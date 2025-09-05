@@ -125,8 +125,7 @@ pub struct ResourceBindingComponents {
     /// Name of this component.
     /// It is required when the resource contains multiple components to ensure proper identification,
     /// and must also be unique within the same resource.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub name: String,
     /// ReplicaRequirements represents the requirements required by each replica for this component.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaRequirements")]
     pub replica_requirements: Option<ResourceBindingComponentsReplicaRequirements>,

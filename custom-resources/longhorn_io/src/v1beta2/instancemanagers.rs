@@ -114,6 +114,21 @@ pub struct InstanceManagerStatusDataEngineStatus {
 pub struct InstanceManagerStatusDataEngineStatusV2 {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuMask")]
     pub cpu_mask: Option<String>,
+    /// InterruptModeEnabled indicates whether the V2 data engine is running in
+    /// interrupt mode (true) or polling mode (false). Set by Longhorn manager;
+    /// read-only to users.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "interruptModeEnabled")]
+    pub interrupt_mode_enabled: Option<InstanceManagerStatusDataEngineStatusV2InterruptModeEnabled>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum InstanceManagerStatusDataEngineStatusV2InterruptModeEnabled {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    #[serde(rename = "true")]
+    True,
+    #[serde(rename = "false")]
+    False,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

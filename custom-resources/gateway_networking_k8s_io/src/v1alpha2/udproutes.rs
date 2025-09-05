@@ -84,6 +84,20 @@ pub struct UDPRouteSpec {
     pub parent_refs: Option<Vec<UDPRouteParentRefs>>,
     /// Rules are a list of UDP matchers and actions.
     pub rules: Vec<UDPRouteRules>,
+    /// UseDefaultGateways indicates the default Gateway scope to use for this
+    /// Route. If unset (the default) or set to None, the Route will not be
+    /// attached to any default Gateway; if set, it will be attached to any
+    /// default Gateway supporting the named scope, subject to the usual rules
+    /// about which Routes a Gateway is allowed to claim.
+    /// 
+    /// Think carefully before using this functionality! The set of default
+    /// Gateways supporting the requested scope can change over time without
+    /// any notice to the Route author, and in many situations it will not be
+    /// appropriate to request a default Gateway for a given Route -- for
+    /// example, a Route with specific security requirements should almost
+    /// certainly not use a default Gateway.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useDefaultGateways")]
+    pub use_default_gateways: Option<UDPRouteUseDefaultGateways>,
 }
 
 /// ParentReference identifies an API object (usually a Gateway) that can be considered
@@ -316,6 +330,13 @@ pub struct UDPRouteRulesBackendRefs {
     /// Support for this field varies based on the context where used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub weight: Option<i32>,
+}
+
+/// Spec defines the desired state of UDPRoute.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum UDPRouteUseDefaultGateways {
+    All,
+    None,
 }
 
 /// Status defines the current state of UDPRoute.

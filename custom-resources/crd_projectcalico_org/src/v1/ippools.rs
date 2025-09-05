@@ -30,6 +30,8 @@ pub struct IPPoolSpec {
     pub ipip: Option<IPPoolIpip>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipipMode")]
     pub ipip_mode: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nat-outgoing")]
     pub nat_outgoing: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "natOutgoing")]

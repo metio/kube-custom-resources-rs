@@ -129,7 +129,13 @@ pub struct ComponentSpec {
     /// If that fails, it will fall back to the ReCreate, where pod will be recreated.
     /// Default value is "PreferInPlace"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podUpdatePolicy")]
-    pub pod_update_policy: Option<String>,
+    pub pod_update_policy: Option<ComponentPodUpdatePolicy>,
+    /// PodUpgradePolicy indicates how pods should be updated when the component is upgraded.
+    /// 
+    /// 
+    /// If not specified, the value of PodUpdatePolicy will be used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podUpgradePolicy")]
+    pub pod_upgrade_policy: Option<ComponentPodUpgradePolicy>,
     /// Specifies the desired number of replicas in the Component for enhancing availability and durability, or load balancing.
     pub replicas: i32,
     /// Specifies the resources required by the Component.
@@ -2356,6 +2362,20 @@ pub enum ComponentPersistentVolumeClaimRetentionPolicyWhenDeleted {
 pub enum ComponentPersistentVolumeClaimRetentionPolicyWhenScaled {
     Retain,
     Delete,
+}
+
+/// ComponentSpec defines the desired state of Component
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ComponentPodUpdatePolicy {
+    StrictInPlace,
+    PreferInPlace,
+}
+
+/// ComponentSpec defines the desired state of Component
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ComponentPodUpgradePolicy {
+    StrictInPlace,
+    PreferInPlace,
 }
 
 /// Specifies the resources required by the Component.

@@ -252,8 +252,7 @@ pub struct GitRepositoryStatus {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GitRepositoryStatusArtifact {
     /// Digest is the digest of the file in the form of '<algorithm>:<checksum>'.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub digest: Option<String>,
+    pub digest: String,
     /// LastUpdateTime is the timestamp corresponding to the last update of the
     /// Artifact.
     #[serde(rename = "lastUpdateTime")]
@@ -281,8 +280,7 @@ pub struct GitRepositoryStatusArtifact {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GitRepositoryStatusIncludedArtifacts {
     /// Digest is the digest of the file in the form of '<algorithm>:<checksum>'.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub digest: Option<String>,
+    pub digest: String,
     /// LastUpdateTime is the timestamp corresponding to the last update of the
     /// Artifact.
     #[serde(rename = "lastUpdateTime")]

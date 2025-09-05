@@ -35,7 +35,7 @@ spec:
                   description: "Agent is the name of fence agent that will be used.\nIt should have a fence_ prefix."
                   pattern: "fence_.+"
                   type: "string"
-                nodeSecrets:
+                nodeSecretNames:
                   additionalProperties:
                     type: "string"
                   description: "NodeSecretNames maps the node name to the Secret name which contains params relevant for that node."

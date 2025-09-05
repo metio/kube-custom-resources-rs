@@ -45,7 +45,6 @@ pub struct GatewayConfigSpec {
     /// LoadBalancerServiceAnnotations is a list of annotations that will go into the
     /// LoadBalancer services created automatically by the operator to wrap Gateways.
     /// 
-    /// 
     /// NOTE: removing annotations from a GatewayConfig will not result in the removal of the
     /// corresponding annotations from the LoadBalancer service, in order to prevent the
     /// accidental removal of an annotation installed there by Kubernetes or the cloud
@@ -74,7 +73,6 @@ pub struct GatewayConfigSpec {
     pub password: Option<String>,
     /// Realm defines the STUN/TURN authentication realm to be used for clients toauthenticate
     /// with STUNner.
-    /// 
     /// 
     /// The realm must consist of lower case alphanumeric characters or '-', and must start and
     /// end with an alphanumeric character. No other punctuation is allowed.
@@ -111,12 +109,10 @@ pub struct GatewayConfigAuthRef {
     /// Namespace is the namespace of the referenced object. When unspecified, the local
     /// namespace is inferred.
     /// 
-    /// 
     /// Note that when a namespace different than the local namespace is specified,
     /// a ReferenceGrant object is required in the referent namespace to allow that
     /// namespace's owner to accept the reference. See the ReferenceGrant
     /// documentation for details.
-    /// 
     /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]

@@ -4326,7 +4326,7 @@ spec:
                           description: "Deprecated: no longer in use."
                           type: "boolean"
                         expose:
-                          description: "Can be used to enable/disable exposure via kubernetes Service."
+                          description: "Can be used to enable/disable http exposure via kubernetes Service."
                           type: "boolean"
                         image:
                           description: "The main container image to use for the Integration. When using this parameter the operator will create a synthetic IntegrationKit which\nwon't be able to execute traits requiring CamelCatalog. If the container image you're using is coming from an IntegrationKit, use instead\nIntegration `.spec.integrationKit` parameter. If you're moving the Integration across environments, you will also need to create an \"external\" IntegrationKit."
@@ -4348,12 +4348,17 @@ spec:
                           description: "The main container name. It's named `integration` by default."
                           type: "string"
                         port:
-                          description: "To configure a different port exposed by the container (default `8080`)."
+                          description: "To configure a different http port exposed by the container (default `8080`)."
                           format: "int32"
                           type: "integer"
                         portName:
-                          description: "To configure a different port name for the port exposed by the container. It defaults to `http` only when the `expose` parameter is true."
+                          description: "To configure a different http port name for the port exposed by the container.\nIt defaults to `http` only when the `expose` parameter is true."
                           type: "string"
+                        ports:
+                          description: "List of container ports available in the container (syntax: <port-name>;<port-number>[;port-protocol]).\nWhen omitted, `port-protocol` (admitted values `TCP`, `UDP` or `SCTP`) is `TCP`.\nDon't use this for the primary http managed port (for which case you need to use `portName` and `port`).\nDon't use in Knative based environments."
+                          items:
+                            type: "string"
+                          type: "array"
                         requestCPU:
                           description: "The minimum amount of CPU required (default 125 millicores)."
                           type: "string"
@@ -4374,11 +4379,11 @@ spec:
                             - "RuntimeDefault"
                           type: "string"
                         servicePort:
-                          description: "To configure under which service port the container port is to be exposed (default `80`)."
+                          description: "To configure under which service port the http container port is to be exposed (default `80`)."
                           format: "int32"
                           type: "integer"
                         servicePortName:
-                          description: "To configure under which service port name the container port is to be exposed (default `http`)."
+                          description: "To configure under which service port name the http container port is to be exposed (default `http`)."
                           type: "string"
                       type: "object"
                     cron:
@@ -4694,15 +4699,12 @@ spec:
                     init-containers:
                       description: "The configuration of Init Containers trait"
                       properties:
-                        auto:
-                          description: "To automatically enable the trait"
-                          type: "boolean"
                         configuration:
                           description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
-                          description: "Deprecated: no longer in use."
+                          description: "Can be used to enable or disable a trait. All traits share this common property."
                           type: "boolean"
                         initTasks:
                           description: "A list of init tasks to be executed with format `<name>;<container-image>;<container-command>`."
@@ -4784,6 +4786,11 @@ spec:
                     jvm:
                       description: "The configuration of JVM trait"
                       properties:
+                        agents:
+                          description: "A list of JVM agents to download and execute with format `<agent-name>;<agent-url>[;<jvm-agent-options>]`."
+                          items:
+                            type: "string"
+                          type: "array"
                         classpath:
                           description: "Additional JVM classpath (use `Linux` classpath separator)"
                           type: "string"
@@ -5333,6 +5340,11 @@ spec:
                         nodePort:
                           description: "Enable Service to be exposed as NodePort (default `false`).\nDeprecated: Use service type instead."
                           type: "boolean"
+                        ports:
+                          description: "List of container ports available in the container to expose\n(syntax: <port-name>;<port-number>;<container-port-number>[;<port-protocol]).\nWhen omitted, `port-protocol` (admitted values `TCP`, `UDP` or `SCTP`) is `TCP`.\nDon't use this for the primary http managed port (which is managed by container trait).\nDon't use in Knative based environments."
+                          items:
+                            type: "string"
+                          type: "array"
                         type:
                           description: "The type of service to be used, either 'ClusterIP', 'NodePort' or 'LoadBalancer'."
                           enum:
@@ -5872,7 +5884,7 @@ spec:
                           description: "Deprecated: no longer in use."
                           type: "boolean"
                         expose:
-                          description: "Can be used to enable/disable exposure via kubernetes Service."
+                          description: "Can be used to enable/disable http exposure via kubernetes Service."
                           type: "boolean"
                         image:
                           description: "The main container image to use for the Integration. When using this parameter the operator will create a synthetic IntegrationKit which\nwon't be able to execute traits requiring CamelCatalog. If the container image you're using is coming from an IntegrationKit, use instead\nIntegration `.spec.integrationKit` parameter. If you're moving the Integration across environments, you will also need to create an \"external\" IntegrationKit."
@@ -5894,12 +5906,17 @@ spec:
                           description: "The main container name. It's named `integration` by default."
                           type: "string"
                         port:
-                          description: "To configure a different port exposed by the container (default `8080`)."
+                          description: "To configure a different http port exposed by the container (default `8080`)."
                           format: "int32"
                           type: "integer"
                         portName:
-                          description: "To configure a different port name for the port exposed by the container. It defaults to `http` only when the `expose` parameter is true."
+                          description: "To configure a different http port name for the port exposed by the container.\nIt defaults to `http` only when the `expose` parameter is true."
                           type: "string"
+                        ports:
+                          description: "List of container ports available in the container (syntax: <port-name>;<port-number>[;port-protocol]).\nWhen omitted, `port-protocol` (admitted values `TCP`, `UDP` or `SCTP`) is `TCP`.\nDon't use this for the primary http managed port (for which case you need to use `portName` and `port`).\nDon't use in Knative based environments."
+                          items:
+                            type: "string"
+                          type: "array"
                         requestCPU:
                           description: "The minimum amount of CPU required (default 125 millicores)."
                           type: "string"
@@ -5920,11 +5937,11 @@ spec:
                             - "RuntimeDefault"
                           type: "string"
                         servicePort:
-                          description: "To configure under which service port the container port is to be exposed (default `80`)."
+                          description: "To configure under which service port the http container port is to be exposed (default `80`)."
                           format: "int32"
                           type: "integer"
                         servicePortName:
-                          description: "To configure under which service port name the container port is to be exposed (default `http`)."
+                          description: "To configure under which service port name the http container port is to be exposed (default `http`)."
                           type: "string"
                       type: "object"
                     cron:
@@ -6240,15 +6257,12 @@ spec:
                     init-containers:
                       description: "The configuration of Init Containers trait"
                       properties:
-                        auto:
-                          description: "To automatically enable the trait"
-                          type: "boolean"
                         configuration:
                           description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
-                          description: "Deprecated: no longer in use."
+                          description: "Can be used to enable or disable a trait. All traits share this common property."
                           type: "boolean"
                         initTasks:
                           description: "A list of init tasks to be executed with format `<name>;<container-image>;<container-command>`."
@@ -6330,6 +6344,11 @@ spec:
                     jvm:
                       description: "The configuration of JVM trait"
                       properties:
+                        agents:
+                          description: "A list of JVM agents to download and execute with format `<agent-name>;<agent-url>[;<jvm-agent-options>]`."
+                          items:
+                            type: "string"
+                          type: "array"
                         classpath:
                           description: "Additional JVM classpath (use `Linux` classpath separator)"
                           type: "string"
@@ -6879,6 +6898,11 @@ spec:
                         nodePort:
                           description: "Enable Service to be exposed as NodePort (default `false`).\nDeprecated: Use service type instead."
                           type: "boolean"
+                        ports:
+                          description: "List of container ports available in the container to expose\n(syntax: <port-name>;<port-number>;<container-port-number>[;<port-protocol]).\nWhen omitted, `port-protocol` (admitted values `TCP`, `UDP` or `SCTP`) is `TCP`.\nDon't use this for the primary http managed port (which is managed by container trait).\nDon't use in Knative based environments."
+                          items:
+                            type: "string"
+                          type: "array"
                         type:
                           description: "The type of service to be used, either 'ClusterIP', 'NodePort' or 'LoadBalancer'."
                           enum:

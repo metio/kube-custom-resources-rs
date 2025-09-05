@@ -120,6 +120,59 @@ spec:
                 provisionedThroughputInMiBps:
                   description: "The throughput, measured in mebibytes per second (MiBps), that you want to\nprovision for a file system that you're creating. Required if ThroughputMode\nis set to provisioned. Valid values are 1-3414 MiBps, with the upper limit\ndepending on Region. To increase this limit, contact Amazon Web Services\nSupport. For more information, see Amazon EFS quotas that you can increase\n(https://docs.aws.amazon.com/efs/latest/ug/limits.html#soft-limits) in the\nAmazon EFS User Guide."
                   type: "number"
+                replicationConfiguration:
+                  description: "An array of destination configuration objects. Only one destination configuration\nobject is supported."
+                  items:
+                    description: "Describes the new or existing destination file system for the replication\nconfiguration.\n\n   * If you want to replicate to a new file system, do not specify the File\n   System ID for the destination file system. Amazon EFS creates a new, empty\n   file system. For One Zone storage, specify the Availability Zone to create\n   the file system in. To use an Key Management Service key other than the\n   default KMS key, then specify it. For more information, see Configuring\n   replication to new Amazon EFS file system (https://docs.aws.amazon.com/efs/latest/ug/create-replication.html)\n   in the Amazon EFS User Guide. After the file system is created, you cannot\n   change the KMS key or the performance mode.\n\n   * If you want to replicate to an existing file system that's in the same\n   account as the source file system, then you need to provide the ID or\n   Amazon Resource Name (ARN) of the file system to which to replicate. The\n   file system's replication overwrite protection must be disabled. For more\n   information, see Replicating to an existing file system (https://docs.aws.amazon.com/efs/latest/ug/efs-replication#replicate-existing-destination)\n   in the Amazon EFS User Guide.\n\n   * If you are replicating the file system to a file system that's in a\n   different account than the source file system (cross-account replication),\n   you need to provide the ARN for the file system and the IAM role that\n   allows Amazon EFS to perform replication on the destination account. The\n   file system's replication overwrite protection must be disabled. For more\n   information, see Replicating across Amazon Web Services accounts (https://docs.aws.amazon.com/efs/latest/ug/cross-account-replication.html)\n   in the Amazon EFS User Guide."
+                    properties:
+                      availabilityZoneName:
+                        type: "string"
+                      fileSystemID:
+                        type: "string"
+                      fileSystemRef:
+                        description: "Reference field for FileSystemID"
+                        properties:
+                          from:
+                            description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
+                            properties:
+                              name:
+                                type: "string"
+                              namespace:
+                                type: "string"
+                            type: "object"
+                        type: "object"
+                      kmsKeyID:
+                        type: "string"
+                      kmsKeyRef:
+                        description: "Reference field for KMSKeyID"
+                        properties:
+                          from:
+                            description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
+                            properties:
+                              name:
+                                type: "string"
+                              namespace:
+                                type: "string"
+                            type: "object"
+                        type: "object"
+                      region:
+                        type: "string"
+                      roleARN:
+                        type: "string"
+                      roleRef:
+                        description: "Reference field for RoleARN"
+                        properties:
+                          from:
+                            description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
+                            properties:
+                              name:
+                                type: "string"
+                              namespace:
+                                type: "string"
+                            type: "object"
+                        type: "object"
+                    type: "object"
+                  type: "array"
                 tags:
                   description: "Use to create one or more tags associated with the file system. Each tag\nis a user-defined key-value pair. Name your file system on creation by including\na \"Key\":\"Name\",\"Value\":\"{value}\" key-value pair. Each key must be unique.\nFor more information, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html)\nin the Amazon Web Services General Reference Guide."
                   items:
@@ -203,6 +256,28 @@ spec:
                 ownerID:
                   description: "The Amazon Web Services account that created the file system.\n\nRegex Pattern: `^(\\d{12})|(\\d{4}-\\d{4}-\\d{4})$`"
                   type: "string"
+                replicationConfigurationStatus:
+                  description: "An array of destination objects. Only one destination object is supported."
+                  items:
+                    description: "Describes the destination file system in the replication configuration."
+                    properties:
+                      fileSystemID:
+                        type: "string"
+                      lastReplicatedTimestamp:
+                        format: "date-time"
+                        type: "string"
+                      ownerID:
+                        type: "string"
+                      region:
+                        type: "string"
+                      roleARN:
+                        type: "string"
+                      status:
+                        type: "string"
+                      statusMessage:
+                        type: "string"
+                    type: "object"
+                  type: "array"
                 sizeInBytes:
                   description: "The latest known metered size (in bytes) of data stored in the file system,\nin its Value field, and the time at which that size was determined in its\nTimestamp field. The Timestamp value is the integer number of seconds since\n1970-01-01T00:00:00Z. The SizeInBytes value doesn't represent the size of\na consistent snapshot of the file system, but it is eventually consistent\nwhen there are no writes to the file system. That is, SizeInBytes represents\nactual size only if the file system is not modified for a period longer than\na couple of hours. Otherwise, the value is not the exact size that the file\nsystem was at any point in time."
                   properties:

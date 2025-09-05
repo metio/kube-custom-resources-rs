@@ -411,13 +411,13 @@ pub struct TenantNetworkPoliciesItems {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ingress: Option<Vec<TenantNetworkPoliciesItemsIngress>>,
     /// podSelector selects the pods to which this NetworkPolicy object applies.
-    /// The array of ingress rules is applied to any pods selected by this field.
+    /// The array of rules is applied to any pods selected by this field. An empty
+    /// selector matches all pods in the policy's namespace.
     /// Multiple network policies can select the same set of pods. In this case,
     /// the ingress rules for each are combined additively.
-    /// This field is NOT optional and follows standard label selector semantics.
-    /// An empty podSelector matches all pods in this namespace.
-    #[serde(rename = "podSelector")]
-    pub pod_selector: TenantNetworkPoliciesItemsPodSelector,
+    /// This field is optional. If it is not specified, it defaults to an empty selector.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSelector")]
+    pub pod_selector: Option<TenantNetworkPoliciesItemsPodSelector>,
     /// policyTypes is a list of rule types that the NetworkPolicy relates to.
     /// Valid options are ["Ingress"], ["Egress"], or ["Ingress", "Egress"].
     /// If this field is not specified, it will default based on the existence of ingress or egress rules;
@@ -736,11 +736,11 @@ pub struct TenantNetworkPoliciesItemsIngressPorts {
 }
 
 /// podSelector selects the pods to which this NetworkPolicy object applies.
-/// The array of ingress rules is applied to any pods selected by this field.
+/// The array of rules is applied to any pods selected by this field. An empty
+/// selector matches all pods in the policy's namespace.
 /// Multiple network policies can select the same set of pods. In this case,
 /// the ingress rules for each are combined additively.
-/// This field is NOT optional and follows standard label selector semantics.
-/// An empty podSelector matches all pods in this namespace.
+/// This field is optional. If it is not specified, it defaults to an empty selector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantNetworkPoliciesItemsPodSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.

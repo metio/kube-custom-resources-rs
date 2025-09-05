@@ -463,6 +463,10 @@ pub struct HelmReleaseInstall {
     /// Deprecated use CRD policy (`crds`) attribute with value `Skip` instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipCRDs")]
     pub skip_cr_ds: Option<bool>,
+    /// Strategy defines the install strategy to use for this HelmRelease.
+    /// Defaults to 'RemediateOnFailure'.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub strategy: Option<HelmReleaseInstallStrategy>,
     /// Timeout is the time to wait for any individual Kubernetes operation (like
     /// Jobs for hooks) during the performance of a Helm install action. Defaults to
     /// 'HelmReleaseSpec.Timeout'.
@@ -496,6 +500,27 @@ pub struct HelmReleaseInstallRemediation {
     /// Defaults to '0', a negative integer equals to unlimited retries.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retries: Option<i64>,
+}
+
+/// Strategy defines the install strategy to use for this HelmRelease.
+/// Defaults to 'RemediateOnFailure'.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct HelmReleaseInstallStrategy {
+    /// Name of the install strategy.
+    pub name: HelmReleaseInstallStrategyName,
+    /// RetryInterval is the interval at which to retry a failed install.
+    /// Can be used only when Name is set to RetryOnFailure.
+    /// Defaults to '5m'.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
+    pub retry_interval: Option<String>,
+}
+
+/// Strategy defines the install strategy to use for this HelmRelease.
+/// Defaults to 'RemediateOnFailure'.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum HelmReleaseInstallStrategyName {
+    RemediateOnFailure,
+    RetryOnFailure,
 }
 
 /// KubeConfig for reconciling the HelmRelease on a remote cluster.
@@ -847,6 +872,10 @@ pub struct HelmReleaseUpgrade {
     /// action for the HelmRelease fails. The default is to not perform any action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub remediation: Option<HelmReleaseUpgradeRemediation>,
+    /// Strategy defines the upgrade strategy to use for this HelmRelease.
+    /// Defaults to 'RemediateOnFailure'.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub strategy: Option<HelmReleaseUpgradeStrategy>,
     /// Timeout is the time to wait for any individual Kubernetes operation (like
     /// Jobs for hooks) during the performance of a Helm upgrade action. Defaults to
     /// 'HelmReleaseSpec.Timeout'.
@@ -893,6 +922,27 @@ pub enum HelmReleaseUpgradeRemediationStrategy {
     Rollback,
     #[serde(rename = "uninstall")]
     Uninstall,
+}
+
+/// Strategy defines the upgrade strategy to use for this HelmRelease.
+/// Defaults to 'RemediateOnFailure'.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct HelmReleaseUpgradeStrategy {
+    /// Name of the upgrade strategy.
+    pub name: HelmReleaseUpgradeStrategyName,
+    /// RetryInterval is the interval at which to retry a failed upgrade.
+    /// Can be used only when Name is set to RetryOnFailure.
+    /// Defaults to '5m'.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
+    pub retry_interval: Option<String>,
+}
+
+/// Strategy defines the upgrade strategy to use for this HelmRelease.
+/// Defaults to 'RemediateOnFailure'.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum HelmReleaseUpgradeStrategyName {
+    RemediateOnFailure,
+    RetryOnFailure,
 }
 
 /// ValuesReference contains a reference to a resource containing Helm values,
@@ -959,7 +1009,8 @@ pub struct HelmReleaseStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastAttemptedGeneration")]
     pub last_attempted_generation: Option<i64>,
     /// LastAttemptedReleaseAction is the last release action performed for this
-    /// HelmRelease. It is used to determine the active remediation strategy.
+    /// HelmRelease. It is used to determine the active retry or remediation
+    /// strategy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastAttemptedReleaseAction")]
     pub last_attempted_release_action: Option<HelmReleaseStatusLastAttemptedReleaseAction>,
     /// LastAttemptedReleaseActionDuration is the duration of the last

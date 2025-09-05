@@ -10196,7 +10196,7 @@ pub enum ScrapeConfigOpenstackSdConfigsTlsConfigMinVersion {
 
 /// OVHCloudSDConfig configurations allow retrieving scrape targets from OVHcloud's dedicated servers and VPS using their API.
 /// See <https://prometheus.io/docs/prometheus/latest/configuration/configuration/#ovhcloud_sd_config>
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ScrapeConfigOvhcloudSdConfigs {
     /// Access key to use. <https://api.ovh.com.>
     #[serde(rename = "applicationKey")]
@@ -10214,7 +10214,7 @@ pub struct ScrapeConfigOvhcloudSdConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
     pub refresh_interval: Option<String>,
     /// Service of the targets to retrieve. Must be `VPS` or `DedicatedServer`.
-    pub service: String,
+    pub service: ScrapeConfigOvhcloudSdConfigsService,
 }
 
 /// SecretKeySelector selects a key of a Secret.
@@ -10249,6 +10249,15 @@ pub struct ScrapeConfigOvhcloudSdConfigsConsumerKey {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// OVHCloudSDConfig configurations allow retrieving scrape targets from OVHcloud's dedicated servers and VPS using their API.
+/// See <https://prometheus.io/docs/prometheus/latest/configuration/configuration/#ovhcloud_sd_config>
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigOvhcloudSdConfigsService {
+    #[serde(rename = "VPS")]
+    Vps,
+    DedicatedServer,
 }
 
 /// SecretKeySelector selects a key of a Secret.

@@ -307,7 +307,7 @@ pub struct RuntimeComponentAffinityPodAffinityPreferredDuringSchedulingIgnoredDu
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -318,7 +318,7 @@ pub struct RuntimeComponentAffinityPodAffinityPreferredDuringSchedulingIgnoredDu
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -428,7 +428,7 @@ pub struct RuntimeComponentAffinityPodAffinityRequiredDuringSchedulingIgnoredDur
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -439,7 +439,7 @@ pub struct RuntimeComponentAffinityPodAffinityRequiredDuringSchedulingIgnoredDur
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -580,7 +580,7 @@ pub struct RuntimeComponentAffinityPodAntiAffinityPreferredDuringSchedulingIgnor
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -591,7 +591,7 @@ pub struct RuntimeComponentAffinityPodAntiAffinityPreferredDuringSchedulingIgnor
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -701,7 +701,7 @@ pub struct RuntimeComponentAffinityPodAntiAffinityRequiredDuringSchedulingIgnore
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -712,7 +712,7 @@ pub struct RuntimeComponentAffinityPodAntiAffinityRequiredDuringSchedulingIgnore
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -832,9 +832,6 @@ pub struct RuntimeComponentDeployment {
 pub struct RuntimeComponentDeploymentUpdateStrategy {
     /// Rolling update config params. Present only if DeploymentStrategyType =
     /// RollingUpdate.
-    /// ---
-    /// TODO: Update this to follow our convention for oneOf, whatever we decide it
-    /// to be.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
     pub rolling_update: Option<RuntimeComponentDeploymentUpdateStrategyRollingUpdate>,
     /// Type of deployment. Can be "Recreate" or "RollingUpdate". Default is RollingUpdate.
@@ -844,9 +841,6 @@ pub struct RuntimeComponentDeploymentUpdateStrategy {
 
 /// Rolling update config params. Present only if DeploymentStrategyType =
 /// RollingUpdate.
-/// ---
-/// TODO: Update this to follow our convention for oneOf, whatever we decide it
-/// to be.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentDeploymentUpdateStrategyRollingUpdate {
     /// The maximum number of pods that can be scheduled above the desired number of
@@ -925,9 +919,7 @@ pub struct RuntimeComponentEnvValueFromConfigMapKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -970,9 +962,7 @@ pub struct RuntimeComponentEnvValueFromSecretKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1001,9 +991,7 @@ pub struct RuntimeComponentEnvFromConfigMapRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap must be defined
@@ -1018,9 +1006,7 @@ pub struct RuntimeComponentEnvFromSecretRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret must be defined
@@ -1244,9 +1230,7 @@ pub struct RuntimeComponentInitContainersEnvValueFromConfigMapKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -1289,9 +1273,7 @@ pub struct RuntimeComponentInitContainersEnvValueFromSecretKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1320,9 +1302,7 @@ pub struct RuntimeComponentInitContainersEnvFromConfigMapRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap must be defined
@@ -1337,9 +1317,7 @@ pub struct RuntimeComponentInitContainersEnvFromSecretRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret must be defined
@@ -1624,7 +1602,6 @@ pub struct RuntimeComponentInitContainersLivenessProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see <https://github.com/grpc/grpc/blob/master/doc/health-checking.md).>
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -1775,7 +1752,6 @@ pub struct RuntimeComponentInitContainersReadinessProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see <https://github.com/grpc/grpc/blob/master/doc/health-checking.md).>
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -1847,10 +1823,8 @@ pub struct RuntimeComponentInitContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1874,6 +1848,11 @@ pub struct RuntimeComponentInitContainersResourcesClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// SecurityContext defines the security options the container should be run with.
@@ -1907,7 +1886,7 @@ pub struct RuntimeComponentInitContainersSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
     /// procMount denotes the type of proc mount to use for the containers.
-    /// The default is DefaultProcMount which uses the container runtime defaults for
+    /// The default value is Default which uses the container runtime defaults for
     /// readonly paths and masked paths.
     /// This requires the ProcMountType feature flag to be enabled.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -2030,7 +2009,6 @@ pub struct RuntimeComponentInitContainersSecurityContextSeccompProfile {
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
     /// 
-    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -2142,7 +2120,6 @@ pub struct RuntimeComponentInitContainersStartupProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see <https://github.com/grpc/grpc/blob/master/doc/health-checking.md).>
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -2227,9 +2204,7 @@ pub struct RuntimeComponentInitContainersVolumeMounts {
     /// RecursiveReadOnly specifies whether read-only mounts should be handled
     /// recursively.
     /// 
-    /// 
     /// If ReadOnly is false, this field has no meaning and must be unspecified.
-    /// 
     /// 
     /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
     /// recursively read-only.  If this field is set to IfPossible, the mount is made
@@ -2238,10 +2213,8 @@ pub struct RuntimeComponentInitContainersVolumeMounts {
     /// supported by the container runtime, otherwise the pod will not be started and
     /// an error will be generated to indicate the reason.
     /// 
-    /// 
     /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
     /// None (or be unspecified, which defaults to None).
-    /// 
     /// 
     /// If this field is not specified, it is treated as an equivalent of Disabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
@@ -2276,19 +2249,16 @@ pub struct RuntimeComponentMonitoringEndpoints {
     /// `authorization` configures the Authorization header credentials to use when
     /// scraping the target.
     /// 
-    /// 
     /// Cannot be set at the same time as `basicAuth`, or `oauth2`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<RuntimeComponentMonitoringEndpointsAuthorization>,
     /// `basicAuth` configures the Basic Authentication credentials to use when
     /// scraping the target.
     /// 
-    /// 
     /// Cannot be set at the same time as `authorization`, or `oauth2`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<RuntimeComponentMonitoringEndpointsBasicAuth>,
     /// File to read bearer token for scraping the target.
-    /// 
     /// 
     /// Deprecated: use `authorization` instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenFile")]
@@ -2296,7 +2266,6 @@ pub struct RuntimeComponentMonitoringEndpoints {
     /// `bearerTokenSecret` specifies a key of a Secret containing the bearer
     /// token for scraping targets. The secret needs to be in the same namespace
     /// as the ServiceMonitor object and readable by the Prometheus Operator.
-    /// 
     /// 
     /// Deprecated: use `authorization` instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
@@ -2307,9 +2276,7 @@ pub struct RuntimeComponentMonitoringEndpoints {
     /// When true, the pods which are not running (e.g. either in Failed or
     /// Succeeded state) are dropped during the target discovery.
     /// 
-    /// 
     /// If unset, the filtering is enabled.
-    /// 
     /// 
     /// More info: <https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-phase>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "filterRunning")]
@@ -2328,7 +2295,6 @@ pub struct RuntimeComponentMonitoringEndpoints {
     pub honor_timestamps: Option<bool>,
     /// Interval at which Prometheus scrapes the metrics from the target.
     /// 
-    /// 
     /// If empty, Prometheus uses the global scrape interval.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<String>,
@@ -2338,9 +2304,7 @@ pub struct RuntimeComponentMonitoringEndpoints {
     pub metric_relabelings: Option<Vec<RuntimeComponentMonitoringEndpointsMetricRelabelings>>,
     /// `oauth2` configures the OAuth2 settings to use when scraping the target.
     /// 
-    /// 
     /// It requires Prometheus >= 2.27.0.
-    /// 
     /// 
     /// Cannot be set at the same time as `authorization`, or `basicAuth`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2350,12 +2314,10 @@ pub struct RuntimeComponentMonitoringEndpoints {
     pub params: Option<BTreeMap<String, String>>,
     /// HTTP path from which to scrape for metrics.
     /// 
-    /// 
     /// If empty, Prometheus uses the default value (e.g. `/metrics`).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     /// Name of the Service port which this endpoint refers to.
-    /// 
     /// 
     /// It takes precedence over `targetPort`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2367,28 +2329,22 @@ pub struct RuntimeComponentMonitoringEndpoints {
     /// `relabelings` configures the relabeling rules to apply the target's
     /// metadata labels.
     /// 
-    /// 
     /// The Operator automatically adds relabelings for a few standard Kubernetes fields.
     /// 
-    /// 
     /// The original scrape job's name is available via the `__tmp_prometheus_job_name` label.
-    /// 
     /// 
     /// More info: <https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub relabelings: Option<Vec<RuntimeComponentMonitoringEndpointsRelabelings>>,
     /// HTTP scheme to use for scraping.
     /// 
-    /// 
     /// `http` and `https` are the expected values unless you rewrite the
     /// `__scheme__` label via relabeling.
-    /// 
     /// 
     /// If empty, Prometheus uses the default value `http`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<RuntimeComponentMonitoringEndpointsScheme>,
     /// Timeout after which Prometheus considers the scrape to be failed.
-    /// 
     /// 
     /// If empty, Prometheus uses the global scrape timeout unless it is less
     /// than the target's scrape interval value in which the latter is used.
@@ -2405,7 +2361,6 @@ pub struct RuntimeComponentMonitoringEndpoints {
     /// the metrics that have an explicit timestamp present in scraped data.
     /// Has no effect if `honorTimestamps` is false.
     /// 
-    /// 
     /// It requires Prometheus >= v2.48.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "trackTimestampsStaleness")]
     pub track_timestamps_staleness: Option<bool>,
@@ -2413,7 +2368,6 @@ pub struct RuntimeComponentMonitoringEndpoints {
 
 /// `authorization` configures the Authorization header credentials to use when
 /// scraping the target.
-/// 
 /// 
 /// Cannot be set at the same time as `basicAuth`, or `oauth2`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2423,9 +2377,7 @@ pub struct RuntimeComponentMonitoringEndpointsAuthorization {
     pub credentials: Option<RuntimeComponentMonitoringEndpointsAuthorizationCredentials>,
     /// Defines the authentication type. The value is case-insensitive.
     /// 
-    /// 
     /// "Basic" is not a supported value.
-    /// 
     /// 
     /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -2441,9 +2393,7 @@ pub struct RuntimeComponentMonitoringEndpointsAuthorizationCredentials {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2453,7 +2403,6 @@ pub struct RuntimeComponentMonitoringEndpointsAuthorizationCredentials {
 
 /// `basicAuth` configures the Basic Authentication credentials to use when
 /// scraping the target.
-/// 
 /// 
 /// Cannot be set at the same time as `authorization`, or `oauth2`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2478,9 +2427,7 @@ pub struct RuntimeComponentMonitoringEndpointsBasicAuthPassword {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2498,9 +2445,7 @@ pub struct RuntimeComponentMonitoringEndpointsBasicAuthUsername {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2512,7 +2457,6 @@ pub struct RuntimeComponentMonitoringEndpointsBasicAuthUsername {
 /// token for scraping targets. The secret needs to be in the same namespace
 /// as the ServiceMonitor object and readable by the Prometheus Operator.
 /// 
-/// 
 /// Deprecated: use `authorization` instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentMonitoringEndpointsBearerTokenSecret {
@@ -2522,9 +2466,7 @@ pub struct RuntimeComponentMonitoringEndpointsBearerTokenSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2535,22 +2477,18 @@ pub struct RuntimeComponentMonitoringEndpointsBearerTokenSecret {
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
 /// scraped samples and remote write samples.
 /// 
-/// 
 /// More info: <https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentMonitoringEndpointsMetricRelabelings {
     /// Action to perform based on the regex matching.
     /// 
-    /// 
     /// `Uppercase` and `Lowercase` actions require Prometheus >= v2.36.0.
     /// `DropEqual` and `KeepEqual` actions require Prometheus >= v2.41.0.
-    /// 
     /// 
     /// Default: "Replace"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<RuntimeComponentMonitoringEndpointsMetricRelabelingsAction>,
     /// Modulus to take of the hash of the source label values.
-    /// 
     /// 
     /// Only applicable when the action is `HashMod`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2560,7 +2498,6 @@ pub struct RuntimeComponentMonitoringEndpointsMetricRelabelings {
     pub regex: Option<String>,
     /// Replacement value against which a Replace action is performed if the
     /// regular expression matches.
-    /// 
     /// 
     /// Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2575,10 +2512,8 @@ pub struct RuntimeComponentMonitoringEndpointsMetricRelabelings {
     pub source_labels: Option<Vec<String>>,
     /// Label to which the resulting string is written in a replacement.
     /// 
-    /// 
     /// It is mandatory for `Replace`, `HashMod`, `Lowercase`, `Uppercase`,
     /// `KeepEqual` and `DropEqual` actions.
-    /// 
     /// 
     /// Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
@@ -2587,7 +2522,6 @@ pub struct RuntimeComponentMonitoringEndpointsMetricRelabelings {
 
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
 /// scraped samples and remote write samples.
-/// 
 /// 
 /// More info: <https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config>
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -2634,9 +2568,7 @@ pub enum RuntimeComponentMonitoringEndpointsMetricRelabelingsAction {
 
 /// `oauth2` configures the OAuth2 settings to use when scraping the target.
 /// 
-/// 
 /// It requires Prometheus >= 2.27.0.
-/// 
 /// 
 /// Cannot be set at the same time as `authorization`, or `basicAuth`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2657,28 +2589,21 @@ pub struct RuntimeComponentMonitoringEndpointsOauth2 {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// 
-    /// It requires Prometheus >= v2.43.0.
+    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// 
-    /// It requires Prometheus >= v2.43.0.
+    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, RuntimeComponentMonitoringEndpointsOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    /// If unset, Prometheus uses its default value.
     /// 
-    /// 
-    /// It requires Prometheus >= v2.43.0.
+    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
-    /// 
-    /// 
-    /// It requires Prometheus >= v2.43.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
     pub proxy_url: Option<String>,
     /// `scopes` defines the OAuth2 scopes used for the token request.
@@ -2714,9 +2639,7 @@ pub struct RuntimeComponentMonitoringEndpointsOauth2ClientIdConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -2733,9 +2656,7 @@ pub struct RuntimeComponentMonitoringEndpointsOauth2ClientIdSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2753,9 +2674,7 @@ pub struct RuntimeComponentMonitoringEndpointsOauth2ClientSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2772,9 +2691,7 @@ pub struct RuntimeComponentMonitoringEndpointsOauth2ProxyConnectHeader {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2800,12 +2717,10 @@ pub struct RuntimeComponentMonitoringEndpointsOauth2TlsConfig {
     pub key_secret: Option<RuntimeComponentMonitoringEndpointsOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// 
     /// It requires Prometheus >= v2.41.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<RuntimeComponentMonitoringEndpointsOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    /// 
     /// 
     /// It requires Prometheus >= v2.35.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
@@ -2835,9 +2750,7 @@ pub struct RuntimeComponentMonitoringEndpointsOauth2TlsConfigCaConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -2854,9 +2767,7 @@ pub struct RuntimeComponentMonitoringEndpointsOauth2TlsConfigCaSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2884,9 +2795,7 @@ pub struct RuntimeComponentMonitoringEndpointsOauth2TlsConfigCertConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -2903,9 +2812,7 @@ pub struct RuntimeComponentMonitoringEndpointsOauth2TlsConfigCertSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2922,9 +2829,7 @@ pub struct RuntimeComponentMonitoringEndpointsOauth2TlsConfigKeySecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2963,22 +2868,18 @@ pub enum RuntimeComponentMonitoringEndpointsOauth2TlsConfigMinVersion {
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
 /// scraped samples and remote write samples.
 /// 
-/// 
 /// More info: <https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentMonitoringEndpointsRelabelings {
     /// Action to perform based on the regex matching.
     /// 
-    /// 
     /// `Uppercase` and `Lowercase` actions require Prometheus >= v2.36.0.
     /// `DropEqual` and `KeepEqual` actions require Prometheus >= v2.41.0.
-    /// 
     /// 
     /// Default: "Replace"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<RuntimeComponentMonitoringEndpointsRelabelingsAction>,
     /// Modulus to take of the hash of the source label values.
-    /// 
     /// 
     /// Only applicable when the action is `HashMod`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2988,7 +2889,6 @@ pub struct RuntimeComponentMonitoringEndpointsRelabelings {
     pub regex: Option<String>,
     /// Replacement value against which a Replace action is performed if the
     /// regular expression matches.
-    /// 
     /// 
     /// Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3003,10 +2903,8 @@ pub struct RuntimeComponentMonitoringEndpointsRelabelings {
     pub source_labels: Option<Vec<String>>,
     /// Label to which the resulting string is written in a replacement.
     /// 
-    /// 
     /// It is mandatory for `Replace`, `HashMod`, `Lowercase`, `Uppercase`,
     /// `KeepEqual` and `DropEqual` actions.
-    /// 
     /// 
     /// Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
@@ -3015,7 +2913,6 @@ pub struct RuntimeComponentMonitoringEndpointsRelabelings {
 
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
 /// scraped samples and remote write samples.
-/// 
 /// 
 /// More info: <https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config>
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -3096,12 +2993,10 @@ pub struct RuntimeComponentMonitoringEndpointsTlsConfig {
     pub key_secret: Option<RuntimeComponentMonitoringEndpointsTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// 
     /// It requires Prometheus >= v2.41.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<RuntimeComponentMonitoringEndpointsTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    /// 
     /// 
     /// It requires Prometheus >= v2.35.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
@@ -3131,9 +3026,7 @@ pub struct RuntimeComponentMonitoringEndpointsTlsConfigCaConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -3150,9 +3043,7 @@ pub struct RuntimeComponentMonitoringEndpointsTlsConfigCaSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3180,9 +3071,7 @@ pub struct RuntimeComponentMonitoringEndpointsTlsConfigCertConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -3199,9 +3088,7 @@ pub struct RuntimeComponentMonitoringEndpointsTlsConfigCertSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3218,9 +3105,7 @@ pub struct RuntimeComponentMonitoringEndpointsTlsConfigKeySecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3337,7 +3222,6 @@ pub struct RuntimeComponentProbesLivenessGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see <https://github.com/grpc/grpc/blob/master/doc/health-checking.md).>
-    /// 
     /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3459,7 +3343,6 @@ pub struct RuntimeComponentProbesReadinessGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see <https://github.com/grpc/grpc/blob/master/doc/health-checking.md).>
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -3580,7 +3463,6 @@ pub struct RuntimeComponentProbesStartupGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see <https://github.com/grpc/grpc/blob/master/doc/health-checking.md).>
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -3637,10 +3519,8 @@ pub struct RuntimeComponentResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3664,6 +3544,11 @@ pub struct RuntimeComponentResourcesClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// Configures the ingress resource.
@@ -3735,16 +3620,13 @@ pub struct RuntimeComponentServicePorts {
     /// This field follows standard Kubernetes label syntax.
     /// Valid values are either:
     /// 
-    /// 
     /// * Un-prefixed protocol names - reserved for IANA standard service names (as per
     /// RFC-6335 and <https://www.iana.org/assignments/service-names).>
-    /// 
     /// 
     /// * Kubernetes-defined prefixed names:
     ///   * 'kubernetes.io/h2c' - HTTP/2 prior knowledge over cleartext as described in <https://www.rfc-editor.org/rfc/rfc9113.html#name-starting-http-2-with-prior->
     ///   * 'kubernetes.io/ws'  - WebSocket over cleartext as described in <https://www.rfc-editor.org/rfc/rfc6455>
     ///   * 'kubernetes.io/wss' - WebSocket over TLS as described in <https://www.rfc-editor.org/rfc/rfc6455>
-    /// 
     /// 
     /// * Other protocols should use implementation-defined prefixed names such as
     /// mycompany.com/my-custom-protocol.
@@ -4007,9 +3889,7 @@ pub struct RuntimeComponentSidecarContainersEnvValueFromConfigMapKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -4052,9 +3932,7 @@ pub struct RuntimeComponentSidecarContainersEnvValueFromSecretKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -4083,9 +3961,7 @@ pub struct RuntimeComponentSidecarContainersEnvFromConfigMapRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap must be defined
@@ -4100,9 +3976,7 @@ pub struct RuntimeComponentSidecarContainersEnvFromSecretRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret must be defined
@@ -4387,7 +4261,6 @@ pub struct RuntimeComponentSidecarContainersLivenessProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see <https://github.com/grpc/grpc/blob/master/doc/health-checking.md).>
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -4538,7 +4411,6 @@ pub struct RuntimeComponentSidecarContainersReadinessProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see <https://github.com/grpc/grpc/blob/master/doc/health-checking.md).>
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -4610,10 +4482,8 @@ pub struct RuntimeComponentSidecarContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4637,6 +4507,11 @@ pub struct RuntimeComponentSidecarContainersResourcesClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// SecurityContext defines the security options the container should be run with.
@@ -4670,7 +4545,7 @@ pub struct RuntimeComponentSidecarContainersSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
     /// procMount denotes the type of proc mount to use for the containers.
-    /// The default is DefaultProcMount which uses the container runtime defaults for
+    /// The default value is Default which uses the container runtime defaults for
     /// readonly paths and masked paths.
     /// This requires the ProcMountType feature flag to be enabled.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -4793,7 +4668,6 @@ pub struct RuntimeComponentSidecarContainersSecurityContextSeccompProfile {
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
     /// 
-    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -4905,7 +4779,6 @@ pub struct RuntimeComponentSidecarContainersStartupProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see <https://github.com/grpc/grpc/blob/master/doc/health-checking.md).>
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -4990,9 +4863,7 @@ pub struct RuntimeComponentSidecarContainersVolumeMounts {
     /// RecursiveReadOnly specifies whether read-only mounts should be handled
     /// recursively.
     /// 
-    /// 
     /// If ReadOnly is false, this field has no meaning and must be unspecified.
-    /// 
     /// 
     /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
     /// recursively read-only.  If this field is set to IfPossible, the mount is made
@@ -5001,10 +4872,8 @@ pub struct RuntimeComponentSidecarContainersVolumeMounts {
     /// supported by the container runtime, otherwise the pod will not be started and
     /// an error will be generated to indicate the reason.
     /// 
-    /// 
     /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
     /// None (or be unspecified, which defaults to None).
-    /// 
     /// 
     /// If this field is not specified, it is treated as an equivalent of Disabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
@@ -5164,7 +5033,7 @@ pub struct RuntimeComponentStatefulSetStorageVolumeClaimTemplateSpec {
     /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
     /// exists.
     /// More info: <https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/>
-    /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
+    /// (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
@@ -5304,7 +5173,6 @@ pub struct RuntimeComponentStatefulSetStorageVolumeClaimTemplateStatus {
     /// Apart from above values - keys that are unprefixed or have kubernetes.io prefix are considered
     /// reserved and hence may not be used.
     /// 
-    /// 
     /// ClaimResourceStatus can be in any of following states:
     /// 	- ControllerResizeInProgress:
     /// 		State set when resize controller starts resizing the volume in control-plane.
@@ -5326,12 +5194,10 @@ pub struct RuntimeComponentStatefulSetStorageVolumeClaimTemplateStatus {
     ///      - pvc.status.allocatedResourceStatus['storage'] = "NodeResizeFailed"
     /// When this field is not set, it means that no resize operation is in progress for the given PVC.
     /// 
-    /// 
     /// A controller that receives PVC update with previously unknown resourceName or ClaimResourceStatus
     /// should ignore the update for the purpose it was designed. For example - a controller that
     /// only is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid
     /// resources associated with PVC.
-    /// 
     /// 
     /// This is an alpha field and requires enabling RecoverVolumeExpansionFailure feature.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocatedResourceStatuses")]
@@ -5344,7 +5210,6 @@ pub struct RuntimeComponentStatefulSetStorageVolumeClaimTemplateStatus {
     /// Apart from above values - keys that are unprefixed or have kubernetes.io prefix are considered
     /// reserved and hence may not be used.
     /// 
-    /// 
     /// Capacity reported here may be larger than the actual capacity when a volume expansion operation
     /// is requested.
     /// For storage quota, the larger value from allocatedResources and PVC.spec.resources is used.
@@ -5353,12 +5218,10 @@ pub struct RuntimeComponentStatefulSetStorageVolumeClaimTemplateStatus {
     /// lowered if there are no expansion operations in progress and if the actual volume capacity
     /// is equal or lower than the requested capacity.
     /// 
-    /// 
     /// A controller that receives PVC update with previously unknown resourceName
     /// should ignore the update for the purpose it was designed. For example - a controller that
     /// only is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid
     /// resources associated with PVC.
-    /// 
     /// 
     /// This is an alpha field and requires enabling RecoverVolumeExpansionFailure feature.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocatedResources")]
@@ -5372,12 +5235,12 @@ pub struct RuntimeComponentStatefulSetStorageVolumeClaimTemplateStatus {
     pub conditions: Option<Vec<Condition>>,
     /// currentVolumeAttributesClassName is the current name of the VolumeAttributesClass the PVC is using.
     /// When unset, there is no VolumeAttributeClass applied to this PersistentVolumeClaim
-    /// This is an alpha field and requires enabling VolumeAttributesClass feature.
+    /// This is a beta field and requires enabling VolumeAttributesClass feature (off by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentVolumeAttributesClassName")]
     pub current_volume_attributes_class_name: Option<String>,
     /// ModifyVolumeStatus represents the status object of ControllerModifyVolume operation.
     /// When this is unset, there is no ModifyVolume operation being attempted.
-    /// This is an alpha field and requires enabling VolumeAttributesClass feature.
+    /// This is a beta field and requires enabling VolumeAttributesClass feature (off by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "modifyVolumeStatus")]
     pub modify_volume_status: Option<RuntimeComponentStatefulSetStorageVolumeClaimTemplateStatusModifyVolumeStatus>,
     /// phase represents the current phase of PersistentVolumeClaim.
@@ -5387,7 +5250,7 @@ pub struct RuntimeComponentStatefulSetStorageVolumeClaimTemplateStatus {
 
 /// ModifyVolumeStatus represents the status object of ControllerModifyVolume operation.
 /// When this is unset, there is no ModifyVolume operation being attempted.
-/// This is an alpha field and requires enabling VolumeAttributesClass feature.
+/// This is a beta field and requires enabling VolumeAttributesClass feature (off by default).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentStatefulSetStorageVolumeClaimTemplateStatusModifyVolumeStatus {
     /// status is the status of the ControllerModifyVolume operation. It can be in any of following states:
@@ -5462,9 +5325,7 @@ pub struct RuntimeComponentVolumeMounts {
     /// RecursiveReadOnly specifies whether read-only mounts should be handled
     /// recursively.
     /// 
-    /// 
     /// If ReadOnly is false, this field has no meaning and must be unspecified.
-    /// 
     /// 
     /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
     /// recursively read-only.  If this field is set to IfPossible, the mount is made
@@ -5473,10 +5334,8 @@ pub struct RuntimeComponentVolumeMounts {
     /// supported by the container runtime, otherwise the pod will not be started and
     /// an error will be generated to indicate the reason.
     /// 
-    /// 
     /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
     /// None (or be unspecified, which defaults to None).
-    /// 
     /// 
     /// If this field is not specified, it is treated as an equivalent of Disabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
@@ -5531,7 +5390,6 @@ pub struct RuntimeComponentVolumes {
     /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
     /// and deleted when the pod is removed.
     /// 
-    /// 
     /// Use this if:
     /// a) the volume is only needed while the pod runs,
     /// b) features of normal volumes like restoring from snapshot or capacity
@@ -5542,16 +5400,13 @@ pub struct RuntimeComponentVolumes {
     ///    information on the connection between this volume type
     ///    and PersistentVolumeClaim).
     /// 
-    /// 
     /// Use PersistentVolumeClaim or one of the vendor-specific
     /// APIs for volumes that persist for longer than the lifecycle
     /// of an individual pod.
     /// 
-    /// 
     /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
     /// be used that way - see the documentation of the driver for
     /// more information.
-    /// 
     /// 
     /// A pod can use both types of ephemeral volumes and
     /// persistent volumes at the same time.
@@ -5587,11 +5442,24 @@ pub struct RuntimeComponentVolumes {
     /// used for system agents or other privileged things that are allowed
     /// to see the host machine. Most containers will NOT need this.
     /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#hostpath>
-    /// ---
-    /// TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not
-    /// mount host directories as read/write.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
     pub host_path: Option<RuntimeComponentVolumesHostPath>,
+    /// image represents an OCI object (a container image or artifact) pulled and mounted on the kubelet's host machine.
+    /// The volume is resolved at pod startup depending on which PullPolicy value is provided:
+    /// 
+    /// - Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
+    /// - Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
+    /// - IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
+    /// 
+    /// The volume gets re-resolved if the pod gets deleted and recreated, which means that new remote content will become available on pod recreation.
+    /// A failure to resolve or pull the image during pod startup will block containers from starting and may add significant latency. Failures will be retried using normal volume backoff and will be reported on the pod reason and message.
+    /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
+    /// The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
+    /// The volume will be mounted read-only (ro) and non-executable files (noexec).
+    /// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath).
+    /// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<RuntimeComponentVolumesImage>,
     /// iscsi represents an ISCSI Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: <https://examples.k8s.io/volumes/iscsi/README.md>
@@ -5650,7 +5518,6 @@ pub struct RuntimeComponentVolumesAwsElasticBlockStore {
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
     /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore>
-    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// partition is the partition in the volume that you want to mount.
@@ -5746,9 +5613,7 @@ pub struct RuntimeComponentVolumesCephfsSecretRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -5786,9 +5651,7 @@ pub struct RuntimeComponentVolumesCinderSecretRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -5818,9 +5681,7 @@ pub struct RuntimeComponentVolumesConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional specify whether the ConfigMap or its keys must be defined
@@ -5887,9 +5748,7 @@ pub struct RuntimeComponentVolumesCsiNodePublishSecretRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -5983,7 +5842,6 @@ pub struct RuntimeComponentVolumesEmptyDir {
 /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
 /// and deleted when the pod is removed.
 /// 
-/// 
 /// Use this if:
 /// a) the volume is only needed while the pod runs,
 /// b) features of normal volumes like restoring from snapshot or capacity
@@ -5994,16 +5852,13 @@ pub struct RuntimeComponentVolumesEmptyDir {
 ///    information on the connection between this volume type
 ///    and PersistentVolumeClaim).
 /// 
-/// 
 /// Use PersistentVolumeClaim or one of the vendor-specific
 /// APIs for volumes that persist for longer than the lifecycle
 /// of an individual pod.
 /// 
-/// 
 /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
 /// be used that way - see the documentation of the driver for
 /// more information.
-/// 
 /// 
 /// A pod can use both types of ephemeral volumes and
 /// persistent volumes at the same time.
@@ -6017,7 +5872,6 @@ pub struct RuntimeComponentVolumesEphemeral {
     /// entry. Pod validation will reject the pod if the concatenated name
     /// is not valid for a PVC (for example, too long).
     /// 
-    /// 
     /// An existing PVC with that name that is not owned by the pod
     /// will *not* be used for the pod to avoid using an unrelated
     /// volume by mistake. Starting the pod is then blocked until
@@ -6027,10 +5881,8 @@ pub struct RuntimeComponentVolumesEphemeral {
     /// this should not be necessary, but it may be useful when
     /// manually reconstructing a broken cluster.
     /// 
-    /// 
     /// This field is read-only and no changes will be made by Kubernetes
     /// to the PVC after it has been created.
-    /// 
     /// 
     /// Required, must not be nil.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
@@ -6045,7 +5897,6 @@ pub struct RuntimeComponentVolumesEphemeral {
 /// entry. Pod validation will reject the pod if the concatenated name
 /// is not valid for a PVC (for example, too long).
 /// 
-/// 
 /// An existing PVC with that name that is not owned by the pod
 /// will *not* be used for the pod to avoid using an unrelated
 /// volume by mistake. Starting the pod is then blocked until
@@ -6055,10 +5906,8 @@ pub struct RuntimeComponentVolumesEphemeral {
 /// this should not be necessary, but it may be useful when
 /// manually reconstructing a broken cluster.
 /// 
-/// 
 /// This field is read-only and no changes will be made by Kubernetes
 /// to the PVC after it has been created.
-/// 
 /// 
 /// Required, must not be nil.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6162,7 +6011,7 @@ pub struct RuntimeComponentVolumesEphemeralVolumeClaimTemplateSpec {
     /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
     /// exists.
     /// More info: <https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/>
-    /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
+    /// (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
@@ -6291,7 +6140,6 @@ pub struct RuntimeComponentVolumesFc {
     /// fsType is the filesystem type to mount.
     /// Must be a filesystem type supported by the host operating system.
     /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
-    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// lun is Optional: FC target lun number
@@ -6348,9 +6196,7 @@ pub struct RuntimeComponentVolumesFlexVolumeSecretRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -6376,7 +6222,6 @@ pub struct RuntimeComponentVolumesGcePersistentDisk {
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
     /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk>
-    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// partition is the partition in the volume that you want to mount.
@@ -6438,9 +6283,6 @@ pub struct RuntimeComponentVolumesGlusterfs {
 /// used for system agents or other privileged things that are allowed
 /// to see the host machine. Most containers will NOT need this.
 /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#hostpath>
-/// ---
-/// TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not
-/// mount host directories as read/write.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentVolumesHostPath {
     /// path of the directory on the host.
@@ -6452,6 +6294,39 @@ pub struct RuntimeComponentVolumesHostPath {
     /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#hostpath>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
+}
+
+/// image represents an OCI object (a container image or artifact) pulled and mounted on the kubelet's host machine.
+/// The volume is resolved at pod startup depending on which PullPolicy value is provided:
+/// 
+/// - Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
+/// - Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
+/// - IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
+/// 
+/// The volume gets re-resolved if the pod gets deleted and recreated, which means that new remote content will become available on pod recreation.
+/// A failure to resolve or pull the image during pod startup will block containers from starting and may add significant latency. Failures will be retried using normal volume backoff and will be reported on the pod reason and message.
+/// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
+/// The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
+/// The volume will be mounted read-only (ro) and non-executable files (noexec).
+/// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath).
+/// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RuntimeComponentVolumesImage {
+    /// Policy for pulling OCI objects. Possible values are:
+    /// Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
+    /// Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
+    /// IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
+    /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
+    pub pull_policy: Option<String>,
+    /// Required: Image or artifact reference to be used.
+    /// Behaves in the same way as pod.spec.containers[*].image.
+    /// Pull secrets will be assembled in the same way as for the container image by looking up node credentials, SA image pull secrets, and pod spec image pull secrets.
+    /// More info: <https://kubernetes.io/docs/concepts/containers/images>
+    /// This field is optional to allow higher level config management to default or override
+    /// container images in workload controllers like Deployments and StatefulSets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reference: Option<String>,
 }
 
 /// iscsi represents an ISCSI Disk resource that is attached to a
@@ -6469,7 +6344,6 @@ pub struct RuntimeComponentVolumesIscsi {
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
     /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#iscsi>
-    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// initiatorName is the custom iSCSI Initiator Name.
@@ -6509,9 +6383,7 @@ pub struct RuntimeComponentVolumesIscsiSecretRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -6589,24 +6461,23 @@ pub struct RuntimeComponentVolumesProjected {
     /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    /// sources is the list of volume projections
+    /// sources is the list of volume projections. Each entry in this list
+    /// handles one source.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sources: Option<Vec<RuntimeComponentVolumesProjectedSources>>,
 }
 
-/// Projection that may be projected along with other supported volume types
+/// Projection that may be projected along with other supported volume types.
+/// Exactly one of these fields must be set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentVolumesProjectedSources {
     /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
     /// of ClusterTrustBundle objects in an auto-updating file.
     /// 
-    /// 
     /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-    /// 
     /// 
     /// ClusterTrustBundle objects can either be selected by name, or by the
     /// combination of signer name and a label selector.
-    /// 
     /// 
     /// Kubelet performs aggressive normalization of the PEM contents written
     /// into the pod filesystem.  Esoteric PEM features such as inter-block
@@ -6632,13 +6503,10 @@ pub struct RuntimeComponentVolumesProjectedSources {
 /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
 /// of ClusterTrustBundle objects in an auto-updating file.
 /// 
-/// 
 /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-/// 
 /// 
 /// ClusterTrustBundle objects can either be selected by name, or by the
 /// combination of signer name and a label selector.
-/// 
 /// 
 /// Kubelet performs aggressive normalization of the PEM contents written
 /// into the pod filesystem.  Esoteric PEM features such as inter-block
@@ -6722,9 +6590,7 @@ pub struct RuntimeComponentVolumesProjectedSourcesConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional specify whether the ConfigMap or its keys must be defined
@@ -6823,9 +6689,7 @@ pub struct RuntimeComponentVolumesProjectedSourcesSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional field specify whether the Secret or its key must be defined
@@ -6910,7 +6774,6 @@ pub struct RuntimeComponentVolumesRbd {
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
     /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#rbd>
-    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// image is the rados image name.
@@ -6957,9 +6820,7 @@ pub struct RuntimeComponentVolumesRbdSecretRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -7012,9 +6873,7 @@ pub struct RuntimeComponentVolumesScaleIoSecretRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -7108,9 +6967,7 @@ pub struct RuntimeComponentVolumesStorageosSecretRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -7155,9 +7012,7 @@ pub struct RuntimeComponentStatusBinding {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }

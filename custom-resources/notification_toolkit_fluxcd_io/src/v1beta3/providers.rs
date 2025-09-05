@@ -183,5 +183,7 @@ pub enum ProviderType {
     Datadog,
     #[serde(rename = "nats")]
     Nats,
+    #[serde(rename = "zulip")]
+    Zulip,
 }
 

@@ -298,6 +298,12 @@ pub struct ClusterComponentSpecs {
     /// Default value is "PreferInPlace"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podUpdatePolicy")]
     pub pod_update_policy: Option<ClusterComponentSpecsPodUpdatePolicy>,
+    /// PodUpgradePolicy indicates how pods should be updated when the component is upgraded.
+    /// 
+    /// 
+    /// If not specified, the value of PodUpdatePolicy will be used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podUpgradePolicy")]
+    pub pod_upgrade_policy: Option<ClusterComponentSpecsPodUpgradePolicy>,
     /// Specifies the desired number of replicas in the Component for enhancing availability and durability, or load balancing.
     pub replicas: i32,
     /// Specifies the resources required by the Component.
@@ -2561,6 +2567,13 @@ pub enum ClusterComponentSpecsPersistentVolumeClaimRetentionPolicyWhenScaled {
 /// ClusterComponentSpec defines the specification of a Component within a Cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterComponentSpecsPodUpdatePolicy {
+    StrictInPlace,
+    PreferInPlace,
+}
+
+/// ClusterComponentSpec defines the specification of a Component within a Cluster.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterComponentSpecsPodUpgradePolicy {
     StrictInPlace,
     PreferInPlace,
 }
@@ -9740,6 +9753,12 @@ pub struct ClusterShardingsTemplate {
     /// Default value is "PreferInPlace"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podUpdatePolicy")]
     pub pod_update_policy: Option<ClusterShardingsTemplatePodUpdatePolicy>,
+    /// PodUpgradePolicy indicates how pods should be updated when the component is upgraded.
+    /// 
+    /// 
+    /// If not specified, the value of PodUpdatePolicy will be used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podUpgradePolicy")]
+    pub pod_upgrade_policy: Option<ClusterShardingsTemplatePodUpgradePolicy>,
     /// Specifies the desired number of replicas in the Component for enhancing availability and durability, or load balancing.
     pub replicas: i32,
     /// Specifies the resources required by the Component.
@@ -12013,6 +12032,23 @@ pub enum ClusterShardingsTemplatePersistentVolumeClaimRetentionPolicyWhenScaled 
 /// enabling sharding and distribution of workloads across Components.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterShardingsTemplatePodUpdatePolicy {
+    StrictInPlace,
+    PreferInPlace,
+}
+
+/// The default template for generating Components for shards, where each shard consists of one Component.
+/// 
+/// 
+/// This field is of type ClusterComponentSpec, which encapsulates all the required details and
+/// definitions for creating and managing the Components.
+/// KubeBlocks uses this template to generate a set of identical Components of shards.
+/// All the generated Components will have the same specifications and definitions as specified in the `template` field.
+/// 
+/// 
+/// This allows for the creation of multiple Components with consistent configurations,
+/// enabling sharding and distribution of workloads across Components.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterShardingsTemplatePodUpgradePolicy {
     StrictInPlace,
     PreferInPlace,
 }

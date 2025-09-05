@@ -23,7 +23,7 @@ pub struct KeycloakSpec {
     /// expressed as a keys (reference: <https://www.keycloak.org/server/all-config)> and values that can be either direct values or references to secrets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalOptions")]
     pub additional_options: Option<Vec<KeycloakAdditionalOptions>>,
-    /// In this section you can configure Keycloak's bootstrap admin - will be used only for inital cluster creation.
+    /// In this section you can configure Keycloak's bootstrap admin - will be used only for initial cluster creation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootstrapAdmin")]
     pub bootstrap_admin: Option<KeycloakBootstrapAdmin>,
     /// In this section you can configure Keycloak's cache
@@ -123,7 +123,7 @@ pub struct KeycloakAdditionalOptionsSecret {
     pub optional: Option<bool>,
 }
 
-/// In this section you can configure Keycloak's bootstrap admin - will be used only for inital cluster creation.
+/// In this section you can configure Keycloak's bootstrap admin - will be used only for initial cluster creation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KeycloakBootstrapAdmin {
     /// Configures the bootstrap admin service account

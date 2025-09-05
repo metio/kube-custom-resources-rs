@@ -1583,6 +1583,9 @@ pub struct ClusterSecretStoreProviderGcpsmAuth {
     pub secret_ref: Option<ClusterSecretStoreProviderGcpsmAuthSecretRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workloadIdentity")]
     pub workload_identity: Option<ClusterSecretStoreProviderGcpsmAuthWorkloadIdentity>,
+    /// GCPWorkloadIdentityFederation holds the configurations required for generating federated access tokens.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workloadIdentityFederation")]
+    pub workload_identity_federation: Option<ClusterSecretStoreProviderGcpsmAuthWorkloadIdentityFederation>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1630,6 +1633,94 @@ pub struct ClusterSecretStoreProviderGcpsmAuthWorkloadIdentity {
 /// A reference to a ServiceAccount resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterSecretStoreProviderGcpsmAuthWorkloadIdentityServiceAccountRef {
+    /// Audience specifies the `aud` claim for the service account token
+    /// If the service account uses a well-known annotation for e.g. IRSA or GCP Workload Identity
+    /// then this audiences will be appended to the list
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub audiences: Option<Vec<String>>,
+    /// The name of the ServiceAccount resource being referred to.
+    pub name: String,
+    /// Namespace of the resource being referred to.
+    /// Ignored if referent is not cluster-scoped, otherwise defaults to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// GCPWorkloadIdentityFederation holds the configurations required for generating federated access tokens.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderGcpsmAuthWorkloadIdentityFederation {
+    /// audience is the Secure Token Service (STS) audience which contains the resource name for the workload identity pool and the provider identifier in that pool.
+    /// If specified, Audience found in the external account credential config will be overridden with the configured value.
+    /// audience must be provided when serviceAccountRef or awsSecurityCredentials is configured.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub audience: Option<String>,
+    /// awsSecurityCredentials is for configuring AWS region and credentials to use for obtaining the access token,
+    /// when using the AWS metadata server is not an option.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsSecurityCredentials")]
+    pub aws_security_credentials: Option<ClusterSecretStoreProviderGcpsmAuthWorkloadIdentityFederationAwsSecurityCredentials>,
+    /// credConfig holds the configmap reference containing the GCP external account credential configuration in JSON format and the key name containing the json data.
+    /// For using Kubernetes cluster as the identity provider, use serviceAccountRef instead. Operators mounted serviceaccount token cannot be used as the token source, instead
+    /// serviceAccountRef must be used by providing operators service account details.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credConfig")]
+    pub cred_config: Option<ClusterSecretStoreProviderGcpsmAuthWorkloadIdentityFederationCredConfig>,
+    /// externalTokenEndpoint is the endpoint explicitly set up to provide tokens, which will be matched against the
+    /// credential_source.url in the provided credConfig. This field is merely to double-check the external token source
+    /// URL is having the expected value.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTokenEndpoint")]
+    pub external_token_endpoint: Option<String>,
+    /// serviceAccountRef is the reference to the kubernetes ServiceAccount to be used for obtaining the tokens,
+    /// when Kubernetes is configured as provider in workload identity pool.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountRef")]
+    pub service_account_ref: Option<ClusterSecretStoreProviderGcpsmAuthWorkloadIdentityFederationServiceAccountRef>,
+}
+
+/// awsSecurityCredentials is for configuring AWS region and credentials to use for obtaining the access token,
+/// when using the AWS metadata server is not an option.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderGcpsmAuthWorkloadIdentityFederationAwsSecurityCredentials {
+    /// awsCredentialsSecretRef is the reference to the secret which holds the AWS credentials.
+    /// Secret should be created with below names for keys
+    /// - aws_access_key_id: Access Key ID, which is the unique identifier for the AWS account or the IAM user.
+    /// - aws_secret_access_key: Secret Access Key, which is used to authenticate requests made to AWS services.
+    /// - aws_session_token: Session Token, is the short-lived token to authenticate requests made to AWS services.
+    #[serde(rename = "awsCredentialsSecretRef")]
+    pub aws_credentials_secret_ref: ClusterSecretStoreProviderGcpsmAuthWorkloadIdentityFederationAwsSecurityCredentialsAwsCredentialsSecretRef,
+    /// region is for configuring the AWS region to be used.
+    pub region: String,
+}
+
+/// awsCredentialsSecretRef is the reference to the secret which holds the AWS credentials.
+/// Secret should be created with below names for keys
+/// - aws_access_key_id: Access Key ID, which is the unique identifier for the AWS account or the IAM user.
+/// - aws_secret_access_key: Secret Access Key, which is used to authenticate requests made to AWS services.
+/// - aws_session_token: Session Token, is the short-lived token to authenticate requests made to AWS services.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderGcpsmAuthWorkloadIdentityFederationAwsSecurityCredentialsAwsCredentialsSecretRef {
+    /// name of the secret.
+    pub name: String,
+    /// namespace in which the secret exists. If empty, secret will looked up in local namespace.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// credConfig holds the configmap reference containing the GCP external account credential configuration in JSON format and the key name containing the json data.
+/// For using Kubernetes cluster as the identity provider, use serviceAccountRef instead. Operators mounted serviceaccount token cannot be used as the token source, instead
+/// serviceAccountRef must be used by providing operators service account details.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderGcpsmAuthWorkloadIdentityFederationCredConfig {
+    /// key name holding the external account credential config.
+    pub key: String,
+    /// name of the configmap.
+    pub name: String,
+    /// namespace in which the configmap exists. If empty, configmap will looked up in local namespace.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// serviceAccountRef is the reference to the kubernetes ServiceAccount to be used for obtaining the tokens,
+/// when Kubernetes is configured as provider in workload identity pool.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderGcpsmAuthWorkloadIdentityFederationServiceAccountRef {
     /// Audience specifies the `aud` claim for the service account token
     /// If the service account uses a well-known annotation for e.g. IRSA or GCP Workload Identity
     /// then this audiences will be appended to the list
@@ -4053,14 +4144,17 @@ pub struct ClusterSecretStoreProviderYandexcertificatemanager {
     /// Yandex.Cloud API endpoint (e.g. 'api.cloud.yandex.net:443')
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiEndpoint")]
     pub api_endpoint: Option<String>,
-    /// Auth defines the information necessary to authenticate against Yandex Certificate Manager
+    /// Auth defines the information necessary to authenticate against Yandex.Cloud
     pub auth: ClusterSecretStoreProviderYandexcertificatemanagerAuth,
     /// The provider for the CA bundle to use to validate Yandex.Cloud server certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caProvider")]
     pub ca_provider: Option<ClusterSecretStoreProviderYandexcertificatemanagerCaProvider>,
+    /// FetchingPolicy configures the provider to interpret the `data.secretKey.remoteRef.key` field in ExternalSecret as certificate ID or certificate name
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub fetching: Option<ClusterSecretStoreProviderYandexcertificatemanagerFetching>,
 }
 
-/// Auth defines the information necessary to authenticate against Yandex Certificate Manager
+/// Auth defines the information necessary to authenticate against Yandex.Cloud
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterSecretStoreProviderYandexcertificatemanagerAuth {
     /// The authorized key used for authentication
@@ -4110,20 +4204,47 @@ pub struct ClusterSecretStoreProviderYandexcertificatemanagerCaProviderCertSecre
     pub namespace: Option<String>,
 }
 
+/// FetchingPolicy configures the provider to interpret the `data.secretKey.remoteRef.key` field in ExternalSecret as certificate ID or certificate name
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderYandexcertificatemanagerFetching {
+    /// ByID configures the provider to interpret the `data.secretKey.remoteRef.key` field in ExternalSecret as secret ID.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "byID")]
+    pub by_id: Option<ClusterSecretStoreProviderYandexcertificatemanagerFetchingById>,
+    /// ByName configures the provider to interpret the `data.secretKey.remoteRef.key` field in ExternalSecret as secret name.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "byName")]
+    pub by_name: Option<ClusterSecretStoreProviderYandexcertificatemanagerFetchingByName>,
+}
+
+/// ByID configures the provider to interpret the `data.secretKey.remoteRef.key` field in ExternalSecret as secret ID.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderYandexcertificatemanagerFetchingById {
+}
+
+/// ByName configures the provider to interpret the `data.secretKey.remoteRef.key` field in ExternalSecret as secret name.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderYandexcertificatemanagerFetchingByName {
+    /// The folder to fetch secrets from
+    #[serde(rename = "folderID")]
+    pub folder_id: String,
+}
+
 /// YandexLockbox configures this store to sync secrets using Yandex Lockbox provider
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterSecretStoreProviderYandexlockbox {
     /// Yandex.Cloud API endpoint (e.g. 'api.cloud.yandex.net:443')
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiEndpoint")]
     pub api_endpoint: Option<String>,
-    /// Auth defines the information necessary to authenticate against Yandex Lockbox
+    /// Auth defines the information necessary to authenticate against Yandex.Cloud
     pub auth: ClusterSecretStoreProviderYandexlockboxAuth,
     /// The provider for the CA bundle to use to validate Yandex.Cloud server certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caProvider")]
     pub ca_provider: Option<ClusterSecretStoreProviderYandexlockboxCaProvider>,
+    /// FetchingPolicy configures the provider to interpret the `data.secretKey.remoteRef.key` field in ExternalSecret as secret ID or secret name
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub fetching: Option<ClusterSecretStoreProviderYandexlockboxFetching>,
 }
 
-/// Auth defines the information necessary to authenticate against Yandex Lockbox
+/// Auth defines the information necessary to authenticate against Yandex.Cloud
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterSecretStoreProviderYandexlockboxAuth {
     /// The authorized key used for authentication
@@ -4171,6 +4292,30 @@ pub struct ClusterSecretStoreProviderYandexlockboxCaProviderCertSecretRef {
     /// Ignored if referent is not cluster-scoped, otherwise defaults to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+}
+
+/// FetchingPolicy configures the provider to interpret the `data.secretKey.remoteRef.key` field in ExternalSecret as secret ID or secret name
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderYandexlockboxFetching {
+    /// ByID configures the provider to interpret the `data.secretKey.remoteRef.key` field in ExternalSecret as secret ID.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "byID")]
+    pub by_id: Option<ClusterSecretStoreProviderYandexlockboxFetchingById>,
+    /// ByName configures the provider to interpret the `data.secretKey.remoteRef.key` field in ExternalSecret as secret name.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "byName")]
+    pub by_name: Option<ClusterSecretStoreProviderYandexlockboxFetchingByName>,
+}
+
+/// ByID configures the provider to interpret the `data.secretKey.remoteRef.key` field in ExternalSecret as secret ID.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderYandexlockboxFetchingById {
+}
+
+/// ByName configures the provider to interpret the `data.secretKey.remoteRef.key` field in ExternalSecret as secret name.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderYandexlockboxFetchingByName {
+    /// The folder to fetch secrets from
+    #[serde(rename = "folderID")]
+    pub folder_id: String,
 }
 
 /// Used to configure http retries if failed

@@ -152,16 +152,12 @@ pub struct InstanceSetSpec {
     /// Note: This field will be removed in future version.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podManagementPolicy")]
     pub pod_management_policy: Option<String>,
-    /// PodUpdatePolicy indicates how pods should be updated
-    /// 
-    /// 
-    /// - `StrictInPlace` indicates that only allows in-place upgrades.
-    /// Any attempt to modify other fields will be rejected.
-    /// - `PreferInPlace` indicates that we will first attempt an in-place upgrade of the Pod.
-    /// If that fails, it will fall back to the ReCreate, where pod will be recreated.
-    /// Default value is "PreferInPlace"
+    /// PodUpdatePolicy indicates how pods should be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podUpdatePolicy")]
     pub pod_update_policy: Option<String>,
+    /// PodUpgradePolicy indicates how pods should be upgraded.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podUpgradePolicy")]
+    pub pod_upgrade_policy: Option<String>,
     /// Specifies the desired number of replicas of the given Template.
     /// These replicas are instantiations of the same Template, with each having a consistent identity.
     /// Defaults to 1 if unspecified.

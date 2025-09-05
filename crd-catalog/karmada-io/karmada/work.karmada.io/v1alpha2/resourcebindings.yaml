@@ -183,6 +183,7 @@ spec:
                         format: "int32"
                         type: "integer"
                     required:
+                      - "name"
                       - "replicas"
                     type: "object"
                   type: "array"

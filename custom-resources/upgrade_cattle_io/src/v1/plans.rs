@@ -102,11 +102,10 @@ pub struct PlanDrain {
     pub pod_selector: Option<PlanDrainPodSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipWaitForDeleteTimeout")]
     pub skip_wait_for_delete_timeout: Option<i64>,
-    /// A Duration represents the elapsed time between two instants
-    /// as an int64 nanosecond count. The representation limits the
-    /// largest representable duration to approximately 290 years.
+    /// If a string, this is passed through directly to the `kubectl drain` command.
+    /// If an int, this represents the duration as a count of nanoseconds, and will be converted to a duration string when passed to the `kubectl drain` command.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub timeout: Option<i64>,
+    pub timeout: Option<IntOrString>,
 }
 
 /// A label selector is a label query over a set of resources. The result of matchLabels and

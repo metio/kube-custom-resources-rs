@@ -189,8 +189,7 @@ pub struct HelmChartStatus {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HelmChartStatusArtifact {
     /// Digest is the digest of the file in the form of '<algorithm>:<checksum>'.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub digest: Option<String>,
+    pub digest: String,
     /// LastUpdateTime is the timestamp corresponding to the last update of the
     /// Artifact.
     #[serde(rename = "lastUpdateTime")]

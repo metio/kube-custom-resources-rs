@@ -81,6 +81,7 @@ spec:
                         api_proxy_ca_data:
                           type: "string"
                         api_token:
+                          default: "id_token"
                           type: "string"
                         authentication_timeout:
                           default: 300
@@ -118,16 +119,20 @@ spec:
                         client_id_prefix:
                           description: "DEPRECATED AFTER v1.73: A prefix that will be applied to the OpenShift OAuth client identifier."
                           type: "string"
+                        insecure_skip_verify_tls:
+                          default: false
+                          description: "Set true to skip verifying certificate validity when Kiali contacts OpenShift over https."
+                          type: "boolean"
                         redirect_uris:
-                          description: "The OAuthClient redirect URIs. You normally do not have to set this unless you are creating remote cluster resources (see `deployment.remote_cluster_resources_only`) with `auth.strategy` set to `openshift`."
+                          description: "Custom redirect URIs for the OpenShift OAuth client. These URIs specify where users will be redirected after successful authentication. If not specified, Kiali will automatically generate appropriate redirect URIs based on the Kiali server's route. You normally do not have to set this unless you are creating remote cluster resources (see `deployment.remote_cluster_resources_only`) with `auth.strategy` set to `openshift`."
                           items:
                             type: "string"
                           type: "array"
                         token_inactivity_timeout:
-                          description: "Timeout that overrides the default OpenShift token inactivity timeout. This value represents the maximum amount of time in seconds that can occur between consecutive uses of the token. Tokens become invalid if they are not used within this temporal window. If 0, the Kiali tokens never timeout. OpenShift may have a minimum allowed value - see the OpenShift documentation specific for the version of OpenShift you are using. WARNING: existing tokens will not be affected by changing this setting."
+                          description: "Sets the maximum time in seconds that can elapse between consecutive uses of an OAuth access token before it expires due to inactivity. This helps improve security by automatically expiring unused tokens. If set to 0, tokens will not expire due to inactivity. Note that OpenShift may enforce minimum values for this setting, and existing tokens are not affected by changes to this configuration."
                           type: "integer"
                         token_max_age:
-                          description: "A time duration in seconds that overrides the default OpenShift access token max age. If 0 then there will be no expiration of tokens."
+                          description: "Sets the absolute maximum lifetime in seconds for OAuth access tokens, regardless of activity. After this time period, tokens will expire and users must re-authenticate. If set to 0, tokens will not have an absolute expiration time and will only expire due to inactivity (if token_inactivity_timeout is configured)."
                           type: "integer"
                       type: "object"
                     strategy:
@@ -168,6 +173,10 @@ spec:
                             type: "string"
                         type: "object"
                       type: "array"
+                    enable_exec_provider:
+                      default: false
+                      description: "Flag to enable exec provider for clustering authentication."
+                      type: "boolean"
                     ignore_home_cluster:
                       default: false
                       description: "Set to true for an external Kiali deployment, or if Kiali should not try to discover Istio on the home cluster. When set to `true`, it is required to set `kubernetes_config.cluster_name`."
@@ -386,6 +395,7 @@ spec:
                           x-kubernetes-preserve-unknown-fields: true
                       type: "object"
                     image_digest:
+                      default: ""
                       description: "If `deployment.image_version` is a digest hash, this value indicates what type of digest it is. A typical value would be 'sha256'. Note: do NOT prefix this value with a '@'."
                       type: "string"
                     image_name:
@@ -752,6 +762,9 @@ spec:
                                   service:
                                     description: "The name of a variable that holds the service name, if used in that dashboard (else it must be omitted)."
                                     type: "string"
+                                  version:
+                                    description: "The name of a variable that holds the version, if used in that dashboard (else it must be omitted)."
+                                    type: "string"
                                   workload:
                                     description: "The name of a variable that holds the workload name, if used in that dashboard (else it must be omitted)."
                                     type: "string"
@@ -775,6 +788,7 @@ spec:
                           description: "DEPRECATED AFTER v1.73: The URL used for in-cluster access to Grafana."
                           type: "string"
                         internal_url:
+                          default: "http://grafana.istio-system:3000"
                           description: "The URL used by Kiali to perform requests and queries to Grafana. An example would be `http://grafana.istio-system:3000`. This URL can contain query parameters if needed, such as '?orgId=1'. If not defined, it will default to `http://grafana.<istio namespace>:3000`."
                           type: "string"
                         is_core:
@@ -801,6 +815,10 @@ spec:
                                   is_core:
                                     default: false
                                     description: "Whether the component is to be considered a core component for your deployment."
+                                    type: "boolean"
+                                  is_multicluster:
+                                    default: false
+                                    description: "Whether the component is a multi-cluster component."
                                     type: "boolean"
                                   is_proxy:
                                     default: false
@@ -880,12 +898,20 @@ spec:
                           default: 15014
                           description: "DEPRECATED AFTER v2.11: This setting is deprecated and will be ignored. The monitoring port of the IstioD pod is now autodetected from the deployment args."
                           type: "integer"
+                        istiod_polling_interval_seconds:
+                          default: 20
+                          description: "How often in seconds Kiali will poll istiod(s) for proxy status and registry services. Polling is not performed if istio_api_enabled is false."
+                          type: "integer"
                         root_namespace:
                           description: "The namespace to treat as the administrative root namespace for Istio configuration."
                           type: "string"
                         url_service_version:
                           description: "DEPRECATED AFTER v2.11: This setting is deprecated and will be ignored. The Istio service used to determine the Istio version is now autodetected from services."
                           type: "string"
+                        validation_change_detection_enabled:
+                          default: true
+                          description: "When true, Kiali will detect changes in Istio configuration and trigger validation reconciliation."
+                          type: "boolean"
                         validation_reconcile_interval:
                           default: "1m"
                           description: "Configures how often Kiali will validate Istio configuration. Validations cannot be disabled at the moment but you can set this to a long period of time. Accepts a golang duration string e.g. '1h' or '30m'."
@@ -936,6 +962,9 @@ spec:
                                   service:
                                     description: "The name of a variable that holds the service name, if used in that dashboard (else it must be omitted)."
                                     type: "string"
+                                  version:
+                                    description: "The name of a variable that holds the version, if used in that dashboard (else it must be omitted)."
+                                    type: "string"
                                   workload:
                                     description: "The name of a variable that holds the workload name, if used in that dashboard (else it must be omitted)."
                                     type: "string"
@@ -953,6 +982,7 @@ spec:
                           description: "Used in the Components health feature. This is the URL which Kiali will ping to determine whether the component is reachable or not. It defaults to `internal_url` when not provided."
                           type: "string"
                         internal_url:
+                          default: "http://perses.istio-system:4000"
                           description: "The URL used by Kiali to perform requests and queries to Perses. An example would be `http://perses.istio-system:4000`. This URL can contain query parameters if needed, such as '?orgId=1'. If not defined, it will default to `http://perses.<istio_namespace>:4000`."
                           type: "string"
                         is_core:
@@ -1289,6 +1319,10 @@ spec:
                                 type: "string"
                             type: "object"
                           type: "array"
+                        enable_exec_provider:
+                          default: false
+                          description: "DEPRECATED AFTER v1.73: Flag to enable exec provider for clustering authentication."
+                          type: "boolean"
                         kiali_urls:
                           description: "DEPRECATED AFTER v1.73: A map between cluster name, instance name and namespace to a Kiali URL."
                           items:
@@ -1447,6 +1481,42 @@ spec:
                               description: "If true list pages display checkbox toggles for the include options, Otherwise the configured settings are applied but can not be changed by the user."
                               type: "boolean"
                           type: "object"
+                        mesh:
+                          description: "Default settings for the Mesh UI."
+                          properties:
+                            find_options:
+                              description: "A list of commonly used and useful find expressions that will be provided to the user out-of-box."
+                              items:
+                                properties:
+                                  auto_select:
+                                    default: false
+                                    description: "If true this option will be selected and take effect automatically. Note that only one option in the list can have this value be set to true."
+                                    type: "boolean"
+                                  description:
+                                    description: "Human-readable text to let the user know what the expression does."
+                                    type: "string"
+                                  expression:
+                                    description: "The find expression."
+                                    type: "string"
+                                type: "object"
+                              type: "array"
+                            hide_options:
+                              description: "A list of commonly used and useful hide expressions that will be provided to the user out-of-box."
+                              items:
+                                properties:
+                                  auto_select:
+                                    default: false
+                                    description: "If true this option will be selected and take effect automatically. Note that only one option in the list can have this value be set to true."
+                                    type: "boolean"
+                                  description:
+                                    description: "Human-readable text to let the user know what the expression does."
+                                    type: "string"
+                                  expression:
+                                    description: "The hide expression."
+                                    type: "string"
+                                type: "object"
+                              type: "array"
+                          type: "object"
                         metrics_inbound:
                           description: "Additional label aggregation for inbound metric pages in detail pages.\nYou will see these configurations in the 'Metric Settings' drop-down.\nAn example,\n```\nspec:\n  kiali_feature_flags:\n    ui_defaults:\n      metrics_inbound:\n        aggregations:\n        - display_name: Istio Network\n          label: topology_istio_io_network\n        - display_name: Istio Revision\n          label: istio_io_rev\n```\n"
                           properties:
@@ -1457,6 +1527,10 @@ spec:
                                     type: "string"
                                   label:
                                     type: "string"
+                                  single_selection:
+                                    default: false
+                                    description: "Flag to indicate if only one option can be selected for this aggregation."
+                                    type: "boolean"
                                 type: "object"
                               type: "array"
                           type: "object"
@@ -1470,6 +1544,10 @@ spec:
                                     type: "string"
                                   label:
                                     type: "string"
+                                  single_selection:
+                                    default: false
+                                    description: "Flag to indicate if only one option can be selected for this aggregation."
+                                    type: "boolean"
                                 type: "object"
                               type: "array"
                           type: "object"
@@ -1656,6 +1734,10 @@ spec:
                                   description: "Enable TLS for the collector. This must be specified when `protocol` is `https` or `grpc`. When you set this to `true`, you must also set a `ca_name` or set `skip_verify` to true."
                                   type: "boolean"
                               type: "object"
+                            sampling_rate:
+                              default: 0.5
+                              description: "Sampling rate for Kiali server traces. >= 1.0 always samples and <= 0 never samples."
+                              type: "number"
                           type: "object"
                       type: "object"
                     port:
@@ -1680,7 +1762,11 @@ spec:
                       description: "Defines the public domain where Kiali is being served. This is the 'domain' part of the URL (usually it's a fully-qualified domain name). For example, `kiali.example.org`. When empty, Kiali will try to guess this value from HTTP headers. On non-OpenShift clusters, you must populate this value if you want to enable cross-linking between Kiali instances in a multi-cluster setup."
                       type: "string"
                     web_history_mode:
+                      default: "browser"
                       description: "Define the history mode of kiali UI. Value must be one of: `browser` or `hash`."
+                      enum:
+                        - "browser"
+                        - "hash"
                       type: "string"
                     web_port:
                       description: "Defines the ingress port where the connections come from. This is usually necessary when the application responds through a proxy/ingress, and it does not forward the correct headers (when this happens, Kiali cannot guess the port). When empty, Kiali will try to guess this value from HTTP headers."
@@ -1696,9 +1782,9 @@ spec:
                         - "https"
                       type: "string"
                     write_timeout:
-                      default: 30
-                      description: "The maximum duration, in seconds, before timing out writes of the HTTP response back to the client.\n\nIn OpenShift clusters, the route request time out should be also increased.\nThis can be done by annotating the specific route with `haproxy.router.openshift.io/timeout`.\nSee https://docs.openshift.com/container-platform/4.16/networking/routes/route-configuration.html#nw-configuring-route-timeouts_route-configuration for further details.\n"
-                      type: "integer"
+                      default: "60s"
+                      description: "The maximum duration before timing out writes of the HTTP response back to the client.\nCan be specified as a number (seconds) or duration string (e.g., \"30s\", \"1h\", \"2m30s\").\n\nIn OpenShift clusters, the route request time out should be also increased.\nThis can be done by annotating the specific route with `haproxy.router.openshift.io/timeout`.\nSee https://docs.openshift.com/container-platform/4.16/networking/routes/route-configuration.html#nw-configuring-route-timeouts_route-configuration for further details.\n"
+                      x-kubernetes-int-or-string: true
                   type: "object"
                 version:
                   default: "default"
