@@ -157,6 +157,15 @@ pub struct ComponentDefinitionSpec {
     /// when scaling down.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podManagementPolicy")]
     pub pod_management_policy: Option<String>,
+    /// Specifies the default update policy for pods when the Component is updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podUpdatePolicy")]
+    pub pod_update_policy: Option<ComponentDefinitionPodUpdatePolicy>,
+    /// Specifies the default update policy for pods when the Component is upgraded (the service version changes).
+    /// 
+    /// 
+    /// If not specified, the default behavior is the same as `podUpdatePolicy`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podUpgradePolicy")]
+    pub pod_upgrade_policy: Option<ComponentDefinitionPodUpgradePolicy>,
     /// Defines the namespaced policy rules required by the Component.
     /// 
     /// 
@@ -473,6 +482,9 @@ pub struct ComponentDefinitionAvailable {
     /// Specifies the strategies for determining whether the component is available based on the available probe.
     /// 
     /// 
+    /// If specified, it will take precedence over the WithPhases and WithRole fields.
+    /// 
+    /// 
     /// This field is immutable once set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "withProbe")]
     pub with_probe: Option<ComponentDefinitionAvailableWithProbe>,
@@ -485,6 +497,9 @@ pub struct ComponentDefinitionAvailable {
 }
 
 /// Specifies the strategies for determining whether the component is available based on the available probe.
+/// 
+/// 
+/// If specified, it will take precedence over the WithPhases and WithRole fields.
 /// 
 /// 
 /// This field is immutable once set.
@@ -11531,6 +11546,18 @@ pub struct ComponentDefinitionLogConfigs {
     /// Specifies a descriptive label for the log type, such as 'slow' for a MySQL slow log file.
     /// It provides a clear identification of the log's purpose and content.
     pub name: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ComponentDefinitionPodUpdatePolicy {
+    PreferInPlace,
+    ReCreate,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ComponentDefinitionPodUpgradePolicy {
+    PreferInPlace,
+    ReCreate,
 }
 
 /// PolicyRule holds information that describes a policy rule, but does not contain information

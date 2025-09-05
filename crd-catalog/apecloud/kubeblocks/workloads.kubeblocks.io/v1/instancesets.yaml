@@ -1734,7 +1734,10 @@ spec:
                   description: "Controls how pods are created during initial scale up,\nwhen replacing pods on nodes, or when scaling down.\n\n\nThe default policy is `OrderedReady`, where pods are created in increasing order and the controller waits until each pod is ready before\ncontinuing. When scaling down, the pods are removed in the opposite order.\nThe alternative policy is `Parallel` which will create pods in parallel\nto match the desired scale without waiting, and on scale down will delete\nall pods at once.\n\n\nNote: This field will be removed in future version."
                   type: "string"
                 podUpdatePolicy:
-                  description: "PodUpdatePolicy indicates how pods should be updated\n\n\n- `StrictInPlace` indicates that only allows in-place upgrades.\nAny attempt to modify other fields will be rejected.\n- `PreferInPlace` indicates that we will first attempt an in-place upgrade of the Pod.\nIf that fails, it will fall back to the ReCreate, where pod will be recreated.\nDefault value is \"PreferInPlace\""
+                  description: "PodUpdatePolicy indicates how pods should be updated."
+                  type: "string"
+                podUpgradePolicy:
+                  description: "PodUpgradePolicy indicates how pods should be upgraded."
                   type: "string"
                 replicas:
                   default: 1

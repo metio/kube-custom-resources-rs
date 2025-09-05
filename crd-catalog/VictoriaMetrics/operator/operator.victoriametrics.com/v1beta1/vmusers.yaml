@@ -135,7 +135,7 @@ spec:
                         description: "CRD describes exist operator's CRD object,\noperator generates access url based on CRD params."
                         properties:
                           kind:
-                            description: "Kind one of:\nVMAgent,VMAlert, VMSingle, VMCluster/vmselect, VMCluster/vmstorage,VMCluster/vminsert  or VMAlertManager"
+                            description: "Kind one of:\nVMAgent,VMAlert, VMSingle, VMCluster/vmselect, VMCluster/vmstorage,VMCluster/vminsert,VMAlertManager, VLSingle, VLCluster/vlinsert, VLCluster/vlselect, VLCluster/vlstorage and VLAgent"
                             enum:
                               - "VMAgent"
                               - "VMAlert"
@@ -146,6 +146,11 @@ spec:
                               - "VMCluster/vmselect"
                               - "VMCluster/vmstorage"
                               - "VMCluster/vminsert"
+                              - "VLSingle"
+                              - "VLCluster/vlinsert"
+                              - "VLCluster/vlselect"
+                              - "VLCluster/vlstorage"
+                              - "VLAgent"
                             type: "string"
                           name:
                             description: "Name target CRD object name"

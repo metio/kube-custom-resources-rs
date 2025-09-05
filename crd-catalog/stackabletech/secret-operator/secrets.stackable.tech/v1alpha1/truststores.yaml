@@ -34,6 +34,13 @@ spec:
                 secretClassName:
                   description: "The name of the SecretClass that the request concerns."
                   type: "string"
+                targetKind:
+                  default: "ConfigMap"
+                  description: "Which Kubernetes kind should be used to output the requested information to.\n\nThe trust information (such as a `ca.crt`) can be considered public information, so we put it in a `ConfigMap` by default. However, some tools might require it to be placed in a `Secret`, so we also support that.\n\nCan be either `ConfigMap` or `Secret`, defaults to `ConfigMap`."
+                  enum:
+                    - "Secret"
+                    - "ConfigMap"
+                  type: "string"
               required:
                 - "secretClassName"
               type: "object"

@@ -138,7 +138,7 @@ pub struct AgentDaemonSetUpdateStrategyRollingUpdate {
     /// pod is available (Ready for at least minReadySeconds) the old DaemonSet pod
     /// on that node is marked deleted. If the old pod becomes unavailable for any
     /// reason (Ready transitions to false, is evicted, or is drained) an updated
-    /// pod is immediatedly created on that node without considering surge limits.
+    /// pod is immediately created on that node without considering surge limits.
     /// Allowing surge implies the possibility that the resources consumed by the
     /// daemonset on any given node can double if the readiness check fails, and
     /// so resource intensive daemonsets should take into account that they may
@@ -857,15 +857,13 @@ pub struct AgentStatefulSetVolumeClaimTemplatesSpec {
     /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
     /// If specified, the CSI driver will create or update the volume with the attributes defined
     /// in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,
-    /// it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass
-    /// will be applied to the claim but it's not allowed to reset this field to empty string once it is set.
-    /// If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass
-    /// will be set by the persistentvolume controller if it exists.
+    /// it can be changed after the claim is created. An empty string or nil value indicates that no
+    /// VolumeAttributesClass will be applied to the claim. If the claim enters an Infeasible error state,
+    /// this field can be reset to its previous value (including nil) to cancel the modification.
     /// If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
     /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
     /// exists.
     /// More info: <https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/>
-    /// (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.

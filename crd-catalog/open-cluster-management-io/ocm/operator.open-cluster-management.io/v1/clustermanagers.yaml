@@ -32,7 +32,7 @@ spec:
               description: "Spec represents a desired deployment configuration of controllers that govern registration and work distribution for attached Klusterlets."
               properties:
                 addOnManagerConfiguration:
-                  description: "AddOnManagerConfiguration contains the configuration of addon manager"
+                  description: "addOnManagerConfiguration contains the configuration of addon manager"
                   properties:
                     featureGates:
                       description: "FeatureGates represents the list of feature gates for addon manager\nIf it is set empty, default feature gates will be used.\nIf it is set, featuregate/Foo is an example of one item in FeatureGates:\n  1. If featuregate/Foo does not exist, registration-operator will discard it\n  2. If featuregate/Foo exists and is false by default. It is now possible to set featuregate/Foo=[false|true]\n  3. If featuregate/Foo exists and is true by default. If a cluster-admin upgrading from 1 to 2 wants to continue having featuregate/Foo=false,\n \the can set featuregate/Foo=false before upgrading. Let's say the cluster-admin wants featuregate/Foo=false."
@@ -55,12 +55,12 @@ spec:
                   type: "object"
                 addOnManagerImagePullSpec:
                   default: "quay.io/open-cluster-management/addon-manager"
-                  description: "AddOnManagerImagePullSpec represents the desired image configuration of addon manager controller/webhook installed on hub."
+                  description: "addOnManagerImagePullSpec represents the desired image configuration of addon manager controller/webhook installed on hub."
                   type: "string"
                 deployOption:
                   default:
                     mode: "Default"
-                  description: "DeployOption contains the options of deploying a cluster-manager\nDefault mode is used if DeployOption is not set."
+                  description: "deployOption contains the options of deploying a cluster-manager\nDefault mode is used if DeployOption is not set."
                   properties:
                     default:
                       description: "Default includes optional configurations for clustermanager in the Default mode."
@@ -221,7 +221,7 @@ spec:
                     - "mode"
                   type: "object"
                 nodePlacement:
-                  description: "NodePlacement enables explicit control over the scheduling of the deployed pods."
+                  description: "nodePlacement enables explicit control over the scheduling of the deployed pods."
                   properties:
                     nodeSelector:
                       additionalProperties:
@@ -254,10 +254,10 @@ spec:
                   type: "object"
                 placementImagePullSpec:
                   default: "quay.io/open-cluster-management/placement"
-                  description: "PlacementImagePullSpec represents the desired image configuration of placement controller/webhook installed on hub."
+                  description: "placementImagePullSpec represents the desired image configuration of placement controller/webhook installed on hub."
                   type: "string"
                 registrationConfiguration:
-                  description: "RegistrationConfiguration contains the configuration of registration"
+                  description: "registrationConfiguration contains the configuration of registration"
                   properties:
                     autoApproveUsers:
                       description: "AutoApproveUser represents a list of users that can auto approve CSR and accept client. If the credential of the\nbootstrap-hub-kubeconfig matches to the users, the cluster created by the bootstrap-hub-kubeconfig will\nbe auto-registered into the hub cluster. This takes effect only when ManagedClusterAutoApproval feature gate\nis enabled."
@@ -288,14 +288,14 @@ spec:
                         properties:
                           authType:
                             default: "csr"
-                            description: "Type of the authentication used by hub to initialize the Hub cluster. Possible values are csr and awsirsa."
+                            description: "authType is the type of the authentication used by hub to initialize the Hub cluster.\nPossible values are csr, awsirsa and grpc."
                             enum:
                               - "csr"
                               - "awsirsa"
                               - "grpc"
                             type: "string"
                           awsirsa:
-                            description: "AwsIrsa represents the configuration for awsirsa driver."
+                            description: "awsirsa represents the configuration for awsirsa driver."
                             properties:
                               autoApprovedIdentities:
                                 description: "AutoApprovedIdentities represent a list of approved arn patterns"
@@ -313,7 +313,7 @@ spec:
                                 type: "array"
                             type: "object"
                           csr:
-                            description: "CSR represents the configuration for csr driver."
+                            description: "csr represents the configuration for csr driver."
                             properties:
                               autoApprovedIdentities:
                                 description: "AutoApprovedIdentities represent a list of approved users"
@@ -322,37 +322,13 @@ spec:
                                 type: "array"
                             type: "object"
                           grpc:
-                            description: "GRPC represents the configuration for gRPC driver."
+                            description: "grpc represents the configuration for gRPC driver."
                             properties:
                               autoApprovedIdentities:
                                 description: "AutoApprovedIdentities represent a list of approved users"
                                 items:
                                   type: "string"
                                 type: "array"
-                              endpointExposure:
-                                description: "EndpointExposure represents the configuration for endpoint exposure."
-                                properties:
-                                  hostname:
-                                    description: "Hostname points to a fixed hostname for serving agents' handshakes."
-                                    properties:
-                                      value:
-                                        type: "string"
-                                    required:
-                                      - "value"
-                                    type: "object"
-                                  type:
-                                    default: "hostname"
-                                    description: "Type specifies how the gRPC endpoint is exposed.\nYou may need to apply an object to expose the gRPC endpoint, for example: a route."
-                                    enum:
-                                      - "hostname"
-                                    type: "string"
-                                required:
-                                  - "type"
-                                type: "object"
-                              imagePullSpec:
-                                default: "quay.io/open-cluster-management/registration"
-                                description: "ImagePullSpec represents the desired image of the gRPC broker installed on hub."
-                                type: "string"
                             type: "object"
                         required:
                           - "authType"
@@ -364,7 +340,7 @@ spec:
                   type: "object"
                 registrationImagePullSpec:
                   default: "quay.io/open-cluster-management/registration"
-                  description: "RegistrationImagePullSpec represents the desired image of registration controller/webhook installed on hub."
+                  description: "registrationImagePullSpec represents the desired image of registration controller/webhook installed on hub."
                   type: "string"
                 resourceRequirement:
                   description: "ResourceRequirement specify QoS classes of deployments managed by clustermanager.\nIt applies to all the containers in the deployments."
@@ -417,10 +393,103 @@ spec:
                         - "ResourceRequirement"
                       type: "string"
                   type: "object"
+                serverConfiguration:
+                  description: "serverConfiguration contains the configuration for http/grpc server."
+                  properties:
+                    endpointsExposure:
+                      description: "endpointsExposure represents the configuration for endpoints exposure of the server."
+                      items:
+                        properties:
+                          grpc:
+                            description: "grpc represents the configuration for grpc endpoint."
+                            properties:
+                              hostname:
+                                description: "hostname points to a fixed hostname for serving agents' handshakes."
+                                properties:
+                                  caBundle:
+                                    description: "caBundle of the endpoint."
+                                    format: "byte"
+                                    type: "string"
+                                  host:
+                                    description: "host is the host name of the endpoint."
+                                    type: "string"
+                                required:
+                                  - "host"
+                                type: "object"
+                              type:
+                                default: "hostname"
+                                description: "type specifies how the endpoint is exposed.\nYou may need to apply an object to expose the endpoint, for example: a route."
+                                enum:
+                                  - "hostname"
+                                type: "string"
+                            required:
+                              - "type"
+                            type: "object"
+                          https:
+                            description: "https represents the configuration for https endpoint."
+                            properties:
+                              hostname:
+                                description: "hostname points to a fixed hostname for serving agents' handshakes."
+                                properties:
+                                  caBundle:
+                                    description: "caBundle of the endpoint."
+                                    format: "byte"
+                                    type: "string"
+                                  host:
+                                    description: "host is the host name of the endpoint."
+                                    type: "string"
+                                required:
+                                  - "host"
+                                type: "object"
+                              type:
+                                default: "hostname"
+                                description: "type specifies how the endpoint is exposed.\nYou may need to apply an object to expose the endpoint, for example: a route."
+                                enum:
+                                  - "hostname"
+                                type: "string"
+                            required:
+                              - "type"
+                            type: "object"
+                          protocol:
+                            default: "grpc"
+                            description: "protocol is the protocol used for the endpoint, could be https or grpc."
+                            enum:
+                              - "grpc"
+                              - "https"
+                            type: "string"
+                          usage:
+                            description: "usage defines the usage of the endpoint. It could be \"agentToHub\" indicating the endpoint is used\nfor communication between agent and hub, or \"consumer\" indicating the endpoint is used for external consumer."
+                            type: "string"
+                        required:
+                          - "protocol"
+                        type: "object"
+                      type: "array"
+                    featureGates:
+                      description: "featureGates represents the features enabled for the server"
+                      items:
+                        properties:
+                          feature:
+                            description: "Feature is the key of feature gate. e.g. featuregate/Foo."
+                            type: "string"
+                          mode:
+                            default: "Disable"
+                            description: "Mode is either Enable, Disable, \"\" where \"\" is Disable by default.\nIn Enable mode, a valid feature gate `featuregate/Foo` will be set to \"--featuregate/Foo=true\".\nIn Disable mode, a valid feature gate `featuregate/Foo` will be set to \"--featuregate/Foo=false\"."
+                            enum:
+                              - "Enable"
+                              - "Disable"
+                            type: "string"
+                        required:
+                          - "feature"
+                        type: "object"
+                      type: "array"
+                    imagePullSpec:
+                      description: "imagePullSpec is the image for the server"
+                      type: "string"
+                  type: "object"
                 workConfiguration:
                   default:
                     workDriver: "kube"
-                  description: "WorkConfiguration contains the configuration of work"
+                  description: "workConfiguration contains the configuration of work"
                   properties:
                     featureGates:
                       description: "FeatureGates represents the list of feature gates for work\nIf it is set empty, default feature gates will be used.\nIf it is set, featuregate/Foo is an example of one item in FeatureGates:\n  1. If featuregate/Foo does not exist, registration-operator will discard it\n  2. If featuregate/Foo exists and is false by default. It is now possible to set featuregate/Foo=[false|true]\n  3. If featuregate/Foo exists and is true by default. If a cluster-admin upgrading from 1 to 2 wants to continue having featuregate/Foo=false,\n \the can set featuregate/Foo=false before upgrading. Let's say the cluster-admin wants featuregate/Foo=false."
@@ -451,7 +520,7 @@ spec:
                   type: "object"
                 workImagePullSpec:
                   default: "quay.io/open-cluster-management/work"
-                  description: "WorkImagePullSpec represents the desired image configuration of work controller/webhook installed on hub."
+                  description: "workImagePullSpec represents the desired image configuration of work controller/webhook installed on hub."
                   type: "string"
               type: "object"
             status:

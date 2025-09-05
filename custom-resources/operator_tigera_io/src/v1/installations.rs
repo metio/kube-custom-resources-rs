@@ -5409,6 +5409,7 @@ pub enum InstallationKubernetesProvider {
     Rke2,
     #[serde(rename = "TKG")]
     Tkg,
+    Kind,
 }
 
 /// Logging Configuration for Components
@@ -12330,6 +12331,7 @@ pub enum InstallationStatusComputedKubernetesProvider {
     Rke2,
     #[serde(rename = "TKG")]
     Tkg,
+    Kind,
 }
 
 /// Logging Configuration for Components

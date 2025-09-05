@@ -20,41 +20,44 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct ClusterManagerSpec {
-    /// AddOnManagerConfiguration contains the configuration of addon manager
+    /// addOnManagerConfiguration contains the configuration of addon manager
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "addOnManagerConfiguration")]
     pub add_on_manager_configuration: Option<ClusterManagerAddOnManagerConfiguration>,
-    /// AddOnManagerImagePullSpec represents the desired image configuration of addon manager controller/webhook installed on hub.
+    /// addOnManagerImagePullSpec represents the desired image configuration of addon manager controller/webhook installed on hub.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "addOnManagerImagePullSpec")]
     pub add_on_manager_image_pull_spec: Option<String>,
-    /// DeployOption contains the options of deploying a cluster-manager
+    /// deployOption contains the options of deploying a cluster-manager
     /// Default mode is used if DeployOption is not set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deployOption")]
     pub deploy_option: Option<ClusterManagerDeployOption>,
-    /// NodePlacement enables explicit control over the scheduling of the deployed pods.
+    /// nodePlacement enables explicit control over the scheduling of the deployed pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePlacement")]
     pub node_placement: Option<ClusterManagerNodePlacement>,
-    /// PlacementImagePullSpec represents the desired image configuration of placement controller/webhook installed on hub.
+    /// placementImagePullSpec represents the desired image configuration of placement controller/webhook installed on hub.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "placementImagePullSpec")]
     pub placement_image_pull_spec: Option<String>,
-    /// RegistrationConfiguration contains the configuration of registration
+    /// registrationConfiguration contains the configuration of registration
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "registrationConfiguration")]
     pub registration_configuration: Option<ClusterManagerRegistrationConfiguration>,
-    /// RegistrationImagePullSpec represents the desired image of registration controller/webhook installed on hub.
+    /// registrationImagePullSpec represents the desired image of registration controller/webhook installed on hub.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "registrationImagePullSpec")]
     pub registration_image_pull_spec: Option<String>,
     /// ResourceRequirement specify QoS classes of deployments managed by clustermanager.
     /// It applies to all the containers in the deployments.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceRequirement")]
     pub resource_requirement: Option<ClusterManagerResourceRequirement>,
-    /// WorkConfiguration contains the configuration of work
+    /// serverConfiguration contains the configuration for http/grpc server.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverConfiguration")]
+    pub server_configuration: Option<ClusterManagerServerConfiguration>,
+    /// workConfiguration contains the configuration of work
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workConfiguration")]
     pub work_configuration: Option<ClusterManagerWorkConfiguration>,
-    /// WorkImagePullSpec represents the desired image configuration of work controller/webhook installed on hub.
+    /// workImagePullSpec represents the desired image configuration of work controller/webhook installed on hub.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workImagePullSpec")]
     pub work_image_pull_spec: Option<String>,
 }
 
-/// AddOnManagerConfiguration contains the configuration of addon manager
+/// addOnManagerConfiguration contains the configuration of addon manager
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterManagerAddOnManagerConfiguration {
     /// FeatureGates represents the list of feature gates for addon manager
@@ -85,7 +88,7 @@ pub enum ClusterManagerAddOnManagerConfigurationFeatureGatesMode {
     Disable,
 }
 
-/// DeployOption contains the options of deploying a cluster-manager
+/// deployOption contains the options of deploying a cluster-manager
 /// Default mode is used if DeployOption is not set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterManagerDeployOption {
@@ -256,7 +259,7 @@ pub struct ClusterManagerDeployOptionHostedWorkWebhookConfigurationBindConfigura
     pub port: Option<i32>,
 }
 
-/// DeployOption contains the options of deploying a cluster-manager
+/// deployOption contains the options of deploying a cluster-manager
 /// Default mode is used if DeployOption is not set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterManagerDeployOptionMode {
@@ -264,7 +267,7 @@ pub enum ClusterManagerDeployOptionMode {
     Hosted,
 }
 
-/// NodePlacement enables explicit control over the scheduling of the deployed pods.
+/// nodePlacement enables explicit control over the scheduling of the deployed pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterManagerNodePlacement {
     /// NodeSelector defines which Nodes the Pods are scheduled on. The default is an empty list.
@@ -307,7 +310,7 @@ pub struct ClusterManagerNodePlacementTolerations {
     pub value: Option<String>,
 }
 
-/// RegistrationConfiguration contains the configuration of registration
+/// registrationConfiguration contains the configuration of registration
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterManagerRegistrationConfiguration {
     /// AutoApproveUser represents a list of users that can auto approve CSR and accept client. If the credential of the
@@ -350,16 +353,17 @@ pub enum ClusterManagerRegistrationConfigurationFeatureGatesMode {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterManagerRegistrationConfigurationRegistrationDrivers {
-    /// Type of the authentication used by hub to initialize the Hub cluster. Possible values are csr and awsirsa.
+    /// authType is the type of the authentication used by hub to initialize the Hub cluster.
+    /// Possible values are csr, awsirsa and grpc.
     #[serde(rename = "authType")]
     pub auth_type: ClusterManagerRegistrationConfigurationRegistrationDriversAuthType,
-    /// AwsIrsa represents the configuration for awsirsa driver.
+    /// awsirsa represents the configuration for awsirsa driver.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub awsirsa: Option<ClusterManagerRegistrationConfigurationRegistrationDriversAwsirsa>,
-    /// CSR represents the configuration for csr driver.
+    /// csr represents the configuration for csr driver.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csr: Option<ClusterManagerRegistrationConfigurationRegistrationDriversCsr>,
-    /// GRPC represents the configuration for gRPC driver.
+    /// grpc represents the configuration for gRPC driver.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<ClusterManagerRegistrationConfigurationRegistrationDriversGrpc>,
 }
@@ -374,7 +378,7 @@ pub enum ClusterManagerRegistrationConfigurationRegistrationDriversAuthType {
     Grpc,
 }
 
-/// AwsIrsa represents the configuration for awsirsa driver.
+/// awsirsa represents the configuration for awsirsa driver.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterManagerRegistrationConfigurationRegistrationDriversAwsirsa {
     /// AutoApprovedIdentities represent a list of approved arn patterns
@@ -390,7 +394,7 @@ pub struct ClusterManagerRegistrationConfigurationRegistrationDriversAwsirsa {
     pub tags: Option<Vec<String>>,
 }
 
-/// CSR represents the configuration for csr driver.
+/// csr represents the configuration for csr driver.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterManagerRegistrationConfigurationRegistrationDriversCsr {
     /// AutoApprovedIdentities represent a list of approved users
@@ -398,43 +402,12 @@ pub struct ClusterManagerRegistrationConfigurationRegistrationDriversCsr {
     pub auto_approved_identities: Option<Vec<String>>,
 }
 
-/// GRPC represents the configuration for gRPC driver.
+/// grpc represents the configuration for gRPC driver.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterManagerRegistrationConfigurationRegistrationDriversGrpc {
     /// AutoApprovedIdentities represent a list of approved users
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoApprovedIdentities")]
     pub auto_approved_identities: Option<Vec<String>>,
-    /// EndpointExposure represents the configuration for endpoint exposure.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointExposure")]
-    pub endpoint_exposure: Option<ClusterManagerRegistrationConfigurationRegistrationDriversGrpcEndpointExposure>,
-    /// ImagePullSpec represents the desired image of the gRPC broker installed on hub.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSpec")]
-    pub image_pull_spec: Option<String>,
-}
-
-/// EndpointExposure represents the configuration for endpoint exposure.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct ClusterManagerRegistrationConfigurationRegistrationDriversGrpcEndpointExposure {
-    /// Hostname points to a fixed hostname for serving agents' handshakes.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub hostname: Option<ClusterManagerRegistrationConfigurationRegistrationDriversGrpcEndpointExposureHostname>,
-    /// Type specifies how the gRPC endpoint is exposed.
-    /// You may need to apply an object to expose the gRPC endpoint, for example: a route.
-    #[serde(rename = "type")]
-    pub r#type: ClusterManagerRegistrationConfigurationRegistrationDriversGrpcEndpointExposureType,
-}
-
-/// Hostname points to a fixed hostname for serving agents' handshakes.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterManagerRegistrationConfigurationRegistrationDriversGrpcEndpointExposureHostname {
-    pub value: String,
-}
-
-/// EndpointExposure represents the configuration for endpoint exposure.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ClusterManagerRegistrationConfigurationRegistrationDriversGrpcEndpointExposureType {
-    #[serde(rename = "hostname")]
-    Hostname,
 }
 
 /// ResourceRequirement specify QoS classes of deployments managed by clustermanager.
@@ -495,7 +468,120 @@ pub enum ClusterManagerResourceRequirementType {
     ResourceRequirement,
 }
 
-/// WorkConfiguration contains the configuration of work
+/// serverConfiguration contains the configuration for http/grpc server.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterManagerServerConfiguration {
+    /// endpointsExposure represents the configuration for endpoints exposure of the server.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointsExposure")]
+    pub endpoints_exposure: Option<Vec<ClusterManagerServerConfigurationEndpointsExposure>>,
+    /// featureGates represents the features enabled for the server
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "featureGates")]
+    pub feature_gates: Option<Vec<ClusterManagerServerConfigurationFeatureGates>>,
+    /// imagePullSpec is the image for the server
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSpec")]
+    pub image_pull_spec: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterManagerServerConfigurationEndpointsExposure {
+    /// grpc represents the configuration for grpc endpoint.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub grpc: Option<ClusterManagerServerConfigurationEndpointsExposureGrpc>,
+    /// https represents the configuration for https endpoint.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub https: Option<ClusterManagerServerConfigurationEndpointsExposureHttps>,
+    /// protocol is the protocol used for the endpoint, could be https or grpc.
+    pub protocol: ClusterManagerServerConfigurationEndpointsExposureProtocol,
+    /// usage defines the usage of the endpoint. It could be "agentToHub" indicating the endpoint is used
+    /// for communication between agent and hub, or "consumer" indicating the endpoint is used for external consumer.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub usage: Option<String>,
+}
+
+/// grpc represents the configuration for grpc endpoint.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterManagerServerConfigurationEndpointsExposureGrpc {
+    /// hostname points to a fixed hostname for serving agents' handshakes.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub hostname: Option<ClusterManagerServerConfigurationEndpointsExposureGrpcHostname>,
+    /// type specifies how the endpoint is exposed.
+    /// You may need to apply an object to expose the endpoint, for example: a route.
+    #[serde(rename = "type")]
+    pub r#type: ClusterManagerServerConfigurationEndpointsExposureGrpcType,
+}
+
+/// hostname points to a fixed hostname for serving agents' handshakes.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterManagerServerConfigurationEndpointsExposureGrpcHostname {
+    /// caBundle of the endpoint.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
+    pub ca_bundle: Option<String>,
+    /// host is the host name of the endpoint.
+    pub host: String,
+}
+
+/// grpc represents the configuration for grpc endpoint.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterManagerServerConfigurationEndpointsExposureGrpcType {
+    #[serde(rename = "hostname")]
+    Hostname,
+}
+
+/// https represents the configuration for https endpoint.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterManagerServerConfigurationEndpointsExposureHttps {
+    /// hostname points to a fixed hostname for serving agents' handshakes.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub hostname: Option<ClusterManagerServerConfigurationEndpointsExposureHttpsHostname>,
+    /// type specifies how the endpoint is exposed.
+    /// You may need to apply an object to expose the endpoint, for example: a route.
+    #[serde(rename = "type")]
+    pub r#type: ClusterManagerServerConfigurationEndpointsExposureHttpsType,
+}
+
+/// hostname points to a fixed hostname for serving agents' handshakes.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterManagerServerConfigurationEndpointsExposureHttpsHostname {
+    /// caBundle of the endpoint.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
+    pub ca_bundle: Option<String>,
+    /// host is the host name of the endpoint.
+    pub host: String,
+}
+
+/// https represents the configuration for https endpoint.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterManagerServerConfigurationEndpointsExposureHttpsType {
+    #[serde(rename = "hostname")]
+    Hostname,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterManagerServerConfigurationEndpointsExposureProtocol {
+    #[serde(rename = "grpc")]
+    Grpc,
+    #[serde(rename = "https")]
+    Https,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterManagerServerConfigurationFeatureGates {
+    /// Feature is the key of feature gate. e.g. featuregate/Foo.
+    pub feature: String,
+    /// Mode is either Enable, Disable, "" where "" is Disable by default.
+    /// In Enable mode, a valid feature gate `featuregate/Foo` will be set to "--featuregate/Foo=true".
+    /// In Disable mode, a valid feature gate `featuregate/Foo` will be set to "--featuregate/Foo=false".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<ClusterManagerServerConfigurationFeatureGatesMode>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterManagerServerConfigurationFeatureGatesMode {
+    Enable,
+    Disable,
+}
+
+/// workConfiguration contains the configuration of work
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterManagerWorkConfiguration {
     /// FeatureGates represents the list of feature gates for work
@@ -537,7 +623,7 @@ pub enum ClusterManagerWorkConfigurationFeatureGatesMode {
     Disable,
 }
 
-/// WorkConfiguration contains the configuration of work
+/// workConfiguration contains the configuration of work
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterManagerWorkConfigurationWorkDriver {
     #[serde(rename = "kube")]

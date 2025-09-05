@@ -435,7 +435,7 @@ pub struct NginxProxyKubernetesDaemonSetContainerResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// 
     /// This field is immutable. It can only be set for containers.
@@ -1006,8 +1006,8 @@ pub struct NginxProxyKubernetesDaemonSetPodAffinityPodAntiAffinity {
     /// most preferred is the one with the greatest sum of weights, i.e.
     /// for each node that meets all of the scheduling requirements (resource
     /// request, requiredDuringScheduling anti-affinity expressions, etc.),
-    /// compute a sum by iterating through the elements of this field and adding
-    /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
+    /// compute a sum by iterating through the elements of this field and subtracting
+    /// "weight" from the sum if the node has pods which matches the corresponding podAffinityTerm; the
     /// node(s) with the highest sum are the most preferred.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
     pub preferred_during_scheduling_ignored_during_execution: Option<Vec<NginxProxyKubernetesDaemonSetPodAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
@@ -1535,7 +1535,6 @@ pub struct NginxProxyKubernetesDaemonSetPodVolumes {
     pub git_repo: Option<NginxProxyKubernetesDaemonSetPodVolumesGitRepo>,
     /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
     /// Deprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer supported.
-    /// More info: <https://examples.k8s.io/volumes/glusterfs/README.md>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub glusterfs: Option<NginxProxyKubernetesDaemonSetPodVolumesGlusterfs>,
     /// hostPath represents a pre-existing file or directory on the host
@@ -1563,7 +1562,7 @@ pub struct NginxProxyKubernetesDaemonSetPodVolumes {
     pub image: Option<NginxProxyKubernetesDaemonSetPodVolumesImage>,
     /// iscsi represents an ISCSI Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
-    /// More info: <https://examples.k8s.io/volumes/iscsi/README.md>
+    /// More info: <https://kubernetes.io/docs/concepts/storage/volumes/#iscsi>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub iscsi: Option<NginxProxyKubernetesDaemonSetPodVolumesIscsi>,
     /// name of the volume.
@@ -1598,7 +1597,6 @@ pub struct NginxProxyKubernetesDaemonSetPodVolumes {
     pub quobyte: Option<NginxProxyKubernetesDaemonSetPodVolumesQuobyte>,
     /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
     /// Deprecated: RBD is deprecated and the in-tree rbd type is no longer supported.
-    /// More info: <https://examples.k8s.io/volumes/rbd/README.md>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rbd: Option<NginxProxyKubernetesDaemonSetPodVolumesRbd>,
     /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
@@ -2113,15 +2111,13 @@ pub struct NginxProxyKubernetesDaemonSetPodVolumesEphemeralVolumeClaimTemplateSp
     /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
     /// If specified, the CSI driver will create or update the volume with the attributes defined
     /// in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,
-    /// it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass
-    /// will be applied to the claim but it's not allowed to reset this field to empty string once it is set.
-    /// If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass
-    /// will be set by the persistentvolume controller if it exists.
+    /// it can be changed after the claim is created. An empty string or nil value indicates that no
+    /// VolumeAttributesClass will be applied to the claim. If the claim enters an Infeasible error state,
+    /// this field can be reset to its previous value (including nil) to cancel the modification.
     /// If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
     /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
     /// exists.
     /// More info: <https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/>
-    /// (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
@@ -2377,11 +2373,9 @@ pub struct NginxProxyKubernetesDaemonSetPodVolumesGitRepo {
 
 /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
 /// Deprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer supported.
-/// More info: <https://examples.k8s.io/volumes/glusterfs/README.md>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NginxProxyKubernetesDaemonSetPodVolumesGlusterfs {
     /// endpoints is the endpoint name that details Glusterfs topology.
-    /// More info: <https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod>
     pub endpoints: String,
     /// path is the Glusterfs volume path.
     /// More info: <https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod>
@@ -2446,7 +2440,7 @@ pub struct NginxProxyKubernetesDaemonSetPodVolumesImage {
 
 /// iscsi represents an ISCSI Disk resource that is attached to a
 /// kubelet's host machine and then exposed to the pod.
-/// More info: <https://examples.k8s.io/volumes/iscsi/README.md>
+/// More info: <https://kubernetes.io/docs/concepts/storage/volumes/#iscsi>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NginxProxyKubernetesDaemonSetPodVolumesIscsi {
     /// chapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication
@@ -2611,6 +2605,42 @@ pub struct NginxProxyKubernetesDaemonSetPodVolumesProjectedSources {
     /// downwardAPI information about the downwardAPI data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<NginxProxyKubernetesDaemonSetPodVolumesProjectedSourcesDownwardApi>,
+    /// Projects an auto-rotating credential bundle (private key and certificate
+    /// chain) that the pod can use either as a TLS client or server.
+    /// 
+    /// Kubelet generates a private key and uses it to send a
+    /// PodCertificateRequest to the named signer.  Once the signer approves the
+    /// request and issues a certificate chain, Kubelet writes the key and
+    /// certificate chain to the pod filesystem.  The pod does not start until
+    /// certificates have been issued for each podCertificate projected volume
+    /// source in its spec.
+    /// 
+    /// Kubelet will begin trying to rotate the certificate at the time indicated
+    /// by the signer using the PodCertificateRequest.Status.BeginRefreshAt
+    /// timestamp.
+    /// 
+    /// Kubelet can write a single file, indicated by the credentialBundlePath
+    /// field, or separate files, indicated by the keyPath and
+    /// certificateChainPath fields.
+    /// 
+    /// The credential bundle is a single file in PEM format.  The first PEM
+    /// entry is the private key (in PKCS#8 format), and the remaining PEM
+    /// entries are the certificate chain issued by the signer (typically,
+    /// signers will return their certificate chain in leaf-to-root order).
+    /// 
+    /// Prefer using the credential bundle format, since your application code
+    /// can read it atomically.  If you use keyPath and certificateChainPath,
+    /// your application must make two separate file reads. If these coincide
+    /// with a certificate rotation, it is possible that the private key and leaf
+    /// certificate you read may not correspond to each other.  Your application
+    /// will need to check for this condition, and re-read until they are
+    /// consistent.
+    /// 
+    /// The named signer controls chooses the format of the certificate it
+    /// issues; consult the signer implementation's documentation to learn how to
+    /// use the certificates it issues.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podCertificate")]
+    pub pod_certificate: Option<NginxProxyKubernetesDaemonSetPodVolumesProjectedSourcesPodCertificate>,
     /// secret information about the secret data to project
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<NginxProxyKubernetesDaemonSetPodVolumesProjectedSourcesSecret>,
@@ -2792,6 +2822,101 @@ pub struct NginxProxyKubernetesDaemonSetPodVolumesProjectedSourcesDownwardApiIte
     pub resource: String,
 }
 
+/// Projects an auto-rotating credential bundle (private key and certificate
+/// chain) that the pod can use either as a TLS client or server.
+/// 
+/// Kubelet generates a private key and uses it to send a
+/// PodCertificateRequest to the named signer.  Once the signer approves the
+/// request and issues a certificate chain, Kubelet writes the key and
+/// certificate chain to the pod filesystem.  The pod does not start until
+/// certificates have been issued for each podCertificate projected volume
+/// source in its spec.
+/// 
+/// Kubelet will begin trying to rotate the certificate at the time indicated
+/// by the signer using the PodCertificateRequest.Status.BeginRefreshAt
+/// timestamp.
+/// 
+/// Kubelet can write a single file, indicated by the credentialBundlePath
+/// field, or separate files, indicated by the keyPath and
+/// certificateChainPath fields.
+/// 
+/// The credential bundle is a single file in PEM format.  The first PEM
+/// entry is the private key (in PKCS#8 format), and the remaining PEM
+/// entries are the certificate chain issued by the signer (typically,
+/// signers will return their certificate chain in leaf-to-root order).
+/// 
+/// Prefer using the credential bundle format, since your application code
+/// can read it atomically.  If you use keyPath and certificateChainPath,
+/// your application must make two separate file reads. If these coincide
+/// with a certificate rotation, it is possible that the private key and leaf
+/// certificate you read may not correspond to each other.  Your application
+/// will need to check for this condition, and re-read until they are
+/// consistent.
+/// 
+/// The named signer controls chooses the format of the certificate it
+/// issues; consult the signer implementation's documentation to learn how to
+/// use the certificates it issues.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesProjectedSourcesPodCertificate {
+    /// Write the certificate chain at this path in the projected volume.
+    /// 
+    /// Most applications should use credentialBundlePath.  When using keyPath
+    /// and certificateChainPath, your application needs to check that the key
+    /// and leaf certificate are consistent, because it is possible to read the
+    /// files mid-rotation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateChainPath")]
+    pub certificate_chain_path: Option<String>,
+    /// Write the credential bundle at this path in the projected volume.
+    /// 
+    /// The credential bundle is a single file that contains multiple PEM blocks.
+    /// The first PEM block is a PRIVATE KEY block, containing a PKCS#8 private
+    /// key.
+    /// 
+    /// The remaining blocks are CERTIFICATE blocks, containing the issued
+    /// certificate chain from the signer (leaf and any intermediates).
+    /// 
+    /// Using credentialBundlePath lets your Pod's application code make a single
+    /// atomic read that retrieves a consistent key and certificate chain.  If you
+    /// project them to separate files, your application code will need to
+    /// additionally check that the leaf certificate was issued to the key.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialBundlePath")]
+    pub credential_bundle_path: Option<String>,
+    /// Write the key at this path in the projected volume.
+    /// 
+    /// Most applications should use credentialBundlePath.  When using keyPath
+    /// and certificateChainPath, your application needs to check that the key
+    /// and leaf certificate are consistent, because it is possible to read the
+    /// files mid-rotation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyPath")]
+    pub key_path: Option<String>,
+    /// The type of keypair Kubelet will generate for the pod.
+    /// 
+    /// Valid values are "RSA3072", "RSA4096", "ECDSAP256", "ECDSAP384",
+    /// "ECDSAP521", and "ED25519".
+    #[serde(rename = "keyType")]
+    pub key_type: String,
+    /// maxExpirationSeconds is the maximum lifetime permitted for the
+    /// certificate.
+    /// 
+    /// Kubelet copies this value verbatim into the PodCertificateRequests it
+    /// generates for this projection.
+    /// 
+    /// If omitted, kube-apiserver will set it to 86400(24 hours). kube-apiserver
+    /// will reject values shorter than 3600 (1 hour).  The maximum allowable
+    /// value is 7862400 (91 days).
+    /// 
+    /// The signer implementation is then free to issue a certificate with any
+    /// lifetime *shorter* than MaxExpirationSeconds, but no shorter than 3600
+    /// seconds (1 hour).  This constraint is enforced by kube-apiserver.
+    /// `kubernetes.io` signers will never issue certificates with a lifetime
+    /// longer than 24 hours.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxExpirationSeconds")]
+    pub max_expiration_seconds: Option<i32>,
+    /// Kubelet's generated CSRs will be addressed to this signer.
+    #[serde(rename = "signerName")]
+    pub signer_name: String,
+}
+
 /// secret information about the secret data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NginxProxyKubernetesDaemonSetPodVolumesProjectedSourcesSecret {
@@ -2888,7 +3013,6 @@ pub struct NginxProxyKubernetesDaemonSetPodVolumesQuobyte {
 
 /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
 /// Deprecated: RBD is deprecated and the in-tree rbd type is no longer supported.
-/// More info: <https://examples.k8s.io/volumes/rbd/README.md>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NginxProxyKubernetesDaemonSetPodVolumesRbd {
     /// fsType is the filesystem type of the volume that you want to mount.
@@ -3938,7 +4062,7 @@ pub struct NginxProxyKubernetesDeploymentContainerResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// 
     /// This field is immutable. It can only be set for containers.
@@ -4509,8 +4633,8 @@ pub struct NginxProxyKubernetesDeploymentPodAffinityPodAntiAffinity {
     /// most preferred is the one with the greatest sum of weights, i.e.
     /// for each node that meets all of the scheduling requirements (resource
     /// request, requiredDuringScheduling anti-affinity expressions, etc.),
-    /// compute a sum by iterating through the elements of this field and adding
-    /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
+    /// compute a sum by iterating through the elements of this field and subtracting
+    /// "weight" from the sum if the node has pods which matches the corresponding podAffinityTerm; the
     /// node(s) with the highest sum are the most preferred.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
     pub preferred_during_scheduling_ignored_during_execution: Option<Vec<NginxProxyKubernetesDeploymentPodAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
@@ -5038,7 +5162,6 @@ pub struct NginxProxyKubernetesDeploymentPodVolumes {
     pub git_repo: Option<NginxProxyKubernetesDeploymentPodVolumesGitRepo>,
     /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
     /// Deprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer supported.
-    /// More info: <https://examples.k8s.io/volumes/glusterfs/README.md>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub glusterfs: Option<NginxProxyKubernetesDeploymentPodVolumesGlusterfs>,
     /// hostPath represents a pre-existing file or directory on the host
@@ -5066,7 +5189,7 @@ pub struct NginxProxyKubernetesDeploymentPodVolumes {
     pub image: Option<NginxProxyKubernetesDeploymentPodVolumesImage>,
     /// iscsi represents an ISCSI Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
-    /// More info: <https://examples.k8s.io/volumes/iscsi/README.md>
+    /// More info: <https://kubernetes.io/docs/concepts/storage/volumes/#iscsi>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub iscsi: Option<NginxProxyKubernetesDeploymentPodVolumesIscsi>,
     /// name of the volume.
@@ -5101,7 +5224,6 @@ pub struct NginxProxyKubernetesDeploymentPodVolumes {
     pub quobyte: Option<NginxProxyKubernetesDeploymentPodVolumesQuobyte>,
     /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
     /// Deprecated: RBD is deprecated and the in-tree rbd type is no longer supported.
-    /// More info: <https://examples.k8s.io/volumes/rbd/README.md>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rbd: Option<NginxProxyKubernetesDeploymentPodVolumesRbd>,
     /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
@@ -5616,15 +5738,13 @@ pub struct NginxProxyKubernetesDeploymentPodVolumesEphemeralVolumeClaimTemplateS
     /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
     /// If specified, the CSI driver will create or update the volume with the attributes defined
     /// in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,
-    /// it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass
-    /// will be applied to the claim but it's not allowed to reset this field to empty string once it is set.
-    /// If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass
-    /// will be set by the persistentvolume controller if it exists.
+    /// it can be changed after the claim is created. An empty string or nil value indicates that no
+    /// VolumeAttributesClass will be applied to the claim. If the claim enters an Infeasible error state,
+    /// this field can be reset to its previous value (including nil) to cancel the modification.
     /// If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
     /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
     /// exists.
     /// More info: <https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/>
-    /// (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
@@ -5880,11 +6000,9 @@ pub struct NginxProxyKubernetesDeploymentPodVolumesGitRepo {
 
 /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
 /// Deprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer supported.
-/// More info: <https://examples.k8s.io/volumes/glusterfs/README.md>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NginxProxyKubernetesDeploymentPodVolumesGlusterfs {
     /// endpoints is the endpoint name that details Glusterfs topology.
-    /// More info: <https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod>
     pub endpoints: String,
     /// path is the Glusterfs volume path.
     /// More info: <https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod>
@@ -5949,7 +6067,7 @@ pub struct NginxProxyKubernetesDeploymentPodVolumesImage {
 
 /// iscsi represents an ISCSI Disk resource that is attached to a
 /// kubelet's host machine and then exposed to the pod.
-/// More info: <https://examples.k8s.io/volumes/iscsi/README.md>
+/// More info: <https://kubernetes.io/docs/concepts/storage/volumes/#iscsi>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NginxProxyKubernetesDeploymentPodVolumesIscsi {
     /// chapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication
@@ -6114,6 +6232,42 @@ pub struct NginxProxyKubernetesDeploymentPodVolumesProjectedSources {
     /// downwardAPI information about the downwardAPI data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<NginxProxyKubernetesDeploymentPodVolumesProjectedSourcesDownwardApi>,
+    /// Projects an auto-rotating credential bundle (private key and certificate
+    /// chain) that the pod can use either as a TLS client or server.
+    /// 
+    /// Kubelet generates a private key and uses it to send a
+    /// PodCertificateRequest to the named signer.  Once the signer approves the
+    /// request and issues a certificate chain, Kubelet writes the key and
+    /// certificate chain to the pod filesystem.  The pod does not start until
+    /// certificates have been issued for each podCertificate projected volume
+    /// source in its spec.
+    /// 
+    /// Kubelet will begin trying to rotate the certificate at the time indicated
+    /// by the signer using the PodCertificateRequest.Status.BeginRefreshAt
+    /// timestamp.
+    /// 
+    /// Kubelet can write a single file, indicated by the credentialBundlePath
+    /// field, or separate files, indicated by the keyPath and
+    /// certificateChainPath fields.
+    /// 
+    /// The credential bundle is a single file in PEM format.  The first PEM
+    /// entry is the private key (in PKCS#8 format), and the remaining PEM
+    /// entries are the certificate chain issued by the signer (typically,
+    /// signers will return their certificate chain in leaf-to-root order).
+    /// 
+    /// Prefer using the credential bundle format, since your application code
+    /// can read it atomically.  If you use keyPath and certificateChainPath,
+    /// your application must make two separate file reads. If these coincide
+    /// with a certificate rotation, it is possible that the private key and leaf
+    /// certificate you read may not correspond to each other.  Your application
+    /// will need to check for this condition, and re-read until they are
+    /// consistent.
+    /// 
+    /// The named signer controls chooses the format of the certificate it
+    /// issues; consult the signer implementation's documentation to learn how to
+    /// use the certificates it issues.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podCertificate")]
+    pub pod_certificate: Option<NginxProxyKubernetesDeploymentPodVolumesProjectedSourcesPodCertificate>,
     /// secret information about the secret data to project
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<NginxProxyKubernetesDeploymentPodVolumesProjectedSourcesSecret>,
@@ -6295,6 +6449,101 @@ pub struct NginxProxyKubernetesDeploymentPodVolumesProjectedSourcesDownwardApiIt
     pub resource: String,
 }
 
+/// Projects an auto-rotating credential bundle (private key and certificate
+/// chain) that the pod can use either as a TLS client or server.
+/// 
+/// Kubelet generates a private key and uses it to send a
+/// PodCertificateRequest to the named signer.  Once the signer approves the
+/// request and issues a certificate chain, Kubelet writes the key and
+/// certificate chain to the pod filesystem.  The pod does not start until
+/// certificates have been issued for each podCertificate projected volume
+/// source in its spec.
+/// 
+/// Kubelet will begin trying to rotate the certificate at the time indicated
+/// by the signer using the PodCertificateRequest.Status.BeginRefreshAt
+/// timestamp.
+/// 
+/// Kubelet can write a single file, indicated by the credentialBundlePath
+/// field, or separate files, indicated by the keyPath and
+/// certificateChainPath fields.
+/// 
+/// The credential bundle is a single file in PEM format.  The first PEM
+/// entry is the private key (in PKCS#8 format), and the remaining PEM
+/// entries are the certificate chain issued by the signer (typically,
+/// signers will return their certificate chain in leaf-to-root order).
+/// 
+/// Prefer using the credential bundle format, since your application code
+/// can read it atomically.  If you use keyPath and certificateChainPath,
+/// your application must make two separate file reads. If these coincide
+/// with a certificate rotation, it is possible that the private key and leaf
+/// certificate you read may not correspond to each other.  Your application
+/// will need to check for this condition, and re-read until they are
+/// consistent.
+/// 
+/// The named signer controls chooses the format of the certificate it
+/// issues; consult the signer implementation's documentation to learn how to
+/// use the certificates it issues.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDeploymentPodVolumesProjectedSourcesPodCertificate {
+    /// Write the certificate chain at this path in the projected volume.
+    /// 
+    /// Most applications should use credentialBundlePath.  When using keyPath
+    /// and certificateChainPath, your application needs to check that the key
+    /// and leaf certificate are consistent, because it is possible to read the
+    /// files mid-rotation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateChainPath")]
+    pub certificate_chain_path: Option<String>,
+    /// Write the credential bundle at this path in the projected volume.
+    /// 
+    /// The credential bundle is a single file that contains multiple PEM blocks.
+    /// The first PEM block is a PRIVATE KEY block, containing a PKCS#8 private
+    /// key.
+    /// 
+    /// The remaining blocks are CERTIFICATE blocks, containing the issued
+    /// certificate chain from the signer (leaf and any intermediates).
+    /// 
+    /// Using credentialBundlePath lets your Pod's application code make a single
+    /// atomic read that retrieves a consistent key and certificate chain.  If you
+    /// project them to separate files, your application code will need to
+    /// additionally check that the leaf certificate was issued to the key.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialBundlePath")]
+    pub credential_bundle_path: Option<String>,
+    /// Write the key at this path in the projected volume.
+    /// 
+    /// Most applications should use credentialBundlePath.  When using keyPath
+    /// and certificateChainPath, your application needs to check that the key
+    /// and leaf certificate are consistent, because it is possible to read the
+    /// files mid-rotation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyPath")]
+    pub key_path: Option<String>,
+    /// The type of keypair Kubelet will generate for the pod.
+    /// 
+    /// Valid values are "RSA3072", "RSA4096", "ECDSAP256", "ECDSAP384",
+    /// "ECDSAP521", and "ED25519".
+    #[serde(rename = "keyType")]
+    pub key_type: String,
+    /// maxExpirationSeconds is the maximum lifetime permitted for the
+    /// certificate.
+    /// 
+    /// Kubelet copies this value verbatim into the PodCertificateRequests it
+    /// generates for this projection.
+    /// 
+    /// If omitted, kube-apiserver will set it to 86400(24 hours). kube-apiserver
+    /// will reject values shorter than 3600 (1 hour).  The maximum allowable
+    /// value is 7862400 (91 days).
+    /// 
+    /// The signer implementation is then free to issue a certificate with any
+    /// lifetime *shorter* than MaxExpirationSeconds, but no shorter than 3600
+    /// seconds (1 hour).  This constraint is enforced by kube-apiserver.
+    /// `kubernetes.io` signers will never issue certificates with a lifetime
+    /// longer than 24 hours.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxExpirationSeconds")]
+    pub max_expiration_seconds: Option<i32>,
+    /// Kubelet's generated CSRs will be addressed to this signer.
+    #[serde(rename = "signerName")]
+    pub signer_name: String,
+}
+
 /// secret information about the secret data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NginxProxyKubernetesDeploymentPodVolumesProjectedSourcesSecret {
@@ -6391,7 +6640,6 @@ pub struct NginxProxyKubernetesDeploymentPodVolumesQuobyte {
 
 /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
 /// Deprecated: RBD is deprecated and the in-tree rbd type is no longer supported.
-/// More info: <https://examples.k8s.io/volumes/rbd/README.md>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NginxProxyKubernetesDeploymentPodVolumesRbd {
     /// fsType is the filesystem type of the volume that you want to mount.

@@ -269,8 +269,12 @@ pub struct AWXSpec {
     /// Sets permissions on the /var/lib/pgdata/data for postgres container using an init container (not Openshift)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub postgres_data_volume_init: Option<bool>,
+    /// (Deprecated, use postgres_extra_settings parameter) Define postgres configuration arguments to use
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub postgres_extra_args: Option<Vec<String>>,
+    /// PostgreSQL configuration settings to be added to postgresql.conf
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub postgres_extra_settings: Option<Vec<AWXPostgresExtraSettings>>,
     /// Specify volume mounts to be added to Postgres container
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub postgres_extra_volume_mounts: Option<String>,
@@ -990,6 +994,14 @@ pub enum AWXLoadbalancerProtocol {
     Http,
     #[serde(rename = "https")]
     Https,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AWXPostgresExtraSettings {
+    /// PostgreSQL configuration parameter name
+    pub setting: String,
+    /// PostgreSQL configuration parameter value
+    pub value: String,
 }
 
 /// (Deprecated, use postgres_resource_requirements parameter) Resource requirements for the postgres init container

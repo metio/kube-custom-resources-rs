@@ -6,6 +6,16 @@ metadata:
     controller-gen.kubebuilder.io/version: "v0.15.0"
   name: "volumegroupsnapshotcontents.groupsnapshot.storage.k8s.io"
 spec:
+  conversion:
+    strategy: "Webhook"
+    webhook:
+      clientConfig:
+        service:
+          name: "snapshot-conversion-webhook-service"
+          namespace: "default"
+          path: "/convert"
+      conversionReviewVersions:
+        - "v1"
   group: "groupsnapshot.storage.k8s.io"
   names:
     kind: "VolumeGroupSnapshotContent"
@@ -190,6 +200,6 @@ spec:
             - "spec"
           type: "object"
       served: true
-      storage: true
+      storage: false
       subresources:
         status: {}

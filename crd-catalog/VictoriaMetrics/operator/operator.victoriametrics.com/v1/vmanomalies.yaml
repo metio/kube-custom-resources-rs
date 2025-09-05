@@ -617,7 +617,7 @@ spec:
                           description: "HealthPath defines absolute or relative URL address where to check availability of the remote webserver"
                           type: "string"
                         pushFrequency:
-                          description: "PushFrequency defines push internval"
+                          description: "PushFrequency defines push interval"
                           type: "string"
                         tenantID:
                           description: "TenantID defines for VictoriaMetrics Cluster version only, tenants are identified by accountID, accountID:projectID or multitenant."
@@ -880,7 +880,7 @@ spec:
                         type: "string"
                       type: "array"
                     datasourceURL:
-                      description: "DatasourceURL address\ndatatasource must serve /api/v1/query and /api/v1/query_range APIs"
+                      description: "DatasourceURL address\ndatasource must serve /api/v1/query and /api/v1/query_range APIs"
                       type: "string"
                     extraFilters:
                       description: "List of strings with series selector."

@@ -213,7 +213,7 @@ pub struct VMUserTargetRefs {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct VMUserTargetRefsCrd {
     /// Kind one of:
-    /// VMAgent,VMAlert, VMSingle, VMCluster/vmselect, VMCluster/vmstorage,VMCluster/vminsert  or VMAlertManager
+    /// VMAgent,VMAlert, VMSingle, VMCluster/vmselect, VMCluster/vmstorage,VMCluster/vminsert,VMAlertManager, VLSingle, VLCluster/vlinsert, VLCluster/vlselect, VLCluster/vlstorage and VLAgent
     pub kind: VMUserTargetRefsCrdKind,
     /// Name target CRD object name
     pub name: String,
@@ -242,6 +242,16 @@ pub enum VMUserTargetRefsCrdKind {
     VmClusterVmstorage,
     #[serde(rename = "VMCluster/vminsert")]
     VmClusterVminsert,
+    #[serde(rename = "VLSingle")]
+    VlSingle,
+    #[serde(rename = "VLCluster/vlinsert")]
+    VlClusterVlinsert,
+    #[serde(rename = "VLCluster/vlselect")]
+    VlClusterVlselect,
+    #[serde(rename = "VLCluster/vlstorage")]
+    VlClusterVlstorage,
+    #[serde(rename = "VLAgent")]
+    VlAgent,
 }
 
 /// TargetRef describes target for user traffic forwarding.

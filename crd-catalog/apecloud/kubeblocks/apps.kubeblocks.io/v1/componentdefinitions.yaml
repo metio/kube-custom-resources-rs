@@ -62,7 +62,7 @@ spec:
                       description: "Specifies the phases that the component will go through to be considered available.\n\n\nThis field is immutable once set."
                       type: "string"
                     withProbe:
-                      description: "Specifies the strategies for determining whether the component is available based on the available probe.\n\n\nThis field is immutable once set."
+                      description: "Specifies the strategies for determining whether the component is available based on the available probe.\n\n\nIf specified, it will take precedence over the WithPhases and WithRole fields.\n\n\nThis field is immutable once set."
                       properties:
                         condition:
                           description: "Specifies the conditions that the component will go through to be considered available.\n\n\nThis field is immutable once set."
@@ -5246,6 +5246,19 @@ spec:
                 podManagementPolicy:
                   default: "OrderedReady"
                   description: "InstanceSet controls the creation of pods during initial scale up, replacement of pods on nodes, and scaling down.\n\n\n- `OrderedReady`: Creates pods in increasing order (pod-0, then pod-1, etc). The controller waits until each pod\nis ready before continuing. Pods are removed in reverse order when scaling down.\n- `Parallel`: Creates pods in parallel to match the desired scale without waiting. All pods are deleted at once\nwhen scaling down."
+                  type: "string"
+                podUpdatePolicy:
+                  default: "PreferInPlace"
+                  description: "Specifies the default update policy for pods when the Component is updated."
+                  enum:
+                    - "PreferInPlace"
+                    - "ReCreate"
+                  type: "string"
+                podUpgradePolicy:
+                  description: "Specifies the default update policy for pods when the Component is upgraded (the service version changes).\n\n\nIf not specified, the default behavior is the same as `podUpdatePolicy`."
+                  enum:
+                    - "PreferInPlace"
+                    - "ReCreate"
                   type: "string"
                 policyRules:
                   description: "Defines the namespaced policy rules required by the Component.\n\n\nThe `policyRules` field is an array of `rbacv1.PolicyRule` objects that define the policy rules\nneeded by the Component to operate within a namespace.\nThese policy rules determine the permissions and verbs the Component is allowed to perform on\nKubernetes resources within the namespace.\n\n\nThe purpose of this field is to automatically generate the necessary RBAC roles\nfor the Component based on the specified policy rules.\nThis ensures that the Pods in the Component has appropriate permissions to function.\n\n\nTo prevent privilege escalation, only permissions already owned by KubeBlocks can be added here.\n\n\nThis field is immutable."

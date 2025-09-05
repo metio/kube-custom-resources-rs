@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.18.0"
+    controller-gen.kubebuilder.io/version: "v0.19.0"
   name: "tenants.capsule.clastix.io"
 spec:
   group: "capsule.clastix.io"
@@ -619,7 +619,7 @@ spec:
                             type: "array"
                             x-kubernetes-list-type: "atomic"
                           podSelector:
-                            description: "podSelector selects the pods to which this NetworkPolicy object applies.\nThe array of ingress rules is applied to any pods selected by this field.\nMultiple network policies can select the same set of pods. In this case,\nthe ingress rules for each are combined additively.\nThis field is NOT optional and follows standard label selector semantics.\nAn empty podSelector matches all pods in this namespace."
+                            description: "podSelector selects the pods to which this NetworkPolicy object applies.\nThe array of rules is applied to any pods selected by this field. An empty\nselector matches all pods in the policy's namespace.\nMultiple network policies can select the same set of pods. In this case,\nthe ingress rules for each are combined additively.\nThis field is optional. If it is not specified, it defaults to an empty selector."
                             properties:
                               matchExpressions:
                                 description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
@@ -658,8 +658,6 @@ spec:
                               type: "string"
                             type: "array"
                             x-kubernetes-list-type: "atomic"
-                        required:
-                          - "podSelector"
                         type: "object"
                       type: "array"
                   type: "object"

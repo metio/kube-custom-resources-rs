@@ -47,6 +47,22 @@ pub struct BackendTLSPolicySpec {
     ///   be unique across all targetRef entries in the BackendTLSPolicy.
     /// * They select different sectionNames in the same target.
     /// 
+    /// When more than one BackendTLSPolicy selects the same target and
+    /// sectionName, implementations MUST determine precedence using the
+    /// following criteria, continuing on ties:
+    /// 
+    /// * The older policy by creation timestamp takes precedence. For
+    ///   example, a policy with a creation timestamp of "2021-07-15
+    ///   01:02:03" MUST be given precedence over a policy with a
+    ///   creation timestamp of "2021-07-15 01:02:04".
+    /// * The policy appearing first in alphabetical order by {name}.
+    ///   For example, a policy named `bar` is given precedence over a
+    ///   policy named `baz`.
+    /// 
+    /// For any BackendTLSPolicy that does not take precedence, the
+    /// implementation MUST ensure the `Accepted` Condition is set to
+    /// `status: False`, with Reason `Conflicted`.
+    /// 
     /// Support: Extended for Kubernetes Service
     /// 
     /// Support: Implementation-specific for any other resource
@@ -141,7 +157,11 @@ pub struct BackendTLSPolicyValidation {
     /// backends:
     /// 
     /// 1. Hostname MUST be used as the SNI to connect to the backend (RFC 6066).
-    /// 2. Hostname MUST be used for authentication and MUST match the certificate served by the matching backend, unless SubjectAltNames is specified.
+    /// 2. Hostname MUST be used for authentication and MUST match the certificate
+    ///    served by the matching backend, unless SubjectAltNames is specified.
+    /// 3. If SubjectAltNames are specified, Hostname can be used for certificate selection
+    ///    but MUST NOT be used for authentication. If you want to use the value
+    ///    of the Hostname field for authentication, you MUST add it to the SubjectAltNames list.
     /// 
     /// Support: Core
     pub hostname: String,

@@ -25,6 +25,9 @@ pub struct MiniClusterSpec {
     /// Archive to load or save
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub archive: Option<MiniClusterArchive>,
+    /// BackoffLimit is the number of retries for the job before failing
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backoffLimit")]
+    pub backoff_limit: Option<i32>,
     /// Cleanup the pods and storage when the index broker pod is complete
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cleanup: Option<bool>,

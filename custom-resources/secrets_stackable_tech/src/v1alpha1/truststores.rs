@@ -25,6 +25,13 @@ pub struct TrustStoreSpec {
     /// The name of the SecretClass that the request concerns.
     #[serde(rename = "secretClassName")]
     pub secret_class_name: String,
+    /// Which Kubernetes kind should be used to output the requested information to.
+    /// 
+    /// The trust information (such as a `ca.crt`) can be considered public information, so we put it in a `ConfigMap` by default. However, some tools might require it to be placed in a `Secret`, so we also support that.
+    /// 
+    /// Can be either `ConfigMap` or `Secret`, defaults to `ConfigMap`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetKind")]
+    pub target_kind: Option<TrustStoreTargetKind>,
 }
 
 /// A [TrustStore](<https://docs.stackable.tech/home/nightly/secret-operator/truststore)> requests information about how to validate secrets issued by a [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass).>
@@ -38,5 +45,14 @@ pub enum TrustStoreFormat {
     TlsPkcs12,
     #[serde(rename = "kerberos")]
     Kerberos,
+}
+
+/// A [TrustStore](<https://docs.stackable.tech/home/nightly/secret-operator/truststore)> requests information about how to validate secrets issued by a [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass).>
+/// 
+/// The requested information is written to a ConfigMap with the same name as the TrustStore.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum TrustStoreTargetKind {
+    Secret,
+    ConfigMap,
 }
 

@@ -145,6 +145,10 @@ pub struct FileSystemSpec {
     /// Amazon EFS User Guide.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "provisionedThroughputInMiBps")]
     pub provisioned_throughput_in_mi_bps: Option<f64>,
+    /// An array of destination configuration objects. Only one destination configuration
+    /// object is supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicationConfiguration")]
+    pub replication_configuration: Option<Vec<FileSystemReplicationConfiguration>>,
     /// Use to create one or more tags associated with the file system. Each tag
     /// is a user-defined key-value pair. Name your file system on creation by including
     /// a "Key":"Name","Value":"{value}" key-value pair. Each key must be unique.
@@ -222,6 +226,112 @@ pub struct FileSystemLifecyclePolicies {
     pub transition_to_primary_storage_class: Option<String>,
 }
 
+/// Describes the new or existing destination file system for the replication
+/// configuration.
+/// 
+///    * If you want to replicate to a new file system, do not specify the File
+///    System ID for the destination file system. Amazon EFS creates a new, empty
+///    file system. For One Zone storage, specify the Availability Zone to create
+///    the file system in. To use an Key Management Service key other than the
+///    default KMS key, then specify it. For more information, see Configuring
+///    replication to new Amazon EFS file system (<https://docs.aws.amazon.com/efs/latest/ug/create-replication.html)>
+///    in the Amazon EFS User Guide. After the file system is created, you cannot
+///    change the KMS key or the performance mode.
+/// 
+///    * If you want to replicate to an existing file system that's in the same
+///    account as the source file system, then you need to provide the ID or
+///    Amazon Resource Name (ARN) of the file system to which to replicate. The
+///    file system's replication overwrite protection must be disabled. For more
+///    information, see Replicating to an existing file system (<https://docs.aws.amazon.com/efs/latest/ug/efs-replication#replicate-existing-destination)>
+///    in the Amazon EFS User Guide.
+/// 
+///    * If you are replicating the file system to a file system that's in a
+///    different account than the source file system (cross-account replication),
+///    you need to provide the ARN for the file system and the IAM role that
+///    allows Amazon EFS to perform replication on the destination account. The
+///    file system's replication overwrite protection must be disabled. For more
+///    information, see Replicating across Amazon Web Services accounts (<https://docs.aws.amazon.com/efs/latest/ug/cross-account-replication.html)>
+///    in the Amazon EFS User Guide.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FileSystemReplicationConfiguration {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availabilityZoneName")]
+    pub availability_zone_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemID")]
+    pub file_system_id: Option<String>,
+    /// Reference field for FileSystemID
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemRef")]
+    pub file_system_ref: Option<FileSystemReplicationConfigurationFileSystemRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyID")]
+    pub kms_key_id: Option<String>,
+    /// Reference field for KMSKeyID
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyRef")]
+    pub kms_key_ref: Option<FileSystemReplicationConfigurationKmsKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub region: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleARN")]
+    pub role_arn: Option<String>,
+    /// Reference field for RoleARN
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleRef")]
+    pub role_ref: Option<FileSystemReplicationConfigurationRoleRef>,
+}
+
+/// Reference field for FileSystemID
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FileSystemReplicationConfigurationFileSystemRef {
+    /// AWSResourceReference provides all the values necessary to reference another
+    /// k8s resource for finding the identifier(Id/ARN/Name)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub from: Option<FileSystemReplicationConfigurationFileSystemRefFrom>,
+}
+
+/// AWSResourceReference provides all the values necessary to reference another
+/// k8s resource for finding the identifier(Id/ARN/Name)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FileSystemReplicationConfigurationFileSystemRefFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// Reference field for KMSKeyID
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FileSystemReplicationConfigurationKmsKeyRef {
+    /// AWSResourceReference provides all the values necessary to reference another
+    /// k8s resource for finding the identifier(Id/ARN/Name)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub from: Option<FileSystemReplicationConfigurationKmsKeyRefFrom>,
+}
+
+/// AWSResourceReference provides all the values necessary to reference another
+/// k8s resource for finding the identifier(Id/ARN/Name)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FileSystemReplicationConfigurationKmsKeyRefFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// Reference field for RoleARN
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FileSystemReplicationConfigurationRoleRef {
+    /// AWSResourceReference provides all the values necessary to reference another
+    /// k8s resource for finding the identifier(Id/ARN/Name)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub from: Option<FileSystemReplicationConfigurationRoleRefFrom>,
+}
+
+/// AWSResourceReference provides all the values necessary to reference another
+/// k8s resource for finding the identifier(Id/ARN/Name)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FileSystemReplicationConfigurationRoleRefFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
 /// A tag is a key-value pair. Allowed characters are letters, white space, and
 /// numbers that can be represented in UTF-8, and the following characters:+
 /// - = . _ : /.
@@ -281,6 +391,9 @@ pub struct FileSystemStatus {
     /// Regex Pattern: `^(\d{12})|(\d{4}-\d{4}-\d{4})$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerID")]
     pub owner_id: Option<String>,
+    /// An array of destination objects. Only one destination object is supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicationConfigurationStatus")]
+    pub replication_configuration_status: Option<Vec<FileSystemStatusReplicationConfigurationStatus>>,
     /// The latest known metered size (in bytes) of data stored in the file system,
     /// in its Value field, and the time at which that size was determined in its
     /// Timestamp field. The Timestamp value is the integer number of seconds since
@@ -314,6 +427,25 @@ pub struct FileSystemStatusAckResourceMetadata {
     pub owner_account_id: String,
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
+}
+
+/// Describes the destination file system in the replication configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FileSystemStatusReplicationConfigurationStatus {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemID")]
+    pub file_system_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastReplicatedTimestamp")]
+    pub last_replicated_timestamp: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerID")]
+    pub owner_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub region: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleARN")]
+    pub role_arn: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub status: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusMessage")]
+    pub status_message: Option<String>,
 }
 
 /// The latest known metered size (in bytes) of data stored in the file system,

@@ -40,6 +40,9 @@ pub struct TeleportOIDCConnectorSpec {
     /// Display is the friendly name for this provider.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub display: Option<String>,
+    /// EntraIDGroupsProvider configures out-of-band user groups provider. It works by following through the groups claim source, which is sent for the "groups" claim when the user's group membership exceeds 200 max item limit.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub entra_id_groups_provider: Option<TeleportOIDCConnectorEntraIdGroupsProvider>,
     /// GoogleAdminEmail is the email of a google admin to impersonate.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub google_admin_email: Option<String>,
@@ -106,6 +109,20 @@ pub struct TeleportOIDCConnectorClientRedirectSettings {
     /// a list of CIDRs allowed for HTTP or HTTPS client redirect URLs
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub insecure_allowed_cidr_ranges: Option<Vec<String>>,
+}
+
+/// EntraIDGroupsProvider configures out-of-band user groups provider. It works by following through the groups claim source, which is sent for the "groups" claim when the user's group membership exceeds 200 max item limit.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TeleportOIDCConnectorEntraIdGroupsProvider {
+    /// Disabled specifies that the groups provider should be disabled even when Entra ID responds with a groups claim source. User may choose to disable it if they are using integrations such as SCIM or similar groups importer as connector based role mapping may be not needed in such a scenario.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub disabled: Option<bool>,
+    /// GraphEndpoint is a Microsoft Graph API endpoint. The groups claim source endpoint provided by Entra ID points to the now-retired Azure AD Graph endpoint ("<https://graph.windows.net").> To convert it to the newer Microsoft Graph API endpoint, Teleport defaults to the Microsoft Graph global service endpoint ("<https://graph.microsoft.com").> Update GraphEndpoint to point to a different Microsoft Graph national cloud deployment endpoint.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub graph_endpoint: Option<String>,
+    /// GroupType is a user group type filter. Defaults to "security-groups". Value can be "security-groups", "directory-roles", "all-groups".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub group_type: Option<String>,
 }
 
 /// MFASettings contains settings to enable SSO MFA checks through this auth connector.

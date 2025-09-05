@@ -25,7 +25,7 @@ pub struct KustomizationSpec {
     /// overridden if its key matches a common one.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonMetadata")]
     pub common_metadata: Option<KustomizationCommonMetadata>,
-    /// Components specifies relative paths to specifications of other Components.
+    /// Components specifies relative paths to kustomize Components.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub components: Option<Vec<String>>,
     /// Decrypt Kubernetes secrets before applying them on the cluster.
@@ -54,6 +54,11 @@ pub struct KustomizationSpec {
     /// A list of resources to be included in the health assessment.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthChecks")]
     pub health_checks: Option<Vec<KustomizationHealthChecks>>,
+    /// IgnoreMissingComponents instructs the controller to ignore Components paths
+    /// not found in source by removing them from the generated kustomization.yaml
+    /// before running kustomize build.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreMissingComponents")]
+    pub ignore_missing_components: Option<bool>,
     /// Images is a list of (image name, new name, new tag or digest)
     /// for changing image names, tags or digests. This can also be achieved with a
     /// patch, but this operator is simpler to specify.
@@ -482,6 +487,10 @@ pub enum KustomizationSourceRefKind {
 pub struct KustomizationStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
+    /// History contains a set of snapshots of the last reconciliation attempts
+    /// tracking the revision, the state and the duration of each attempt.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub history: Option<Vec<KustomizationStatusHistory>>,
     /// Inventory contains the list of Kubernetes resource object references that
     /// have been successfully applied.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -508,6 +517,32 @@ pub struct KustomizationStatus {
     /// ObservedGeneration is the last reconciled generation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
+}
+
+/// Snapshot represents a point-in-time record of a group of resources reconciliation,
+/// including timing information, status, and a unique digest identifier.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KustomizationStatusHistory {
+    /// Digest is the checksum in the format `<algo>:<hex>` of the resources in this snapshot.
+    pub digest: String,
+    /// FirstReconciled is the time when this revision was first reconciled to the cluster.
+    #[serde(rename = "firstReconciled")]
+    pub first_reconciled: String,
+    /// LastReconciled is the time when this revision was last reconciled to the cluster.
+    #[serde(rename = "lastReconciled")]
+    pub last_reconciled: String,
+    /// LastReconciledDuration is time it took to reconcile the resources in this revision.
+    #[serde(rename = "lastReconciledDuration")]
+    pub last_reconciled_duration: String,
+    /// LastReconciledStatus is the status of the last reconciliation.
+    #[serde(rename = "lastReconciledStatus")]
+    pub last_reconciled_status: String,
+    /// Metadata contains additional information about the snapshot.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<BTreeMap<String, String>>,
+    /// TotalReconciliations is the total number of reconciliations that have occurred for this snapshot.
+    #[serde(rename = "totalReconciliations")]
+    pub total_reconciliations: i64,
 }
 
 /// Inventory contains the list of Kubernetes resource object references that

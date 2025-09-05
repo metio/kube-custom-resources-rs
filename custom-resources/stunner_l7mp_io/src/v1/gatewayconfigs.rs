@@ -38,7 +38,6 @@ pub struct GatewayConfigSpec {
     /// LoadBalancerServiceAnnotations is a list of annotations that will go into the
     /// LoadBalancer services created automatically by the operator to wrap Gateways.
     /// 
-    /// 
     /// NOTE: removing annotations from a GatewayConfig will not result in the removal of the
     /// corresponding annotations from the LoadBalancer service, in order to prevent the
     /// accidental removal of an annotation installed there by Kubernetes or the cloud
@@ -57,7 +56,6 @@ pub struct GatewayConfigSpec {
     /// Realm defines the STUN/TURN authentication realm to be used for clients toauthenticate
     /// with STUNner.
     /// 
-    /// 
     /// The realm must consist of lower case alphanumeric characters or '-', and must start and
     /// end with an alphanumeric character. No other punctuation is allowed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -65,9 +63,23 @@ pub struct GatewayConfigSpec {
     /// SharedSecret defines the shared secret to be used for "longterm" authentication.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sharedSecret")]
     pub shared_secret: Option<String>,
+    /// STUNMode toggles STUN-server mode. In this mode only STUN binding requests are handled,
+    /// but no TURN allocations are allowed by the gateway. This is useful to prevent a DDoS
+    /// vector when STUNner is deployed as a user-facing STUN server, where a client creates and
+    /// removes empty allocations in a fast loop to overload the TURN server. When STUN-mode is
+    /// enabled TURN credentials are optional and ignored even if provided, otherwise TURN
+    /// credentials are mandatory. Default is false, which disables pure-STUN mode. Not
+    /// supported in the free tier.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stunMode")]
+    pub stun_mode: Option<bool>,
     /// Username defines the `username` credential for "plaintext" authentication.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userName")]
     pub user_name: Option<String>,
+    /// UserQuota limits the number of allocations active at one time for a given TURN username
+    /// (see RFC8656/Section 5). Overlimit allocations are rejected with a 486 (Allocation Quota
+    /// Reached) error. Default is no quota. Not supported in the free tier.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userQuota")]
+    pub user_quota: Option<i64>,
 }
 
 /// Note that externally set credentials override any inline auth credentials (AuthType,
@@ -89,12 +101,10 @@ pub struct GatewayConfigAuthRef {
     /// Namespace is the namespace of the referenced object. When unspecified, the local
     /// namespace is inferred.
     /// 
-    /// 
     /// Note that when a namespace different than the local namespace is specified,
     /// a ReferenceGrant object is required in the referent namespace to allow that
     /// namespace's owner to accept the reference. See the ReferenceGrant
     /// documentation for details.
-    /// 
     /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]

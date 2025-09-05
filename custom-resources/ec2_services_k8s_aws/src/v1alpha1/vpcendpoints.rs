@@ -63,6 +63,9 @@ pub struct VPCEndpointSpec {
     /// The name of the endpoint service.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
     pub service_name: Option<String>,
+    /// The Region where the service is hosted. The default is the current Region.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceRegion")]
+    pub service_region: Option<String>,
     /// (Interface and Gateway Load Balancer endpoints) The IDs of the subnets in
     /// which to create endpoint network interfaces. For a Gateway Load Balancer
     /// endpoint, you can specify only one subnet.

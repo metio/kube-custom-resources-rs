@@ -2280,6 +2280,8 @@ pub struct OpenTelemetryCollectorTargetAllocator {
     pub allocation_strategy: Option<OpenTelemetryCollectorTargetAllocatorAllocationStrategy>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "collectorNotReadyGracePeriod")]
     pub collector_not_ready_grace_period: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "collectorTargetReloadInterval")]
+    pub collector_target_reload_interval: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
