@@ -17,5 +17,5 @@ for group_level_directory in ./custom-resources/*; do
 
   # apply auto-fixable fixes
   echo "fixing ${group}"
-  K8S_OPENAPI_ENABLED_VERSION=1.31 cargo fix --lib --package "kcr_${group}" --allow-no-vcs
+  K8S_OPENAPI_ENABLED_VERSION=1.34 cargo fix --lib --package "kcr_${group}" --allow-no-vcs
 done
