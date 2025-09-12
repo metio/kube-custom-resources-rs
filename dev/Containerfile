@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: 0BSD
 
 FROM docker.io/mikefarah/yq:latest AS yq
-FROM docker.io/metio/devcontainers-rust:latest
+FROM docker.io/library/rust:latest
 
 COPY --from=yq /usr/bin/yq /usr/bin/yq
 RUN cargo install kopium
