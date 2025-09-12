@@ -927,7 +927,7 @@ spec:
                       type: "string"
                   type: "object"
                 license:
-                  description: "License allows to configure license key to be used for enterprise features.\nUsing license key is supported starting from VictoriaMetrics v1.94.0.\nSee [here](https://docs.victoriametrics.com/victoriametrics/enterprise)"
+                  description: "License allows to configure license key to be used for enterprise features.\nUsing license key is supported starting from VictoriaMetrics v1.94.0.\nSee [here](https://docs.victoriametrics.com/victoriametrics/enterprise/)"
                   properties:
                     forceOffline:
                       description: "Enforce offline verification of the license key."
@@ -1723,6 +1723,9 @@ spec:
                           ignoreFirstIntervals:
                             description: "IgnoreFirstIntervals instructs to ignore first interval"
                             type: "integer"
+                          ignoreFirstSampleInterval:
+                            description: "IgnoreFirstSampleInterval sets interval for total and prometheus_total during which first samples will be ignored"
+                            type: "string"
                           ignoreOldSamples:
                             description: "IgnoreOldSamples instructs to ignore samples with old timestamps outside the current aggregation interval."
                             type: "boolean"
@@ -1753,6 +1756,9 @@ spec:
                                 flush_on_shutdown:
                                   description: "FlushOnShutdown defines whether to flush the aggregation state on process termination\nor config reload. Is `false` by default.\nIt is not recommended changing this setting, unless unfinished aggregations states\nare preferred to missing data points."
                                   type: "boolean"
+                                ignoreFirstSampleInterval:
+                                  description: "IgnoreFirstSampleInterval sets interval for total and prometheus_total during which first samples will be ignored"
+                                  type: "string"
                                 ignore_first_intervals:
                                   type: "integer"
                                 ignore_old_samples:
@@ -2832,6 +2838,9 @@ spec:
                     ignoreFirstIntervals:
                       description: "IgnoreFirstIntervals instructs to ignore first interval"
                       type: "integer"
+                    ignoreFirstSampleInterval:
+                      description: "IgnoreFirstSampleInterval sets interval for total and prometheus_total during which first samples will be ignored"
+                      type: "string"
                     ignoreOldSamples:
                       description: "IgnoreOldSamples instructs to ignore samples with old timestamps outside the current aggregation interval."
                       type: "boolean"
@@ -2862,6 +2871,9 @@ spec:
                           flush_on_shutdown:
                             description: "FlushOnShutdown defines whether to flush the aggregation state on process termination\nor config reload. Is `false` by default.\nIt is not recommended changing this setting, unless unfinished aggregations states\nare preferred to missing data points."
                             type: "boolean"
+                          ignoreFirstSampleInterval:
+                            description: "IgnoreFirstSampleInterval sets interval for total and prometheus_total during which first samples will be ignored"
+                            type: "string"
                           ignore_first_intervals:
                             type: "integer"
                           ignore_old_samples:

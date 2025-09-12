@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.18.0"
+    controller-gen.kubebuilder.io/version: "v0.19.0"
   name: "meshgatewayconfigs.kuma.io"
 spec:
   group: "kuma.io"
@@ -88,7 +88,7 @@ spec:
                   description: "Resources specifies the compute resources for the proxy container.\nThe default can be set in the control plane config."
                   properties:
                     claims:
-                      description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
+                      description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis field depends on the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                       items:
                         description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                         properties:

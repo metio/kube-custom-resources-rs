@@ -19,7 +19,7 @@ spec:
       name: "v1beta1"
       schema:
         openAPIV3Schema:
-          description: "PreflightValidation initiates a preflight validations for all Modules on the current Kubernetes cluster."
+          description: "PreflightValidation initiates a preflight validations for all Modules on the current Kubernetes cluster.\nDeprecated in favor of v1beta2."
           properties:
             apiVersion:
               description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"

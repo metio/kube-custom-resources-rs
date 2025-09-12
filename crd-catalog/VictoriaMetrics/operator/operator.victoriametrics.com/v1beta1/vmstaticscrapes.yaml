@@ -509,7 +509,7 @@ spec:
                             description: "DisableCompression"
                             type: "boolean"
                           disable_keep_alive:
-                            description: "disable_keepalive allows disabling HTTP keep-alive when scraping targets.\nBy default, HTTP keep-alive is enabled, so TCP connections to scrape targets\ncould be reused.\nSee https://docs.victoriametrics.com/victoriametrics/vmagent#scrape_config-enhancements"
+                            description: "disable_keepalive allows disabling HTTP keep-alive when scraping targets.\nBy default, HTTP keep-alive is enabled, so TCP connections to scrape targets\ncould be reused.\nSee https://docs.victoriametrics.com/victoriametrics/vmagent/#scrape_config-enhancements"
                             type: "boolean"
                           headers:
                             description: "Headers allows sending custom headers to scrape targets\nmust be in of semicolon separated header with it's value\neg:\nheaderName: headerValue\nvmagent supports since 1.79.0 version"
@@ -519,7 +519,7 @@ spec:
                           no_stale_markers:
                             type: "boolean"
                           proxy_client_config:
-                            description: "ProxyClientConfig configures proxy auth settings for scraping\nSee feature description https://docs.victoriametrics.com/victoriametrics/vmagent#scraping-targets-via-a-proxy"
+                            description: "ProxyClientConfig configures proxy auth settings for scraping\nSee feature description https://docs.victoriametrics.com/victoriametrics/vmagent/#scraping-targets-via-a-proxy"
                             properties:
                               basic_auth:
                                 description: "BasicAuth allow an endpoint to authenticate over basic authentication"

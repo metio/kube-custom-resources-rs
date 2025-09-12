@@ -177,9 +177,24 @@ spec:
                               type: "string"
                             type: "array"
                             x-kubernetes-list-type: "atomic"
+                          allowPrivilegeEscalation:
+                            default: true
+                            description: "Allow privilege escalation (defaults to true)"
+                            type: "boolean"
                           privileged:
                             description: "Privileged container"
                             type: "boolean"
+                          runAsGroup:
+                            description: "Run as a specific uid"
+                            format: "int64"
+                            type: "integer"
+                          runAsNonRoot:
+                            description: "Run as non root (defaults to false)"
+                            type: "boolean"
+                          runAsUser:
+                            description: "Run as a specific gid"
+                            format: "int64"
+                            type: "integer"
                         type: "object"
                       volumes:
                         additionalProperties:
@@ -642,9 +657,24 @@ spec:
                               type: "string"
                             type: "array"
                             x-kubernetes-list-type: "atomic"
+                          allowPrivilegeEscalation:
+                            default: true
+                            description: "Allow privilege escalation (defaults to true)"
+                            type: "boolean"
                           privileged:
                             description: "Privileged container"
                             type: "boolean"
+                          runAsGroup:
+                            description: "Run as a specific uid"
+                            format: "int64"
+                            type: "integer"
+                          runAsNonRoot:
+                            description: "Run as non root (defaults to false)"
+                            type: "boolean"
+                          runAsUser:
+                            description: "Run as a specific gid"
+                            format: "int64"
+                            type: "integer"
                         type: "object"
                       volumes:
                         additionalProperties:

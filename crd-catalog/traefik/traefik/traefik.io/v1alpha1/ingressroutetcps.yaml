@@ -85,7 +85,7 @@ spec:
                               description: "Port defines the port of a Kubernetes Service.\nThis can be a reference to a named port."
                               x-kubernetes-int-or-string: true
                             proxyProtocol:
-                              description: "ProxyProtocol defines the PROXY protocol configuration.\nMore info: https://doc.traefik.io/traefik/v3.5/routing/services/#proxy-protocol"
+                              description: "ProxyProtocol defines the PROXY protocol configuration.\nMore info: https://doc.traefik.io/traefik/v3.5/routing/services/#proxy-protocol\nDeprecated: ProxyProtocol will not be supported in future APIVersions, please use ServersTransport to configure ProxyProtocol instead."
                               properties:
                                 version:
                                   description: "Version defines the PROXY Protocol version to use."
