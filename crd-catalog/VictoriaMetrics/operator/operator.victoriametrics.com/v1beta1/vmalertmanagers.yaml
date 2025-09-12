@@ -429,7 +429,7 @@ spec:
                   description: "DisableAutomountServiceAccountToken whether to disable serviceAccount auto mount by Kubernetes (available from v0.54.0).\nOperator will conditionally create volumes and volumeMounts for containers if it requires k8s API access.\nFor example, vmagent and vm-config-reloader requires k8s API access.\nOperator creates volumes with name: \"kube-api-access\", which can be used as volumeMount for extraContainers if needed.\nAnd also adds VolumeMounts at /var/run/secrets/kubernetes.io/serviceaccount."
                   type: "boolean"
                 disableNamespaceMatcher:
-                  description: "DisableNamespaceMatcher disables top route namespace label matcher for VMAlertmanagerConfig\nIt may be useful if alert doesn't have namespace label for some reason"
+                  description: "DisableNamespaceMatcher disables adding top route label matcher \"namespace = <VMAlertmanagerConfig.namespace>\" for VMAlertmanagerConfig\nIt may be useful if alert doesn't have namespace label for some reason"
                   type: "boolean"
                 disableRouteContinueEnforce:
                   description: "DisableRouteContinueEnforce cancel the behavior for VMAlertmanagerConfig that always enforce first-level route continue to true"
@@ -471,6 +471,9 @@ spec:
                   type: "object"
                 dnsPolicy:
                   description: "DNSPolicy sets DNS policy for the pod"
+                  type: "string"
+                enforcedNamespaceLabel:
+                  description: "EnforcedNamespaceLabel defines the namespace label key for top route matcher for VMAlertmanagerConfig\nDefault is \"namespace\""
                   type: "string"
                 enforcedTopRouteMatchers:
                   description: "EnforcedTopRouteMatchers defines label matchers to be added for the top route\nof VMAlertmanagerConfig\nIt allows to make some set of labels required for alerts.\nhttps://prometheus.io/docs/alerting/latest/configuration/#matcher"

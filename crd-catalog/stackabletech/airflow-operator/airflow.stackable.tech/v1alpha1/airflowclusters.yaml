@@ -617,6 +617,416 @@ spec:
                       description: "Flag to stop the cluster. This means all deployed resources (e.g. Services, StatefulSets, ConfigMaps) are kept but all deployed Pods (e.g. replicas from a StatefulSet) are scaled to 0 and therefore stopped and removed. If applied at the same time with `reconciliationPaused`, the latter will pause reconciliation and `stopped` will take no effect until `reconciliationPaused` is set to false or removed."
                       type: "boolean"
                   type: "object"
+                dagProcessors:
+                  description: "The `dagProcessors` role runs the DAG processor routine for DAG preparation."
+                  nullable: true
+                  properties:
+                    cliOverrides:
+                      additionalProperties:
+                        type: "string"
+                      default: {}
+                      type: "object"
+                    config:
+                      default: {}
+                      properties:
+                        affinity:
+                          default:
+                            nodeAffinity: null
+                            nodeSelector: null
+                            podAffinity: null
+                            podAntiAffinity: null
+                          description: "These configuration settings control [Pod placement](https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement)."
+                          properties:
+                            nodeAffinity:
+                              description: "Same as the `spec.affinity.nodeAffinity` field on the Pod, see the [Kubernetes docs](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)"
+                              nullable: true
+                              type: "object"
+                              x-kubernetes-preserve-unknown-fields: true
+                            nodeSelector:
+                              additionalProperties:
+                                type: "string"
+                              description: "Simple key-value pairs forming a nodeSelector, see the [Kubernetes docs](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)"
+                              nullable: true
+                              type: "object"
+                            podAffinity:
+                              description: "Same as the `spec.affinity.podAffinity` field on the Pod, see the [Kubernetes docs](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)"
+                              nullable: true
+                              type: "object"
+                              x-kubernetes-preserve-unknown-fields: true
+                            podAntiAffinity:
+                              description: "Same as the `spec.affinity.podAntiAffinity` field on the Pod, see the [Kubernetes docs](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)"
+                              nullable: true
+                              type: "object"
+                              x-kubernetes-preserve-unknown-fields: true
+                          type: "object"
+                        gracefulShutdownTimeout:
+                          description: "Time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Consult the operator documentation for details."
+                          nullable: true
+                          type: "string"
+                        logging:
+                          default:
+                            containers: {}
+                            enableVectorAgent: null
+                          description: "Logging configuration, learn more in the [logging concept documentation](https://docs.stackable.tech/home/nightly/concepts/logging)."
+                          properties:
+                            containers:
+                              additionalProperties:
+                                anyOf:
+                                  - required:
+                                      - "custom"
+                                  - {}
+                                description: "Log configuration of the container"
+                                properties:
+                                  console:
+                                    description: "Configuration for the console appender"
+                                    nullable: true
+                                    properties:
+                                      level:
+                                        description: "The log level threshold. Log events with a lower log level are discarded."
+                                        enum:
+                                          - "TRACE"
+                                          - "DEBUG"
+                                          - "INFO"
+                                          - "WARN"
+                                          - "ERROR"
+                                          - "FATAL"
+                                          - "NONE"
+                                        nullable: true
+                                        type: "string"
+                                    type: "object"
+                                  custom:
+                                    description: "Custom log configuration provided in a ConfigMap"
+                                    properties:
+                                      configMap:
+                                        description: "ConfigMap containing the log configuration files"
+                                        nullable: true
+                                        type: "string"
+                                    type: "object"
+                                  file:
+                                    description: "Configuration for the file appender"
+                                    nullable: true
+                                    properties:
+                                      level:
+                                        description: "The log level threshold. Log events with a lower log level are discarded."
+                                        enum:
+                                          - "TRACE"
+                                          - "DEBUG"
+                                          - "INFO"
+                                          - "WARN"
+                                          - "ERROR"
+                                          - "FATAL"
+                                          - "NONE"
+                                        nullable: true
+                                        type: "string"
+                                    type: "object"
+                                  loggers:
+                                    additionalProperties:
+                                      description: "Configuration of a logger"
+                                      properties:
+                                        level:
+                                          description: "The log level threshold. Log events with a lower log level are discarded."
+                                          enum:
+                                            - "TRACE"
+                                            - "DEBUG"
+                                            - "INFO"
+                                            - "WARN"
+                                            - "ERROR"
+                                            - "FATAL"
+                                            - "NONE"
+                                          nullable: true
+                                          type: "string"
+                                      type: "object"
+                                    default: {}
+                                    description: "Configuration per logger"
+                                    type: "object"
+                                type: "object"
+                              description: "Log configuration per container."
+                              type: "object"
+                            enableVectorAgent:
+                              description: "Wether or not to deploy a container with the Vector log agent."
+                              nullable: true
+                              type: "boolean"
+                          type: "object"
+                        resources:
+                          default:
+                            cpu:
+                              max: null
+                              min: null
+                            memory:
+                              limit: null
+                              runtimeLimits: {}
+                            storage: {}
+                          description: "Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any."
+                          properties:
+                            cpu:
+                              default:
+                                max: null
+                                min: null
+                              properties:
+                                max:
+                                  description: "The maximum amount of CPU cores that can be requested by Pods. Equivalent to the `limit` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`."
+                                  nullable: true
+                                  type: "string"
+                                min:
+                                  description: "The minimal amount of CPU cores that Pods need to run. Equivalent to the `request` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`."
+                                  nullable: true
+                                  type: "string"
+                              type: "object"
+                            memory:
+                              properties:
+                                limit:
+                                  description: "The maximum amount of memory that should be available to the Pod. Specified as a byte [Quantity](https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/), which means these suffixes are supported: E, P, T, G, M, k. You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki. For example, the following represent roughly the same value: `128974848, 129e6, 129M,  128974848000m, 123Mi`"
+                                  nullable: true
+                                  type: "string"
+                                runtimeLimits:
+                                  description: "Additional options that can be specified."
+                                  type: "object"
+                              type: "object"
+                            storage:
+                              type: "object"
+                          type: "object"
+                      type: "object"
+                    configOverrides:
+                      additionalProperties:
+                        additionalProperties:
+                          type: "string"
+                        type: "object"
+                      default: {}
+                      description: "The `configOverrides` can be used to configure properties in product config files that are not exposed in the CRD. Read the [config overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides) and consult the operator specific usage guide documentation for details on the available config files and settings for the specific product."
+                      type: "object"
+                    envOverrides:
+                      additionalProperties:
+                        type: "string"
+                      default: {}
+                      description: "`envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides) for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available."
+                      type: "object"
+                    podOverrides:
+                      default: {}
+                      description: "In the `podOverrides` property you can define a [PodTemplateSpec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core) to override any property that can be set on a Kubernetes Pod. Read the [Pod overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides) for more information."
+                      type: "object"
+                      x-kubernetes-preserve-unknown-fields: true
+                    roleConfig:
+                      default:
+                        podDisruptionBudget:
+                          enabled: true
+                          maxUnavailable: null
+                      description: "This is a product-agnostic RoleConfig, which is sufficient for most of the products."
+                      properties:
+                        podDisruptionBudget:
+                          default:
+                            enabled: true
+                            maxUnavailable: null
+                          description: "This struct is used to configure:\n\n1. If PodDisruptionBudgets are created by the operator 2. The allowed number of Pods to be unavailable (`maxUnavailable`)\n\nLearn more in the [allowed Pod disruptions documentation](https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions)."
+                          properties:
+                            enabled:
+                              default: true
+                              description: "Whether a PodDisruptionBudget should be written out for this role. Disabling this enables you to specify your own - custom - one. Defaults to true."
+                              type: "boolean"
+                            maxUnavailable:
+                              description: "The number of Pods that are allowed to be down because of voluntary disruptions. If you don't explicitly set this, the operator will use a sane default based upon knowledge about the individual product."
+                              format: "uint16"
+                              minimum: 0.0
+                              nullable: true
+                              type: "integer"
+                          type: "object"
+                      type: "object"
+                    roleGroups:
+                      additionalProperties:
+                        properties:
+                          cliOverrides:
+                            additionalProperties:
+                              type: "string"
+                            default: {}
+                            type: "object"
+                          config:
+                            default: {}
+                            properties:
+                              affinity:
+                                default:
+                                  nodeAffinity: null
+                                  nodeSelector: null
+                                  podAffinity: null
+                                  podAntiAffinity: null
+                                description: "These configuration settings control [Pod placement](https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement)."
+                                properties:
+                                  nodeAffinity:
+                                    description: "Same as the `spec.affinity.nodeAffinity` field on the Pod, see the [Kubernetes docs](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)"
+                                    nullable: true
+                                    type: "object"
+                                    x-kubernetes-preserve-unknown-fields: true
+                                  nodeSelector:
+                                    additionalProperties:
+                                      type: "string"
+                                    description: "Simple key-value pairs forming a nodeSelector, see the [Kubernetes docs](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)"
+                                    nullable: true
+                                    type: "object"
+                                  podAffinity:
+                                    description: "Same as the `spec.affinity.podAffinity` field on the Pod, see the [Kubernetes docs](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)"
+                                    nullable: true
+                                    type: "object"
+                                    x-kubernetes-preserve-unknown-fields: true
+                                  podAntiAffinity:
+                                    description: "Same as the `spec.affinity.podAntiAffinity` field on the Pod, see the [Kubernetes docs](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)"
+                                    nullable: true
+                                    type: "object"
+                                    x-kubernetes-preserve-unknown-fields: true
+                                type: "object"
+                              gracefulShutdownTimeout:
+                                description: "Time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Consult the operator documentation for details."
+                                nullable: true
+                                type: "string"
+                              logging:
+                                default:
+                                  containers: {}
+                                  enableVectorAgent: null
+                                description: "Logging configuration, learn more in the [logging concept documentation](https://docs.stackable.tech/home/nightly/concepts/logging)."
+                                properties:
+                                  containers:
+                                    additionalProperties:
+                                      anyOf:
+                                        - required:
+                                            - "custom"
+                                        - {}
+                                      description: "Log configuration of the container"
+                                      properties:
+                                        console:
+                                          description: "Configuration for the console appender"
+                                          nullable: true
+                                          properties:
+                                            level:
+                                              description: "The log level threshold. Log events with a lower log level are discarded."
+                                              enum:
+                                                - "TRACE"
+                                                - "DEBUG"
+                                                - "INFO"
+                                                - "WARN"
+                                                - "ERROR"
+                                                - "FATAL"
+                                                - "NONE"
+                                              nullable: true
+                                              type: "string"
+                                          type: "object"
+                                        custom:
+                                          description: "Custom log configuration provided in a ConfigMap"
+                                          properties:
+                                            configMap:
+                                              description: "ConfigMap containing the log configuration files"
+                                              nullable: true
+                                              type: "string"
+                                          type: "object"
+                                        file:
+                                          description: "Configuration for the file appender"
+                                          nullable: true
+                                          properties:
+                                            level:
+                                              description: "The log level threshold. Log events with a lower log level are discarded."
+                                              enum:
+                                                - "TRACE"
+                                                - "DEBUG"
+                                                - "INFO"
+                                                - "WARN"
+                                                - "ERROR"
+                                                - "FATAL"
+                                                - "NONE"
+                                              nullable: true
+                                              type: "string"
+                                          type: "object"
+                                        loggers:
+                                          additionalProperties:
+                                            description: "Configuration of a logger"
+                                            properties:
+                                              level:
+                                                description: "The log level threshold. Log events with a lower log level are discarded."
+                                                enum:
+                                                  - "TRACE"
+                                                  - "DEBUG"
+                                                  - "INFO"
+                                                  - "WARN"
+                                                  - "ERROR"
+                                                  - "FATAL"
+                                                  - "NONE"
+                                                nullable: true
+                                                type: "string"
+                                            type: "object"
+                                          default: {}
+                                          description: "Configuration per logger"
+                                          type: "object"
+                                      type: "object"
+                                    description: "Log configuration per container."
+                                    type: "object"
+                                  enableVectorAgent:
+                                    description: "Wether or not to deploy a container with the Vector log agent."
+                                    nullable: true
+                                    type: "boolean"
+                                type: "object"
+                              resources:
+                                default:
+                                  cpu:
+                                    max: null
+                                    min: null
+                                  memory:
+                                    limit: null
+                                    runtimeLimits: {}
+                                  storage: {}
+                                description: "Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any."
+                                properties:
+                                  cpu:
+                                    default:
+                                      max: null
+                                      min: null
+                                    properties:
+                                      max:
+                                        description: "The maximum amount of CPU cores that can be requested by Pods. Equivalent to the `limit` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`."
+                                        nullable: true
+                                        type: "string"
+                                      min:
+                                        description: "The minimal amount of CPU cores that Pods need to run. Equivalent to the `request` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`."
+                                        nullable: true
+                                        type: "string"
+                                    type: "object"
+                                  memory:
+                                    properties:
+                                      limit:
+                                        description: "The maximum amount of memory that should be available to the Pod. Specified as a byte [Quantity](https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/), which means these suffixes are supported: E, P, T, G, M, k. You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki. For example, the following represent roughly the same value: `128974848, 129e6, 129M,  128974848000m, 123Mi`"
+                                        nullable: true
+                                        type: "string"
+                                      runtimeLimits:
+                                        description: "Additional options that can be specified."
+                                        type: "object"
+                                    type: "object"
+                                  storage:
+                                    type: "object"
+                                type: "object"
+                            type: "object"
+                          configOverrides:
+                            additionalProperties:
+                              additionalProperties:
+                                type: "string"
+                              type: "object"
+                            default: {}
+                            description: "The `configOverrides` can be used to configure properties in product config files that are not exposed in the CRD. Read the [config overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides) and consult the operator specific usage guide documentation for details on the available config files and settings for the specific product."
+                            type: "object"
+                          envOverrides:
+                            additionalProperties:
+                              type: "string"
+                            default: {}
+                            description: "`envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides) for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available."
+                            type: "object"
+                          podOverrides:
+                            default: {}
+                            description: "In the `podOverrides` property you can define a [PodTemplateSpec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core) to override any property that can be set on a Kubernetes Pod. Read the [Pod overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides) for more information."
+                            type: "object"
+                            x-kubernetes-preserve-unknown-fields: true
+                          replicas:
+                            format: "uint16"
+                            minimum: 0.0
+                            nullable: true
+                            type: "integer"
+                        type: "object"
+                      type: "object"
+                  required:
+                    - "roleGroups"
+                  type: "object"
                 image:
                   anyOf:
                     - required:
@@ -851,7 +1261,417 @@ spec:
                       x-kubernetes-preserve-unknown-fields: true
                   type: "object"
                 schedulers:
-                  description: "The `scheduler` is responsible for triggering jobs and persisting their metadata to the backend database. Jobs are scheduled on the workers/executors."
+                  description: "The `schedulers` is responsible for triggering jobs and persisting their metadata to the backend database. Jobs are scheduled on the workers/executors."
+                  nullable: true
+                  properties:
+                    cliOverrides:
+                      additionalProperties:
+                        type: "string"
+                      default: {}
+                      type: "object"
+                    config:
+                      default: {}
+                      properties:
+                        affinity:
+                          default:
+                            nodeAffinity: null
+                            nodeSelector: null
+                            podAffinity: null
+                            podAntiAffinity: null
+                          description: "These configuration settings control [Pod placement](https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement)."
+                          properties:
+                            nodeAffinity:
+                              description: "Same as the `spec.affinity.nodeAffinity` field on the Pod, see the [Kubernetes docs](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)"
+                              nullable: true
+                              type: "object"
+                              x-kubernetes-preserve-unknown-fields: true
+                            nodeSelector:
+                              additionalProperties:
+                                type: "string"
+                              description: "Simple key-value pairs forming a nodeSelector, see the [Kubernetes docs](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)"
+                              nullable: true
+                              type: "object"
+                            podAffinity:
+                              description: "Same as the `spec.affinity.podAffinity` field on the Pod, see the [Kubernetes docs](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)"
+                              nullable: true
+                              type: "object"
+                              x-kubernetes-preserve-unknown-fields: true
+                            podAntiAffinity:
+                              description: "Same as the `spec.affinity.podAntiAffinity` field on the Pod, see the [Kubernetes docs](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)"
+                              nullable: true
+                              type: "object"
+                              x-kubernetes-preserve-unknown-fields: true
+                          type: "object"
+                        gracefulShutdownTimeout:
+                          description: "Time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Consult the operator documentation for details."
+                          nullable: true
+                          type: "string"
+                        logging:
+                          default:
+                            containers: {}
+                            enableVectorAgent: null
+                          description: "Logging configuration, learn more in the [logging concept documentation](https://docs.stackable.tech/home/nightly/concepts/logging)."
+                          properties:
+                            containers:
+                              additionalProperties:
+                                anyOf:
+                                  - required:
+                                      - "custom"
+                                  - {}
+                                description: "Log configuration of the container"
+                                properties:
+                                  console:
+                                    description: "Configuration for the console appender"
+                                    nullable: true
+                                    properties:
+                                      level:
+                                        description: "The log level threshold. Log events with a lower log level are discarded."
+                                        enum:
+                                          - "TRACE"
+                                          - "DEBUG"
+                                          - "INFO"
+                                          - "WARN"
+                                          - "ERROR"
+                                          - "FATAL"
+                                          - "NONE"
+                                        nullable: true
+                                        type: "string"
+                                    type: "object"
+                                  custom:
+                                    description: "Custom log configuration provided in a ConfigMap"
+                                    properties:
+                                      configMap:
+                                        description: "ConfigMap containing the log configuration files"
+                                        nullable: true
+                                        type: "string"
+                                    type: "object"
+                                  file:
+                                    description: "Configuration for the file appender"
+                                    nullable: true
+                                    properties:
+                                      level:
+                                        description: "The log level threshold. Log events with a lower log level are discarded."
+                                        enum:
+                                          - "TRACE"
+                                          - "DEBUG"
+                                          - "INFO"
+                                          - "WARN"
+                                          - "ERROR"
+                                          - "FATAL"
+                                          - "NONE"
+                                        nullable: true
+                                        type: "string"
+                                    type: "object"
+                                  loggers:
+                                    additionalProperties:
+                                      description: "Configuration of a logger"
+                                      properties:
+                                        level:
+                                          description: "The log level threshold. Log events with a lower log level are discarded."
+                                          enum:
+                                            - "TRACE"
+                                            - "DEBUG"
+                                            - "INFO"
+                                            - "WARN"
+                                            - "ERROR"
+                                            - "FATAL"
+                                            - "NONE"
+                                          nullable: true
+                                          type: "string"
+                                      type: "object"
+                                    default: {}
+                                    description: "Configuration per logger"
+                                    type: "object"
+                                type: "object"
+                              description: "Log configuration per container."
+                              type: "object"
+                            enableVectorAgent:
+                              description: "Wether or not to deploy a container with the Vector log agent."
+                              nullable: true
+                              type: "boolean"
+                          type: "object"
+                        resources:
+                          default:
+                            cpu:
+                              max: null
+                              min: null
+                            memory:
+                              limit: null
+                              runtimeLimits: {}
+                            storage: {}
+                          description: "Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any."
+                          properties:
+                            cpu:
+                              default:
+                                max: null
+                                min: null
+                              properties:
+                                max:
+                                  description: "The maximum amount of CPU cores that can be requested by Pods. Equivalent to the `limit` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`."
+                                  nullable: true
+                                  type: "string"
+                                min:
+                                  description: "The minimal amount of CPU cores that Pods need to run. Equivalent to the `request` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`."
+                                  nullable: true
+                                  type: "string"
+                              type: "object"
+                            memory:
+                              properties:
+                                limit:
+                                  description: "The maximum amount of memory that should be available to the Pod. Specified as a byte [Quantity](https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/), which means these suffixes are supported: E, P, T, G, M, k. You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki. For example, the following represent roughly the same value: `128974848, 129e6, 129M,  128974848000m, 123Mi`"
+                                  nullable: true
+                                  type: "string"
+                                runtimeLimits:
+                                  description: "Additional options that can be specified."
+                                  type: "object"
+                              type: "object"
+                            storage:
+                              type: "object"
+                          type: "object"
+                      type: "object"
+                    configOverrides:
+                      additionalProperties:
+                        additionalProperties:
+                          type: "string"
+                        type: "object"
+                      default: {}
+                      description: "The `configOverrides` can be used to configure properties in product config files that are not exposed in the CRD. Read the [config overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides) and consult the operator specific usage guide documentation for details on the available config files and settings for the specific product."
+                      type: "object"
+                    envOverrides:
+                      additionalProperties:
+                        type: "string"
+                      default: {}
+                      description: "`envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides) for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available."
+                      type: "object"
+                    podOverrides:
+                      default: {}
+                      description: "In the `podOverrides` property you can define a [PodTemplateSpec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core) to override any property that can be set on a Kubernetes Pod. Read the [Pod overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides) for more information."
+                      type: "object"
+                      x-kubernetes-preserve-unknown-fields: true
+                    roleConfig:
+                      default:
+                        podDisruptionBudget:
+                          enabled: true
+                          maxUnavailable: null
+                      description: "This is a product-agnostic RoleConfig, which is sufficient for most of the products."
+                      properties:
+                        podDisruptionBudget:
+                          default:
+                            enabled: true
+                            maxUnavailable: null
+                          description: "This struct is used to configure:\n\n1. If PodDisruptionBudgets are created by the operator 2. The allowed number of Pods to be unavailable (`maxUnavailable`)\n\nLearn more in the [allowed Pod disruptions documentation](https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions)."
+                          properties:
+                            enabled:
+                              default: true
+                              description: "Whether a PodDisruptionBudget should be written out for this role. Disabling this enables you to specify your own - custom - one. Defaults to true."
+                              type: "boolean"
+                            maxUnavailable:
+                              description: "The number of Pods that are allowed to be down because of voluntary disruptions. If you don't explicitly set this, the operator will use a sane default based upon knowledge about the individual product."
+                              format: "uint16"
+                              minimum: 0.0
+                              nullable: true
+                              type: "integer"
+                          type: "object"
+                      type: "object"
+                    roleGroups:
+                      additionalProperties:
+                        properties:
+                          cliOverrides:
+                            additionalProperties:
+                              type: "string"
+                            default: {}
+                            type: "object"
+                          config:
+                            default: {}
+                            properties:
+                              affinity:
+                                default:
+                                  nodeAffinity: null
+                                  nodeSelector: null
+                                  podAffinity: null
+                                  podAntiAffinity: null
+                                description: "These configuration settings control [Pod placement](https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement)."
+                                properties:
+                                  nodeAffinity:
+                                    description: "Same as the `spec.affinity.nodeAffinity` field on the Pod, see the [Kubernetes docs](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)"
+                                    nullable: true
+                                    type: "object"
+                                    x-kubernetes-preserve-unknown-fields: true
+                                  nodeSelector:
+                                    additionalProperties:
+                                      type: "string"
+                                    description: "Simple key-value pairs forming a nodeSelector, see the [Kubernetes docs](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)"
+                                    nullable: true
+                                    type: "object"
+                                  podAffinity:
+                                    description: "Same as the `spec.affinity.podAffinity` field on the Pod, see the [Kubernetes docs](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)"
+                                    nullable: true
+                                    type: "object"
+                                    x-kubernetes-preserve-unknown-fields: true
+                                  podAntiAffinity:
+                                    description: "Same as the `spec.affinity.podAntiAffinity` field on the Pod, see the [Kubernetes docs](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)"
+                                    nullable: true
+                                    type: "object"
+                                    x-kubernetes-preserve-unknown-fields: true
+                                type: "object"
+                              gracefulShutdownTimeout:
+                                description: "Time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Consult the operator documentation for details."
+                                nullable: true
+                                type: "string"
+                              logging:
+                                default:
+                                  containers: {}
+                                  enableVectorAgent: null
+                                description: "Logging configuration, learn more in the [logging concept documentation](https://docs.stackable.tech/home/nightly/concepts/logging)."
+                                properties:
+                                  containers:
+                                    additionalProperties:
+                                      anyOf:
+                                        - required:
+                                            - "custom"
+                                        - {}
+                                      description: "Log configuration of the container"
+                                      properties:
+                                        console:
+                                          description: "Configuration for the console appender"
+                                          nullable: true
+                                          properties:
+                                            level:
+                                              description: "The log level threshold. Log events with a lower log level are discarded."
+                                              enum:
+                                                - "TRACE"
+                                                - "DEBUG"
+                                                - "INFO"
+                                                - "WARN"
+                                                - "ERROR"
+                                                - "FATAL"
+                                                - "NONE"
+                                              nullable: true
+                                              type: "string"
+                                          type: "object"
+                                        custom:
+                                          description: "Custom log configuration provided in a ConfigMap"
+                                          properties:
+                                            configMap:
+                                              description: "ConfigMap containing the log configuration files"
+                                              nullable: true
+                                              type: "string"
+                                          type: "object"
+                                        file:
+                                          description: "Configuration for the file appender"
+                                          nullable: true
+                                          properties:
+                                            level:
+                                              description: "The log level threshold. Log events with a lower log level are discarded."
+                                              enum:
+                                                - "TRACE"
+                                                - "DEBUG"
+                                                - "INFO"
+                                                - "WARN"
+                                                - "ERROR"
+                                                - "FATAL"
+                                                - "NONE"
+                                              nullable: true
+                                              type: "string"
+                                          type: "object"
+                                        loggers:
+                                          additionalProperties:
+                                            description: "Configuration of a logger"
+                                            properties:
+                                              level:
+                                                description: "The log level threshold. Log events with a lower log level are discarded."
+                                                enum:
+                                                  - "TRACE"
+                                                  - "DEBUG"
+                                                  - "INFO"
+                                                  - "WARN"
+                                                  - "ERROR"
+                                                  - "FATAL"
+                                                  - "NONE"
+                                                nullable: true
+                                                type: "string"
+                                            type: "object"
+                                          default: {}
+                                          description: "Configuration per logger"
+                                          type: "object"
+                                      type: "object"
+                                    description: "Log configuration per container."
+                                    type: "object"
+                                  enableVectorAgent:
+                                    description: "Wether or not to deploy a container with the Vector log agent."
+                                    nullable: true
+                                    type: "boolean"
+                                type: "object"
+                              resources:
+                                default:
+                                  cpu:
+                                    max: null
+                                    min: null
+                                  memory:
+                                    limit: null
+                                    runtimeLimits: {}
+                                  storage: {}
+                                description: "Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any."
+                                properties:
+                                  cpu:
+                                    default:
+                                      max: null
+                                      min: null
+                                    properties:
+                                      max:
+                                        description: "The maximum amount of CPU cores that can be requested by Pods. Equivalent to the `limit` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`."
+                                        nullable: true
+                                        type: "string"
+                                      min:
+                                        description: "The minimal amount of CPU cores that Pods need to run. Equivalent to the `request` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`."
+                                        nullable: true
+                                        type: "string"
+                                    type: "object"
+                                  memory:
+                                    properties:
+                                      limit:
+                                        description: "The maximum amount of memory that should be available to the Pod. Specified as a byte [Quantity](https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/), which means these suffixes are supported: E, P, T, G, M, k. You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki. For example, the following represent roughly the same value: `128974848, 129e6, 129M,  128974848000m, 123Mi`"
+                                        nullable: true
+                                        type: "string"
+                                      runtimeLimits:
+                                        description: "Additional options that can be specified."
+                                        type: "object"
+                                    type: "object"
+                                  storage:
+                                    type: "object"
+                                type: "object"
+                            type: "object"
+                          configOverrides:
+                            additionalProperties:
+                              additionalProperties:
+                                type: "string"
+                              type: "object"
+                            default: {}
+                            description: "The `configOverrides` can be used to configure properties in product config files that are not exposed in the CRD. Read the [config overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides) and consult the operator specific usage guide documentation for details on the available config files and settings for the specific product."
+                            type: "object"
+                          envOverrides:
+                            additionalProperties:
+                              type: "string"
+                            default: {}
+                            description: "`envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides) for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available."
+                            type: "object"
+                          podOverrides:
+                            default: {}
+                            description: "In the `podOverrides` property you can define a [PodTemplateSpec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core) to override any property that can be set on a Kubernetes Pod. Read the [Pod overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides) for more information."
+                            type: "object"
+                            x-kubernetes-preserve-unknown-fields: true
+                          replicas:
+                            format: "uint16"
+                            minimum: 0.0
+                            nullable: true
+                            type: "integer"
+                        type: "object"
+                      type: "object"
+                  required:
+                    - "roleGroups"
+                  type: "object"
+                triggerers:
+                  description: "The `triggerers` role runs the triggerer process for use with deferrable DAG operators."
                   nullable: true
                   properties:
                     cliOverrides:
@@ -1261,7 +2081,7 @@ spec:
                     - "roleGroups"
                   type: "object"
                 webservers:
-                  description: "The `webserver` role provides the main UI for user interaction."
+                  description: "The `webservers` role provides the main UI for user interaction."
                   nullable: true
                   properties:
                     cliOverrides:

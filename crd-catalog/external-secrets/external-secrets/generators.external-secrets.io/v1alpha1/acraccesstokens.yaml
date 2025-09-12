@@ -133,6 +133,7 @@ spec:
                     - "USGovernmentCloud"
                     - "ChinaCloud"
                     - "GermanCloud"
+                    - "AzureStackCloud"
                   type: "string"
                 registry:
                   description: "the domain name of the ACR registry\ne.g. foobarexample.azurecr.io"

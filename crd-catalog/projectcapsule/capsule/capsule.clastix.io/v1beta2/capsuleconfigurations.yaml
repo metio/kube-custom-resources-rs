@@ -29,6 +29,10 @@ spec:
             spec:
               description: "CapsuleConfigurationSpec defines the Capsule configuration."
               properties:
+                allowServiceAccountPromotion:
+                  default: false
+                  description: "ServiceAccounts within tenant namespaces can be promoted to owners of the given tenant\nthis can be achieved by labeling the serviceaccount and then they are considered owners. This can only be done by other owners of the tenant.\nHowever ServiceAccounts which have been promoted to owner can not promote further serviceAccounts."
+                  type: "boolean"
                 enableTLSReconciler:
                   default: true
                   description: "Toggles the TLS reconciler, the controller that is able to generate CA and certificates for the webhooks\nwhen not using an already provided CA and certificate, or when these are managed externally with Vault, or cert-manager."

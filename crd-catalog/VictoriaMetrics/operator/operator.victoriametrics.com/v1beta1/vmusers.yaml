@@ -80,7 +80,7 @@ spec:
                       type: "array"
                   type: "object"
                 load_balancing_policy:
-                  description: "LoadBalancingPolicy defines load balancing policy to use for backend urls.\nSupported policies: least_loaded, first_available.\nSee [here](https://docs.victoriametrics.com/victoriametrics/vmauth#load-balancing) for more details (default \"least_loaded\")"
+                  description: "LoadBalancingPolicy defines load balancing policy to use for backend urls.\nSupported policies: least_loaded, first_available.\nSee [here](https://docs.victoriametrics.com/victoriametrics/vmauth/#load-balancing) for more details (default \"least_loaded\")"
                   enum:
                     - "least_loaded"
                     - "first_available"
@@ -135,7 +135,7 @@ spec:
                         description: "CRD describes exist operator's CRD object,\noperator generates access url based on CRD params."
                         properties:
                           kind:
-                            description: "Kind one of:\nVMAgent,VMAlert, VMSingle, VMCluster/vmselect, VMCluster/vmstorage,VMCluster/vminsert,VMAlertManager, VLSingle, VLCluster/vlinsert, VLCluster/vlselect, VLCluster/vlstorage and VLAgent"
+                            description: "Kind one of:\nVMAgent,VMAlert, VMSingle, VMCluster/vmselect, VMCluster/vmstorage,VMCluster/vminsert,VMAlertManager, VLSingle, VLCluster/vlinsert, VLCluster/vlselect, VLCluster/vlstorage, VTSingle, VTCluster/vtinsert, VTCluster/vtselect, VTCluster/vtstorage and VLAgent"
                             enum:
                               - "VMAgent"
                               - "VMAlert"
@@ -151,6 +151,10 @@ spec:
                               - "VLCluster/vlselect"
                               - "VLCluster/vlstorage"
                               - "VLAgent"
+                              - "VTCluster/vtinsert"
+                              - "VTCluster/vtselect"
+                              - "VTCluster/vtstorage"
+                              - "VTSingle"
                             type: "string"
                           name:
                             description: "Name target CRD object name"

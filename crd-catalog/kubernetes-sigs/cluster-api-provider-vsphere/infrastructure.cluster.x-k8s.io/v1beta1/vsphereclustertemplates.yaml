@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.18.0"
+    controller-gen.kubebuilder.io/version: "v0.19.0"
   name: "vsphereclustertemplates.infrastructure.cluster.x-k8s.io"
 spec:
   group: "infrastructure.cluster.x-k8s.io"
@@ -67,9 +67,6 @@ spec:
                               description: "The port on which the API server is serving."
                               format: "int32"
                               type: "integer"
-                          required:
-                            - "host"
-                            - "port"
                           type: "object"
                         disableClusterModule:
                           description: "DisableClusterModule is used to explicitly turn off the ClusterModule feature.\nThis should work along side NodeAntiAffinity feature flag.\nIf the NodeAntiAffinity feature flag is turned off, this will be disregarded."

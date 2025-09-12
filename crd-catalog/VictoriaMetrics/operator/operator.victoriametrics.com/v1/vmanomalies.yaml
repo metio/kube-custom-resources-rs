@@ -465,7 +465,7 @@ spec:
                     x-kubernetes-preserve-unknown-fields: true
                   type: "array"
                 license:
-                  description: "License allows to configure license key to be used for enterprise features.\nUsing license key is supported starting from VictoriaMetrics v1.94.0.\nSee [here](https://docs.victoriametrics.com/enterprise)"
+                  description: "License allows to configure license key to be used for enterprise features.\nUsing license key is supported starting from VictoriaMetrics v1.94.0.\nSee [here](https://docs.victoriametrics.com/victoriametrics/enterprise/)"
                   properties:
                     forceOffline:
                       description: "Enforce offline verification of the license key."

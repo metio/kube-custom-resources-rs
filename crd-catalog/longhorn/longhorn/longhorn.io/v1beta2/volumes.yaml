@@ -89,6 +89,12 @@ spec:
                 backupTargetName:
                   description: "The backup target name that the volume will be backed up to or is synced."
                   type: "string"
+                cloneMode:
+                  enum:
+                    - ""
+                    - "full-copy"
+                    - "linked-clone"
+                  type: "string"
                 dataEngine:
                   enum:
                     - "v1"

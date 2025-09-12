@@ -565,6 +565,9 @@ spec:
                           type: "integer"
                       type: "object"
                   type: "object"
+                metricLabelsDefault:
+                  description: "MetricLabelsDefault is an optional string that specifies the default metric-labels\nselector used by Limitador when automatically discovering custom metrics.\nWhen set the operator passes this value to the Limitador process as the\n`--metric-labels-default` command-line flag."
+                  type: "string"
                 pdb:
                   properties:
                     maxUnavailable:

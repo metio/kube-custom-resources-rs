@@ -325,6 +325,7 @@ spec:
                         - "OCIRepository"
                         - "GitRepository"
                         - "Bucket"
+                        - "ExternalArtifact"
                       type: "string"
                     name:
                       description: "Name of the referent."

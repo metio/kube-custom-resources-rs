@@ -11,6 +11,10 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 
 ## Available Custom Resources
 
+### ps.percona.com/v1
+- `PerconaServerMySQLBackup`
+- `PerconaServerMySQLRestore`
+- `PerconaServerMySQL`
 ### ps.percona.com/v1alpha1
 - `PerconaServerMySQLBackup`
 - `PerconaServerMySQLRestore`
