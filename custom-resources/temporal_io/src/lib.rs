@@ -5,6 +5,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 
 ## temporal.io/v1beta1
 - `TemporalClusterClient`
+- `TemporalCluster`
 - `TemporalNamespace`
 - `TemporalSchedule`
 - `TemporalWorkerProcess`
