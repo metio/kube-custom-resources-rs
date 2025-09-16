@@ -19,6 +19,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `ClusterVersion`
 - `ComponentClassDefinition`
 - `ComponentDefinition`
+- `ComponentResourceConstraint`
 - `Component`
 - `ComponentVersion`
 - `ConfigConstraint`

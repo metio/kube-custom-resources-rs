@@ -4,6 +4,7 @@ pub mod clusters;
 pub mod clusterversions;
 pub mod componentclassdefinitions;
 pub mod componentdefinitions;
+pub mod componentresourceconstraints;
 pub mod components;
 pub mod componentversions;
 pub mod configconstraints;
