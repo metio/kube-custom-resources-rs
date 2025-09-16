@@ -14,6 +14,12 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 ### camel.apache.org/v1
 - `Build`
 - `CamelCatalog`
+- `IntegrationKit`
+- `IntegrationPlatform`
+- `IntegrationProfile`
+- `Integration`
 - `Kamelet`
+- `Pipe`
 ### camel.apache.org/v1alpha1
+- `KameletBinding`
 - `Kamelet`

@@ -6,8 +6,14 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## camel.apache.org/v1
 - `Build`
 - `CamelCatalog`
+- `IntegrationKit`
+- `IntegrationPlatform`
+- `IntegrationProfile`
+- `Integration`
 - `Kamelet`
+- `Pipe`
 ## camel.apache.org/v1alpha1
+- `KameletBinding`
 - `Kamelet`
 */
 #[cfg(feature = "v1")]
