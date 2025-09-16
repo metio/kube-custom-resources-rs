@@ -126,6 +126,8 @@ The following groups are available:
 - [chisel-operator.io](https://crates.io/crates/kcr_chisel_operator_io)
 - [cilium.io](https://crates.io/crates/kcr_cilium_io)
 - [claudie.io](https://crates.io/crates/kcr_claudie_io)
+- [clickhouse-keeper.altinity.com](https://crates.io/crates/kcr_clickhouse_keeper_altinity_com)
+- [clickhouse.altinity.com](https://crates.io/crates/kcr_clickhouse_altinity_com)
 - [cloudformation.linki.space](https://crates.io/crates/kcr_cloudformation_linki_space)
 - [cloudfront.services.k8s.aws](https://crates.io/crates/kcr_cloudfront_services_k8s_aws)
 - [cloudtrail.services.k8s.aws](https://crates.io/crates/kcr_cloudtrail_services_k8s_aws)
