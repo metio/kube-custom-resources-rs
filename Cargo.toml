@@ -86,6 +86,8 @@ members = [
     "custom-resources/chisel_operator_io",
     "custom-resources/cilium_io",
     "custom-resources/claudie_io",
+    "custom-resources/clickhouse_altinity_com",
+    "custom-resources/clickhouse_keeper_altinity_com",
     "custom-resources/cloudformation_linki_space",
     "custom-resources/cloudfront_services_k8s_aws",
     "custom-resources/cloudtrail_services_k8s_aws",
