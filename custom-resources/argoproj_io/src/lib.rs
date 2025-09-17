@@ -5,6 +5,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 
 ## argoproj.io/v1alpha1
 - `Application`
+- `ApplicationSet`
 - `AppProject`
 - `ArgoCDExport`
 - `ArgoCD`

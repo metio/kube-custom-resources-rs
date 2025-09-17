@@ -13,6 +13,7 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 
 ### argoproj.io/v1alpha1
 - `Application`
+- `ApplicationSet`
 - `AppProject`
 - `ArgoCDExport`
 - `ArgoCD`
