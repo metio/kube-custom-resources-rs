@@ -334,6 +334,7 @@ members = [
     "custom-resources/reports_kyverno_io",
     "custom-resources/reports_x_k8s_io",
     "custom-resources/resources_teleport_dev",
+    "custom-resources/ripsaw_cloudbulldozer_io",
     "custom-resources/rocketmq_apache_org",
     "custom-resources/route53_services_k8s_aws",
     "custom-resources/route53resolver_services_k8s_aws",
