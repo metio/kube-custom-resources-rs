@@ -13,5 +13,6 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 
 ### postgresql.cnpg.io/v1
 - `Backup`
+- `Cluster`
 - `Pooler`
 - `ScheduledBackup`

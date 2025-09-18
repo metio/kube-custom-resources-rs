@@ -5,6 +5,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 
 ## postgresql.cnpg.io/v1
 - `Backup`
+- `Cluster`
 - `Pooler`
 - `ScheduledBackup`
 */
