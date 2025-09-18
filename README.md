@@ -374,6 +374,7 @@ The following groups are available:
 - [reports.kyverno.io](https://crates.io/crates/kcr_reports_kyverno_io)
 - [reports.x-k8s.io](https://crates.io/crates/kcr_reports_x_k8s_io)
 - [resources.teleport.dev](https://crates.io/crates/kcr_resources_teleport_dev)
+- [ripsaw.cloudbulldozer.io](https://crates.io/crates/kcr_ripsaw_cloudbulldozer_io)
 - [rocketmq.apache.org](https://crates.io/crates/kcr_rocketmq_apache_org)
 - [route53.services.k8s.aws](https://crates.io/crates/kcr_route53_services_k8s_aws)
 - [route53resolver.services.k8s.aws](https://crates.io/crates/kcr_route53resolver_services_k8s_aws)
