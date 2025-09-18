@@ -1,6 +1,7 @@
 pub mod ingressroutes;
 pub mod ingressroutetcps;
 pub mod ingressrouteudps;
+pub mod middlewares;
 pub mod middlewaretcps;
 pub mod serverstransports;
 pub mod serverstransporttcps;

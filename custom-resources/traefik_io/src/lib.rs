@@ -7,6 +7,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `IngressRoute`
 - `IngressRouteTCP`
 - `IngressRouteUDP`
+- `Middleware`
 - `MiddlewareTCP`
 - `ServersTransport`
 - `ServersTransportTCP`
