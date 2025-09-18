@@ -6,6 +6,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## work.karmada.io/v1alpha1
 - `ClusterResourceBinding`
 - `ResourceBinding`
+- `Work`
 ## work.karmada.io/v1alpha2
 - `ClusterResourceBinding`
 - `ResourceBinding`
