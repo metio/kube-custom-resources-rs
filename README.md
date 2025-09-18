@@ -152,6 +152,7 @@ The following groups are available:
 - [core.kubeadmiral.io](https://crates.io/crates/kcr_core_kubeadmiral_io)
 - [core.linuxsuren.github.com](https://crates.io/crates/kcr_core_linuxsuren_github_com)
 - [core.openfeature.dev](https://crates.io/crates/kcr_core_openfeature_dev)
+- [core.strimzi.io](https://crates.io/crates/kcr_core_strimzi_io)
 - [couchbase.com](https://crates.io/crates/kcr_couchbase_com)
 - [craftypath.github.io](https://crates.io/crates/kcr_craftypath_github_io)
 - [crane.konveyor.io](https://crates.io/crates/kcr_crane_konveyor_io)
