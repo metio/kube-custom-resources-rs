@@ -16,3 +16,5 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 - `DatadogMetric`
 - `DatadogMonitor`
 - `DatadogSLO`
+### datadoghq.com/v2alpha1
+- `DatadogAgent`
