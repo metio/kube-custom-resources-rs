@@ -12,6 +12,7 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 ## Available Custom Resources
 
 ### metal3.io/v1alpha1
+- `BareMetalHost`
 - `BMCEventSubscription`
 - `DataImage`
 - `FirmwareSchema`

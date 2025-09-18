@@ -4,6 +4,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 # Available Custom Resources
 
 ## metal3.io/v1alpha1
+- `BareMetalHost`
 - `BMCEventSubscription`
 - `DataImage`
 - `FirmwareSchema`
