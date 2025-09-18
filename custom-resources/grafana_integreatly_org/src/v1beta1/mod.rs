@@ -8,3 +8,4 @@ pub mod grafanamutetimings;
 pub mod grafananotificationpolicies;
 pub mod grafananotificationpolicyroutes;
 pub mod grafananotificationtemplates;
+pub mod grafanas;
