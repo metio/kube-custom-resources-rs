@@ -13,3 +13,5 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 
 ### ptp.openshift.io/v1
 - `NodePtpDevice`
+- `PtpConfig`
+- `PtpOperatorConfig`
