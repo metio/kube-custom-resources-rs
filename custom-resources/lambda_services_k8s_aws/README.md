@@ -12,6 +12,7 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 ## Available Custom Resources
 
 ### lambda.services.k8s.aws/v1alpha1
+- `Alias`
 - `CodeSigningConfig`
 - `EventSourceMapping`
 - `Function`

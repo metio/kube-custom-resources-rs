@@ -4,6 +4,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 # Available Custom Resources
 
 ## lambda.services.k8s.aws/v1alpha1
+- `Alias`
 - `CodeSigningConfig`
 - `EventSourceMapping`
 - `Function`
