@@ -69,6 +69,7 @@ members = [
     "custom-resources/cache_kubedl_io",
     "custom-resources/caching_ibm_com",
     "custom-resources/camel_apache_org",
+    "custom-resources/canaries_flanksource_com",
     "custom-resources/capabilities_3scale_net",
     "custom-resources/capsule_clastix_io",
     "custom-resources/cassandra_datastax_com",

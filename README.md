@@ -109,6 +109,7 @@ The following groups are available:
 - [cache.kubedl.io](https://crates.io/crates/kcr_cache_kubedl_io)
 - [caching.ibm.com](https://crates.io/crates/kcr_caching_ibm_com)
 - [camel.apache.org](https://crates.io/crates/kcr_camel_apache_org)
+- [canaries.flanksource.com](https://crates.io/crates/kcr_canaries_flanksource_com)
 - [capabilities.3scale.net](https://crates.io/crates/kcr_capabilities_3scale_net)
 - [capsule.clastix.io](https://crates.io/crates/kcr_capsule_clastix_io)
 - [cassandra.datastax.com](https://crates.io/crates/kcr_cassandra_datastax_com)
