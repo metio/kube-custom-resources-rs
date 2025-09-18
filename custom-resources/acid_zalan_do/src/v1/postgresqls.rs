@@ -17,13 +17,13 @@ use self::prelude::*;
 #[kube(derive="PartialEq")]
 pub struct PostgresqlSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalVolumes")]
-    pub additional_volumes: Option<Vec<PostgresqlSpecAdditionalVolumes>>,
+    pub additional_volumes: Option<Vec<PostgresqlAdditionalVolumes>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedSourceRanges")]
     pub allowed_source_ranges: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub clone: Option<PostgresqlSpecClone>,
+    pub clone: Option<PostgresqlClone>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionPooler")]
-    pub connection_pooler: Option<PostgresqlSpecConnectionPooler>,
+    pub connection_pooler: Option<PostgresqlConnectionPooler>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub databases: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dockerImage")]
@@ -60,11 +60,11 @@ pub struct PostgresqlSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "masterServiceAnnotations")]
     pub master_service_annotations: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
-    pub node_affinity: Option<PostgresqlSpecNodeAffinity>,
+    pub node_affinity: Option<PostgresqlNodeAffinity>,
     #[serde(rename = "numberOfInstances")]
     pub number_of_instances: i64,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub patroni: Option<PostgresqlSpecPatroni>,
+    pub patroni: Option<PostgresqlPatroni>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAnnotations")]
     pub pod_annotations: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podPriorityClassName")]
@@ -72,16 +72,16 @@ pub struct PostgresqlSpec {
     /// deprecated
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pod_priority_class_name")]
     pub pod_priority_class_name_x: Option<String>,
-    pub postgresql: PostgresqlSpecPostgresql,
+    pub postgresql: PostgresqlPostgresql,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preparedDatabases")]
-    pub prepared_databases: Option<BTreeMap<String, PostgresqlSpecPreparedDatabases>>,
+    pub prepared_databases: Option<BTreeMap<String, PostgresqlPreparedDatabases>>,
     /// deprecated
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaLoadBalancer")]
     pub replica_load_balancer: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaServiceAnnotations")]
     pub replica_service_annotations: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<PostgresqlSpecResources>,
+    pub resources: Option<PostgresqlResources>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
     pub scheduler_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAnnotations")]
@@ -95,15 +95,15 @@ pub struct PostgresqlSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "spiloRunAsUser")]
     pub spilo_run_as_user: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub standby: Option<PostgresqlSpecStandby>,
+    pub standby: Option<PostgresqlStandby>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub streams: Option<Vec<PostgresqlSpecStreams>>,
+    pub streams: Option<Vec<PostgresqlStreams>>,
     #[serde(rename = "teamId")]
     pub team_id: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tls: Option<PostgresqlSpecTls>,
+    pub tls: Option<PostgresqlTls>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tolerations: Option<Vec<PostgresqlSpecTolerations>>,
+    pub tolerations: Option<Vec<PostgresqlTolerations>>,
     /// deprecated
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useLoadBalancer")]
     pub use_load_balancer: Option<bool>,
@@ -115,11 +115,11 @@ pub struct PostgresqlSpec {
     pub users_with_in_place_secret_rotation: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "usersWithSecretRotation")]
     pub users_with_secret_rotation: Option<Vec<String>>,
-    pub volume: PostgresqlSpecVolume,
+    pub volume: PostgresqlVolume,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PostgresqlSpecAdditionalVolumes {
+pub struct PostgresqlAdditionalVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isSubPathExpr")]
     pub is_sub_path_expr: Option<bool>,
     #[serde(rename = "mountPath")]
@@ -134,7 +134,7 @@ pub struct PostgresqlSpecAdditionalVolumes {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PostgresqlSpecClone {
+pub struct PostgresqlClone {
     pub cluster: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub s3_access_key_id: Option<String>,
@@ -153,17 +153,17 @@ pub struct PostgresqlSpecClone {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PostgresqlSpecConnectionPooler {
+pub struct PostgresqlConnectionPooler {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dockerImage")]
     pub docker_image: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxDBConnections")]
     pub max_db_connections: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub mode: Option<PostgresqlSpecConnectionPoolerMode>,
+    pub mode: Option<PostgresqlConnectionPoolerMode>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "numberOfInstances")]
     pub number_of_instances: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<PostgresqlSpecConnectionPoolerResources>,
+    pub resources: Option<PostgresqlConnectionPoolerResources>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub schema: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -171,7 +171,7 @@ pub struct PostgresqlSpecConnectionPooler {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum PostgresqlSpecConnectionPoolerMode {
+pub enum PostgresqlConnectionPoolerMode {
     #[serde(rename = "session")]
     Session,
     #[serde(rename = "transaction")]
@@ -179,15 +179,15 @@ pub enum PostgresqlSpecConnectionPoolerMode {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PostgresqlSpecConnectionPoolerResources {
+pub struct PostgresqlConnectionPoolerResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub limits: Option<PostgresqlSpecConnectionPoolerResourcesLimits>,
+    pub limits: Option<PostgresqlConnectionPoolerResourcesLimits>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub requests: Option<PostgresqlSpecConnectionPoolerResourcesRequests>,
+    pub requests: Option<PostgresqlConnectionPoolerResourcesRequests>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PostgresqlSpecConnectionPoolerResourcesLimits {
+pub struct PostgresqlConnectionPoolerResourcesLimits {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -195,7 +195,7 @@ pub struct PostgresqlSpecConnectionPoolerResourcesLimits {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PostgresqlSpecConnectionPoolerResourcesRequests {
+pub struct PostgresqlConnectionPoolerResourcesRequests {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -203,29 +203,29 @@ pub struct PostgresqlSpecConnectionPoolerResourcesRequests {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PostgresqlSpecNodeAffinity {
+pub struct PostgresqlNodeAffinity {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
-    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<PostgresqlSpecNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<PostgresqlNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
-    pub required_during_scheduling_ignored_during_execution: Option<PostgresqlSpecNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
+    pub required_during_scheduling_ignored_during_execution: Option<PostgresqlNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PostgresqlSpecNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
-    pub preference: PostgresqlSpecNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
+pub struct PostgresqlNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
+    pub preference: PostgresqlNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
     pub weight: i32,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PostgresqlSpecNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference {
+pub struct PostgresqlNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<PostgresqlSpecNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions>>,
+    pub match_expressions: Option<Vec<PostgresqlNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFields")]
-    pub match_fields: Option<Vec<PostgresqlSpecNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields>>,
+    pub match_fields: Option<Vec<PostgresqlNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PostgresqlSpecNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
+pub struct PostgresqlNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -233,7 +233,7 @@ pub struct PostgresqlSpecNodeAffinityPreferredDuringSchedulingIgnoredDuringExecu
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PostgresqlSpecNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
+pub struct PostgresqlNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -241,21 +241,21 @@ pub struct PostgresqlSpecNodeAffinityPreferredDuringSchedulingIgnoredDuringExecu
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PostgresqlSpecNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution {
+pub struct PostgresqlNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     #[serde(rename = "nodeSelectorTerms")]
-    pub node_selector_terms: Vec<PostgresqlSpecNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
+    pub node_selector_terms: Vec<PostgresqlNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PostgresqlSpecNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms {
+pub struct PostgresqlNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<PostgresqlSpecNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions>>,
+    pub match_expressions: Option<Vec<PostgresqlNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFields")]
-    pub match_fields: Option<Vec<PostgresqlSpecNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields>>,
+    pub match_fields: Option<Vec<PostgresqlNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PostgresqlSpecNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
+pub struct PostgresqlNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -263,7 +263,7 @@ pub struct PostgresqlSpecNodeAffinityRequiredDuringSchedulingIgnoredDuringExecut
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PostgresqlSpecNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
+pub struct PostgresqlNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -271,7 +271,7 @@ pub struct PostgresqlSpecNodeAffinityRequiredDuringSchedulingIgnoredDuringExecut
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PostgresqlSpecPatroni {
+pub struct PostgresqlPatroni {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub failsafe_mode: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -297,14 +297,14 @@ pub struct PostgresqlSpecPatroni {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct PostgresqlSpecPostgresql {
+pub struct PostgresqlPostgresql {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parameters: Option<BTreeMap<String, String>>,
-    pub version: PostgresqlSpecPostgresqlVersion,
+    pub version: PostgresqlPostgresqlVersion,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum PostgresqlSpecPostgresqlVersion {
+pub enum PostgresqlPostgresqlVersion {
     #[serde(rename = "13")]
     r#_13,
     #[serde(rename = "14")]
@@ -318,19 +318,19 @@ pub enum PostgresqlSpecPostgresqlVersion {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PostgresqlSpecPreparedDatabases {
+pub struct PostgresqlPreparedDatabases {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultUsers")]
     pub default_users: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub extensions: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub schemas: Option<BTreeMap<String, PostgresqlSpecPreparedDatabasesSchemas>>,
+    pub schemas: Option<BTreeMap<String, PostgresqlPreparedDatabasesSchemas>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretNamespace")]
     pub secret_namespace: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PostgresqlSpecPreparedDatabasesSchemas {
+pub struct PostgresqlPreparedDatabasesSchemas {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultRoles")]
     pub default_roles: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultUsers")]
@@ -338,15 +338,15 @@ pub struct PostgresqlSpecPreparedDatabasesSchemas {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PostgresqlSpecResources {
+pub struct PostgresqlResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub limits: Option<PostgresqlSpecResourcesLimits>,
+    pub limits: Option<PostgresqlResourcesLimits>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub requests: Option<PostgresqlSpecResourcesRequests>,
+    pub requests: Option<PostgresqlResourcesRequests>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PostgresqlSpecResourcesLimits {
+pub struct PostgresqlResourcesLimits {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hugepages-1Gi")]
@@ -358,7 +358,7 @@ pub struct PostgresqlSpecResourcesLimits {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PostgresqlSpecResourcesRequests {
+pub struct PostgresqlResourcesRequests {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hugepages-1Gi")]
@@ -370,7 +370,7 @@ pub struct PostgresqlSpecResourcesRequests {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PostgresqlSpecStandby {
+pub struct PostgresqlStandby {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gs_wal_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -382,7 +382,7 @@ pub struct PostgresqlSpecStandby {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PostgresqlSpecStreams {
+pub struct PostgresqlStreams {
     #[serde(rename = "applicationId")]
     pub application_id: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "batchSize")]
@@ -396,11 +396,11 @@ pub struct PostgresqlSpecStreams {
     pub filter: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<String>,
-    pub tables: BTreeMap<String, PostgresqlSpecStreamsTables>,
+    pub tables: BTreeMap<String, PostgresqlStreamsTables>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PostgresqlSpecStreamsTables {
+pub struct PostgresqlStreamsTables {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "eventType")]
     pub event_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "idColumn")]
@@ -414,7 +414,7 @@ pub struct PostgresqlSpecStreamsTables {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PostgresqlSpecTls {
+pub struct PostgresqlTls {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caFile")]
     pub ca_file: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caSecretName")]
@@ -428,13 +428,13 @@ pub struct PostgresqlSpecTls {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PostgresqlSpecTolerations {
+pub struct PostgresqlTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub effect: Option<PostgresqlSpecTolerationsEffect>,
+    pub effect: Option<PostgresqlTolerationsEffect>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub operator: Option<PostgresqlSpecTolerationsOperator>,
+    pub operator: Option<PostgresqlTolerationsOperator>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -442,26 +442,26 @@ pub struct PostgresqlSpecTolerations {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum PostgresqlSpecTolerationsEffect {
+pub enum PostgresqlTolerationsEffect {
     NoExecute,
     NoSchedule,
     PreferNoSchedule,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum PostgresqlSpecTolerationsOperator {
+pub enum PostgresqlTolerationsOperator {
     Equal,
     Exists,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PostgresqlSpecVolume {
+pub struct PostgresqlVolume {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub iops: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isSubPathExpr")]
     pub is_sub_path_expr: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub selector: Option<PostgresqlSpecVolumeSelector>,
+    pub selector: Option<PostgresqlVolumeSelector>,
     pub size: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClass")]
     pub storage_class: Option<String>,
@@ -472,23 +472,23 @@ pub struct PostgresqlSpecVolume {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PostgresqlSpecVolumeSelector {
+pub struct PostgresqlVolumeSelector {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<PostgresqlSpecVolumeSelectorMatchExpressions>>,
+    pub match_expressions: Option<Vec<PostgresqlVolumeSelectorMatchExpressions>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct PostgresqlSpecVolumeSelectorMatchExpressions {
+pub struct PostgresqlVolumeSelectorMatchExpressions {
     pub key: String,
-    pub operator: PostgresqlSpecVolumeSelectorMatchExpressionsOperator,
+    pub operator: PostgresqlVolumeSelectorMatchExpressionsOperator,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum PostgresqlSpecVolumeSelectorMatchExpressionsOperator {
+pub enum PostgresqlVolumeSelectorMatchExpressionsOperator {
     DoesNotExist,
     Exists,
     In,
