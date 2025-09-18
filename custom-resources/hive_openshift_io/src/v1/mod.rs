@@ -13,4 +13,6 @@ pub mod hiveconfigs;
 pub mod machinepoolnameleases;
 pub mod machinepools;
 pub mod selectorsyncidentityproviders;
+pub mod selectorsyncsets;
 pub mod syncidentityproviders;
+pub mod syncsets;
