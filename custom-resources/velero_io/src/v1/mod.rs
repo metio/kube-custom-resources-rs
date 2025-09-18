@@ -5,6 +5,7 @@ pub mod deletebackuprequests;
 pub mod downloadrequests;
 pub mod podvolumebackups;
 pub mod podvolumerestores;
+pub mod restores;
 pub mod schedules;
 pub mod serverstatusrequests;
 pub mod volumesnapshotlocations;
