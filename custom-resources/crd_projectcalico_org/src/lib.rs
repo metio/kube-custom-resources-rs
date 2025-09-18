@@ -10,6 +10,8 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `BlockAffinity`
 - `CalicoNodeStatus`
 - `ClusterInformation`
+- `FelixConfiguration`
+- `GlobalNetworkPolicy`
 - `GlobalNetworkSet`
 - `HostEndpoint`
 - `IPAMBlock`
@@ -18,6 +20,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `IPPool`
 - `IPReservation`
 - `KubeControllersConfiguration`
+- `NetworkPolicy`
 - `NetworkSet`
 - `StagedGlobalNetworkPolicy`
 - `StagedKubernetesNetworkPolicy`

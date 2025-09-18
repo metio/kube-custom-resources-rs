@@ -18,6 +18,8 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 - `BlockAffinity`
 - `CalicoNodeStatus`
 - `ClusterInformation`
+- `FelixConfiguration`
+- `GlobalNetworkPolicy`
 - `GlobalNetworkSet`
 - `HostEndpoint`
 - `IPAMBlock`
@@ -26,6 +28,7 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 - `IPPool`
 - `IPReservation`
 - `KubeControllersConfiguration`
+- `NetworkPolicy`
 - `NetworkSet`
 - `StagedGlobalNetworkPolicy`
 - `StagedKubernetesNetworkPolicy`
