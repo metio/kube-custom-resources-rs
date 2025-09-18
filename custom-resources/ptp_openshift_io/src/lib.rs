@@ -5,6 +5,8 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 
 ## ptp.openshift.io/v1
 - `NodePtpDevice`
+- `PtpConfig`
+- `PtpOperatorConfig`
 */
 #[cfg(feature = "v1")]
 pub mod v1;
