@@ -12,6 +12,7 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 ## Available Custom Resources
 
 ### kuadrant.io/v1
+- `AuthPolicy`
 - `RateLimitPolicy`
 ### kuadrant.io/v1alpha1
 - `DNSHealthCheckProbe`
@@ -20,6 +21,8 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 ### kuadrant.io/v1beta1
 - `Kuadrant`
 ### kuadrant.io/v1beta2
+- `AuthPolicy`
 - `RateLimitPolicy`
 ### kuadrant.io/v1beta3
+- `AuthPolicy`
 - `RateLimitPolicy`
