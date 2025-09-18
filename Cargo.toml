@@ -112,6 +112,7 @@ members = [
     "custom-resources/core_kubeadmiral_io",
     "custom-resources/core_linuxsuren_github_com",
     "custom-resources/core_openfeature_dev",
+    "custom-resources/core_strimzi_io",
     "custom-resources/couchbase_com",
     "custom-resources/craftypath_github_io",
     "custom-resources/crane_konveyor_io",

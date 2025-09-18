@@ -1,6 +1,7 @@
 pub mod kafkabridges;
 pub mod kafkaconnectors;
 pub mod kafkaconnects;
+pub mod kafkamirrormaker2s;
 pub mod kafkamirrormakers;
 pub mod kafkanodepools;
 pub mod kafkarebalances;
