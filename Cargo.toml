@@ -182,6 +182,7 @@ members = [
     "custom-resources/groupsnapshot_storage_k8s_io",
     "custom-resources/hazelcast_com",
     "custom-resources/hbase_stackable_tech",
+    "custom-resources/hdfs_stackable_tech",
     "custom-resources/helm_sigstore_dev",
     "custom-resources/helm_toolkit_fluxcd_io",
     "custom-resources/hive_openshift_io",
