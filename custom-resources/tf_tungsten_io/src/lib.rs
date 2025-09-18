@@ -16,6 +16,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `Rabbitmq`
 - `Redis`
 - `Vrouter`
+- `Webui`
 - `Zookeeper`
 */
 #[cfg(feature = "v1alpha1")]
