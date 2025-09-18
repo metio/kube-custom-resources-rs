@@ -4,6 +4,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 # Available Custom Resources
 
 ## druid.apache.org/v1alpha1
+- `DruidIngestion`
 - `Druid`
 */
 #[cfg(feature = "v1alpha1")]
