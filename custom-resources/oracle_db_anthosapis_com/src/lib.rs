@@ -11,6 +11,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `Database`
 - `Export`
 - `Import`
+- `Instance`
 - `PITR`
 - `Release`
 */

@@ -5,5 +5,6 @@ pub mod cronanythings;
 pub mod databases;
 pub mod exports;
 pub mod imports;
+pub mod instances;
 pub mod pitrs;
 pub mod releases;
