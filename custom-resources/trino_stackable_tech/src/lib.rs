@@ -5,6 +5,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 
 ## trino.stackable.tech/v1alpha1
 - `TrinoCatalog`
+- `TrinoCluster`
 */
 #[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;
