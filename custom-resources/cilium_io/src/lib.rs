@@ -9,9 +9,11 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `CiliumBGPNodeConfigOverride`
 - `CiliumBGPNodeConfig`
 - `CiliumBGPPeerConfig`
+- `CiliumClusterwideEnvoyConfig`
 - `CiliumClusterwideNetworkPolicy`
 - `CiliumEgressGatewayPolicy`
 - `CiliumEndpoint`
+- `CiliumEnvoyConfig`
 - `CiliumExternalWorkload`
 - `CiliumIdentity`
 - `CiliumLocalRedirectPolicy`
