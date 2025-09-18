@@ -153,6 +153,7 @@ members = [
     "custom-resources/externaldata_gatekeeper_sh",
     "custom-resources/externaldns_k8s_io",
     "custom-resources/externaldns_nginx_org",
+    "custom-resources/fence_agents_remediation_medik8s_io",
     "custom-resources/flagger_app",
     "custom-resources/flink_apache_org",
     "custom-resources/flow_volcano_sh",

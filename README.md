@@ -193,6 +193,7 @@ The following groups are available:
 - [externaldata.gatekeeper.sh](https://crates.io/crates/kcr_externaldata_gatekeeper_sh)
 - [externaldns.k8s.io](https://crates.io/crates/kcr_externaldns_k8s_io)
 - [externaldns.nginx.org](https://crates.io/crates/kcr_externaldns_nginx_org)
+- [fence-agents-remediation.medik8s.io](https://crates.io/crates/kcr_fence_agents_remediation_medik8s_io)
 - [flagger.app](https://crates.io/crates/kcr_flagger_app)
 - [flink.apache.org](https://crates.io/crates/kcr_flink_apache_org)
 - [flow.volcano.sh](https://crates.io/crates/kcr_flow_volcano_sh)
