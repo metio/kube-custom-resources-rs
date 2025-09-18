@@ -1,3 +1,4 @@
+pub mod baremetalhosts;
 pub mod bmceventsubscriptions;
 pub mod dataimages;
 pub mod firmwareschemas;
