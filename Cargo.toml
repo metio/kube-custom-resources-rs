@@ -294,6 +294,7 @@ members = [
     "custom-resources/operator_authorino_kuadrant_io",
     "custom-resources/operator_cluster_x_k8s_io",
     "custom-resources/operator_cryostat_io",
+    "custom-resources/operator_knative_dev",
     "custom-resources/operator_marin3r_3scale_net",
     "custom-resources/operator_open_cluster_management_io",
     "custom-resources/operator_shipwright_io",

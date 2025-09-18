@@ -334,6 +334,7 @@ The following groups are available:
 - [operator.authorino.kuadrant.io](https://crates.io/crates/kcr_operator_authorino_kuadrant_io)
 - [operator.cluster.x-k8s.io](https://crates.io/crates/kcr_operator_cluster_x_k8s_io)
 - [operator.cryostat.io](https://crates.io/crates/kcr_operator_cryostat_io)
+- [operator.knative.dev](https://crates.io/crates/kcr_operator_knative_dev)
 - [operator.marin3r.3scale.net](https://crates.io/crates/kcr_operator_marin3r_3scale_net)
 - [operator.open-cluster-management.io](https://crates.io/crates/kcr_operator_open_cluster_management_io)
 - [operator.shipwright.io](https://crates.io/crates/kcr_operator_shipwright_io)
