@@ -13,6 +13,10 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 
 ### apiextensions.crossplane.io/v1
 - `CompositeResourceDefinition`
+- `CompositionRevision`
+- `Composition`
+### apiextensions.crossplane.io/v1beta1
+- `CompositionRevision`
 ### apiextensions.crossplane.io/v2
 - `CompositeResourceDefinition`
 ### apiextensions.crossplane.io/v2alpha1
