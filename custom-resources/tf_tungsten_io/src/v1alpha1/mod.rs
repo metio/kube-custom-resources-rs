@@ -10,4 +10,5 @@ pub mod queryengine;
 pub mod rabbitmqs;
 pub mod redis;
 pub mod vrouters;
+pub mod webuis;
 pub mod zookeepers;
