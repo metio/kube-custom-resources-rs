@@ -221,6 +221,7 @@ The following groups are available:
 - [graphql.gloo.solo.io](https://crates.io/crates/kcr_graphql_gloo_solo_io)
 - [groupsnapshot.storage.k8s.io](https://crates.io/crates/kcr_groupsnapshot_storage_k8s_io)
 - [hazelcast.com](https://crates.io/crates/kcr_hazelcast_com)
+- [hbase.stackable.tech](https://crates.io/crates/kcr_hbase_stackable_tech)
 - [helm.sigstore.dev](https://crates.io/crates/kcr_helm_sigstore_dev)
 - [helm.toolkit.fluxcd.io](https://crates.io/crates/kcr_helm_toolkit_fluxcd_io)
 - [hive.openshift.io](https://crates.io/crates/kcr_hive_openshift_io)
