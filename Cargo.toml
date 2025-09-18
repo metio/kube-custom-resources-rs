@@ -11,6 +11,7 @@ members = [
     "custom-resources/actions_summerwind_dev",
     "custom-resources/addons_cluster_x_k8s_io",
     "custom-resources/agent_k8s_elastic_co",
+    "custom-resources/airflow_stackable_tech",
     "custom-resources/akri_sh",
     "custom-resources/amd_com",
     "custom-resources/anywhere_eks_amazonaws_com",
