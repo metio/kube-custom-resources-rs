@@ -258,6 +258,7 @@ The following groups are available:
 - [keycloak.k8s.reddec.net](https://crates.io/crates/kcr_keycloak_k8s_reddec_net)
 - [keycloak.org](https://crates.io/crates/kcr_keycloak_org)
 - [keyspaces.services.k8s.aws](https://crates.io/crates/kcr_keyspaces_services_k8s_aws)
+- [kiali.io](https://crates.io/crates/kcr_kiali_io)
 - [kibana.k8s.elastic.co](https://crates.io/crates/kcr_kibana_k8s_elastic_co)
 - [kinesis.services.k8s.aws](https://crates.io/crates/kcr_kinesis_services_k8s_aws)
 - [kmm.sigs.x-k8s.io](https://crates.io/crates/kcr_kmm_sigs_x_k8s_io)
