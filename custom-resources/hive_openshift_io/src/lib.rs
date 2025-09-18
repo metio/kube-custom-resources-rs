@@ -19,7 +19,9 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `MachinePoolNameLease`
 - `MachinePool`
 - `SelectorSyncIdentityProvider`
+- `SelectorSyncSet`
 - `SyncIdentityProvider`
+- `SyncSet`
 */
 #[cfg(feature = "v1")]
 pub mod v1;
