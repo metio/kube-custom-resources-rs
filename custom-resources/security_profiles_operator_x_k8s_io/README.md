@@ -19,5 +19,6 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 - `SecurityProfilesOperatorDaemon`
 ### security-profiles-operator.x-k8s.io/v1alpha2
 - `RawSelinuxProfile`
+- `SelinuxProfile`
 ### security-profiles-operator.x-k8s.io/v1beta1
 - `SeccompProfile`

@@ -11,6 +11,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `SecurityProfilesOperatorDaemon`
 ## security-profiles-operator.x-k8s.io/v1alpha2
 - `RawSelinuxProfile`
+- `SelinuxProfile`
 ## security-profiles-operator.x-k8s.io/v1beta1
 - `SeccompProfile`
 */
