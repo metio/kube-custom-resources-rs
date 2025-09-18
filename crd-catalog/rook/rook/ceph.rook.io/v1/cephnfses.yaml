@@ -226,6 +226,25 @@ spec:
                                                 type: "array"
                                                 x-kubernetes-list-type: "atomic"
                                             type: "object"
+                                          podCertificate:
+                                            properties:
+                                              certificateChainPath:
+                                                type: "string"
+                                              credentialBundlePath:
+                                                type: "string"
+                                              keyPath:
+                                                type: "string"
+                                              keyType:
+                                                type: "string"
+                                              maxExpirationSeconds:
+                                                format: "int32"
+                                                type: "integer"
+                                              signerName:
+                                                type: "string"
+                                            required:
+                                              - "keyType"
+                                              - "signerName"
+                                            type: "object"
                                           secret:
                                             properties:
                                               items:
@@ -473,6 +492,25 @@ spec:
                                                   type: "object"
                                                 type: "array"
                                                 x-kubernetes-list-type: "atomic"
+                                            type: "object"
+                                          podCertificate:
+                                            properties:
+                                              certificateChainPath:
+                                                type: "string"
+                                              credentialBundlePath:
+                                                type: "string"
+                                              keyPath:
+                                                type: "string"
+                                              keyType:
+                                                type: "string"
+                                              maxExpirationSeconds:
+                                                format: "int32"
+                                                type: "integer"
+                                              signerName:
+                                                type: "string"
+                                            required:
+                                              - "keyType"
+                                              - "signerName"
                                             type: "object"
                                           secret:
                                             properties:
@@ -738,6 +776,25 @@ spec:
                                                       type: "array"
                                                       x-kubernetes-list-type: "atomic"
                                                   type: "object"
+                                                podCertificate:
+                                                  properties:
+                                                    certificateChainPath:
+                                                      type: "string"
+                                                    credentialBundlePath:
+                                                      type: "string"
+                                                    keyPath:
+                                                      type: "string"
+                                                    keyType:
+                                                      type: "string"
+                                                    maxExpirationSeconds:
+                                                      format: "int32"
+                                                      type: "integer"
+                                                    signerName:
+                                                      type: "string"
+                                                  required:
+                                                    - "keyType"
+                                                    - "signerName"
+                                                  type: "object"
                                                 secret:
                                                   properties:
                                                     items:
@@ -824,7 +881,7 @@ spec:
                               description: "Resources allow specifying resource requests/limits on the SSSD sidecar container."
                               properties:
                                 claims:
-                                  description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
+                                  description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis field depends on the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                                   items:
                                     description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                     properties:
@@ -1035,6 +1092,25 @@ spec:
                                                       type: "object"
                                                     type: "array"
                                                     x-kubernetes-list-type: "atomic"
+                                                type: "object"
+                                              podCertificate:
+                                                properties:
+                                                  certificateChainPath:
+                                                    type: "string"
+                                                  credentialBundlePath:
+                                                    type: "string"
+                                                  keyPath:
+                                                    type: "string"
+                                                  keyType:
+                                                    type: "string"
+                                                  maxExpirationSeconds:
+                                                    format: "int32"
+                                                    type: "integer"
+                                                  signerName:
+                                                    type: "string"
+                                                required:
+                                                  - "keyType"
+                                                  - "signerName"
                                                 type: "object"
                                               secret:
                                                 properties:
@@ -1767,7 +1843,7 @@ spec:
                       nullable: true
                       properties:
                         claims:
-                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
+                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis field depends on the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                           items:
                             description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                             properties:
