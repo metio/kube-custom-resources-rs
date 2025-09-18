@@ -5,6 +5,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 
 ## superset.stackable.tech/v1alpha1
 - `DruidConnection`
+- `SupersetCluster`
 */
 #[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;

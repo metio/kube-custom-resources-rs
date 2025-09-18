@@ -4,6 +4,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 # Available Custom Resources
 
 ## zookeeper.stackable.tech/v1alpha1
+- `ZookeeperCluster`
 - `ZookeeperZnode`
 */
 #[cfg(feature = "v1alpha1")]
