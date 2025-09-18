@@ -15,8 +15,13 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 - `TeleportLoginRule`
 - `TeleportOktaImportRule`
 ### resources.teleport.dev/v2
+- `TeleportProvisionToken`
 - `TeleportSAMLConnector`
 - `TeleportUser`
 ### resources.teleport.dev/v3
 - `TeleportGithubConnector`
 - `TeleportOIDCConnector`
+### resources.teleport.dev/v5
+- `TeleportRole`
+### resources.teleport.dev/v6
+- `TeleportRole`
