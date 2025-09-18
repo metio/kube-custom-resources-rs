@@ -6,6 +6,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## sonataflow.org/v1alpha08
 - `SonataFlowBuild`
 - `SonataFlowPlatform`
+- `SonataFlow`
 */
 #[cfg(feature = "v1alpha08")]
 pub mod v1alpha08;
