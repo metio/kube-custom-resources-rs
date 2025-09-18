@@ -218,6 +218,7 @@ members = [
     "custom-resources/keycloak_k8s_reddec_net",
     "custom-resources/keycloak_org",
     "custom-resources/keyspaces_services_k8s_aws",
+    "custom-resources/kiali_io",
     "custom-resources/kibana_k8s_elastic_co",
     "custom-resources/kinesis_services_k8s_aws",
     "custom-resources/kmm_sigs_x_k8s_io",
