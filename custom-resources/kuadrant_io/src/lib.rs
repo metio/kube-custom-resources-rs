@@ -4,6 +4,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 # Available Custom Resources
 
 ## kuadrant.io/v1
+- `AuthPolicy`
 - `RateLimitPolicy`
 ## kuadrant.io/v1alpha1
 - `DNSHealthCheckProbe`
@@ -12,8 +13,10 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## kuadrant.io/v1beta1
 - `Kuadrant`
 ## kuadrant.io/v1beta2
+- `AuthPolicy`
 - `RateLimitPolicy`
 ## kuadrant.io/v1beta3
+- `AuthPolicy`
 - `RateLimitPolicy`
 */
 #[cfg(feature = "v1")]
