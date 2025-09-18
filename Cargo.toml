@@ -130,6 +130,7 @@ members = [
     "custom-resources/digitalis_io",
     "custom-resources/documentdb_services_k8s_aws",
     "custom-resources/druid_apache_org",
+    "custom-resources/druid_stackable_tech",
     "custom-resources/dynamodb_services_k8s_aws",
     "custom-resources/ec2_services_k8s_aws",
     "custom-resources/ecr_services_k8s_aws",

@@ -170,6 +170,7 @@ The following groups are available:
 - [digitalis.io](https://crates.io/crates/kcr_digitalis_io)
 - [documentdb.services.k8s.aws](https://crates.io/crates/kcr_documentdb_services_k8s_aws)
 - [druid.apache.org](https://crates.io/crates/kcr_druid_apache_org)
+- [druid.stackable.tech](https://crates.io/crates/kcr_druid_stackable_tech)
 - [dynamodb.services.k8s.aws](https://crates.io/crates/kcr_dynamodb_services_k8s_aws)
 - [ec2.services.k8s.aws](https://crates.io/crates/kcr_ec2_services_k8s_aws)
 - [ecr.services.k8s.aws](https://crates.io/crates/kcr_ecr_services_k8s_aws)
