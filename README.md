@@ -362,6 +362,7 @@ The following groups are available:
 - [ps.percona.com](https://crates.io/crates/kcr_ps_percona_com)
 - [psmdb.percona.com](https://crates.io/crates/kcr_psmdb_percona_com)
 - [ptp.openshift.io](https://crates.io/crates/kcr_ptp_openshift_io)
+- [pubsubplus.solace.com](https://crates.io/crates/kcr_pubsubplus_solace_com)
 - [pxc.percona.com](https://crates.io/crates/kcr_pxc_percona_com)
 - [quay.redhat.com](https://crates.io/crates/kcr_quay_redhat_com)
 - [quota.codeflare.dev](https://crates.io/crates/kcr_quota_codeflare_dev)

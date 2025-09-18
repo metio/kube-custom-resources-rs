@@ -322,6 +322,7 @@ members = [
     "custom-resources/ps_percona_com",
     "custom-resources/psmdb_percona_com",
     "custom-resources/ptp_openshift_io",
+    "custom-resources/pubsubplus_solace_com",
     "custom-resources/pxc_percona_com",
     "custom-resources/quay_redhat_com",
     "custom-resources/quota_codeflare_dev",
