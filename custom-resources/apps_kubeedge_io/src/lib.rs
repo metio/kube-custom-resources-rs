@@ -4,6 +4,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 # Available Custom Resources
 
 ## apps.kubeedge.io/v1alpha1
+- `EdgeApplication`
 - `NodeGroup`
 */
 #[cfg(feature = "v1alpha1")]
