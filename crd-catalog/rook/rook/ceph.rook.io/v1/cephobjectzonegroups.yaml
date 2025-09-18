@@ -39,7 +39,7 @@ spec:
               description: "ObjectZoneGroupSpec represent the spec of an ObjectZoneGroup"
               properties:
                 realm:
-                  description: "The display name for the ceph users"
+                  description: "The name of the realm the zone group is a member of."
                   type: "string"
               required:
                 - "realm"

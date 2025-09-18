@@ -111,6 +111,7 @@ spec:
                       type: "string"
                     enableCrushUpdates:
                       description: "Allow rook operator to change the pool CRUSH tunables once the pool is created"
+                      nullable: true
                       type: "boolean"
                     enableRBDStats:
                       description: "EnableRBDStats is used to enable gathering of statistics for all RBD images in the pool"
@@ -451,6 +452,25 @@ spec:
                                               type: "array"
                                               x-kubernetes-list-type: "atomic"
                                           type: "object"
+                                        podCertificate:
+                                          properties:
+                                            certificateChainPath:
+                                              type: "string"
+                                            credentialBundlePath:
+                                              type: "string"
+                                            keyPath:
+                                              type: "string"
+                                            keyType:
+                                              type: "string"
+                                            maxExpirationSeconds:
+                                              format: "int32"
+                                              type: "integer"
+                                            signerName:
+                                              type: "string"
+                                          required:
+                                            - "keyType"
+                                            - "signerName"
+                                          type: "object"
                                         secret:
                                           properties:
                                             items:
@@ -583,7 +603,7 @@ spec:
                           description: "Resources represents the way to specify resource requirements for the ops-log sidecar"
                           properties:
                             claims:
-                              description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
+                              description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis field depends on the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                               items:
                                 description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                 properties:
@@ -1156,7 +1176,7 @@ spec:
                       nullable: true
                       properties:
                         claims:
-                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
+                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis field depends on the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                           items:
                             description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                             properties:
@@ -1535,6 +1555,7 @@ spec:
                       type: "string"
                     enableCrushUpdates:
                       description: "Allow rook operator to change the pool CRUSH tunables once the pool is created"
+                      nullable: true
                       type: "boolean"
                     enableRBDStats:
                       description: "EnableRBDStats is used to enable gathering of statistics for all RBD images in the pool"

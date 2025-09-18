@@ -177,7 +177,7 @@ spec:
                   description: "The namespace where the parent CephCluster and CephObjectStore are found"
                   type: "string"
                 displayName:
-                  description: "The display name for the ceph users"
+                  description: "The display name for the ceph user."
                   type: "string"
                 keys:
                   description: "Allows specifying credentials for the user. If not provided, the operator\nwill generate them."

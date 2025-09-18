@@ -3,6 +3,7 @@ pub mod cephblockpools;
 pub mod cephbucketnotifications;
 pub mod cephbuckettopics;
 pub mod cephclients;
+pub mod cephclusters;
 pub mod cephcosidrivers;
 pub mod cephfilesystemmirrors;
 pub mod cephfilesystems;

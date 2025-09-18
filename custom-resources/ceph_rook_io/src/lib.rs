@@ -9,6 +9,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `CephBucketNotification`
 - `CephBucketTopic`
 - `CephClient`
+- `CephCluster`
 - `CephCOSIDriver`
 - `CephFilesystemMirror`
 - `CephFilesystem`

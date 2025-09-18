@@ -17,6 +17,7 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 - `CephBucketNotification`
 - `CephBucketTopic`
 - `CephClient`
+- `CephCluster`
 - `CephCOSIDriver`
 - `CephFilesystemMirror`
 - `CephFilesystem`
