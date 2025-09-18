@@ -7,6 +7,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `ServiceExport`
 - `ServiceImport`
 - `AppliedWork`
+- `Work`
 */
 #[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;
