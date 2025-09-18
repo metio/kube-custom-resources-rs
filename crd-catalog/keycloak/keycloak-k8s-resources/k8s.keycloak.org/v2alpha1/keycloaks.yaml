@@ -1249,6 +1249,22 @@ spec:
                         type: "object"
                       type: "array"
                   type: "object"
+                serviceMonitor:
+                  description: "Configuration related to the generated ServiceMonitor"
+                  properties:
+                    enabled:
+                      default: true
+                      description: "Enables or disables the creation of the ServiceMonitor."
+                      type: "boolean"
+                    interval:
+                      default: "30s"
+                      description: "Interval at which metrics should be scraped"
+                      type: "string"
+                    scrapeTimeout:
+                      default: "10s"
+                      description: "Timeout after which the scrape is ended"
+                      type: "string"
+                  type: "object"
                 startOptimized:
                   description: "Set to force the behavior of the --optimized flag for the start command. If left unspecified the operator will assume custom images have already been augmented."
                   type: "boolean"
