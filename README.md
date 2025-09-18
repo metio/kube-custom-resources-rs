@@ -272,6 +272,7 @@ The following groups are available:
 - [kustomize.toolkit.fluxcd.io](https://crates.io/crates/kcr_kustomize_toolkit_fluxcd_io)
 - [kyverno.io](https://crates.io/crates/kcr_kyverno_io)
 - [lambda.services.k8s.aws](https://crates.io/crates/kcr_lambda_services_k8s_aws)
+- [lb.lbconfig.carlosedp.com](https://crates.io/crates/kcr_lb_lbconfig_carlosedp_com)
 - [leaksignal.com](https://crates.io/crates/kcr_leaksignal_com)
 - [lerentis.uploadfilter24.eu](https://crates.io/crates/kcr_lerentis_uploadfilter24_eu)
 - [limitador.kuadrant.io](https://crates.io/crates/kcr_limitador_kuadrant_io)

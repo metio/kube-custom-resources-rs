@@ -232,6 +232,7 @@ members = [
     "custom-resources/kustomize_toolkit_fluxcd_io",
     "custom-resources/kyverno_io",
     "custom-resources/lambda_services_k8s_aws",
+    "custom-resources/lb_lbconfig_carlosedp_com",
     "custom-resources/leaksignal_com",
     "custom-resources/lerentis_uploadfilter24_eu",
     "custom-resources/limitador_kuadrant_io",
