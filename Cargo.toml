@@ -134,6 +134,7 @@ members = [
     "custom-resources/dynamodb_services_k8s_aws",
     "custom-resources/ec2_services_k8s_aws",
     "custom-resources/ecr_services_k8s_aws",
+    "custom-resources/edc_stackable_tech",
     "custom-resources/edp_epam_com",
     "custom-resources/efs_services_k8s_aws",
     "custom-resources/egressgateway_spidernet_io",
