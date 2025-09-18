@@ -6,6 +6,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## psmdb.percona.com/v1
 - `PerconaServerMongoDBBackup`
 - `PerconaServerMongoDBRestore`
+- `PerconaServerMongoDB`
 */
 #[cfg(feature = "v1")]
 pub mod v1;
