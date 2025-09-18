@@ -13,6 +13,8 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `CapsuleConfiguration`
 - `Tenant`
 - `CapsuleConfiguration`
+- `GlobalTenantResource`
+- `TenantResource`
 - `Tenant`
 */
 #[cfg(feature = "v1alpha1")]
