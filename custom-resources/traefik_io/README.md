@@ -15,6 +15,7 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 - `IngressRoute`
 - `IngressRouteTCP`
 - `IngressRouteUDP`
+- `Middleware`
 - `MiddlewareTCP`
 - `ServersTransport`
 - `ServersTransportTCP`
