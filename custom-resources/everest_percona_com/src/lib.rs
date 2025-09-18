@@ -8,6 +8,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `DatabaseClusterBackup`
 - `DatabaseClusterRestore`
 - `DatabaseCluster`
+- `DatabaseEngine`
 - `MonitoringConfig`
 */
 #[cfg(feature = "v1alpha1")]
