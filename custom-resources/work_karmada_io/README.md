@@ -14,6 +14,7 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 ### work.karmada.io/v1alpha1
 - `ClusterResourceBinding`
 - `ResourceBinding`
+- `Work`
 ### work.karmada.io/v1alpha2
 - `ClusterResourceBinding`
 - `ResourceBinding`
