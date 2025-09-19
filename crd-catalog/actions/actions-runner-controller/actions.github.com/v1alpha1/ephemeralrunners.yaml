@@ -35,6 +35,9 @@ spec:
         - jsonPath: ".status.jobDisplayName"
           name: "JobDisplayName"
           type: "string"
+        - jsonPath: ".status.jobId"
+          name: "JobId"
+          type: "string"
         - jsonPath: ".status.message"
           name: "Message"
           type: "string"
@@ -4932,6 +4935,8 @@ spec:
                     type: "string"
                   type: "object"
                 jobDisplayName:
+                  type: "string"
+                jobId:
                   type: "string"
                 jobRepositoryName:
                   type: "string"

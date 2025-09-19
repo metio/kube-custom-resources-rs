@@ -3,7 +3,7 @@ kind: "CustomResourceDefinition"
 metadata:
   annotations:
     api-approved.kubernetes.io: "https://github.com/kubernetes-sigs/gateway-api/pull/3328"
-    gateway.networking.k8s.io/bundle-version: "v1.3.0"
+    gateway.networking.k8s.io/bundle-version: "v1.4.0-rc.1"
     gateway.networking.k8s.io/channel: "standard"
   name: "gateways.gateway.networking.k8s.io"
 spec:
@@ -49,7 +49,7 @@ spec:
               description: "Spec defines the desired state of Gateway."
               properties:
                 addresses:
-                  description: "Addresses requested for this Gateway. This is optional and behavior can\ndepend on the implementation. If a value is set in the spec and the\nrequested address is invalid or unavailable, the implementation MUST\nindicate this in the associated entry in GatewayStatus.Addresses.\n\nThe Addresses field represents a request for the address(es) on the\n\"outside of the Gateway\", that traffic bound for this Gateway will use.\nThis could be the IP address or hostname of an external load balancer or\nother networking infrastructure, or some other address that traffic will\nbe sent to.\n\nIf no Addresses are specified, the implementation MAY schedule the\nGateway in an implementation-specific manner, assigning an appropriate\nset of Addresses.\n\nThe implementation MUST bind all Listeners to every GatewayAddress that\nit assigns to the Gateway and add a corresponding entry in\nGatewayStatus.Addresses.\n\nSupport: Extended"
+                  description: "Addresses requested for this Gateway. This is optional and behavior can\ndepend on the implementation. If a value is set in the spec and the\nrequested address is invalid or unavailable, the implementation MUST\nindicate this in an associated entry in GatewayStatus.Conditions.\n\nThe Addresses field represents a request for the address(es) on the\n\"outside of the Gateway\", that traffic bound for this Gateway will use.\nThis could be the IP address or hostname of an external load balancer or\nother networking infrastructure, or some other address that traffic will\nbe sent to.\n\nIf no Addresses are specified, the implementation MAY schedule the\nGateway in an implementation-specific manner, assigning an appropriate\nset of Addresses.\n\nThe implementation MUST bind all Listeners to every GatewayAddress that\nit assigns to the Gateway and add a corresponding entry in\nGatewayStatus.Addresses.\n\nSupport: Extended"
                   items:
                     description: "GatewaySpecAddress describes an address that can be bound to a Gateway."
                     oneOf:
@@ -80,16 +80,16 @@ spec:
                         type: "string"
                     type: "object"
                     x-kubernetes-validations:
-                      - message: "Hostname value must only contain valid characters (matching ^(\\*\\.)?[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$)"
-                        rule: "self.type == 'Hostname' ? self.value.matches(r\"\"\"^(\\*\\.)?[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$\"\"\"): true"
+                      - message: "Hostname value must be empty or contain only valid characters (matching ^(\\*\\.)?[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$)"
+                        rule: "self.type == 'Hostname' ? (!has(self.value) || self.value.matches(r\"\"\"^(\\*\\.)?[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$\"\"\")): true"
                   maxItems: 16
                   type: "array"
                   x-kubernetes-list-type: "atomic"
                   x-kubernetes-validations:
                     - message: "IPAddress values must be unique"
-                      rule: "self.all(a1, a1.type == 'IPAddress' ? self.exists_one(a2, a2.type == a1.type && a2.value == a1.value) : true )"
+                      rule: "self.all(a1, a1.type == 'IPAddress' && has(a1.value) ? self.exists_one(a2, a2.type == a1.type && has(a2.value) && a2.value == a1.value) : true )"
                     - message: "Hostname values must be unique"
-                      rule: "self.all(a1, a1.type == 'Hostname' ? self.exists_one(a2, a2.type == a1.type && a2.value == a1.value) : true )"
+                      rule: "self.all(a1, a1.type == 'Hostname'  && has(a1.value) ? self.exists_one(a2, a2.type == a1.type && has(a2.value) && a2.value == a1.value) : true )"
                 gatewayClassName:
                   description: "GatewayClassName used for this Gateway. This is the name of a\nGatewayClass resource."
                   maxLength: 253

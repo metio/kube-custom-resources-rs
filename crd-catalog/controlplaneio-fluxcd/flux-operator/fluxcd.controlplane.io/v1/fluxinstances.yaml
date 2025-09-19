@@ -53,6 +53,10 @@ spec:
                       default: false
                       description: "Multitenant enables the multitenancy lockdown. Defaults to false."
                       type: "boolean"
+                    multitenantWorkloadIdentity:
+                      default: false
+                      description: "MultitenantWorkloadIdentity enables the multitenancy lockdown for\nworkload identity. Defaults to false."
+                      type: "boolean"
                     networkPolicy:
                       default: true
                       description: "NetworkPolicy restricts network access to the current namespace.\nDefaults to true."
@@ -67,8 +71,14 @@ spec:
                         - "medium"
                         - "large"
                       type: "string"
+                    tenantDefaultDecryptionServiceAccount:
+                      description: "TenantDefaultDecryptionServiceAccount is the name of the service account\nto use as default for kustomize-controller SOPS decryption when the\nmultitenant lockdown for workload identity is enabled. Defaults to the\n'default' service account from the tenant namespace."
+                      type: "string"
+                    tenantDefaultKubeConfigServiceAccount:
+                      description: "TenantDefaultKubeConfigServiceAccount is the name of the service account\nto use as default for kustomize-controller and helm-controller remote\ncluster access via spec.kubeConfig.configMapRef when the multitenant\nlockdown for workload identity is enabled. Defaults to the 'default'\nservice account from the tenant namespace."
+                      type: "string"
                     tenantDefaultServiceAccount:
-                      description: "TenantDefaultServiceAccount is the name of the service account\nto use as default when the multitenant lockdown is enabled.\nDefaults to the 'default' service account from the tenant namespace."
+                      description: "TenantDefaultServiceAccount is the name of the service account\nto use as default when the multitenant lockdown is enabled, for\nkustomize-controller and helm-controller.\nThis field will also be used for multitenant workload identity\nlockdown for source-controller, notification-controller,\nimage-reflector-controller and image-automation-controller.\nDefaults to the 'default' service account from the tenant namespace."
                       type: "string"
                     type:
                       default: "kubernetes"
@@ -81,6 +91,9 @@ spec:
                         - "gcp"
                       type: "string"
                   type: "object"
+                  x-kubernetes-validations:
+                    - message: ".objectLevelWorkloadIdentity must be set to true when .multitenantWorkloadIdentity is set to true"
+                      rule: "(has(self.objectLevelWorkloadIdentity) && self.objectLevelWorkloadIdentity) || !has(self.multitenantWorkloadIdentity) || !self.multitenantWorkloadIdentity"
                 commonMetadata:
                   description: "CommonMetadata specifies the common labels and annotations that are\napplied to all resources. Any existing label or annotation will be\noverridden if its key matches a common one."
                   properties:
