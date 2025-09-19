@@ -30,7 +30,7 @@ spec:
               description: "VaultAuthSpec defines the desired state of VaultAuth"
               properties:
                 allowedNamespaces:
-                  description: "AllowedNamespaces Kubernetes Namespaces which are allow-listed for use with this AuthMethod.\nThis field allows administrators to customize which Kubernetes namespaces are authorized to\nuse with this AuthMethod. While Vault will still enforce its own rules, this has the added\nconfigurability of restricting which VaultAuthMethods can be used by which namespaces.\nAccepted values:\n[]{\"*\"} - wildcard, all namespaces.\n[]{\"a\", \"b\"} - list of namespaces.\nunset - disallow all namespaces except the Operator's the VaultAuthMethod's namespace, this\nis the default behavior."
+                  description: "AllowedNamespaces Kubernetes Namespaces which are allow-listed for use with this AuthMethod.\nThis field allows administrators to customize which Kubernetes namespaces are authorized to\nuse with this AuthMethod. While Vault will still enforce its own rules, this has the added\nconfigurability of restricting which VaultAuthMethods can be used by which namespaces.\nYou only need to set allowedNamespaces when you want to control access from a resource in\na different namespace than the VaultAuth it references. Secret resources in\nthe same namespace as the VaultAuth bypass this check.\nAccepted values:\n[]{\"*\"} - wildcard, all namespaces.\n[]{\"a\", \"b\"} - list of namespaces.\nunset - disallow all namespaces except the Operator's the VaultAuthMethod's namespace, this\nis the default behavior."
                   items:
                     type: "string"
                   type: "array"
@@ -204,7 +204,7 @@ spec:
                       type: "string"
                     namespace:
                       description: "Namespace of the VaultAuthGlobal resource. If not provided, the namespace of\nthe referring VaultAuth resource is used."
-                      pattern: "^([a-z0-9.-]{1,253})$"
+                      pattern: "^([a-z0-9-]{1,63})$"
                       type: "string"
                   type: "object"
                 vaultConnectionRef:
@@ -215,6 +215,7 @@ spec:
               description: "VaultAuthStatus defines the observed state of VaultAuth"
               properties:
                 conditions:
+                  description: "Conditions hold information that can be used by other apps to determine the\nhealth of the resource instance."
                   items:
                     description: "Condition contains details for one aspect of the current state of this API Resource."
                     properties:
@@ -258,8 +259,10 @@ spec:
                     type: "object"
                   type: "array"
                 error:
+                  description: "Error is a human-readable error message indicating why the VaultAuth is invalid."
                   type: "string"
                 specHash:
+                  description: "SpecHash is a SHA256 hash of the spec, used to determine if the spec has changed."
                   type: "string"
                 valid:
                   description: "Valid auth mechanism."

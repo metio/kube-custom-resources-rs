@@ -445,6 +445,11 @@ spec:
                         type: "array"
                     type: "object"
                   type: "array"
+                remoteRecordStatuses:
+                  additionalProperties:
+                    x-kubernetes-preserve-unknown-fields: true
+                  description: "remoteRecordStatuses is a map of cluster IDs and their unique DNSRecordStatus as raw JSON.\n\n\nA CRD can't reference a type within itself so the `apiextensionsv1.JSON` type is used.\nUse GetRemoteRecordStatuses to get the converted type."
+                  type: "object"
                 validFor:
                   description: "ValidFor indicates duration since the last reconciliation we consider data in the record to be valid"
                   type: "string"

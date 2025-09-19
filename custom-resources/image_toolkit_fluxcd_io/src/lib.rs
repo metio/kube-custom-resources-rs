@@ -3,6 +3,10 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 
 # Available Custom Resources
 
+## image.toolkit.fluxcd.io/v1
+- `ImageUpdateAutomation`
+- `ImagePolicy`
+- `ImageRepository`
 ## image.toolkit.fluxcd.io/v1beta1
 - `ImageUpdateAutomation`
 - `ImagePolicy`
@@ -12,6 +16,8 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `ImagePolicy`
 - `ImageRepository`
 */
+#[cfg(feature = "v1")]
+pub mod v1;
 #[cfg(feature = "v1beta1")]
 pub mod v1beta1;
 #[cfg(feature = "v1beta2")]
