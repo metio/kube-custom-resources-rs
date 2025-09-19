@@ -12,6 +12,7 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 ## Available Custom Resources
 
 ### gateway.networking.k8s.io/v1
+- `BackendTLSPolicy`
 - `GatewayClass`
 - `Gateway`
 - `GRPCRoute`

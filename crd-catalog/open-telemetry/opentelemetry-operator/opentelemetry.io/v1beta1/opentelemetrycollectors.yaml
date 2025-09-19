@@ -3738,6 +3738,8 @@ spec:
                       - "whenUnsatisfiable"
                     type: "object"
                   type: "array"
+                trafficDistribution:
+                  type: "string"
                 upgradeStrategy:
                   enum:
                     - "automatic"

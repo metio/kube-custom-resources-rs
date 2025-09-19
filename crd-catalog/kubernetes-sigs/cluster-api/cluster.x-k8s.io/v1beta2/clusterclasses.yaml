@@ -340,6 +340,16 @@ spec:
                   required:
                     - "templateRef"
                   type: "object"
+                kubernetesVersions:
+                  description: "kubernetesVersions is the list of Kubernetes versions that can be\nused for clusters using this ClusterClass.\nThe list of version must be ordered from the older to the newer version, and there should be\nat least one version for every minor in between the first and the last version."
+                  items:
+                    maxLength: 256
+                    minLength: 1
+                    type: "string"
+                  maxItems: 100
+                  minItems: 1
+                  type: "array"
+                  x-kubernetes-list-type: "atomic"
                 patches:
                   description: "patches defines the patches which are applied to customize\nreferenced templates of a ClusterClass.\nNote: Patches will be applied in the order of the array."
                   items:

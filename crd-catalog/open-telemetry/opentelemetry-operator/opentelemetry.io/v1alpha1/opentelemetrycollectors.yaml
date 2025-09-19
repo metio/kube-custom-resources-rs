@@ -3484,6 +3484,8 @@ spec:
                       - "whenUnsatisfiable"
                     type: "object"
                   type: "array"
+                trafficDistribution:
+                  type: "string"
                 updateStrategy:
                   properties:
                     rollingUpdate:

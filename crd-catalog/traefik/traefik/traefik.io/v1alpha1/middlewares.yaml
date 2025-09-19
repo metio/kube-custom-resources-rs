@@ -325,10 +325,11 @@ spec:
                               type: "object"
                           type: "object"
                         strategy:
-                          description: "Strategy defines the load balancing strategy between the servers.\nSupported values are: wrr (Weighed round-robin) and p2c (Power of two choices).\nRoundRobin value is deprecated and supported for backward compatibility."
+                          description: "Strategy defines the load balancing strategy between the servers.\nSupported values are: wrr (Weighed round-robin), p2c (Power of two choices), and hrw (Highest Random Weight).\nRoundRobin value is deprecated and supported for backward compatibility."
                           enum:
                             - "wrr"
                             - "p2c"
+                            - "hrw"
                             - "RoundRobin"
                           type: "string"
                         weight:

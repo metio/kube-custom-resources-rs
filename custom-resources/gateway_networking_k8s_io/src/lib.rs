@@ -4,6 +4,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 # Available Custom Resources
 
 ## gateway.networking.k8s.io/v1
+- `BackendTLSPolicy`
 - `GatewayClass`
 - `Gateway`
 - `GRPCRoute`

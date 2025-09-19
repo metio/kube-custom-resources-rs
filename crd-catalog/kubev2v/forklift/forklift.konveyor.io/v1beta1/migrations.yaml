@@ -294,6 +294,9 @@ spec:
                       namespace:
                         description: "The VM Namespace\nOnly relevant for an openshift source."
                         type: "string"
+                      nbdeClevis:
+                        description: "Attempt passphrase-less unlocking for all devices with Clevis, over the network.\nConversion pod running on target cluster will attempt to connect to a TANG server, make sure TANG\nserver is available on target network.\nhttps://docs.redhat.com/en/documentation/red_hat_enterprise_linux/8/html/security_hardening/configuring-automated-unlocking-of-encrypted-volumes-using-policy-based-decryption_security-hardening\nIf both nbdeClevis and LUKS are configured, nbdeClevis takes precedence."
+                        type: "boolean"
                       networkNameTemplate:
                         description: "NetworkNameTemplate is a template for generating network interface names in the target virtual machine.\nIt follows Go template syntax and has access to the following variables:\n  - .NetworkName: If target network is multus, name of the Multus network attachment definition, empty otherwise.\n  - .NetworkNamespace: If target network is multus, namespace where the network attachment definition is located.\n  - .NetworkType: type of the network (\"Multus\" or \"Pod\")\n  - .NetworkIndex: sequential index of the network interface (0-based)\nThe template can be used to customize network interface names based on target network configuration.\nNote:\n  - This template will override at the plan level template\n  - If not specified on VM level and on Plan leverl, default naming conventions will be used\nExamples:\n  \"net-{{.NetworkIndex}}\"\n  \"{{if eq .NetworkType \"Pod\"}}pod{{else}}multus-{{.NetworkIndex}}{{end}}\""
                         type: "string"

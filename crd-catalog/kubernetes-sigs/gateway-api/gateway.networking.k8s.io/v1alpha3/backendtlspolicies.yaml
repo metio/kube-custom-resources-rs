@@ -3,7 +3,7 @@ kind: "CustomResourceDefinition"
 metadata:
   annotations:
     api-approved.kubernetes.io: "https://github.com/kubernetes-sigs/gateway-api/pull/3328"
-    gateway.networking.k8s.io/bundle-version: "v1.3.0"
+    gateway.networking.k8s.io/bundle-version: "v1.4.0-rc.1"
     gateway.networking.k8s.io/channel: "experimental"
   labels:
     gateway.networking.k8s.io/policy: "Direct"
@@ -21,10 +21,8 @@ spec:
     singular: "backendtlspolicy"
   scope: "Namespaced"
   versions:
-    - additionalPrinterColumns:
-        - jsonPath: ".metadata.creationTimestamp"
-          name: "Age"
-          type: "date"
+    - deprecated: true
+      deprecationWarning: "The v1alpha3 version of BackendTLSPolicy has been deprecated and will be removed in a future release of the API. Please upgrade to v1."
       name: "v1alpha3"
       schema:
         openAPIV3Schema:
@@ -304,9 +302,7 @@ spec:
             - "spec"
           type: "object"
       served: true
-      storage: true
-      subresources:
-        status: {}
+      storage: false
 status:
   acceptedNames:
     kind: ""

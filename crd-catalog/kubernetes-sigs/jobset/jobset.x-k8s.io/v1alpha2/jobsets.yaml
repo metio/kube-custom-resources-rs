@@ -81,7 +81,7 @@ spec:
                     rules:
                       description: "List of failure policy rules for this JobSet.\nFor a given Job failure, the rules will be evaluated in order,\nand only the first matching rule will be executed.\nIf no matching rule is found, the RestartJobSet action is applied."
                       items:
-                        description: "FailurePolicyRule defines a FailurePolicyAction to be executed if a child job\nfails due to a reason listed in OnJobFailureReasons."
+                        description: "FailurePolicyRule defines a FailurePolicyAction to be executed if a child job\nfails due to a reason listed in OnJobFailureReasons and a message pattern\nlisted in OnJobFailureMessagePatterns. The rule must match both the job\nfailure reason and the job failure message. The rules are evaluated in\norder and the first matching rule is executed."
                         properties:
                           action:
                             description: "The action to take if the rule is matched."
@@ -93,8 +93,13 @@ spec:
                           name:
                             description: "The name of the failure policy rule.\nThe name is defaulted to 'failurePolicyRuleN' where N is the index of the failure policy rule.\nThe name must match the regular expression \"^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$\"."
                             type: "string"
+                          onJobFailureMessagePatterns:
+                            description: "The requirement on the job failure message. The requirement is satisfied\nif at least one pattern (regex) matches the job failure message. An\nempty list matches any job failure message.\nThe syntax of the regular expressions accepted is the same general\nsyntax used by Perl, Python, and other languages. More precisely, it is\nthe syntax accepted by RE2 and described at https://golang.org/s/re2syntax,\nexcept for \\C. For an overview of the syntax, see\nhttps://pkg.go.dev/regexp/syntax."
+                            items:
+                              type: "string"
+                            type: "array"
                           onJobFailureReasons:
-                            description: "The requirement on the job failure reasons. The requirement\nis satisfied if at least one reason matches the list.\nThe rules are evaluated in order, and the first matching\nrule is executed.\nAn empty list applies the rule to any job failure reason."
+                            description: "The requirement on the job failure reasons. The requirement is satisfied\nif at least one reason matches the list. An empty list matches any job\nfailure reason."
                             items:
                               type: "string"
                             type: "array"
