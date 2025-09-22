@@ -408,4 +408,3 @@ pub struct PushSecretStatusSyncedPushSecretsMatchRemoteRef {
     pub remote_key: String,
 }
 
-pub type PushSecretStatusSyncedPushSecrets = BTreeMap<String, PushSecretData>;
