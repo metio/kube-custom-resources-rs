@@ -1151,6 +1151,10 @@ Files: crd-catalog/perses/perses-operator/*
 Copyright: The perses/perses-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/planetscale/vitess-operator/*
+Copyright: The planetscale/vitess-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/pravega/zookeeper-operator/*
 Copyright: The pravega/zookeeper-operator Authors
 License: Apache-2.0
