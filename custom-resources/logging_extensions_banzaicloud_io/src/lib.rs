@@ -4,6 +4,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 # Available Custom Resources
 
 ## logging-extensions.banzaicloud.io/v1alpha1
+- `EventTailer`
 - `HostTailer`
 */
 #[cfg(feature = "v1alpha1")]
