@@ -3176,6 +3176,22 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ignores: &[],
     },
     UpstreamSource {
+        project_name: "planetscale/vitess-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/planetscale/vitess-operator/blob/main/deploy/crds/planetscale.com_etcdlockservers.yaml",
+            "https://github.com/planetscale/vitess-operator/blob/main/deploy/crds/planetscale.com_vitessbackups.yaml",
+            "https://github.com/planetscale/vitess-operator/blob/main/deploy/crds/planetscale.com_vitessbackupschedules.yaml",
+            "https://github.com/planetscale/vitess-operator/blob/main/deploy/crds/planetscale.com_vitessbackupstorages.yaml",
+            "https://github.com/planetscale/vitess-operator/blob/main/deploy/crds/planetscale.com_vitesscells.yaml",
+            "https://github.com/planetscale/vitess-operator/blob/main/deploy/crds/planetscale.com_vitessclusters.yaml",
+            "https://github.com/planetscale/vitess-operator/blob/main/deploy/crds/planetscale.com_vitesskeyspaces.yaml",
+            "https://github.com/planetscale/vitess-operator/blob/main/deploy/crds/planetscale.com_vitessshards.yaml",
+
+        ],
+        ignores: &[],
+    },
+    UpstreamSource {
         project_name: "pravega/zookeeper-operator",
         license: APACHE_V2,
         urls: &[
