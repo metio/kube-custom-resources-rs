@@ -104,7 +104,7 @@ spec:
                         - type: "integer"
                         - type: "string"
                       default: 1
-                      description: "weight gives a comparative advantage to this ClusterQueue\nor Cohort when competing for unused resources in the\nCohort.  The share is based on the dominant resource usage\nabove nominal quotas for each resource, divided by the\nweight.  Admission prioritizes scheduling workloads from\nClusterQueues and Cohorts with the lowest share and\npreempting workloads from the ClusterQueues and Cohorts\nwith the highest share.  A zero weight implies infinite\nshare value, meaning that this Node will always be at\ndisadvantage against other ClusterQueues and Cohorts."
+                      description: "weight gives a comparative advantage to this ClusterQueue\nor Cohort when competing for unused resources in the\nCohort.  The share is based on the dominant resource usage\nabove nominal quotas for each resource, divided by the\nweight.  Admission prioritizes scheduling workloads from\nClusterQueues and Cohorts with the lowest share and\npreempting workloads from the ClusterQueues and Cohorts\nwith the highest share.  A zero weight implies infinite\nshare value, meaning that this Node will always be at\ndisadvantage against other ClusterQueues and Cohorts.\nWhen not 0, Weight must be greater than 10^-9."
                       pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                       x-kubernetes-int-or-string: true
                   type: "object"
@@ -208,19 +208,19 @@ spec:
                     - "BestEffortFIFO"
                   type: "string"
                 resourceGroups:
-                  description: "resourceGroups describes groups of resources.\nEach resource group defines the list of resources and a list of flavors\nthat provide quotas for these resources.\nEach resource and each flavor can only form part of one resource group.\nresourceGroups can be up to 16."
+                  description: "resourceGroups describes groups of resources.\nEach resource group defines the list of resources and a list of flavors\nthat provide quotas for these resources.\nEach resource and each flavor can only form part of one resource group.\nresourceGroups can be up to 16, with a max of 256 total flavors across all groups."
                   items:
                     properties:
                       coveredResources:
-                        description: "coveredResources is the list of resources covered by the flavors in this\ngroup.\nExamples: cpu, memory, vendor.com/gpu.\nThe list cannot be empty and it can contain up to 16 resources."
+                        description: "coveredResources is the list of resources covered by the flavors in this\ngroup.\nExamples: cpu, memory, vendor.com/gpu.\nThe list cannot be empty and it can contain up to 64 resources. With a total\nof up to 256 covered resources across all resource groups in the ClusterQueue."
                         items:
                           description: "ResourceName is the name identifying various resources in a ResourceList."
                           type: "string"
-                        maxItems: 16
+                        maxItems: 64
                         minItems: 1
                         type: "array"
                       flavors:
-                        description: "flavors is the list of flavors that provide the resources of this group.\nTypically, different flavors represent different hardware models\n(e.g., gpu models, cpu architectures) or pricing models (on-demand vs spot\ncpus).\nEach flavor MUST list all the resources listed for this group in the same\norder as the .resources field.\nThe list cannot be empty and it can contain up to 16 flavors."
+                        description: "flavors is the list of flavors that provide the resources of this group.\nTypically, different flavors represent different hardware models\n(e.g., gpu models, cpu architectures) or pricing models (on-demand vs spot\ncpus).\nEach flavor MUST list all the resources listed for this group in the same\norder as the .resources field.\nThe list cannot be empty and it can contain up to 64 flavors, with a max of\n256 total flavors across all resource groups in the ClusterQueue."
                         items:
                           properties:
                             name:
@@ -270,7 +270,7 @@ spec:
                             - "name"
                             - "resources"
                           type: "object"
-                        maxItems: 16
+                        maxItems: 64
                         minItems: 1
                         type: "array"
                         x-kubernetes-list-map-keys:

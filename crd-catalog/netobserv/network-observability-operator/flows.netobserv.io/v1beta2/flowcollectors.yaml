@@ -802,7 +802,7 @@ spec:
                                       - "SCTP"
                                     type: "string"
                                   sampling:
-                                    description: "`sampling` is the sampling ratio for the matched packets, overriding the global sampling defined at `spec.agent.ebpf.sampling`."
+                                    description: "`sampling` is the sampling interval for the matched packets, overriding the global sampling defined at `spec.agent.ebpf.sampling`."
                                     format: "int32"
                                     type: "integer"
                                   sourcePorts:
@@ -830,7 +830,7 @@ spec:
                               minItems: 1
                               type: "array"
                             sampling:
-                              description: "`sampling` is the sampling ratio for the matched packets, overriding the global sampling defined at `spec.agent.ebpf.sampling`."
+                              description: "`sampling` is the sampling interval for the matched packets, overriding the global sampling defined at `spec.agent.ebpf.sampling`."
                               format: "int32"
                               type: "integer"
                             sourcePorts:
@@ -1020,7 +1020,7 @@ spec:
                           type: "object"
                         sampling:
                           default: 50
-                          description: "Sampling ratio of the eBPF probe. 100 means one packet on 100 is sent. 0 or 1 means all packets are sampled."
+                          description: "Sampling interval of the eBPF probe. 100 means one packet on 100 is sent. 0 or 1 means all packets are sampled."
                           format: "int32"
                           minimum: 0.0
                           type: "integer"
@@ -1069,7 +1069,7 @@ spec:
                           type: "object"
                         sampling:
                           default: 400
-                          description: "`sampling` is the sampling rate on the reporter. 100 means one flow on 100 is sent.\nTo ensure cluster stability, it is not possible to set a value below 2.\nIf you really want to sample every packet, which might impact the cluster stability,\nrefer to `forceSampleAll`. Alternatively, you can use the eBPF Agent instead of IPFIX."
+                          description: "`sampling` is the sampling interval on the reporter. 100 means one flow on 100 is sent.\nTo ensure cluster stability, it is not possible to set a value below 2.\nIf you really want to sample every packet, which might impact the cluster stability,\nrefer to `forceSampleAll`. Alternatively, you can use the eBPF Agent instead of IPFIX."
                           format: "int32"
                           minimum: 2.0
                           type: "integer"
@@ -2535,7 +2535,7 @@ spec:
                       description: "`advanced` allows setting some aspects of the internal configuration of the Loki clients.\nThis section is aimed mostly for debugging and fine-grained performance optimizations."
                       properties:
                         excludeLabels:
-                          description: "`excludeLabels` is a list of field to be excluded from the list of Loki labels."
+                          description: "`excludeLabels` is a list of fields to be excluded from the list of Loki labels. [Unsupported (*)]."
                           items:
                             type: "string"
                           type: "array"
@@ -2903,7 +2903,7 @@ spec:
                     - message: "Namespace is immutable. If you need to change it, delete and recreate the resource."
                       rule: "self == oldSelf"
                 networkPolicy:
-                  description: "`networkPolicy` defines ingress network policy settings for NetObserv components isolation."
+                  description: "`networkPolicy` defines network policy settings for NetObserv components isolation."
                   properties:
                     additionalNamespaces:
                       description: "`additionalNamespaces` contains additional namespaces allowed to connect to the NetObserv namespace.\nIt provides flexibility in the network policy configuration, but if you need a more specific\nconfiguration, you can disable it and install your own instead."
@@ -2911,7 +2911,8 @@ spec:
                         type: "string"
                       type: "array"
                     enable:
-                      description: "Set `enable` to `true` to deploy network policies on the namespaces used by NetObserv (main and privileged). It is disabled by default.\nThese network policies better isolate the NetObserv components to prevent undesired connections to them.\nTo increase the security of connections, enable this option or create your own network policy."
+                      default: true
+                      description: "Set `enable` to `true` to deploy network policies on the namespaces used by NetObserv (main and privileged). It is disabled by default.\nThese network policies better isolate the NetObserv components to prevent undesired connections to them.\nThis option is enabled by default, disable it to manually manage network policies"
                       type: "boolean"
                   type: "object"
                 processor:
@@ -3598,7 +3599,7 @@ spec:
                           type: "string"
                         sampling:
                           default: 50
-                          description: "`sampling` is the sampling ratio when deduper `mode` is `Sample`. For example, a value of `50` means that 1 flow in 50 is sampled."
+                          description: "`sampling` is the sampling interval when deduper `mode` is `Sample`. For example, a value of `50` means that 1 flow in 50 is sampled."
                           format: "int32"
                           minimum: 0.0
                           type: "integer"
@@ -3620,7 +3621,7 @@ spec:
                             description: "A query that selects the network flows to keep. More information about this query language in https://github.com/netobserv/flowlogs-pipeline/blob/main/docs/filtering.md."
                             type: "string"
                           sampling:
-                            description: "`sampling` is an optional sampling ratio to apply to this filter. For example, a value of `50` means that 1 matching flow in 50 is sampled."
+                            description: "`sampling` is an optional sampling interval to apply to this filter. For example, a value of `50` means that 1 matching flow in 50 is sampled."
                             format: "int32"
                             minimum: 0.0
                             type: "integer"
@@ -3961,13 +3962,69 @@ spec:
                     metrics:
                       description: "`Metrics` define the processor configuration regarding metrics"
                       properties:
-                        disableAlerts:
-                          description: "`disableAlerts` is a list of alerts that should be disabled.\nPossible values are:<br>\n`NetObservNoFlows`, which is triggered when no flows are being observed for a certain period.<br>\n`NetObservLokiError`, which is triggered when flows are being dropped due to Loki errors.<br>"
+                        alerts:
+                          description: "`alerts` is a list of alerts to be created for Prometheus AlertManager, organized by templates and variants [Unsupported (*)].\nThis is currently an experimental feature behind a feature gate. To enable, edit `spec.processor.advanced.env` by adding `EXPERIMENTAL_ALERTS_HEALTH` set to `true`.\nMore information on alerts: https://github.com/netobserv/network-observability-operator/blob/main/docs/Alerts.md"
                           items:
-                            description: "Name of a processor alert.\nPossible values are:<br>\n- `NetObservNoFlows`, which is triggered when no flows are being observed for a certain period.<br>\n- `NetObservLokiError`, which is triggered when flows are being dropped due to Loki errors.<br>"
-                            enum:
-                              - "NetObservNoFlows"
-                              - "NetObservLokiError"
+                            properties:
+                              template:
+                                description: "Alert template name.\nPossible values are: `PacketDropsByKernel`, `PacketDropsByDevice`, `IPsecErrors`, `NetpolDenied`,\n`LatencyHighTrend`, `DNSErrors`, `ExternalEgressHighTrend`, `ExternalIngressHighTrend`, `CrossAZ`.\nMore information on alerts: https://github.com/netobserv/network-observability-operator/blob/main/docs/Alerts.md"
+                                enum:
+                                  - "PacketDropsByKernel"
+                                  - "PacketDropsByDevice"
+                                  - "IPsecErrors"
+                                  - "NetpolDenied"
+                                  - "LatencyHighTrend"
+                                  - "DNSErrors"
+                                  - "ExternalEgressHighTrend"
+                                  - "ExternalIngressHighTrend"
+                                  - "CrossAZ"
+                                type: "string"
+                              variants:
+                                description: "A list of variants for this template"
+                                items:
+                                  properties:
+                                    groupBy:
+                                      description: "Optional grouping criteria, possible values are: `Node`, `Namespace`, `Workload`."
+                                      enum:
+                                        - ""
+                                        - "Node"
+                                        - "Namespace"
+                                        - "Workload"
+                                      type: "string"
+                                    lowVolumeThreshold:
+                                      description: "The low volume threshold allows to ignore metrics with a too low volume of traffic, in order to improve signal-to-noise.\nIt is provided as an absolute rate (bytes per second or packets per second, depending on the context).\nWhen provided, it must be parsable as a float."
+                                      type: "string"
+                                    thresholds:
+                                      description: "Thresholds of the alert per severity.\nThey are expressed as a percentage of errors above which the alert is triggered. They must be parsable as floats."
+                                      properties:
+                                        critical:
+                                          description: "Threshold for severity `critical`. Leave empty to not generate a Critical alert."
+                                          type: "string"
+                                        info:
+                                          description: "Threshold for severity `info`. Leave empty to not generate an Info alert."
+                                          type: "string"
+                                        warning:
+                                          description: "Threshold for severity `warning`. Leave empty to not generate a Warning alert."
+                                          type: "string"
+                                      type: "object"
+                                    trendDuration:
+                                      description: "For trending alerts, the duration interval for baseline comparison. For example, \"2h\" means comparing against a 2-hours average. Defaults to 2h."
+                                      type: "string"
+                                    trendOffset:
+                                      description: "For trending alerts, the time offset for baseline comparison. For example, \"1d\" means comparing against yesterday. Defaults to 1d."
+                                      type: "string"
+                                  required:
+                                    - "thresholds"
+                                  type: "object"
+                                type: "array"
+                            required:
+                              - "template"
+                              - "variants"
+                            type: "object"
+                          type: "array"
+                        disableAlerts:
+                          description: "`disableAlerts` is a list of alert groups that should be disabled from the default set of alerts.\nPossible values are: `NetObservNoFlows`, `NetObservLokiError`, `PacketDropsByKernel`, `PacketDropsByDevice`, `IPsecErrors`, `NetpolDenied`,\n`LatencyHighTrend`, `DNSErrors`, `ExternalEgressHighTrend`, `ExternalIngressHighTrend`, `CrossAZ`.\nMore information on alerts: https://github.com/netobserv/network-observability-operator/blob/main/docs/Alerts.md"
+                          items:
                             type: "string"
                           type: "array"
                         includeList:

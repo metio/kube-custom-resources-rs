@@ -472,7 +472,7 @@ spec:
                     - "name"
                   x-kubernetes-list-type: "map"
                 prober:
-                  description: "prober defines the pecification for the prober to use for probing targets.\nThe prober.URL parameter is required. Targets cannot be probed if left empty."
+                  description: "prober defines the specification for the prober to use for probing targets.\nThe prober.URL parameter is required. Targets cannot be probed if left empty."
                   properties:
                     noProxy:
                       description: "noProxy defines a comma-separated string that can contain IPs, CIDR notation, domain names\nthat should be excluded from proxying. IP and domain names can\ncontain port numbers.\n\nIt requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0."
@@ -860,7 +860,7 @@ spec:
               description: "status defines the status subresource. It is under active development and is updated only when the\n\"StatusForConfigurationResources\" feature gate is enabled.\n\nMost recent observed status of the Probe. Read-only.\nMore info:\nhttps://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#spec-and-status"
               properties:
                 bindings:
-                  description: "bindings defines the list of workload resources (Prometheus or PrometheusAgent) which select the configuration resource."
+                  description: "bindings defines the list of workload resources (Prometheus, PrometheusAgent, or ThanosRuler) which select the configuration resource."
                   items:
                     description: "WorkloadBinding is a link between a configuration resource and a workload resource."
                     properties:
@@ -916,10 +916,11 @@ spec:
                         minLength: 1
                         type: "string"
                       resource:
-                        description: "resource defines the type of resource being referenced (e.g. Prometheus or PrometheusAgent)."
+                        description: "resource defines the type of resource being referenced (e.g. Prometheus, PrometheusAgent, or ThanosRuler)."
                         enum:
                           - "prometheuses"
                           - "prometheusagents"
+                          - "thanosrulers"
                         type: "string"
                     required:
                       - "group"

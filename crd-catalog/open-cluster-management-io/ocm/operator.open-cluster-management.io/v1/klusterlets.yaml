@@ -29,7 +29,7 @@ spec:
               description: "Spec represents the desired deployment configuration of Klusterlet agent."
               properties:
                 clusterName:
-                  description: "ClusterName is the name of the managed cluster to be created on hub.\nThe Klusterlet agent generates a random name if it is not set, or discovers the appropriate cluster name on OpenShift."
+                  description: "clusterName is the name of the managed cluster to be created on hub.\nThe Klusterlet agent generates a random name if it is not set, or discovers the appropriate cluster name on OpenShift."
                   maxLength: 63
                   pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
                   type: "string"
@@ -75,7 +75,7 @@ spec:
                   description: "ImagePullSpec represents the desired image configuration of agent, it takes effect only when\nsingleton mode is set. quay.io/open-cluster-management.io/registration-operator:latest will\nbe used if unspecified"
                   type: "string"
                 namespace:
-                  description: "Namespace is the namespace to deploy the agent on the managed cluster.\nThe namespace must have a prefix of \"open-cluster-management-\", and if it is not set,\nthe namespace of \"open-cluster-management-agent\" is used to deploy agent.\nIn addition, the add-ons are deployed to the namespace of \"{Namespace}-addon\".\nIn the Hosted mode, this namespace still exists on the managed cluster to contain\nnecessary resources, like service accounts, roles and rolebindings, while the agent\nis deployed to the namespace with the same name as klusterlet on the management cluster."
+                  description: "namespace is the namespace to deploy the agent on the managed cluster.\nThe namespace must have a prefix of \"open-cluster-management-\", and if it is not set,\nthe namespace of \"open-cluster-management-agent\" is used to deploy agent.\nIn addition, the add-ons are deployed to the namespace of \"{Namespace}-addon\".\nIn the Hosted mode, this namespace still exists on the managed cluster to contain\nnecessary resources, like service accounts, roles and rolebindings, while the agent\nis deployed to the namespace with the same name as klusterlet on the management cluster."
                   maxLength: 57
                   pattern: "^open-cluster-management-[-a-z0-9]*[a-z0-9]$"
                   type: "string"
