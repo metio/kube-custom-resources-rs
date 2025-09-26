@@ -62,7 +62,7 @@ spec:
                         - type: "integer"
                         - type: "string"
                       default: 1
-                      description: "weight gives a comparative advantage to this ClusterQueue\nor Cohort when competing for unused resources in the\nCohort.  The share is based on the dominant resource usage\nabove nominal quotas for each resource, divided by the\nweight.  Admission prioritizes scheduling workloads from\nClusterQueues and Cohorts with the lowest share and\npreempting workloads from the ClusterQueues and Cohorts\nwith the highest share.  A zero weight implies infinite\nshare value, meaning that this Node will always be at\ndisadvantage against other ClusterQueues and Cohorts."
+                      description: "weight gives a comparative advantage to this ClusterQueue\nor Cohort when competing for unused resources in the\nCohort.  The share is based on the dominant resource usage\nabove nominal quotas for each resource, divided by the\nweight.  Admission prioritizes scheduling workloads from\nClusterQueues and Cohorts with the lowest share and\npreempting workloads from the ClusterQueues and Cohorts\nwith the highest share.  A zero weight implies infinite\nshare value, meaning that this Node will always be at\ndisadvantage against other ClusterQueues and Cohorts.\nWhen not 0, Weight must be greater than 10^-9."
                       pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                       x-kubernetes-int-or-string: true
                   type: "object"
@@ -249,7 +249,7 @@ spec:
                         type: "array"
                         x-kubernetes-list-type: "set"
                       topology:
-                        description: "topology is the topology that associated with this ResourceFlavor.\n\nThis is an alpha field and requires enabling the TopologyAwareScheduling\nfeature gate."
+                        description: "topology is the topology that associated with this ResourceFlavor.\n\nThis is a beta field and requires enabling the TopologyAwareScheduling\nfeature gate."
                         properties:
                           levels:
                             description: "levels define the levels of topology."

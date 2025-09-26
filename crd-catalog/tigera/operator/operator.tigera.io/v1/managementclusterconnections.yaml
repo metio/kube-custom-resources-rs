@@ -155,17 +155,17 @@ spec:
                   description: "Impersonation configures the RBAC impersonation permissions for the guardian deployment. This field is not\napplicable to installation variant Calico as no impersonation is ever used. Otherwise, if this field is left nil,\na default set of permissions will be applied.\nWARNING: If this field is specified, it completely replaces the default permissions.\nFor example, providing an empty `impersonation: {}` block will result in guardian\nhaving NO impersonation permissions. Similarly, if you specify `users` but omit `groups`,\nguardian will lose its default permissions to impersonate groups."
                   properties:
                     groups:
-                      description: "Groups is a list of group names that can be impersonated."
+                      description: "Groups is a list of group names that can be impersonated. An empty list infers all groups can be impersonated,\na null values means none."
                       items:
                         type: "string"
                       type: "array"
                     serviceAccounts:
-                      description: "ServiceAccounts is a list of service account names that can be impersonated."
+                      description: "ServiceAccounts is a list of service account names that can be impersonated. An empty list infers all service accounts can\nbe impersonated, a null values means none."
                       items:
                         type: "string"
                       type: "array"
                     users:
-                      description: "Users is a list of users that can be impersonated."
+                      description: "Users is a list of users that can be impersonated. An empty list infers all users can be impersonated, a null\nvalue means none."
                       items:
                         type: "string"
                       type: "array"

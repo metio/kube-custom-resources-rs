@@ -697,6 +697,7 @@ spec:
                   description: "Preserve the CPU model and flags the VM runs with in its oVirt cluster."
                   type: "boolean"
                 preserveStaticIPs:
+                  default: true
                   description: "Preserve static IPs of VMs in vSphere"
                   type: "boolean"
                 provider:
@@ -764,6 +765,10 @@ spec:
                 pvcNameTemplateUseGenerateName:
                   default: true
                   description: "PVCNameTemplateUseGenerateName indicates if the PVC name template should use generateName instead of name.\nSetting this to false will use the name field of the PVCNameTemplate.\nThis is useful when using a template that generates a name without a suffix.\nFor example, if the template is \"{{.VmName}}-disk-{{.DiskIndex}}\", setting this to false will result in\nthe PVC name being \"{{.VmName}}-disk-{{.DiskIndex}}\", which may not be unique.\nbut will be more predictable.\n**DANGER** When set to false, the generated PVC name may not be unique and may cause conflicts."
+                  type: "boolean"
+                runPreflightInspection:
+                  default: true
+                  description: "RunPreflightInspection controls whether an inspection step on VM base disks is performed before starting the first disk transfer. Applies only to warm migrations from VMWare.\n- true (default): Inspection step runs before transferring any disks and may fail if it detects the migration would fail.\n- false: No inspection is performed before disk transfer."
                   type: "boolean"
                 skipGuestConversion:
                   default: false

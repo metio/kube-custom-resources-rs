@@ -200,6 +200,32 @@ spec:
                                     type: "array"
                                     x-kubernetes-list-type: "atomic"
                                 type: "object"
+                              podCertificate:
+                                description: "Projects an auto-rotating credential bundle (private key and certificate\nchain) that the pod can use either as a TLS client or server.\n\nKubelet generates a private key and uses it to send a\nPodCertificateRequest to the named signer.  Once the signer approves the\nrequest and issues a certificate chain, Kubelet writes the key and\ncertificate chain to the pod filesystem.  The pod does not start until\ncertificates have been issued for each podCertificate projected volume\nsource in its spec.\n\nKubelet will begin trying to rotate the certificate at the time indicated\nby the signer using the PodCertificateRequest.Status.BeginRefreshAt\ntimestamp.\n\nKubelet can write a single file, indicated by the credentialBundlePath\nfield, or separate files, indicated by the keyPath and\ncertificateChainPath fields.\n\nThe credential bundle is a single file in PEM format.  The first PEM\nentry is the private key (in PKCS#8 format), and the remaining PEM\nentries are the certificate chain issued by the signer (typically,\nsigners will return their certificate chain in leaf-to-root order).\n\nPrefer using the credential bundle format, since your application code\ncan read it atomically.  If you use keyPath and certificateChainPath,\nyour application must make two separate file reads. If these coincide\nwith a certificate rotation, it is possible that the private key and leaf\ncertificate you read may not correspond to each other.  Your application\nwill need to check for this condition, and re-read until they are\nconsistent.\n\nThe named signer controls chooses the format of the certificate it\nissues; consult the signer implementation's documentation to learn how to\nuse the certificates it issues."
+                                properties:
+                                  certificateChainPath:
+                                    description: "Write the certificate chain at this path in the projected volume.\n\nMost applications should use credentialBundlePath.  When using keyPath\nand certificateChainPath, your application needs to check that the key\nand leaf certificate are consistent, because it is possible to read the\nfiles mid-rotation."
+                                    type: "string"
+                                  credentialBundlePath:
+                                    description: "Write the credential bundle at this path in the projected volume.\n\nThe credential bundle is a single file that contains multiple PEM blocks.\nThe first PEM block is a PRIVATE KEY block, containing a PKCS#8 private\nkey.\n\nThe remaining blocks are CERTIFICATE blocks, containing the issued\ncertificate chain from the signer (leaf and any intermediates).\n\nUsing credentialBundlePath lets your Pod's application code make a single\natomic read that retrieves a consistent key and certificate chain.  If you\nproject them to separate files, your application code will need to\nadditionally check that the leaf certificate was issued to the key."
+                                    type: "string"
+                                  keyPath:
+                                    description: "Write the key at this path in the projected volume.\n\nMost applications should use credentialBundlePath.  When using keyPath\nand certificateChainPath, your application needs to check that the key\nand leaf certificate are consistent, because it is possible to read the\nfiles mid-rotation."
+                                    type: "string"
+                                  keyType:
+                                    description: "The type of keypair Kubelet will generate for the pod.\n\nValid values are \"RSA3072\", \"RSA4096\", \"ECDSAP256\", \"ECDSAP384\",\n\"ECDSAP521\", and \"ED25519\"."
+                                    type: "string"
+                                  maxExpirationSeconds:
+                                    description: "maxExpirationSeconds is the maximum lifetime permitted for the\ncertificate.\n\nKubelet copies this value verbatim into the PodCertificateRequests it\ngenerates for this projection.\n\nIf omitted, kube-apiserver will set it to 86400(24 hours). kube-apiserver\nwill reject values shorter than 3600 (1 hour).  The maximum allowable\nvalue is 7862400 (91 days).\n\nThe signer implementation is then free to issue a certificate with any\nlifetime *shorter* than MaxExpirationSeconds, but no shorter than 3600\nseconds (1 hour).  This constraint is enforced by kube-apiserver.\n`kubernetes.io` signers will never issue certificates with a lifetime\nlonger than 24 hours."
+                                    format: "int32"
+                                    type: "integer"
+                                  signerName:
+                                    description: "Kubelet's generated CSRs will be addressed to this signer."
+                                    type: "string"
+                                required:
+                                  - "keyType"
+                                  - "signerName"
+                                type: "object"
                               secret:
                                 description: "secret information about the secret data to project"
                                 properties:
@@ -261,7 +287,7 @@ spec:
                                   description: "Resource requirements for a sidecar container"
                                   properties:
                                     claims:
-                                      description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
+                                      description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis field depends on the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                                       items:
                                         description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                         properties:
@@ -305,7 +331,7 @@ spec:
                                   description: "Resource requirements for a sidecar container"
                                   properties:
                                     claims:
-                                      description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
+                                      description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis field depends on the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                                       items:
                                         description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                         properties:
@@ -349,7 +375,7 @@ spec:
                             description: "EnvVar represents an environment variable present in a Container."
                             properties:
                               name:
-                                description: "Name of the environment variable. Must be a C_IDENTIFIER."
+                                description: "Name of the environment variable.\nMay consist of any printable ASCII characters except '='."
                                 type: "string"
                               value:
                                 description: "Variable references $(VAR_NAME) are expanded\nusing the previously defined environment variables in the container and\nany service environment variables. If a variable cannot be resolved,\nthe reference in the input string will be unchanged. Double $$ are reduced\nto a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.\n\"$$(VAR_NAME)\" will produce the string literal \"$(VAR_NAME)\".\nEscaped references will never be expanded, regardless of whether the variable\nexists or not.\nDefaults to \"\"."
@@ -385,6 +411,28 @@ spec:
                                         type: "string"
                                     required:
                                       - "fieldPath"
+                                    type: "object"
+                                    x-kubernetes-map-type: "atomic"
+                                  fileKeyRef:
+                                    description: "FileKeyRef selects a key of the env file.\nRequires the EnvFiles feature gate to be enabled."
+                                    properties:
+                                      key:
+                                        description: "The key within the env file. An invalid key will prevent the pod from starting.\nThe keys defined within a source may consist of any printable ASCII characters except '='.\nDuring Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters."
+                                        type: "string"
+                                      optional:
+                                        default: false
+                                        description: "Specify whether the file or its key must be defined. If the file or key\ndoes not exist, then the env var is not published.\nIf optional is set to true and the specified key does not exist,\nthe environment variable will not be set in the Pod's containers.\n\nIf optional is set to false and the specified key does not exist,\nan error will be returned during Pod creation."
+                                        type: "boolean"
+                                      path:
+                                        description: "The path within the volume from which to select the file.\nMust be relative and may not contain the '..' path or start with '..'."
+                                        type: "string"
+                                      volumeName:
+                                        description: "The name of the volume mount containing the env file."
+                                        type: "string"
+                                    required:
+                                      - "key"
+                                      - "path"
+                                      - "volumeName"
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
                                   resourceFieldRef:
@@ -447,7 +495,7 @@ spec:
                                 type: "object"
                                 x-kubernetes-map-type: "atomic"
                               prefix:
-                                description: "Optional text to prepend to the name of each environment variable. Must be a C_IDENTIFIER."
+                                description: "Optional text to prepend to the name of each environment variable.\nMay consist of any printable ASCII characters except '='."
                                 type: "string"
                               secretRef:
                                 description: "The Secret to select from"
@@ -580,7 +628,7 @@ spec:
                               description: "ResourceRequirements describes the compute resource requirements."
                               properties:
                                 claims:
-                                  description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
+                                  description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis field depends on the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                                   items:
                                     description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                     properties:
@@ -970,7 +1018,7 @@ spec:
                                   description: "Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s))."
                                   properties:
                                     preferredDuringSchedulingIgnoredDuringExecution:
-                                      description: "The scheduler will prefer to schedule pods to nodes that satisfy\nthe anti-affinity expressions specified by this field, but it may choose\na node that violates one or more of the expressions. The node that is\nmost preferred is the one with the greatest sum of weights, i.e.\nfor each node that meets all of the scheduling requirements (resource\nrequest, requiredDuringScheduling anti-affinity expressions, etc.),\ncompute a sum by iterating through the elements of this field and adding\n\"weight\" to the sum if the node has pods which matches the corresponding podAffinityTerm; the\nnode(s) with the highest sum are the most preferred."
+                                      description: "The scheduler will prefer to schedule pods to nodes that satisfy\nthe anti-affinity expressions specified by this field, but it may choose\na node that violates one or more of the expressions. The node that is\nmost preferred is the one with the greatest sum of weights, i.e.\nfor each node that meets all of the scheduling requirements (resource\nrequest, requiredDuringScheduling anti-affinity expressions, etc.),\ncompute a sum by iterating through the elements of this field and subtracting\n\"weight\" from the sum if the node has pods which matches the corresponding podAffinityTerm; the\nnode(s) with the highest sum are the most preferred."
                                       items:
                                         description: "The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)"
                                         properties:
@@ -1186,7 +1234,7 @@ spec:
                               description: "Resource limits for backup jobs. Includes manual, scheduled and replica\ncreate backups"
                               properties:
                                 claims:
-                                  description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
+                                  description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis field depends on the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                                   items:
                                     description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                     properties:
@@ -1744,7 +1792,7 @@ spec:
                                   description: "Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s))."
                                   properties:
                                     preferredDuringSchedulingIgnoredDuringExecution:
-                                      description: "The scheduler will prefer to schedule pods to nodes that satisfy\nthe anti-affinity expressions specified by this field, but it may choose\na node that violates one or more of the expressions. The node that is\nmost preferred is the one with the greatest sum of weights, i.e.\nfor each node that meets all of the scheduling requirements (resource\nrequest, requiredDuringScheduling anti-affinity expressions, etc.),\ncompute a sum by iterating through the elements of this field and adding\n\"weight\" to the sum if the node has pods which matches the corresponding podAffinityTerm; the\nnode(s) with the highest sum are the most preferred."
+                                      description: "The scheduler will prefer to schedule pods to nodes that satisfy\nthe anti-affinity expressions specified by this field, but it may choose\na node that violates one or more of the expressions. The node that is\nmost preferred is the one with the greatest sum of weights, i.e.\nfor each node that meets all of the scheduling requirements (resource\nrequest, requiredDuringScheduling anti-affinity expressions, etc.),\ncompute a sum by iterating through the elements of this field and subtracting\n\"weight\" from the sum if the node has pods which matches the corresponding podAffinityTerm; the\nnode(s) with the highest sum are the most preferred."
                                       items:
                                         description: "The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)"
                                         properties:
@@ -1957,7 +2005,7 @@ spec:
                               description: "Resource requirements for a pgBackRest repository host"
                               properties:
                                 claims:
-                                  description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
+                                  description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis field depends on the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                                   items:
                                     description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                     properties:
@@ -2124,7 +2172,7 @@ spec:
                                       description: "EnvVar represents an environment variable present in a Container."
                                       properties:
                                         name:
-                                          description: "Name of the environment variable. Must be a C_IDENTIFIER."
+                                          description: "Name of the environment variable.\nMay consist of any printable ASCII characters except '='."
                                           type: "string"
                                         value:
                                           description: "Variable references $(VAR_NAME) are expanded\nusing the previously defined environment variables in the container and\nany service environment variables. If a variable cannot be resolved,\nthe reference in the input string will be unchanged. Double $$ are reduced\nto a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.\n\"$$(VAR_NAME)\" will produce the string literal \"$(VAR_NAME)\".\nEscaped references will never be expanded, regardless of whether the variable\nexists or not.\nDefaults to \"\"."
@@ -2160,6 +2208,28 @@ spec:
                                                   type: "string"
                                               required:
                                                 - "fieldPath"
+                                              type: "object"
+                                              x-kubernetes-map-type: "atomic"
+                                            fileKeyRef:
+                                              description: "FileKeyRef selects a key of the env file.\nRequires the EnvFiles feature gate to be enabled."
+                                              properties:
+                                                key:
+                                                  description: "The key within the env file. An invalid key will prevent the pod from starting.\nThe keys defined within a source may consist of any printable ASCII characters except '='.\nDuring Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters."
+                                                  type: "string"
+                                                optional:
+                                                  default: false
+                                                  description: "Specify whether the file or its key must be defined. If the file or key\ndoes not exist, then the env var is not published.\nIf optional is set to true and the specified key does not exist,\nthe environment variable will not be set in the Pod's containers.\n\nIf optional is set to false and the specified key does not exist,\nan error will be returned during Pod creation."
+                                                  type: "boolean"
+                                                path:
+                                                  description: "The path within the volume from which to select the file.\nMust be relative and may not contain the '..' path or start with '..'."
+                                                  type: "string"
+                                                volumeName:
+                                                  description: "The name of the volume mount containing the env file."
+                                                  type: "string"
+                                              required:
+                                                - "key"
+                                                - "path"
+                                                - "volumeName"
                                               type: "object"
                                               x-kubernetes-map-type: "atomic"
                                             resourceFieldRef:
@@ -2208,7 +2278,7 @@ spec:
                                       - "name"
                                     x-kubernetes-list-type: "map"
                                   envFrom:
-                                    description: "List of sources to populate environment variables in the container.\nThe keys defined within a source must be a C_IDENTIFIER. All invalid keys\nwill be reported as an event when the container is starting. When a key exists in multiple\nsources, the value associated with the last source will take precedence.\nValues defined by an Env with a duplicate key will take precedence.\nCannot be updated."
+                                    description: "List of sources to populate environment variables in the container.\nThe keys defined within a source may consist of any printable ASCII characters except '='.\nWhen a key exists in multiple\nsources, the value associated with the last source will take precedence.\nValues defined by an Env with a duplicate key will take precedence.\nCannot be updated."
                                     items:
                                       description: "EnvFromSource represents the source of a set of ConfigMaps or Secrets"
                                       properties:
@@ -2225,7 +2295,7 @@ spec:
                                           type: "object"
                                           x-kubernetes-map-type: "atomic"
                                         prefix:
-                                          description: "Optional text to prepend to the name of each environment variable. Must be a C_IDENTIFIER."
+                                          description: "Optional text to prepend to the name of each environment variable.\nMay consist of any printable ASCII characters except '='."
                                           type: "string"
                                         secretRef:
                                           description: "The Secret to select from"
@@ -2674,7 +2744,7 @@ spec:
                                     description: "Compute Resources required by this container.\nCannot be updated.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                                     properties:
                                       claims:
-                                        description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
+                                        description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis field depends on the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                                         items:
                                           description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                           properties:
@@ -2711,8 +2781,37 @@ spec:
                                         type: "object"
                                     type: "object"
                                   restartPolicy:
-                                    description: "RestartPolicy defines the restart behavior of individual containers in a pod.\nThis field may only be set for init containers, and the only allowed value is \"Always\".\nFor non-init containers or when this field is not specified,\nthe restart behavior is defined by the Pod's restart policy and the container type.\nSetting the RestartPolicy as \"Always\" for the init container will have the following effect:\nthis init container will be continually restarted on\nexit until all regular containers have terminated. Once all regular\ncontainers have completed, all init containers with restartPolicy \"Always\"\nwill be shut down. This lifecycle differs from normal init containers and\nis often referred to as a \"sidecar\" container. Although this init\ncontainer still starts in the init container sequence, it does not wait\nfor the container to complete before proceeding to the next init\ncontainer. Instead, the next init container starts immediately after this\ninit container is started, or after any startupProbe has successfully\ncompleted."
+                                    description: "RestartPolicy defines the restart behavior of individual containers in a pod.\nThis overrides the pod-level restart policy. When this field is not specified,\nthe restart behavior is defined by the Pod's restart policy and the container type.\nAdditionally, setting the RestartPolicy as \"Always\" for the init container will\nhave the following effect:\nthis init container will be continually restarted on\nexit until all regular containers have terminated. Once all regular\ncontainers have completed, all init containers with restartPolicy \"Always\"\nwill be shut down. This lifecycle differs from normal init containers and\nis often referred to as a \"sidecar\" container. Although this init\ncontainer still starts in the init container sequence, it does not wait\nfor the container to complete before proceeding to the next init\ncontainer. Instead, the next init container starts immediately after this\ninit container is started, or after any startupProbe has successfully\ncompleted."
                                     type: "string"
+                                  restartPolicyRules:
+                                    description: "Represents a list of rules to be checked to determine if the\ncontainer should be restarted on exit. The rules are evaluated in\norder. Once a rule matches a container exit condition, the remaining\nrules are ignored. If no rule matches the container exit condition,\nthe Container-level restart policy determines the whether the container\nis restarted or not. Constraints on the rules:\n- At most 20 rules are allowed.\n- Rules can have the same action.\n- Identical rules are not forbidden in validations.\nWhen rules are specified, container MUST set RestartPolicy explicitly\neven it if matches the Pod's RestartPolicy."
+                                    items:
+                                      description: "ContainerRestartRule describes how a container exit is handled."
+                                      properties:
+                                        action:
+                                          description: "Specifies the action taken on a container exit if the requirements\nare satisfied. The only possible value is \"Restart\" to restart the\ncontainer."
+                                          type: "string"
+                                        exitCodes:
+                                          description: "Represents the exit codes to check on container exits."
+                                          properties:
+                                            operator:
+                                              description: "Represents the relationship between the container exit code(s) and the\nspecified values. Possible values are:\n- In: the requirement is satisfied if the container exit code is in the\n  set of specified values.\n- NotIn: the requirement is satisfied if the container exit code is\n  not in the set of specified values."
+                                              type: "string"
+                                            values:
+                                              description: "Specifies the set of values to check for container exit codes.\nAt most 255 elements are allowed."
+                                              items:
+                                                format: "int32"
+                                                type: "integer"
+                                              type: "array"
+                                              x-kubernetes-list-type: "set"
+                                          required:
+                                            - "operator"
+                                          type: "object"
+                                      required:
+                                        - "action"
+                                      type: "object"
+                                    type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                   securityContext:
                                     description: "SecurityContext defines the security options the container should be run with.\nIf set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.\nMore info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/"
                                     properties:
@@ -3321,7 +3420,7 @@ spec:
                                         description: "storageClassName is the name of the StorageClass required by the claim.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1"
                                         type: "string"
                                       volumeAttributesClassName:
-                                        description: "volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.\nIf specified, the CSI driver will create or update the volume with the attributes defined\nin the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,\nit can be changed after the claim is created. An empty string value means that no VolumeAttributesClass\nwill be applied to the claim but it's not allowed to reset this field to empty string once it is set.\nIf unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass\nwill be set by the persistentvolume controller if it exists.\nIf the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be\nset to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource\nexists.\nMore info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/\n(Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default)."
+                                        description: "volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.\nIf specified, the CSI driver will create or update the volume with the attributes defined\nin the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,\nit can be changed after the claim is created. An empty string or nil value indicates that no\nVolumeAttributesClass will be applied to the claim. If the claim enters an Infeasible error state,\nthis field can be reset to its previous value (including nil) to cancel the modification.\nIf the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be\nset to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource\nexists.\nMore info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/"
                                         type: "string"
                                       volumeMode:
                                         description: "volumeMode defines what type of volume is required by the claim.\nValue of Filesystem is implied when not included in claim spec."
@@ -3692,7 +3791,7 @@ spec:
                                   description: "Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s))."
                                   properties:
                                     preferredDuringSchedulingIgnoredDuringExecution:
-                                      description: "The scheduler will prefer to schedule pods to nodes that satisfy\nthe anti-affinity expressions specified by this field, but it may choose\na node that violates one or more of the expressions. The node that is\nmost preferred is the one with the greatest sum of weights, i.e.\nfor each node that meets all of the scheduling requirements (resource\nrequest, requiredDuringScheduling anti-affinity expressions, etc.),\ncompute a sum by iterating through the elements of this field and adding\n\"weight\" to the sum if the node has pods which matches the corresponding podAffinityTerm; the\nnode(s) with the highest sum are the most preferred."
+                                      description: "The scheduler will prefer to schedule pods to nodes that satisfy\nthe anti-affinity expressions specified by this field, but it may choose\na node that violates one or more of the expressions. The node that is\nmost preferred is the one with the greatest sum of weights, i.e.\nfor each node that meets all of the scheduling requirements (resource\nrequest, requiredDuringScheduling anti-affinity expressions, etc.),\ncompute a sum by iterating through the elements of this field and subtracting\n\"weight\" from the sum if the node has pods which matches the corresponding podAffinityTerm; the\nnode(s) with the highest sum are the most preferred."
                                       items:
                                         description: "The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)"
                                         properties:
@@ -3924,7 +4023,7 @@ spec:
                               description: "Resource requirements for the pgBackRest restore Job."
                               properties:
                                 claims:
-                                  description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
+                                  description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis field depends on the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                                   items:
                                     description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                     properties:
@@ -3997,7 +4096,7 @@ spec:
                                   description: "Resource requirements for a sidecar container"
                                   properties:
                                     claims:
-                                      description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
+                                      description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis field depends on the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                                       items:
                                         description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                         properties:
@@ -4041,7 +4140,7 @@ spec:
                                   description: "Resource requirements for a sidecar container"
                                   properties:
                                     claims:
-                                      description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
+                                      description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis field depends on the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                                       items:
                                         description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                         properties:
@@ -4443,7 +4542,7 @@ spec:
                               description: "Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s))."
                               properties:
                                 preferredDuringSchedulingIgnoredDuringExecution:
-                                  description: "The scheduler will prefer to schedule pods to nodes that satisfy\nthe anti-affinity expressions specified by this field, but it may choose\na node that violates one or more of the expressions. The node that is\nmost preferred is the one with the greatest sum of weights, i.e.\nfor each node that meets all of the scheduling requirements (resource\nrequest, requiredDuringScheduling anti-affinity expressions, etc.),\ncompute a sum by iterating through the elements of this field and adding\n\"weight\" to the sum if the node has pods which matches the corresponding podAffinityTerm; the\nnode(s) with the highest sum are the most preferred."
+                                  description: "The scheduler will prefer to schedule pods to nodes that satisfy\nthe anti-affinity expressions specified by this field, but it may choose\na node that violates one or more of the expressions. The node that is\nmost preferred is the one with the greatest sum of weights, i.e.\nfor each node that meets all of the scheduling requirements (resource\nrequest, requiredDuringScheduling anti-affinity expressions, etc.),\ncompute a sum by iterating through the elements of this field and subtracting\n\"weight\" from the sum if the node has pods which matches the corresponding podAffinityTerm; the\nnode(s) with the highest sum are the most preferred."
                                   items:
                                     description: "The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)"
                                     properties:
@@ -4792,6 +4891,32 @@ spec:
                                     type: "array"
                                     x-kubernetes-list-type: "atomic"
                                 type: "object"
+                              podCertificate:
+                                description: "Projects an auto-rotating credential bundle (private key and certificate\nchain) that the pod can use either as a TLS client or server.\n\nKubelet generates a private key and uses it to send a\nPodCertificateRequest to the named signer.  Once the signer approves the\nrequest and issues a certificate chain, Kubelet writes the key and\ncertificate chain to the pod filesystem.  The pod does not start until\ncertificates have been issued for each podCertificate projected volume\nsource in its spec.\n\nKubelet will begin trying to rotate the certificate at the time indicated\nby the signer using the PodCertificateRequest.Status.BeginRefreshAt\ntimestamp.\n\nKubelet can write a single file, indicated by the credentialBundlePath\nfield, or separate files, indicated by the keyPath and\ncertificateChainPath fields.\n\nThe credential bundle is a single file in PEM format.  The first PEM\nentry is the private key (in PKCS#8 format), and the remaining PEM\nentries are the certificate chain issued by the signer (typically,\nsigners will return their certificate chain in leaf-to-root order).\n\nPrefer using the credential bundle format, since your application code\ncan read it atomically.  If you use keyPath and certificateChainPath,\nyour application must make two separate file reads. If these coincide\nwith a certificate rotation, it is possible that the private key and leaf\ncertificate you read may not correspond to each other.  Your application\nwill need to check for this condition, and re-read until they are\nconsistent.\n\nThe named signer controls chooses the format of the certificate it\nissues; consult the signer implementation's documentation to learn how to\nuse the certificates it issues."
+                                properties:
+                                  certificateChainPath:
+                                    description: "Write the certificate chain at this path in the projected volume.\n\nMost applications should use credentialBundlePath.  When using keyPath\nand certificateChainPath, your application needs to check that the key\nand leaf certificate are consistent, because it is possible to read the\nfiles mid-rotation."
+                                    type: "string"
+                                  credentialBundlePath:
+                                    description: "Write the credential bundle at this path in the projected volume.\n\nThe credential bundle is a single file that contains multiple PEM blocks.\nThe first PEM block is a PRIVATE KEY block, containing a PKCS#8 private\nkey.\n\nThe remaining blocks are CERTIFICATE blocks, containing the issued\ncertificate chain from the signer (leaf and any intermediates).\n\nUsing credentialBundlePath lets your Pod's application code make a single\natomic read that retrieves a consistent key and certificate chain.  If you\nproject them to separate files, your application code will need to\nadditionally check that the leaf certificate was issued to the key."
+                                    type: "string"
+                                  keyPath:
+                                    description: "Write the key at this path in the projected volume.\n\nMost applications should use credentialBundlePath.  When using keyPath\nand certificateChainPath, your application needs to check that the key\nand leaf certificate are consistent, because it is possible to read the\nfiles mid-rotation."
+                                    type: "string"
+                                  keyType:
+                                    description: "The type of keypair Kubelet will generate for the pod.\n\nValid values are \"RSA3072\", \"RSA4096\", \"ECDSAP256\", \"ECDSAP384\",\n\"ECDSAP521\", and \"ED25519\"."
+                                    type: "string"
+                                  maxExpirationSeconds:
+                                    description: "maxExpirationSeconds is the maximum lifetime permitted for the\ncertificate.\n\nKubelet copies this value verbatim into the PodCertificateRequests it\ngenerates for this projection.\n\nIf omitted, kube-apiserver will set it to 86400(24 hours). kube-apiserver\nwill reject values shorter than 3600 (1 hour).  The maximum allowable\nvalue is 7862400 (91 days).\n\nThe signer implementation is then free to issue a certificate with any\nlifetime *shorter* than MaxExpirationSeconds, but no shorter than 3600\nseconds (1 hour).  This constraint is enforced by kube-apiserver.\n`kubernetes.io` signers will never issue certificates with a lifetime\nlonger than 24 hours."
+                                    format: "int32"
+                                    type: "integer"
+                                  signerName:
+                                    description: "Kubelet's generated CSRs will be addressed to this signer."
+                                    type: "string"
+                                required:
+                                  - "keyType"
+                                  - "signerName"
+                                type: "object"
                               secret:
                                 description: "secret information about the secret data to project"
                                 properties:
@@ -5021,7 +5146,7 @@ spec:
                                       description: "storageClassName is the name of the StorageClass required by the claim.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1"
                                       type: "string"
                                     volumeAttributesClassName:
-                                      description: "volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.\nIf specified, the CSI driver will create or update the volume with the attributes defined\nin the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,\nit can be changed after the claim is created. An empty string value means that no VolumeAttributesClass\nwill be applied to the claim but it's not allowed to reset this field to empty string once it is set.\nIf unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass\nwill be set by the persistentvolume controller if it exists.\nIf the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be\nset to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource\nexists.\nMore info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/\n(Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default)."
+                                      description: "volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.\nIf specified, the CSI driver will create or update the volume with the attributes defined\nin the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,\nit can be changed after the claim is created. An empty string or nil value indicates that no\nVolumeAttributesClass will be applied to the claim. If the claim enters an Infeasible error state,\nthis field can be reset to its previous value (including nil) to cancel the modification.\nIf the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be\nset to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource\nexists.\nMore info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/"
                                       type: "string"
                                     volumeMode:
                                       description: "volumeMode defines what type of volume is required by the claim.\nValue of Filesystem is implied when not included in claim spec."
@@ -5040,7 +5165,7 @@ spec:
                           description: "Resource requirements for the pgBackRest restore Job."
                           properties:
                             claims:
-                              description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
+                              description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis field depends on the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                               items:
                                 description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                 properties:
@@ -5457,7 +5582,7 @@ spec:
                               description: "Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s))."
                               properties:
                                 preferredDuringSchedulingIgnoredDuringExecution:
-                                  description: "The scheduler will prefer to schedule pods to nodes that satisfy\nthe anti-affinity expressions specified by this field, but it may choose\na node that violates one or more of the expressions. The node that is\nmost preferred is the one with the greatest sum of weights, i.e.\nfor each node that meets all of the scheduling requirements (resource\nrequest, requiredDuringScheduling anti-affinity expressions, etc.),\ncompute a sum by iterating through the elements of this field and adding\n\"weight\" to the sum if the node has pods which matches the corresponding podAffinityTerm; the\nnode(s) with the highest sum are the most preferred."
+                                  description: "The scheduler will prefer to schedule pods to nodes that satisfy\nthe anti-affinity expressions specified by this field, but it may choose\na node that violates one or more of the expressions. The node that is\nmost preferred is the one with the greatest sum of weights, i.e.\nfor each node that meets all of the scheduling requirements (resource\nrequest, requiredDuringScheduling anti-affinity expressions, etc.),\ncompute a sum by iterating through the elements of this field and subtracting\n\"weight\" from the sum if the node has pods which matches the corresponding podAffinityTerm; the\nnode(s) with the highest sum are the most preferred."
                                   items:
                                     description: "The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)"
                                     properties:
@@ -5685,7 +5810,7 @@ spec:
                           description: "Resource requirements for the pgBackRest restore Job."
                           properties:
                             claims:
-                              description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
+                              description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis field depends on the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                               items:
                                 description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                 properties:
@@ -6180,7 +6305,7 @@ spec:
                       description: "ResourceRequirements describes the compute resource requirements."
                       properties:
                         claims:
-                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
+                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis field depends on the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                           items:
                             description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                             properties:
@@ -6571,7 +6696,7 @@ spec:
                             description: "Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s))."
                             properties:
                               preferredDuringSchedulingIgnoredDuringExecution:
-                                description: "The scheduler will prefer to schedule pods to nodes that satisfy\nthe anti-affinity expressions specified by this field, but it may choose\na node that violates one or more of the expressions. The node that is\nmost preferred is the one with the greatest sum of weights, i.e.\nfor each node that meets all of the scheduling requirements (resource\nrequest, requiredDuringScheduling anti-affinity expressions, etc.),\ncompute a sum by iterating through the elements of this field and adding\n\"weight\" to the sum if the node has pods which matches the corresponding podAffinityTerm; the\nnode(s) with the highest sum are the most preferred."
+                                description: "The scheduler will prefer to schedule pods to nodes that satisfy\nthe anti-affinity expressions specified by this field, but it may choose\na node that violates one or more of the expressions. The node that is\nmost preferred is the one with the greatest sum of weights, i.e.\nfor each node that meets all of the scheduling requirements (resource\nrequest, requiredDuringScheduling anti-affinity expressions, etc.),\ncompute a sum by iterating through the elements of this field and subtracting\n\"weight\" from the sum if the node has pods which matches the corresponding podAffinityTerm; the\nnode(s) with the highest sum are the most preferred."
                                 items:
                                   description: "The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)"
                                   properties:
@@ -6787,7 +6912,7 @@ spec:
                                 description: "Resource requirements for a sidecar container"
                                 properties:
                                   claims:
-                                    description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
+                                    description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis field depends on the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                                     items:
                                       description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                       properties:
@@ -6929,7 +7054,7 @@ spec:
                             description: "storageClassName is the name of the StorageClass required by the claim.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1"
                             type: "string"
                           volumeAttributesClassName:
-                            description: "volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.\nIf specified, the CSI driver will create or update the volume with the attributes defined\nin the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,\nit can be changed after the claim is created. An empty string value means that no VolumeAttributesClass\nwill be applied to the claim but it's not allowed to reset this field to empty string once it is set.\nIf unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass\nwill be set by the persistentvolume controller if it exists.\nIf the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be\nset to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource\nexists.\nMore info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/\n(Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default)."
+                            description: "volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.\nIf specified, the CSI driver will create or update the volume with the attributes defined\nin the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,\nit can be changed after the claim is created. An empty string or nil value indicates that no\nVolumeAttributesClass will be applied to the claim. If the claim enters an Infeasible error state,\nthis field can be reset to its previous value (including nil) to cancel the modification.\nIf the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be\nset to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource\nexists.\nMore info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/"
                             type: "string"
                           volumeMode:
                             description: "volumeMode defines what type of volume is required by the claim.\nValue of Filesystem is implied when not included in claim spec."
@@ -6943,7 +7068,7 @@ spec:
                           description: "EnvVar represents an environment variable present in a Container."
                           properties:
                             name:
-                              description: "Name of the environment variable. Must be a C_IDENTIFIER."
+                              description: "Name of the environment variable.\nMay consist of any printable ASCII characters except '='."
                               type: "string"
                             value:
                               description: "Variable references $(VAR_NAME) are expanded\nusing the previously defined environment variables in the container and\nany service environment variables. If a variable cannot be resolved,\nthe reference in the input string will be unchanged. Double $$ are reduced\nto a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.\n\"$$(VAR_NAME)\" will produce the string literal \"$(VAR_NAME)\".\nEscaped references will never be expanded, regardless of whether the variable\nexists or not.\nDefaults to \"\"."
@@ -6979,6 +7104,28 @@ spec:
                                       type: "string"
                                   required:
                                     - "fieldPath"
+                                  type: "object"
+                                  x-kubernetes-map-type: "atomic"
+                                fileKeyRef:
+                                  description: "FileKeyRef selects a key of the env file.\nRequires the EnvFiles feature gate to be enabled."
+                                  properties:
+                                    key:
+                                      description: "The key within the env file. An invalid key will prevent the pod from starting.\nThe keys defined within a source may consist of any printable ASCII characters except '='.\nDuring Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters."
+                                      type: "string"
+                                    optional:
+                                      default: false
+                                      description: "Specify whether the file or its key must be defined. If the file or key\ndoes not exist, then the env var is not published.\nIf optional is set to true and the specified key does not exist,\nthe environment variable will not be set in the Pod's containers.\n\nIf optional is set to false and the specified key does not exist,\nan error will be returned during Pod creation."
+                                      type: "boolean"
+                                    path:
+                                      description: "The path within the volume from which to select the file.\nMust be relative and may not contain the '..' path or start with '..'."
+                                      type: "string"
+                                    volumeName:
+                                      description: "The name of the volume mount containing the env file."
+                                      type: "string"
+                                  required:
+                                    - "key"
+                                    - "path"
+                                    - "volumeName"
                                   type: "object"
                                   x-kubernetes-map-type: "atomic"
                                 resourceFieldRef:
@@ -7040,7 +7187,7 @@ spec:
                               type: "object"
                               x-kubernetes-map-type: "atomic"
                             prefix:
-                              description: "Optional text to prepend to the name of each environment variable. Must be a C_IDENTIFIER."
+                              description: "Optional text to prepend to the name of each environment variable.\nMay consist of any printable ASCII characters except '='."
                               type: "string"
                             secretRef:
                               description: "The Secret to select from"
@@ -7166,7 +7313,7 @@ spec:
                             description: "ResourceRequirements describes the compute resource requirements."
                             properties:
                               claims:
-                                description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
+                                description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis field depends on the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                                 items:
                                   description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                   properties:
@@ -7228,7 +7375,7 @@ spec:
                                 description: "EnvVar represents an environment variable present in a Container."
                                 properties:
                                   name:
-                                    description: "Name of the environment variable. Must be a C_IDENTIFIER."
+                                    description: "Name of the environment variable.\nMay consist of any printable ASCII characters except '='."
                                     type: "string"
                                   value:
                                     description: "Variable references $(VAR_NAME) are expanded\nusing the previously defined environment variables in the container and\nany service environment variables. If a variable cannot be resolved,\nthe reference in the input string will be unchanged. Double $$ are reduced\nto a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.\n\"$$(VAR_NAME)\" will produce the string literal \"$(VAR_NAME)\".\nEscaped references will never be expanded, regardless of whether the variable\nexists or not.\nDefaults to \"\"."
@@ -7264,6 +7411,28 @@ spec:
                                             type: "string"
                                         required:
                                           - "fieldPath"
+                                        type: "object"
+                                        x-kubernetes-map-type: "atomic"
+                                      fileKeyRef:
+                                        description: "FileKeyRef selects a key of the env file.\nRequires the EnvFiles feature gate to be enabled."
+                                        properties:
+                                          key:
+                                            description: "The key within the env file. An invalid key will prevent the pod from starting.\nThe keys defined within a source may consist of any printable ASCII characters except '='.\nDuring Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters."
+                                            type: "string"
+                                          optional:
+                                            default: false
+                                            description: "Specify whether the file or its key must be defined. If the file or key\ndoes not exist, then the env var is not published.\nIf optional is set to true and the specified key does not exist,\nthe environment variable will not be set in the Pod's containers.\n\nIf optional is set to false and the specified key does not exist,\nan error will be returned during Pod creation."
+                                            type: "boolean"
+                                          path:
+                                            description: "The path within the volume from which to select the file.\nMust be relative and may not contain the '..' path or start with '..'."
+                                            type: "string"
+                                          volumeName:
+                                            description: "The name of the volume mount containing the env file."
+                                            type: "string"
+                                        required:
+                                          - "key"
+                                          - "path"
+                                          - "volumeName"
                                         type: "object"
                                         x-kubernetes-map-type: "atomic"
                                       resourceFieldRef:
@@ -7312,7 +7481,7 @@ spec:
                                 - "name"
                               x-kubernetes-list-type: "map"
                             envFrom:
-                              description: "List of sources to populate environment variables in the container.\nThe keys defined within a source must be a C_IDENTIFIER. All invalid keys\nwill be reported as an event when the container is starting. When a key exists in multiple\nsources, the value associated with the last source will take precedence.\nValues defined by an Env with a duplicate key will take precedence.\nCannot be updated."
+                              description: "List of sources to populate environment variables in the container.\nThe keys defined within a source may consist of any printable ASCII characters except '='.\nWhen a key exists in multiple\nsources, the value associated with the last source will take precedence.\nValues defined by an Env with a duplicate key will take precedence.\nCannot be updated."
                               items:
                                 description: "EnvFromSource represents the source of a set of ConfigMaps or Secrets"
                                 properties:
@@ -7329,7 +7498,7 @@ spec:
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
                                   prefix:
-                                    description: "Optional text to prepend to the name of each environment variable. Must be a C_IDENTIFIER."
+                                    description: "Optional text to prepend to the name of each environment variable.\nMay consist of any printable ASCII characters except '='."
                                     type: "string"
                                   secretRef:
                                     description: "The Secret to select from"
@@ -7778,7 +7947,7 @@ spec:
                               description: "Compute Resources required by this container.\nCannot be updated.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                               properties:
                                 claims:
-                                  description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
+                                  description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis field depends on the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                                   items:
                                     description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                     properties:
@@ -7815,8 +7984,37 @@ spec:
                                   type: "object"
                               type: "object"
                             restartPolicy:
-                              description: "RestartPolicy defines the restart behavior of individual containers in a pod.\nThis field may only be set for init containers, and the only allowed value is \"Always\".\nFor non-init containers or when this field is not specified,\nthe restart behavior is defined by the Pod's restart policy and the container type.\nSetting the RestartPolicy as \"Always\" for the init container will have the following effect:\nthis init container will be continually restarted on\nexit until all regular containers have terminated. Once all regular\ncontainers have completed, all init containers with restartPolicy \"Always\"\nwill be shut down. This lifecycle differs from normal init containers and\nis often referred to as a \"sidecar\" container. Although this init\ncontainer still starts in the init container sequence, it does not wait\nfor the container to complete before proceeding to the next init\ncontainer. Instead, the next init container starts immediately after this\ninit container is started, or after any startupProbe has successfully\ncompleted."
+                              description: "RestartPolicy defines the restart behavior of individual containers in a pod.\nThis overrides the pod-level restart policy. When this field is not specified,\nthe restart behavior is defined by the Pod's restart policy and the container type.\nAdditionally, setting the RestartPolicy as \"Always\" for the init container will\nhave the following effect:\nthis init container will be continually restarted on\nexit until all regular containers have terminated. Once all regular\ncontainers have completed, all init containers with restartPolicy \"Always\"\nwill be shut down. This lifecycle differs from normal init containers and\nis often referred to as a \"sidecar\" container. Although this init\ncontainer still starts in the init container sequence, it does not wait\nfor the container to complete before proceeding to the next init\ncontainer. Instead, the next init container starts immediately after this\ninit container is started, or after any startupProbe has successfully\ncompleted."
                               type: "string"
+                            restartPolicyRules:
+                              description: "Represents a list of rules to be checked to determine if the\ncontainer should be restarted on exit. The rules are evaluated in\norder. Once a rule matches a container exit condition, the remaining\nrules are ignored. If no rule matches the container exit condition,\nthe Container-level restart policy determines the whether the container\nis restarted or not. Constraints on the rules:\n- At most 20 rules are allowed.\n- Rules can have the same action.\n- Identical rules are not forbidden in validations.\nWhen rules are specified, container MUST set RestartPolicy explicitly\neven it if matches the Pod's RestartPolicy."
+                              items:
+                                description: "ContainerRestartRule describes how a container exit is handled."
+                                properties:
+                                  action:
+                                    description: "Specifies the action taken on a container exit if the requirements\nare satisfied. The only possible value is \"Restart\" to restart the\ncontainer."
+                                    type: "string"
+                                  exitCodes:
+                                    description: "Represents the exit codes to check on container exits."
+                                    properties:
+                                      operator:
+                                        description: "Represents the relationship between the container exit code(s) and the\nspecified values. Possible values are:\n- In: the requirement is satisfied if the container exit code is in the\n  set of specified values.\n- NotIn: the requirement is satisfied if the container exit code is\n  not in the set of specified values."
+                                        type: "string"
+                                      values:
+                                        description: "Specifies the set of values to check for container exit codes.\nAt most 255 elements are allowed."
+                                        items:
+                                          format: "int32"
+                                          type: "integer"
+                                        type: "array"
+                                        x-kubernetes-list-type: "set"
+                                    required:
+                                      - "operator"
+                                    type: "object"
+                                required:
+                                  - "action"
+                                type: "object"
+                              type: "array"
+                              x-kubernetes-list-type: "atomic"
                             securityContext:
                               description: "SecurityContext defines the security options the container should be run with.\nIf set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.\nMore info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/"
                               properties:
@@ -8134,7 +8332,7 @@ spec:
                         description: "Compute resources of a PostgreSQL container."
                         properties:
                           claims:
-                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
+                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis field depends on the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                             items:
                               description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                               properties:
@@ -8301,7 +8499,7 @@ spec:
                                 description: "EnvVar represents an environment variable present in a Container."
                                 properties:
                                   name:
-                                    description: "Name of the environment variable. Must be a C_IDENTIFIER."
+                                    description: "Name of the environment variable.\nMay consist of any printable ASCII characters except '='."
                                     type: "string"
                                   value:
                                     description: "Variable references $(VAR_NAME) are expanded\nusing the previously defined environment variables in the container and\nany service environment variables. If a variable cannot be resolved,\nthe reference in the input string will be unchanged. Double $$ are reduced\nto a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.\n\"$$(VAR_NAME)\" will produce the string literal \"$(VAR_NAME)\".\nEscaped references will never be expanded, regardless of whether the variable\nexists or not.\nDefaults to \"\"."
@@ -8337,6 +8535,28 @@ spec:
                                             type: "string"
                                         required:
                                           - "fieldPath"
+                                        type: "object"
+                                        x-kubernetes-map-type: "atomic"
+                                      fileKeyRef:
+                                        description: "FileKeyRef selects a key of the env file.\nRequires the EnvFiles feature gate to be enabled."
+                                        properties:
+                                          key:
+                                            description: "The key within the env file. An invalid key will prevent the pod from starting.\nThe keys defined within a source may consist of any printable ASCII characters except '='.\nDuring Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters."
+                                            type: "string"
+                                          optional:
+                                            default: false
+                                            description: "Specify whether the file or its key must be defined. If the file or key\ndoes not exist, then the env var is not published.\nIf optional is set to true and the specified key does not exist,\nthe environment variable will not be set in the Pod's containers.\n\nIf optional is set to false and the specified key does not exist,\nan error will be returned during Pod creation."
+                                            type: "boolean"
+                                          path:
+                                            description: "The path within the volume from which to select the file.\nMust be relative and may not contain the '..' path or start with '..'."
+                                            type: "string"
+                                          volumeName:
+                                            description: "The name of the volume mount containing the env file."
+                                            type: "string"
+                                        required:
+                                          - "key"
+                                          - "path"
+                                          - "volumeName"
                                         type: "object"
                                         x-kubernetes-map-type: "atomic"
                                       resourceFieldRef:
@@ -8385,7 +8605,7 @@ spec:
                                 - "name"
                               x-kubernetes-list-type: "map"
                             envFrom:
-                              description: "List of sources to populate environment variables in the container.\nThe keys defined within a source must be a C_IDENTIFIER. All invalid keys\nwill be reported as an event when the container is starting. When a key exists in multiple\nsources, the value associated with the last source will take precedence.\nValues defined by an Env with a duplicate key will take precedence.\nCannot be updated."
+                              description: "List of sources to populate environment variables in the container.\nThe keys defined within a source may consist of any printable ASCII characters except '='.\nWhen a key exists in multiple\nsources, the value associated with the last source will take precedence.\nValues defined by an Env with a duplicate key will take precedence.\nCannot be updated."
                               items:
                                 description: "EnvFromSource represents the source of a set of ConfigMaps or Secrets"
                                 properties:
@@ -8402,7 +8622,7 @@ spec:
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
                                   prefix:
-                                    description: "Optional text to prepend to the name of each environment variable. Must be a C_IDENTIFIER."
+                                    description: "Optional text to prepend to the name of each environment variable.\nMay consist of any printable ASCII characters except '='."
                                     type: "string"
                                   secretRef:
                                     description: "The Secret to select from"
@@ -8851,7 +9071,7 @@ spec:
                               description: "Compute Resources required by this container.\nCannot be updated.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                               properties:
                                 claims:
-                                  description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
+                                  description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis field depends on the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                                   items:
                                     description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                     properties:
@@ -8888,8 +9108,37 @@ spec:
                                   type: "object"
                               type: "object"
                             restartPolicy:
-                              description: "RestartPolicy defines the restart behavior of individual containers in a pod.\nThis field may only be set for init containers, and the only allowed value is \"Always\".\nFor non-init containers or when this field is not specified,\nthe restart behavior is defined by the Pod's restart policy and the container type.\nSetting the RestartPolicy as \"Always\" for the init container will have the following effect:\nthis init container will be continually restarted on\nexit until all regular containers have terminated. Once all regular\ncontainers have completed, all init containers with restartPolicy \"Always\"\nwill be shut down. This lifecycle differs from normal init containers and\nis often referred to as a \"sidecar\" container. Although this init\ncontainer still starts in the init container sequence, it does not wait\nfor the container to complete before proceeding to the next init\ncontainer. Instead, the next init container starts immediately after this\ninit container is started, or after any startupProbe has successfully\ncompleted."
+                              description: "RestartPolicy defines the restart behavior of individual containers in a pod.\nThis overrides the pod-level restart policy. When this field is not specified,\nthe restart behavior is defined by the Pod's restart policy and the container type.\nAdditionally, setting the RestartPolicy as \"Always\" for the init container will\nhave the following effect:\nthis init container will be continually restarted on\nexit until all regular containers have terminated. Once all regular\ncontainers have completed, all init containers with restartPolicy \"Always\"\nwill be shut down. This lifecycle differs from normal init containers and\nis often referred to as a \"sidecar\" container. Although this init\ncontainer still starts in the init container sequence, it does not wait\nfor the container to complete before proceeding to the next init\ncontainer. Instead, the next init container starts immediately after this\ninit container is started, or after any startupProbe has successfully\ncompleted."
                               type: "string"
+                            restartPolicyRules:
+                              description: "Represents a list of rules to be checked to determine if the\ncontainer should be restarted on exit. The rules are evaluated in\norder. Once a rule matches a container exit condition, the remaining\nrules are ignored. If no rule matches the container exit condition,\nthe Container-level restart policy determines the whether the container\nis restarted or not. Constraints on the rules:\n- At most 20 rules are allowed.\n- Rules can have the same action.\n- Identical rules are not forbidden in validations.\nWhen rules are specified, container MUST set RestartPolicy explicitly\neven it if matches the Pod's RestartPolicy."
+                              items:
+                                description: "ContainerRestartRule describes how a container exit is handled."
+                                properties:
+                                  action:
+                                    description: "Specifies the action taken on a container exit if the requirements\nare satisfied. The only possible value is \"Restart\" to restart the\ncontainer."
+                                    type: "string"
+                                  exitCodes:
+                                    description: "Represents the exit codes to check on container exits."
+                                    properties:
+                                      operator:
+                                        description: "Represents the relationship between the container exit code(s) and the\nspecified values. Possible values are:\n- In: the requirement is satisfied if the container exit code is in the\n  set of specified values.\n- NotIn: the requirement is satisfied if the container exit code is\n  not in the set of specified values."
+                                        type: "string"
+                                      values:
+                                        description: "Specifies the set of values to check for container exit codes.\nAt most 255 elements are allowed."
+                                        items:
+                                          format: "int32"
+                                          type: "integer"
+                                        type: "array"
+                                        x-kubernetes-list-type: "set"
+                                    required:
+                                      - "operator"
+                                    type: "object"
+                                required:
+                                  - "action"
+                                type: "object"
+                              type: "array"
+                              x-kubernetes-list-type: "atomic"
                             securityContext:
                               description: "SecurityContext defines the security options the container should be run with.\nIf set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.\nMore info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/"
                               properties:
@@ -9279,7 +9528,7 @@ spec:
                                   description: "storageClassName is the name of the StorageClass required by the claim.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1"
                                   type: "string"
                                 volumeAttributesClassName:
-                                  description: "volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.\nIf specified, the CSI driver will create or update the volume with the attributes defined\nin the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,\nit can be changed after the claim is created. An empty string value means that no VolumeAttributesClass\nwill be applied to the claim but it's not allowed to reset this field to empty string once it is set.\nIf unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass\nwill be set by the persistentvolume controller if it exists.\nIf the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be\nset to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource\nexists.\nMore info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/\n(Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default)."
+                                  description: "volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.\nIf specified, the CSI driver will create or update the volume with the attributes defined\nin the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,\nit can be changed after the claim is created. An empty string or nil value indicates that no\nVolumeAttributesClass will be applied to the claim. If the claim enters an Infeasible error state,\nthis field can be reset to its previous value (including nil) to cancel the modification.\nIf the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be\nset to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource\nexists.\nMore info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/"
                                   type: "string"
                                 volumeMode:
                                   description: "volumeMode defines what type of volume is required by the claim.\nValue of Filesystem is implied when not included in claim spec."
@@ -9529,7 +9778,7 @@ spec:
                             description: "storageClassName is the name of the StorageClass required by the claim.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1"
                             type: "string"
                           volumeAttributesClassName:
-                            description: "volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.\nIf specified, the CSI driver will create or update the volume with the attributes defined\nin the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,\nit can be changed after the claim is created. An empty string value means that no VolumeAttributesClass\nwill be applied to the claim but it's not allowed to reset this field to empty string once it is set.\nIf unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass\nwill be set by the persistentvolume controller if it exists.\nIf the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be\nset to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource\nexists.\nMore info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/\n(Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default)."
+                            description: "volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.\nIf specified, the CSI driver will create or update the volume with the attributes defined\nin the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,\nit can be changed after the claim is created. An empty string or nil value indicates that no\nVolumeAttributesClass will be applied to the claim. If the claim enters an Infeasible error state,\nthis field can be reset to its previous value (including nil) to cancel the modification.\nIf the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be\nset to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource\nexists.\nMore info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/"
                             type: "string"
                           volumeMode:
                             description: "volumeMode defines what type of volume is required by the claim.\nValue of Filesystem is implied when not included in claim spec."
@@ -9746,7 +9995,7 @@ spec:
                       description: "Compute resources of a PMM container."
                       properties:
                         claims:
-                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
+                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis field depends on the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                           items:
                             description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                             properties:
@@ -10160,7 +10409,7 @@ spec:
                               description: "Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s))."
                               properties:
                                 preferredDuringSchedulingIgnoredDuringExecution:
-                                  description: "The scheduler will prefer to schedule pods to nodes that satisfy\nthe anti-affinity expressions specified by this field, but it may choose\na node that violates one or more of the expressions. The node that is\nmost preferred is the one with the greatest sum of weights, i.e.\nfor each node that meets all of the scheduling requirements (resource\nrequest, requiredDuringScheduling anti-affinity expressions, etc.),\ncompute a sum by iterating through the elements of this field and adding\n\"weight\" to the sum if the node has pods which matches the corresponding podAffinityTerm; the\nnode(s) with the highest sum are the most preferred."
+                                  description: "The scheduler will prefer to schedule pods to nodes that satisfy\nthe anti-affinity expressions specified by this field, but it may choose\na node that violates one or more of the expressions. The node that is\nmost preferred is the one with the greatest sum of weights, i.e.\nfor each node that meets all of the scheduling requirements (resource\nrequest, requiredDuringScheduling anti-affinity expressions, etc.),\ncompute a sum by iterating through the elements of this field and subtracting\n\"weight\" from the sum if the node has pods which matches the corresponding podAffinityTerm; the\nnode(s) with the highest sum are the most preferred."
                                   items:
                                     description: "The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)"
                                     properties:
@@ -10517,6 +10766,32 @@ spec:
                                         type: "array"
                                         x-kubernetes-list-type: "atomic"
                                     type: "object"
+                                  podCertificate:
+                                    description: "Projects an auto-rotating credential bundle (private key and certificate\nchain) that the pod can use either as a TLS client or server.\n\nKubelet generates a private key and uses it to send a\nPodCertificateRequest to the named signer.  Once the signer approves the\nrequest and issues a certificate chain, Kubelet writes the key and\ncertificate chain to the pod filesystem.  The pod does not start until\ncertificates have been issued for each podCertificate projected volume\nsource in its spec.\n\nKubelet will begin trying to rotate the certificate at the time indicated\nby the signer using the PodCertificateRequest.Status.BeginRefreshAt\ntimestamp.\n\nKubelet can write a single file, indicated by the credentialBundlePath\nfield, or separate files, indicated by the keyPath and\ncertificateChainPath fields.\n\nThe credential bundle is a single file in PEM format.  The first PEM\nentry is the private key (in PKCS#8 format), and the remaining PEM\nentries are the certificate chain issued by the signer (typically,\nsigners will return their certificate chain in leaf-to-root order).\n\nPrefer using the credential bundle format, since your application code\ncan read it atomically.  If you use keyPath and certificateChainPath,\nyour application must make two separate file reads. If these coincide\nwith a certificate rotation, it is possible that the private key and leaf\ncertificate you read may not correspond to each other.  Your application\nwill need to check for this condition, and re-read until they are\nconsistent.\n\nThe named signer controls chooses the format of the certificate it\nissues; consult the signer implementation's documentation to learn how to\nuse the certificates it issues."
+                                    properties:
+                                      certificateChainPath:
+                                        description: "Write the certificate chain at this path in the projected volume.\n\nMost applications should use credentialBundlePath.  When using keyPath\nand certificateChainPath, your application needs to check that the key\nand leaf certificate are consistent, because it is possible to read the\nfiles mid-rotation."
+                                        type: "string"
+                                      credentialBundlePath:
+                                        description: "Write the credential bundle at this path in the projected volume.\n\nThe credential bundle is a single file that contains multiple PEM blocks.\nThe first PEM block is a PRIVATE KEY block, containing a PKCS#8 private\nkey.\n\nThe remaining blocks are CERTIFICATE blocks, containing the issued\ncertificate chain from the signer (leaf and any intermediates).\n\nUsing credentialBundlePath lets your Pod's application code make a single\natomic read that retrieves a consistent key and certificate chain.  If you\nproject them to separate files, your application code will need to\nadditionally check that the leaf certificate was issued to the key."
+                                        type: "string"
+                                      keyPath:
+                                        description: "Write the key at this path in the projected volume.\n\nMost applications should use credentialBundlePath.  When using keyPath\nand certificateChainPath, your application needs to check that the key\nand leaf certificate are consistent, because it is possible to read the\nfiles mid-rotation."
+                                        type: "string"
+                                      keyType:
+                                        description: "The type of keypair Kubelet will generate for the pod.\n\nValid values are \"RSA3072\", \"RSA4096\", \"ECDSAP256\", \"ECDSAP384\",\n\"ECDSAP521\", and \"ED25519\"."
+                                        type: "string"
+                                      maxExpirationSeconds:
+                                        description: "maxExpirationSeconds is the maximum lifetime permitted for the\ncertificate.\n\nKubelet copies this value verbatim into the PodCertificateRequests it\ngenerates for this projection.\n\nIf omitted, kube-apiserver will set it to 86400(24 hours). kube-apiserver\nwill reject values shorter than 3600 (1 hour).  The maximum allowable\nvalue is 7862400 (91 days).\n\nThe signer implementation is then free to issue a certificate with any\nlifetime *shorter* than MaxExpirationSeconds, but no shorter than 3600\nseconds (1 hour).  This constraint is enforced by kube-apiserver.\n`kubernetes.io` signers will never issue certificates with a lifetime\nlonger than 24 hours."
+                                        format: "int32"
+                                        type: "integer"
+                                      signerName:
+                                        description: "Kubelet's generated CSRs will be addressed to this signer."
+                                        type: "string"
+                                    required:
+                                      - "keyType"
+                                      - "signerName"
+                                    type: "object"
                                   secret:
                                     description: "secret information about the secret data to project"
                                     properties:
@@ -10589,7 +10864,7 @@ spec:
                                   description: "Resource requirements for a sidecar container"
                                   properties:
                                     claims:
-                                      description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
+                                      description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis field depends on the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                                       items:
                                         description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                         properties:
@@ -10665,7 +10940,7 @@ spec:
                             description: "EnvVar represents an environment variable present in a Container."
                             properties:
                               name:
-                                description: "Name of the environment variable. Must be a C_IDENTIFIER."
+                                description: "Name of the environment variable.\nMay consist of any printable ASCII characters except '='."
                                 type: "string"
                               value:
                                 description: "Variable references $(VAR_NAME) are expanded\nusing the previously defined environment variables in the container and\nany service environment variables. If a variable cannot be resolved,\nthe reference in the input string will be unchanged. Double $$ are reduced\nto a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.\n\"$$(VAR_NAME)\" will produce the string literal \"$(VAR_NAME)\".\nEscaped references will never be expanded, regardless of whether the variable\nexists or not.\nDefaults to \"\"."
@@ -10701,6 +10976,28 @@ spec:
                                         type: "string"
                                     required:
                                       - "fieldPath"
+                                    type: "object"
+                                    x-kubernetes-map-type: "atomic"
+                                  fileKeyRef:
+                                    description: "FileKeyRef selects a key of the env file.\nRequires the EnvFiles feature gate to be enabled."
+                                    properties:
+                                      key:
+                                        description: "The key within the env file. An invalid key will prevent the pod from starting.\nThe keys defined within a source may consist of any printable ASCII characters except '='.\nDuring Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters."
+                                        type: "string"
+                                      optional:
+                                        default: false
+                                        description: "Specify whether the file or its key must be defined. If the file or key\ndoes not exist, then the env var is not published.\nIf optional is set to true and the specified key does not exist,\nthe environment variable will not be set in the Pod's containers.\n\nIf optional is set to false and the specified key does not exist,\nan error will be returned during Pod creation."
+                                        type: "boolean"
+                                      path:
+                                        description: "The path within the volume from which to select the file.\nMust be relative and may not contain the '..' path or start with '..'."
+                                        type: "string"
+                                      volumeName:
+                                        description: "The name of the volume mount containing the env file."
+                                        type: "string"
+                                    required:
+                                      - "key"
+                                      - "path"
+                                      - "volumeName"
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
                                   resourceFieldRef:
@@ -10762,7 +11059,7 @@ spec:
                                 type: "object"
                                 x-kubernetes-map-type: "atomic"
                               prefix:
-                                description: "Optional text to prepend to the name of each environment variable. Must be a C_IDENTIFIER."
+                                description: "Optional text to prepend to the name of each environment variable.\nMay consist of any printable ASCII characters except '='."
                                 type: "string"
                               secretRef:
                                 description: "The Secret to select from"
@@ -10853,7 +11150,7 @@ spec:
                           description: "Compute resources of a PgBouncer container. Changing this value causes\nPgBouncer to restart.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers"
                           properties:
                             claims:
-                              description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
+                              description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis field depends on the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                               items:
                                 description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                 properties:
@@ -11020,7 +11317,7 @@ spec:
                                   description: "EnvVar represents an environment variable present in a Container."
                                   properties:
                                     name:
-                                      description: "Name of the environment variable. Must be a C_IDENTIFIER."
+                                      description: "Name of the environment variable.\nMay consist of any printable ASCII characters except '='."
                                       type: "string"
                                     value:
                                       description: "Variable references $(VAR_NAME) are expanded\nusing the previously defined environment variables in the container and\nany service environment variables. If a variable cannot be resolved,\nthe reference in the input string will be unchanged. Double $$ are reduced\nto a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.\n\"$$(VAR_NAME)\" will produce the string literal \"$(VAR_NAME)\".\nEscaped references will never be expanded, regardless of whether the variable\nexists or not.\nDefaults to \"\"."
@@ -11056,6 +11353,28 @@ spec:
                                               type: "string"
                                           required:
                                             - "fieldPath"
+                                          type: "object"
+                                          x-kubernetes-map-type: "atomic"
+                                        fileKeyRef:
+                                          description: "FileKeyRef selects a key of the env file.\nRequires the EnvFiles feature gate to be enabled."
+                                          properties:
+                                            key:
+                                              description: "The key within the env file. An invalid key will prevent the pod from starting.\nThe keys defined within a source may consist of any printable ASCII characters except '='.\nDuring Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters."
+                                              type: "string"
+                                            optional:
+                                              default: false
+                                              description: "Specify whether the file or its key must be defined. If the file or key\ndoes not exist, then the env var is not published.\nIf optional is set to true and the specified key does not exist,\nthe environment variable will not be set in the Pod's containers.\n\nIf optional is set to false and the specified key does not exist,\nan error will be returned during Pod creation."
+                                              type: "boolean"
+                                            path:
+                                              description: "The path within the volume from which to select the file.\nMust be relative and may not contain the '..' path or start with '..'."
+                                              type: "string"
+                                            volumeName:
+                                              description: "The name of the volume mount containing the env file."
+                                              type: "string"
+                                          required:
+                                            - "key"
+                                            - "path"
+                                            - "volumeName"
                                           type: "object"
                                           x-kubernetes-map-type: "atomic"
                                         resourceFieldRef:
@@ -11104,7 +11423,7 @@ spec:
                                   - "name"
                                 x-kubernetes-list-type: "map"
                               envFrom:
-                                description: "List of sources to populate environment variables in the container.\nThe keys defined within a source must be a C_IDENTIFIER. All invalid keys\nwill be reported as an event when the container is starting. When a key exists in multiple\nsources, the value associated with the last source will take precedence.\nValues defined by an Env with a duplicate key will take precedence.\nCannot be updated."
+                                description: "List of sources to populate environment variables in the container.\nThe keys defined within a source may consist of any printable ASCII characters except '='.\nWhen a key exists in multiple\nsources, the value associated with the last source will take precedence.\nValues defined by an Env with a duplicate key will take precedence.\nCannot be updated."
                                 items:
                                   description: "EnvFromSource represents the source of a set of ConfigMaps or Secrets"
                                   properties:
@@ -11121,7 +11440,7 @@ spec:
                                       type: "object"
                                       x-kubernetes-map-type: "atomic"
                                     prefix:
-                                      description: "Optional text to prepend to the name of each environment variable. Must be a C_IDENTIFIER."
+                                      description: "Optional text to prepend to the name of each environment variable.\nMay consist of any printable ASCII characters except '='."
                                       type: "string"
                                     secretRef:
                                       description: "The Secret to select from"
@@ -11570,7 +11889,7 @@ spec:
                                 description: "Compute Resources required by this container.\nCannot be updated.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                                 properties:
                                   claims:
-                                    description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
+                                    description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis field depends on the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                                     items:
                                       description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                       properties:
@@ -11607,8 +11926,37 @@ spec:
                                     type: "object"
                                 type: "object"
                               restartPolicy:
-                                description: "RestartPolicy defines the restart behavior of individual containers in a pod.\nThis field may only be set for init containers, and the only allowed value is \"Always\".\nFor non-init containers or when this field is not specified,\nthe restart behavior is defined by the Pod's restart policy and the container type.\nSetting the RestartPolicy as \"Always\" for the init container will have the following effect:\nthis init container will be continually restarted on\nexit until all regular containers have terminated. Once all regular\ncontainers have completed, all init containers with restartPolicy \"Always\"\nwill be shut down. This lifecycle differs from normal init containers and\nis often referred to as a \"sidecar\" container. Although this init\ncontainer still starts in the init container sequence, it does not wait\nfor the container to complete before proceeding to the next init\ncontainer. Instead, the next init container starts immediately after this\ninit container is started, or after any startupProbe has successfully\ncompleted."
+                                description: "RestartPolicy defines the restart behavior of individual containers in a pod.\nThis overrides the pod-level restart policy. When this field is not specified,\nthe restart behavior is defined by the Pod's restart policy and the container type.\nAdditionally, setting the RestartPolicy as \"Always\" for the init container will\nhave the following effect:\nthis init container will be continually restarted on\nexit until all regular containers have terminated. Once all regular\ncontainers have completed, all init containers with restartPolicy \"Always\"\nwill be shut down. This lifecycle differs from normal init containers and\nis often referred to as a \"sidecar\" container. Although this init\ncontainer still starts in the init container sequence, it does not wait\nfor the container to complete before proceeding to the next init\ncontainer. Instead, the next init container starts immediately after this\ninit container is started, or after any startupProbe has successfully\ncompleted."
                                 type: "string"
+                              restartPolicyRules:
+                                description: "Represents a list of rules to be checked to determine if the\ncontainer should be restarted on exit. The rules are evaluated in\norder. Once a rule matches a container exit condition, the remaining\nrules are ignored. If no rule matches the container exit condition,\nthe Container-level restart policy determines the whether the container\nis restarted or not. Constraints on the rules:\n- At most 20 rules are allowed.\n- Rules can have the same action.\n- Identical rules are not forbidden in validations.\nWhen rules are specified, container MUST set RestartPolicy explicitly\neven it if matches the Pod's RestartPolicy."
+                                items:
+                                  description: "ContainerRestartRule describes how a container exit is handled."
+                                  properties:
+                                    action:
+                                      description: "Specifies the action taken on a container exit if the requirements\nare satisfied. The only possible value is \"Restart\" to restart the\ncontainer."
+                                      type: "string"
+                                    exitCodes:
+                                      description: "Represents the exit codes to check on container exits."
+                                      properties:
+                                        operator:
+                                          description: "Represents the relationship between the container exit code(s) and the\nspecified values. Possible values are:\n- In: the requirement is satisfied if the container exit code is in the\n  set of specified values.\n- NotIn: the requirement is satisfied if the container exit code is\n  not in the set of specified values."
+                                          type: "string"
+                                        values:
+                                          description: "Specifies the set of values to check for container exit codes.\nAt most 255 elements are allowed."
+                                          items:
+                                            format: "int32"
+                                            type: "integer"
+                                          type: "array"
+                                          x-kubernetes-list-type: "set"
+                                      required:
+                                        - "operator"
+                                      type: "object"
+                                  required:
+                                    - "action"
+                                  type: "object"
+                                type: "array"
+                                x-kubernetes-list-type: "atomic"
                               securityContext:
                                 description: "SecurityContext defines the security options the container should be run with.\nIf set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.\nMore info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/"
                                 properties:
