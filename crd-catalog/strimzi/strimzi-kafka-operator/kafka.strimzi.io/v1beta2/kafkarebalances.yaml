@@ -34,6 +34,7 @@ spec:
           jsonPath: ".status.conditions[*].type"
           name: "Status"
           type: "string"
+      deprecated: false
       name: "v1beta2"
       schema:
         openAPIV3Schema:

@@ -50,11 +50,11 @@ spec:
             metadata:
               type: "object"
             spec:
-              description: "WorkloadSpec defines the desired state of Workload"
+              description: "spec is the specification of the Workload."
               properties:
                 active:
                   default: true
-                  description: "Active determines if a workload can be admitted into a queue.\nChanging active from true to false will evict any running workloads.\nPossible values are:\n\n  - false: indicates that a workload should never be admitted and evicts running workloads\n  - true: indicates that a workload can be evaluated for admission into it's respective queue.\n\nDefaults to true"
+                  description: "active determines if a workload can be admitted into a queue.\nChanging active from true to false will evict any running workloads.\nPossible values are:\n\n  - false: indicates that a workload should never be admitted and evicts running workloads\n  - true: indicates that a workload can be evaluated for admission into it's respective queue.\n\nDefaults to true"
                   type: "boolean"
                 maximumExecutionTimeSeconds:
                   description: "maximumExecutionTimeSeconds if provided, determines the maximum time, in seconds,\nthe workload can be admitted before it's automatically deactivated.\n\nIf unspecified, no execution time limit is enforced on the Workload."
@@ -5051,16 +5051,16 @@ spec:
                         description: "topologyRequest defines the topology request for the PodSet."
                         properties:
                           podIndexLabel:
-                            description: "PodIndexLabel indicates the name of the label indexing the pods.\nFor example, in the context of\n- kubernetes job this is: kubernetes.io/job-completion-index\n- JobSet: kubernetes.io/job-completion-index (inherited from Job)\n- Kubeflow: training.kubeflow.org/replica-index"
+                            description: "podIndexLabel indicates the name of the label indexing the pods.\nFor example, in the context of\n- kubernetes job this is: kubernetes.io/job-completion-index\n- JobSet: kubernetes.io/job-completion-index (inherited from Job)\n- Kubeflow: training.kubeflow.org/replica-index"
                             type: "string"
                           podSetGroupName:
-                            description: "PodSetGroupName indicates the name of the group of PodSets to which this PodSet belongs to.\nPodSets with the same `PodSetGroupName` should be assigned the same ResourceFlavor"
+                            description: "podSetGroupName indicates the name of the group of PodSets to which this PodSet belongs to.\nPodSets with the same `PodSetGroupName` should be assigned the same ResourceFlavor"
                             type: "string"
                           podSetSliceRequiredTopology:
-                            description: "PodSetSliceRequiredTopology indicates the topology level required by the PodSet slice, as\nindicated by the `kueue.x-k8s.io/podset-slice-required-topology` annotation."
+                            description: "podSetSliceRequiredTopology indicates the topology level required by the PodSet slice, as\nindicated by the `kueue.x-k8s.io/podset-slice-required-topology` annotation."
                             type: "string"
                           podSetSliceSize:
-                            description: "PodSetSliceSize indicates the size of a subgroup of pods in a PodSet for which\nKueue finds a requested topology domain on a level defined\nin `kueue.x-k8s.io/podset-slice-required-topology` annotation."
+                            description: "podSetSliceSize indicates the size of a subgroup of pods in a PodSet for which\nKueue finds a requested topology domain on a level defined\nin `kueue.x-k8s.io/podset-slice-required-topology` annotation."
                             format: "int32"
                             type: "integer"
                           preferred:
@@ -5070,11 +5070,11 @@ spec:
                             description: "required indicates the topology level required by the PodSet, as\nindicated by the `kueue.x-k8s.io/podset-required-topology` PodSet\nannotation."
                             type: "string"
                           subGroupCount:
-                            description: "SubGroupIndexLabel indicates the count of replicated Jobs (groups) within a PodSet.\nFor example, in the context of JobSet this value is read from jobset.sigs.k8s.io/replicatedjob-replicas."
+                            description: "subGroupCount indicates the count of replicated Jobs (groups) within a PodSet.\nFor example, in the context of JobSet this value is read from jobset.sigs.k8s.io/replicatedjob-replicas."
                             format: "int32"
                             type: "integer"
                           subGroupIndexLabel:
-                            description: "SubGroupIndexLabel indicates the name of the label indexing the instances of replicated Jobs (groups)\nwithin a PodSet. For example, in the context of JobSet this is jobset.sigs.k8s.io/job-index."
+                            description: "subGroupIndexLabel indicates the name of the label indexing the instances of replicated Jobs (groups)\nwithin a PodSet. For example, in the context of JobSet this is jobset.sigs.k8s.io/job-index."
                             type: "string"
                           unconstrained:
                             description: "unconstrained indicates that Kueue has the freedom to schedule the PodSet within\nthe entire available capacity, without constraints on the compactness of the placement.\nThis is indicated by the `kueue.x-k8s.io/podset-unconstrained-topology` PodSet annotation."
@@ -5094,11 +5094,11 @@ spec:
                     - "name"
                   x-kubernetes-list-type: "map"
                 priority:
-                  description: "Priority determines the order of access to the resources managed by the\nClusterQueue where the workload is queued.\nThe priority value is populated from PriorityClassName.\nThe higher the value, the higher the priority.\nIf priorityClassName is specified, priority must not be null."
+                  description: "priority determines the order of access to the resources managed by the\nClusterQueue where the workload is queued.\nThe priority value is populated from PriorityClassName.\nThe higher the value, the higher the priority.\nIf priorityClassName is specified, priority must not be null."
                   format: "int32"
                   type: "integer"
                 priorityClassName:
-                  description: "If specified, indicates the workload's priority.\n\"system-node-critical\" and \"system-cluster-critical\" are two special\nkeywords which indicate the highest priorities with the former being\nthe highest priority. Any other name must be defined by creating a\nPriorityClass object with that name. If not specified, the workload\npriority will be default or zero if there is no default."
+                  description: "priorityClassName is the name of the PriorityClass the Workload is associated with.\nIf specified, indicates the workload's priority.\n\"system-node-critical\" and \"system-cluster-critical\" are two special\nkeywords which indicate the highest priorities with the former being\nthe highest priority. Any other name must be defined by creating a\nPriorityClass object with that name. If not specified, the workload\npriority will be default or zero if there is no default."
                   maxLength: 253
                   pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
                   type: "string"
@@ -5122,7 +5122,7 @@ spec:
                 - message: "priority should not be nil when priorityClassName is set"
                   rule: "has(self.priorityClassName) ? has(self.priority) : true"
             status:
-              description: "WorkloadStatus defines the observed state of Workload"
+              description: "status is the status of the Workload."
               properties:
                 accumulatedPastExexcutionTimeSeconds:
                   description: "accumulatedPastExexcutionTimeSeconds holds the total time, in seconds, the workload spent\nin Admitted state, in the previous `Admit` - `Evict` cycles."
@@ -5137,7 +5137,7 @@ spec:
                       pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
                       type: "string"
                     podSetAssignments:
-                      description: "PodSetAssignments hold the admission results for each of the .spec.podSets entries."
+                      description: "podSetAssignments hold the admission results for each of the .spec.podSets entries."
                       items:
                         properties:
                           count:
@@ -5154,11 +5154,11 @@ spec:
                               maxLength: 253
                               pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
                               type: "string"
-                            description: "Flavors are the flavors assigned to the workload for each resource."
+                            description: "flavors are the flavors assigned to the workload for each resource."
                             type: "object"
                           name:
                             default: "main"
-                            description: "Name is the name of the podSet. It should match one of the names in .spec.podSets."
+                            description: "name is the name of the podSet. It should match one of the names in .spec.podSets."
                             maxLength: 63
                             pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
                             type: "string"
@@ -5237,27 +5237,32 @@ spec:
                         maxLength: 316
                         type: "string"
                       podSetUpdates:
+                        description: "podSetUpdates contains a list of pod set modifications suggested by AdmissionChecks."
                         items:
                           description: "PodSetUpdate contains a list of pod set modifications suggested by AdmissionChecks.\nThe modifications should be additive only - modifications of already existing keys\nor having the same key provided by multiple AdmissionChecks is not allowed and will\nresult in failure during workload admission."
                           properties:
                             annotations:
                               additionalProperties:
                                 type: "string"
+                              description: "annotations of the PodSet to modify."
                               type: "object"
                             labels:
                               additionalProperties:
                                 type: "string"
+                              description: "labels of the PodSet to modify."
                               type: "object"
                             name:
-                              description: "Name of the PodSet to modify. Should match to one of the Workload's PodSets."
+                              description: "name of the PodSet to modify. Should match to one of the Workload's PodSets."
                               maxLength: 63
                               pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
                               type: "string"
                             nodeSelector:
                               additionalProperties:
                                 type: "string"
+                              description: "nodeSelector of the PodSet to modify."
                               type: "object"
                             tolerations:
+                              description: "tolerations of the PodSet to modify."
                               items:
                                 description: "The pod this Toleration is attached to tolerates any taint that matches\nthe triple <key,value,effect> using the matching operator <operator>."
                                 properties:
@@ -5317,7 +5322,7 @@ spec:
                     - "name"
                   x-kubernetes-list-type: "map"
                 clusterName:
-                  description: "clusterName is the name of the cluster where the workload is actually assigned.\nThis field is reset after the Workload is evicted."
+                  description: "clusterName is the name of the cluster where the workload is currently assigned.\n\nWith ElasticJobs, this field may also indicate the cluster where the original (old) workload\nwas assigned, providing placement context for new scaled-up workloads. This supports\naffinity or propagation policies across workload slices.\n\nThis field is reset after the Workload is evicted."
                   type: "string"
                 conditions:
                   description: "conditions hold the latest available observations of the Workload\ncurrent state.\n\nThe type of the condition could be:\n\n- Admitted: the Workload was admitted through a ClusterQueue.\n- Finished: the associated workload finished running (failed or succeeded).\n- PodsReady: at least `.spec.podSets[*].count` Pods are ready or have\nsucceeded."
@@ -5414,7 +5419,6 @@ spec:
                   items:
                     properties:
                       name:
-                        default: "main"
                         description: "name is the name of the podSet. It should match one of the names in .spec.podSets."
                         maxLength: 63
                         pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"

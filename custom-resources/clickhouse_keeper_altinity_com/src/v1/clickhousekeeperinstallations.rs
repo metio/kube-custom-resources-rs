@@ -809,7 +809,7 @@ pub struct ClickHouseKeeperInstallationTemplatesHostTemplatesSpec {
     /// 
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub files: Option<BTreeMap<String, serde_json::Value>>,
-    /// by default, hostname will generate, but this allows define custom name for each `clickhuse-server`
+    /// by default, hostname will generate, but this allows define custom name for each `clickhouse-server`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "raftPort")]

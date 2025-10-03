@@ -9,14 +9,14 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// MultiKueueConfigSpec defines the desired state of MultiKueueConfig
+/// spec is the specification of the MultiKueueConfig.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "kueue.x-k8s.io", version = "v1beta1", kind = "MultiKueueConfig", plural = "multikueueconfigs")]
 #[kube(schema = "disabled")]
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct MultiKueueConfigSpec {
-    /// List of MultiKueueClusters names where the workloads from the ClusterQueue should be distributed.
+    /// clusters is a list of MultiKueueClusters names where the workloads from the ClusterQueue should be distributed.
     pub clusters: Vec<String>,
 }
 

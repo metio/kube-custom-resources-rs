@@ -299,6 +299,9 @@ pub struct AlertmanagerConfigReceiversDiscordConfigsHttpConfig {
     /// object and accessible by the Prometheus Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
     pub bearer_token_secret: Option<AlertmanagerConfigReceiversDiscordConfigsHttpConfigBearerTokenSecret>,
+    /// enableHttp2 can be used to disable HTTP2.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHttp2")]
+    pub enable_http2: Option<bool>,
     /// followRedirects specifies whether the client should follow HTTP 3xx redirects.
     /// When true, the client will automatically follow redirect responses.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
@@ -1245,6 +1248,9 @@ pub struct AlertmanagerConfigReceiversMsteamsConfigsHttpConfig {
     /// object and accessible by the Prometheus Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
     pub bearer_token_secret: Option<AlertmanagerConfigReceiversMsteamsConfigsHttpConfigBearerTokenSecret>,
+    /// enableHttp2 can be used to disable HTTP2.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHttp2")]
+    pub enable_http2: Option<bool>,
     /// followRedirects specifies whether the client should follow HTTP 3xx redirects.
     /// When true, the client will automatically follow redirect responses.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
@@ -1926,6 +1932,9 @@ pub struct AlertmanagerConfigReceiversMsteamsv2ConfigsHttpConfig {
     /// object and accessible by the Prometheus Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
     pub bearer_token_secret: Option<AlertmanagerConfigReceiversMsteamsv2ConfigsHttpConfigBearerTokenSecret>,
+    /// enableHttp2 can be used to disable HTTP2.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHttp2")]
+    pub enable_http2: Option<bool>,
     /// followRedirects specifies whether the client should follow HTTP 3xx redirects.
     /// When true, the client will automatically follow redirect responses.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
@@ -2677,6 +2686,9 @@ pub struct AlertmanagerConfigReceiversOpsgenieConfigsHttpConfig {
     /// object and accessible by the Prometheus Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
     pub bearer_token_secret: Option<AlertmanagerConfigReceiversOpsgenieConfigsHttpConfigBearerTokenSecret>,
+    /// enableHttp2 can be used to disable HTTP2.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHttp2")]
+    pub enable_http2: Option<bool>,
     /// followRedirects specifies whether the client should follow HTTP 3xx redirects.
     /// When true, the client will automatically follow redirect responses.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
@@ -3426,6 +3438,9 @@ pub struct AlertmanagerConfigReceiversPagerdutyConfigsHttpConfig {
     /// object and accessible by the Prometheus Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
     pub bearer_token_secret: Option<AlertmanagerConfigReceiversPagerdutyConfigsHttpConfigBearerTokenSecret>,
+    /// enableHttp2 can be used to disable HTTP2.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHttp2")]
+    pub enable_http2: Option<bool>,
     /// followRedirects specifies whether the client should follow HTTP 3xx redirects.
     /// When true, the client will automatically follow redirect responses.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
@@ -4210,6 +4225,9 @@ pub struct AlertmanagerConfigReceiversPushoverConfigsHttpConfig {
     /// object and accessible by the Prometheus Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
     pub bearer_token_secret: Option<AlertmanagerConfigReceiversPushoverConfigsHttpConfigBearerTokenSecret>,
+    /// enableHttp2 can be used to disable HTTP2.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHttp2")]
+    pub enable_http2: Option<bool>,
     /// followRedirects specifies whether the client should follow HTTP 3xx redirects.
     /// When true, the client will automatically follow redirect responses.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
@@ -4998,6 +5016,9 @@ pub struct AlertmanagerConfigReceiversRocketchatConfigsHttpConfig {
     /// object and accessible by the Prometheus Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
     pub bearer_token_secret: Option<AlertmanagerConfigReceiversRocketchatConfigsHttpConfigBearerTokenSecret>,
+    /// enableHttp2 can be used to disable HTTP2.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHttp2")]
+    pub enable_http2: Option<bool>,
     /// followRedirects specifies whether the client should follow HTTP 3xx redirects.
     /// When true, the client will automatically follow redirect responses.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
@@ -5845,6 +5866,9 @@ pub struct AlertmanagerConfigReceiversSlackConfigsHttpConfig {
     /// object and accessible by the Prometheus Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
     pub bearer_token_secret: Option<AlertmanagerConfigReceiversSlackConfigsHttpConfigBearerTokenSecret>,
+    /// enableHttp2 can be used to disable HTTP2.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHttp2")]
+    pub enable_http2: Option<bool>,
     /// followRedirects specifies whether the client should follow HTTP 3xx redirects.
     /// When true, the client will automatically follow redirect responses.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
@@ -6527,6 +6551,9 @@ pub struct AlertmanagerConfigReceiversSnsConfigsHttpConfig {
     /// object and accessible by the Prometheus Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
     pub bearer_token_secret: Option<AlertmanagerConfigReceiversSnsConfigsHttpConfigBearerTokenSecret>,
+    /// enableHttp2 can be used to disable HTTP2.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHttp2")]
+    pub enable_http2: Option<bool>,
     /// followRedirects specifies whether the client should follow HTTP 3xx redirects.
     /// When true, the client will automatically follow redirect responses.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
@@ -7294,6 +7321,9 @@ pub struct AlertmanagerConfigReceiversTelegramConfigsHttpConfig {
     /// object and accessible by the Prometheus Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
     pub bearer_token_secret: Option<AlertmanagerConfigReceiversTelegramConfigsHttpConfigBearerTokenSecret>,
+    /// enableHttp2 can be used to disable HTTP2.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHttp2")]
+    pub enable_http2: Option<bool>,
     /// followRedirects specifies whether the client should follow HTTP 3xx redirects.
     /// When true, the client will automatically follow redirect responses.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
@@ -8017,6 +8047,9 @@ pub struct AlertmanagerConfigReceiversVictoropsConfigsHttpConfig {
     /// object and accessible by the Prometheus Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
     pub bearer_token_secret: Option<AlertmanagerConfigReceiversVictoropsConfigsHttpConfigBearerTokenSecret>,
+    /// enableHttp2 can be used to disable HTTP2.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHttp2")]
+    pub enable_http2: Option<bool>,
     /// followRedirects specifies whether the client should follow HTTP 3xx redirects.
     /// When true, the client will automatically follow redirect responses.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
@@ -8676,6 +8709,9 @@ pub struct AlertmanagerConfigReceiversWebexConfigsHttpConfig {
     /// object and accessible by the Prometheus Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
     pub bearer_token_secret: Option<AlertmanagerConfigReceiversWebexConfigsHttpConfigBearerTokenSecret>,
+    /// enableHttp2 can be used to disable HTTP2.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHttp2")]
+    pub enable_http2: Option<bool>,
     /// followRedirects specifies whether the client should follow HTTP 3xx redirects.
     /// When true, the client will automatically follow redirect responses.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
@@ -9345,6 +9381,9 @@ pub struct AlertmanagerConfigReceiversWebhookConfigsHttpConfig {
     /// object and accessible by the Prometheus Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
     pub bearer_token_secret: Option<AlertmanagerConfigReceiversWebhookConfigsHttpConfigBearerTokenSecret>,
+    /// enableHttp2 can be used to disable HTTP2.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHttp2")]
+    pub enable_http2: Option<bool>,
     /// followRedirects specifies whether the client should follow HTTP 3xx redirects.
     /// When true, the client will automatically follow redirect responses.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
@@ -10071,6 +10110,9 @@ pub struct AlertmanagerConfigReceiversWechatConfigsHttpConfig {
     /// object and accessible by the Prometheus Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
     pub bearer_token_secret: Option<AlertmanagerConfigReceiversWechatConfigsHttpConfigBearerTokenSecret>,
+    /// enableHttp2 can be used to disable HTTP2.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHttp2")]
+    pub enable_http2: Option<bool>,
     /// followRedirects specifies whether the client should follow HTTP 3xx redirects.
     /// When true, the client will automatically follow redirect responses.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]

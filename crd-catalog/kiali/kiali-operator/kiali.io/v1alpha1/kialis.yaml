@@ -480,6 +480,14 @@ spec:
                     namespace:
                       description: "The namespace into which Kiali is to be installed. If this is empty or not defined, the default will be the namespace where the Kiali CR is located."
                       type: "string"
+                    network_policy:
+                      description: "Configures if the Kiali server pod should be protected by a NetworkPolicy resource that restricts both ingress and egress traffic."
+                      properties:
+                        enabled:
+                          default: true
+                          description: "If true, a NetworkPolicy resource is created to restrict traffic to the Kiali server pod. The NetworkPolicy will allow ingress traffic only to the Kiali server API port and, if enabled, the metrics port."
+                          type: "boolean"
+                      type: "object"
                     node_selector:
                       description: "A set of node labels that dictate onto which node the Kiali pod will be deployed."
                       type: "object"
@@ -1342,6 +1350,25 @@ spec:
                             type: "object"
                           type: "array"
                       type: "object"
+                    custom_workload_types:
+                      description: "Enable observability tabs (Traffic, Logs, Metrics, Traces) for custom workload types beyond the built-in Kubernetes controllers."
+                      items:
+                        properties:
+                          group:
+                            description: "The API group of the custom workload type (e.g., 'argoproj.io')."
+                            type: "string"
+                          kind:
+                            description: "The kind of the custom workload type (e.g., 'Rollout')."
+                            type: "string"
+                          version:
+                            description: "The API version of the custom workload type (e.g., 'v1alpha1')."
+                            type: "string"
+                        required:
+                          - "group"
+                          - "version"
+                          - "kind"
+                        type: "object"
+                      type: "array"
                     disabled_features:
                       description: "There may be some features that admins do not want to be accessible to users (even in 'view only' mode). In this case, this setting allows you to disable one or more of those features entirely."
                       items:

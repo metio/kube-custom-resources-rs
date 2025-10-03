@@ -1160,7 +1160,7 @@ pub enum ServiceMonitorSelectorMechanism {
 /// <https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#spec-and-status>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceMonitorStatus {
-    /// bindings defines the list of workload resources (Prometheus, PrometheusAgent, or ThanosRuler) which select the configuration resource.
+    /// bindings defines the list of workload resources (Prometheus, PrometheusAgent, ThanosRuler or Alertmanager) which select the configuration resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bindings: Option<Vec<ServiceMonitorStatusBindings>>,
 }
@@ -1168,7 +1168,7 @@ pub struct ServiceMonitorStatus {
 /// WorkloadBinding is a link between a configuration resource and a workload resource.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ServiceMonitorStatusBindings {
-    /// conditions defines the current state of the configuration resource when bound to the referenced Prometheus object.
+    /// conditions defines the current state of the configuration resource when bound to the referenced Workload object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// group defines the group of the referenced resource.
@@ -1177,7 +1177,7 @@ pub struct ServiceMonitorStatusBindings {
     pub name: String,
     /// namespace defines the namespace of the referenced object.
     pub namespace: String,
-    /// resource defines the type of resource being referenced (e.g. Prometheus, PrometheusAgent, or ThanosRuler).
+    /// resource defines the type of resource being referenced (e.g. Prometheus, PrometheusAgent, ThanosRuler or Alertmanager).
     pub resource: ServiceMonitorStatusBindingsResource,
 }
 
@@ -1197,5 +1197,7 @@ pub enum ServiceMonitorStatusBindingsResource {
     Prometheusagents,
     #[serde(rename = "thanosrulers")]
     Thanosrulers,
+    #[serde(rename = "alertmanagers")]
+    Alertmanagers,
 }
 

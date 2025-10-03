@@ -463,6 +463,9 @@ pub struct ClickHouseOperatorConfigurationReconcileHostWait {
     /// Whether the operator during reconcile procedure should wait for a ClickHouse host to be included into a ClickHouse cluster
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub include: Option<ClickHouseOperatorConfigurationReconcileHostWaitInclude>,
+    /// What probes the operator should wait during host launch procedure
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub probes: Option<ClickHouseOperatorConfigurationReconcileHostWaitProbes>,
     /// Whether the operator during reconcile procedure should wait for a ClickHouse host to complete all running queries
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub queries: Option<ClickHouseOperatorConfigurationReconcileHostWaitQueries>,
@@ -513,6 +516,105 @@ pub enum ClickHouseOperatorConfigurationReconcileHostWaitExclude {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClickHouseOperatorConfigurationReconcileHostWaitInclude {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    #[serde(rename = "0")]
+    r#_0,
+    #[serde(rename = "1")]
+    r#_1,
+    False,
+    #[serde(rename = "false")]
+    FalseX,
+    True,
+    #[serde(rename = "true")]
+    TrueX,
+    No,
+    #[serde(rename = "no")]
+    NoX,
+    Yes,
+    #[serde(rename = "yes")]
+    YesX,
+    Off,
+    #[serde(rename = "off")]
+    OffX,
+    On,
+    #[serde(rename = "on")]
+    OnX,
+    Disable,
+    #[serde(rename = "disable")]
+    DisableX,
+    Enable,
+    #[serde(rename = "enable")]
+    EnableX,
+    Disabled,
+    #[serde(rename = "disabled")]
+    DisabledX,
+    Enabled,
+    #[serde(rename = "enabled")]
+    EnabledX,
+}
+
+/// What probes the operator should wait during host launch procedure
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClickHouseOperatorConfigurationReconcileHostWaitProbes {
+    /// Whether the operator during host launch procedure should wait for readiness probe to succeed.
+    /// In case probe is unspecified wait is assumed to be completed successfully.
+    /// Default option value is to wait.
+    /// 
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub readiness: Option<ClickHouseOperatorConfigurationReconcileHostWaitProbesReadiness>,
+    /// Whether the operator during host launch procedure should wait for startup probe to succeed.
+    /// In case probe is unspecified wait is assumed to be completed successfully.
+    /// Default option value is to do not wait.
+    /// 
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub startup: Option<ClickHouseOperatorConfigurationReconcileHostWaitProbesStartup>,
+}
+
+/// What probes the operator should wait during host launch procedure
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClickHouseOperatorConfigurationReconcileHostWaitProbesReadiness {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    #[serde(rename = "0")]
+    r#_0,
+    #[serde(rename = "1")]
+    r#_1,
+    False,
+    #[serde(rename = "false")]
+    FalseX,
+    True,
+    #[serde(rename = "true")]
+    TrueX,
+    No,
+    #[serde(rename = "no")]
+    NoX,
+    Yes,
+    #[serde(rename = "yes")]
+    YesX,
+    Off,
+    #[serde(rename = "off")]
+    OffX,
+    On,
+    #[serde(rename = "on")]
+    OnX,
+    Disable,
+    #[serde(rename = "disable")]
+    DisableX,
+    Enable,
+    #[serde(rename = "enable")]
+    EnableX,
+    Disabled,
+    #[serde(rename = "disabled")]
+    DisabledX,
+    Enabled,
+    #[serde(rename = "enabled")]
+    EnabledX,
+}
+
+/// What probes the operator should wait during host launch procedure
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClickHouseOperatorConfigurationReconcileHostWaitProbesStartup {
     #[serde(rename = "")]
     KopiumEmpty,
     #[serde(rename = "0")]
@@ -978,6 +1080,6 @@ pub enum ClickHouseOperatorConfigurationTemplateChiPolicy {
 pub struct ClickHouseOperatorConfigurationWatch {
     /// List of namespaces where clickhouse-operator watches for events.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespaces: Option<Vec<String>>,
+    pub namespaces: Option<BTreeMap<String, serde_json::Value>>,
 }
 

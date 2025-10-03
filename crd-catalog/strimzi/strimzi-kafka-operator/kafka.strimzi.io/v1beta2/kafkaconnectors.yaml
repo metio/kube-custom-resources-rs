@@ -38,6 +38,7 @@ spec:
           jsonPath: ".status.conditions[?(@.type==\"Ready\")].status"
           name: "Ready"
           type: "string"
+      deprecated: false
       name: "v1beta2"
       schema:
         openAPIV3Schema:

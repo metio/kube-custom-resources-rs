@@ -45,6 +45,9 @@ pub struct ClusterClassSpec {
     /// Note: Patches will be applied in the order of the array.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub patches: Option<Vec<ClusterClassPatches>>,
+    /// upgrade defines the upgrade configuration for clusters using this ClusterClass.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub upgrade: Option<ClusterClassUpgrade>,
     /// variables defines the variables which can be configured
     /// in the Cluster topology and are then used in patches.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -598,6 +601,22 @@ pub struct ClusterClassPatchesExternal {
     /// validateTopologyExtension references an extension which is called to validate the topology.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "validateTopologyExtension")]
     pub validate_topology_extension: Option<String>,
+}
+
+/// upgrade defines the upgrade configuration for clusters using this ClusterClass.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterClassUpgrade {
+    /// external defines external runtime extensions for upgrade operations.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub external: Option<ClusterClassUpgradeExternal>,
+}
+
+/// external defines external runtime extensions for upgrade operations.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterClassUpgradeExternal {
+    /// generateUpgradePlanExtension references an extension which is called to generate upgrade plan.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "generateUpgradePlanExtension")]
+    pub generate_upgrade_plan_extension: Option<String>,
 }
 
 /// ClusterClassVariable defines a variable which can

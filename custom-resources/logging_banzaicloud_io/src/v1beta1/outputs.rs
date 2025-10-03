@@ -65,6 +65,8 @@ pub struct OutputSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oss: Option<OutputOss>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub rabbitmq: Option<OutputRabbitmq>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub redis: Option<OutputRedis>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub relabel: Option<OutputRelabel>,
@@ -6668,6 +6670,256 @@ pub enum OutputOssFormatType {
     Hash,
     #[serde(rename = "single_value")]
     SingleValue,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputRabbitmq {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub app_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub auth_mechanism: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub automatically_recover: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub buffer: Option<OutputRabbitmqBuffer>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub connection_timeout: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub content_encoding: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub content_type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub continuation_timeout: Option<i64>,
+    pub exchange: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exchange_durable: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exchange_no_declare: Option<bool>,
+    pub exchange_type: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expiration: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub format: Option<OutputRabbitmqFormat>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub frame_max: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub heartbeat: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub hosts: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id_key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub message_type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub network_recovery_interval: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pass: Option<OutputRabbitmqPass>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub persistent: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub priority: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub recovery_attempts: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub routing_key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timestamp: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tls: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tls_ca_certificates: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tls_cert: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tls_key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user: Option<OutputRabbitmqUser>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub verify_peer: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub vhost: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputRabbitmqBuffer {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub chunk_full_threshold: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub chunk_limit_records: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub chunk_limit_size: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub compress: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub delayed_commit_timeout: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub disable_chunk_backup: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub disabled: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub flush_at_shutdown: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub flush_interval: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub flush_mode: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub flush_thread_burst_interval: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub flush_thread_count: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub flush_thread_interval: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub overflow_action: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub queue_limit_length: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub queued_chunks_limit_size: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retry_exponential_backoff_base: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retry_forever: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retry_max_interval: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retry_max_times: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retry_randomize: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retry_secondary_threshold: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retry_timeout: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retry_type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retry_wait: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tags: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timekey: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timekey_use_utc: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timekey_wait: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timekey_zone: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub total_limit_size: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputRabbitmqFormat {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub add_newline: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub message_key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<OutputRabbitmqFormatType>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputRabbitmqFormatType {
+    #[serde(rename = "out_file")]
+    OutFile,
+    #[serde(rename = "json")]
+    Json,
+    #[serde(rename = "ltsv")]
+    Ltsv,
+    #[serde(rename = "csv")]
+    Csv,
+    #[serde(rename = "msgpack")]
+    Msgpack,
+    #[serde(rename = "hash")]
+    Hash,
+    #[serde(rename = "single_value")]
+    SingleValue,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputRabbitmqPass {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountFrom")]
+    pub mount_from: Option<OutputRabbitmqPassMountFrom>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<OutputRabbitmqPassValueFrom>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputRabbitmqPassMountFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OutputRabbitmqPassMountFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputRabbitmqPassMountFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputRabbitmqPassValueFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OutputRabbitmqPassValueFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputRabbitmqPassValueFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputRabbitmqUser {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountFrom")]
+    pub mount_from: Option<OutputRabbitmqUserMountFrom>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<OutputRabbitmqUserValueFrom>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputRabbitmqUserMountFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OutputRabbitmqUserMountFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputRabbitmqUserMountFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputRabbitmqUserValueFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OutputRabbitmqUserValueFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputRabbitmqUserValueFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

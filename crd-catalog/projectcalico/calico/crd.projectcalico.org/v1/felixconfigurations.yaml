@@ -593,11 +593,23 @@ spec:
                 prometheusGoMetricsEnabled:
                   description: "PrometheusGoMetricsEnabled disables Go runtime metrics collection, which the Prometheus client does by default, when\nset to false. This reduces the number of metrics reported, reducing Prometheus load. [Default: true]"
                   type: "boolean"
+                prometheusMetricsCAFile:
+                  description: "PrometheusMetricsCAFile defines the absolute path to the TLS CA certificate file used for securing the /metrics endpoint.\nThis certificate must be valid and accessible by the calico-node process."
+                  type: "string"
+                prometheusMetricsCertFile:
+                  description: "PrometheusMetricsCertFile defines the absolute path to the TLS certificate file used for securing the /metrics endpoint.\nThis certificate must be valid and accessible by the calico-node process."
+                  type: "string"
+                prometheusMetricsClientAuth:
+                  description: "PrometheusMetricsClientAuth specifies the client authentication type for the /metrics endpoint.\nThis determines how the server validates client certificates. Default is \"RequireAndVerifyClientCert\"."
+                  type: "string"
                 prometheusMetricsEnabled:
                   description: "PrometheusMetricsEnabled enables the Prometheus metrics server in Felix if set to true. [Default: false]"
                   type: "boolean"
                 prometheusMetricsHost:
                   description: "PrometheusMetricsHost is the host that the Prometheus metrics server should bind to. [Default: empty]"
+                  type: "string"
+                prometheusMetricsKeyFile:
+                  description: "PrometheusMetricsKeyFile defines the absolute path to the private key file corresponding to the TLS certificate\nused for securing the /metrics endpoint. The private key must be valid and accessible by the calico-node process."
                   type: "string"
                 prometheusMetricsPort:
                   description: "PrometheusMetricsPort is the TCP port that the Prometheus metrics server should bind to. [Default: 9091]"

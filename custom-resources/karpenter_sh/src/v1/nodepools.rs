@@ -27,8 +27,20 @@ pub struct NodePoolSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disruption: Option<NodePoolDisruption>,
     /// Limits define a set of bounds for provisioning capacity.
+    /// Limits other than limits.nodes is not supported when replicas is set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Replicas is the desired number of nodes for the NodePool. When specified, the NodePool will
+    /// maintain this fixed number of replicas rather than scaling based on pod demand.
+    /// When replicas is set:
+    ///   - The following fields are ignored:
+    ///       * disruption.consolidationPolicy
+    ///       * disruption.consolidateAfter
+    ///   - Only limits.nodes is supported; other resource limits (e.g., CPU, memory) must not be specified.
+    ///   - Weight is not supported.
+    /// Note: This field is alpha.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub replicas: Option<i64>,
     /// Template contains the template of possibilities for the provisioning logic to launch a NodeClaim with.
     /// NodeClaims launched from this NodePool will often be further constrained than the template specifies.
     pub template: NodePoolTemplate,
@@ -36,6 +48,7 @@ pub struct NodePoolSpec {
     /// numerical weight indicates that this nodepool will be ordered
     /// ahead of other nodepools with lower weights. A nodepool with no weight
     /// will be treated as if it is a nodepool with a weight of 0.
+    /// Weight is not supported when replicas is set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub weight: Option<i32>,
 }
@@ -52,10 +65,12 @@ pub struct NodePoolDisruption {
     /// ConsolidateAfter is the duration the controller will wait
     /// before attempting to terminate nodes that are underutilized.
     /// Refer to ConsolidationPolicy for how underutilization is considered.
+    /// When replicas is set, ConsolidateAfter is simply ignored
     #[serde(rename = "consolidateAfter")]
     pub consolidate_after: String,
     /// ConsolidationPolicy describes which nodes Karpenter can disrupt through its consolidation
     /// algorithm. This policy defaults to "WhenEmptyOrUnderutilized" if not specified
+    /// When replicas is set, ConsolidationPolicy is simply ignored
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "consolidationPolicy")]
     pub consolidation_policy: Option<NodePoolDisruptionConsolidationPolicy>,
 }
@@ -279,6 +294,9 @@ pub struct NodePoolStatus {
     /// the actual NodeClass Generation, NodeRegistrationHealthy status condition on the NodePool will be reset
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeClassObservedGeneration")]
     pub node_class_observed_generation: Option<i64>,
+    /// Nodes is the count of nodes associated with this NodePool
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub nodes: Option<i64>,
     /// Resources is the list of resources that have been provisioned.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<BTreeMap<String, IntOrString>>,

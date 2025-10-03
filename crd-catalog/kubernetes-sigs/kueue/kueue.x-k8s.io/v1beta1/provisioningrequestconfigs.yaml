@@ -27,7 +27,7 @@ spec:
             metadata:
               type: "object"
             spec:
-              description: "ProvisioningRequestConfigSpec defines the desired state of ProvisioningRequestConfig"
+              description: "spec is the specification of the ProvisioningRequestConfig."
               properties:
                 managedResources:
                   description: "managedResources contains the list of resources managed by the autoscaling.\n\nIf empty, all resources are considered managed.\n\nIf not empty, the ProvisioningRequest will contain only the podsets that are\nrequesting at least one of them.\n\nIf none of the workloads podsets is requesting at least a managed resource,\nthe workload is considered ready."
@@ -42,7 +42,7 @@ spec:
                     description: "Parameter is limited to 255 characters."
                     maxLength: 255
                     type: "string"
-                  description: "Parameters contains all other parameters classes may require."
+                  description: "parameters contains all other parameters classes may require."
                   maxProperties: 100
                   type: "object"
                 podSetMergePolicy:
@@ -77,7 +77,7 @@ spec:
                       type: "array"
                   type: "object"
                 provisioningClassName:
-                  description: "ProvisioningClassName describes the different modes of provisioning the resources.\nCheck autoscaling.x-k8s.io ProvisioningRequestSpec.ProvisioningClassName for details."
+                  description: "provisioningClassName describes the different modes of provisioning the resources.\nCheck autoscaling.x-k8s.io ProvisioningRequestSpec.ProvisioningClassName for details."
                   maxLength: 253
                   pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
                   type: "string"
@@ -90,17 +90,17 @@ spec:
                   properties:
                     backoffBaseSeconds:
                       default: 60
-                      description: "BackoffBaseSeconds defines the base for the exponential backoff for\nre-queuing an evicted workload.\n\nDefaults to 60."
+                      description: "backoffBaseSeconds defines the base for the exponential backoff for\nre-queuing an evicted workload.\n\nDefaults to 60."
                       format: "int32"
                       type: "integer"
                     backoffLimitCount:
                       default: 3
-                      description: "BackoffLimitCount defines the maximum number of re-queuing retries.\nOnce the number is reached, the workload is deactivated (`.spec.activate`=`false`).\n\nEvery backoff duration is about \"b*2^(n-1)+Rand\" where:\n- \"b\" represents the base set by \"BackoffBaseSeconds\" parameter,\n- \"n\" represents the \"workloadStatus.requeueState.count\",\n- \"Rand\" represents the random jitter.\nDuring this time, the workload is taken as an inadmissible and\nother workloads will have a chance to be admitted.\nBy default, the consecutive requeue delays are around: (60s, 120s, 240s, ...).\n\nDefaults to 3."
+                      description: "backoffLimitCount defines the maximum number of re-queuing retries.\nOnce the number is reached, the workload is deactivated (`.spec.activate`=`false`).\n\nEvery backoff duration is about \"b*2^(n-1)+Rand\" where:\n- \"b\" represents the base set by \"BackoffBaseSeconds\" parameter,\n- \"n\" represents the \"workloadStatus.requeueState.count\",\n- \"Rand\" represents the random jitter.\nDuring this time, the workload is taken as an inadmissible and\nother workloads will have a chance to be admitted.\nBy default, the consecutive requeue delays are around: (60s, 120s, 240s, ...).\n\nDefaults to 3."
                       format: "int32"
                       type: "integer"
                     backoffMaxSeconds:
                       default: 1800
-                      description: "BackoffMaxSeconds defines the maximum backoff time to re-queue an evicted workload.\n\nDefaults to 1800."
+                      description: "backoffMaxSeconds defines the maximum backoff time to re-queue an evicted workload.\n\nDefaults to 1800."
                       format: "int32"
                       type: "integer"
                   type: "object"

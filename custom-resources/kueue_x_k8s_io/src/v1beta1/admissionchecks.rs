@@ -10,7 +10,7 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// AdmissionCheckSpec defines the desired state of AdmissionCheck
+/// spec is the specification of the AdmissionCheck.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "kueue.x-k8s.io", version = "v1beta1", kind = "AdmissionCheck", plural = "admissionchecks")]
 #[kube(status = "AdmissionCheckStatus")]
@@ -22,11 +22,11 @@ pub struct AdmissionCheckSpec {
     /// not necessarily a Kubernetes Pod or Deployment name. Cannot be empty.
     #[serde(rename = "controllerName")]
     pub controller_name: String,
-    /// Parameters identifies a configuration with additional parameters for the
+    /// parameters identifies a configuration with additional parameters for the
     /// check.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parameters: Option<AdmissionCheckParameters>,
-    /// RetryDelayMinutes specifies how long to keep the workload suspended after
+    /// retryDelayMinutes specifies how long to keep the workload suspended after
     /// a failed check (after it transitioned to False). When the delay period has passed, the check
     /// state goes to "Unknown". The default is 15 min.
     /// Deprecated: retryDelayMinutes has already been deprecated since v0.8 and will be removed in v1beta2.
@@ -34,20 +34,20 @@ pub struct AdmissionCheckSpec {
     pub retry_delay_minutes: Option<i64>,
 }
 
-/// Parameters identifies a configuration with additional parameters for the
+/// parameters identifies a configuration with additional parameters for the
 /// check.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AdmissionCheckParameters {
-    /// ApiGroup is the group for the resource being referenced.
+    /// apiGroup is the group for the resource being referenced.
     #[serde(rename = "apiGroup")]
     pub api_group: String,
-    /// Kind is the type of the resource being referenced.
+    /// kind is the type of the resource being referenced.
     pub kind: String,
-    /// Name is the name of the resource being referenced.
+    /// name is the name of the resource being referenced.
     pub name: String,
 }
 
-/// AdmissionCheckStatus defines the observed state of AdmissionCheck
+/// status is the status of the AdmissionCheck.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AdmissionCheckStatus {
     /// conditions hold the latest available observations of the AdmissionCheck

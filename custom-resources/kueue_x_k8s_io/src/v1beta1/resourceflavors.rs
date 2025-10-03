@@ -10,7 +10,7 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// ResourceFlavorSpec defines the desired state of the ResourceFlavor
+/// spec is the specification of the ResourceFlavor.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "kueue.x-k8s.io", version = "v1beta1", kind = "ResourceFlavor", plural = "resourceflavors")]
 #[kube(schema = "disabled")]

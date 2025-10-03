@@ -12,7 +12,7 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// LocalQueueSpec defines the desired state of LocalQueue
+/// spec is the specification of the LocalQueue.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "kueue.x-k8s.io", version = "v1beta1", kind = "LocalQueue", plural = "localqueues")]
 #[kube(namespaced)]
@@ -61,7 +61,7 @@ pub struct LocalQueueFairSharing {
     pub weight: Option<IntOrString>,
 }
 
-/// LocalQueueSpec defines the desired state of LocalQueue
+/// spec is the specification of the LocalQueue.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum LocalQueueStopPolicy {
     None,
@@ -69,21 +69,21 @@ pub enum LocalQueueStopPolicy {
     HoldAndDrain,
 }
 
-/// LocalQueueStatus defines the observed state of LocalQueue
+/// status is the status of the LocalQueue.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct LocalQueueStatus {
     /// admittedWorkloads is the number of workloads in this LocalQueue
     /// admitted to a ClusterQueue and that haven't finished yet.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "admittedWorkloads")]
     pub admitted_workloads: Option<i32>,
-    /// Conditions hold the latest available observations of the LocalQueue
+    /// conditions hold the latest available observations of the LocalQueue
     /// current state.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// FairSharing contains the information about the current status of fair sharing.
+    /// fairSharing contains the information about the current status of fair sharing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fairSharing")]
     pub fair_sharing: Option<LocalQueueStatusFairSharing>,
-    /// flavorsUsage are the used quotas, by flavor currently in use by the
+    /// flavorUsage are the used quotas, by flavor currently in use by the
     /// workloads assigned to this LocalQueue.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flavorUsage")]
     pub flavor_usage: Option<Vec<LocalQueueStatusFlavorUsage>>,
@@ -94,7 +94,7 @@ pub struct LocalQueueStatus {
     /// workloads assigned to this LocalQueue.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flavorsReservation")]
     pub flavors_reservation: Option<Vec<LocalQueueStatusFlavorsReservation>>,
-    /// PendingWorkloads is the number of Workloads in the LocalQueue not yet admitted to a ClusterQueue
+    /// pendingWorkloads is the number of Workloads in the LocalQueue not yet admitted to a ClusterQueue
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pendingWorkloads")]
     pub pending_workloads: Option<i32>,
     /// reservingWorkloads is the number of workloads in this LocalQueue
@@ -103,13 +103,13 @@ pub struct LocalQueueStatus {
     pub reserving_workloads: Option<i32>,
 }
 
-/// FairSharing contains the information about the current status of fair sharing.
+/// fairSharing contains the information about the current status of fair sharing.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct LocalQueueStatusFairSharing {
     /// admissionFairSharingStatus represents information relevant to the Admission Fair Sharing
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "admissionFairSharingStatus")]
     pub admission_fair_sharing_status: Option<LocalQueueStatusFairSharingAdmissionFairSharingStatus>,
-    /// WeightedShare represents the maximum of the ratios of usage
+    /// weightedShare represents the maximum of the ratios of usage
     /// above nominal quota to the lendable resources in the
     /// Cohort, among all the resources provided by the Node, and
     /// divided by the weight.  If zero, it means that the usage of
@@ -123,12 +123,12 @@ pub struct LocalQueueStatusFairSharing {
 /// admissionFairSharingStatus represents information relevant to the Admission Fair Sharing
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct LocalQueueStatusFairSharingAdmissionFairSharingStatus {
-    /// ConsumedResources represents the aggregated usage of resources over time,
+    /// consumedResources represents the aggregated usage of resources over time,
     /// with decaying function applied.
     /// The value is populated if usage consumption functionality is enabled in Kueue config.
     #[serde(rename = "consumedResources")]
     pub consumed_resources: BTreeMap<String, IntOrString>,
-    /// LastUpdate is the time when share and consumed resources were updated.
+    /// lastUpdate is the time when share and consumed resources were updated.
     #[serde(rename = "lastUpdate")]
     pub last_update: String,
 }

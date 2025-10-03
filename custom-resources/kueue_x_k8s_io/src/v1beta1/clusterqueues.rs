@@ -12,7 +12,7 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// ClusterQueueSpec defines the desired state of ClusterQueue
+/// spec is the specification of the ClusterQueue.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "kueue.x-k8s.io", version = "v1beta1", kind = "ClusterQueue", plural = "clusterqueues")]
 #[kube(status = "ClusterQueueStatus")]
@@ -24,7 +24,7 @@ pub struct ClusterQueueSpec {
     /// Cannot be used along with AdmissionCheckStrategy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "admissionChecks")]
     pub admission_checks: Option<Vec<String>>,
-    /// admissionCheckStrategy defines a list of strategies to determine which ResourceFlavors require AdmissionChecks.
+    /// admissionChecksStrategy defines a list of strategies to determine which ResourceFlavors require AdmissionChecks.
     /// This property cannot be used in conjunction with the 'admissionChecks' property.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "admissionChecksStrategy")]
     pub admission_checks_strategy: Option<ClusterQueueAdmissionChecksStrategy>,
@@ -61,29 +61,10 @@ pub struct ClusterQueueSpec {
     /// If set to an empty selector `{}`, then all namespaces are eligible.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<ClusterQueueNamespaceSelector>,
-    /// ClusterQueuePreemption contains policies to preempt Workloads from this
-    /// ClusterQueue or the ClusterQueue's cohort.
-    /// 
-    /// Preemption may be configured to work in the following scenarios:
-    /// 
-    ///   - When a Workload fits within the nominal quota of the ClusterQueue, but
-    ///     the quota is currently borrowed by other ClusterQueues in the cohort.
-    ///     We preempt workloads in other ClusterQueues to allow this ClusterQueue to
-    ///     reclaim its nominal quota. Configured using reclaimWithinCohort.
-    ///   - When a Workload doesn't fit within the nominal quota of the ClusterQueue
-    ///     and there are admitted Workloads in the ClusterQueue with lower priority.
-    ///     Configured using withinClusterQueue.
-    ///   - When a Workload may fit while both borrowing and preempting
-    ///     low priority workloads in the Cohort. Configured using borrowWithinCohort.
-    ///   - When FairSharing is enabled, to maintain fair distribution of
-    ///     unused resources. See FairSharing documentation.
-    /// 
-    /// The preemption algorithm tries to find a minimal set of Workloads to
-    /// preempt to accomomdate the pending Workload, preempting Workloads with
-    /// lower priority first.
+    /// preemption defines the preemption policies.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub preemption: Option<ClusterQueuePreemption>,
-    /// QueueingStrategy indicates the queueing strategy of the workloads
+    /// queueingStrategy indicates the queueing strategy of the workloads
     /// across the queues in this ClusterQueue.
     /// Current Supported Strategies:
     /// 
@@ -114,7 +95,7 @@ pub struct ClusterQueueSpec {
     pub stop_policy: Option<ClusterQueueStopPolicy>,
 }
 
-/// admissionCheckStrategy defines a list of strategies to determine which ResourceFlavors require AdmissionChecks.
+/// admissionChecksStrategy defines a list of strategies to determine which ResourceFlavors require AdmissionChecks.
 /// This property cannot be used in conjunction with the 'admissionChecks' property.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterQueueAdmissionChecksStrategy {
@@ -137,7 +118,7 @@ pub struct ClusterQueueAdmissionChecksStrategyAdmissionChecks {
 /// admissionScope indicates whether ClusterQueue uses the Admission Fair Sharing
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterQueueAdmissionScope {
-    /// AdmissionMode indicates which mode for AdmissionFairSharing should be used
+    /// admissionMode indicates which mode for AdmissionFairSharing should be used
     /// in the AdmissionScope. Possible values are:
     /// - UsageBasedAdmissionFairSharing
     /// - NoAdmissionFairSharing
@@ -238,31 +219,12 @@ pub struct ClusterQueueNamespaceSelectorMatchExpressions {
     pub values: Option<Vec<String>>,
 }
 
-/// ClusterQueuePreemption contains policies to preempt Workloads from this
-/// ClusterQueue or the ClusterQueue's cohort.
-/// 
-/// Preemption may be configured to work in the following scenarios:
-/// 
-///   - When a Workload fits within the nominal quota of the ClusterQueue, but
-///     the quota is currently borrowed by other ClusterQueues in the cohort.
-///     We preempt workloads in other ClusterQueues to allow this ClusterQueue to
-///     reclaim its nominal quota. Configured using reclaimWithinCohort.
-///   - When a Workload doesn't fit within the nominal quota of the ClusterQueue
-///     and there are admitted Workloads in the ClusterQueue with lower priority.
-///     Configured using withinClusterQueue.
-///   - When a Workload may fit while both borrowing and preempting
-///     low priority workloads in the Cohort. Configured using borrowWithinCohort.
-///   - When FairSharing is enabled, to maintain fair distribution of
-///     unused resources. See FairSharing documentation.
-/// 
-/// The preemption algorithm tries to find a minimal set of Workloads to
-/// preempt to accomomdate the pending Workload, preempting Workloads with
-/// lower priority first.
+/// preemption defines the preemption policies.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterQueuePreemption {
-    /// BorrowWithinCohort contains configuration which allows to preempt workloads
-    /// within cohort while borrowing. It only works with Classical Preemption,
-    /// __not__ with Fair Sharing.
+    /// borrowWithinCohort determines whether a pending Workload can preempt
+    /// Workloads from other ClusterQueues in the cohort if the workload requires borrowing.
+    /// May only be configured with Classical Preemption, and __not__ with Fair Sharing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "borrowWithinCohort")]
     pub borrow_within_cohort: Option<ClusterQueuePreemptionBorrowWithinCohort>,
     /// reclaimWithinCohort determines whether a pending Workload can preempt
@@ -296,9 +258,9 @@ pub struct ClusterQueuePreemption {
     pub within_cluster_queue: Option<ClusterQueuePreemptionWithinClusterQueue>,
 }
 
-/// BorrowWithinCohort contains configuration which allows to preempt workloads
-/// within cohort while borrowing. It only works with Classical Preemption,
-/// __not__ with Fair Sharing.
+/// borrowWithinCohort determines whether a pending Workload can preempt
+/// Workloads from other ClusterQueues in the cohort if the workload requires borrowing.
+/// May only be configured with Classical Preemption, and __not__ with Fair Sharing.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterQueuePreemptionBorrowWithinCohort {
     /// maxPriorityThreshold allows to restrict the set of workloads which
@@ -319,35 +281,16 @@ pub struct ClusterQueuePreemptionBorrowWithinCohort {
     pub policy: Option<ClusterQueuePreemptionBorrowWithinCohortPolicy>,
 }
 
-/// BorrowWithinCohort contains configuration which allows to preempt workloads
-/// within cohort while borrowing. It only works with Classical Preemption,
-/// __not__ with Fair Sharing.
+/// borrowWithinCohort determines whether a pending Workload can preempt
+/// Workloads from other ClusterQueues in the cohort if the workload requires borrowing.
+/// May only be configured with Classical Preemption, and __not__ with Fair Sharing.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterQueuePreemptionBorrowWithinCohortPolicy {
     Never,
     LowerPriority,
 }
 
-/// ClusterQueuePreemption contains policies to preempt Workloads from this
-/// ClusterQueue or the ClusterQueue's cohort.
-/// 
-/// Preemption may be configured to work in the following scenarios:
-/// 
-///   - When a Workload fits within the nominal quota of the ClusterQueue, but
-///     the quota is currently borrowed by other ClusterQueues in the cohort.
-///     We preempt workloads in other ClusterQueues to allow this ClusterQueue to
-///     reclaim its nominal quota. Configured using reclaimWithinCohort.
-///   - When a Workload doesn't fit within the nominal quota of the ClusterQueue
-///     and there are admitted Workloads in the ClusterQueue with lower priority.
-///     Configured using withinClusterQueue.
-///   - When a Workload may fit while both borrowing and preempting
-///     low priority workloads in the Cohort. Configured using borrowWithinCohort.
-///   - When FairSharing is enabled, to maintain fair distribution of
-///     unused resources. See FairSharing documentation.
-/// 
-/// The preemption algorithm tries to find a minimal set of Workloads to
-/// preempt to accomomdate the pending Workload, preempting Workloads with
-/// lower priority first.
+/// preemption defines the preemption policies.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterQueuePreemptionReclaimWithinCohort {
     Never,
@@ -355,26 +298,7 @@ pub enum ClusterQueuePreemptionReclaimWithinCohort {
     Any,
 }
 
-/// ClusterQueuePreemption contains policies to preempt Workloads from this
-/// ClusterQueue or the ClusterQueue's cohort.
-/// 
-/// Preemption may be configured to work in the following scenarios:
-/// 
-///   - When a Workload fits within the nominal quota of the ClusterQueue, but
-///     the quota is currently borrowed by other ClusterQueues in the cohort.
-///     We preempt workloads in other ClusterQueues to allow this ClusterQueue to
-///     reclaim its nominal quota. Configured using reclaimWithinCohort.
-///   - When a Workload doesn't fit within the nominal quota of the ClusterQueue
-///     and there are admitted Workloads in the ClusterQueue with lower priority.
-///     Configured using withinClusterQueue.
-///   - When a Workload may fit while both borrowing and preempting
-///     low priority workloads in the Cohort. Configured using borrowWithinCohort.
-///   - When FairSharing is enabled, to maintain fair distribution of
-///     unused resources. See FairSharing documentation.
-/// 
-/// The preemption algorithm tries to find a minimal set of Workloads to
-/// preempt to accomomdate the pending Workload, preempting Workloads with
-/// lower priority first.
+/// preemption defines the preemption policies.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterQueuePreemptionWithinClusterQueue {
     Never,
@@ -382,7 +306,7 @@ pub enum ClusterQueuePreemptionWithinClusterQueue {
     LowerOrNewerEqualPriority,
 }
 
-/// ClusterQueueSpec defines the desired state of ClusterQueue
+/// spec is the specification of the ClusterQueue.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterQueueQueueingStrategy {
     #[serde(rename = "StrictFIFO")]
@@ -418,7 +342,7 @@ pub struct ClusterQueueResourceGroupsFlavors {
     /// ClusterQueue will have an Active condition set to False.
     pub name: String,
     /// resources is the list of quotas for this flavor per resource.
-    /// There could be up to 16 resources.
+    /// There could be up to 64 resources.
     pub resources: Vec<ClusterQueueResourceGroupsFlavorsResources>,
 }
 
@@ -464,7 +388,7 @@ pub struct ClusterQueueResourceGroupsFlavorsResources {
     pub nominal_quota: IntOrString,
 }
 
-/// ClusterQueueSpec defines the desired state of ClusterQueue
+/// spec is the specification of the ClusterQueue.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterQueueStopPolicy {
     None,
@@ -472,7 +396,7 @@ pub enum ClusterQueueStopPolicy {
     HoldAndDrain,
 }
 
-/// ClusterQueueStatus defines the observed state of ClusterQueue
+/// status is the status of the ClusterQueue.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterQueueStatus {
     /// admittedWorkloads is the number of workloads currently admitted to this
@@ -500,7 +424,7 @@ pub struct ClusterQueueStatus {
     /// admitted to this clusterQueue.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pendingWorkloads")]
     pub pending_workloads: Option<i32>,
-    /// PendingWorkloadsStatus contains the information exposed about the current
+    /// pendingWorkloadsStatus contains the information exposed about the current
     /// status of the pending workloads in the cluster queue.
     /// Deprecated: This field is no longer effective since v0.14.0, which means Kueue no longer stores and updates information.
     /// You can migrate to VisibilityOnDemand
@@ -522,7 +446,7 @@ pub struct ClusterQueueStatusFairSharing {
     /// admissionFairSharingStatus represents information relevant to the Admission Fair Sharing
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "admissionFairSharingStatus")]
     pub admission_fair_sharing_status: Option<ClusterQueueStatusFairSharingAdmissionFairSharingStatus>,
-    /// WeightedShare represents the maximum of the ratios of usage
+    /// weightedShare represents the maximum of the ratios of usage
     /// above nominal quota to the lendable resources in the
     /// Cohort, among all the resources provided by the Node, and
     /// divided by the weight.  If zero, it means that the usage of
@@ -536,12 +460,12 @@ pub struct ClusterQueueStatusFairSharing {
 /// admissionFairSharingStatus represents information relevant to the Admission Fair Sharing
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterQueueStatusFairSharingAdmissionFairSharingStatus {
-    /// ConsumedResources represents the aggregated usage of resources over time,
+    /// consumedResources represents the aggregated usage of resources over time,
     /// with decaying function applied.
     /// The value is populated if usage consumption functionality is enabled in Kueue config.
     #[serde(rename = "consumedResources")]
     pub consumed_resources: BTreeMap<String, IntOrString>,
-    /// LastUpdate is the time when share and consumed resources were updated.
+    /// lastUpdate is the time when share and consumed resources were updated.
     #[serde(rename = "lastUpdate")]
     pub last_update: String,
 }
@@ -556,7 +480,7 @@ pub struct ClusterQueueStatusFlavorsReservation {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterQueueStatusFlavorsReservationResources {
-    /// Borrowed is quantity of quota that is borrowed from the cohort. In other
+    /// borrowed is quantity of quota that is borrowed from the cohort. In other
     /// words, it's the used quota that is over the nominalQuota.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub borrowed: Option<IntOrString>,
@@ -578,7 +502,7 @@ pub struct ClusterQueueStatusFlavorsUsage {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterQueueStatusFlavorsUsageResources {
-    /// Borrowed is quantity of quota that is borrowed from the cohort. In other
+    /// borrowed is quantity of quota that is borrowed from the cohort. In other
     /// words, it's the used quota that is over the nominalQuota.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub borrowed: Option<IntOrString>,
@@ -590,7 +514,7 @@ pub struct ClusterQueueStatusFlavorsUsageResources {
     pub total: Option<IntOrString>,
 }
 
-/// PendingWorkloadsStatus contains the information exposed about the current
+/// pendingWorkloadsStatus contains the information exposed about the current
 /// status of the pending workloads in the cluster queue.
 /// Deprecated: This field is no longer effective since v0.14.0, which means Kueue no longer stores and updates information.
 /// You can migrate to VisibilityOnDemand
@@ -598,10 +522,10 @@ pub struct ClusterQueueStatusFlavorsUsageResources {
 /// instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterQueueStatusPendingWorkloadsStatus {
-    /// Head contains the list of top pending workloads.
+    /// clusterQueuePendingWorkload contains the list of top pending workloads.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterQueuePendingWorkload")]
     pub cluster_queue_pending_workload: Option<Vec<ClusterQueueStatusPendingWorkloadsStatusClusterQueuePendingWorkload>>,
-    /// LastChangeTime indicates the time of the last change of the structure.
+    /// lastChangeTime indicates the time of the last change of the structure.
     #[serde(rename = "lastChangeTime")]
     pub last_change_time: String,
 }
@@ -610,9 +534,9 @@ pub struct ClusterQueueStatusPendingWorkloadsStatus {
 /// in the cluster queue.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterQueueStatusPendingWorkloadsStatusClusterQueuePendingWorkload {
-    /// Name indicates the name of the pending workload.
+    /// name indicates the name of the pending workload.
     pub name: String,
-    /// Namespace indicates the name of the pending workload.
+    /// namespace indicates the name of the pending workload.
     pub namespace: String,
 }
 

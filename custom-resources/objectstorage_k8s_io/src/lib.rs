@@ -9,6 +9,14 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `BucketClaim`
 - `BucketClass`
 - `Bucket`
+## objectstorage.k8s.io/v1alpha2
+- `BucketAccessClass`
+- `BucketAccess`
+- `BucketClaim`
+- `BucketClass`
+- `Bucket`
 */
 #[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;
+#[cfg(feature = "v1alpha2")]
+pub mod v1alpha2;

@@ -1170,21 +1170,33 @@ pub struct AlertmanagerAlertmanagerConfigurationGlobal {
 /// httpConfig defines the default HTTP configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlertmanagerAlertmanagerConfigurationGlobalHttpConfig {
-    /// authorization defines the header configuration for the client.
-    /// This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
+    /// authorization configures the Authorization header credentials used by
+    /// the client.
+    /// 
+    /// Cannot be set at the same time as `basicAuth`, `bearerTokenSecret` or `oauth2`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<AlertmanagerAlertmanagerConfigurationGlobalHttpConfigAuthorization>,
-    /// basicAuth defines basicAuth for the client.
-    /// This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
+    /// basicAuth defines the Basic Authentication credentials used by the
+    /// client.
+    /// 
+    /// Cannot be set at the same time as `authorization`, `bearerTokenSecret` or `oauth2`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<AlertmanagerAlertmanagerConfigurationGlobalHttpConfigBasicAuth>,
-    /// bearerTokenSecret defines the secret's key that contains the bearer token to be used by the client
-    /// for authentication.
-    /// The secret needs to be in the same namespace as the Alertmanager
-    /// object and accessible by the Prometheus Operator.
+    /// bearerTokenSecret defines a key of a Secret containing the bearer token
+    /// used by the client for authentication. The secret needs to be in the
+    /// same namespace as the custom resource and readable by the Prometheus
+    /// Operator.
+    /// 
+    /// Cannot be set at the same time as `authorization`, `basicAuth` or `oauth2`.
+    /// 
+    /// Deprecated: use `authorization` instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
     pub bearer_token_secret: Option<AlertmanagerAlertmanagerConfigurationGlobalHttpConfigBearerTokenSecret>,
-    /// followRedirects defines whether the client should follow HTTP 3xx redirects.
+    /// enableHttp2 can be used to disable HTTP2.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHttp2")]
+    pub enable_http2: Option<bool>,
+    /// followRedirects defines whether the client should follow HTTP 3xx
+    /// redirects.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     /// noProxy defines a comma-separated string that can contain IPs, CIDR notation, domain names
@@ -1194,7 +1206,11 @@ pub struct AlertmanagerAlertmanagerConfigurationGlobalHttpConfig {
     /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
-    /// oauth2 defines the client credentials used to fetch a token for the targets.
+    /// oauth2 defines the OAuth2 settings used by the client.
+    /// 
+    /// It requires Prometheus >= 2.27.0.
+    /// 
+    /// Cannot be set at the same time as `authorization`, `basicAuth` or `bearerTokenSecret`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oauth2: Option<AlertmanagerAlertmanagerConfigurationGlobalHttpConfigOauth2>,
     /// proxyConnectHeader optionally specifies headers to send to
@@ -1211,13 +1227,15 @@ pub struct AlertmanagerAlertmanagerConfigurationGlobalHttpConfig {
     /// proxyUrl defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
     pub proxy_url: Option<String>,
-    /// tlsConfig defines the TLSConfig for the client.
+    /// tlsConfig defines the TLS configuration used by the client.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
     pub tls_config: Option<AlertmanagerAlertmanagerConfigurationGlobalHttpConfigTlsConfig>,
 }
 
-/// authorization defines the header configuration for the client.
-/// This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
+/// authorization configures the Authorization header credentials used by
+/// the client.
+/// 
+/// Cannot be set at the same time as `basicAuth`, `bearerTokenSecret` or `oauth2`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlertmanagerAlertmanagerConfigurationGlobalHttpConfigAuthorization {
     /// credentials defines a key of a Secret in the namespace that contains the credentials for authentication.
@@ -1249,8 +1267,10 @@ pub struct AlertmanagerAlertmanagerConfigurationGlobalHttpConfigAuthorizationCre
     pub optional: Option<bool>,
 }
 
-/// basicAuth defines basicAuth for the client.
-/// This is mutually exclusive with Authorization. If both are defined, BasicAuth takes precedence.
+/// basicAuth defines the Basic Authentication credentials used by the
+/// client.
+/// 
+/// Cannot be set at the same time as `authorization`, `bearerTokenSecret` or `oauth2`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlertmanagerAlertmanagerConfigurationGlobalHttpConfigBasicAuth {
     /// password defines a key of a Secret containing the password for
@@ -1299,10 +1319,14 @@ pub struct AlertmanagerAlertmanagerConfigurationGlobalHttpConfigBasicAuthUsernam
     pub optional: Option<bool>,
 }
 
-/// bearerTokenSecret defines the secret's key that contains the bearer token to be used by the client
-/// for authentication.
-/// The secret needs to be in the same namespace as the Alertmanager
-/// object and accessible by the Prometheus Operator.
+/// bearerTokenSecret defines a key of a Secret containing the bearer token
+/// used by the client for authentication. The secret needs to be in the
+/// same namespace as the custom resource and readable by the Prometheus
+/// Operator.
+/// 
+/// Cannot be set at the same time as `authorization`, `basicAuth` or `oauth2`.
+/// 
+/// Deprecated: use `authorization` instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlertmanagerAlertmanagerConfigurationGlobalHttpConfigBearerTokenSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -1319,7 +1343,11 @@ pub struct AlertmanagerAlertmanagerConfigurationGlobalHttpConfigBearerTokenSecre
     pub optional: Option<bool>,
 }
 
-/// oauth2 defines the client credentials used to fetch a token for the targets.
+/// oauth2 defines the OAuth2 settings used by the client.
+/// 
+/// It requires Prometheus >= 2.27.0.
+/// 
+/// Cannot be set at the same time as `authorization`, `basicAuth` or `bearerTokenSecret`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlertmanagerAlertmanagerConfigurationGlobalHttpConfigOauth2 {
     /// clientId defines a key of a Secret or ConfigMap containing the
@@ -1631,7 +1659,7 @@ pub struct AlertmanagerAlertmanagerConfigurationGlobalHttpConfigProxyConnectHead
     pub optional: Option<bool>,
 }
 
-/// tlsConfig defines the TLSConfig for the client.
+/// tlsConfig defines the TLS configuration used by the client.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlertmanagerAlertmanagerConfigurationGlobalHttpConfigTlsConfig {
     /// ca defines the Certificate authority used when verifying server certificates.
@@ -1768,7 +1796,7 @@ pub struct AlertmanagerAlertmanagerConfigurationGlobalHttpConfigTlsConfigKeySecr
     pub optional: Option<bool>,
 }
 
-/// tlsConfig defines the TLSConfig for the client.
+/// tlsConfig defines the TLS configuration used by the client.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum AlertmanagerAlertmanagerConfigurationGlobalHttpConfigTlsConfigMaxVersion {
     #[serde(rename = "TLS10")]
@@ -1781,7 +1809,7 @@ pub enum AlertmanagerAlertmanagerConfigurationGlobalHttpConfigTlsConfigMaxVersio
     Tls13,
 }
 
-/// tlsConfig defines the TLSConfig for the client.
+/// tlsConfig defines the TLS configuration used by the client.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum AlertmanagerAlertmanagerConfigurationGlobalHttpConfigTlsConfigMinVersion {
     #[serde(rename = "TLS10")]

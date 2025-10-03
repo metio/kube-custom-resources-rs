@@ -45,7 +45,7 @@ pub struct KafkaBridgeSpec {
     /// The container image used for Kafka Bridge pods. If no image name is explicitly specified, the image name corresponds to the image specified in the Cluster Operator configuration. If an image name is not defined in the Cluster Operator configuration, a default value is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    /// **Currently not supported** JVM Options for pods.
+    /// JVM Options for pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmOptions")]
     pub jvm_options: Option<KafkaBridgeJvmOptions>,
     /// Pod liveness checking.
@@ -54,6 +54,9 @@ pub struct KafkaBridgeSpec {
     /// Logging configuration for Kafka Bridge.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<KafkaBridgeLogging>,
+    /// Metrics configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricsConfig")]
+    pub metrics_config: Option<KafkaBridgeMetricsConfig>,
     /// Kafka producer related configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub producer: Option<KafkaBridgeProducer>,
@@ -121,6 +124,9 @@ pub struct KafkaBridgeAuthentication {
     /// Link to Kubernetes Secret containing the OAuth client secret which the Kafka client can use to authenticate against the OAuth server and use the token endpoint URI.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientSecret")]
     pub client_secret: Option<KafkaBridgeAuthenticationClientSecret>,
+    /// Configuration for the custom authentication mechanism. Only properties with the `sasl.` and `ssl.keystore.` prefixes are allowed. Specify other options in the regular configuration section of the custom resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub config: Option<BTreeMap<String, serde_json::Value>>,
     /// The connect timeout in seconds when connecting to authorization server. If not set, the effective connect timeout is 60 seconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeoutSeconds")]
     pub connect_timeout_seconds: Option<i64>,
@@ -130,6 +136,9 @@ pub struct KafkaBridgeAuthentication {
     /// Enable or disable OAuth metrics. Default value is `false`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableMetrics")]
     pub enable_metrics: Option<bool>,
+    /// A custom OAuth grant type to use when authenticating against the authorization server with `clientId` and one of `clientSecret` or `clientAssertion`. The value defaults to `client_credentials` in these cases. This is optional configuration, only used with custom authorization server implementations.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "grantType")]
+    pub grant_type: Option<String>,
     /// The maximum number of retries to attempt if an initial HTTP request fails. If not set, the default is to not attempt any retries.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpRetries")]
     pub http_retries: Option<i64>,
@@ -151,6 +160,9 @@ pub struct KafkaBridgeAuthentication {
     /// Link to Kubernetes Secret containing the refresh token which can be used to obtain access token from the authorization server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshToken")]
     pub refresh_token: Option<KafkaBridgeAuthenticationRefreshToken>,
+    /// Enable or disable SASL on this authentication mechanism.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sasl: Option<bool>,
     /// SASL extensions parameters.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "saslExtensions")]
     pub sasl_extensions: Option<BTreeMap<String, String>>,
@@ -163,7 +175,7 @@ pub struct KafkaBridgeAuthentication {
     /// Authorization server token endpoint URI.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenEndpointUri")]
     pub token_endpoint_uri: Option<String>,
-    /// Authentication type. Currently the supported types are `tls`, `scram-sha-256`, `scram-sha-512`, `plain`, and 'oauth'. `scram-sha-256` and `scram-sha-512` types use SASL SCRAM-SHA-256 and SASL SCRAM-SHA-512 Authentication, respectively. `plain` type uses SASL PLAIN Authentication. `oauth` type uses SASL OAUTHBEARER Authentication. The `tls` type uses TLS Client Authentication. The `tls` type is supported only over TLS connections.
+    /// Specifies the authentication type. Supported types are `tls`, `scram-sha-256`, `scram-sha-512`, `plain`, 'oauth', and `custom`. `tls` uses TLS client authentication and is supported only over TLS connections. `scram-sha-256` and `scram-sha-512` use SASL SCRAM-SHA-256 and SASL SCRAM-SHA-512 authentication, respectively. `plain` uses SASL PLAIN authentication. `oauth` uses SASL OAUTHBEARER authentication. `custom` allows you to configure a custom authentication mechanism.
     #[serde(rename = "type")]
     pub r#type: KafkaBridgeAuthenticationType,
     /// Username used for the authentication.
@@ -259,6 +271,8 @@ pub enum KafkaBridgeAuthenticationType {
     Plain,
     #[serde(rename = "oauth")]
     Oauth,
+    #[serde(rename = "custom")]
+    Custom,
 }
 
 /// Kafka consumer related configuration.
@@ -297,7 +311,7 @@ pub struct KafkaBridgeHttpCors {
     pub allowed_origins: Vec<String>,
 }
 
-/// **Currently not supported** JVM Options for pods.
+/// JVM Options for pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaBridgeJvmOptions {
     /// A map of -XX options to the JVM.
@@ -387,6 +401,56 @@ pub struct KafkaBridgeLoggingValueFromConfigMapKeyRef {
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// Metrics configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct KafkaBridgeMetricsConfig {
+    /// Metrics type. The supported types are `jmxPrometheusExporter` and `strimziMetricsReporter`. Type `jmxPrometheusExporter` uses the Prometheus JMX Exporter to expose Kafka JMX metrics in Prometheus format through an HTTP endpoint. Type `strimziMetricsReporter` uses the Strimzi Metrics Reporter to directly expose Kafka metrics in Prometheus format through an HTTP endpoint.
+    #[serde(rename = "type")]
+    pub r#type: KafkaBridgeMetricsConfigType,
+    /// ConfigMap entry where the Prometheus JMX Exporter configuration is stored.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<KafkaBridgeMetricsConfigValueFrom>,
+    /// Configuration values for the Strimzi Metrics Reporter.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<KafkaBridgeMetricsConfigValues>,
+}
+
+/// Metrics configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaBridgeMetricsConfigType {
+    #[serde(rename = "jmxPrometheusExporter")]
+    JmxPrometheusExporter,
+    #[serde(rename = "strimziMetricsReporter")]
+    StrimziMetricsReporter,
+}
+
+/// ConfigMap entry where the Prometheus JMX Exporter configuration is stored.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaBridgeMetricsConfigValueFrom {
+    /// Reference to the key in the ConfigMap containing the configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<KafkaBridgeMetricsConfigValueFromConfigMapKeyRef>,
+}
+
+/// Reference to the key in the ConfigMap containing the configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaBridgeMetricsConfigValueFromConfigMapKeyRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Configuration values for the Strimzi Metrics Reporter.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaBridgeMetricsConfigValues {
+    /// A list of regex patterns to filter the metrics to collect. Should contain at least one element.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowList")]
+    pub allow_list: Option<Vec<String>>,
 }
 
 /// Kafka producer related configuration.

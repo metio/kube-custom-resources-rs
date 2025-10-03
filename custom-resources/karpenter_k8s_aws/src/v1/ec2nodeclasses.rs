@@ -254,6 +254,9 @@ pub struct Ec2NodeClassCapacityReservationSelectorTerms {
     /// ID is the capacity reservation id in EC2
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
+    /// InstanceMatchCriteria specifies how instances are matched to capacity reservations.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceMatchCriteria")]
+    pub instance_match_criteria: Option<Ec2NodeClassCapacityReservationSelectorTermsInstanceMatchCriteria>,
     /// Owner is the owner id for the ami.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerID")]
     pub owner_id: Option<String>,
@@ -261,6 +264,14 @@ pub struct Ec2NodeClassCapacityReservationSelectorTerms {
     /// Specifying '*' for a value selects all values for a given tag key.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<BTreeMap<String, String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum Ec2NodeClassCapacityReservationSelectorTermsInstanceMatchCriteria {
+    #[serde(rename = "open")]
+    Open,
+    #[serde(rename = "targeted")]
+    Targeted,
 }
 
 /// EC2NodeClassSpec is the top level specification for the AWS Karpenter Provider.

@@ -1165,8 +1165,18 @@ pub struct BootstrapProviderAdditionalDeploymentsManagerMetrics {
     /// BindAddress is the TCP address that the controller should bind to
     /// for serving prometheus metrics.
     /// It can be set to "0" to disable the metrics serving.
+    /// NOTE: This field is deprecated, please use DiagnosticsAddress field
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bindAddress")]
     pub bind_address: Option<String>,
+    /// DiagnosticsAddress is the TCP address that the controller should bind to
+    /// for serving prometheus metric.
+    /// It can be set to "0" to disable the metrics serving.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "diagnosticsAddress")]
+    pub diagnostics_address: Option<String>,
+    /// InsecureDiagnostics indicates if insecure metrics serving should be enabled.
+    /// If false, or not set, the diagnostics address will expose pprof endpoints too.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureDiagnostics")]
+    pub insecure_diagnostics: Option<bool>,
 }
 
 /// Webhook contains the controllers webhook configuration
@@ -2364,8 +2374,18 @@ pub struct BootstrapProviderManagerMetrics {
     /// BindAddress is the TCP address that the controller should bind to
     /// for serving prometheus metrics.
     /// It can be set to "0" to disable the metrics serving.
+    /// NOTE: This field is deprecated, please use DiagnosticsAddress field
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bindAddress")]
     pub bind_address: Option<String>,
+    /// DiagnosticsAddress is the TCP address that the controller should bind to
+    /// for serving prometheus metric.
+    /// It can be set to "0" to disable the metrics serving.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "diagnosticsAddress")]
+    pub diagnostics_address: Option<String>,
+    /// InsecureDiagnostics indicates if insecure metrics serving should be enabled.
+    /// If false, or not set, the diagnostics address will expose pprof endpoints too.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureDiagnostics")]
+    pub insecure_diagnostics: Option<bool>,
 }
 
 /// Webhook contains the controllers webhook configuration

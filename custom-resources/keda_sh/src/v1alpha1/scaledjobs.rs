@@ -66,8 +66,6 @@ pub struct ScaledJobJobTargetRef {
     /// batch.kubernetes.io/job-index-failure-count annotation. It can only
     /// be set when Job's completionMode=Indexed, and the Pod's restart
     /// policy is Never. The field is immutable.
-    /// This field is beta-level. It can be used when the `JobBackoffLimitPerIndex`
-    /// feature gate is enabled (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backoffLimitPerIndex")]
     pub backoff_limit_per_index: Option<i32>,
     /// completionMode specifies how Pod completions are tracked. It can be
@@ -112,8 +110,8 @@ pub struct ScaledJobJobTargetRef {
     /// characters as defined by RFC 3986. The value cannot exceed 63 characters.
     /// This field is immutable.
     /// 
-    /// This field is alpha-level. The job controller accepts setting the field
-    /// when the feature gate JobManagedBy is enabled (disabled by default).
+    /// This field is beta-level. The job controller accepts setting the field
+    /// when the feature gate JobManagedBy is enabled (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "managedBy")]
     pub managed_by: Option<String>,
     /// manualSelector controls generation of pod labels and pod selectors.
@@ -136,8 +134,6 @@ pub struct ScaledJobJobTargetRef {
     /// It can only be specified when backoffLimitPerIndex is set.
     /// It can be null or up to completions. It is required and must be
     /// less than or equal to 10^4 when is completions greater than 10^5.
-    /// This field is beta-level. It can be used when the `JobBackoffLimitPerIndex`
-    /// feature gate is enabled (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxFailedIndexes")]
     pub max_failed_indexes: Option<i32>,
     /// Specifies the maximum desired number of pods the job should
@@ -179,9 +175,6 @@ pub struct ScaledJobJobTargetRef {
     /// only when the number of succeeded pods equals to the completions.
     /// When the field is specified, it must be immutable and works only for the Indexed Jobs.
     /// Once the Job meets the SuccessPolicy, the lingering pods are terminated.
-    /// 
-    /// This field is beta-level. To use this field, you must enable the
-    /// `JobSuccessPolicy` feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successPolicy")]
     pub success_policy: Option<ScaledJobJobTargetRefSuccessPolicy>,
     /// suspend specifies whether the Job controller should create Pods or not. If
@@ -236,8 +229,6 @@ pub struct ScaledJobJobTargetRefPodFailurePolicyRules {
     ///   running pods are terminated.
     /// - FailIndex: indicates that the pod's index is marked as Failed and will
     ///   not be restarted.
-    ///   This value is beta-level. It can be used when the
-    ///   `JobBackoffLimitPerIndex` feature gate is enabled (enabled by default).
     /// - Ignore: indicates that the counter towards the .backoffLimit is not
     ///   incremented and a replacement pod is created.
     /// - Count: indicates that the pod is handled in the default way - the
@@ -336,9 +327,6 @@ pub struct ScaledJobJobTargetRefSelectorMatchExpressions {
 /// only when the number of succeeded pods equals to the completions.
 /// When the field is specified, it must be immutable and works only for the Indexed Jobs.
 /// Once the Job meets the SuccessPolicy, the lingering pods are terminated.
-/// 
-/// This field is beta-level. To use this field, you must enable the
-/// `JobSuccessPolicy` feature gate (enabled by default).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefSuccessPolicy {
     /// rules represents the list of alternative rules for the declaring the Jobs
@@ -501,7 +489,7 @@ pub struct ScaledJobJobTargetRefTemplateSpec {
     /// Init containers may not have Lifecycle actions, Readiness probes, Liveness probes, or Startup probes.
     /// The resourceRequirements of an init container are taken into account during scheduling
     /// by finding the highest request/limit for each resource type, and then using the max of
-    /// of that value or the sum of the normal containers. Limits are applied to init containers
+    /// that value or the sum of the normal containers. Limits are applied to init containers
     /// in a similar fashion.
     /// Init containers cannot currently be added or removed.
     /// Cannot be updated.
@@ -599,6 +587,17 @@ pub struct ScaledJobJobTargetRefTemplateSpec {
     /// This field is immutable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaims")]
     pub resource_claims: Option<Vec<ScaledJobJobTargetRefTemplateSpecResourceClaims>>,
+    /// Resources is the total amount of CPU and Memory resources required by all
+    /// containers in the pod. It supports specifying Requests and Limits for
+    /// "cpu" and "memory" resource names only. ResourceClaims are not supported.
+    /// 
+    /// This field enables fine-grained control over resource allocation for the
+    /// entire pod, allowing resource sharing among containers in a pod.
+    /// 
+    /// This is an alpha field and requires enabling the PodLevelResources feature
+    /// gate.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<ScaledJobJobTargetRefTemplateSpecResources>,
     /// Restart policy for all containers within the pod.
     /// One of Always, OnFailure, Never. In some contexts, only a subset of those values may be permitted.
     /// Default to Always.
@@ -883,7 +882,6 @@ pub struct ScaledJobJobTargetRefTemplateSpecAffinityPodAffinityPreferredDuringSc
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -894,7 +892,6 @@ pub struct ScaledJobJobTargetRefTemplateSpecAffinityPodAffinityPreferredDuringSc
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1004,7 +1001,6 @@ pub struct ScaledJobJobTargetRefTemplateSpecAffinityPodAffinityRequiredDuringSch
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -1015,7 +1011,6 @@ pub struct ScaledJobJobTargetRefTemplateSpecAffinityPodAffinityRequiredDuringSch
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1156,7 +1151,6 @@ pub struct ScaledJobJobTargetRefTemplateSpecAffinityPodAntiAffinityPreferredDuri
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -1167,7 +1161,6 @@ pub struct ScaledJobJobTargetRefTemplateSpecAffinityPodAntiAffinityPreferredDuri
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1277,7 +1270,6 @@ pub struct ScaledJobJobTargetRefTemplateSpecAffinityPodAntiAffinityRequiredDurin
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -1288,7 +1280,6 @@ pub struct ScaledJobJobTargetRefTemplateSpecAffinityPodAntiAffinityRequiredDurin
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1645,13 +1636,13 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersEnvValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
-/// EnvFromSource represents the source of a set of ConfigMaps
+/// EnvFromSource represents the source of a set of ConfigMaps or Secrets
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersEnvFrom {
     /// The ConfigMap to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<ScaledJobJobTargetRefTemplateSpecContainersEnvFromConfigMapRef>,
-    /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
+    /// Optional text to prepend to the name of each environment variable. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// The Secret to select from
@@ -1710,6 +1701,11 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersLifecycle {
     /// More info: <https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<ScaledJobJobTargetRefTemplateSpecContainersLifecyclePreStop>,
+    /// StopSignal defines which signal will be sent to a container when it is being stopped.
+    /// If not specified, the default is defined by the container runtime in use.
+    /// StopSignal can only be set for Pods with a non-empty .spec.os.name
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
 }
 
 /// PostStart is called immediately after a container is created. If the handler fails,
@@ -1718,23 +1714,23 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersLifecycle {
 /// More info: <https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersLifecyclePostStart {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ScaledJobJobTargetRefTemplateSpecContainersLifecyclePostStartExec>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ScaledJobJobTargetRefTemplateSpecContainersLifecyclePostStartHttpGet>,
-    /// Sleep represents the duration that the container should sleep before being terminated.
+    /// Sleep represents a duration that the container should sleep.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sleep: Option<ScaledJobJobTargetRefTemplateSpecContainersLifecyclePostStartSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-    /// for the backward compatibility. There are no validation of this field and
-    /// lifecycle hooks will fail in runtime when tcp handler is specified.
+    /// for backward compatibility. There is no validation of this field and
+    /// lifecycle hooks will fail at runtime when it is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ScaledJobJobTargetRefTemplateSpecContainersLifecyclePostStartTcpSocket>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersLifecyclePostStartExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -1746,7 +1742,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersLifecyclePostStartExec {
     pub command: Option<Vec<String>>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersLifecyclePostStartHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -1779,7 +1775,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersLifecyclePostStartHttpGetH
     pub value: String,
 }
 
-/// Sleep represents the duration that the container should sleep before being terminated.
+/// Sleep represents a duration that the container should sleep.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersLifecyclePostStartSleep {
     /// Seconds is the number of seconds to sleep.
@@ -1787,8 +1783,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersLifecyclePostStartSleep {
 }
 
 /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-/// for the backward compatibility. There are no validation of this field and
-/// lifecycle hooks will fail in runtime when tcp handler is specified.
+/// for backward compatibility. There is no validation of this field and
+/// lifecycle hooks will fail at runtime when it is specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersLifecyclePostStartTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -1811,23 +1807,23 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersLifecyclePostStartTcpSocke
 /// More info: <https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersLifecyclePreStop {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ScaledJobJobTargetRefTemplateSpecContainersLifecyclePreStopExec>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ScaledJobJobTargetRefTemplateSpecContainersLifecyclePreStopHttpGet>,
-    /// Sleep represents the duration that the container should sleep before being terminated.
+    /// Sleep represents a duration that the container should sleep.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sleep: Option<ScaledJobJobTargetRefTemplateSpecContainersLifecyclePreStopSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-    /// for the backward compatibility. There are no validation of this field and
-    /// lifecycle hooks will fail in runtime when tcp handler is specified.
+    /// for backward compatibility. There is no validation of this field and
+    /// lifecycle hooks will fail at runtime when it is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ScaledJobJobTargetRefTemplateSpecContainersLifecyclePreStopTcpSocket>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersLifecyclePreStopExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -1839,7 +1835,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersLifecyclePreStopExec {
     pub command: Option<Vec<String>>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersLifecyclePreStopHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -1872,7 +1868,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersLifecyclePreStopHttpGetHtt
     pub value: String,
 }
 
-/// Sleep represents the duration that the container should sleep before being terminated.
+/// Sleep represents a duration that the container should sleep.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersLifecyclePreStopSleep {
     /// Seconds is the number of seconds to sleep.
@@ -1880,8 +1876,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersLifecyclePreStopSleep {
 }
 
 /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-/// for the backward compatibility. There are no validation of this field and
-/// lifecycle hooks will fail in runtime when tcp handler is specified.
+/// for backward compatibility. There is no validation of this field and
+/// lifecycle hooks will fail at runtime when it is specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersLifecyclePreStopTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -1899,17 +1895,17 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersLifecyclePreStopTcpSocket 
 /// More info: <https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersLivenessProbe {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ScaledJobJobTargetRefTemplateSpecContainersLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<ScaledJobJobTargetRefTemplateSpecContainersLivenessProbeGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ScaledJobJobTargetRefTemplateSpecContainersLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -1924,7 +1920,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersLivenessProbe {
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ScaledJobJobTargetRefTemplateSpecContainersLivenessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
@@ -1946,7 +1942,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersLivenessProbe {
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersLivenessProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -1958,7 +1954,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersLivenessProbeExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersLivenessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -1971,7 +1967,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersLivenessProbeGrpc {
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersLivenessProbeHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -2004,7 +2000,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersLivenessProbeHttpGetHttpHe
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersLivenessProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -2049,17 +2045,17 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersPorts {
 /// More info: <https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersReadinessProbe {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ScaledJobJobTargetRefTemplateSpecContainersReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<ScaledJobJobTargetRefTemplateSpecContainersReadinessProbeGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ScaledJobJobTargetRefTemplateSpecContainersReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -2074,7 +2070,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersReadinessProbe {
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ScaledJobJobTargetRefTemplateSpecContainersReadinessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
@@ -2096,7 +2092,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersReadinessProbe {
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersReadinessProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -2108,7 +2104,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersReadinessProbeExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersReadinessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -2121,7 +2117,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersReadinessProbeGrpc {
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersReadinessProbeHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -2154,7 +2150,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersReadinessProbeHttpGetHttpH
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersReadinessProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -2417,17 +2413,17 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersSecurityContextWindowsOpti
 /// More info: <https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersStartupProbe {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ScaledJobJobTargetRefTemplateSpecContainersStartupProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<ScaledJobJobTargetRefTemplateSpecContainersStartupProbeGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ScaledJobJobTargetRefTemplateSpecContainersStartupProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -2442,7 +2438,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersStartupProbe {
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ScaledJobJobTargetRefTemplateSpecContainersStartupProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
@@ -2464,7 +2460,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersStartupProbe {
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersStartupProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -2476,7 +2472,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersStartupProbeExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersStartupProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -2489,7 +2485,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersStartupProbeGrpc {
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersStartupProbeHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -2522,7 +2518,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainersStartupProbeHttpGetHttpHea
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecContainersStartupProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -2621,9 +2617,11 @@ pub struct ScaledJobJobTargetRefTemplateSpecDnsConfig {
 /// PodDNSConfigOption defines DNS resolver options of a pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecDnsConfigOptions {
+    /// Name is this DNS resolver option's name.
     /// Required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Value is this DNS resolver option's value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
@@ -2875,13 +2873,13 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersEnvValueFromSecre
     pub optional: Option<bool>,
 }
 
-/// EnvFromSource represents the source of a set of ConfigMaps
+/// EnvFromSource represents the source of a set of ConfigMaps or Secrets
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersEnvFrom {
     /// The ConfigMap to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersEnvFromConfigMapRef>,
-    /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
+    /// Optional text to prepend to the name of each environment variable. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// The Secret to select from
@@ -2939,6 +2937,11 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecycle {
     /// More info: <https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePreStop>,
+    /// StopSignal defines which signal will be sent to a container when it is being stopped.
+    /// If not specified, the default is defined by the container runtime in use.
+    /// StopSignal can only be set for Pods with a non-empty .spec.os.name
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
 }
 
 /// PostStart is called immediately after a container is created. If the handler fails,
@@ -2947,23 +2950,23 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecycle {
 /// More info: <https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePostStart {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePostStartExec>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePostStartHttpGet>,
-    /// Sleep represents the duration that the container should sleep before being terminated.
+    /// Sleep represents a duration that the container should sleep.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sleep: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePostStartSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-    /// for the backward compatibility. There are no validation of this field and
-    /// lifecycle hooks will fail in runtime when tcp handler is specified.
+    /// for backward compatibility. There is no validation of this field and
+    /// lifecycle hooks will fail at runtime when it is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePostStartTcpSocket>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePostStartExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -2975,7 +2978,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePostStar
     pub command: Option<Vec<String>>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePostStartHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -3008,7 +3011,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePostStar
     pub value: String,
 }
 
-/// Sleep represents the duration that the container should sleep before being terminated.
+/// Sleep represents a duration that the container should sleep.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePostStartSleep {
     /// Seconds is the number of seconds to sleep.
@@ -3016,8 +3019,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePostStar
 }
 
 /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-/// for the backward compatibility. There are no validation of this field and
-/// lifecycle hooks will fail in runtime when tcp handler is specified.
+/// for backward compatibility. There is no validation of this field and
+/// lifecycle hooks will fail at runtime when it is specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePostStartTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -3040,23 +3043,23 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePostStar
 /// More info: <https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePreStop {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePreStopExec>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePreStopHttpGet>,
-    /// Sleep represents the duration that the container should sleep before being terminated.
+    /// Sleep represents a duration that the container should sleep.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sleep: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePreStopSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-    /// for the backward compatibility. There are no validation of this field and
-    /// lifecycle hooks will fail in runtime when tcp handler is specified.
+    /// for backward compatibility. There is no validation of this field and
+    /// lifecycle hooks will fail at runtime when it is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePreStopTcpSocket>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePreStopExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -3068,7 +3071,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePreStopE
     pub command: Option<Vec<String>>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePreStopHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -3101,7 +3104,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePreStopH
     pub value: String,
 }
 
-/// Sleep represents the duration that the container should sleep before being terminated.
+/// Sleep represents a duration that the container should sleep.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePreStopSleep {
     /// Seconds is the number of seconds to sleep.
@@ -3109,8 +3112,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePreStopS
 }
 
 /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-/// for the backward compatibility. There are no validation of this field and
-/// lifecycle hooks will fail in runtime when tcp handler is specified.
+/// for backward compatibility. There is no validation of this field and
+/// lifecycle hooks will fail at runtime when it is specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePreStopTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -3125,17 +3128,17 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLifecyclePreStopT
 /// Probes are not allowed for ephemeral containers.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLivenessProbe {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersLivenessProbeGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -3150,7 +3153,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLivenessProbe {
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersLivenessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
@@ -3172,7 +3175,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLivenessProbe {
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLivenessProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -3184,7 +3187,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLivenessProbeExec
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLivenessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -3197,7 +3200,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLivenessProbeGrpc
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLivenessProbeHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -3230,7 +3233,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLivenessProbeHttp
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersLivenessProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -3272,17 +3275,17 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersPorts {
 /// Probes are not allowed for ephemeral containers.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersReadinessProbe {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersReadinessProbeGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -3297,7 +3300,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersReadinessProbe {
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersReadinessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
@@ -3319,7 +3322,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersReadinessProbe {
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersReadinessProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -3331,7 +3334,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersReadinessProbeExe
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersReadinessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -3344,7 +3347,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersReadinessProbeGrp
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersReadinessProbeHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -3377,7 +3380,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersReadinessProbeHtt
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersReadinessProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -3632,17 +3635,17 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersSecurityContextWi
 /// Probes are not allowed for ephemeral containers.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersStartupProbe {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersStartupProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersStartupProbeGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersStartupProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -3657,7 +3660,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersStartupProbe {
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ScaledJobJobTargetRefTemplateSpecEphemeralContainersStartupProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
@@ -3679,7 +3682,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersStartupProbe {
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersStartupProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -3691,7 +3694,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersStartupProbeExec 
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersStartupProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -3704,7 +3707,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersStartupProbeGrpc 
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersStartupProbeHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -3737,7 +3740,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersStartupProbeHttpG
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecEphemeralContainersStartupProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -4101,13 +4104,13 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersEnvValueFromSecretKeyR
     pub optional: Option<bool>,
 }
 
-/// EnvFromSource represents the source of a set of ConfigMaps
+/// EnvFromSource represents the source of a set of ConfigMaps or Secrets
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersEnvFrom {
     /// The ConfigMap to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<ScaledJobJobTargetRefTemplateSpecInitContainersEnvFromConfigMapRef>,
-    /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
+    /// Optional text to prepend to the name of each environment variable. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// The Secret to select from
@@ -4166,6 +4169,11 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLifecycle {
     /// More info: <https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePreStop>,
+    /// StopSignal defines which signal will be sent to a container when it is being stopped.
+    /// If not specified, the default is defined by the container runtime in use.
+    /// StopSignal can only be set for Pods with a non-empty .spec.os.name
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
 }
 
 /// PostStart is called immediately after a container is created. If the handler fails,
@@ -4174,23 +4182,23 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLifecycle {
 /// More info: <https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePostStart {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePostStartExec>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePostStartHttpGet>,
-    /// Sleep represents the duration that the container should sleep before being terminated.
+    /// Sleep represents a duration that the container should sleep.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sleep: Option<ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePostStartSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-    /// for the backward compatibility. There are no validation of this field and
-    /// lifecycle hooks will fail in runtime when tcp handler is specified.
+    /// for backward compatibility. There is no validation of this field and
+    /// lifecycle hooks will fail at runtime when it is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePostStartTcpSocket>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePostStartExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -4202,7 +4210,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePostStartExec
     pub command: Option<Vec<String>>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePostStartHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -4235,7 +4243,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePostStartHttp
     pub value: String,
 }
 
-/// Sleep represents the duration that the container should sleep before being terminated.
+/// Sleep represents a duration that the container should sleep.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePostStartSleep {
     /// Seconds is the number of seconds to sleep.
@@ -4243,8 +4251,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePostStartSlee
 }
 
 /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-/// for the backward compatibility. There are no validation of this field and
-/// lifecycle hooks will fail in runtime when tcp handler is specified.
+/// for backward compatibility. There is no validation of this field and
+/// lifecycle hooks will fail at runtime when it is specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePostStartTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -4267,23 +4275,23 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePostStartTcpS
 /// More info: <https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePreStop {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePreStopExec>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePreStopHttpGet>,
-    /// Sleep represents the duration that the container should sleep before being terminated.
+    /// Sleep represents a duration that the container should sleep.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sleep: Option<ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePreStopSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-    /// for the backward compatibility. There are no validation of this field and
-    /// lifecycle hooks will fail in runtime when tcp handler is specified.
+    /// for backward compatibility. There is no validation of this field and
+    /// lifecycle hooks will fail at runtime when it is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePreStopTcpSocket>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePreStopExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -4295,7 +4303,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePreStopExec {
     pub command: Option<Vec<String>>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePreStopHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -4328,7 +4336,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePreStopHttpGe
     pub value: String,
 }
 
-/// Sleep represents the duration that the container should sleep before being terminated.
+/// Sleep represents a duration that the container should sleep.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePreStopSleep {
     /// Seconds is the number of seconds to sleep.
@@ -4336,8 +4344,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePreStopSleep 
 }
 
 /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-/// for the backward compatibility. There are no validation of this field and
-/// lifecycle hooks will fail in runtime when tcp handler is specified.
+/// for backward compatibility. There is no validation of this field and
+/// lifecycle hooks will fail at runtime when it is specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePreStopTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -4355,17 +4363,17 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLifecyclePreStopTcpSoc
 /// More info: <https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLivenessProbe {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ScaledJobJobTargetRefTemplateSpecInitContainersLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<ScaledJobJobTargetRefTemplateSpecInitContainersLivenessProbeGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ScaledJobJobTargetRefTemplateSpecInitContainersLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -4380,7 +4388,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLivenessProbe {
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ScaledJobJobTargetRefTemplateSpecInitContainersLivenessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
@@ -4402,7 +4410,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLivenessProbe {
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLivenessProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -4414,7 +4422,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLivenessProbeExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLivenessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -4427,7 +4435,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLivenessProbeGrpc {
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLivenessProbeHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -4460,7 +4468,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLivenessProbeHttpGetHt
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersLivenessProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -4505,17 +4513,17 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersPorts {
 /// More info: <https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersReadinessProbe {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ScaledJobJobTargetRefTemplateSpecInitContainersReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<ScaledJobJobTargetRefTemplateSpecInitContainersReadinessProbeGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ScaledJobJobTargetRefTemplateSpecInitContainersReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -4530,7 +4538,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersReadinessProbe {
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ScaledJobJobTargetRefTemplateSpecInitContainersReadinessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
@@ -4552,7 +4560,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersReadinessProbe {
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersReadinessProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -4564,7 +4572,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersReadinessProbeExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersReadinessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -4577,7 +4585,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersReadinessProbeGrpc {
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersReadinessProbeHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -4610,7 +4618,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersReadinessProbeHttpGetH
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersReadinessProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -4873,17 +4881,17 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersSecurityContextWindows
 /// More info: <https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersStartupProbe {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<ScaledJobJobTargetRefTemplateSpecInitContainersStartupProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<ScaledJobJobTargetRefTemplateSpecInitContainersStartupProbeGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<ScaledJobJobTargetRefTemplateSpecInitContainersStartupProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -4898,7 +4906,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersStartupProbe {
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<ScaledJobJobTargetRefTemplateSpecInitContainersStartupProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
@@ -4920,7 +4928,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersStartupProbe {
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersStartupProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -4932,7 +4940,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersStartupProbeExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersStartupProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -4945,7 +4953,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersStartupProbeGrpc {
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersStartupProbeHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -4978,7 +4986,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainersStartupProbeHttpGetHtt
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecInitContainersStartupProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -5136,6 +5144,52 @@ pub struct ScaledJobJobTargetRefTemplateSpecResourceClaims {
     pub resource_claim_template_name: Option<String>,
 }
 
+/// Resources is the total amount of CPU and Memory resources required by all
+/// containers in the pod. It supports specifying Requests and Limits for
+/// "cpu" and "memory" resource names only. ResourceClaims are not supported.
+/// 
+/// This field enables fine-grained control over resource allocation for the
+/// entire pod, allowing resource sharing among containers in a pod.
+/// 
+/// This is an alpha field and requires enabling the PodLevelResources feature
+/// gate.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScaledJobJobTargetRefTemplateSpecResources {
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// This field is immutable. It can only be set for containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<ScaledJobJobTargetRefTemplateSpecResourcesClaims>>,
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: <https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: <https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// ResourceClaim references one entry in PodSpec.ResourceClaims.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScaledJobJobTargetRefTemplateSpecResourcesClaims {
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
+    pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
+}
+
 /// PodSchedulingGate is associated to a Pod to guard its scheduling.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecSchedulingGates {
@@ -5197,6 +5251,31 @@ pub struct ScaledJobJobTargetRefTemplateSpecSecurityContext {
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
+    /// seLinuxChangePolicy defines how the container's SELinux label is applied to all volumes used by the Pod.
+    /// It has no effect on nodes that do not support SELinux or to volumes does not support SELinux.
+    /// Valid values are "MountOption" and "Recursive".
+    /// 
+    /// "Recursive" means relabeling of all files on all Pod volumes by the container runtime.
+    /// This may be slow for large volumes, but allows mixing privileged and unprivileged Pods sharing the same volume on the same node.
+    /// 
+    /// "MountOption" mounts all eligible Pod volumes with `-o context` mount option.
+    /// This requires all Pods that share the same volume to use the same SELinux label.
+    /// It is not possible to share the same volume among privileged and unprivileged Pods.
+    /// Eligible volumes are in-tree FibreChannel and iSCSI volumes, and all CSI volumes
+    /// whose CSI driver announces SELinux support by setting spec.seLinuxMount: true in their
+    /// CSIDriver instance. Other volumes are always re-labelled recursively.
+    /// "MountOption" value is allowed only when SELinuxMount feature gate is enabled.
+    /// 
+    /// If not specified and SELinuxMount feature gate is enabled, "MountOption" is used.
+    /// If not specified and SELinuxMount feature gate is disabled, "MountOption" is used for ReadWriteOncePod volumes
+    /// and "Recursive" for all other volumes.
+    /// 
+    /// This field affects only Pods that have SELinux label set, either in PodSecurityContext or in SecurityContext of all containers.
+    /// 
+    /// All Pods that use the same volume should use the same seLinuxChangePolicy, otherwise some pods can get stuck in ContainerCreating state.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxChangePolicy")]
+    pub se_linux_change_policy: Option<String>,
     /// The SELinux context to be applied to all containers.
     /// If unspecified, the container runtime will allocate a random SELinux context for each
     /// container.  May also be set in SecurityContext.  If set in
@@ -5434,7 +5513,6 @@ pub struct ScaledJobJobTargetRefTemplateSpecTopologySpreadConstraints {
     /// - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
     /// 
     /// If this value is nil, the behavior is equivalent to the Honor policy.
-    /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
     pub node_affinity_policy: Option<String>,
     /// NodeTaintsPolicy indicates how we will treat node taints when calculating
@@ -5444,7 +5522,6 @@ pub struct ScaledJobJobTargetRefTemplateSpecTopologySpreadConstraints {
     /// - Ignore: node taints are ignored. All nodes are included.
     /// 
     /// If this value is nil, the behavior is equivalent to the Ignore policy.
-    /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
     pub node_taints_policy: Option<String>,
     /// TopologyKey is the key of node labels. Nodes that have a label with this key
@@ -5518,26 +5595,35 @@ pub struct ScaledJobJobTargetRefTemplateSpecTopologySpreadConstraintsLabelSelect
 pub struct ScaledJobJobTargetRefTemplateSpecVolumes {
     /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
+    /// Deprecated: AWSElasticBlockStore is deprecated. All operations for the in-tree
+    /// awsElasticBlockStore type are redirected to the ebs.csi.aws.com CSI driver.
     /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
     pub aws_elastic_block_store: Option<ScaledJobJobTargetRefTemplateSpecVolumesAwsElasticBlockStore>,
     /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
+    /// Deprecated: AzureDisk is deprecated. All operations for the in-tree azureDisk type
+    /// are redirected to the disk.csi.azure.com CSI driver.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
     pub azure_disk: Option<ScaledJobJobTargetRefTemplateSpecVolumesAzureDisk>,
     /// azureFile represents an Azure File Service mount on the host and bind mount to the pod.
+    /// Deprecated: AzureFile is deprecated. All operations for the in-tree azureFile type
+    /// are redirected to the file.csi.azure.com CSI driver.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureFile")]
     pub azure_file: Option<ScaledJobJobTargetRefTemplateSpecVolumesAzureFile>,
-    /// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime
+    /// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime.
+    /// Deprecated: CephFS is deprecated and the in-tree cephfs type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cephfs: Option<ScaledJobJobTargetRefTemplateSpecVolumesCephfs>,
     /// cinder represents a cinder volume attached and mounted on kubelets host machine.
+    /// Deprecated: Cinder is deprecated. All operations for the in-tree cinder type
+    /// are redirected to the cinder.csi.openstack.org CSI driver.
     /// More info: <https://examples.k8s.io/mysql-cinder-pd/README.md>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cinder: Option<ScaledJobJobTargetRefTemplateSpecVolumesCinder>,
     /// configMap represents a configMap that should populate this volume
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<ScaledJobJobTargetRefTemplateSpecVolumesConfigMap>,
-    /// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature).
+    /// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<ScaledJobJobTargetRefTemplateSpecVolumesCsi>,
     /// downwardAPI represents downward API about the pod that should populate this volume
@@ -5578,23 +5664,28 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumes {
     pub fc: Option<ScaledJobJobTargetRefTemplateSpecVolumesFc>,
     /// flexVolume represents a generic volume resource that is
     /// provisioned/attached using an exec based plugin.
+    /// Deprecated: FlexVolume is deprecated. Consider using a CSIDriver instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
     pub flex_volume: Option<ScaledJobJobTargetRefTemplateSpecVolumesFlexVolume>,
-    /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
+    /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running.
+    /// Deprecated: Flocker is deprecated and the in-tree flocker type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub flocker: Option<ScaledJobJobTargetRefTemplateSpecVolumesFlocker>,
     /// gcePersistentDisk represents a GCE Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
+    /// Deprecated: GCEPersistentDisk is deprecated. All operations for the in-tree
+    /// gcePersistentDisk type are redirected to the pd.csi.storage.gke.io CSI driver.
     /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
     pub gce_persistent_disk: Option<ScaledJobJobTargetRefTemplateSpecVolumesGcePersistentDisk>,
     /// gitRepo represents a git repository at a particular revision.
-    /// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
+    /// Deprecated: GitRepo is deprecated. To provision a container with a git repo, mount an
     /// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
     /// into the Pod's container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitRepo")]
     pub git_repo: Option<ScaledJobJobTargetRefTemplateSpecVolumesGitRepo>,
     /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
+    /// Deprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer supported.
     /// More info: <https://examples.k8s.io/volumes/glusterfs/README.md>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub glusterfs: Option<ScaledJobJobTargetRefTemplateSpecVolumesGlusterfs>,
@@ -5617,7 +5708,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumes {
     /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
     /// The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
     /// The volume will be mounted read-only (ro) and non-executable files (noexec).
-    /// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath).
+    /// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.
     /// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<ScaledJobJobTargetRefTemplateSpecVolumesImage>,
@@ -5639,23 +5730,30 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumes {
     /// More info: <https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<ScaledJobJobTargetRefTemplateSpecVolumesPersistentVolumeClaim>,
-    /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
+    /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine.
+    /// Deprecated: PhotonPersistentDisk is deprecated and the in-tree photonPersistentDisk type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
     pub photon_persistent_disk: Option<ScaledJobJobTargetRefTemplateSpecVolumesPhotonPersistentDisk>,
-    /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
+    /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine.
+    /// Deprecated: PortworxVolume is deprecated. All operations for the in-tree portworxVolume type
+    /// are redirected to the pxd.portworx.com CSI driver when the CSIMigrationPortworx feature-gate
+    /// is on.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
     pub portworx_volume: Option<ScaledJobJobTargetRefTemplateSpecVolumesPortworxVolume>,
     /// projected items for all in one resources secrets, configmaps, and downward API
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub projected: Option<ScaledJobJobTargetRefTemplateSpecVolumesProjected>,
-    /// quobyte represents a Quobyte mount on the host that shares a pod's lifetime
+    /// quobyte represents a Quobyte mount on the host that shares a pod's lifetime.
+    /// Deprecated: Quobyte is deprecated and the in-tree quobyte type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub quobyte: Option<ScaledJobJobTargetRefTemplateSpecVolumesQuobyte>,
     /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
+    /// Deprecated: RBD is deprecated and the in-tree rbd type is no longer supported.
     /// More info: <https://examples.k8s.io/volumes/rbd/README.md>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rbd: Option<ScaledJobJobTargetRefTemplateSpecVolumesRbd>,
     /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
+    /// Deprecated: ScaleIO is deprecated and the in-tree scaleIO type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleIO")]
     pub scale_io: Option<ScaledJobJobTargetRefTemplateSpecVolumesScaleIo>,
     /// secret represents a secret that should populate this volume.
@@ -5663,15 +5761,20 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<ScaledJobJobTargetRefTemplateSpecVolumesSecret>,
     /// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
+    /// Deprecated: StorageOS is deprecated and the in-tree storageos type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storageos: Option<ScaledJobJobTargetRefTemplateSpecVolumesStorageos>,
-    /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
+    /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine.
+    /// Deprecated: VsphereVolume is deprecated. All operations for the in-tree vsphereVolume type
+    /// are redirected to the csi.vsphere.vmware.com CSI driver.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
     pub vsphere_volume: Option<ScaledJobJobTargetRefTemplateSpecVolumesVsphereVolume>,
 }
 
 /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
 /// kubelet's host machine and then exposed to the pod.
+/// Deprecated: AWSElasticBlockStore is deprecated. All operations for the in-tree
+/// awsElasticBlockStore type are redirected to the ebs.csi.aws.com CSI driver.
 /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesAwsElasticBlockStore {
@@ -5698,6 +5801,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesAwsElasticBlockStore {
 }
 
 /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
+/// Deprecated: AzureDisk is deprecated. All operations for the in-tree azureDisk type
+/// are redirected to the disk.csi.azure.com CSI driver.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesAzureDisk {
     /// cachingMode is the Host Caching mode: None, Read Only, Read Write.
@@ -5724,6 +5829,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesAzureDisk {
 }
 
 /// azureFile represents an Azure File Service mount on the host and bind mount to the pod.
+/// Deprecated: AzureFile is deprecated. All operations for the in-tree azureFile type
+/// are redirected to the file.csi.azure.com CSI driver.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesAzureFile {
     /// readOnly defaults to false (read/write). ReadOnly here will force
@@ -5738,7 +5845,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesAzureFile {
     pub share_name: String,
 }
 
-/// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime
+/// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime.
+/// Deprecated: CephFS is deprecated and the in-tree cephfs type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesCephfs {
     /// monitors is Required: Monitors is a collection of Ceph monitors
@@ -5780,6 +5888,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesCephfsSecretRef {
 }
 
 /// cinder represents a cinder volume attached and mounted on kubelets host machine.
+/// Deprecated: Cinder is deprecated. All operations for the in-tree cinder type
+/// are redirected to the cinder.csi.openstack.org CSI driver.
 /// More info: <https://examples.k8s.io/mysql-cinder-pd/README.md>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesCinder {
@@ -5870,7 +5980,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesConfigMapItems {
     pub path: String,
 }
 
-/// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature).
+/// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesCsi {
     /// driver is the name of the CSI driver that handles this volume.
@@ -6321,6 +6431,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesFc {
 
 /// flexVolume represents a generic volume resource that is
 /// provisioned/attached using an exec based plugin.
+/// Deprecated: FlexVolume is deprecated. Consider using a CSIDriver instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesFlexVolume {
     /// driver is the name of the driver to use for this volume.
@@ -6362,7 +6473,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesFlexVolumeSecretRef {
     pub name: Option<String>,
 }
 
-/// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
+/// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running.
+/// Deprecated: Flocker is deprecated and the in-tree flocker type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesFlocker {
     /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker
@@ -6376,6 +6488,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesFlocker {
 
 /// gcePersistentDisk represents a GCE Disk resource that is attached to a
 /// kubelet's host machine and then exposed to the pod.
+/// Deprecated: GCEPersistentDisk is deprecated. All operations for the in-tree
+/// gcePersistentDisk type are redirected to the pd.csi.storage.gke.io CSI driver.
 /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesGcePersistentDisk {
@@ -6404,7 +6518,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesGcePersistentDisk {
 }
 
 /// gitRepo represents a git repository at a particular revision.
-/// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
+/// Deprecated: GitRepo is deprecated. To provision a container with a git repo, mount an
 /// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
 /// into the Pod's container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6423,6 +6537,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesGitRepo {
 }
 
 /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
+/// Deprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer supported.
 /// More info: <https://examples.k8s.io/volumes/glusterfs/README.md>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesGlusterfs {
@@ -6469,7 +6584,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesHostPath {
 /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
 /// The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
 /// The volume will be mounted read-only (ro) and non-executable files (noexec).
-/// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath).
+/// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.
 /// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesImage {
@@ -6581,7 +6696,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesPersistentVolumeClaim {
     pub read_only: Option<bool>,
 }
 
-/// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
+/// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine.
+/// Deprecated: PhotonPersistentDisk is deprecated and the in-tree photonPersistentDisk type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesPhotonPersistentDisk {
     /// fsType is the filesystem type to mount.
@@ -6594,7 +6710,10 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesPhotonPersistentDisk {
     pub pd_id: String,
 }
 
-/// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
+/// portworxVolume represents a portworx volume attached and mounted on kubelets host machine.
+/// Deprecated: PortworxVolume is deprecated. All operations for the in-tree portworxVolume type
+/// are redirected to the pxd.portworx.com CSI driver when the CSIMigrationPortworx feature-gate
+/// is on.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesPortworxVolume {
     /// fSType represents the filesystem type to mount
@@ -6900,7 +7019,8 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesProjectedSourcesServiceAccoun
     pub path: String,
 }
 
-/// quobyte represents a Quobyte mount on the host that shares a pod's lifetime
+/// quobyte represents a Quobyte mount on the host that shares a pod's lifetime.
+/// Deprecated: Quobyte is deprecated and the in-tree quobyte type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesQuobyte {
     /// group to map volume access to
@@ -6928,6 +7048,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesQuobyte {
 }
 
 /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
+/// Deprecated: RBD is deprecated and the in-tree rbd type is no longer supported.
 /// More info: <https://examples.k8s.io/volumes/rbd/README.md>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesRbd {
@@ -6987,6 +7108,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesRbdSecretRef {
 }
 
 /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
+/// Deprecated: ScaleIO is deprecated and the in-tree scaleIO type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesScaleIo {
     /// fsType is the filesystem type to mount.
@@ -7091,6 +7213,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesSecretItems {
 }
 
 /// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
+/// Deprecated: StorageOS is deprecated and the in-tree storageos type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesStorageos {
     /// fsType is the filesystem type to mount.
@@ -7133,7 +7256,9 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesStorageosSecretRef {
     pub name: Option<String>,
 }
 
-/// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
+/// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine.
+/// Deprecated: VsphereVolume is deprecated. All operations for the in-tree vsphereVolume type
+/// are redirected to the csi.vsphere.vmware.com CSI driver.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledJobJobTargetRefTemplateSpecVolumesVsphereVolume {
     /// fsType is filesystem type to mount.

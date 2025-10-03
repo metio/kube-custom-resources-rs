@@ -2297,9 +2297,15 @@ pub struct OutputOutputsS3 {
     /// The AWS access key id.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsKeyId")]
     pub aws_key_id: Option<String>,
+    /// The AWS access key id from Secrets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsKeyIdFromSecret")]
+    pub aws_key_id_from_secret: Option<OutputOutputsS3AwsKeyIdFromSecret>,
     /// The AWS secret key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsSecKey")]
     pub aws_sec_key: Option<String>,
+    /// The AWS secret key from Secrets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsSecKeyFromSecret")]
+    pub aws_sec_key_from_secret: Option<OutputOutputsS3AwsSecKeyFromSecret>,
     /// This prevents AWS SDK from breaking endpoint URL
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forcePathStyle")]
     pub force_path_style: Option<bool>,
@@ -2345,6 +2351,76 @@ pub struct OutputOutputsS3 {
     /// the following parameters are for S3 kms <https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingKMSEncryption.html>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useServerSideEncryption")]
     pub use_server_side_encryption: Option<String>,
+}
+
+/// The AWS access key id from Secrets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOutputsS3AwsKeyIdFromSecret {
+    /// ValueSource defines how to find a value's key.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<OutputOutputsS3AwsKeyIdFromSecretValueFrom>,
+}
+
+/// ValueSource defines how to find a value's key.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOutputsS3AwsKeyIdFromSecretValueFrom {
+    /// Selects a key of a secret in the pod's namespace
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OutputOutputsS3AwsKeyIdFromSecretValueFromSecretKeyRef>,
+}
+
+/// Selects a key of a secret in the pod's namespace
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOutputsS3AwsKeyIdFromSecretValueFromSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// The AWS secret key from Secrets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOutputsS3AwsSecKeyFromSecret {
+    /// ValueSource defines how to find a value's key.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<OutputOutputsS3AwsSecKeyFromSecretValueFrom>,
+}
+
+/// ValueSource defines how to find a value's key.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOutputsS3AwsSecKeyFromSecretValueFrom {
+    /// Selects a key of a secret in the pod's namespace
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OutputOutputsS3AwsSecKeyFromSecretValueFromSecretKeyRef>,
+}
+
+/// Selects a key of a secret in the pod's namespace
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOutputsS3AwsSecKeyFromSecretValueFromSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 /// out_s3 plugin

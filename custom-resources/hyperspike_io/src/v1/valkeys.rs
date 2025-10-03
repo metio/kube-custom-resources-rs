@@ -21,7 +21,12 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct ValkeySpec {
-    /// Anonymous Auth
+    /// Anonymous Auth.
+    /// 
+    /// If true, clients can login without providing a password. If
+    /// false, the the operator will configure the valkey server to use a password. It
+    /// will either create a Secret holding the password or, if ServicePassword is set,
+    /// use an existing secret.
     #[serde(rename = "anonymousAuth")]
     pub anonymous_auth: bool,
     /// Certificate Issuer
@@ -48,7 +53,7 @@ pub struct ValkeySpec {
     /// Node Selector
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
-    /// Number of shards
+    /// Number of shards. Each node is a primary
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nodes: Option<i32>,
     /// Enable prometheus
@@ -56,19 +61,32 @@ pub struct ValkeySpec {
     /// Extra prometheus labels for operator targeting
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "prometheusLabels")]
     pub prometheus_labels: Option<BTreeMap<String, String>>,
-    /// Number of replicas
+    /// Number of replicas for each node.
+    /// 
+    /// Note: This field currently creates extra primary nodes.
+    /// Follow  <https://github.com/hyperspike/valkey-operator/issues/186> for details
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
     /// Resources requirements and limits for the Valkey Server container
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ValkeyResources>,
-    /// ServiceMonitor Enabled
+    /// ServiceMonitor Enabled. The service monitor is a custom resource which tells
+    /// other Prometheus components how to scrape metrics from the valkey cluster
     #[serde(rename = "serviceMonitor")]
     pub service_monitor: bool,
-    /// Service Password
+    /// Service Password is a SecretKeySelector that points to a data key in a Secret. Look for
+    /// SecretKeySelector in [Kubernetes Pod Documentation] for details
+    /// 
+    /// This field is optional. If ServicePassword is not set and
+    /// [ValkeySpec.AnonymousAuth] is false, then the operator will create a secret
+    /// in with the same name and  namespace as the custom resource, with a "password" data key
+    /// and a random 16-character password value.
+    /// 
+    /// <https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#environment-variables>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "servicePassword")]
     pub service_password: Option<ValkeyServicePassword>,
-    /// Persistent volume claim
+    /// Persistent volume claim. The kind and metadata can be omitted, but the spec
+    /// is necessary.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage: Option<ValkeyStorage>,
     /// TLS Support
@@ -247,7 +265,15 @@ pub struct ValkeyResourcesClaims {
     pub request: Option<String>,
 }
 
-/// Service Password
+/// Service Password is a SecretKeySelector that points to a data key in a Secret. Look for
+/// SecretKeySelector in [Kubernetes Pod Documentation] for details
+/// 
+/// This field is optional. If ServicePassword is not set and
+/// [ValkeySpec.AnonymousAuth] is false, then the operator will create a secret
+/// in with the same name and  namespace as the custom resource, with a "password" data key
+/// and a random 16-character password value.
+/// 
+/// <https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#environment-variables>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ValkeyServicePassword {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -264,7 +290,8 @@ pub struct ValkeyServicePassword {
     pub optional: Option<bool>,
 }
 
-/// Persistent volume claim
+/// Persistent volume claim. The kind and metadata can be omitted, but the spec
+/// is necessary.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ValkeyStorage {
     /// APIVersion defines the versioned schema of this representation of an object.

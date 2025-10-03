@@ -6,6 +6,7 @@
 mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
+    pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
@@ -21,6 +22,29 @@ pub struct CiliumPodIpPoolSpec {
     /// IPv6 specifies the IPv6 CIDRs and mask sizes of the pool
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ipv6: Option<CiliumPodIpPoolIpv6>,
+    /// NamespaceSelector selects the set of Namespaces that are eligible to use
+    /// this pool. If both PodSelector and NamespaceSelector are specified, a Pod
+    /// must match both selectors to be eligible for IP allocation from this pool.
+    /// 
+    /// If NamespaceSelector is empty, the pool can be used by Pods in any namespace
+    /// (subject to PodSelector constraints).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<CiliumPodIpPoolNamespaceSelector>,
+    /// PodSelector selects the set of Pods that are eligible to receive IPs from
+    /// this pool when neither the Pod nor its Namespace specify an explicit
+    /// `ipam.cilium.io/*` annotation.
+    /// 
+    /// The selector can match on regular Pod labels and on the following synthetic
+    /// labels that Cilium adds for convenience:
+    /// 
+    /// io.kubernetes.pod.namespace – the Pod's namespace
+    /// io.kubernetes.pod.name      – the Pod's name
+    /// 
+    /// A single Pod must not match more than one pool for the same IP family.
+    /// If multiple pools match, IP allocation fails for that Pod and a warning event
+    /// is emitted in the namespace of the Pod.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSelector")]
+    pub pod_selector: Option<CiliumPodIpPoolPodSelector>,
 }
 
 /// IPv4 specifies the IPv4 CIDRs and mask sizes of the pool
@@ -41,5 +65,102 @@ pub struct CiliumPodIpPoolIpv6 {
     /// MaskSize is the mask size of the pool.
     #[serde(rename = "maskSize")]
     pub mask_size: i64,
+}
+
+/// NamespaceSelector selects the set of Namespaces that are eligible to use
+/// this pool. If both PodSelector and NamespaceSelector are specified, a Pod
+/// must match both selectors to be eligible for IP allocation from this pool.
+/// 
+/// If NamespaceSelector is empty, the pool can be used by Pods in any namespace
+/// (subject to PodSelector constraints).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CiliumPodIpPoolNamespaceSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumPodIpPoolNamespaceSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CiliumPodIpPoolNamespaceSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: CiliumPodIpPoolNamespaceSelectorMatchExpressionsOperator,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum CiliumPodIpPoolNamespaceSelectorMatchExpressionsOperator {
+    In,
+    NotIn,
+    Exists,
+    DoesNotExist,
+}
+
+/// PodSelector selects the set of Pods that are eligible to receive IPs from
+/// this pool when neither the Pod nor its Namespace specify an explicit
+/// `ipam.cilium.io/*` annotation.
+/// 
+/// The selector can match on regular Pod labels and on the following synthetic
+/// labels that Cilium adds for convenience:
+/// 
+/// io.kubernetes.pod.namespace – the Pod's namespace
+/// io.kubernetes.pod.name      – the Pod's name
+/// 
+/// A single Pod must not match more than one pool for the same IP family.
+/// If multiple pools match, IP allocation fails for that Pod and a warning event
+/// is emitted in the namespace of the Pod.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CiliumPodIpPoolPodSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumPodIpPoolPodSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CiliumPodIpPoolPodSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: CiliumPodIpPoolPodSelectorMatchExpressionsOperator,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum CiliumPodIpPoolPodSelectorMatchExpressionsOperator {
+    In,
+    NotIn,
+    Exists,
+    DoesNotExist,
 }
 
