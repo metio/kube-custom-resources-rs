@@ -149,6 +149,9 @@ pub struct ClusterSecretStoreProvider {
     /// Kubernetes configures this store to sync secrets using a Kubernetes cluster provider
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kubernetes: Option<ClusterSecretStoreProviderKubernetes>,
+    /// Ngrok configures this store to sync secrets using the ngrok provider.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ngrok: Option<ClusterSecretStoreProviderNgrok>,
     /// Onboardbase configures this store to sync secrets using the Onboardbase provider
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub onboardbase: Option<ClusterSecretStoreProviderOnboardbase>,
@@ -1611,6 +1614,13 @@ pub struct ClusterSecretStoreProviderGcpsm {
     /// ProjectID project where secret is located
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "projectID")]
     pub project_id: Option<String>,
+    /// SecretVersionSelectionPolicy specifies how the provider selects a secret version
+    /// when "latest" is disabled or destroyed.
+    /// Possible values are:
+    /// - LatestOrFail: the provider always uses "latest", or fails if that version is disabled/destroyed.
+    /// - LatestOrFetch: the provider falls back to fetching the latest version if the version is DESTROYED or DISABLED
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretVersionSelectionPolicy")]
+    pub secret_version_selection_policy: Option<String>,
 }
 
 /// Auth defines the information necessary to authenticate against GCP
@@ -2743,6 +2753,57 @@ pub enum ClusterSecretStoreProviderKubernetesServerCaProviderType {
     ConfigMap,
 }
 
+/// Ngrok configures this store to sync secrets using the ngrok provider.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderNgrok {
+    /// APIURL is the URL of the ngrok API.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiUrl")]
+    pub api_url: Option<String>,
+    /// Auth configures how the ngrok provider authenticates with the ngrok API.
+    pub auth: ClusterSecretStoreProviderNgrokAuth,
+    /// Vault configures the ngrok vault to sync secrets with.
+    pub vault: ClusterSecretStoreProviderNgrokVault,
+}
+
+/// Auth configures how the ngrok provider authenticates with the ngrok API.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderNgrokAuth {
+    /// APIKey is the API Key used to authenticate with ngrok. See <https://ngrok.com/docs/api/#authentication>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiKey")]
+    pub api_key: Option<ClusterSecretStoreProviderNgrokAuthApiKey>,
+}
+
+/// APIKey is the API Key used to authenticate with ngrok. See <https://ngrok.com/docs/api/#authentication>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderNgrokAuthApiKey {
+    /// SecretRef is a reference to a secret containing the ngrok API key.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<ClusterSecretStoreProviderNgrokAuthApiKeySecretRef>,
+}
+
+/// SecretRef is a reference to a secret containing the ngrok API key.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderNgrokAuthApiKeySecretRef {
+    /// A key in the referenced Secret.
+    /// Some instances of this field may be defaulted, in others it may be required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the Secret resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// The namespace of the Secret resource being referred to.
+    /// Ignored if referent is not cluster-scoped, otherwise defaults to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// Vault configures the ngrok vault to sync secrets with.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderNgrokVault {
+    /// Name is the name of the ngrok vault to sync secrets with.
+    pub name: String,
+}
+
 /// Onboardbase configures this store to sync secrets using the Onboardbase provider
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterSecretStoreProviderOnboardbase {
@@ -3548,6 +3609,10 @@ pub struct ClusterSecretStoreProviderVaultAuthCert {
     /// authentication method
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCert")]
     pub client_cert: Option<ClusterSecretStoreProviderVaultAuthCertClientCert>,
+    /// Path where the Certificate authentication backend is mounted
+    /// in Vault, e.g: "cert"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
     /// SecretRef to a key in a Secret resource containing client private key to
     /// authenticate with Vault using the Cert authentication method
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]

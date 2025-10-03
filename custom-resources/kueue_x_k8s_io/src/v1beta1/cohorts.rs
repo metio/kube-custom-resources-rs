@@ -11,7 +11,7 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// CohortSpec defines the desired state of Cohort
+/// spec is the specification of the Cohort.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "kueue.x-k8s.io", version = "v1beta1", kind = "Cohort", plural = "cohorts")]
 #[kube(status = "CohortStatus")]
@@ -24,7 +24,7 @@ pub struct CohortSpec {
     /// if FairSharing is enabled in the Kueue configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fairSharing")]
     pub fair_sharing: Option<CohortFairSharing>,
-    /// ParentName references the name of the Cohort's parent, if
+    /// parentName references the name of the Cohort's parent, if
     /// any. It satisfies one of three cases:
     /// 1) Unset. This Cohort is the root of its Cohort tree.
     /// 2) References a non-existent Cohort. We use default Cohort (no borrowing/lending limits).
@@ -36,7 +36,7 @@ pub struct CohortSpec {
     /// exists.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "parentName")]
     pub parent_name: Option<String>,
-    /// ResourceGroups describes groupings of Resources and
+    /// resourceGroups describes groupings of Resources and
     /// Flavors.  Each ResourceGroup defines a list of Resources
     /// and a list of Flavors which provide quotas for these
     /// Resources. Each Resource and each Flavor may only form part
@@ -110,7 +110,7 @@ pub struct CohortResourceGroupsFlavors {
     /// ClusterQueue will have an Active condition set to False.
     pub name: String,
     /// resources is the list of quotas for this flavor per resource.
-    /// There could be up to 16 resources.
+    /// There could be up to 64 resources.
     pub resources: Vec<CohortResourceGroupsFlavorsResources>,
 }
 
@@ -156,7 +156,7 @@ pub struct CohortResourceGroupsFlavorsResources {
     pub nominal_quota: IntOrString,
 }
 
-/// CohortStatus defines the observed state of Cohort.
+/// status is the status of the Cohort.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CohortStatus {
     /// fairSharing contains the current state for this Cohort
@@ -174,7 +174,7 @@ pub struct CohortStatusFairSharing {
     /// admissionFairSharingStatus represents information relevant to the Admission Fair Sharing
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "admissionFairSharingStatus")]
     pub admission_fair_sharing_status: Option<CohortStatusFairSharingAdmissionFairSharingStatus>,
-    /// WeightedShare represents the maximum of the ratios of usage
+    /// weightedShare represents the maximum of the ratios of usage
     /// above nominal quota to the lendable resources in the
     /// Cohort, among all the resources provided by the Node, and
     /// divided by the weight.  If zero, it means that the usage of
@@ -188,12 +188,12 @@ pub struct CohortStatusFairSharing {
 /// admissionFairSharingStatus represents information relevant to the Admission Fair Sharing
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CohortStatusFairSharingAdmissionFairSharingStatus {
-    /// ConsumedResources represents the aggregated usage of resources over time,
+    /// consumedResources represents the aggregated usage of resources over time,
     /// with decaying function applied.
     /// The value is populated if usage consumption functionality is enabled in Kueue config.
     #[serde(rename = "consumedResources")]
     pub consumed_resources: BTreeMap<String, IntOrString>,
-    /// LastUpdate is the time when share and consumed resources were updated.
+    /// lastUpdate is the time when share and consumed resources were updated.
     #[serde(rename = "lastUpdate")]
     pub last_update: String,
 }

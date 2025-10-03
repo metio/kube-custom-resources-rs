@@ -37,6 +37,9 @@ pub struct ClickHouseInstallationTemplateSpec {
     pub namespace_domain_pattern: Option<String>,
     /// Optional, allows tuning reconciling cycle for ClickhouseInstallation from clickhouse-operator side
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reconcile: Option<ClickHouseInstallationTemplateReconcile>,
+    /// [OBSOLETED] Optional, allows tuning reconciling cycle for ClickhouseInstallation from clickhouse-operator side
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reconciling: Option<ClickHouseInstallationTemplateReconciling>,
     /// In case 'RollingUpdate' specified, the operator will always restart ClickHouse pods during reconcile.
     /// This options is used in rare cases when force restart is required and is typically removed after the use in order to avoid unneeded restarts.
@@ -869,9 +872,367 @@ pub enum ClickHouseInstallationTemplateConfigurationClustersPdbManaged {
 /// allow tuning reconciling process
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClickHouseInstallationTemplateConfigurationClustersReconcile {
+    /// Whether the operator during reconcile procedure should wait for a ClickHouse host:
+    ///   - to be excluded from a ClickHouse cluster
+    ///   - to complete all running queries
+    ///   - to be included into a ClickHouse cluster
+    /// respectfully before moving forward
+    /// 
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<ClickHouseInstallationTemplateConfigurationClustersReconcileHost>,
     /// runtime parameters for clickhouse-operator process which are used during reconcile cycle
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub runtime: Option<ClickHouseInstallationTemplateConfigurationClustersReconcileRuntime>,
+}
+
+/// Whether the operator during reconcile procedure should wait for a ClickHouse host:
+///   - to be excluded from a ClickHouse cluster
+///   - to complete all running queries
+///   - to be included into a ClickHouse cluster
+/// respectfully before moving forward
+/// 
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClickHouseInstallationTemplateConfigurationClustersReconcileHost {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub wait: Option<ClickHouseInstallationTemplateConfigurationClustersReconcileHostWait>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClickHouseInstallationTemplateConfigurationClustersReconcileHostWait {
+    /// Allows to stop all ClickHouse clusters defined in a CHI.
+    /// Works as the following:
+    ///  - When `stop` is `1` operator sets `Replicas: 0` in each StatefulSet. Thie leads to having all `Pods` and `Service` deleted. All PVCs are kept intact.
+    ///  - When `stop` is `0` operator sets `Replicas: 1` and `Pod`s and `Service`s will created again and all retained PVCs will be attached to `Pod`s.
+    /// 
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exclude: Option<ClickHouseInstallationTemplateConfigurationClustersReconcileHostWaitExclude>,
+    /// Whether the operator during reconcile procedure should wait for a ClickHouse host to be included into a ClickHouse cluster
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub include: Option<ClickHouseInstallationTemplateConfigurationClustersReconcileHostWaitInclude>,
+    /// What probes the operator should wait during host launch procedure
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub probes: Option<ClickHouseInstallationTemplateConfigurationClustersReconcileHostWaitProbes>,
+    /// Whether the operator during reconcile procedure should wait for a ClickHouse host to complete all running queries
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub queries: Option<ClickHouseInstallationTemplateConfigurationClustersReconcileHostWaitQueries>,
+    /// Whether the operator during reconcile procedure should wait for replicas to catch-up
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub replicas: Option<ClickHouseInstallationTemplateConfigurationClustersReconcileHostWaitReplicas>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClickHouseInstallationTemplateConfigurationClustersReconcileHostWaitExclude {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    #[serde(rename = "0")]
+    r#_0,
+    #[serde(rename = "1")]
+    r#_1,
+    False,
+    #[serde(rename = "false")]
+    FalseX,
+    True,
+    #[serde(rename = "true")]
+    TrueX,
+    No,
+    #[serde(rename = "no")]
+    NoX,
+    Yes,
+    #[serde(rename = "yes")]
+    YesX,
+    Off,
+    #[serde(rename = "off")]
+    OffX,
+    On,
+    #[serde(rename = "on")]
+    OnX,
+    Disable,
+    #[serde(rename = "disable")]
+    DisableX,
+    Enable,
+    #[serde(rename = "enable")]
+    EnableX,
+    Disabled,
+    #[serde(rename = "disabled")]
+    DisabledX,
+    Enabled,
+    #[serde(rename = "enabled")]
+    EnabledX,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClickHouseInstallationTemplateConfigurationClustersReconcileHostWaitInclude {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    #[serde(rename = "0")]
+    r#_0,
+    #[serde(rename = "1")]
+    r#_1,
+    False,
+    #[serde(rename = "false")]
+    FalseX,
+    True,
+    #[serde(rename = "true")]
+    TrueX,
+    No,
+    #[serde(rename = "no")]
+    NoX,
+    Yes,
+    #[serde(rename = "yes")]
+    YesX,
+    Off,
+    #[serde(rename = "off")]
+    OffX,
+    On,
+    #[serde(rename = "on")]
+    OnX,
+    Disable,
+    #[serde(rename = "disable")]
+    DisableX,
+    Enable,
+    #[serde(rename = "enable")]
+    EnableX,
+    Disabled,
+    #[serde(rename = "disabled")]
+    DisabledX,
+    Enabled,
+    #[serde(rename = "enabled")]
+    EnabledX,
+}
+
+/// What probes the operator should wait during host launch procedure
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClickHouseInstallationTemplateConfigurationClustersReconcileHostWaitProbes {
+    /// Whether the operator during host launch procedure should wait for ready probe to succeed.
+    /// In case probe is unspecified wait is assumed to be completed successfully.
+    /// Default option value is to wait.
+    /// 
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub readiness: Option<ClickHouseInstallationTemplateConfigurationClustersReconcileHostWaitProbesReadiness>,
+    /// Whether the operator during host launch procedure should wait for startup probe to succeed.
+    /// In case probe is unspecified wait is assumed to be completed successfully.
+    /// Default option value is to do not wait.
+    /// 
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub startup: Option<ClickHouseInstallationTemplateConfigurationClustersReconcileHostWaitProbesStartup>,
+}
+
+/// What probes the operator should wait during host launch procedure
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClickHouseInstallationTemplateConfigurationClustersReconcileHostWaitProbesReadiness {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    #[serde(rename = "0")]
+    r#_0,
+    #[serde(rename = "1")]
+    r#_1,
+    False,
+    #[serde(rename = "false")]
+    FalseX,
+    True,
+    #[serde(rename = "true")]
+    TrueX,
+    No,
+    #[serde(rename = "no")]
+    NoX,
+    Yes,
+    #[serde(rename = "yes")]
+    YesX,
+    Off,
+    #[serde(rename = "off")]
+    OffX,
+    On,
+    #[serde(rename = "on")]
+    OnX,
+    Disable,
+    #[serde(rename = "disable")]
+    DisableX,
+    Enable,
+    #[serde(rename = "enable")]
+    EnableX,
+    Disabled,
+    #[serde(rename = "disabled")]
+    DisabledX,
+    Enabled,
+    #[serde(rename = "enabled")]
+    EnabledX,
+}
+
+/// What probes the operator should wait during host launch procedure
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClickHouseInstallationTemplateConfigurationClustersReconcileHostWaitProbesStartup {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    #[serde(rename = "0")]
+    r#_0,
+    #[serde(rename = "1")]
+    r#_1,
+    False,
+    #[serde(rename = "false")]
+    FalseX,
+    True,
+    #[serde(rename = "true")]
+    TrueX,
+    No,
+    #[serde(rename = "no")]
+    NoX,
+    Yes,
+    #[serde(rename = "yes")]
+    YesX,
+    Off,
+    #[serde(rename = "off")]
+    OffX,
+    On,
+    #[serde(rename = "on")]
+    OnX,
+    Disable,
+    #[serde(rename = "disable")]
+    DisableX,
+    Enable,
+    #[serde(rename = "enable")]
+    EnableX,
+    Disabled,
+    #[serde(rename = "disabled")]
+    DisabledX,
+    Enabled,
+    #[serde(rename = "enabled")]
+    EnabledX,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClickHouseInstallationTemplateConfigurationClustersReconcileHostWaitQueries {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    #[serde(rename = "0")]
+    r#_0,
+    #[serde(rename = "1")]
+    r#_1,
+    False,
+    #[serde(rename = "false")]
+    FalseX,
+    True,
+    #[serde(rename = "true")]
+    TrueX,
+    No,
+    #[serde(rename = "no")]
+    NoX,
+    Yes,
+    #[serde(rename = "yes")]
+    YesX,
+    Off,
+    #[serde(rename = "off")]
+    OffX,
+    On,
+    #[serde(rename = "on")]
+    OnX,
+    Disable,
+    #[serde(rename = "disable")]
+    DisableX,
+    Enable,
+    #[serde(rename = "enable")]
+    EnableX,
+    Disabled,
+    #[serde(rename = "disabled")]
+    DisabledX,
+    Enabled,
+    #[serde(rename = "enabled")]
+    EnabledX,
+}
+
+/// Whether the operator during reconcile procedure should wait for replicas to catch-up
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClickHouseInstallationTemplateConfigurationClustersReconcileHostWaitReplicas {
+    /// Whether the operator during reconcile procedure should wait for all replicas to catch-up
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub all: Option<ClickHouseInstallationTemplateConfigurationClustersReconcileHostWaitReplicasAll>,
+    /// replication max absolute delay to consider replica is not delayed
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub delay: Option<i64>,
+    /// Whether the operator during reconcile procedure should wait for new replicas to catch-up
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub new: Option<ClickHouseInstallationTemplateConfigurationClustersReconcileHostWaitReplicasNew>,
+}
+
+/// Whether the operator during reconcile procedure should wait for replicas to catch-up
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClickHouseInstallationTemplateConfigurationClustersReconcileHostWaitReplicasAll {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    #[serde(rename = "0")]
+    r#_0,
+    #[serde(rename = "1")]
+    r#_1,
+    False,
+    #[serde(rename = "false")]
+    FalseX,
+    True,
+    #[serde(rename = "true")]
+    TrueX,
+    No,
+    #[serde(rename = "no")]
+    NoX,
+    Yes,
+    #[serde(rename = "yes")]
+    YesX,
+    Off,
+    #[serde(rename = "off")]
+    OffX,
+    On,
+    #[serde(rename = "on")]
+    OnX,
+    Disable,
+    #[serde(rename = "disable")]
+    DisableX,
+    Enable,
+    #[serde(rename = "enable")]
+    EnableX,
+    Disabled,
+    #[serde(rename = "disabled")]
+    DisabledX,
+    Enabled,
+    #[serde(rename = "enabled")]
+    EnabledX,
+}
+
+/// Whether the operator during reconcile procedure should wait for replicas to catch-up
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClickHouseInstallationTemplateConfigurationClustersReconcileHostWaitReplicasNew {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    #[serde(rename = "0")]
+    r#_0,
+    #[serde(rename = "1")]
+    r#_1,
+    False,
+    #[serde(rename = "false")]
+    FalseX,
+    True,
+    #[serde(rename = "true")]
+    TrueX,
+    No,
+    #[serde(rename = "no")]
+    NoX,
+    Yes,
+    #[serde(rename = "yes")]
+    YesX,
+    Off,
+    #[serde(rename = "off")]
+    OffX,
+    On,
+    #[serde(rename = "on")]
+    OnX,
+    Disable,
+    #[serde(rename = "disable")]
+    DisableX,
+    Enable,
+    #[serde(rename = "enable")]
+    EnableX,
+    Disabled,
+    #[serde(rename = "disabled")]
+    DisabledX,
+    Enabled,
+    #[serde(rename = "enabled")]
+    EnabledX,
 }
 
 /// runtime parameters for clickhouse-operator process which are used during reconcile cycle
@@ -880,7 +1241,7 @@ pub struct ClickHouseInstallationTemplateConfigurationClustersReconcileRuntime {
     /// The maximum percentage of cluster shards that may be reconciled in parallel, 50 percent by default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconcileShardsMaxConcurrencyPercent")]
     pub reconcile_shards_max_concurrency_percent: Option<i64>,
-    /// How many goroutines will be used to reconcile shards of a cluster in parallel, 1 by default
+    /// The maximum number of cluster shards that may be reconciled in parallel, 1 by default
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconcileShardsThreadsNumber")]
     pub reconcile_shards_threads_number: Option<i64>,
 }
@@ -1096,6 +1457,9 @@ pub struct ClickHouseInstallationTemplateConfigurationClustersZookeeper {
     /// session timeout during connect to Zookeeper
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub session_timeout_ms: Option<i64>,
+    /// Enables compression in Keeper protocol if set to true
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub use_compression: Option<ClickHouseInstallationTemplateConfigurationClustersZookeeperUseCompression>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1116,6 +1480,49 @@ pub struct ClickHouseInstallationTemplateConfigurationClustersZookeeperNodes {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClickHouseInstallationTemplateConfigurationClustersZookeeperNodesSecure {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    #[serde(rename = "0")]
+    r#_0,
+    #[serde(rename = "1")]
+    r#_1,
+    False,
+    #[serde(rename = "false")]
+    FalseX,
+    True,
+    #[serde(rename = "true")]
+    TrueX,
+    No,
+    #[serde(rename = "no")]
+    NoX,
+    Yes,
+    #[serde(rename = "yes")]
+    YesX,
+    Off,
+    #[serde(rename = "off")]
+    OffX,
+    On,
+    #[serde(rename = "on")]
+    OnX,
+    Disable,
+    #[serde(rename = "disable")]
+    DisableX,
+    Enable,
+    #[serde(rename = "enable")]
+    EnableX,
+    Disabled,
+    #[serde(rename = "disabled")]
+    DisabledX,
+    Enabled,
+    #[serde(rename = "enabled")]
+    EnabledX,
+}
+
+/// optional, allows configure <yandex><zookeeper>..</zookeeper></yandex> section in each `Pod` only in current ClickHouse cluster, during generate `ConfigMap` which will mounted in `/etc/clickhouse-server/config.d/`
+/// override top-level `chi.spec.configuration.zookeeper` settings
+/// 
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClickHouseInstallationTemplateConfigurationClustersZookeeperUseCompression {
     #[serde(rename = "")]
     KopiumEmpty,
     #[serde(rename = "0")]
@@ -1176,6 +1583,9 @@ pub struct ClickHouseInstallationTemplateConfigurationZookeeper {
     /// session timeout during connect to Zookeeper
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub session_timeout_ms: Option<i64>,
+    /// Enables compression in Keeper protocol if set to true
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub use_compression: Option<ClickHouseInstallationTemplateConfigurationZookeeperUseCompression>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1196,6 +1606,51 @@ pub struct ClickHouseInstallationTemplateConfigurationZookeeperNodes {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClickHouseInstallationTemplateConfigurationZookeeperNodesSecure {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    #[serde(rename = "0")]
+    r#_0,
+    #[serde(rename = "1")]
+    r#_1,
+    False,
+    #[serde(rename = "false")]
+    FalseX,
+    True,
+    #[serde(rename = "true")]
+    TrueX,
+    No,
+    #[serde(rename = "no")]
+    NoX,
+    Yes,
+    #[serde(rename = "yes")]
+    YesX,
+    Off,
+    #[serde(rename = "off")]
+    OffX,
+    On,
+    #[serde(rename = "on")]
+    OnX,
+    Disable,
+    #[serde(rename = "disable")]
+    DisableX,
+    Enable,
+    #[serde(rename = "enable")]
+    EnableX,
+    Disabled,
+    #[serde(rename = "disabled")]
+    DisabledX,
+    Enabled,
+    #[serde(rename = "enabled")]
+    EnabledX,
+}
+
+/// allows configure <yandex><zookeeper>..</zookeeper></yandex> section in each `Pod` during generate `ConfigMap` which will mounted in `/etc/clickhouse-server/config.d/`
+/// `clickhouse-operator` itself doesn't manage Zookeeper, please install Zookeeper separatelly look examples on <https://github.com/Altinity/clickhouse-operator/tree/master/deploy/zookeeper/>
+/// currently, zookeeper (or clickhouse-keeper replacement) used for *ReplicatedMergeTree table engines and for `distributed_ddl`
+/// More details: <https://clickhouse.tech/docs/en/operations/server-configuration-parameters/settings/#server-settings_zookeeper>
+/// 
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClickHouseInstallationTemplateConfigurationZookeeperUseCompression {
     #[serde(rename = "")]
     KopiumEmpty,
     #[serde(rename = "0")]
@@ -1379,6 +1834,834 @@ pub struct ClickHouseInstallationTemplateDefaultsTemplates {
 
 /// Optional, allows tuning reconciling cycle for ClickhouseInstallation from clickhouse-operator side
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClickHouseInstallationTemplateReconcile {
+    /// Optional, defines behavior for cleanup Kubernetes resources during reconcile cycle
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cleanup: Option<ClickHouseInstallationTemplateReconcileCleanup>,
+    /// Timeout in seconds for `clickhouse-operator` to wait for modified `ConfigMap` to propagate into the `Pod`
+    /// More details: <https://kubernetes.io/docs/concepts/configuration/configmap/#mounted-configmaps-are-updated-automatically>
+    /// 
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapPropagationTimeout")]
+    pub config_map_propagation_timeout: Option<i64>,
+    /// Whether the operator during reconcile procedure should wait for a ClickHouse host:
+    ///   - to be excluded from a ClickHouse cluster
+    ///   - to complete all running queries
+    ///   - to be included into a ClickHouse cluster
+    /// respectfully before moving forward
+    /// 
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<ClickHouseInstallationTemplateReconcileHost>,
+    /// macros parameters
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub macros: Option<ClickHouseInstallationTemplateReconcileMacros>,
+    /// DISCUSSED TO BE DEPRECATED
+    /// Syntax sugar
+    /// Overrides all three 'reconcile.host.wait.{exclude, queries, include}' values from the operator's config
+    /// Possible values:
+    ///  - wait - should wait to exclude host, complete queries and include host back into the cluster
+    ///  - nowait - should NOT wait to exclude host, complete queries and include host back into the cluster
+    /// 
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub policy: Option<ClickHouseInstallationTemplateReconcilePolicy>,
+    /// runtime parameters for clickhouse-operator process which are used during reconcile cycle
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub runtime: Option<ClickHouseInstallationTemplateReconcileRuntime>,
+}
+
+/// Optional, defines behavior for cleanup Kubernetes resources during reconcile cycle
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClickHouseInstallationTemplateReconcileCleanup {
+    /// Describes what clickhouse-operator should do with Kubernetes resources which are failed during reconcile.
+    /// Default behavior is `Retain`"
+    /// 
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconcileFailedObjects")]
+    pub reconcile_failed_objects: Option<ClickHouseInstallationTemplateReconcileCleanupReconcileFailedObjects>,
+    /// Describes what clickhouse-operator should do with found Kubernetes resources which should be managed by clickhouse-operator,
+    /// but do not have `ownerReference` to any currently managed `ClickHouseInstallation` resource.
+    /// Default behavior is `Delete`"
+    /// 
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unknownObjects")]
+    pub unknown_objects: Option<ClickHouseInstallationTemplateReconcileCleanupUnknownObjects>,
+}
+
+/// Describes what clickhouse-operator should do with Kubernetes resources which are failed during reconcile.
+/// Default behavior is `Retain`"
+/// 
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClickHouseInstallationTemplateReconcileCleanupReconcileFailedObjects {
+    /// Behavior policy for failed ConfigMap, `Retain` by default
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<ClickHouseInstallationTemplateReconcileCleanupReconcileFailedObjectsConfigMap>,
+    /// Behavior policy for failed PVC, `Retain` by default
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pvc: Option<ClickHouseInstallationTemplateReconcileCleanupReconcileFailedObjectsPvc>,
+    /// Behavior policy for failed Service, `Retain` by default
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub service: Option<ClickHouseInstallationTemplateReconcileCleanupReconcileFailedObjectsService>,
+    /// Behavior policy for failed StatefulSet, `Retain` by default
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statefulSet")]
+    pub stateful_set: Option<ClickHouseInstallationTemplateReconcileCleanupReconcileFailedObjectsStatefulSet>,
+}
+
+/// Describes what clickhouse-operator should do with Kubernetes resources which are failed during reconcile.
+/// Default behavior is `Retain`"
+/// 
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClickHouseInstallationTemplateReconcileCleanupReconcileFailedObjectsConfigMap {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    Retain,
+    Delete,
+}
+
+/// Describes what clickhouse-operator should do with Kubernetes resources which are failed during reconcile.
+/// Default behavior is `Retain`"
+/// 
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClickHouseInstallationTemplateReconcileCleanupReconcileFailedObjectsPvc {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    Retain,
+    Delete,
+}
+
+/// Describes what clickhouse-operator should do with Kubernetes resources which are failed during reconcile.
+/// Default behavior is `Retain`"
+/// 
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClickHouseInstallationTemplateReconcileCleanupReconcileFailedObjectsService {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    Retain,
+    Delete,
+}
+
+/// Describes what clickhouse-operator should do with Kubernetes resources which are failed during reconcile.
+/// Default behavior is `Retain`"
+/// 
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClickHouseInstallationTemplateReconcileCleanupReconcileFailedObjectsStatefulSet {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    Retain,
+    Delete,
+}
+
+/// Describes what clickhouse-operator should do with found Kubernetes resources which should be managed by clickhouse-operator,
+/// but do not have `ownerReference` to any currently managed `ClickHouseInstallation` resource.
+/// Default behavior is `Delete`"
+/// 
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClickHouseInstallationTemplateReconcileCleanupUnknownObjects {
+    /// Behavior policy for unknown ConfigMap, `Delete` by default
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<ClickHouseInstallationTemplateReconcileCleanupUnknownObjectsConfigMap>,
+    /// Behavior policy for unknown PVC, `Delete` by default
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pvc: Option<ClickHouseInstallationTemplateReconcileCleanupUnknownObjectsPvc>,
+    /// Behavior policy for unknown Service, `Delete` by default
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub service: Option<ClickHouseInstallationTemplateReconcileCleanupUnknownObjectsService>,
+    /// Behavior policy for unknown StatefulSet, `Delete` by default
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statefulSet")]
+    pub stateful_set: Option<ClickHouseInstallationTemplateReconcileCleanupUnknownObjectsStatefulSet>,
+}
+
+/// Describes what clickhouse-operator should do with found Kubernetes resources which should be managed by clickhouse-operator,
+/// but do not have `ownerReference` to any currently managed `ClickHouseInstallation` resource.
+/// Default behavior is `Delete`"
+/// 
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClickHouseInstallationTemplateReconcileCleanupUnknownObjectsConfigMap {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    Retain,
+    Delete,
+}
+
+/// Describes what clickhouse-operator should do with found Kubernetes resources which should be managed by clickhouse-operator,
+/// but do not have `ownerReference` to any currently managed `ClickHouseInstallation` resource.
+/// Default behavior is `Delete`"
+/// 
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClickHouseInstallationTemplateReconcileCleanupUnknownObjectsPvc {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    Retain,
+    Delete,
+}
+
+/// Describes what clickhouse-operator should do with found Kubernetes resources which should be managed by clickhouse-operator,
+/// but do not have `ownerReference` to any currently managed `ClickHouseInstallation` resource.
+/// Default behavior is `Delete`"
+/// 
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClickHouseInstallationTemplateReconcileCleanupUnknownObjectsService {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    Retain,
+    Delete,
+}
+
+/// Describes what clickhouse-operator should do with found Kubernetes resources which should be managed by clickhouse-operator,
+/// but do not have `ownerReference` to any currently managed `ClickHouseInstallation` resource.
+/// Default behavior is `Delete`"
+/// 
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClickHouseInstallationTemplateReconcileCleanupUnknownObjectsStatefulSet {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    Retain,
+    Delete,
+}
+
+/// Whether the operator during reconcile procedure should wait for a ClickHouse host:
+///   - to be excluded from a ClickHouse cluster
+///   - to complete all running queries
+///   - to be included into a ClickHouse cluster
+/// respectfully before moving forward
+/// 
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClickHouseInstallationTemplateReconcileHost {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub wait: Option<ClickHouseInstallationTemplateReconcileHostWait>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClickHouseInstallationTemplateReconcileHostWait {
+    /// Allows to stop all ClickHouse clusters defined in a CHI.
+    /// Works as the following:
+    ///  - When `stop` is `1` operator sets `Replicas: 0` in each StatefulSet. Thie leads to having all `Pods` and `Service` deleted. All PVCs are kept intact.
+    ///  - When `stop` is `0` operator sets `Replicas: 1` and `Pod`s and `Service`s will created again and all retained PVCs will be attached to `Pod`s.
+    /// 
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exclude: Option<ClickHouseInstallationTemplateReconcileHostWaitExclude>,
+    /// Whether the operator during reconcile procedure should wait for a ClickHouse host to be included into a ClickHouse cluster
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub include: Option<ClickHouseInstallationTemplateReconcileHostWaitInclude>,
+    /// What probes the operator should wait during host launch procedure
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub probes: Option<ClickHouseInstallationTemplateReconcileHostWaitProbes>,
+    /// Whether the operator during reconcile procedure should wait for a ClickHouse host to complete all running queries
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub queries: Option<ClickHouseInstallationTemplateReconcileHostWaitQueries>,
+    /// Whether the operator during reconcile procedure should wait for replicas to catch-up
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub replicas: Option<ClickHouseInstallationTemplateReconcileHostWaitReplicas>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClickHouseInstallationTemplateReconcileHostWaitExclude {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    #[serde(rename = "0")]
+    r#_0,
+    #[serde(rename = "1")]
+    r#_1,
+    False,
+    #[serde(rename = "false")]
+    FalseX,
+    True,
+    #[serde(rename = "true")]
+    TrueX,
+    No,
+    #[serde(rename = "no")]
+    NoX,
+    Yes,
+    #[serde(rename = "yes")]
+    YesX,
+    Off,
+    #[serde(rename = "off")]
+    OffX,
+    On,
+    #[serde(rename = "on")]
+    OnX,
+    Disable,
+    #[serde(rename = "disable")]
+    DisableX,
+    Enable,
+    #[serde(rename = "enable")]
+    EnableX,
+    Disabled,
+    #[serde(rename = "disabled")]
+    DisabledX,
+    Enabled,
+    #[serde(rename = "enabled")]
+    EnabledX,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClickHouseInstallationTemplateReconcileHostWaitInclude {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    #[serde(rename = "0")]
+    r#_0,
+    #[serde(rename = "1")]
+    r#_1,
+    False,
+    #[serde(rename = "false")]
+    FalseX,
+    True,
+    #[serde(rename = "true")]
+    TrueX,
+    No,
+    #[serde(rename = "no")]
+    NoX,
+    Yes,
+    #[serde(rename = "yes")]
+    YesX,
+    Off,
+    #[serde(rename = "off")]
+    OffX,
+    On,
+    #[serde(rename = "on")]
+    OnX,
+    Disable,
+    #[serde(rename = "disable")]
+    DisableX,
+    Enable,
+    #[serde(rename = "enable")]
+    EnableX,
+    Disabled,
+    #[serde(rename = "disabled")]
+    DisabledX,
+    Enabled,
+    #[serde(rename = "enabled")]
+    EnabledX,
+}
+
+/// What probes the operator should wait during host launch procedure
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClickHouseInstallationTemplateReconcileHostWaitProbes {
+    /// Whether the operator during host launch procedure should wait for ready probe to succeed.
+    /// In case probe is unspecified wait is assumed to be completed successfully.
+    /// Default option value is to wait.
+    /// 
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub readiness: Option<ClickHouseInstallationTemplateReconcileHostWaitProbesReadiness>,
+    /// Whether the operator during host launch procedure should wait for startup probe to succeed.
+    /// In case probe is unspecified wait is assumed to be completed successfully.
+    /// Default option value is to do not wait.
+    /// 
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub startup: Option<ClickHouseInstallationTemplateReconcileHostWaitProbesStartup>,
+}
+
+/// What probes the operator should wait during host launch procedure
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClickHouseInstallationTemplateReconcileHostWaitProbesReadiness {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    #[serde(rename = "0")]
+    r#_0,
+    #[serde(rename = "1")]
+    r#_1,
+    False,
+    #[serde(rename = "false")]
+    FalseX,
+    True,
+    #[serde(rename = "true")]
+    TrueX,
+    No,
+    #[serde(rename = "no")]
+    NoX,
+    Yes,
+    #[serde(rename = "yes")]
+    YesX,
+    Off,
+    #[serde(rename = "off")]
+    OffX,
+    On,
+    #[serde(rename = "on")]
+    OnX,
+    Disable,
+    #[serde(rename = "disable")]
+    DisableX,
+    Enable,
+    #[serde(rename = "enable")]
+    EnableX,
+    Disabled,
+    #[serde(rename = "disabled")]
+    DisabledX,
+    Enabled,
+    #[serde(rename = "enabled")]
+    EnabledX,
+}
+
+/// What probes the operator should wait during host launch procedure
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClickHouseInstallationTemplateReconcileHostWaitProbesStartup {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    #[serde(rename = "0")]
+    r#_0,
+    #[serde(rename = "1")]
+    r#_1,
+    False,
+    #[serde(rename = "false")]
+    FalseX,
+    True,
+    #[serde(rename = "true")]
+    TrueX,
+    No,
+    #[serde(rename = "no")]
+    NoX,
+    Yes,
+    #[serde(rename = "yes")]
+    YesX,
+    Off,
+    #[serde(rename = "off")]
+    OffX,
+    On,
+    #[serde(rename = "on")]
+    OnX,
+    Disable,
+    #[serde(rename = "disable")]
+    DisableX,
+    Enable,
+    #[serde(rename = "enable")]
+    EnableX,
+    Disabled,
+    #[serde(rename = "disabled")]
+    DisabledX,
+    Enabled,
+    #[serde(rename = "enabled")]
+    EnabledX,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClickHouseInstallationTemplateReconcileHostWaitQueries {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    #[serde(rename = "0")]
+    r#_0,
+    #[serde(rename = "1")]
+    r#_1,
+    False,
+    #[serde(rename = "false")]
+    FalseX,
+    True,
+    #[serde(rename = "true")]
+    TrueX,
+    No,
+    #[serde(rename = "no")]
+    NoX,
+    Yes,
+    #[serde(rename = "yes")]
+    YesX,
+    Off,
+    #[serde(rename = "off")]
+    OffX,
+    On,
+    #[serde(rename = "on")]
+    OnX,
+    Disable,
+    #[serde(rename = "disable")]
+    DisableX,
+    Enable,
+    #[serde(rename = "enable")]
+    EnableX,
+    Disabled,
+    #[serde(rename = "disabled")]
+    DisabledX,
+    Enabled,
+    #[serde(rename = "enabled")]
+    EnabledX,
+}
+
+/// Whether the operator during reconcile procedure should wait for replicas to catch-up
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClickHouseInstallationTemplateReconcileHostWaitReplicas {
+    /// Whether the operator during reconcile procedure should wait for all replicas to catch-up
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub all: Option<ClickHouseInstallationTemplateReconcileHostWaitReplicasAll>,
+    /// replication max absolute delay to consider replica is not delayed
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub delay: Option<i64>,
+    /// Whether the operator during reconcile procedure should wait for new replicas to catch-up
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub new: Option<ClickHouseInstallationTemplateReconcileHostWaitReplicasNew>,
+}
+
+/// Whether the operator during reconcile procedure should wait for replicas to catch-up
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClickHouseInstallationTemplateReconcileHostWaitReplicasAll {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    #[serde(rename = "0")]
+    r#_0,
+    #[serde(rename = "1")]
+    r#_1,
+    False,
+    #[serde(rename = "false")]
+    FalseX,
+    True,
+    #[serde(rename = "true")]
+    TrueX,
+    No,
+    #[serde(rename = "no")]
+    NoX,
+    Yes,
+    #[serde(rename = "yes")]
+    YesX,
+    Off,
+    #[serde(rename = "off")]
+    OffX,
+    On,
+    #[serde(rename = "on")]
+    OnX,
+    Disable,
+    #[serde(rename = "disable")]
+    DisableX,
+    Enable,
+    #[serde(rename = "enable")]
+    EnableX,
+    Disabled,
+    #[serde(rename = "disabled")]
+    DisabledX,
+    Enabled,
+    #[serde(rename = "enabled")]
+    EnabledX,
+}
+
+/// Whether the operator during reconcile procedure should wait for replicas to catch-up
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClickHouseInstallationTemplateReconcileHostWaitReplicasNew {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    #[serde(rename = "0")]
+    r#_0,
+    #[serde(rename = "1")]
+    r#_1,
+    False,
+    #[serde(rename = "false")]
+    FalseX,
+    True,
+    #[serde(rename = "true")]
+    TrueX,
+    No,
+    #[serde(rename = "no")]
+    NoX,
+    Yes,
+    #[serde(rename = "yes")]
+    YesX,
+    Off,
+    #[serde(rename = "off")]
+    OffX,
+    On,
+    #[serde(rename = "on")]
+    OnX,
+    Disable,
+    #[serde(rename = "disable")]
+    DisableX,
+    Enable,
+    #[serde(rename = "enable")]
+    EnableX,
+    Disabled,
+    #[serde(rename = "disabled")]
+    DisabledX,
+    Enabled,
+    #[serde(rename = "enabled")]
+    EnabledX,
+}
+
+/// macros parameters
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClickHouseInstallationTemplateReconcileMacros {
+    /// sections behaviour for macros
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sections: Option<ClickHouseInstallationTemplateReconcileMacrosSections>,
+}
+
+/// sections behaviour for macros
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClickHouseInstallationTemplateReconcileMacrosSections {
+    /// sections behaviour for macros on files
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub files: Option<ClickHouseInstallationTemplateReconcileMacrosSectionsFiles>,
+    /// sections behaviour for macros on profiles
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub profiles: Option<ClickHouseInstallationTemplateReconcileMacrosSectionsProfiles>,
+    /// sections behaviour for macros on quotas
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub quotas: Option<ClickHouseInstallationTemplateReconcileMacrosSectionsQuotas>,
+    /// sections behaviour for macros on settings
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub settings: Option<ClickHouseInstallationTemplateReconcileMacrosSectionsSettings>,
+    /// sections behaviour for macros on users
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub users: Option<ClickHouseInstallationTemplateReconcileMacrosSectionsUsers>,
+}
+
+/// sections behaviour for macros on files
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClickHouseInstallationTemplateReconcileMacrosSectionsFiles {
+    /// enabled or not
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<ClickHouseInstallationTemplateReconcileMacrosSectionsFilesEnabled>,
+}
+
+/// sections behaviour for macros on files
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClickHouseInstallationTemplateReconcileMacrosSectionsFilesEnabled {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    #[serde(rename = "0")]
+    r#_0,
+    #[serde(rename = "1")]
+    r#_1,
+    False,
+    #[serde(rename = "false")]
+    FalseX,
+    True,
+    #[serde(rename = "true")]
+    TrueX,
+    No,
+    #[serde(rename = "no")]
+    NoX,
+    Yes,
+    #[serde(rename = "yes")]
+    YesX,
+    Off,
+    #[serde(rename = "off")]
+    OffX,
+    On,
+    #[serde(rename = "on")]
+    OnX,
+    Disable,
+    #[serde(rename = "disable")]
+    DisableX,
+    Enable,
+    #[serde(rename = "enable")]
+    EnableX,
+    Disabled,
+    #[serde(rename = "disabled")]
+    DisabledX,
+    Enabled,
+    #[serde(rename = "enabled")]
+    EnabledX,
+}
+
+/// sections behaviour for macros on profiles
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClickHouseInstallationTemplateReconcileMacrosSectionsProfiles {
+    /// enabled or not
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<ClickHouseInstallationTemplateReconcileMacrosSectionsProfilesEnabled>,
+}
+
+/// sections behaviour for macros on profiles
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClickHouseInstallationTemplateReconcileMacrosSectionsProfilesEnabled {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    #[serde(rename = "0")]
+    r#_0,
+    #[serde(rename = "1")]
+    r#_1,
+    False,
+    #[serde(rename = "false")]
+    FalseX,
+    True,
+    #[serde(rename = "true")]
+    TrueX,
+    No,
+    #[serde(rename = "no")]
+    NoX,
+    Yes,
+    #[serde(rename = "yes")]
+    YesX,
+    Off,
+    #[serde(rename = "off")]
+    OffX,
+    On,
+    #[serde(rename = "on")]
+    OnX,
+    Disable,
+    #[serde(rename = "disable")]
+    DisableX,
+    Enable,
+    #[serde(rename = "enable")]
+    EnableX,
+    Disabled,
+    #[serde(rename = "disabled")]
+    DisabledX,
+    Enabled,
+    #[serde(rename = "enabled")]
+    EnabledX,
+}
+
+/// sections behaviour for macros on quotas
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClickHouseInstallationTemplateReconcileMacrosSectionsQuotas {
+    /// enabled or not
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<ClickHouseInstallationTemplateReconcileMacrosSectionsQuotasEnabled>,
+}
+
+/// sections behaviour for macros on quotas
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClickHouseInstallationTemplateReconcileMacrosSectionsQuotasEnabled {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    #[serde(rename = "0")]
+    r#_0,
+    #[serde(rename = "1")]
+    r#_1,
+    False,
+    #[serde(rename = "false")]
+    FalseX,
+    True,
+    #[serde(rename = "true")]
+    TrueX,
+    No,
+    #[serde(rename = "no")]
+    NoX,
+    Yes,
+    #[serde(rename = "yes")]
+    YesX,
+    Off,
+    #[serde(rename = "off")]
+    OffX,
+    On,
+    #[serde(rename = "on")]
+    OnX,
+    Disable,
+    #[serde(rename = "disable")]
+    DisableX,
+    Enable,
+    #[serde(rename = "enable")]
+    EnableX,
+    Disabled,
+    #[serde(rename = "disabled")]
+    DisabledX,
+    Enabled,
+    #[serde(rename = "enabled")]
+    EnabledX,
+}
+
+/// sections behaviour for macros on settings
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClickHouseInstallationTemplateReconcileMacrosSectionsSettings {
+    /// enabled or not
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<ClickHouseInstallationTemplateReconcileMacrosSectionsSettingsEnabled>,
+}
+
+/// sections behaviour for macros on settings
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClickHouseInstallationTemplateReconcileMacrosSectionsSettingsEnabled {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    #[serde(rename = "0")]
+    r#_0,
+    #[serde(rename = "1")]
+    r#_1,
+    False,
+    #[serde(rename = "false")]
+    FalseX,
+    True,
+    #[serde(rename = "true")]
+    TrueX,
+    No,
+    #[serde(rename = "no")]
+    NoX,
+    Yes,
+    #[serde(rename = "yes")]
+    YesX,
+    Off,
+    #[serde(rename = "off")]
+    OffX,
+    On,
+    #[serde(rename = "on")]
+    OnX,
+    Disable,
+    #[serde(rename = "disable")]
+    DisableX,
+    Enable,
+    #[serde(rename = "enable")]
+    EnableX,
+    Disabled,
+    #[serde(rename = "disabled")]
+    DisabledX,
+    Enabled,
+    #[serde(rename = "enabled")]
+    EnabledX,
+}
+
+/// sections behaviour for macros on users
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClickHouseInstallationTemplateReconcileMacrosSectionsUsers {
+    /// enabled or not
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<ClickHouseInstallationTemplateReconcileMacrosSectionsUsersEnabled>,
+}
+
+/// sections behaviour for macros on users
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClickHouseInstallationTemplateReconcileMacrosSectionsUsersEnabled {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    #[serde(rename = "0")]
+    r#_0,
+    #[serde(rename = "1")]
+    r#_1,
+    False,
+    #[serde(rename = "false")]
+    FalseX,
+    True,
+    #[serde(rename = "true")]
+    TrueX,
+    No,
+    #[serde(rename = "no")]
+    NoX,
+    Yes,
+    #[serde(rename = "yes")]
+    YesX,
+    Off,
+    #[serde(rename = "off")]
+    OffX,
+    On,
+    #[serde(rename = "on")]
+    OnX,
+    Disable,
+    #[serde(rename = "disable")]
+    DisableX,
+    Enable,
+    #[serde(rename = "enable")]
+    EnableX,
+    Disabled,
+    #[serde(rename = "disabled")]
+    DisabledX,
+    Enabled,
+    #[serde(rename = "enabled")]
+    EnabledX,
+}
+
+/// Optional, allows tuning reconciling cycle for ClickhouseInstallation from clickhouse-operator side
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClickHouseInstallationTemplateReconcilePolicy {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    #[serde(rename = "wait")]
+    Wait,
+    #[serde(rename = "nowait")]
+    Nowait,
+}
+
+/// runtime parameters for clickhouse-operator process which are used during reconcile cycle
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClickHouseInstallationTemplateReconcileRuntime {
+    /// The maximum percentage of cluster shards that may be reconciled in parallel, 50 percent by default.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconcileShardsMaxConcurrencyPercent")]
+    pub reconcile_shards_max_concurrency_percent: Option<i64>,
+    /// The maximum number of cluster shards that may be reconciled in parallel, 1 by default
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconcileShardsThreadsNumber")]
+    pub reconcile_shards_threads_number: Option<i64>,
+}
+
+/// [OBSOLETED] Optional, allows tuning reconciling cycle for ClickhouseInstallation from clickhouse-operator side
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClickHouseInstallationTemplateReconciling {
     /// Optional, defines behavior for cleanup Kubernetes resources during reconcile cycle
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1388,6 +2671,14 @@ pub struct ClickHouseInstallationTemplateReconciling {
     /// 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapPropagationTimeout")]
     pub config_map_propagation_timeout: Option<i64>,
+    /// Whether the operator during reconcile procedure should wait for a ClickHouse host:
+    ///   - to be excluded from a ClickHouse cluster
+    ///   - to complete all running queries
+    ///   - to be included into a ClickHouse cluster
+    /// respectfully before moving forward
+    /// 
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<ClickHouseInstallationTemplateReconcilingHost>,
     /// macros parameters
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub macros: Option<ClickHouseInstallationTemplateReconcilingMacros>,
@@ -1550,6 +2841,356 @@ pub enum ClickHouseInstallationTemplateReconcilingCleanupUnknownObjectsStatefulS
     KopiumEmpty,
     Retain,
     Delete,
+}
+
+/// Whether the operator during reconcile procedure should wait for a ClickHouse host:
+///   - to be excluded from a ClickHouse cluster
+///   - to complete all running queries
+///   - to be included into a ClickHouse cluster
+/// respectfully before moving forward
+/// 
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClickHouseInstallationTemplateReconcilingHost {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub wait: Option<ClickHouseInstallationTemplateReconcilingHostWait>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClickHouseInstallationTemplateReconcilingHostWait {
+    /// Allows to stop all ClickHouse clusters defined in a CHI.
+    /// Works as the following:
+    ///  - When `stop` is `1` operator sets `Replicas: 0` in each StatefulSet. Thie leads to having all `Pods` and `Service` deleted. All PVCs are kept intact.
+    ///  - When `stop` is `0` operator sets `Replicas: 1` and `Pod`s and `Service`s will created again and all retained PVCs will be attached to `Pod`s.
+    /// 
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exclude: Option<ClickHouseInstallationTemplateReconcilingHostWaitExclude>,
+    /// Whether the operator during reconcile procedure should wait for a ClickHouse host to be included into a ClickHouse cluster
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub include: Option<ClickHouseInstallationTemplateReconcilingHostWaitInclude>,
+    /// What probes the operator should wait during host launch procedure
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub probes: Option<ClickHouseInstallationTemplateReconcilingHostWaitProbes>,
+    /// Whether the operator during reconcile procedure should wait for a ClickHouse host to complete all running queries
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub queries: Option<ClickHouseInstallationTemplateReconcilingHostWaitQueries>,
+    /// Whether the operator during reconcile procedure should wait for replicas to catch-up
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub replicas: Option<ClickHouseInstallationTemplateReconcilingHostWaitReplicas>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClickHouseInstallationTemplateReconcilingHostWaitExclude {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    #[serde(rename = "0")]
+    r#_0,
+    #[serde(rename = "1")]
+    r#_1,
+    False,
+    #[serde(rename = "false")]
+    FalseX,
+    True,
+    #[serde(rename = "true")]
+    TrueX,
+    No,
+    #[serde(rename = "no")]
+    NoX,
+    Yes,
+    #[serde(rename = "yes")]
+    YesX,
+    Off,
+    #[serde(rename = "off")]
+    OffX,
+    On,
+    #[serde(rename = "on")]
+    OnX,
+    Disable,
+    #[serde(rename = "disable")]
+    DisableX,
+    Enable,
+    #[serde(rename = "enable")]
+    EnableX,
+    Disabled,
+    #[serde(rename = "disabled")]
+    DisabledX,
+    Enabled,
+    #[serde(rename = "enabled")]
+    EnabledX,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClickHouseInstallationTemplateReconcilingHostWaitInclude {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    #[serde(rename = "0")]
+    r#_0,
+    #[serde(rename = "1")]
+    r#_1,
+    False,
+    #[serde(rename = "false")]
+    FalseX,
+    True,
+    #[serde(rename = "true")]
+    TrueX,
+    No,
+    #[serde(rename = "no")]
+    NoX,
+    Yes,
+    #[serde(rename = "yes")]
+    YesX,
+    Off,
+    #[serde(rename = "off")]
+    OffX,
+    On,
+    #[serde(rename = "on")]
+    OnX,
+    Disable,
+    #[serde(rename = "disable")]
+    DisableX,
+    Enable,
+    #[serde(rename = "enable")]
+    EnableX,
+    Disabled,
+    #[serde(rename = "disabled")]
+    DisabledX,
+    Enabled,
+    #[serde(rename = "enabled")]
+    EnabledX,
+}
+
+/// What probes the operator should wait during host launch procedure
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClickHouseInstallationTemplateReconcilingHostWaitProbes {
+    /// Whether the operator during host launch procedure should wait for ready probe to succeed.
+    /// In case probe is unspecified wait is assumed to be completed successfully.
+    /// Default option value is to wait.
+    /// 
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub readiness: Option<ClickHouseInstallationTemplateReconcilingHostWaitProbesReadiness>,
+    /// Whether the operator during host launch procedure should wait for startup probe to succeed.
+    /// In case probe is unspecified wait is assumed to be completed successfully.
+    /// Default option value is to do not wait.
+    /// 
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub startup: Option<ClickHouseInstallationTemplateReconcilingHostWaitProbesStartup>,
+}
+
+/// What probes the operator should wait during host launch procedure
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClickHouseInstallationTemplateReconcilingHostWaitProbesReadiness {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    #[serde(rename = "0")]
+    r#_0,
+    #[serde(rename = "1")]
+    r#_1,
+    False,
+    #[serde(rename = "false")]
+    FalseX,
+    True,
+    #[serde(rename = "true")]
+    TrueX,
+    No,
+    #[serde(rename = "no")]
+    NoX,
+    Yes,
+    #[serde(rename = "yes")]
+    YesX,
+    Off,
+    #[serde(rename = "off")]
+    OffX,
+    On,
+    #[serde(rename = "on")]
+    OnX,
+    Disable,
+    #[serde(rename = "disable")]
+    DisableX,
+    Enable,
+    #[serde(rename = "enable")]
+    EnableX,
+    Disabled,
+    #[serde(rename = "disabled")]
+    DisabledX,
+    Enabled,
+    #[serde(rename = "enabled")]
+    EnabledX,
+}
+
+/// What probes the operator should wait during host launch procedure
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClickHouseInstallationTemplateReconcilingHostWaitProbesStartup {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    #[serde(rename = "0")]
+    r#_0,
+    #[serde(rename = "1")]
+    r#_1,
+    False,
+    #[serde(rename = "false")]
+    FalseX,
+    True,
+    #[serde(rename = "true")]
+    TrueX,
+    No,
+    #[serde(rename = "no")]
+    NoX,
+    Yes,
+    #[serde(rename = "yes")]
+    YesX,
+    Off,
+    #[serde(rename = "off")]
+    OffX,
+    On,
+    #[serde(rename = "on")]
+    OnX,
+    Disable,
+    #[serde(rename = "disable")]
+    DisableX,
+    Enable,
+    #[serde(rename = "enable")]
+    EnableX,
+    Disabled,
+    #[serde(rename = "disabled")]
+    DisabledX,
+    Enabled,
+    #[serde(rename = "enabled")]
+    EnabledX,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClickHouseInstallationTemplateReconcilingHostWaitQueries {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    #[serde(rename = "0")]
+    r#_0,
+    #[serde(rename = "1")]
+    r#_1,
+    False,
+    #[serde(rename = "false")]
+    FalseX,
+    True,
+    #[serde(rename = "true")]
+    TrueX,
+    No,
+    #[serde(rename = "no")]
+    NoX,
+    Yes,
+    #[serde(rename = "yes")]
+    YesX,
+    Off,
+    #[serde(rename = "off")]
+    OffX,
+    On,
+    #[serde(rename = "on")]
+    OnX,
+    Disable,
+    #[serde(rename = "disable")]
+    DisableX,
+    Enable,
+    #[serde(rename = "enable")]
+    EnableX,
+    Disabled,
+    #[serde(rename = "disabled")]
+    DisabledX,
+    Enabled,
+    #[serde(rename = "enabled")]
+    EnabledX,
+}
+
+/// Whether the operator during reconcile procedure should wait for replicas to catch-up
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClickHouseInstallationTemplateReconcilingHostWaitReplicas {
+    /// Whether the operator during reconcile procedure should wait for all replicas to catch-up
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub all: Option<ClickHouseInstallationTemplateReconcilingHostWaitReplicasAll>,
+    /// replication max absolute delay to consider replica is not delayed
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub delay: Option<i64>,
+    /// Whether the operator during reconcile procedure should wait for new replicas to catch-up
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub new: Option<ClickHouseInstallationTemplateReconcilingHostWaitReplicasNew>,
+}
+
+/// Whether the operator during reconcile procedure should wait for replicas to catch-up
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClickHouseInstallationTemplateReconcilingHostWaitReplicasAll {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    #[serde(rename = "0")]
+    r#_0,
+    #[serde(rename = "1")]
+    r#_1,
+    False,
+    #[serde(rename = "false")]
+    FalseX,
+    True,
+    #[serde(rename = "true")]
+    TrueX,
+    No,
+    #[serde(rename = "no")]
+    NoX,
+    Yes,
+    #[serde(rename = "yes")]
+    YesX,
+    Off,
+    #[serde(rename = "off")]
+    OffX,
+    On,
+    #[serde(rename = "on")]
+    OnX,
+    Disable,
+    #[serde(rename = "disable")]
+    DisableX,
+    Enable,
+    #[serde(rename = "enable")]
+    EnableX,
+    Disabled,
+    #[serde(rename = "disabled")]
+    DisabledX,
+    Enabled,
+    #[serde(rename = "enabled")]
+    EnabledX,
+}
+
+/// Whether the operator during reconcile procedure should wait for replicas to catch-up
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClickHouseInstallationTemplateReconcilingHostWaitReplicasNew {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    #[serde(rename = "0")]
+    r#_0,
+    #[serde(rename = "1")]
+    r#_1,
+    False,
+    #[serde(rename = "false")]
+    FalseX,
+    True,
+    #[serde(rename = "true")]
+    TrueX,
+    No,
+    #[serde(rename = "no")]
+    NoX,
+    Yes,
+    #[serde(rename = "yes")]
+    YesX,
+    Off,
+    #[serde(rename = "off")]
+    OffX,
+    On,
+    #[serde(rename = "on")]
+    OnX,
+    Disable,
+    #[serde(rename = "disable")]
+    DisableX,
+    Enable,
+    #[serde(rename = "enable")]
+    EnableX,
+    Disabled,
+    #[serde(rename = "disabled")]
+    DisabledX,
+    Enabled,
+    #[serde(rename = "enabled")]
+    EnabledX,
 }
 
 /// macros parameters
@@ -1825,7 +3466,7 @@ pub enum ClickHouseInstallationTemplateReconcilingMacrosSectionsUsersEnabled {
     EnabledX,
 }
 
-/// Optional, allows tuning reconciling cycle for ClickhouseInstallation from clickhouse-operator side
+/// [OBSOLETED] Optional, allows tuning reconciling cycle for ClickhouseInstallation from clickhouse-operator side
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClickHouseInstallationTemplateReconcilingPolicy {
     #[serde(rename = "")]
@@ -1842,7 +3483,7 @@ pub struct ClickHouseInstallationTemplateReconcilingRuntime {
     /// The maximum percentage of cluster shards that may be reconciled in parallel, 50 percent by default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconcileShardsMaxConcurrencyPercent")]
     pub reconcile_shards_max_concurrency_percent: Option<i64>,
-    /// How many goroutines will be used to reconcile shards of a cluster in parallel, 1 by default
+    /// The maximum number of cluster shards that may be reconciled in parallel, 1 by default
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconcileShardsThreadsNumber")]
     pub reconcile_shards_threads_number: Option<i64>,
 }
@@ -2015,7 +3656,7 @@ pub struct ClickHouseInstallationTemplateTemplatesHostTemplatesSpec {
     /// 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "interserverHTTPPort")]
     pub interserver_http_port: Option<i64>,
-    /// by default, hostname will generate, but this allows define custom name for each `clickhuse-server`
+    /// by default, hostname will generate, but this allows define custom name for each `clickhouse-server`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional, open secure ports
@@ -2404,7 +4045,7 @@ pub struct ClickHouseInstallationTemplateUseTemplates {
     /// name of `ClickHouseInstallationTemplate` (chit) resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Kubernetes namespace where need search `chit` resource, depending on `watchNamespaces` settings in `clichouse-operator`
+    /// Kubernetes namespace where need search `chit` resource, depending on `watchNamespaces` settings in `clickhouse-operator`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// optional, current strategy is only merge, and current `chi` settings have more priority than merged template `chit`

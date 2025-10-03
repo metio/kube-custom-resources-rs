@@ -23,12 +23,18 @@ pub struct DopplerSecretSpec {
     /// The Doppler config
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<String>,
+    /// The JWT expiration time in seconds for OIDC authentication. This controls the lifetime of the Kubernetes ServiceAccount token requested via the TokenRequest API. Kubernetes enforces a minimum of 600 seconds (10 minutes). Defaults to 600 if not specified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
+    pub expiration_seconds: Option<i64>,
     /// Format enables the downloading of secrets as a file
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub format: Option<DopplerSecretFormat>,
     /// The Doppler API host
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
+    /// The Doppler Service Account Identity (OIDC). Mutually exclusive with 'tokenSecret'.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub identity: Option<String>,
     /// The Kubernetes secret where the operator will store and sync the fetched secrets
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "managedSecret")]
     pub managed_secret: Option<DopplerSecretManagedSecret>,
@@ -47,7 +53,7 @@ pub struct DopplerSecretSpec {
     /// A list of secrets to sync from the config
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secrets: Option<Vec<String>>,
-    /// The Kubernetes secret containing either a Doppler service token or OIDC configuration
+    /// The Kubernetes secret containing either a Doppler service token or OIDC configuration. Mutually exclusive with 'identity'.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenSecret")]
     pub token_secret: Option<DopplerSecretTokenSecret>,
     /// Whether or not to verify TLS
@@ -146,7 +152,7 @@ pub enum DopplerSecretProcessorsType {
     Base64,
 }
 
-/// The Kubernetes secret containing either a Doppler service token or OIDC configuration
+/// The Kubernetes secret containing either a Doppler service token or OIDC configuration. Mutually exclusive with 'identity'.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DopplerSecretTokenSecret {
     /// The name of the Secret resource

@@ -141,10 +141,8 @@ pub struct FlowCollectorAgentEbpf {
     /// `metrics` defines the eBPF agent configuration regarding metrics.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metrics: Option<FlowCollectorAgentEbpfMetrics>,
-    /// Privileged mode for the eBPF Agent container. When ignored or set to `false`, the operator sets
-    /// granular capabilities (BPF, PERFMON, NET_ADMIN) to the container.
-    /// If for some reason these capabilities cannot be set, such as if an old kernel version not knowing CAP_BPF
-    /// is in use, then you can turn on this mode for more global privileges.
+    /// Privileged mode for the eBPF Agent container. When set to `true`, the agent is able to capture more traffic, including from secondary interfaces.
+    /// When ignored or set to `false`, the operator sets granular capabilities (BPF, PERFMON, NET_ADMIN) to the container.
     /// Some agent features require the privileged mode, such as packet drops tracking (see `features`) and SR-IOV support.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
@@ -3562,7 +3560,7 @@ pub struct FlowCollectorNetworkPolicy {
     /// configuration, you can disable it and install your own instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalNamespaces")]
     pub additional_namespaces: Option<Vec<String>>,
-    /// Set `enable` to `true` to deploy network policies on the namespaces used by NetObserv (main and privileged). It is disabled by default.
+    /// Deploys network policies on the namespaces used by NetObserv (main and privileged).
     /// These network policies better isolate the NetObserv components to prevent undesired connections to them.
     /// This option is enabled by default, disable it to manually manage network policies
     #[serde(default, skip_serializing_if = "Option::is_none")]

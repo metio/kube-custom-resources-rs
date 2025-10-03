@@ -1690,6 +1690,9 @@ pub struct KafkaEntityOperatorTemplate {
     /// Template for Entity Operator `Pods`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pod: Option<KafkaEntityOperatorTemplatePod>,
+    /// Template for the Entity Operator Pod Disruption Budget.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podDisruptionBudget")]
+    pub pod_disruption_budget: Option<KafkaEntityOperatorTemplatePodDisruptionBudget>,
     /// Template for the Entity Operator service account.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<KafkaEntityOperatorTemplateServiceAccount>,
@@ -2446,6 +2449,28 @@ pub struct KafkaEntityOperatorTemplatePodVolumesSecretItems {
     pub mode: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
+}
+
+/// Template for the Entity Operator Pod Disruption Budget.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaEntityOperatorTemplatePodDisruptionBudget {
+    /// Maximum number of unavailable pods to allow automatic Pod eviction. A Pod eviction is allowed when the `maxUnavailable` number of pods or fewer are unavailable after the eviction. Setting this value to 0 prevents all voluntary evictions, so the pods must be evicted manually. Defaults to 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
+    pub max_unavailable: Option<i64>,
+    /// Metadata to apply to the `PodDisruptionBudgetTemplate` resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<KafkaEntityOperatorTemplatePodDisruptionBudgetMetadata>,
+}
+
+/// Metadata to apply to the `PodDisruptionBudgetTemplate` resource.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaEntityOperatorTemplatePodDisruptionBudgetMetadata {
+    /// Annotations added to the Kubernetes resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Labels added to the Kubernetes resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
 }
 
 /// Template for the Entity Operator service account.
@@ -4424,7 +4449,7 @@ pub struct KafkaKafka {
     /// The image of the init container used for initializing the `broker.rack`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "brokerRackInitImage")]
     pub broker_rack_init_image: Option<String>,
-    /// Kafka broker config properties with the following prefixes cannot be set: listeners, advertised., broker., listener., host.name, port, inter.broker.listener.name, sasl., ssl., security., password., log.dir, zookeeper.connect, zookeeper.set.acl, zookeeper.ssl, zookeeper.clientCnxnSocket, authorizer., super.user, cruise.control.metrics.topic, cruise.control.metrics.reporter.bootstrap.servers, node.id, process.roles, controller., metadata.log.dir, zookeeper.metadata.migration.enable, client.quota.callback.static.kafka.admin., client.quota.callback.static.produce, client.quota.callback.static.fetch, client.quota.callback.static.storage.per.volume.limit.min.available., client.quota.callback.static.excluded.principal.name.list, prometheus.metrics.reporter. (with the exception of: zookeeper.connection.timeout.ms, sasl.server.max.receive.size, ssl.cipher.suites, ssl.protocol, ssl.enabled.protocols, ssl.secure.random.implementation, cruise.control.metrics.topic.num.partitions, cruise.control.metrics.topic.replication.factor, cruise.control.metrics.topic.retention.ms, cruise.control.metrics.topic.auto.create.retries, cruise.control.metrics.topic.auto.create.timeout.ms, cruise.control.metrics.topic.min.insync.replicas, controller.quorum.election.backoff.max.ms, controller.quorum.election.timeout.ms, controller.quorum.fetch.timeout.ms).
+    /// Kafka broker config properties with the following prefixes cannot be set: listeners, advertised., broker., listener., host.name, port, inter.broker.listener.name, sasl., ssl., security., password., log.dir, zookeeper.connect, zookeeper.set.acl, zookeeper.ssl, zookeeper.clientCnxnSocket, authorizer., super.user, cruise.control.metrics.topic, cruise.control.metrics.reporter.bootstrap.servers, node.id, process.roles, controller., metadata.log.dir, zookeeper.metadata.migration.enable, client.quota.callback.static.kafka.admin., client.quota.callback.static.produce, client.quota.callback.static.fetch, client.quota.callback.static.storage.per.volume.limit.min.available., client.quota.callback.static.excluded.principal.name.list, prometheus.metrics.reporter. (with the exception of: zookeeper.connection.timeout.ms, sasl.server.max.receive.size, ssl.cipher.suites, ssl.protocol, ssl.enabled.protocols, ssl.secure.random.implementation, cruise.control.metrics.topic.num.partitions, cruise.control.metrics.topic.replication.factor, cruise.control.metrics.topic.retention.ms, cruise.control.metrics.topic.auto.create.retries, cruise.control.metrics.topic.auto.create.timeout.ms, cruise.control.metrics.topic.min.insync.replicas, broker.session.timeout.ms, broker.heartbeat.interval.ms, controller.socket.timeout.ms, controller.quorum.election.backoff.max.ms, controller.quorum.election.timeout.ms, controller.quorum.fetch.timeout.ms).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<BTreeMap<String, serde_json::Value>>,
     /// The container image used for Kafka pods. If the property is not set, the default Kafka image version is determined based on the `version` configuration. The image names are specifically mapped to corresponding versions in the Cluster Operator configuration. Changing the Kafka image version does not automatically update the image versions for other components, such as Kafka Exporter. 
@@ -4683,6 +4708,9 @@ pub struct KafkaKafkaListenersAuthentication {
     /// The audience to use when making requests to the authorization server's token endpoint. Used for inter-broker authentication and for configuring OAuth 2.0 over PLAIN using the `clientId` and `secret` method.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientAudience")]
     pub client_audience: Option<String>,
+    /// The grant type to use when making requests to the authorization server's token endpoint. Used for `OAuth over PLAIN` when `username` and `password` passed via SASL_PLAIN client authentication are passed on to the authorization server as `clientId` and `secret`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientGrantType")]
+    pub client_grant_type: Option<String>,
     /// OAuth Client ID which the Kafka broker can use to authenticate against the authorization server and use the introspect endpoint URI.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientId")]
     pub client_id: Option<String>,
@@ -6967,6 +6995,9 @@ pub struct KafkaKafkaExporterTemplate {
     /// Template for Kafka Exporter `Pods`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pod: Option<KafkaKafkaExporterTemplatePod>,
+    /// Template for the Pod Disruption Budget for Kafka Exporter pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podDisruptionBudget")]
+    pub pod_disruption_budget: Option<KafkaKafkaExporterTemplatePodDisruptionBudget>,
     /// Template for Kafka Exporter `Service`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<KafkaKafkaExporterTemplateService>,
@@ -7847,6 +7878,28 @@ pub struct KafkaKafkaExporterTemplatePodVolumesSecretItems {
     pub mode: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
+}
+
+/// Template for the Pod Disruption Budget for Kafka Exporter pods.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaKafkaExporterTemplatePodDisruptionBudget {
+    /// Maximum number of unavailable pods to allow automatic Pod eviction. A Pod eviction is allowed when the `maxUnavailable` number of pods or fewer are unavailable after the eviction. Setting this value to 0 prevents all voluntary evictions, so the pods must be evicted manually. Defaults to 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
+    pub max_unavailable: Option<i64>,
+    /// Metadata to apply to the `PodDisruptionBudgetTemplate` resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<KafkaKafkaExporterTemplatePodDisruptionBudgetMetadata>,
+}
+
+/// Metadata to apply to the `PodDisruptionBudgetTemplate` resource.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaKafkaExporterTemplatePodDisruptionBudgetMetadata {
+    /// Annotations added to the Kubernetes resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Labels added to the Kubernetes resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
 }
 
 /// Template for Kafka Exporter `Service`.

@@ -12,7 +12,7 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// WorkloadSpec defines the desired state of Workload
+/// spec is the specification of the Workload.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "kueue.x-k8s.io", version = "v1beta1", kind = "Workload", plural = "workloads")]
 #[kube(namespaced)]
@@ -21,7 +21,7 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct WorkloadSpec {
-    /// Active determines if a workload can be admitted into a queue.
+    /// active determines if a workload can be admitted into a queue.
     /// Changing active from true to false will evict any running workloads.
     /// Possible values are:
     /// 
@@ -43,13 +43,14 @@ pub struct WorkloadSpec {
     /// podSets cannot be changed.
     #[serde(rename = "podSets")]
     pub pod_sets: Vec<WorkloadPodSets>,
-    /// Priority determines the order of access to the resources managed by the
+    /// priority determines the order of access to the resources managed by the
     /// ClusterQueue where the workload is queued.
     /// The priority value is populated from PriorityClassName.
     /// The higher the value, the higher the priority.
     /// If priorityClassName is specified, priority must not be null.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub priority: Option<i32>,
+    /// priorityClassName is the name of the PriorityClass the Workload is associated with.
     /// If specified, indicates the workload's priority.
     /// "system-node-critical" and "system-cluster-critical" are two special
     /// keywords which indicate the highest priorities with the former being
@@ -7374,22 +7375,22 @@ pub struct WorkloadPodSetsTemplateSpecVolumesVsphereVolume {
 /// topologyRequest defines the topology request for the PodSet.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkloadPodSetsTopologyRequest {
-    /// PodIndexLabel indicates the name of the label indexing the pods.
+    /// podIndexLabel indicates the name of the label indexing the pods.
     /// For example, in the context of
     /// - kubernetes job this is: kubernetes.io/job-completion-index
     /// - JobSet: kubernetes.io/job-completion-index (inherited from Job)
     /// - Kubeflow: training.kubeflow.org/replica-index
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podIndexLabel")]
     pub pod_index_label: Option<String>,
-    /// PodSetGroupName indicates the name of the group of PodSets to which this PodSet belongs to.
+    /// podSetGroupName indicates the name of the group of PodSets to which this PodSet belongs to.
     /// PodSets with the same `PodSetGroupName` should be assigned the same ResourceFlavor
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSetGroupName")]
     pub pod_set_group_name: Option<String>,
-    /// PodSetSliceRequiredTopology indicates the topology level required by the PodSet slice, as
+    /// podSetSliceRequiredTopology indicates the topology level required by the PodSet slice, as
     /// indicated by the `kueue.x-k8s.io/podset-slice-required-topology` annotation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSetSliceRequiredTopology")]
     pub pod_set_slice_required_topology: Option<String>,
-    /// PodSetSliceSize indicates the size of a subgroup of pods in a PodSet for which
+    /// podSetSliceSize indicates the size of a subgroup of pods in a PodSet for which
     /// Kueue finds a requested topology domain on a level defined
     /// in `kueue.x-k8s.io/podset-slice-required-topology` annotation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSetSliceSize")]
@@ -7404,11 +7405,11 @@ pub struct WorkloadPodSetsTopologyRequest {
     /// annotation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub required: Option<String>,
-    /// SubGroupIndexLabel indicates the count of replicated Jobs (groups) within a PodSet.
+    /// subGroupCount indicates the count of replicated Jobs (groups) within a PodSet.
     /// For example, in the context of JobSet this value is read from jobset.sigs.k8s.io/replicatedjob-replicas.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subGroupCount")]
     pub sub_group_count: Option<i32>,
-    /// SubGroupIndexLabel indicates the name of the label indexing the instances of replicated Jobs (groups)
+    /// subGroupIndexLabel indicates the name of the label indexing the instances of replicated Jobs (groups)
     /// within a PodSet. For example, in the context of JobSet this is jobset.sigs.k8s.io/job-index.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subGroupIndexLabel")]
     pub sub_group_index_label: Option<String>,
@@ -7419,7 +7420,7 @@ pub struct WorkloadPodSetsTopologyRequest {
     pub unconstrained: Option<bool>,
 }
 
-/// WorkloadSpec defines the desired state of Workload
+/// spec is the specification of the Workload.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum WorkloadPriorityClassSource {
     #[serde(rename = "kueue.x-k8s.io/workloadpriorityclass")]
@@ -7430,7 +7431,7 @@ pub enum WorkloadPriorityClassSource {
     KopiumEmpty,
 }
 
-/// WorkloadStatus defines the observed state of Workload
+/// status is the status of the Workload.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkloadStatus {
     /// accumulatedPastExexcutionTimeSeconds holds the total time, in seconds, the workload spent
@@ -7445,7 +7446,12 @@ pub struct WorkloadStatus {
     /// admissionChecks list all the admission checks required by the workload and the current status
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "admissionChecks")]
     pub admission_checks: Option<Vec<WorkloadStatusAdmissionChecks>>,
-    /// clusterName is the name of the cluster where the workload is actually assigned.
+    /// clusterName is the name of the cluster where the workload is currently assigned.
+    /// 
+    /// With ElasticJobs, this field may also indicate the cluster where the original (old) workload
+    /// was assigned, providing placement context for new scaled-up workloads. This supports
+    /// affinity or propagation policies across workload slices.
+    /// 
     /// This field is reset after the Workload is evicted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterName")]
     pub cluster_name: Option<String>,
@@ -7499,7 +7505,7 @@ pub struct WorkloadStatusAdmission {
     /// clusterQueue is the name of the ClusterQueue that admitted this workload.
     #[serde(rename = "clusterQueue")]
     pub cluster_queue: String,
-    /// PodSetAssignments hold the admission results for each of the .spec.podSets entries.
+    /// podSetAssignments hold the admission results for each of the .spec.podSets entries.
     #[serde(rename = "podSetAssignments")]
     pub pod_set_assignments: Vec<WorkloadStatusAdmissionPodSetAssignments>,
 }
@@ -7520,10 +7526,10 @@ pub struct WorkloadStatusAdmissionPodSetAssignments {
     /// topologyAssignment.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "delayedTopologyRequest")]
     pub delayed_topology_request: Option<String>,
-    /// Flavors are the flavors assigned to the workload for each resource.
+    /// flavors are the flavors assigned to the workload for each resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub flavors: Option<BTreeMap<String, String>>,
-    /// Name is the name of the podSet. It should match one of the names in .spec.podSets.
+    /// name is the name of the podSet. It should match one of the names in .spec.podSets.
     pub name: String,
     /// resourceUsage keeps track of the total resources all the pods in the podset need to run.
     /// 
@@ -7657,6 +7663,7 @@ pub struct WorkloadStatusAdmissionChecks {
     pub message: String,
     /// name identifies the admission check.
     pub name: String,
+    /// podSetUpdates contains a list of pod set modifications suggested by AdmissionChecks.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSetUpdates")]
     pub pod_set_updates: Option<Vec<WorkloadStatusAdmissionChecksPodSetUpdates>>,
     /// state of the admissionCheck, one of Pending, Ready, Retry, Rejected
@@ -7669,14 +7676,18 @@ pub struct WorkloadStatusAdmissionChecks {
 /// result in failure during workload admission.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkloadStatusAdmissionChecksPodSetUpdates {
+    /// annotations of the PodSet to modify.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
+    /// labels of the PodSet to modify.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    /// Name of the PodSet to modify. Should match to one of the Workload's PodSets.
+    /// name of the PodSet to modify. Should match to one of the Workload's PodSets.
     pub name: String,
+    /// nodeSelector of the PodSet to modify.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
+    /// tolerations of the PodSet to modify.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<WorkloadStatusAdmissionChecksPodSetUpdatesTolerations>>,
 }

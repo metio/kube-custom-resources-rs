@@ -486,6 +486,9 @@ pub struct KialiDeployment {
     /// The namespace into which Kiali is to be installed. If this is empty or not defined, the default will be the namespace where the Kiali CR is located.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+    /// Configures if the Kiali server pod should be protected by a NetworkPolicy resource that restricts both ingress and egress traffic.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub network_policy: Option<KialiDeploymentNetworkPolicy>,
     /// A set of node labels that dictate onto which node the Kiali pod will be deployed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub node_selector: Option<BTreeMap<String, serde_json::Value>>,
@@ -870,6 +873,14 @@ pub enum KialiDeploymentLoggerLogLevel {
     Error,
     #[serde(rename = "fatal")]
     Fatal,
+}
+
+/// Configures if the Kiali server pod should be protected by a NetworkPolicy resource that restricts both ingress and egress traffic.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KialiDeploymentNetworkPolicy {
+    /// If true, a NetworkPolicy resource is created to restrict traffic to the Kiali server pod. The NetworkPolicy will allow ingress traffic only to the Kiali server API port and, if enabled, the metrics port.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
 }
 
 /// Configures the liveness, readiness, and startup probes of the Kiali pod.
@@ -1644,6 +1655,9 @@ pub struct KialiKialiFeatureFlags {
     /// DEPRECATED AFTER v1.73: Multi-cluster related features.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub clustering: Option<KialiKialiFeatureFlagsClustering>,
+    /// Enable observability tabs (Traffic, Logs, Metrics, Traces) for custom workload types beyond the built-in Kubernetes controllers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub custom_workload_types: Option<Vec<KialiKialiFeatureFlagsCustomWorkloadTypes>>,
     /// There may be some features that admins do not want to be accessible to users (even in 'view only' mode). In this case, this setting allows you to disable one or more of those features entirely.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disabled_features: Option<Vec<String>>,
@@ -1727,6 +1741,16 @@ pub struct KialiKialiFeatureFlagsClusteringKialiUrls {
     /// DEPRECATED AFTER v1.73: The URL of Kiali in the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KialiKialiFeatureFlagsCustomWorkloadTypes {
+    /// The API group of the custom workload type (e.g., 'argoproj.io').
+    pub group: String,
+    /// The kind of the custom workload type (e.g., 'Rollout').
+    pub kind: String,
+    /// The API version of the custom workload type (e.g., 'v1alpha1').
+    pub version: String,
 }
 
 /// Default settings for the UI. These defaults apply to all users.

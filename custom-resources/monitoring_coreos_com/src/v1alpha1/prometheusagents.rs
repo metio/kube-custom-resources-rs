@@ -388,7 +388,7 @@ pub struct PrometheusAgentSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<PrometheusAgentLogLevel>,
     /// maximumStartupDurationSeconds defines the maximum time that the `prometheus` container's startup probe will wait before being considered failed. The startup probe will return success after the WAL replay is complete.
-    /// If set, the value should be greater than 60 (seconds). Otherwise it will be equal to 600 seconds (15 minutes).
+    /// If set, the value should be greater than 60 (seconds). Otherwise it will be equal to 900 seconds (15 minutes).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumStartupDurationSeconds")]
     pub maximum_startup_duration_seconds: Option<i32>,
     /// minReadySeconds defines the minimum number of seconds for which a newly created Pod should be ready

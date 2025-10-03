@@ -89,7 +89,7 @@ pub struct TraefikServiceHighestRandomWeightServices {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serversTransport")]
     pub servers_transport: Option<String>,
     /// Sticky defines the sticky sessions configuration.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/routing/services/#sticky-sessions>
+    /// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/http/load-balancing/service/#sticky-sessions>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sticky: Option<TraefikServiceHighestRandomWeightServicesSticky>,
     /// Strategy defines the load balancing strategy between the servers.
@@ -182,7 +182,7 @@ pub struct TraefikServiceHighestRandomWeightServicesResponseForwarding {
 }
 
 /// Sticky defines the sticky sessions configuration.
-/// More info: <https://doc.traefik.io/traefik/v3.5/routing/services/#sticky-sessions>
+/// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/http/load-balancing/service/#sticky-sessions>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TraefikServiceHighestRandomWeightServicesSticky {
     /// Cookie defines the sticky cookie configuration.
@@ -308,7 +308,7 @@ pub struct TraefikServiceMirroring {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serversTransport")]
     pub servers_transport: Option<String>,
     /// Sticky defines the sticky sessions configuration.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/routing/services/#sticky-sessions>
+    /// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/http/load-balancing/service/#sticky-sessions>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sticky: Option<TraefikServiceMirroringSticky>,
     /// Strategy defines the load balancing strategy between the servers.
@@ -432,7 +432,7 @@ pub struct TraefikServiceMirroringMirrors {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serversTransport")]
     pub servers_transport: Option<String>,
     /// Sticky defines the sticky sessions configuration.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/routing/services/#sticky-sessions>
+    /// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/http/load-balancing/service/#sticky-sessions>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sticky: Option<TraefikServiceMirroringMirrorsSticky>,
     /// Strategy defines the load balancing strategy between the servers.
@@ -525,7 +525,7 @@ pub struct TraefikServiceMirroringMirrorsResponseForwarding {
 }
 
 /// Sticky defines the sticky sessions configuration.
-/// More info: <https://doc.traefik.io/traefik/v3.5/routing/services/#sticky-sessions>
+/// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/http/load-balancing/service/#sticky-sessions>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TraefikServiceMirroringMirrorsSticky {
     /// Cookie defines the sticky cookie configuration.
@@ -612,7 +612,7 @@ pub struct TraefikServiceMirroringResponseForwarding {
 }
 
 /// Sticky defines the sticky sessions configuration.
-/// More info: <https://doc.traefik.io/traefik/v3.5/routing/services/#sticky-sessions>
+/// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/http/load-balancing/service/#sticky-sessions>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TraefikServiceMirroringSticky {
     /// Cookie defines the sticky cookie configuration.
@@ -682,7 +682,7 @@ pub struct TraefikServiceWeighted {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<TraefikServiceWeightedServices>>,
     /// Sticky defines whether sticky sessions are enabled.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/routing/providers/kubernetes-crd/#stickiness-and-load-balancing>
+    /// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/kubernetes/crd/http/traefikservice/#stickiness-and-load-balancing>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sticky: Option<TraefikServiceWeightedSticky>,
 }
@@ -738,7 +738,7 @@ pub struct TraefikServiceWeightedServices {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serversTransport")]
     pub servers_transport: Option<String>,
     /// Sticky defines the sticky sessions configuration.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/routing/services/#sticky-sessions>
+    /// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/http/load-balancing/service/#sticky-sessions>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sticky: Option<TraefikServiceWeightedServicesSticky>,
     /// Strategy defines the load balancing strategy between the servers.
@@ -831,7 +831,7 @@ pub struct TraefikServiceWeightedServicesResponseForwarding {
 }
 
 /// Sticky defines the sticky sessions configuration.
-/// More info: <https://doc.traefik.io/traefik/v3.5/routing/services/#sticky-sessions>
+/// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/http/load-balancing/service/#sticky-sessions>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TraefikServiceWeightedServicesSticky {
     /// Cookie defines the sticky cookie configuration.
@@ -895,7 +895,7 @@ pub enum TraefikServiceWeightedServicesStrategy {
 }
 
 /// Sticky defines whether sticky sessions are enabled.
-/// More info: <https://doc.traefik.io/traefik/v3.5/routing/providers/kubernetes-crd/#stickiness-and-load-balancing>
+/// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/kubernetes/crd/http/traefikservice/#stickiness-and-load-balancing>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TraefikServiceWeightedSticky {
     /// Cookie defines the sticky cookie configuration.

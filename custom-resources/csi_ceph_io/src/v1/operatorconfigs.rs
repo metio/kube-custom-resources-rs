@@ -1309,9 +1309,11 @@ pub struct OperatorConfigDriverSpecDefaultsControllerPluginTolerations {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OperatorConfigDriverSpecDefaultsControllerPluginVolumes {
     /// VolumeMount describes a mounting of a Volume within a container.
-    pub mount: OperatorConfigDriverSpecDefaultsControllerPluginVolumesMount,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mount: Option<OperatorConfigDriverSpecDefaultsControllerPluginVolumesMount>,
     /// Volume represents a named volume in a pod that may be accessed by any container in the pod.
-    pub volume: OperatorConfigDriverSpecDefaultsControllerPluginVolumesVolume,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub volume: Option<OperatorConfigDriverSpecDefaultsControllerPluginVolumesVolume>,
 }
 
 /// VolumeMount describes a mounting of a Volume within a container.
@@ -4314,9 +4316,11 @@ pub struct OperatorConfigDriverSpecDefaultsNodePluginUpdateStrategyRollingUpdate
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OperatorConfigDriverSpecDefaultsNodePluginVolumes {
     /// VolumeMount describes a mounting of a Volume within a container.
-    pub mount: OperatorConfigDriverSpecDefaultsNodePluginVolumesMount,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mount: Option<OperatorConfigDriverSpecDefaultsNodePluginVolumesMount>,
     /// Volume represents a named volume in a pod that may be accessed by any container in the pod.
-    pub volume: OperatorConfigDriverSpecDefaultsNodePluginVolumesVolume,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub volume: Option<OperatorConfigDriverSpecDefaultsNodePluginVolumesVolume>,
 }
 
 /// VolumeMount describes a mounting of a Volume within a container.

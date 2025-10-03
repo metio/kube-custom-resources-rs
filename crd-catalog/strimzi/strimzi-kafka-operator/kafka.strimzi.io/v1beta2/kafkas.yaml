@@ -34,6 +34,7 @@ spec:
           jsonPath: ".status.conditions[?(@.type==\"Warning\")].status"
           name: "Warnings"
           type: "string"
+      deprecated: false
       name: "v1beta2"
       schema:
         openAPIV3Schema:
@@ -2206,6 +2207,28 @@ spec:
                                 type: "object"
                               type: "array"
                           type: "object"
+                        podDisruptionBudget:
+                          description: "Template for the Entity Operator Pod Disruption Budget."
+                          properties:
+                            maxUnavailable:
+                              description: "Maximum number of unavailable pods to allow automatic Pod eviction. A Pod eviction is allowed when the `maxUnavailable` number of pods or fewer are unavailable after the eviction. Setting this value to 0 prevents all voluntary evictions, so the pods must be evicted manually. Defaults to 1."
+                              minimum: 0.0
+                              type: "integer"
+                            metadata:
+                              description: "Metadata to apply to the `PodDisruptionBudgetTemplate` resource."
+                              properties:
+                                annotations:
+                                  additionalProperties:
+                                    type: "string"
+                                  description: "Annotations added to the Kubernetes resource."
+                                  type: "object"
+                                labels:
+                                  additionalProperties:
+                                    type: "string"
+                                  description: "Labels added to the Kubernetes resource."
+                                  type: "object"
+                              type: "object"
+                          type: "object"
                         serviceAccount:
                           description: "Template for the Entity Operator service account."
                           properties:
@@ -4193,7 +4216,7 @@ spec:
                       description: "The image of the init container used for initializing the `broker.rack`."
                       type: "string"
                     config:
-                      description: "Kafka broker config properties with the following prefixes cannot be set: listeners, advertised., broker., listener., host.name, port, inter.broker.listener.name, sasl., ssl., security., password., log.dir, zookeeper.connect, zookeeper.set.acl, zookeeper.ssl, zookeeper.clientCnxnSocket, authorizer., super.user, cruise.control.metrics.topic, cruise.control.metrics.reporter.bootstrap.servers, node.id, process.roles, controller., metadata.log.dir, zookeeper.metadata.migration.enable, client.quota.callback.static.kafka.admin., client.quota.callback.static.produce, client.quota.callback.static.fetch, client.quota.callback.static.storage.per.volume.limit.min.available., client.quota.callback.static.excluded.principal.name.list, prometheus.metrics.reporter. (with the exception of: zookeeper.connection.timeout.ms, sasl.server.max.receive.size, ssl.cipher.suites, ssl.protocol, ssl.enabled.protocols, ssl.secure.random.implementation, cruise.control.metrics.topic.num.partitions, cruise.control.metrics.topic.replication.factor, cruise.control.metrics.topic.retention.ms, cruise.control.metrics.topic.auto.create.retries, cruise.control.metrics.topic.auto.create.timeout.ms, cruise.control.metrics.topic.min.insync.replicas, controller.quorum.election.backoff.max.ms, controller.quorum.election.timeout.ms, controller.quorum.fetch.timeout.ms)."
+                      description: "Kafka broker config properties with the following prefixes cannot be set: listeners, advertised., broker., listener., host.name, port, inter.broker.listener.name, sasl., ssl., security., password., log.dir, zookeeper.connect, zookeeper.set.acl, zookeeper.ssl, zookeeper.clientCnxnSocket, authorizer., super.user, cruise.control.metrics.topic, cruise.control.metrics.reporter.bootstrap.servers, node.id, process.roles, controller., metadata.log.dir, zookeeper.metadata.migration.enable, client.quota.callback.static.kafka.admin., client.quota.callback.static.produce, client.quota.callback.static.fetch, client.quota.callback.static.storage.per.volume.limit.min.available., client.quota.callback.static.excluded.principal.name.list, prometheus.metrics.reporter. (with the exception of: zookeeper.connection.timeout.ms, sasl.server.max.receive.size, ssl.cipher.suites, ssl.protocol, ssl.enabled.protocols, ssl.secure.random.implementation, cruise.control.metrics.topic.num.partitions, cruise.control.metrics.topic.replication.factor, cruise.control.metrics.topic.retention.ms, cruise.control.metrics.topic.auto.create.retries, cruise.control.metrics.topic.auto.create.timeout.ms, cruise.control.metrics.topic.min.insync.replicas, broker.session.timeout.ms, broker.heartbeat.interval.ms, controller.socket.timeout.ms, controller.quorum.election.backoff.max.ms, controller.quorum.election.timeout.ms, controller.quorum.fetch.timeout.ms)."
                       type: "object"
                       x-kubernetes-preserve-unknown-fields: true
                     image:
@@ -4267,6 +4290,9 @@ spec:
                                 type: "boolean"
                               clientAudience:
                                 description: "The audience to use when making requests to the authorization server's token endpoint. Used for inter-broker authentication and for configuring OAuth 2.0 over PLAIN using the `clientId` and `secret` method."
+                                type: "string"
+                              clientGrantType:
+                                description: "The grant type to use when making requests to the authorization server's token endpoint. Used for `OAuth over PLAIN` when `username` and `password` passed via SASL_PLAIN client authentication are passed on to the authorization server as `clientId` and `secret`."
                                 type: "string"
                               clientId:
                                 description: "OAuth Client ID which the Kafka broker can use to authenticate against the authorization server and use the introspect endpoint URI."
@@ -7202,6 +7228,28 @@ spec:
                                     type: "object"
                                 type: "object"
                               type: "array"
+                          type: "object"
+                        podDisruptionBudget:
+                          description: "Template for the Pod Disruption Budget for Kafka Exporter pods."
+                          properties:
+                            maxUnavailable:
+                              description: "Maximum number of unavailable pods to allow automatic Pod eviction. A Pod eviction is allowed when the `maxUnavailable` number of pods or fewer are unavailable after the eviction. Setting this value to 0 prevents all voluntary evictions, so the pods must be evicted manually. Defaults to 1."
+                              minimum: 0.0
+                              type: "integer"
+                            metadata:
+                              description: "Metadata to apply to the `PodDisruptionBudgetTemplate` resource."
+                              properties:
+                                annotations:
+                                  additionalProperties:
+                                    type: "string"
+                                  description: "Annotations added to the Kubernetes resource."
+                                  type: "object"
+                                labels:
+                                  additionalProperties:
+                                    type: "string"
+                                  description: "Labels added to the Kubernetes resource."
+                                  type: "object"
+                              type: "object"
                           type: "object"
                         service:
                           description: "Template for Kafka Exporter `Service`."

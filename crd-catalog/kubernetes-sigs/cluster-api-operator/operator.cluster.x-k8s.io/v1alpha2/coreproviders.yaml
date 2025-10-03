@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.16.1"
+    controller-gen.kubebuilder.io/version: "v0.19.0"
   name: "coreproviders.operator.cluster.x-k8s.io"
 spec:
   group: "operator.cluster.x-k8s.io"
@@ -887,8 +887,14 @@ spec:
                             description: "Metrics contains the controller metrics configuration"
                             properties:
                               bindAddress:
-                                description: "BindAddress is the TCP address that the controller should bind to\nfor serving prometheus metrics.\nIt can be set to \"0\" to disable the metrics serving."
+                                description: "BindAddress is the TCP address that the controller should bind to\nfor serving prometheus metrics.\nIt can be set to \"0\" to disable the metrics serving.\nNOTE: This field is deprecated, please use DiagnosticsAddress field"
                                 type: "string"
+                              diagnosticsAddress:
+                                description: "DiagnosticsAddress is the TCP address that the controller should bind to\nfor serving prometheus metric.\nIt can be set to \"0\" to disable the metrics serving."
+                                type: "string"
+                              insecureDiagnostics:
+                                description: "InsecureDiagnostics indicates if insecure metrics serving should be enabled.\nIf false, or not set, the diagnostics address will expose pprof endpoints too."
+                                type: "boolean"
                             type: "object"
                           profilerAddress:
                             description: "ProfilerAddress defines the bind address to expose the pprof profiler (e.g. localhost:6060).\nDefault empty, meaning the profiler is disabled.\nController Manager flag is --profiler-address."
@@ -1833,8 +1839,14 @@ spec:
                       description: "Metrics contains the controller metrics configuration"
                       properties:
                         bindAddress:
-                          description: "BindAddress is the TCP address that the controller should bind to\nfor serving prometheus metrics.\nIt can be set to \"0\" to disable the metrics serving."
+                          description: "BindAddress is the TCP address that the controller should bind to\nfor serving prometheus metrics.\nIt can be set to \"0\" to disable the metrics serving.\nNOTE: This field is deprecated, please use DiagnosticsAddress field"
                           type: "string"
+                        diagnosticsAddress:
+                          description: "DiagnosticsAddress is the TCP address that the controller should bind to\nfor serving prometheus metric.\nIt can be set to \"0\" to disable the metrics serving."
+                          type: "string"
+                        insecureDiagnostics:
+                          description: "InsecureDiagnostics indicates if insecure metrics serving should be enabled.\nIf false, or not set, the diagnostics address will expose pprof endpoints too."
+                          type: "boolean"
                       type: "object"
                     profilerAddress:
                       description: "ProfilerAddress defines the bind address to expose the pprof profiler (e.g. localhost:6060).\nDefault empty, meaning the profiler is disabled.\nController Manager flag is --profiler-address."

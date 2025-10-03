@@ -48,7 +48,7 @@ pub struct KafkaMirrorMaker2Spec {
     /// Logging configuration for Kafka Connect.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<KafkaMirrorMaker2Logging>,
-    /// Metrics configuration. Only `jmxPrometheusExporter` can be configured, as this component does not yet support `strimziMetricsReporter`.
+    /// Metrics configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricsConfig")]
     pub metrics_config: Option<KafkaMirrorMaker2MetricsConfig>,
     /// Configuration of the MirrorMaker 2 connectors.
@@ -128,6 +128,9 @@ pub struct KafkaMirrorMaker2ClustersAuthentication {
     /// Link to Kubernetes Secret containing the OAuth client secret which the Kafka client can use to authenticate against the OAuth server and use the token endpoint URI.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientSecret")]
     pub client_secret: Option<KafkaMirrorMaker2ClustersAuthenticationClientSecret>,
+    /// Configuration for the custom authentication mechanism. Only properties with the `sasl.` and `ssl.keystore.` prefixes are allowed. Specify other options in the regular configuration section of the custom resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub config: Option<BTreeMap<String, serde_json::Value>>,
     /// The connect timeout in seconds when connecting to authorization server. If not set, the effective connect timeout is 60 seconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeoutSeconds")]
     pub connect_timeout_seconds: Option<i64>,
@@ -137,6 +140,9 @@ pub struct KafkaMirrorMaker2ClustersAuthentication {
     /// Enable or disable OAuth metrics. Default value is `false`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableMetrics")]
     pub enable_metrics: Option<bool>,
+    /// A custom OAuth grant type to use when authenticating against the authorization server with `clientId` and one of `clientSecret` or `clientAssertion`. The value defaults to `client_credentials` in these cases. This is optional configuration, only used with custom authorization server implementations.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "grantType")]
+    pub grant_type: Option<String>,
     /// The maximum number of retries to attempt if an initial HTTP request fails. If not set, the default is to not attempt any retries.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpRetries")]
     pub http_retries: Option<i64>,
@@ -158,6 +164,9 @@ pub struct KafkaMirrorMaker2ClustersAuthentication {
     /// Link to Kubernetes Secret containing the refresh token which can be used to obtain access token from the authorization server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshToken")]
     pub refresh_token: Option<KafkaMirrorMaker2ClustersAuthenticationRefreshToken>,
+    /// Enable or disable SASL on this authentication mechanism.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sasl: Option<bool>,
     /// SASL extensions parameters.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "saslExtensions")]
     pub sasl_extensions: Option<BTreeMap<String, String>>,
@@ -170,7 +179,7 @@ pub struct KafkaMirrorMaker2ClustersAuthentication {
     /// Authorization server token endpoint URI.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenEndpointUri")]
     pub token_endpoint_uri: Option<String>,
-    /// Authentication type. Currently the supported types are `tls`, `scram-sha-256`, `scram-sha-512`, `plain`, and 'oauth'. `scram-sha-256` and `scram-sha-512` types use SASL SCRAM-SHA-256 and SASL SCRAM-SHA-512 Authentication, respectively. `plain` type uses SASL PLAIN Authentication. `oauth` type uses SASL OAUTHBEARER Authentication. The `tls` type uses TLS Client Authentication. The `tls` type is supported only over TLS connections.
+    /// Specifies the authentication type. Supported types are `tls`, `scram-sha-256`, `scram-sha-512`, `plain`, 'oauth', and `custom`. `tls` uses TLS client authentication and is supported only over TLS connections. `scram-sha-256` and `scram-sha-512` use SASL SCRAM-SHA-256 and SASL SCRAM-SHA-512 authentication, respectively. `plain` uses SASL PLAIN authentication. `oauth` uses SASL OAUTHBEARER authentication. `custom` allows you to configure a custom authentication mechanism.
     #[serde(rename = "type")]
     pub r#type: KafkaMirrorMaker2ClustersAuthenticationType,
     /// Username used for the authentication.
@@ -266,6 +275,8 @@ pub enum KafkaMirrorMaker2ClustersAuthenticationType {
     Plain,
     #[serde(rename = "oauth")]
     Oauth,
+    #[serde(rename = "custom")]
+    Custom,
 }
 
 /// TLS configuration for connecting MirrorMaker 2 connectors to a cluster.
@@ -515,7 +526,7 @@ pub struct KafkaMirrorMaker2LoggingValueFromConfigMapKeyRef {
     pub optional: Option<bool>,
 }
 
-/// Metrics configuration. Only `jmxPrometheusExporter` can be configured, as this component does not yet support `strimziMetricsReporter`.
+/// Metrics configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KafkaMirrorMaker2MetricsConfig {
     /// Metrics type. The supported types are `jmxPrometheusExporter` and `strimziMetricsReporter`. Type `jmxPrometheusExporter` uses the Prometheus JMX Exporter to expose Kafka JMX metrics in Prometheus format through an HTTP endpoint. Type `strimziMetricsReporter` uses the Strimzi Metrics Reporter to directly expose Kafka metrics in Prometheus format through an HTTP endpoint.
@@ -529,7 +540,7 @@ pub struct KafkaMirrorMaker2MetricsConfig {
     pub values: Option<KafkaMirrorMaker2MetricsConfigValues>,
 }
 
-/// Metrics configuration. Only `jmxPrometheusExporter` can be configured, as this component does not yet support `strimziMetricsReporter`.
+/// Metrics configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaMirrorMaker2MetricsConfigType {
     #[serde(rename = "jmxPrometheusExporter")]

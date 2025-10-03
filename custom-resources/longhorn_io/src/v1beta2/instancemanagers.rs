@@ -71,9 +71,6 @@ pub struct InstanceManagerStatus {
     pub instance_engines: Option<BTreeMap<String, InstanceManagerStatusInstanceEngines>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceReplicas")]
     pub instance_replicas: Option<BTreeMap<String, InstanceManagerStatusInstanceReplicas>>,
-    /// Deprecated: Replaced by InstanceEngines and InstanceReplicas
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub instances: Option<BTreeMap<String, InstanceManagerStatusInstances>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ip: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerID")]
@@ -195,53 +192,6 @@ pub struct InstanceManagerStatusInstanceReplicasSpec {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstanceManagerStatusInstanceReplicasStatus {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub conditions: Option<BTreeMap<String, bool>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub endpoint: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorMsg")]
-    pub error_msg: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub listen: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portEnd")]
-    pub port_end: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portStart")]
-    pub port_start: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
-    pub resource_version: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub state: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPortEnd")]
-    pub target_port_end: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPortStart")]
-    pub target_port_start: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
-    pub r#type: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ublkID")]
-    pub ublk_id: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub uuid: Option<String>,
-}
-
-/// Deprecated: Replaced by InstanceEngines and InstanceReplicas
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstanceManagerStatusInstances {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub spec: Option<InstanceManagerStatusInstancesSpec>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub status: Option<InstanceManagerStatusInstancesStatus>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstanceManagerStatusInstancesSpec {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataEngine")]
-    pub data_engine: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstanceManagerStatusInstancesStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<BTreeMap<String, bool>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

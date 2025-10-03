@@ -80,6 +80,8 @@ pub struct TestRunInitializer {
     pub metadata: Option<TestRunInitializerMetadata>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
+    pub priority_class_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<TestRunInitializerReadinessProbe>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1762,6 +1764,8 @@ pub struct TestRunRunner {
     pub metadata: Option<TestRunRunnerMetadata>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
+    pub priority_class_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<TestRunRunnerReadinessProbe>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3480,6 +3484,8 @@ pub struct TestRunStarter {
     pub metadata: Option<TestRunStarterMetadata>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
+    pub priority_class_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<TestRunStarterReadinessProbe>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

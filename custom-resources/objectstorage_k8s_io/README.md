@@ -17,3 +17,9 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 - `BucketClaim`
 - `BucketClass`
 - `Bucket`
+### objectstorage.k8s.io/v1alpha2
+- `BucketAccessClass`
+- `BucketAccess`
+- `BucketClaim`
+- `BucketClass`
+- `Bucket`

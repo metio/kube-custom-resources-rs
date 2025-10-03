@@ -1130,6 +1130,10 @@ pub struct ClusterGeneratorGeneratorVaultDynamicSecretSpecProviderAuthCert {
     /// authentication method
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCert")]
     pub client_cert: Option<ClusterGeneratorGeneratorVaultDynamicSecretSpecProviderAuthCertClientCert>,
+    /// Path where the Certificate authentication backend is mounted
+    /// in Vault, e.g: "cert"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
     /// SecretRef to a key in a Secret resource containing client private key to
     /// authenticate with Vault using the Cert authentication method
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]

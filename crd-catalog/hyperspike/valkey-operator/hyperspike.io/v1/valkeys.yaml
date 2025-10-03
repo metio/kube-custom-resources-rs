@@ -54,7 +54,7 @@ spec:
               properties:
                 anonymousAuth:
                   default: false
-                  description: "Anonymous Auth"
+                  description: "Anonymous Auth.\n\nIf true, clients can login without providing a password. If\nfalse, the the operator will configure the valkey server to use a password. It\nwill either create a Secret holding the password or, if ServicePassword is set,\nuse an existing secret."
                   type: "boolean"
                 certIssuer:
                   description: "Certificate Issuer"
@@ -198,7 +198,7 @@ spec:
                   type: "object"
                 nodes:
                   default: 3
-                  description: "Number of shards"
+                  description: "Number of shards. Each node is a primary"
                   format: "int32"
                   type: "integer"
                 prometheus:
@@ -212,7 +212,7 @@ spec:
                   type: "object"
                 replicas:
                   default: 0
-                  description: "Number of replicas"
+                  description: "Number of replicas for each node.\n\nNote: This field currently creates extra primary nodes.\nFollow  https://github.com/hyperspike/valkey-operator/issues/186 for details"
                   format: "int32"
                   type: "integer"
                 resources:
@@ -257,10 +257,10 @@ spec:
                   type: "object"
                 serviceMonitor:
                   default: false
-                  description: "ServiceMonitor Enabled"
+                  description: "ServiceMonitor Enabled. The service monitor is a custom resource which tells\nother Prometheus components how to scrape metrics from the valkey cluster"
                   type: "boolean"
                 servicePassword:
-                  description: "Service Password"
+                  description: "Service Password is a SecretKeySelector that points to a data key in a Secret. Look for\nSecretKeySelector in [Kubernetes Pod Documentation] for details\n\nThis field is optional. If ServicePassword is not set and\n[ValkeySpec.AnonymousAuth] is false, then the operator will create a secret\nin with the same name and  namespace as the custom resource, with a \"password\" data key\nand a random 16-character password value.\n\nhttps://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#environment-variables"
                   properties:
                     key:
                       description: "The key of the secret to select from.  Must be a valid secret key."
@@ -277,7 +277,7 @@ spec:
                   type: "object"
                   x-kubernetes-map-type: "atomic"
                 storage:
-                  description: "Persistent volume claim"
+                  description: "Persistent volume claim. The kind and metadata can be omitted, but the spec\nis necessary."
                   properties:
                     apiVersion:
                       description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"

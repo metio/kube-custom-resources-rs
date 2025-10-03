@@ -1298,9 +1298,11 @@ pub struct DriverControllerPluginTolerations {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DriverControllerPluginVolumes {
     /// VolumeMount describes a mounting of a Volume within a container.
-    pub mount: DriverControllerPluginVolumesMount,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mount: Option<DriverControllerPluginVolumesMount>,
     /// Volume represents a named volume in a pod that may be accessed by any container in the pod.
-    pub volume: DriverControllerPluginVolumesVolume,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub volume: Option<DriverControllerPluginVolumesVolume>,
 }
 
 /// VolumeMount describes a mounting of a Volume within a container.
@@ -4303,9 +4305,11 @@ pub struct DriverNodePluginUpdateStrategyRollingUpdate {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DriverNodePluginVolumes {
     /// VolumeMount describes a mounting of a Volume within a container.
-    pub mount: DriverNodePluginVolumesMount,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mount: Option<DriverNodePluginVolumesMount>,
     /// Volume represents a named volume in a pod that may be accessed by any container in the pod.
-    pub volume: DriverNodePluginVolumesVolume,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub volume: Option<DriverNodePluginVolumesVolume>,
 }
 
 /// VolumeMount describes a mounting of a Volume within a container.

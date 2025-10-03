@@ -668,12 +668,28 @@ pub struct FelixConfigurationSpec {
     /// set to false. This reduces the number of metrics reported, reducing Prometheus load. [Default: true]
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "prometheusGoMetricsEnabled")]
     pub prometheus_go_metrics_enabled: Option<bool>,
+    /// PrometheusMetricsCAFile defines the absolute path to the TLS CA certificate file used for securing the /metrics endpoint.
+    /// This certificate must be valid and accessible by the calico-node process.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "prometheusMetricsCAFile")]
+    pub prometheus_metrics_ca_file: Option<String>,
+    /// PrometheusMetricsCertFile defines the absolute path to the TLS certificate file used for securing the /metrics endpoint.
+    /// This certificate must be valid and accessible by the calico-node process.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "prometheusMetricsCertFile")]
+    pub prometheus_metrics_cert_file: Option<String>,
+    /// PrometheusMetricsClientAuth specifies the client authentication type for the /metrics endpoint.
+    /// This determines how the server validates client certificates. Default is "RequireAndVerifyClientCert".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "prometheusMetricsClientAuth")]
+    pub prometheus_metrics_client_auth: Option<String>,
     /// PrometheusMetricsEnabled enables the Prometheus metrics server in Felix if set to true. [Default: false]
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "prometheusMetricsEnabled")]
     pub prometheus_metrics_enabled: Option<bool>,
     /// PrometheusMetricsHost is the host that the Prometheus metrics server should bind to. [Default: empty]
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "prometheusMetricsHost")]
     pub prometheus_metrics_host: Option<String>,
+    /// PrometheusMetricsKeyFile defines the absolute path to the private key file corresponding to the TLS certificate
+    /// used for securing the /metrics endpoint. The private key must be valid and accessible by the calico-node process.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "prometheusMetricsKeyFile")]
+    pub prometheus_metrics_key_file: Option<String>,
     /// PrometheusMetricsPort is the TCP port that the Prometheus metrics server should bind to. [Default: 9091]
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "prometheusMetricsPort")]
     pub prometheus_metrics_port: Option<i64>,

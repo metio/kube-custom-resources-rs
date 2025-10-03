@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   labels:
-    clickhouse.altinity.com/chop: "0.25.3"
+    clickhouse.altinity.com/chop: "0.25.4"
   name: "clickhouseoperatorconfigurations.clickhouse.altinity.com"
 spec:
   group: "clickhouse.altinity.com"
@@ -358,6 +358,64 @@ spec:
                                 - "Enabled"
                                 - "enabled"
                               type: "string"
+                            probes:
+                              description: "What probes the operator should wait during host launch procedure"
+                              properties:
+                                readiness:
+                                  description: "Whether the operator during host launch procedure should wait for readiness probe to succeed.\nIn case probe is unspecified wait is assumed to be completed successfully.\nDefault option value is to wait.\n"
+                                  enum:
+                                    - ""
+                                    - "0"
+                                    - "1"
+                                    - "False"
+                                    - "false"
+                                    - "True"
+                                    - "true"
+                                    - "No"
+                                    - "no"
+                                    - "Yes"
+                                    - "yes"
+                                    - "Off"
+                                    - "off"
+                                    - "On"
+                                    - "on"
+                                    - "Disable"
+                                    - "disable"
+                                    - "Enable"
+                                    - "enable"
+                                    - "Disabled"
+                                    - "disabled"
+                                    - "Enabled"
+                                    - "enabled"
+                                  type: "string"
+                                startup:
+                                  description: "Whether the operator during host launch procedure should wait for startup probe to succeed.\nIn case probe is unspecified wait is assumed to be completed successfully.\nDefault option value is to do not wait.\n"
+                                  enum:
+                                    - ""
+                                    - "0"
+                                    - "1"
+                                    - "False"
+                                    - "false"
+                                    - "True"
+                                    - "true"
+                                    - "No"
+                                    - "no"
+                                    - "Yes"
+                                    - "yes"
+                                    - "Off"
+                                    - "off"
+                                    - "On"
+                                    - "on"
+                                    - "Disable"
+                                    - "disable"
+                                    - "Enable"
+                                    - "enable"
+                                    - "Disabled"
+                                    - "disabled"
+                                    - "Enabled"
+                                    - "enabled"
+                                  type: "string"
+                              type: "object"
                             queries:
                               description: "Whether the operator during reconcile procedure should wait for a ClickHouse host to complete all running queries"
                               enum:
@@ -637,9 +695,8 @@ spec:
                   properties:
                     namespaces:
                       description: "List of namespaces where clickhouse-operator watches for events."
-                      items:
-                        type: "string"
-                      type: "array"
+                      type: "object"
+                      x-kubernetes-preserve-unknown-fields: true
                   type: "object"
               type: "object"
               x-kubernetes-preserve-unknown-fields: true

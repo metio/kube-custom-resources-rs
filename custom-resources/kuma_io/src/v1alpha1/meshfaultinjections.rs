@@ -22,6 +22,9 @@ pub struct MeshFaultInjectionSpec {
     /// From list makes a match between clients and corresponding configurations
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub from: Option<Vec<MeshFaultInjectionFrom>>,
+    /// Rules defines inbound fault injection configuration
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub rules: Option<Vec<MeshFaultInjectionRules>>,
     /// TargetRef is a reference to the resource the policy takes an effect on.
     /// The resource could be either a real store object or virtual resource
     /// defined inplace.
@@ -154,6 +157,99 @@ pub enum MeshFaultInjectionFromTargetRefKind {
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,
     Dataplane,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MeshFaultInjectionRules {
+    /// Default defines fault configuration
+    pub default: MeshFaultInjectionRulesDefault,
+    /// Matches defines list of matches for which fault injection will be applied
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub matches: Option<Vec<MeshFaultInjectionRulesMatches>>,
+}
+
+/// Default defines fault configuration
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MeshFaultInjectionRulesDefault {
+    /// Http allows to define list of Http faults between dataplanes.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub http: Option<Vec<MeshFaultInjectionRulesDefaultHttp>>,
+}
+
+/// FaultInjection defines the configuration of faults between dataplanes.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MeshFaultInjectionRulesDefaultHttp {
+    /// Abort defines a configuration of not delivering requests to destination
+    /// service and replacing the responses from destination dataplane by
+    /// predefined status code
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub abort: Option<MeshFaultInjectionRulesDefaultHttpAbort>,
+    /// Delay defines configuration of delaying a response from a destination
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub delay: Option<MeshFaultInjectionRulesDefaultHttpDelay>,
+    /// ResponseBandwidth defines a configuration to limit the speed of
+    /// responding to the requests
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseBandwidth")]
+    pub response_bandwidth: Option<MeshFaultInjectionRulesDefaultHttpResponseBandwidth>,
+}
+
+/// Abort defines a configuration of not delivering requests to destination
+/// service and replacing the responses from destination dataplane by
+/// predefined status code
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MeshFaultInjectionRulesDefaultHttpAbort {
+    /// HTTP status code which will be returned to source side
+    #[serde(rename = "httpStatus")]
+    pub http_status: i32,
+    /// Percentage of requests on which abort will be injected, has to be
+    /// either int or decimal represented as string.
+    pub percentage: IntOrString,
+}
+
+/// Delay defines configuration of delaying a response from a destination
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MeshFaultInjectionRulesDefaultHttpDelay {
+    /// Percentage of requests on which delay will be injected, has to be
+    /// either int or decimal represented as string.
+    pub percentage: IntOrString,
+    /// The duration during which the response will be delayed
+    pub value: String,
+}
+
+/// ResponseBandwidth defines a configuration to limit the speed of
+/// responding to the requests
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MeshFaultInjectionRulesDefaultHttpResponseBandwidth {
+    /// Limit is represented by value measure in Gbps, Mbps, kbps, e.g.
+    /// 10kbps
+    pub limit: String,
+    /// Percentage of requests on which response bandwidth limit will be
+    /// either int or decimal represented as string.
+    pub percentage: IntOrString,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MeshFaultInjectionRulesMatches {
+    /// SpiffeID defines a matcher configuration for SpiffeID matching
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "spiffeID")]
+    pub spiffe_id: Option<MeshFaultInjectionRulesMatchesSpiffeId>,
+}
+
+/// SpiffeID defines a matcher configuration for SpiffeID matching
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MeshFaultInjectionRulesMatchesSpiffeId {
+    /// Type defines how to match incoming traffic by SpiffeID. `Exact` or `Prefix` are allowed.
+    #[serde(rename = "type")]
+    pub r#type: MeshFaultInjectionRulesMatchesSpiffeIdType,
+    /// Value is SpiffeId of a client that needs to match for the configuration to be applied
+    pub value: String,
+}
+
+/// SpiffeID defines a matcher configuration for SpiffeID matching
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum MeshFaultInjectionRulesMatchesSpiffeIdType {
+    Exact,
+    Prefix,
 }
 
 /// TargetRef is a reference to the resource the policy takes an effect on.

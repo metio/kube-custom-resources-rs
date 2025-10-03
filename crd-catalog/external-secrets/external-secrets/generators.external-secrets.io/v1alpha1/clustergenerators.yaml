@@ -971,6 +971,10 @@ spec:
                                           pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
                                           type: "string"
                                       type: "object"
+                                    path:
+                                      default: "cert"
+                                      description: "Path where the Certificate authentication backend is mounted\nin Vault, e.g: \"cert\""
+                                      type: "string"
                                     secretRef:
                                       description: "SecretRef to a key in a Secret resource containing client private key to\nauthenticate with Vault using the Cert authentication method"
                                       properties:

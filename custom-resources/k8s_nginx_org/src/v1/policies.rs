@@ -223,9 +223,18 @@ pub struct PolicyJwt {
     /// The SNI name to use when connecting to the remote server. If not set, the hostname from the ``jwksURI`` will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sniName")]
     pub sni_name: Option<String>,
+    /// Enables verification of the JWKS server SSL certificate. Default is false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslVerify")]
+    pub ssl_verify: Option<bool>,
+    /// Sets the verification depth in the JWKS server certificates chain. The default is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslVerifyDepth")]
+    pub ssl_verify_depth: Option<i64>,
     /// The token specifies a variable that contains the JSON Web Token. By default the JWT is passed in the Authorization header as a Bearer Token. JWT may be also passed as a cookie or a part of a query string, for example: $cookie_auth_token. Accepted variables are $http_, $arg_, $cookie_.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub token: Option<String>,
+    /// The name of the Kubernetes secret that stores the CA certificate for JWKS server verification. It must be in the same namespace as the Policy resource. The secret must be of the type nginx.org/ca, and the certificate must be stored in the secret under the key ca.crt.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trustedCertSecret")]
+    pub trusted_cert_secret: Option<String>,
 }
 
 /// The OpenID Connect policy configures NGINX to authenticate client requests by validating a JWT token against an OAuth2/OIDC token provider, such as Auth0 or Keycloak.

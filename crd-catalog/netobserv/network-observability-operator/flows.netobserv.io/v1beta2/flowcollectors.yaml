@@ -970,7 +970,7 @@ spec:
                               type: "object"
                           type: "object"
                         privileged:
-                          description: "Privileged mode for the eBPF Agent container. When ignored or set to `false`, the operator sets\ngranular capabilities (BPF, PERFMON, NET_ADMIN) to the container.\nIf for some reason these capabilities cannot be set, such as if an old kernel version not knowing CAP_BPF\nis in use, then you can turn on this mode for more global privileges.\nSome agent features require the privileged mode, such as packet drops tracking (see `features`) and SR-IOV support."
+                          description: "Privileged mode for the eBPF Agent container. When set to `true`, the agent is able to capture more traffic, including from secondary interfaces.\nWhen ignored or set to `false`, the operator sets granular capabilities (BPF, PERFMON, NET_ADMIN) to the container.\nSome agent features require the privileged mode, such as packet drops tracking (see `features`) and SR-IOV support."
                           type: "boolean"
                         resources:
                           default:
@@ -2903,6 +2903,8 @@ spec:
                     - message: "Namespace is immutable. If you need to change it, delete and recreate the resource."
                       rule: "self == oldSelf"
                 networkPolicy:
+                  default:
+                    enable: true
                   description: "`networkPolicy` defines network policy settings for NetObserv components isolation."
                   properties:
                     additionalNamespaces:
@@ -2911,8 +2913,7 @@ spec:
                         type: "string"
                       type: "array"
                     enable:
-                      default: true
-                      description: "Set `enable` to `true` to deploy network policies on the namespaces used by NetObserv (main and privileged). It is disabled by default.\nThese network policies better isolate the NetObserv components to prevent undesired connections to them.\nThis option is enabled by default, disable it to manually manage network policies"
+                      description: "Deploys network policies on the namespaces used by NetObserv (main and privileged).\nThese network policies better isolate the NetObserv components to prevent undesired connections to them.\nThis option is enabled by default, disable it to manually manage network policies"
                       type: "boolean"
                   type: "object"
                 processor:

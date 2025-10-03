@@ -10,7 +10,7 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// ProvisioningRequestConfigSpec defines the desired state of ProvisioningRequestConfig
+/// spec is the specification of the ProvisioningRequestConfig.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "kueue.x-k8s.io", version = "v1beta1", kind = "ProvisioningRequestConfig", plural = "provisioningrequestconfigs")]
 #[kube(schema = "disabled")]
@@ -28,7 +28,7 @@ pub struct ProvisioningRequestConfigSpec {
     /// the workload is considered ready.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "managedResources")]
     pub managed_resources: Option<Vec<String>>,
-    /// Parameters contains all other parameters classes may require.
+    /// parameters contains all other parameters classes may require.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parameters: Option<BTreeMap<String, String>>,
     /// podSetMergePolicy specifies the policy for merging PodSets before being passed
@@ -39,7 +39,7 @@ pub struct ProvisioningRequestConfigSpec {
     /// are used to target the provisioned nodes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSetUpdates")]
     pub pod_set_updates: Option<ProvisioningRequestConfigPodSetUpdates>,
-    /// ProvisioningClassName describes the different modes of provisioning the resources.
+    /// provisioningClassName describes the different modes of provisioning the resources.
     /// Check autoscaling.x-k8s.io ProvisioningRequestSpec.ProvisioningClassName for details.
     #[serde(rename = "provisioningClassName")]
     pub provisioning_class_name: String,
@@ -55,7 +55,7 @@ pub struct ProvisioningRequestConfigSpec {
     pub retry_strategy: Option<ProvisioningRequestConfigRetryStrategy>,
 }
 
-/// ProvisioningRequestConfigSpec defines the desired state of ProvisioningRequestConfig
+/// spec is the specification of the ProvisioningRequestConfig.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ProvisioningRequestConfigPodSetMergePolicy {
     IdenticalPodTemplates,
@@ -92,13 +92,13 @@ pub struct ProvisioningRequestConfigPodSetUpdatesNodeSelector {
 /// set retryStrategy.backoffLimitCount to 0.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProvisioningRequestConfigRetryStrategy {
-    /// BackoffBaseSeconds defines the base for the exponential backoff for
+    /// backoffBaseSeconds defines the base for the exponential backoff for
     /// re-queuing an evicted workload.
     /// 
     /// Defaults to 60.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backoffBaseSeconds")]
     pub backoff_base_seconds: Option<i32>,
-    /// BackoffLimitCount defines the maximum number of re-queuing retries.
+    /// backoffLimitCount defines the maximum number of re-queuing retries.
     /// Once the number is reached, the workload is deactivated (`.spec.activate`=`false`).
     /// 
     /// Every backoff duration is about "b*2^(n-1)+Rand" where:
@@ -112,7 +112,7 @@ pub struct ProvisioningRequestConfigRetryStrategy {
     /// Defaults to 3.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backoffLimitCount")]
     pub backoff_limit_count: Option<i32>,
-    /// BackoffMaxSeconds defines the maximum backoff time to re-queue an evicted workload.
+    /// backoffMaxSeconds defines the maximum backoff time to re-queue an evicted workload.
     /// 
     /// Defaults to 1800.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backoffMaxSeconds")]

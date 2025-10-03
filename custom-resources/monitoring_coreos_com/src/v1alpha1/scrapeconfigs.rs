@@ -8,6 +8,7 @@ mod prelude {
     pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
     pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
@@ -15,6 +16,7 @@ use self::prelude::*;
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "monitoring.coreos.com", version = "v1alpha1", kind = "ScrapeConfig", plural = "scrapeconfigs")]
 #[kube(namespaced)]
+#[kube(status = "ScrapeConfigStatus")]
 #[kube(schema = "disabled")]
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
@@ -7047,6 +7049,7 @@ pub struct ScrapeConfigKumaSdConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<ScrapeConfigKumaSdConfigsBasicAuth>,
     /// clientID is used by Kuma Control Plane to compute Monitoring Assignment for specific Prometheus backend.
+    /// It requires Prometheus >= v2.50.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientID")]
     pub client_id: Option<String>,
     /// enableHTTP2 defines whether to enable HTTP2.
@@ -11468,5 +11471,54 @@ pub enum ScrapeConfigTlsConfigMinVersion {
     Tls12,
     #[serde(rename = "TLS13")]
     Tls13,
+}
+
+/// status defines the status subresource. It is under active development and is updated only when the
+/// "StatusForConfigurationResources" feature gate is enabled.
+/// 
+/// Most recent observed status of the ScrapeConfig. Read-only.
+/// More info:
+/// <https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#spec-and-status>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScrapeConfigStatus {
+    /// bindings defines the list of workload resources (Prometheus, PrometheusAgent, ThanosRuler or Alertmanager) which select the configuration resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub bindings: Option<Vec<ScrapeConfigStatusBindings>>,
+}
+
+/// WorkloadBinding is a link between a configuration resource and a workload resource.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ScrapeConfigStatusBindings {
+    /// conditions defines the current state of the configuration resource when bound to the referenced Workload object.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
+    /// group defines the group of the referenced resource.
+    pub group: ScrapeConfigStatusBindingsGroup,
+    /// name defines the name of the referenced object.
+    pub name: String,
+    /// namespace defines the namespace of the referenced object.
+    pub namespace: String,
+    /// resource defines the type of resource being referenced (e.g. Prometheus, PrometheusAgent, ThanosRuler or Alertmanager).
+    pub resource: ScrapeConfigStatusBindingsResource,
+}
+
+/// WorkloadBinding is a link between a configuration resource and a workload resource.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigStatusBindingsGroup {
+    #[serde(rename = "monitoring.coreos.com")]
+    MonitoringCoreosCom,
+}
+
+/// WorkloadBinding is a link between a configuration resource and a workload resource.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigStatusBindingsResource {
+    #[serde(rename = "prometheuses")]
+    Prometheuses,
+    #[serde(rename = "prometheusagents")]
+    Prometheusagents,
+    #[serde(rename = "thanosrulers")]
+    Thanosrulers,
+    #[serde(rename = "alertmanagers")]
+    Alertmanagers,
 }
 

@@ -10,39 +10,43 @@ mod prelude {
 }
 use self::prelude::*;
 
+/// spec is the specification of the MultiKueueCluster.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[kube(group = "kueue.x-k8s.io", version = "v1beta1", kind = "MultiKueueCluster", plural = "multikueueclusters")]
 #[kube(status = "MultiKueueClusterStatus")]
 #[kube(schema = "disabled")]
 #[kube(derive="PartialEq")]
 pub struct MultiKueueClusterSpec {
-    /// Information how to connect to the cluster.
+    /// kubeConfig is information on how to connect to the cluster.
     #[serde(rename = "kubeConfig")]
     pub kube_config: MultiKueueClusterKubeConfig,
 }
 
-/// Information how to connect to the cluster.
+/// kubeConfig is information on how to connect to the cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MultiKueueClusterKubeConfig {
-    /// Location of the KubeConfig.
+    /// location of the KubeConfig.
     /// 
     /// If LocationType is Secret then Location is the name of the secret inside the namespace in
     /// which the kueue controller manager is running. The config should be stored in the "kubeconfig" key.
     pub location: String,
-    /// Type of the KubeConfig location.
+    /// locationType of the KubeConfig.
     #[serde(rename = "locationType")]
     pub location_type: MultiKueueClusterKubeConfigLocationType,
 }
 
-/// Information how to connect to the cluster.
+/// kubeConfig is information on how to connect to the cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum MultiKueueClusterKubeConfigLocationType {
     Secret,
     Path,
 }
 
+/// status is the status of the MultiKueueCluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MultiKueueClusterStatus {
+    /// conditions hold the latest available observations of the MultiKueueCluster
+    /// current state.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
