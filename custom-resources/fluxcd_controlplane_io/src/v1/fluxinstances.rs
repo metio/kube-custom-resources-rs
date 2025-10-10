@@ -374,6 +374,11 @@ pub struct FluxInstanceStatus {
     /// distribution config that was last attempted to reconcile.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastAttemptedRevision")]
     pub last_attempted_revision: Option<String>,
+    /// LastHandledForceAt holds the value of the most recent
+    /// force request value, so a change of the annotation value
+    /// can be detected.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastHandledForceAt")]
+    pub last_handled_force_at: Option<String>,
     /// LastHandledReconcileAt holds the value of the most recent
     /// reconcile request value, so a change of the annotation value
     /// can be detected.

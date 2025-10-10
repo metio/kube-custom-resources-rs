@@ -111,7 +111,7 @@ pub struct ClusterFilterFiltersAws {
     /// The EC2 instance private ip.Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateIP")]
     pub private_ip: Option<bool>,
-    /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinetly. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
+    /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinitely. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryLimit")]
     pub retry_limit: Option<String>,
     /// The VPC ID for current EC2 instance.Default is false.
@@ -154,7 +154,7 @@ pub struct ClusterFilterFiltersGrep {
     /// Value Format: FIELD REGEX
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<String>,
-    /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinetly. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
+    /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinitely. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryLimit")]
     pub retry_limit: Option<String>,
 }
@@ -276,7 +276,7 @@ pub struct ClusterFilterFiltersKubernetes {
     /// The parser must be registered in a parsers file (refer to parser filter-kube-test as an example).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "regexParser")]
     pub regex_parser: Option<String>,
-    /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinetly. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
+    /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinitely. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryLimit")]
     pub retry_limit: Option<String>,
     /// Debug level between 0 (nothing) and 4 (every detail).
@@ -350,7 +350,7 @@ pub struct ClusterFilterFiltersLogToMetrics {
     /// Value Format: FIELD REGEX
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<Vec<String>>,
-    /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinetly. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
+    /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinitely. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryLimit")]
     pub retry_limit: Option<String>,
     /// Defines the tag for the generated metrics record
@@ -377,7 +377,7 @@ pub struct ClusterFilterFiltersLua {
     /// It prevents to crash when invalid Lua script is executed. Default is true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectedMode")]
     pub protected_mode: Option<bool>,
-    /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinetly. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
+    /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinitely. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryLimit")]
     pub retry_limit: Option<String>,
     /// Path to the Lua script that will be used.
@@ -410,9 +410,7 @@ pub struct ClusterFilterFiltersLuaScript {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -429,7 +427,7 @@ pub struct ClusterFilterFiltersModify {
     /// All conditions have to be true for the rules to be applied.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<ClusterFilterFiltersModifyConditions>>,
-    /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinetly. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
+    /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinitely. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryLimit")]
     pub retry_limit: Option<String>,
     /// Rules are applied in the order they appear,
@@ -535,7 +533,7 @@ pub struct ClusterFilterFiltersMultiline {
     /// Specify one or multiple Multiline Parsing definitions to apply to the content.
     /// You can specify multiple multiline parsers to detect different formats by separating them with a comma.
     pub parser: String,
-    /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinetly. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
+    /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinitely. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryLimit")]
     pub retry_limit: Option<String>,
 }
@@ -579,7 +577,7 @@ pub struct ClusterFilterFiltersNest {
     /// Remove prefix from affected keys if it matches this string
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "removePrefix")]
     pub remove_prefix: Option<String>,
-    /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinetly. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
+    /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinitely. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryLimit")]
     pub retry_limit: Option<String>,
     /// Nest records which field matches the wildcard
@@ -617,7 +615,7 @@ pub struct ClusterFilterFiltersParser {
     /// If false, all other original fields will be removed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reserveData")]
     pub reserve_data: Option<bool>,
-    /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinetly. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
+    /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinitely. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryLimit")]
     pub retry_limit: Option<String>,
     /// If the key is a escaped string (e.g: stringify JSON), unescape the string before to apply the parser.
@@ -640,7 +638,7 @@ pub struct ClusterFilterFiltersRecordModifier {
     /// If the key is matched, that field is removed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "removeKeys")]
     pub remove_keys: Option<Vec<String>>,
-    /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinetly. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
+    /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinitely. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryLimit")]
     pub retry_limit: Option<String>,
     /// If set, the plugin appends uuid to each record. The value assigned becomes the key in the map.
@@ -666,7 +664,7 @@ pub struct ClusterFilterFiltersRewriteTag {
     pub emitter_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emitterStorageType")]
     pub emitter_storage_type: Option<String>,
-    /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinetly. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
+    /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinitely. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryLimit")]
     pub retry_limit: Option<String>,
     /// Defines the matching criteria and the format of the Tag for the matching record.
@@ -690,7 +688,7 @@ pub struct ClusterFilterFiltersThrottle {
     /// Rate is the amount of messages for the time.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rate: Option<i64>,
-    /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinetly. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
+    /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinitely. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryLimit")]
     pub retry_limit: Option<String>,
     /// Window is the amount of intervals to calculate average over.
@@ -713,7 +711,7 @@ pub struct ClusterFilterFiltersWasm {
     /// Wasm function name that will be triggered to do filtering. It's assumed that the function is built inside the Wasm program specified above.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "functionName")]
     pub function_name: Option<String>,
-    /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinetly. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
+    /// RetryLimit describes how many times fluent-bit should retry to send data to a specific output. If set to false fluent-bit will try indefinitely. If set to any integer N>0 it will try at most N+1 times. Leading zeros are not allowed (values such as 007, 0150, 01 do not work). If this property is not defined fluent-bit will use the default value: 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryLimit")]
     pub retry_limit: Option<String>,
     /// Size of the heap size of Wasm execution. Review unit sizes for allowed values.

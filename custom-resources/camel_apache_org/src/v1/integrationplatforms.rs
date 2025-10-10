@@ -414,7 +414,7 @@ pub struct IntegrationPlatformTraits {
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "3scale")]
     pub r#_3scale: Option<IntegrationPlatformTraits3scale>,
-    /// The extension point with addon traits
+    /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub addons: Option<BTreeMap<String, BTreeMap<String, serde_json::Value>>>,
     /// The configuration of Affinity trait
@@ -472,7 +472,7 @@ pub struct IntegrationPlatformTraits {
     /// The configuration of Kamelets trait
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kamelets: Option<IntegrationPlatformTraitsKamelets>,
-    /// Deprecated: for backward compatibility.
+    /// The configuration of Keda trait
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keda: Option<IntegrationPlatformTraitsKeda>,
     /// The configuration of Knative trait
@@ -1314,11 +1314,59 @@ pub struct IntegrationPlatformTraitsKamelets {
     pub mount_point: Option<String>,
 }
 
-/// Deprecated: for backward compatibility.
+/// The configuration of Keda trait
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationPlatformTraitsKeda {
-    /// TraitConfiguration parameters configuration
-    pub configuration: BTreeMap<String, serde_json::Value>,
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// The wait period between the last active trigger reported and scaling the resource back to 0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cooldownPeriod")]
+    pub cooldown_period: Option<i32>,
+    /// Can be used to enable or disable a trait. All traits share this common property.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// Enabling this property allows KEDA to scale the resource down to the specified number of replicas.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "idleReplicaCount")]
+    pub idle_replica_count: Option<i32>,
+    /// Maximum number of replicas.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxReplicaCount")]
+    pub max_replica_count: Option<i32>,
+    /// Minimum number of replicas.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReplicaCount")]
+    pub min_replica_count: Option<i32>,
+    /// Interval (seconds) to check each trigger on.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pollingInterval")]
+    pub polling_interval: Option<i32>,
+    /// Definition of triggers according to the KEDA format. Each trigger must contain `type` field corresponding
+    /// to the name of a KEDA autoscaler and a key/value map named `metadata` containing specific trigger options
+    /// and optionally a mapping of secrets, used by Keda operator to poll resources according to the autoscaler type.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub triggers: Option<Vec<IntegrationPlatformTraitsKedaTriggers>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IntegrationPlatformTraitsKedaTriggers {
+    /// The trigger metadata (see Keda documentation to learn how to fill for each type).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<BTreeMap<String, String>>,
+    /// The secrets mapping to use. Keda allows the possibility to use values coming from different secrets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secrets: Option<Vec<IntegrationPlatformTraitsKedaTriggersSecrets>>,
+    /// The autoscaler type.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IntegrationPlatformTraitsKedaTriggersSecrets {
+    /// The mapping to use for this secret (eg, `database-secret-key:keda-secret-key`)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mapping: Option<BTreeMap<String, String>>,
+    /// The name of the secret to use.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// The configuration of Knative trait
@@ -2413,7 +2461,7 @@ pub struct IntegrationPlatformStatusTraits {
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "3scale")]
     pub r#_3scale: Option<IntegrationPlatformStatusTraits3scale>,
-    /// The extension point with addon traits
+    /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub addons: Option<BTreeMap<String, BTreeMap<String, serde_json::Value>>>,
     /// The configuration of Affinity trait
@@ -2471,7 +2519,7 @@ pub struct IntegrationPlatformStatusTraits {
     /// The configuration of Kamelets trait
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kamelets: Option<IntegrationPlatformStatusTraitsKamelets>,
-    /// Deprecated: for backward compatibility.
+    /// The configuration of Keda trait
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keda: Option<IntegrationPlatformStatusTraitsKeda>,
     /// The configuration of Knative trait
@@ -3313,11 +3361,59 @@ pub struct IntegrationPlatformStatusTraitsKamelets {
     pub mount_point: Option<String>,
 }
 
-/// Deprecated: for backward compatibility.
+/// The configuration of Keda trait
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationPlatformStatusTraitsKeda {
-    /// TraitConfiguration parameters configuration
-    pub configuration: BTreeMap<String, serde_json::Value>,
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// The wait period between the last active trigger reported and scaling the resource back to 0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cooldownPeriod")]
+    pub cooldown_period: Option<i32>,
+    /// Can be used to enable or disable a trait. All traits share this common property.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// Enabling this property allows KEDA to scale the resource down to the specified number of replicas.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "idleReplicaCount")]
+    pub idle_replica_count: Option<i32>,
+    /// Maximum number of replicas.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxReplicaCount")]
+    pub max_replica_count: Option<i32>,
+    /// Minimum number of replicas.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReplicaCount")]
+    pub min_replica_count: Option<i32>,
+    /// Interval (seconds) to check each trigger on.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pollingInterval")]
+    pub polling_interval: Option<i32>,
+    /// Definition of triggers according to the KEDA format. Each trigger must contain `type` field corresponding
+    /// to the name of a KEDA autoscaler and a key/value map named `metadata` containing specific trigger options
+    /// and optionally a mapping of secrets, used by Keda operator to poll resources according to the autoscaler type.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub triggers: Option<Vec<IntegrationPlatformStatusTraitsKedaTriggers>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IntegrationPlatformStatusTraitsKedaTriggers {
+    /// The trigger metadata (see Keda documentation to learn how to fill for each type).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<BTreeMap<String, String>>,
+    /// The secrets mapping to use. Keda allows the possibility to use values coming from different secrets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secrets: Option<Vec<IntegrationPlatformStatusTraitsKedaTriggersSecrets>>,
+    /// The autoscaler type.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IntegrationPlatformStatusTraitsKedaTriggersSecrets {
+    /// The mapping to use for this secret (eg, `database-secret-key:keda-secret-key`)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mapping: Option<BTreeMap<String, String>>,
+    /// The name of the secret to use.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// The configuration of Knative trait

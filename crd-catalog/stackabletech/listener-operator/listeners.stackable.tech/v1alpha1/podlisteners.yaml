@@ -21,7 +21,7 @@ spec:
           description: "Auto-generated derived type for PodListenersSpec via `CustomResource`"
           properties:
             spec:
-              description: "Informs users about Listeners that are bound by a given Pod.\n\nThis is not expected to be created or modified by users. It will be created by the Stackable Listener Operator when mounting the listener volume, and is always named `pod-{pod.metadata.uid}`."
+              description: "Informs users about Listeners that are bound by a given Pod.\n\nThis is not expected to be created or modified by users. It will be created by\nthe Stackable Listener Operator when mounting the listener volume, and is always\nnamed `pod-{pod.metadata.uid}`."
               properties:
                 listeners:
                   additionalProperties:

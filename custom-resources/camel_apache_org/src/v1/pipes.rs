@@ -47,6 +47,9 @@ pub struct PipeSpec {
     /// Steps contains an optional list of intermediate steps that are executed between the Source and the Sink
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub steps: Option<Vec<PipeSteps>>,
+    /// the traits needed to customize the depending Integration
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub traits: Option<PipeTraits>,
 }
 
 /// Integration is an optional integration used to specify custom parameters
@@ -6270,7 +6273,7 @@ pub struct PipeIntegrationTraits {
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "3scale")]
     pub r#_3scale: Option<PipeIntegrationTraits3scale>,
-    /// The extension point with addon traits
+    /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub addons: Option<BTreeMap<String, BTreeMap<String, serde_json::Value>>>,
     /// The configuration of Affinity trait
@@ -6328,7 +6331,7 @@ pub struct PipeIntegrationTraits {
     /// The configuration of Kamelets trait
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kamelets: Option<PipeIntegrationTraitsKamelets>,
-    /// Deprecated: for backward compatibility.
+    /// The configuration of Keda trait
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keda: Option<PipeIntegrationTraitsKeda>,
     /// The configuration of Knative trait
@@ -7170,11 +7173,59 @@ pub struct PipeIntegrationTraitsKamelets {
     pub mount_point: Option<String>,
 }
 
-/// Deprecated: for backward compatibility.
+/// The configuration of Keda trait
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PipeIntegrationTraitsKeda {
-    /// TraitConfiguration parameters configuration
-    pub configuration: BTreeMap<String, serde_json::Value>,
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// The wait period between the last active trigger reported and scaling the resource back to 0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cooldownPeriod")]
+    pub cooldown_period: Option<i32>,
+    /// Can be used to enable or disable a trait. All traits share this common property.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// Enabling this property allows KEDA to scale the resource down to the specified number of replicas.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "idleReplicaCount")]
+    pub idle_replica_count: Option<i32>,
+    /// Maximum number of replicas.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxReplicaCount")]
+    pub max_replica_count: Option<i32>,
+    /// Minimum number of replicas.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReplicaCount")]
+    pub min_replica_count: Option<i32>,
+    /// Interval (seconds) to check each trigger on.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pollingInterval")]
+    pub polling_interval: Option<i32>,
+    /// Definition of triggers according to the KEDA format. Each trigger must contain `type` field corresponding
+    /// to the name of a KEDA autoscaler and a key/value map named `metadata` containing specific trigger options
+    /// and optionally a mapping of secrets, used by Keda operator to poll resources according to the autoscaler type.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub triggers: Option<Vec<PipeIntegrationTraitsKedaTriggers>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeIntegrationTraitsKedaTriggers {
+    /// The trigger metadata (see Keda documentation to learn how to fill for each type).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<BTreeMap<String, String>>,
+    /// The secrets mapping to use. Keda allows the possibility to use values coming from different secrets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secrets: Option<Vec<PipeIntegrationTraitsKedaTriggersSecrets>>,
+    /// The autoscaler type.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeIntegrationTraitsKedaTriggersSecrets {
+    /// The mapping to use for this secret (eg, `database-secret-key:keda-secret-key`)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mapping: Option<BTreeMap<String, String>>,
+    /// The name of the secret to use.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// The configuration of Knative trait
@@ -8051,6 +8102,1648 @@ pub struct PipeStepsRef {
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
+}
+
+/// the traits needed to customize the depending Integration
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraits {
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "3scale")]
+    pub r#_3scale: Option<PipeTraits3scale>,
+    /// Deprecated: no longer in use.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub addons: Option<BTreeMap<String, BTreeMap<String, serde_json::Value>>>,
+    /// The configuration of Affinity trait
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub affinity: Option<PipeTraitsAffinity>,
+    /// The configuration of Builder trait
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub builder: Option<PipeTraitsBuilder>,
+    /// The configuration of Camel trait
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub camel: Option<PipeTraitsCamel>,
+    /// The configuration of Container trait
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub container: Option<PipeTraitsContainer>,
+    /// The configuration of Cron trait
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cron: Option<PipeTraitsCron>,
+    /// The configuration of Dependencies trait
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub dependencies: Option<PipeTraitsDependencies>,
+    /// The configuration of Deployer trait
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deployer: Option<PipeTraitsDeployer>,
+    /// The configuration of Deployment trait
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deployment: Option<PipeTraitsDeployment>,
+    /// The configuration of Environment trait
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub environment: Option<PipeTraitsEnvironment>,
+    /// The configuration of Error Handler trait
+    /// Deprecated: no longer in use.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "error-handler")]
+    pub error_handler: Option<PipeTraitsErrorHandler>,
+    /// The configuration of GC trait
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub gc: Option<PipeTraitsGc>,
+    /// The configuration of Health trait
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub health: Option<PipeTraitsHealth>,
+    /// The configuration of Ingress trait
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ingress: Option<PipeTraitsIngress>,
+    /// The configuration of Init Containers trait
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "init-containers")]
+    pub init_containers: Option<PipeTraitsInitContainers>,
+    /// The configuration of Istio trait
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub istio: Option<PipeTraitsIstio>,
+    /// The configuration of Jolokia trait
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub jolokia: Option<PipeTraitsJolokia>,
+    /// The configuration of JVM trait
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub jvm: Option<PipeTraitsJvm>,
+    /// The configuration of Kamelets trait
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kamelets: Option<PipeTraitsKamelets>,
+    /// The configuration of Keda trait
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub keda: Option<PipeTraitsKeda>,
+    /// The configuration of Knative trait
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub knative: Option<PipeTraitsKnative>,
+    /// The configuration of Knative Service trait
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "knative-service")]
+    pub knative_service: Option<PipeTraitsKnativeService>,
+    /// The configuration of Logging trait
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub logging: Option<PipeTraitsLogging>,
+    /// The configuration of Master trait
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub master: Option<PipeTraitsMaster>,
+    /// The configuration of Mount trait
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mount: Option<PipeTraitsMount>,
+    /// The configuration of OpenAPI trait
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub openapi: Option<PipeTraitsOpenapi>,
+    /// The configuration of Owner trait
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub owner: Option<PipeTraitsOwner>,
+    /// The configuration of PDB trait
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pdb: Option<PipeTraitsPdb>,
+    /// The configuration of Platform trait
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub platform: Option<PipeTraitsPlatform>,
+    /// The configuration of Pod trait
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pod: Option<PipeTraitsPod>,
+    /// The configuration of Prometheus trait
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub prometheus: Option<PipeTraitsPrometheus>,
+    /// The configuration of Pull Secret trait
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pull-secret")]
+    pub pull_secret: Option<PipeTraitsPullSecret>,
+    /// The configuration of Quarkus trait
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub quarkus: Option<PipeTraitsQuarkus>,
+    /// The configuration of Registry trait (support removed since version 2.5.0).
+    /// Deprecated: use jvm trait or read documentation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub registry: Option<PipeTraitsRegistry>,
+    /// The configuration of Route trait
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub route: Option<PipeTraitsRoute>,
+    /// The configuration of Security Context trait
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "security-context")]
+    pub security_context: Option<PipeTraitsSecurityContext>,
+    /// The configuration of Service trait
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub service: Option<PipeTraitsService>,
+    /// The configuration of Service Binding trait
+    /// Deprecated: no longer in use.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "service-binding")]
+    pub service_binding: Option<PipeTraitsServiceBinding>,
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub strimzi: Option<PipeTraitsStrimzi>,
+    /// The configuration of Telemetry trait
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub telemetry: Option<PipeTraitsTelemetry>,
+    /// The configuration of Toleration trait
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub toleration: Option<PipeTraitsToleration>,
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tracing: Option<PipeTraitsTracing>,
+}
+
+/// Deprecated: for backward compatibility.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraits3scale {
+    /// TraitConfiguration parameters configuration
+    pub configuration: BTreeMap<String, serde_json::Value>,
+}
+
+/// The configuration of Affinity trait
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsAffinity {
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// Can be used to enable or disable a trait. All traits share this common property.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// Defines a set of nodes the integration pod(s) are eligible to be scheduled on, based on labels on the node.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityLabels")]
+    pub node_affinity_labels: Option<Vec<String>>,
+    /// Always co-locates multiple replicas of the integration in the same node (default `false`).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
+    pub pod_affinity: Option<bool>,
+    /// Defines a set of pods (namely those matching the label selector, relative to the given namespace) that the
+    /// integration pod(s) should be co-located with.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinityLabels")]
+    pub pod_affinity_labels: Option<Vec<String>>,
+    /// Never co-locates multiple replicas of the integration in the same node (default `false`).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<bool>,
+    /// Defines a set of pods (namely those matching the label selector, relative to the given namespace) that the
+    /// integration pod(s) should not be co-located with.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinityLabels")]
+    pub pod_anti_affinity_labels: Option<Vec<String>>,
+}
+
+/// The configuration of Builder trait
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsBuilder {
+    /// When using `pod` strategy, annotation to use for the builder pod.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Specify a base image. In order to have the application working properly it must be a container image which has a Java JDK
+    /// installed and ready to use on path (ie `/usr/bin/java`).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseImage")]
+    pub base_image: Option<String>,
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// Deprecated: no longer in use.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// Use the incremental image build option, to reuse existing containers (default `true`)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "incrementalImageBuild")]
+    pub incremental_image_build: Option<bool>,
+    /// When using `pod` strategy, the maximum amount of CPU required by the pod builder.
+    /// Deprecated: use TasksRequestCPU instead with task name `builder`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitCPU")]
+    pub limit_cpu: Option<String>,
+    /// When using `pod` strategy, the maximum amount of memory required by the pod builder.
+    /// Deprecated: use TasksRequestCPU instead with task name `builder`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitMemory")]
+    pub limit_memory: Option<String>,
+    /// A list of references pointing to configmaps/secrets that contains a maven profile.
+    /// This configmap/secret is a resource of the IntegrationKit created, therefore it needs to be present in the namespace where the operator is going to create the IntegrationKit.
+    /// The content of the maven profile is expected to be a text containing a valid maven profile starting with `<profile>` and ending with `</profile>` that will be integrated as an inline profile in the POM.
+    /// Syntax: [configmap|secret]:name[/key], where name represents the resource name, key optionally represents the resource key to be filtered (default key value = profile.xml).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mavenProfiles")]
+    pub maven_profiles: Option<Vec<String>>,
+    /// Defines a set of nodes the builder pod is eligible to be scheduled on, based on labels on the node.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<BTreeMap<String, String>>,
+    /// The build order strategy to use, either `dependencies`, `fifo` or `sequential` (default is the platform default)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "orderStrategy")]
+    pub order_strategy: Option<PipeTraitsBuilderOrderStrategy>,
+    /// The list of manifest platforms to use to build a container image (default `linux/amd64`).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub platforms: Option<Vec<String>>,
+    /// A list of properties to be provided to the build task
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub properties: Option<Vec<String>>,
+    /// When using `pod` strategy, the minimum amount of CPU required by the pod builder.
+    /// Deprecated: use TasksRequestCPU instead with task name `builder`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestCPU")]
+    pub request_cpu: Option<String>,
+    /// When using `pod` strategy, the minimum amount of memory required by the pod builder.
+    /// Deprecated: use TasksRequestCPU instead with task name `builder`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestMemory")]
+    pub request_memory: Option<String>,
+    /// The strategy to use, either `pod` or `routine` (default `routine`)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub strategy: Option<PipeTraitsBuilderStrategy>,
+    /// A list of tasks to be executed (available only when using `pod` strategy) with format `<name>;<container-image>;<container-command>`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tasks: Option<Vec<String>>,
+    /// A list of tasks sorted by the order of execution in a csv format, ie, `<taskName1>,<taskName2>,...`.
+    /// Mind that you must include also the operator tasks (`builder`, `quarkus-native`, `package`, `jib`, `s2i`)
+    /// if you need to execute them. Useful only with `pod` strategy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tasksFilter")]
+    pub tasks_filter: Option<String>,
+    /// A list of limit cpu configuration for the specific task with format `<task-name>:<limit-cpu-conf>`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tasksLimitCPU")]
+    pub tasks_limit_cpu: Option<Vec<String>>,
+    /// A list of limit memory configuration for the specific task with format `<task-name>:<limit-memory-conf>`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tasksLimitMemory")]
+    pub tasks_limit_memory: Option<Vec<String>>,
+    /// A list of request cpu configuration for the specific task with format `<task-name>:<request-cpu-conf>`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tasksRequestCPU")]
+    pub tasks_request_cpu: Option<Vec<String>>,
+    /// A list of request memory configuration for the specific task with format `<task-name>:<request-memory-conf>`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tasksRequestMemory")]
+    pub tasks_request_memory: Option<Vec<String>>,
+    /// Enable verbose logging on build components that support it (e.g. Kaniko build pod).
+    /// Deprecated no longer in use
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub verbose: Option<bool>,
+}
+
+/// The configuration of Builder trait
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PipeTraitsBuilderOrderStrategy {
+    #[serde(rename = "dependencies")]
+    Dependencies,
+    #[serde(rename = "fifo")]
+    Fifo,
+    #[serde(rename = "sequential")]
+    Sequential,
+}
+
+/// The configuration of Builder trait
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PipeTraitsBuilderStrategy {
+    #[serde(rename = "pod")]
+    Pod,
+    #[serde(rename = "routine")]
+    Routine,
+}
+
+/// The configuration of Camel trait
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsCamel {
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// Deprecated: no longer in use.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// A list of properties to be provided to the Integration runtime
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub properties: Option<Vec<String>>,
+    /// The runtime provider to use for the integration. (Default, Camel K Runtime).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeProvider")]
+    pub runtime_provider: Option<PipeTraitsCamelRuntimeProvider>,
+    /// The runtime version to use for the integration. It overrides the default version set in the Integration Platform.
+    /// You can use a fixed version (for example "3.2.3") or a semantic version (for example "3.x") which will try to resolve
+    /// to the best matching Catalog existing on the cluster (Default, the one provided by the operator version).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeVersion")]
+    pub runtime_version: Option<String>,
+}
+
+/// The configuration of Camel trait
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PipeTraitsCamelRuntimeProvider {
+    #[serde(rename = "quarkus")]
+    Quarkus,
+    #[serde(rename = "plain-quarkus")]
+    PlainQuarkus,
+}
+
+/// The configuration of Container trait
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsContainer {
+    /// Security Context AllowPrivilegeEscalation configuration (default false).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
+    pub allow_privilege_escalation: Option<bool>,
+    /// To automatically enable the trait
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub auto: Option<bool>,
+    /// Security Context Capabilities Add configuration (default none).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "capabilitiesAdd")]
+    pub capabilities_add: Option<Vec<String>>,
+    /// Security Context Capabilities Drop configuration (default ALL).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "capabilitiesDrop")]
+    pub capabilities_drop: Option<Vec<String>>,
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// Deprecated: no longer in use.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// Can be used to enable/disable http exposure via kubernetes Service.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expose: Option<bool>,
+    /// The main container image to use for the Integration. When using this parameter the operator will create a synthetic IntegrationKit which
+    /// won't be able to execute traits requiring CamelCatalog. If the container image you're using is coming from an IntegrationKit, use instead
+    /// Integration `.spec.integrationKit` parameter. If you're moving the Integration across environments, you will also need to create an "external" IntegrationKit.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<String>,
+    /// The pull policy: Always|Never|IfNotPresent
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
+    pub image_pull_policy: Option<PipeTraitsContainerImagePullPolicy>,
+    /// The maximum amount of CPU to be provided (default 500 millicores).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitCPU")]
+    pub limit_cpu: Option<String>,
+    /// The maximum amount of memory to be provided (default 512 Mi).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitMemory")]
+    pub limit_memory: Option<String>,
+    /// The main container name. It's named `integration` by default.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// To configure a different http port exposed by the container (default `8080`).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i32>,
+    /// To configure a different http port name for the port exposed by the container.
+    /// It defaults to `http` only when the `expose` parameter is true.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portName")]
+    pub port_name: Option<String>,
+    /// List of container ports available in the container (syntax: <port-name>;<port-number>[;port-protocol]).
+    /// When omitted, `port-protocol` (admitted values `TCP`, `UDP` or `SCTP`) is `TCP`.
+    /// Don't use this for the primary http managed port (for which case you need to use `portName` and `port`).
+    /// Don't use in Knative based environments.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ports: Option<Vec<String>>,
+    /// The minimum amount of CPU required (default 125 millicores).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestCPU")]
+    pub request_cpu: Option<String>,
+    /// The minimum amount of memory required (default 128 Mi).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestMemory")]
+    pub request_memory: Option<String>,
+    /// Security Context RunAsNonRoot configuration (default false).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
+    pub run_as_non_root: Option<bool>,
+    /// Security Context RunAsUser configuration (default none): this value is automatically retrieved in Openshift clusters when not explicitly set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
+    pub run_as_user: Option<i64>,
+    /// Security Context SeccompProfileType configuration (default RuntimeDefault).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfileType")]
+    pub seccomp_profile_type: Option<PipeTraitsContainerSeccompProfileType>,
+    /// To configure under which service port the http container port is to be exposed (default `80`).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "servicePort")]
+    pub service_port: Option<i32>,
+    /// To configure under which service port name the http container port is to be exposed (default `http`).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "servicePortName")]
+    pub service_port_name: Option<String>,
+}
+
+/// The configuration of Container trait
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PipeTraitsContainerImagePullPolicy {
+    Always,
+    Never,
+    IfNotPresent,
+}
+
+/// The configuration of Container trait
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PipeTraitsContainerSeccompProfileType {
+    Unconfined,
+    RuntimeDefault,
+}
+
+/// The configuration of Cron trait
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsCron {
+    /// Specifies the duration in seconds, relative to the start time, that the job
+    /// may be continuously active before it is considered to be failed.
+    /// It defaults to 60s.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeDeadlineSeconds")]
+    pub active_deadline_seconds: Option<i64>,
+    /// Automatically deploy the integration as CronJob when all routes are
+    /// either starting from a periodic consumer (only `cron`, `timer` and `quartz` are supported) or a passive consumer (e.g. `direct` is a passive consumer).
+    /// 
+    /// It's required that all periodic consumers have the same period, and it can be expressed as cron schedule (e.g. `1m` can be expressed as `0/1 * * * *`,
+    /// while `35m` or `50s` cannot).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub auto: Option<bool>,
+    /// Specifies the number of retries before marking the job failed.
+    /// It defaults to 2.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backoffLimit")]
+    pub backoff_limit: Option<i32>,
+    /// A comma separated list of the Camel components that need to be customized in order for them to work when the schedule is triggered externally by Kubernetes.
+    /// Supported components are currently: `cron`, `timer` and `quartz`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub components: Option<String>,
+    /// Specifies how to treat concurrent executions of a Job.
+    /// Valid values are:
+    /// - "Allow": allows CronJobs to run concurrently;
+    /// - "Forbid" (default): forbids concurrent runs, skipping next run if previous run hasn't finished yet;
+    /// - "Replace": cancels currently running job and replaces it with a new one
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "concurrencyPolicy")]
+    pub concurrency_policy: Option<PipeTraitsCronConcurrencyPolicy>,
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// Can be used to enable or disable a trait. All traits share this common property.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// Use the default Camel implementation of the `cron` endpoint (`quartz`) instead of trying to materialize the integration
+    /// as Kubernetes CronJob.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub fallback: Option<bool>,
+    /// The CronJob schedule for the whole integration. If multiple routes are declared, they must have the same schedule for this
+    /// mechanism to work correctly.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub schedule: Option<String>,
+    /// Optional deadline in seconds for starting the job if it misses scheduled
+    /// time for any reason.  Missed jobs executions will be counted as failed ones.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startingDeadlineSeconds")]
+    pub starting_deadline_seconds: Option<i64>,
+    /// The timezone that the CronJob will run on
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeZone")]
+    pub time_zone: Option<String>,
+}
+
+/// The configuration of Cron trait
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PipeTraitsCronConcurrencyPolicy {
+    Allow,
+    Forbid,
+    Replace,
+}
+
+/// The configuration of Dependencies trait
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsDependencies {
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// Deprecated: no longer in use.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+
+/// The configuration of Deployer trait
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsDeployer {
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// Deprecated: no longer in use.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// Allows to explicitly select the desired deployment kind between `deployment`, `cron-job` or `knative-service` when creating the resources for running the integration.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<PipeTraitsDeployerKind>,
+    /// Deprecated: won't be able to enforce client side update in the future.
+    /// Use server-side apply to update the owned resources (default `true`).
+    /// Note that it automatically falls back to client-side patching, if SSA is not available, e.g., on old Kubernetes clusters.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useSSA")]
+    pub use_ssa: Option<bool>,
+}
+
+/// The configuration of Deployer trait
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PipeTraitsDeployerKind {
+    #[serde(rename = "deployment")]
+    Deployment,
+    #[serde(rename = "cron-job")]
+    CronJob,
+    #[serde(rename = "knative-service")]
+    KnativeService,
+}
+
+/// The configuration of Deployment trait
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsDeployment {
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// Deprecated: no longer in use.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// The maximum time in seconds for the deployment to make progress before it
+    /// is considered to be failed. It defaults to `60s`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "progressDeadlineSeconds")]
+    pub progress_deadline_seconds: Option<i32>,
+    /// The maximum number of pods that can be scheduled above the desired number of
+    /// pods.
+    /// Value can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%).
+    /// This can not be 0 if MaxUnavailable is 0.
+    /// Absolute number is calculated from percentage by rounding up.
+    /// Defaults to `25%`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdateMaxSurge")]
+    pub rolling_update_max_surge: Option<IntOrString>,
+    /// The maximum number of pods that can be unavailable during the update.
+    /// Value can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%).
+    /// Absolute number is calculated from percentage by rounding down.
+    /// This can not be 0 if MaxSurge is 0.
+    /// Defaults to `25%`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdateMaxUnavailable")]
+    pub rolling_update_max_unavailable: Option<IntOrString>,
+    /// The deployment strategy to use to replace existing pods with new ones.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub strategy: Option<PipeTraitsDeploymentStrategy>,
+}
+
+/// The configuration of Deployment trait
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PipeTraitsDeploymentStrategy {
+    Recreate,
+    RollingUpdate,
+}
+
+/// The configuration of Environment trait
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsEnvironment {
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// Enables injection of `NAMESPACE` and `POD_NAME` environment variables (default `true`)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerMeta")]
+    pub container_meta: Option<bool>,
+    /// Deprecated: no longer in use.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// Propagates the `HTTP_PROXY`, `HTTPS_PROXY` and `NO_PROXY` environment variables (default `true`)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpProxy")]
+    pub http_proxy: Option<bool>,
+    /// A list of environment variables to be added to the integration container.
+    /// The syntax is either VAR=VALUE or VAR=[configmap|secret]:name/key, where name represents the resource name,
+    /// and key represents the resource key to be mapped as and environment variable.
+    /// These take precedence over any previously defined environment variables.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub vars: Option<Vec<String>>,
+}
+
+/// The configuration of Error Handler trait
+/// Deprecated: no longer in use.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsErrorHandler {
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// Deprecated: no longer in use.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// The error handler ref name provided or found in application properties
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ref")]
+    pub r#ref: Option<String>,
+}
+
+/// The configuration of GC trait
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsGc {
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// Discovery client cache to be used, either `disabled`, `disk` or `memory` (default `memory`).
+    /// Deprecated: no longer in use.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "discoveryCache")]
+    pub discovery_cache: Option<PipeTraitsGcDiscoveryCache>,
+    /// Can be used to enable or disable a trait. All traits share this common property.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+
+/// The configuration of GC trait
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PipeTraitsGcDiscoveryCache {
+    #[serde(rename = "disabled")]
+    Disabled,
+    #[serde(rename = "disk")]
+    Disk,
+    #[serde(rename = "memory")]
+    Memory,
+}
+
+/// The configuration of Health trait
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsHealth {
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// Can be used to enable or disable a trait. All traits share this common property.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// Minimum consecutive failures for the liveness probe to be considered failed after having succeeded.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessFailureThreshold")]
+    pub liveness_failure_threshold: Option<i32>,
+    /// Number of seconds after the container has started before the liveness probe is initiated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessInitialDelay")]
+    pub liveness_initial_delay: Option<i32>,
+    /// How often to perform the liveness probe.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessPeriod")]
+    pub liveness_period: Option<i32>,
+    /// The liveness port to use (default 8080).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessPort")]
+    pub liveness_port: Option<i32>,
+    /// The liveness probe path to use (default provided by the Catalog runtime used).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
+    pub liveness_probe: Option<String>,
+    /// Configures the liveness probe for the integration container (default `false`).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbeEnabled")]
+    pub liveness_probe_enabled: Option<bool>,
+    /// Scheme to use when connecting to the liveness probe (default `HTTP`).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessScheme")]
+    pub liveness_scheme: Option<String>,
+    /// Minimum consecutive successes for the liveness probe to be considered successful after having failed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessSuccessThreshold")]
+    pub liveness_success_threshold: Option<i32>,
+    /// Number of seconds after which the liveness probe times out.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessTimeout")]
+    pub liveness_timeout: Option<i32>,
+    /// Minimum consecutive failures for the readiness probe to be considered failed after having succeeded.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessFailureThreshold")]
+    pub readiness_failure_threshold: Option<i32>,
+    /// Number of seconds after the container has started before the readiness probe is initiated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessInitialDelay")]
+    pub readiness_initial_delay: Option<i32>,
+    /// How often to perform the readiness probe.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessPeriod")]
+    pub readiness_period: Option<i32>,
+    /// The readiness port to use (default 8080).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessPort")]
+    pub readiness_port: Option<i32>,
+    /// The readiness probe path to use (default provided by the Catalog runtime used).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
+    pub readiness_probe: Option<String>,
+    /// Configures the readiness probe for the integration container (default `true`).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbeEnabled")]
+    pub readiness_probe_enabled: Option<bool>,
+    /// Scheme to use when connecting to the readiness probe (default `HTTP`).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessScheme")]
+    pub readiness_scheme: Option<String>,
+    /// Minimum consecutive successes for the readiness probe to be considered successful after having failed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessSuccessThreshold")]
+    pub readiness_success_threshold: Option<i32>,
+    /// Number of seconds after which the readiness probe times out.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessTimeout")]
+    pub readiness_timeout: Option<i32>,
+    /// Minimum consecutive failures for the startup probe to be considered failed after having succeeded.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupFailureThreshold")]
+    pub startup_failure_threshold: Option<i32>,
+    /// Number of seconds after the container has started before the startup probe is initiated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupInitialDelay")]
+    pub startup_initial_delay: Option<i32>,
+    /// How often to perform the startup probe.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupPeriod")]
+    pub startup_period: Option<i32>,
+    /// The startup port to use (default 8080).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupPort")]
+    pub startup_port: Option<i32>,
+    /// The startup probe path to use (default provided by the Catalog runtime used).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
+    pub startup_probe: Option<String>,
+    /// Configures the startup probe for the integration container (default `false`).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbeEnabled")]
+    pub startup_probe_enabled: Option<bool>,
+    /// Scheme to use when connecting to the startup probe (default `HTTP`).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupScheme")]
+    pub startup_scheme: Option<String>,
+    /// Minimum consecutive successes for the startup probe to be considered successful after having failed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupSuccessThreshold")]
+    pub startup_success_threshold: Option<i32>,
+    /// Number of seconds after which the startup probe times out.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupTimeout")]
+    pub startup_timeout: Option<i32>,
+}
+
+/// The configuration of Ingress trait
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsIngress {
+    /// The annotations added to the ingress.
+    /// This can be used to set controller specific annotations, e.g., when using the NGINX Ingress controller:
+    /// See <https://github.com/kubernetes/ingress-nginx/blob/main/docs/user-guide/nginx-configuration/annotations.md>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// To automatically add an ingress whenever the integration uses an HTTP endpoint consumer.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub auto: Option<bool>,
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// Can be used to enable or disable a trait. All traits share this common property.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// To configure the host exposed by the ingress.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// The Ingress class name as defined by the Ingress spec
+    /// See <https://kubernetes.io/docs/concepts/services-networking/ingress/>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressClassName")]
+    pub ingress_class_name: Option<String>,
+    /// To configure the path exposed by the ingress (default `/`).
+    /// Deprecated: In favor of `paths` - left for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// To configure the path type exposed by the ingress.
+    /// One of `Exact`, `Prefix`, `ImplementationSpecific` (default to `Prefix`).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pathType")]
+    pub path_type: Option<PipeTraitsIngressPathType>,
+    /// To configure the paths exposed by the ingress (default `['/']`).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub paths: Option<Vec<String>>,
+    /// To configure tls hosts
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsHosts")]
+    pub tls_hosts: Option<Vec<String>>,
+    /// To configure tls secret name
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsSecretName")]
+    pub tls_secret_name: Option<String>,
+}
+
+/// The configuration of Ingress trait
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PipeTraitsIngressPathType {
+    Exact,
+    Prefix,
+    ImplementationSpecific,
+}
+
+/// The configuration of Init Containers trait
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsInitContainers {
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// Can be used to enable or disable a trait. All traits share this common property.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// A list of init tasks to be executed with format `<name>;<container-image>;<container-command>`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initTasks")]
+    pub init_tasks: Option<Vec<String>>,
+    /// A list of sidecar tasks to be executed with format `<name>;<container-image>;<container-command>`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sideCarTasks")]
+    pub side_car_tasks: Option<Vec<String>>,
+}
+
+/// The configuration of Istio trait
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsIstio {
+    /// Configures a (comma-separated) list of CIDR subnets that should not be intercepted by the Istio proxy (`10.0.0.0/8,172.16.0.0/12,192.168.0.0/16` by default).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub allow: Option<String>,
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// Can be used to enable or disable a trait. All traits share this common property.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// Forces the value for labels `sidecar.istio.io/inject`. By default the label is set to `true` on deployment and not set on Knative Service.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub inject: Option<bool>,
+}
+
+/// The configuration of Jolokia trait
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsJolokia {
+    /// The PEM encoded CA certification file path, used to verify client certificates,
+    /// applicable when `protocol` is `https` and `use-ssl-client-authentication` is `true`
+    /// (default `/var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt` for OpenShift).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "CACert")]
+    pub ca_cert: Option<String>,
+    /// The principal(s) which must be given in a client certificate to allow access to the Jolokia endpoint,
+    /// applicable when `protocol` is `https` and `use-ssl-client-authentication` is `true`
+    /// (default `clientPrincipal=cn=system:master-proxy`, `cn=hawtio-online.hawtio.svc` and `cn=fuse-console.fuse.svc` for OpenShift).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientPrincipal")]
+    pub client_principal: Option<Vec<String>>,
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// Listen for multicast requests (default `false`)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "discoveryEnabled")]
+    pub discovery_enabled: Option<bool>,
+    /// Can be used to enable or disable a trait. All traits share this common property.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// Mandate the client certificate contains a client flag in the extended key usage section,
+    /// applicable when `protocol` is `https` and `use-ssl-client-authentication` is `true`
+    /// (default `true` for OpenShift).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "extendedClientCheck")]
+    pub extended_client_check: Option<bool>,
+    /// The Host address to which the Jolokia agent should bind to. If `"\*"` or `"0.0.0.0"` is given,
+    /// the servers binds to every network interface (default `"*"`).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// A list of additional Jolokia options as defined
+    /// in <https://jolokia.org/reference/html/agents.html#agent-jvm-config[JVM> agent configuration options]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub options: Option<Vec<String>>,
+    /// The password used for authentication, applicable when the `user` option is set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub password: Option<String>,
+    /// The Jolokia endpoint port (default `8778`).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i32>,
+    /// The protocol to use, either `http` or `https` (default `https` for OpenShift)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub protocol: Option<String>,
+    /// Whether client certificates should be used for authentication (default `true` for OpenShift).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useSSLClientAuthentication")]
+    pub use_ssl_client_authentication: Option<bool>,
+    /// The user to be used for authentication
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user: Option<String>,
+}
+
+/// The configuration of JVM trait
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsJvm {
+    /// A list of JVM agents to download and execute with format `<agent-name>;<agent-url>[;<jvm-agent-options>]`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub agents: Option<Vec<String>>,
+    /// Additional JVM classpath (use `Linux` classpath separator)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub classpath: Option<String>,
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// Activates remote debugging, so that a debugger can be attached to the JVM, e.g., using port-forwarding
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub debug: Option<bool>,
+    /// Transport address at which to listen for the newly launched JVM (default `*:5005`)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "debugAddress")]
+    pub debug_address: Option<String>,
+    /// Suspends the target JVM immediately before the main class is loaded
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "debugSuspend")]
+    pub debug_suspend: Option<bool>,
+    /// Can be used to enable or disable a trait. All traits share this common property.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// The Jar dependency which will run the application. Leave it empty for managed Integrations.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub jar: Option<String>,
+    /// A list of JVM options
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub options: Option<Vec<String>>,
+    /// Prints the command used the start the JVM in the container logs (default `true`)
+    /// Deprecated: no longer in use.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "printCommand")]
+    pub print_command: Option<bool>,
+}
+
+/// The configuration of Kamelets trait
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsKamelets {
+    /// Automatically inject all referenced Kamelets and their default configuration (enabled by default)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub auto: Option<bool>,
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// Can be used to enable or disable a trait. All traits share this common property.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// Comma separated list of Kamelet names to load into the current integration
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub list: Option<String>,
+    /// The directory where the application mounts and reads Kamelet spec (default `/etc/camel/kamelets`)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPoint")]
+    pub mount_point: Option<String>,
+}
+
+/// The configuration of Keda trait
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsKeda {
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// The wait period between the last active trigger reported and scaling the resource back to 0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cooldownPeriod")]
+    pub cooldown_period: Option<i32>,
+    /// Can be used to enable or disable a trait. All traits share this common property.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// Enabling this property allows KEDA to scale the resource down to the specified number of replicas.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "idleReplicaCount")]
+    pub idle_replica_count: Option<i32>,
+    /// Maximum number of replicas.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxReplicaCount")]
+    pub max_replica_count: Option<i32>,
+    /// Minimum number of replicas.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReplicaCount")]
+    pub min_replica_count: Option<i32>,
+    /// Interval (seconds) to check each trigger on.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pollingInterval")]
+    pub polling_interval: Option<i32>,
+    /// Definition of triggers according to the KEDA format. Each trigger must contain `type` field corresponding
+    /// to the name of a KEDA autoscaler and a key/value map named `metadata` containing specific trigger options
+    /// and optionally a mapping of secrets, used by Keda operator to poll resources according to the autoscaler type.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub triggers: Option<Vec<PipeTraitsKedaTriggers>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsKedaTriggers {
+    /// The trigger metadata (see Keda documentation to learn how to fill for each type).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<BTreeMap<String, String>>,
+    /// The secrets mapping to use. Keda allows the possibility to use values coming from different secrets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secrets: Option<Vec<PipeTraitsKedaTriggersSecrets>>,
+    /// The autoscaler type.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsKedaTriggersSecrets {
+    /// The mapping to use for this secret (eg, `database-secret-key:keda-secret-key`)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mapping: Option<BTreeMap<String, String>>,
+    /// The name of the secret to use.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// The configuration of Knative trait
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsKnative {
+    /// Enable automatic discovery of all trait properties.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub auto: Option<bool>,
+    /// List of channels used as destination of integration routes.
+    /// Can contain simple channel names or full Camel URIs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "channelSinks")]
+    pub channel_sinks: Option<Vec<String>>,
+    /// List of channels used as source of integration routes.
+    /// Can contain simple channel names or full Camel URIs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "channelSources")]
+    pub channel_sources: Option<Vec<String>>,
+    /// Can be used to inject a Knative complete configuration in JSON format.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub config: Option<String>,
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// Can be used to enable or disable a trait. All traits share this common property.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// List of endpoints used as destination of integration routes.
+    /// Can contain simple endpoint names or full Camel URIs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointSinks")]
+    pub endpoint_sinks: Option<Vec<String>>,
+    /// List of channels used as source of integration routes.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointSources")]
+    pub endpoint_sources: Option<Vec<String>>,
+    /// List of event types that the integration will produce.
+    /// Can contain simple event types or full Camel URIs (to use a specific broker).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "eventSinks")]
+    pub event_sinks: Option<Vec<String>>,
+    /// List of event types that the integration will be subscribed to.
+    /// Can contain simple event types or full Camel URIs (to use a specific broker different from "default").
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "eventSources")]
+    pub event_sources: Option<Vec<String>>,
+    /// Enables the default filtering for the Knative trigger using the event type
+    /// If this is true, the created Knative trigger uses the event type as a filter on the event stream when no other filter criteria is given. (default: true)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "filterEventType")]
+    pub filter_event_type: Option<bool>,
+    /// Enables filtering on events based on the header "ce-knativehistory". Since this header has been removed in newer versions of
+    /// Knative, filtering is disabled by default.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "filterSourceChannels")]
+    pub filter_source_channels: Option<bool>,
+    /// Sets filter attributes on the event stream (such as event type, source, subject and so on).
+    /// A list of key-value pairs that represent filter attributes and its values.
+    /// The syntax is KEY=VALUE, e.g., `source="my.source"`.
+    /// Filter attributes get set on the Knative trigger that is being created as part of this integration.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub filters: Option<Vec<String>>,
+    /// Enables the camel-k-operator to set the "bindings.knative.dev/include=true" label to the namespace
+    /// As Knative requires this label to perform injection of K_SINK URL into the service.
+    /// If this is false, the integration pod may start and fail, read the SinkBinding Knative documentation. (default: true)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceLabel")]
+    pub namespace_label: Option<bool>,
+    /// Allows binding the integration to a sink via a Knative SinkBinding resource.
+    /// This can be used when the integration targets a single sink.
+    /// It's enabled by default when the integration targets a single sink
+    /// (except when the integration is owned by a Knative source).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sinkBinding")]
+    pub sink_binding: Option<bool>,
+}
+
+/// The configuration of Knative Service trait
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsKnativeService {
+    /// The annotations added to route.
+    /// This can be used to set knative service specific annotations
+    /// CLI usage example: -t "knative-service.annotations.'haproxy.router.openshift.io/balance'=true"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Automatically deploy the integration as Knative service when all conditions hold:
+    /// 
+    /// * Integration is using the Knative profile
+    /// * All routes are either starting from an HTTP based consumer or a passive consumer (e.g. `direct` is a passive consumer)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub auto: Option<bool>,
+    /// Configures the Knative autoscaling metric property (e.g. to set `concurrency` based or `cpu` based autoscaling).
+    /// 
+    /// Refer to the Knative documentation for more information.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoscalingMetric")]
+    pub autoscaling_metric: Option<String>,
+    /// Sets the allowed concurrency level or CPU percentage (depending on the autoscaling metric) for each Pod.
+    /// 
+    /// Refer to the Knative documentation for more information.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoscalingTarget")]
+    pub autoscaling_target: Option<i64>,
+    /// Configures the Knative autoscaling class property (e.g. to set `hpa.autoscaling.knative.dev` or `kpa.autoscaling.knative.dev` autoscaling).
+    /// 
+    /// Refer to the Knative documentation for more information.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub class: Option<PipeTraitsKnativeServiceClass>,
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// Can be used to enable or disable a trait. All traits share this common property.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// An upper bound for the number of Pods that can be running in parallel for the integration.
+    /// Knative has its own cap value that depends on the installation.
+    /// 
+    /// Refer to the Knative documentation for more information.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxScale")]
+    pub max_scale: Option<i64>,
+    /// The minimum number of Pods that should be running at any time for the integration. It's **zero** by default, meaning that
+    /// the integration is scaled down to zero when not used for a configured amount of time.
+    /// 
+    /// Refer to the Knative documentation for more information.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minScale")]
+    pub min_scale: Option<i64>,
+    /// Enables to gradually shift traffic to the latest Revision and sets the rollout duration.
+    /// It's disabled by default and must be expressed as a Golang `time.Duration` string representation,
+    /// rounded to a second precision.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rolloutDuration")]
+    pub rollout_duration: Option<String>,
+    /// The maximum duration in seconds that the request instance is allowed to respond to a request.
+    /// This field propagates to the integration pod's terminationGracePeriodSeconds
+    /// 
+    /// Refer to the Knative documentation for more information.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i64>,
+    /// Setting `cluster-local`, Knative service becomes a private service.
+    /// Specifically, this option applies the `networking.knative.dev/visibility` label to Knative service.
+    /// 
+    /// Refer to the Knative documentation for more information.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub visibility: Option<PipeTraitsKnativeServiceVisibility>,
+}
+
+/// The configuration of Knative Service trait
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PipeTraitsKnativeServiceClass {
+    #[serde(rename = "kpa.autoscaling.knative.dev")]
+    KpaAutoscalingKnativeDev,
+    #[serde(rename = "hpa.autoscaling.knative.dev")]
+    HpaAutoscalingKnativeDev,
+}
+
+/// The configuration of Knative Service trait
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PipeTraitsKnativeServiceVisibility {
+    #[serde(rename = "cluster-local")]
+    ClusterLocal,
+}
+
+/// The configuration of Logging trait
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsLogging {
+    /// Colorize the log output
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub color: Option<bool>,
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// Can be used to enable or disable a trait. All traits share this common property.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// Logs message format
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub format: Option<String>,
+    /// Output the logs in JSON
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub json: Option<bool>,
+    /// Enable "pretty printing" of the JSON logs
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonPrettyPrint")]
+    pub json_pretty_print: Option<bool>,
+    /// Adjust the logging level (defaults to `INFO`)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub level: Option<PipeTraitsLoggingLevel>,
+}
+
+/// The configuration of Logging trait
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PipeTraitsLoggingLevel {
+    #[serde(rename = "FATAL")]
+    Fatal,
+    #[serde(rename = "WARN")]
+    Warn,
+    #[serde(rename = "INFO")]
+    Info,
+    #[serde(rename = "DEBUG")]
+    Debug,
+    #[serde(rename = "TRACE")]
+    Trace,
+}
+
+/// The configuration of Master trait
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsMaster {
+    /// Enables automatic configuration of the trait.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub auto: Option<bool>,
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// Can be used to enable or disable a trait. All traits share this common property.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// When this flag is active, the operator analyzes the source code to add dependencies required by delegate endpoints.
+    /// E.g. when using `master:lockname:timer`, then `camel:timer` is automatically added to the set of dependencies.
+    /// It's enabled by default.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeDelegateDependencies")]
+    pub include_delegate_dependencies: Option<bool>,
+    /// Label that will be used to identify all pods contending the lock. Defaults to "camel.apache.org/integration".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelKey")]
+    pub label_key: Option<String>,
+    /// Label value that will be used to identify all pods contending the lock. Defaults to the integration name.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelValue")]
+    pub label_value: Option<String>,
+    /// Name of the configmap that will be used to store the lock. Defaults to "<integration-name>-lock".
+    /// Name of the configmap/lease resource that will be used to store the lock. Defaults to "<integration-name>-lock".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceName")]
+    pub resource_name: Option<String>,
+    /// Type of Kubernetes resource to use for locking ("ConfigMap" or "Lease"). Defaults to "Lease".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceType")]
+    pub resource_type: Option<String>,
+}
+
+/// The configuration of Mount trait
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsMount {
+    /// A list of configuration pointing to configmap/secret.
+    /// The configuration are expected to be UTF-8 resources as they are processed by runtime Camel Context and tried to be parsed as property files.
+    /// They are also made available on the classpath in order to ease their usage directly from the Route.
+    /// Syntax: [configmap|secret]:name[/key], where name represents the resource name and key optionally represents the resource key to be filtered
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configs: Option<Vec<String>>,
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// A list of EmptyDir volumes to be mounted. An optional size limit may be configured (default 500Mi).
+    /// Syntax: name:/container/path[:sizeLimit]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDirs")]
+    pub empty_dirs: Option<Vec<String>>,
+    /// Deprecated: no longer in use.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// Enable "hot reload" when a secret/configmap mounted is edited (default `false`). The configmap/secret must be
+    /// marked with `camel.apache.org/integration` label to be taken in account. The resource will be watched for any kind change, also for
+    /// changes in metadata.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hotReload")]
+    pub hot_reload: Option<bool>,
+    /// A list of resources (text or binary content) pointing to configmap/secret.
+    /// The resources are expected to be any resource type (text or binary content).
+    /// The destination path can be either a default location or any path specified by the user.
+    /// Syntax: [configmap|secret]:name[/key][@path], where name represents the resource name, key optionally represents the resource key to be filtered and path represents the destination path
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<Vec<String>>,
+    /// Deprecated: no longer available since version 2.5.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scanKameletsImplicitLabelSecrets")]
+    pub scan_kamelets_implicit_label_secrets: Option<bool>,
+    /// A list of Persistent Volume Claims to be mounted. Syntax: [pvcname:/container/path]. If the PVC is not found, the Integration fails.
+    /// You can use the syntax [pvcname:/container/path:size:accessMode<:storageClass>] to create a dynamic PVC based on the Storage Class provided
+    /// or the default cluster Storage Class. However, if the PVC exists, the operator would mount it.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub volumes: Option<Vec<String>>,
+}
+
+/// The configuration of OpenAPI trait
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsOpenapi {
+    /// The configmaps holding the spec of the OpenAPI (compatible with > 3.0 spec only).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configmaps: Option<Vec<String>>,
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// Deprecated: no longer in use.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+
+/// The configuration of Owner trait
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsOwner {
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// Can be used to enable or disable a trait. All traits share this common property.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// The set of annotations to be transferred
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetAnnotations")]
+    pub target_annotations: Option<Vec<String>>,
+    /// The set of labels to be transferred
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabels")]
+    pub target_labels: Option<Vec<String>>,
+}
+
+/// The configuration of PDB trait
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsPdb {
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// Can be used to enable or disable a trait. All traits share this common property.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// The number of pods for the Integration that can be unavailable after an eviction.
+    /// It can be either an absolute number or a percentage (default `1` if `min-available` is also not set).
+    /// Only one of `max-unavailable` and `min-available` can be specified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
+    pub max_unavailable: Option<String>,
+    /// The number of pods for the Integration that must still be available after an eviction.
+    /// It can be either an absolute number or a percentage.
+    /// Only one of `min-available` and `max-unavailable` can be specified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minAvailable")]
+    pub min_available: Option<String>,
+}
+
+/// The configuration of Platform trait
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsPlatform {
+    /// To automatically detect from the environment if a default platform can be created (it will be created on OpenShift or when a registry address is set).
+    /// Deprecated: Platform is auto generated by the operator install procedure - maintained for backward compatibility
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub auto: Option<bool>,
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// To create a default (empty) platform when the platform is missing.
+    /// Deprecated: Platform is auto generated by the operator install procedure - maintained for backward compatibility
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "createDefault")]
+    pub create_default: Option<bool>,
+    /// Deprecated: no longer in use.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// Indicates if the platform should be created globally in the case of global operator (default true).
+    /// Deprecated: Platform is auto generated by the operator install procedure - maintained for backward compatibility
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub global: Option<bool>,
+}
+
+/// The configuration of Pod trait
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsPod {
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// Can be used to enable or disable a trait. All traits share this common property.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+
+/// The configuration of Prometheus trait
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsPrometheus {
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// Can be used to enable or disable a trait. All traits share this common property.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// Whether a `PodMonitor` resource is created (default `true`).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podMonitor")]
+    pub pod_monitor: Option<bool>,
+    /// The `PodMonitor` resource labels, applicable when `pod-monitor` is `true`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podMonitorLabels")]
+    pub pod_monitor_labels: Option<Vec<String>>,
+}
+
+/// The configuration of Pull Secret trait
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsPullSecret {
+    /// Automatically configures the platform registry secret on the pod if it is of type `kubernetes.io/dockerconfigjson`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub auto: Option<bool>,
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// Can be used to enable or disable a trait. All traits share this common property.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// When using a global operator with a shared platform, this enables delegation of the `system:image-puller` cluster role on the operator namespace to the integration service account.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullerDelegation")]
+    pub image_puller_delegation: Option<bool>,
+    /// The pull secret name to set on the Pod. If left empty this is automatically taken from the `IntegrationPlatform` registry configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
+    pub secret_name: Option<String>,
+}
+
+/// The configuration of Quarkus trait
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsQuarkus {
+    /// The Quarkus mode to run: either `jvm` or `native` (default `jvm`).
+    /// In case both `jvm` and `native` are specified, two `IntegrationKit` resources are created,
+    /// with the `native` kit having precedence over the `jvm` one once ready.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "buildMode")]
+    pub build_mode: Option<Vec<String>>,
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// Deprecated: no longer in use.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// The base image to use when running a native build (default `quay.io/quarkus/quarkus-micro-image:2.0`)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nativeBaseImage")]
+    pub native_base_image: Option<String>,
+    /// The image containing the tooling required for a native build (by default it will use the one provided in the runtime catalog)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nativeBuilderImage")]
+    pub native_builder_image: Option<String>,
+    /// The Quarkus package types, `fast-jar` or `native` (default `fast-jar`).
+    /// In case both `fast-jar` and `native` are specified, two `IntegrationKit` resources are created,
+    /// with the native kit having precedence over the `fast-jar` one once ready.
+    /// The order influences the resolution of the current kit for the integration.
+    /// The kit corresponding to the first package type will be assigned to the
+    /// integration in case no existing kit that matches the integration exists.
+    /// Deprecated: use `build-mode` instead.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "packageTypes")]
+    pub package_types: Option<Vec<String>>,
+}
+
+/// The configuration of Registry trait (support removed since version 2.5.0).
+/// Deprecated: use jvm trait or read documentation.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsRegistry {
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// Can be used to enable or disable a trait. All traits share this common property.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+
+/// The configuration of Route trait
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsRoute {
+    /// The annotations added to route.
+    /// This can be used to set route specific annotations
+    /// For annotations options see <https://docs.openshift.com/container-platform/3.11/architecture/networking/routes.html#route-specific-annotations>
+    /// CLI usage example: -t "route.annotations.'haproxy.router.openshift.io/balance'=true"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// Can be used to enable or disable a trait. All traits share this common property.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// To configure the host exposed by the route.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// The TLS CA certificate contents.
+    /// 
+    /// Refer to the OpenShift route documentation for additional information.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsCACertificate")]
+    pub tls_ca_certificate: Option<String>,
+    /// The secret name and key reference to the TLS CA certificate. The format is "secret-name[/key-name]", the value represents the secret name, if there is only one key in the secret it will be read, otherwise you can set a key name separated with a "/".
+    /// 
+    /// Refer to the OpenShift route documentation for additional information.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsCACertificateSecret")]
+    pub tls_ca_certificate_secret: Option<String>,
+    /// The TLS certificate contents.
+    /// 
+    /// Refer to the OpenShift route documentation for additional information.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsCertificate")]
+    pub tls_certificate: Option<String>,
+    /// The secret name and key reference to the TLS certificate. The format is "secret-name[/key-name]", the value represents the secret name, if there is only one key in the secret it will be read, otherwise you can set a key name separated with a "/".
+    /// 
+    /// Refer to the OpenShift route documentation for additional information.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsCertificateSecret")]
+    pub tls_certificate_secret: Option<String>,
+    /// The destination CA certificate provides the contents of the ca certificate of the final destination.  When using reencrypt
+    /// termination this file should be provided in order to have routers use it for health checks on the secure connection.
+    /// If this field is not specified, the router may provide its own destination CA and perform hostname validation using
+    /// the short service name (service.namespace.svc), which allows infrastructure generated certificates to automatically
+    /// verify.
+    /// 
+    /// Refer to the OpenShift route documentation for additional information.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsDestinationCACertificate")]
+    pub tls_destination_ca_certificate: Option<String>,
+    /// The secret name and key reference to the destination CA certificate. The format is "secret-name[/key-name]", the value represents the secret name, if there is only one key in the secret it will be read, otherwise you can set a key name separated with a "/".
+    /// 
+    /// Refer to the OpenShift route documentation for additional information.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsDestinationCACertificateSecret")]
+    pub tls_destination_ca_certificate_secret: Option<String>,
+    /// To configure how to deal with insecure traffic, e.g. `Allow`, `Disable` or `Redirect` traffic.
+    /// 
+    /// Refer to the OpenShift route documentation for additional information.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsInsecureEdgeTerminationPolicy")]
+    pub tls_insecure_edge_termination_policy: Option<PipeTraitsRouteTlsInsecureEdgeTerminationPolicy>,
+    /// The TLS certificate key contents.
+    /// 
+    /// Refer to the OpenShift route documentation for additional information.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsKey")]
+    pub tls_key: Option<String>,
+    /// The secret name and key reference to the TLS certificate key. The format is "secret-name[/key-name]", the value represents the secret name, if there is only one key in the secret it will be read, otherwise you can set a key name separated with a "/".
+    /// 
+    /// Refer to the OpenShift route documentation for additional information.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsKeySecret")]
+    pub tls_key_secret: Option<String>,
+    /// The TLS termination type, like `edge`, `passthrough` or `reencrypt`.
+    /// 
+    /// Refer to the OpenShift route documentation for additional information.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsTermination")]
+    pub tls_termination: Option<PipeTraitsRouteTlsTermination>,
+}
+
+/// The configuration of Route trait
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PipeTraitsRouteTlsInsecureEdgeTerminationPolicy {
+    None,
+    Allow,
+    Redirect,
+}
+
+/// The configuration of Route trait
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PipeTraitsRouteTlsTermination {
+    #[serde(rename = "edge")]
+    Edge,
+    #[serde(rename = "reencrypt")]
+    Reencrypt,
+    #[serde(rename = "passthrough")]
+    Passthrough,
+}
+
+/// The configuration of Security Context trait
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsSecurityContext {
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// Deprecated: no longer in use.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// Security Context RunAsNonRoot configuration (default false).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
+    pub run_as_non_root: Option<bool>,
+    /// Security Context RunAsUser configuration (default none): this value is automatically retrieved in Openshift clusters when not explicitly set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
+    pub run_as_user: Option<i64>,
+    /// Security Context SeccompProfileType configuration (default RuntimeDefault).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfileType")]
+    pub seccomp_profile_type: Option<PipeTraitsSecurityContextSeccompProfileType>,
+}
+
+/// The configuration of Security Context trait
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PipeTraitsSecurityContextSeccompProfileType {
+    Unconfined,
+    RuntimeDefault,
+}
+
+/// The configuration of Service trait
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsService {
+    /// The annotations added to the Service object.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// To automatically detect from the code if a Service needs to be created.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub auto: Option<bool>,
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// Can be used to enable or disable a trait. All traits share this common property.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// The labels added to the Service object.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+    /// Enable Service to be exposed as NodePort (default `false`).
+    /// Deprecated: Use service type instead.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePort")]
+    pub node_port: Option<bool>,
+    /// List of container ports available in the container to expose
+    /// (syntax: <port-name>;<port-number>;<container-port-number>[;<port-protocol]).
+    /// When omitted, `port-protocol` (admitted values `TCP`, `UDP` or `SCTP`) is `TCP`.
+    /// Don't use this for the primary http managed port (which is managed by container trait).
+    /// Don't use in Knative based environments.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ports: Option<Vec<String>>,
+    /// The type of service to be used, either 'ClusterIP', 'NodePort' or 'LoadBalancer'.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<PipeTraitsServiceType>,
+}
+
+/// The configuration of Service trait
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PipeTraitsServiceType {
+    #[serde(rename = "ClusterIP")]
+    ClusterIp,
+    NodePort,
+    LoadBalancer,
+}
+
+/// The configuration of Service Binding trait
+/// Deprecated: no longer in use.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsServiceBinding {
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// Can be used to enable or disable a trait. All traits share this common property.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// List of Services in the form [[apigroup/]version:]kind:[namespace/]name
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub services: Option<Vec<String>>,
+}
+
+/// Deprecated: for backward compatibility.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsStrimzi {
+    /// TraitConfiguration parameters configuration
+    pub configuration: BTreeMap<String, serde_json::Value>,
+}
+
+/// The configuration of Telemetry trait
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsTelemetry {
+    /// Enables automatic configuration of the trait, including automatic discovery of the telemetry endpoint.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub auto: Option<bool>,
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// Can be used to enable or disable a trait. All traits share this common property.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// The target endpoint of the Telemetry service (automatically discovered by default)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub endpoint: Option<String>,
+    /// The sampler of the telemetry used for tracing (default "on")
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sampler: Option<String>,
+    /// The sampler of the telemetry used for tracing is parent based (default "true")
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sampler-parent-based")]
+    pub sampler_parent_based: Option<bool>,
+    /// The sampler ratio of the telemetry used for tracing
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sampler-ratio")]
+    pub sampler_ratio: Option<String>,
+    /// The name of the service that publishes telemetry data (defaults to the integration name)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
+    pub service_name: Option<String>,
+}
+
+/// The configuration of Toleration trait
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsToleration {
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// Can be used to enable or disable a trait. All traits share this common property.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// The list of taints to tolerate, in the form `Key[=Value]:Effect[:Seconds]`
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub taints: Option<Vec<String>>,
+}
+
+/// Deprecated: for backward compatibility.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PipeTraitsTracing {
+    /// TraitConfiguration parameters configuration
+    pub configuration: BTreeMap<String, serde_json::Value>,
 }
 
 /// the status of a Pipe

@@ -422,6 +422,9 @@ spec:
                 lastAttemptedRevision:
                   description: "LastAttemptedRevision is the version and digest of the\ndistribution config that was last attempted to reconcile."
                   type: "string"
+                lastHandledForceAt:
+                  description: "LastHandledForceAt holds the value of the most recent\nforce request value, so a change of the annotation value\ncan be detected."
+                  type: "string"
                 lastHandledReconcileAt:
                   description: "LastHandledReconcileAt holds the value of the most recent\nreconcile request value, so a change of the annotation value\ncan be detected."
                   type: "string"

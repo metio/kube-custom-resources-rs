@@ -41,6 +41,13 @@ spec:
             spec:
               description: "spec defines the behavior of a ServiceImport."
               properties:
+                ipFamilies:
+                  description: "IPFamilies identifies all the IPFamilies assigned for this ServiceImport."
+                  items:
+                    description: "IPFamily represents the IP Family (IPv4 or IPv6). This type is used\nto express the family of an IP expressed by a type (e.g. service.spec.ipFamilies)."
+                    type: "string"
+                  maxItems: 2
+                  type: "array"
                 ips:
                   description: "ip will be used as the VIP for this service when type is ClusterSetIP."
                   items:

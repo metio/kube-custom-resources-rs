@@ -5304,6 +5304,9 @@ spec:
                                     - "key"
                                   type: "object"
                                   x-kubernetes-map-type: "atomic"
+                                useFIPSSTSEndpoint:
+                                  description: "useFIPSSTSEndpoint defines the FIPS mode for the AWS STS endpoint.\nIt requires Prometheus >= v2.54.0."
+                                  type: "boolean"
                               type: "object"
                             subject:
                               description: "subject defines the subject line when the message is delivered to email endpoints.\nThis field is only used when sending to email subscribers of an SNS topic."

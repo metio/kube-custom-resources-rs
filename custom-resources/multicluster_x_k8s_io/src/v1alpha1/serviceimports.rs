@@ -18,6 +18,9 @@ use self::prelude::*;
 #[kube(schema = "disabled")]
 #[kube(derive="PartialEq")]
 pub struct ServiceImportSpec {
+    /// IPFamilies identifies all the IPFamilies assigned for this ServiceImport.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilies")]
+    pub ip_families: Option<Vec<String>>,
     /// ip will be used as the VIP for this service when type is ClusterSetIP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ips: Option<Vec<String>>,

@@ -1266,6 +1266,9 @@ pub struct DeviceConfigRemediationWorkflow {
     /// enable if operator should automatically handle remediation of node incase of gpu issues
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
+    /// Tester image used to run tests and verify if remediation fixed the reported problem.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "testerImage")]
+    pub tester_image: Option<String>,
     /// Time to live for argo workflow object and its pods for a failed workflow in hours. By default, it is set to 24 hours
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ttlForFailedWorkflows")]
     pub ttl_for_failed_workflows: Option<i64>,

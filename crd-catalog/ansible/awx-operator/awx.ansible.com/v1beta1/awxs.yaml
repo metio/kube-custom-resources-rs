@@ -2024,6 +2024,15 @@ spec:
                   description: "topology rule(s) for the web pods"
                   type: "string"
               type: "object"
+              x-kubernetes-validations:
+                - message: "Both image and image_version must be set when required"
+                  rule: "has(self.image) && has(self.image_version) || !has(self.image) && !has(self.image_version)"
+                - message: "Both redis_image and redis_image_version must be set when required"
+                  rule: "has(self.redis_image) && has(self.redis_image_version) || !has(self.redis_image) && !has(self.redis_image_version)"
+                - message: "Both postgres_image and postgres_image_version must be set when required"
+                  rule: "has(self.postgres_image) && has(self.postgres_image_version) || !has(self.postgres_image) && !has(self.postgres_image_version)"
+                - message: "Both metrics_utility_image and metrics_utility_image_version must be set when required"
+                  rule: "has(self.metrics_utility_image) && has(self.metrics_utility_image_version) || !has(self.metrics_utility_image) && !has(self.metrics_utility_image_version)"
             status:
               properties:
                 URL:

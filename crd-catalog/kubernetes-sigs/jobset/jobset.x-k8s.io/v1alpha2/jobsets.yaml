@@ -47,64 +47,64 @@ spec:
             metadata:
               type: "object"
             spec:
-              description: "JobSetSpec defines the desired state of JobSet"
+              description: "spec is the specification for jobset"
               properties:
                 coordinator:
-                  description: "Coordinator can be used to assign a specific pod as the coordinator for\nthe JobSet. If defined, an annotation will be added to all Jobs and pods with\ncoordinator pod, which contains the stable network endpoint where the\ncoordinator pod can be reached.\njobset.sigs.k8s.io/coordinator=<pod hostname>.<headless service>"
+                  description: "coordinator can be used to assign a specific pod as the coordinator for\nthe JobSet. If defined, an annotation will be added to all Jobs and pods with\ncoordinator pod, which contains the stable network endpoint where the\ncoordinator pod can be reached.\njobset.sigs.k8s.io/coordinator=<pod hostname>.<headless service>"
                   properties:
                     jobIndex:
-                      description: "JobIndex is the index of Job which contains the coordinator pod\n(i.e., for a ReplicatedJob with N replicas, there are Job indexes 0 to N-1)."
+                      description: "jobIndex is the index of Job which contains the coordinator pod\n(i.e., for a ReplicatedJob with N replicas, there are Job indexes 0 to N-1)."
                       type: "integer"
                     podIndex:
-                      description: "PodIndex is the Job completion index of the coordinator pod."
+                      description: "podIndex is the Job completion index of the coordinator pod."
                       type: "integer"
                     replicatedJob:
-                      description: "ReplicatedJob is the name of the ReplicatedJob which contains\nthe coordinator pod."
+                      description: "replicatedJob is the name of the ReplicatedJob which contains\nthe coordinator pod."
                       type: "string"
                   required:
                     - "replicatedJob"
                   type: "object"
                 failurePolicy:
-                  description: "FailurePolicy, if set, configures when to declare the JobSet as\nfailed.\nThe JobSet is always declared failed if any job in the set\nfinished with status failed."
+                  description: "failurePolicy configures when to declare the JobSet as\nfailed.\nThe JobSet is always declared failed if any job in the set\nfinished with status failed."
                   properties:
                     maxRestarts:
-                      description: "MaxRestarts defines the limit on the number of JobSet restarts.\nA restart is achieved by recreating all active child jobs."
+                      description: "maxRestarts defines the limit on the number of JobSet restarts.\nA restart is achieved by recreating all active child jobs."
                       format: "int32"
                       type: "integer"
                     restartStrategy:
                       default: "Recreate"
-                      description: "RestartStrategy defines the strategy to use when restarting the JobSet.\nDefaults to Recreate."
+                      description: "restartStrategy defines the strategy to use when restarting the JobSet.\nDefaults to Recreate."
                       enum:
                         - "Recreate"
                         - "BlockingRecreate"
                       type: "string"
                     rules:
-                      description: "List of failure policy rules for this JobSet.\nFor a given Job failure, the rules will be evaluated in order,\nand only the first matching rule will be executed.\nIf no matching rule is found, the RestartJobSet action is applied."
+                      description: "rules is a list of failure policy rules for this JobSet.\nFor a given Job failure, the rules will be evaluated in order,\nand only the first matching rule will be executed.\nIf no matching rule is found, the RestartJobSet action is applied."
                       items:
                         description: "FailurePolicyRule defines a FailurePolicyAction to be executed if a child job\nfails due to a reason listed in OnJobFailureReasons and a message pattern\nlisted in OnJobFailureMessagePatterns. The rule must match both the job\nfailure reason and the job failure message. The rules are evaluated in\norder and the first matching rule is executed."
                         properties:
                           action:
-                            description: "The action to take if the rule is matched."
+                            description: "action to take if the rule is matched."
                             enum:
                               - "FailJobSet"
                               - "RestartJobSet"
                               - "RestartJobSetAndIgnoreMaxRestarts"
                             type: "string"
                           name:
-                            description: "The name of the failure policy rule.\nThe name is defaulted to 'failurePolicyRuleN' where N is the index of the failure policy rule.\nThe name must match the regular expression \"^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$\"."
+                            description: "name of the failure policy rule.\nThe name is defaulted to 'failurePolicyRuleN' where N is the index of the failure policy rule.\nThe name must match the regular expression \"^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$\"."
                             type: "string"
                           onJobFailureMessagePatterns:
-                            description: "The requirement on the job failure message. The requirement is satisfied\nif at least one pattern (regex) matches the job failure message. An\nempty list matches any job failure message.\nThe syntax of the regular expressions accepted is the same general\nsyntax used by Perl, Python, and other languages. More precisely, it is\nthe syntax accepted by RE2 and described at https://golang.org/s/re2syntax,\nexcept for \\C. For an overview of the syntax, see\nhttps://pkg.go.dev/regexp/syntax."
+                            description: "onJobFailureMessagePatterns is a requirement on the job failure messages.\nThe requirement is satisfied\nif at least one pattern (regex) matches the job failure message. An\nempty list matches any job failure message.\nThe syntax of the regular expressions accepted is the same general\nsyntax used by Perl, Python, and other languages. More precisely, it is\nthe syntax accepted by RE2 and described at https://golang.org/s/re2syntax,\nexcept for \\C. For an overview of the syntax, see\nhttps://pkg.go.dev/regexp/syntax."
                             items:
                               type: "string"
                             type: "array"
                           onJobFailureReasons:
-                            description: "The requirement on the job failure reasons. The requirement is satisfied\nif at least one reason matches the list. An empty list matches any job\nfailure reason."
+                            description: "onJobFailureReasons is a list of job failures reasons.\nThe requirement is satisfied\nif at least one reason matches the list. An empty list matches any job\nfailure reason."
                             items:
                               type: "string"
                             type: "array"
                           targetReplicatedJobs:
-                            description: "TargetReplicatedJobs are the names of the replicated jobs the operator applies to.\nAn empty list will apply to all replicatedJobs."
+                            description: "targetReplicatedJobs are the names of the replicated jobs the operator applies to.\nAn empty list will apply to all replicatedJobs."
                             items:
                               type: "string"
                             type: "array"
@@ -119,38 +119,38 @@ spec:
                     - message: "Value is immutable"
                       rule: "self == oldSelf"
                 managedBy:
-                  description: "ManagedBy is used to indicate the controller or entity that manages a JobSet.\nThe built-in JobSet controller reconciles JobSets which don't have this\nfield at all or the field value is the reserved string\n`jobset.sigs.k8s.io/jobset-controller`, but skips reconciling JobSets\nwith a custom value for this field.\n\nThe value must be a valid domain-prefixed path (e.g. acme.io/foo) -\nall characters before the first \"/\" must be a valid subdomain as defined\nby RFC 1123. All characters trailing the first \"/\" must be valid HTTP Path\ncharacters as defined by RFC 3986. The value cannot exceed 63 characters.\nThe field is immutable."
+                  description: "managedBy is used to indicate the controller or entity that manages a JobSet.\nThe built-in JobSet controller reconciles JobSets which don't have this\nfield at all or the field value is the reserved string\n`jobset.sigs.k8s.io/jobset-controller`, but skips reconciling JobSets\nwith a custom value for this field.\n\nThe value must be a valid domain-prefixed path (e.g. acme.io/foo) -\nall characters before the first \"/\" must be a valid subdomain as defined\nby RFC 1123. All characters trailing the first \"/\" must be valid HTTP Path\ncharacters as defined by RFC 3986. The value cannot exceed 63 characters.\nThe field is immutable."
                   type: "string"
                 network:
-                  description: "Network defines the networking options for the jobset."
+                  description: "network defines the networking options for the jobset."
                   properties:
                     enableDNSHostnames:
-                      description: "EnableDNSHostnames allows pods to be reached via their hostnames.\nPods will be reachable using the fully qualified pod hostname:\n<jobSet.name>-<spec.replicatedJob.name>-<job-index>-<pod-index>.<subdomain>"
+                      description: "enableDNSHostnames allows pods to be reached via their hostnames.\nPods will be reachable using the fully qualified pod hostname:\n<jobSet.name>-<spec.replicatedJob.name>-<job-index>-<pod-index>.<subdomain>"
                       type: "boolean"
                     publishNotReadyAddresses:
-                      description: "Indicates if DNS records of pods should be published before the pods are ready.\nDefaults to True."
+                      description: "publishNotReadyAddresses indicates if DNS records of pods should be published before the pods are ready.\nDefaults to True."
                       type: "boolean"
                     subdomain:
-                      description: "Subdomain is an explicit choice for a network subdomain name\nWhen set, any replicated job in the set is added to this network.\nDefaults to <jobSet.name> if not set."
+                      description: "subdomain is an explicit choice for a network subdomain name\nWhen set, any replicated job in the set is added to this network.\nDefaults to <jobSet.name> if not set."
                       type: "string"
                   type: "object"
                   x-kubernetes-validations:
                     - message: "Value is immutable"
                       rule: "self == oldSelf"
                 replicatedJobs:
-                  description: "ReplicatedJobs is the group of jobs that will form the set."
+                  description: "replicatedJobs is the group of jobs that will form the set."
                   items:
                     properties:
                       dependsOn:
-                        description: "DependsOn is an optional list that specifies the preceding ReplicatedJobs upon which\nthe current ReplicatedJob depends. If specified, the ReplicatedJob will be created\nonly after the referenced ReplicatedJobs reach their desired state.\nThe Order of ReplicatedJobs is defined by their enumeration in the slice.\nNote, that the first ReplicatedJob in the slice cannot use the DependsOn API.\nCurrently, only a single item is supported in the DependsOn list.\nIf JobSet is suspended the all active ReplicatedJobs will be suspended. When JobSet is\nresumed the Job sequence starts again.\nThis API is mutually exclusive with the StartupPolicy API."
+                        description: "dependsOn is an optional list that specifies the preceding ReplicatedJobs upon which\nthe current ReplicatedJob depends. If specified, the ReplicatedJob will be created\nonly after the referenced ReplicatedJobs reach their desired state.\nThe Order of ReplicatedJobs is defined by their enumeration in the slice.\nNote, that the first ReplicatedJob in the slice cannot use the DependsOn API.\nCurrently, only a single item is supported in the DependsOn list.\nIf JobSet is suspended the all active ReplicatedJobs will be suspended. When JobSet is\nresumed the Job sequence starts again.\nThis API is mutually exclusive with the StartupPolicy API."
                         items:
                           description: "DependsOn defines the dependency on the previous ReplicatedJob status."
                           properties:
                             name:
-                              description: "Name of the previous ReplicatedJob."
+                              description: "name of the previous ReplicatedJob."
                               type: "string"
                             status:
-                              description: "Status defines the condition for the ReplicatedJob. Only Ready or Complete status can be set."
+                              description: "status defines the condition for the ReplicatedJob. Only Ready or Complete status can be set."
                               enum:
                                 - "Ready"
                                 - "Complete"
@@ -169,18 +169,18 @@ spec:
                             rule: "self == oldSelf"
                       groupName:
                         default: "default"
-                        description: "GroupName defines the name of the group this ReplicatedJob belongs to. Defaults to \"default\""
+                        description: "groupName defines the name of the group this ReplicatedJob belongs to. Defaults to \"default\""
                         type: "string"
                       name:
-                        description: "Name is the name of the entry and will be used as a suffix\nfor the Job name."
+                        description: "name is the name of the entry and will be used as a suffix\nfor the Job name."
                         type: "string"
                       replicas:
                         default: 1
-                        description: "Replicas is the number of jobs that will be created from this ReplicatedJob's template.\nJobs names will be in the format: <jobSet.name>-<spec.replicatedJob.name>-<job-index>"
+                        description: "replicas is the number of jobs that will be created from this ReplicatedJob's template.\nJobs names will be in the format: <jobSet.name>-<spec.replicatedJob.name>-<job-index>"
                         format: "int32"
                         type: "integer"
                       template:
-                        description: "Template defines the template of the Job that will be created."
+                        description: "template defines the template of the Job that will be created."
                         properties:
                           metadata:
                             description: "Standard object's metadata of the jobs created from this template.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata"
@@ -5336,10 +5336,10 @@ spec:
                     - "name"
                   x-kubernetes-list-type: "map"
                 startupPolicy:
-                  description: "StartupPolicy, if set, configures in what order jobs must be started\nDeprecated: StartupPolicy is deprecated, please use the DependsOn API."
+                  description: "startupPolicy configures in what order jobs must be started\nDeprecated: StartupPolicy is deprecated, please use the DependsOn API."
                   properties:
                     startupPolicyOrder:
-                      description: "StartupPolicyOrder determines the startup order of the ReplicatedJobs.\nAnyOrder means to start replicated jobs in any order.\nInOrder means to start them as they are listed in the JobSet. A ReplicatedJob is started only\nwhen all the jobs of the previous one are ready."
+                      description: "startupPolicyOrder determines the startup order of the ReplicatedJobs.\nAnyOrder means to start replicated jobs in any order.\nInOrder means to start them as they are listed in the JobSet. A ReplicatedJob is started only\nwhen all the jobs of the previous one are ready."
                       enum:
                         - "AnyOrder"
                         - "InOrder"
@@ -5351,16 +5351,16 @@ spec:
                     - message: "Value is immutable"
                       rule: "self == oldSelf"
                 successPolicy:
-                  description: "SuccessPolicy configures when to declare the JobSet as\nsucceeded.\nThe JobSet is always declared succeeded if all jobs in the set\nfinished with status complete."
+                  description: "successPolicy configures when to declare the JobSet as\nsucceeded.\nThe JobSet is always declared succeeded if all jobs in the set\nfinished with status complete."
                   properties:
                     operator:
-                      description: "Operator determines either All or Any of the selected jobs should succeed to consider the JobSet successful"
+                      description: "operator determines either All or Any of the selected jobs should succeed to consider the JobSet successful"
                       enum:
                         - "All"
                         - "Any"
                       type: "string"
                     targetReplicatedJobs:
-                      description: "TargetReplicatedJobs are the names of the replicated jobs the operator will apply to.\nA null or empty list will apply to all replicatedJobs."
+                      description: "targetReplicatedJobs are the names of the replicated jobs the operator will apply to.\nA null or empty list will apply to all replicatedJobs."
                       items:
                         type: "string"
                       type: "array"
@@ -5372,10 +5372,10 @@ spec:
                     - message: "Value is immutable"
                       rule: "self == oldSelf"
                 suspend:
-                  description: "Suspend suspends all running child Jobs when set to true."
+                  description: "suspend suspends all running child Jobs when set to true."
                   type: "boolean"
                 ttlSecondsAfterFinished:
-                  description: "TTLSecondsAfterFinished limits the lifetime of a JobSet that has finished\nexecution (either Complete or Failed). If this field is set,\nTTLSecondsAfterFinished after the JobSet finishes, it is eligible to be\nautomatically deleted. When the JobSet is being deleted, its lifecycle\nguarantees (e.g. finalizers) will be honored. If this field is unset,\nthe JobSet won't be automatically deleted. If this field is set to zero,\nthe JobSet becomes eligible to be deleted immediately after it finishes."
+                  description: "ttlSecondsAfterFinished limits the lifetime of a JobSet that has finished\nexecution (either Complete or Failed). If this field is set,\nTTLSecondsAfterFinished after the JobSet finishes, it is eligible to be\nautomatically deleted. When the JobSet is being deleted, its lifecycle\nguarantees (e.g. finalizers) will be honored. If this field is unset,\nthe JobSet won't be automatically deleted. If this field is set to zero,\nthe JobSet becomes eligible to be deleted immediately after it finishes."
                   format: "int32"
                   minimum: 0.0
                   type: "integer"
@@ -5384,9 +5384,10 @@ spec:
                 - message: "StartupPolicy and DependsOn APIs are mutually exclusive"
                   rule: "!(has(self.startupPolicy) && self.startupPolicy.startupPolicyOrder == 'InOrder' && self.replicatedJobs.exists(x, has(x.dependsOn)))"
             status:
-              description: "JobSetStatus defines the observed state of JobSet"
+              description: "status is the status of the jobset"
               properties:
                 conditions:
+                  description: "conditions track status"
                   items:
                     description: "Condition contains details for one aspect of the current state of this API Resource."
                     properties:
@@ -5433,31 +5434,31 @@ spec:
                     - "type"
                   x-kubernetes-list-type: "map"
                 replicatedJobsStatus:
-                  description: "ReplicatedJobsStatus track the number of JobsReady for each replicatedJob."
+                  description: "replicatedJobsStatus track the number of JobsReady for each replicatedJob."
                   items:
                     description: "ReplicatedJobStatus defines the observed ReplicatedJobs Readiness."
                     properties:
                       active:
-                        description: "Active is the number of child Jobs with at least 1 pod in a running or pending state\nwhich are not marked for deletion."
+                        description: "active is the number of child Jobs with at least 1 pod in a running or pending state\nwhich are not marked for deletion."
                         format: "int32"
                         type: "integer"
                       failed:
-                        description: "Failed is the number of failed child Jobs."
+                        description: "failed is the number of failed child Jobs."
                         format: "int32"
                         type: "integer"
                       name:
-                        description: "Name of the ReplicatedJob."
+                        description: "name of the ReplicatedJob."
                         type: "string"
                       ready:
-                        description: "Ready is the number of child Jobs where the number of ready pods and completed pods\nis greater than or equal to the total expected pod count for the Job (i.e., the minimum\nof job.spec.parallelism and job.spec.completions)."
+                        description: "ready is the number of child Jobs where the number of ready pods and completed pods\nis greater than or equal to the total expected pod count for the Job (i.e., the minimum\nof job.spec.parallelism and job.spec.completions)."
                         format: "int32"
                         type: "integer"
                       succeeded:
-                        description: "Succeeded is the number of successfully completed child Jobs."
+                        description: "succeeded is the number of successfully completed child Jobs."
                         format: "int32"
                         type: "integer"
                       suspended:
-                        description: "Suspended is the number of child Jobs which are in a suspended state."
+                        description: "suspended is the number of child Jobs which are in a suspended state."
                         format: "int32"
                         type: "integer"
                     required:
@@ -5473,15 +5474,15 @@ spec:
                     - "name"
                   x-kubernetes-list-type: "map"
                 restarts:
-                  description: "Restarts tracks the number of times the JobSet has restarted (i.e. recreated in case of RecreateAll policy)."
+                  description: "restarts tracks the number of times the JobSet has restarted (i.e. recreated in case of RecreateAll policy)."
                   format: "int32"
                   type: "integer"
                 restartsCountTowardsMax:
-                  description: "RestartsCountTowardsMax tracks the number of times the JobSet has restarted that counts towards the maximum allowed number of restarts."
+                  description: "restartsCountTowardsMax tracks the number of times the JobSet has restarted that counts towards the maximum allowed number of restarts."
                   format: "int32"
                   type: "integer"
                 terminalState:
-                  description: "TerminalState the state of the JobSet when it finishes execution.\nIt can be either Completed or Failed. Otherwise, it is empty by default."
+                  description: "terminalState the state of the JobSet when it finishes execution.\nIt can be either Completed or Failed. Otherwise, it is empty by default."
                   type: "string"
               type: "object"
           type: "object"

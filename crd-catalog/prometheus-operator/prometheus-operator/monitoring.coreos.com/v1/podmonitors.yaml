@@ -104,7 +104,7 @@ spec:
                     description: "PodMetricsEndpoint defines an endpoint serving Prometheus metrics to be scraped by\nPrometheus."
                     properties:
                       authorization:
-                        description: "authorization defines the Authorization header credentials to use when\nscraping the target.\n\nCannot be set at the same time as `basicAuth`, or `oauth2`."
+                        description: "authorization configures the Authorization header credentials used by\nthe client.\n\nCannot be set at the same time as `basicAuth`, `bearerTokenSecret` or `oauth2`."
                         properties:
                           credentials:
                             description: "credentials defines a key of a Secret in the namespace that contains the credentials for authentication."
@@ -128,7 +128,7 @@ spec:
                             type: "string"
                         type: "object"
                       basicAuth:
-                        description: "basicAuth defines the Basic Authentication credentials to use when\nscraping the target.\n\nCannot be set at the same time as `authorization`, or `oauth2`."
+                        description: "basicAuth defines the Basic Authentication credentials used by the\nclient.\n\nCannot be set at the same time as `authorization`, `bearerTokenSecret` or `oauth2`."
                         properties:
                           password:
                             description: "password defines a key of a Secret containing the password for\nauthentication."
@@ -166,7 +166,7 @@ spec:
                             x-kubernetes-map-type: "atomic"
                         type: "object"
                       bearerTokenSecret:
-                        description: "bearerTokenSecret defines a key of a Secret containing the bearer\ntoken for scraping targets. The secret needs to be in the same namespace\nas the PodMonitor object and readable by the Prometheus Operator.\n\nDeprecated: use `authorization` instead."
+                        description: "bearerTokenSecret defines a key of a Secret containing the bearer token\nused by the client for authentication. The secret needs to be in the\nsame namespace as the custom resource and readable by the Prometheus\nOperator.\n\nCannot be set at the same time as `authorization`, `basicAuth` or `oauth2`.\n\nDeprecated: use `authorization` instead."
                         properties:
                           key:
                             description: "The key of the secret to select from.  Must be a valid secret key."
@@ -183,13 +183,13 @@ spec:
                         type: "object"
                         x-kubernetes-map-type: "atomic"
                       enableHttp2:
-                        description: "enableHttp2 can be used to disable HTTP2 when scraping the target."
+                        description: "enableHttp2 can be used to disable HTTP2."
                         type: "boolean"
                       filterRunning:
                         description: "filterRunning when true, the pods which are not running (e.g. either in Failed or\nSucceeded state) are dropped during the target discovery.\n\nIf unset, the filtering is enabled.\n\nMore info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-phase"
                         type: "boolean"
                       followRedirects:
-                        description: "followRedirects defines whether the scrape requests should follow HTTP\n3xx redirects."
+                        description: "followRedirects defines whether the client should follow HTTP 3xx\nredirects."
                         type: "boolean"
                       honorLabels:
                         description: "honorLabels when true preserves the metric's labels when they collide\nwith the target's labels."
@@ -249,8 +249,7 @@ spec:
                             sourceLabels:
                               description: "sourceLabels defines the source labels select values from existing labels. Their content is\nconcatenated using the configured Separator and matched against the\nconfigured regular expression."
                               items:
-                                description: "LabelName is a valid Prometheus label name which may only contain ASCII\nletters, numbers, as well as underscores."
-                                pattern: "^[a-zA-Z_][a-zA-Z0-9_]*$"
+                                description: "LabelName is a valid Prometheus label name.\nFor Prometheus 3.x, a label name is valid if it contains UTF-8 characters.\nFor Prometheus 2.x, a label name is only valid if it contains ASCII characters, letters, numbers, as well as underscores."
                                 type: "string"
                               type: "array"
                             targetLabel:
@@ -262,7 +261,7 @@ spec:
                         description: "noProxy defines a comma-separated string that can contain IPs, CIDR notation, domain names\nthat should be excluded from proxying. IP and domain names can\ncontain port numbers.\n\nIt requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0."
                         type: "string"
                       oauth2:
-                        description: "oauth2 defines the OAuth2 settings to use when scraping the target.\n\nIt requires Prometheus >= 2.27.0.\n\nCannot be set at the same time as `authorization`, or `basicAuth`."
+                        description: "oauth2 defines the OAuth2 settings used by the client.\n\nIt requires Prometheus >= 2.27.0.\n\nCannot be set at the same time as `authorization`, `basicAuth` or `bearerTokenSecret`."
                         properties:
                           clientId:
                             description: "clientId defines a key of a Secret or ConfigMap containing the\nOAuth2 client's ID."
@@ -587,8 +586,7 @@ spec:
                             sourceLabels:
                               description: "sourceLabels defines the source labels select values from existing labels. Their content is\nconcatenated using the configured Separator and matched against the\nconfigured regular expression."
                               items:
-                                description: "LabelName is a valid Prometheus label name which may only contain ASCII\nletters, numbers, as well as underscores."
-                                pattern: "^[a-zA-Z_][a-zA-Z0-9_]*$"
+                                description: "LabelName is a valid Prometheus label name.\nFor Prometheus 3.x, a label name is valid if it contains UTF-8 characters.\nFor Prometheus 2.x, a label name is only valid if it contains ASCII characters, letters, numbers, as well as underscores."
                                 type: "string"
                               type: "array"
                             targetLabel:
@@ -613,7 +611,7 @@ spec:
                         description: "targetPort defines the name or number of the target port of the `Pod` object behind the Service, the\nport must be specified with container port property.\n\nDeprecated: use 'port' or 'portNumber' instead."
                         x-kubernetes-int-or-string: true
                       tlsConfig:
-                        description: "tlsConfig defines the TLS configuration to use when scraping the target."
+                        description: "tlsConfig defines the TLS configuration used by the client."
                         properties:
                           ca:
                             description: "ca defines the Certificate authority used when verifying server certificates."

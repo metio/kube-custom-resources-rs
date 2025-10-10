@@ -7196,6 +7196,10 @@ pub struct AlertmanagerConfigReceiversSnsConfigsSigv4 {
     /// variable `AWS_SECRET_ACCESS_KEY` is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKey")]
     pub secret_key: Option<AlertmanagerConfigReceiversSnsConfigsSigv4SecretKey>,
+    /// useFIPSSTSEndpoint defines the FIPS mode for the AWS STS endpoint.
+    /// It requires Prometheus >= v2.54.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useFIPSSTSEndpoint")]
+    pub use_fipssts_endpoint: Option<bool>,
 }
 
 /// accessKey defines the AWS API key. If not specified, the environment variable

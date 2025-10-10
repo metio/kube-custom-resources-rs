@@ -44,9 +44,9 @@ pub struct SecretEngineMountSpec {
     /// Options Specifies mount type specific options that are passed to the backend.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub options: Option<BTreeMap<String, String>>,
-    /// Path at which this secret engine will be available
-    /// The final path in Vault will be {[spec.authentication.namespace]}/{spec.path}/{metadata.name}.
-    /// The authentication role must have the following capabilities = [ "create", "read", "update", "delete"] on that path /sys/mounts/{[spec.authentication.namespace]}/{spec.path}/{metadata.name}.
+    /// Path at which this secret engine will be available. If not specified, defaults to the resource name (/sys/mounts/{[spec.authentication.namespace]}/{metadata.name}).
+    /// The final path in Vault will be {[spec.authentication.namespace]}/{[spec.path]}/{metadata.name}.
+    /// The authentication role must have the following capabilities = [ "create", "read", "update", "delete"] on computed path /sys/mounts/{[spec.authentication.namespace]}/{[spec.path]}/{metadata.name} or /sys/mounts/{[spec.authentication.namespace]}/{metadata.name} if path is empty.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     /// SealWrap Enable seal wrapping for the mount, causing values stored by the mount to be wrapped by the seal's encryption capability.

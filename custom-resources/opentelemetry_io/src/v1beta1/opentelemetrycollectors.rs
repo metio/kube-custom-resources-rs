@@ -37,6 +37,8 @@ pub struct OpenTelemetryCollectorSpec {
     pub daemon_set_update_strategy: Option<OpenTelemetryCollectorDaemonSetUpdateStrategy>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploymentUpdateStrategy")]
     pub deployment_update_strategy: Option<OpenTelemetryCollectorDeploymentUpdateStrategy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsPolicy")]
+    pub dns_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<OpenTelemetryCollectorEnv>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envFrom")]
