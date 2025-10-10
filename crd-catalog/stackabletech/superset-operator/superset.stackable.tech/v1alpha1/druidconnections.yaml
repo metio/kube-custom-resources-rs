@@ -21,7 +21,7 @@ spec:
           description: "Auto-generated derived type for DruidConnectionSpec via `CustomResource`"
           properties:
             spec:
-              description: "The DruidConnection resource can be used to automatically deploy a Druid datasource in Superset. Learn more about it in the [Superset operator usage guide](https://docs.stackable.tech/home/nightly/superset/usage-guide/connecting-druid)."
+              description: "The DruidConnection resource can be used to automatically deploy a Druid datasource in Superset.\nLearn more about it in the [Superset operator usage guide](https://docs.stackable.tech/home/nightly/superset/usage-guide/connecting-druid)."
               properties:
                 druid:
                   description: "The Druid to connect."

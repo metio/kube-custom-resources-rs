@@ -604,7 +604,7 @@ spec:
                       description: "Pod's annotations"
                       type: "object"
                     deploymentStrategy:
-                      description: "DeploymentStrategy describes how to replace existing pods with new ones\nDefault value is RollingUpdate with MaxUnavailable and MaxSurege as 25% (kubernetes default)"
+                      description: "DeploymentStrategy describes how to replace existing pods with new ones\nDefault value is Recreate"
                       properties:
                         rollingUpdate:
                           description: "Rolling update config params. Present only if DeploymentStrategyType =\nRollingUpdate."

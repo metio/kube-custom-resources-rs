@@ -12,7 +12,11 @@ use self::prelude::*;
 
 /// Exposes a set of pods to the outside world.
 /// 
-/// Essentially a Stackable extension of a Kubernetes Service. Compared to a Service, a Listener changes three things: 1. It uses a cluster-level policy object (ListenerClass) to define how exactly the exposure works 2. It has a consistent API for reading back the exposed address(es) of the service 3. The Pod must mount a Volume referring to the Listener, which also allows ["sticky" scheduling](<https://docs.stackable.tech/home/nightly/listener-operator/listener#_sticky_scheduling).>
+/// Essentially a Stackable extension of a Kubernetes Service. Compared to a Service, a Listener changes three things:
+/// 1. It uses a cluster-level policy object (ListenerClass) to define how exactly the exposure works
+/// 2. It has a consistent API for reading back the exposed address(es) of the service
+/// 3. The Pod must mount a Volume referring to the Listener, which also allows
+///    ["sticky" scheduling](<https://docs.stackable.tech/home/nightly/listener-operator/listener#_sticky_scheduling).>
 /// 
 /// Learn more in the [Listener documentation](<https://docs.stackable.tech/home/nightly/listener-operator/listener).>
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -58,7 +62,8 @@ pub struct ListenerStatus {
     pub ingress_addresses: Option<Vec<ListenerStatusIngressAddresses>>,
     /// Port mappings for accessing the Listener on each Node that the Pods are currently running on.
     /// 
-    /// This is only intended for internal use by listener-operator itself. This will be left unset if using a ListenerClass that does not require Node-local access.
+    /// This is only intended for internal use by listener-operator itself. This will be left unset if using a ListenerClass that does
+    /// not require Node-local access.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePorts")]
     pub node_ports: Option<BTreeMap<String, i32>>,
     /// The backing Kubernetes Service.

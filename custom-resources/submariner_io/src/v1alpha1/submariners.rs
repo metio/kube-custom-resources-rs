@@ -63,6 +63,9 @@ pub struct SubmarinerSpec {
     /// Enable this cluster as a preferred server for data-plane connections.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ceIPSecPreferredServer")]
     pub ce_ip_sec_preferred_server: Option<bool>,
+    /// Use certificates for authentication when OVN IPsec is enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ceIPSecUseOVNCertAuthMode")]
+    pub ce_ip_sec_use_ovn_cert_auth_mode: Option<bool>,
     /// The cluster CIDR.
     #[serde(rename = "clusterCIDR")]
     pub cluster_cidr: String,

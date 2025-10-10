@@ -48,6 +48,9 @@ pub struct CryostatSpec {
     /// Options to customize the NetworkPolicy objects created for Cryostat's various Services.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkPolicies")]
     pub network_policies: Option<CryostatNetworkPolicies>,
+    /// Options to configure the Cryostat application's object storage. If not provided, a managed instance will be automatically provisioned.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectStorageOptions")]
+    pub object_storage_options: Option<CryostatObjectStorageOptions>,
     /// Options to configure the Cryostat deployments and pods metadata
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "operandMetadata")]
     pub operand_metadata: Option<CryostatOperandMetadata>,
@@ -616,6 +619,84 @@ pub struct CryostatNetworkPoliciesStorageConfig {
     /// Disable the NetworkPolicy for ingress to a given pod. Enabled by default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressDisabled")]
     pub ingress_disabled: Option<bool>,
+}
+
+/// Options to configure the Cryostat application's object storage. If not provided, a managed instance will be automatically provisioned.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CryostatObjectStorageOptions {
+    /// Configuration for external object storage providers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub provider: Option<CryostatObjectStorageOptionsProvider>,
+    /// Name of the secret containing the object storage secret access key. This secret must contain a
+    /// ACCESS_KEY secret which is the object storage access key ID, and a SECRET_KEY secret which is the object storage secret access key.
+    /// If using an external S3 provider requiring authentication then this must be provided.
+    /// It is recommended that the secret should be marked as immutable to avoid accidental changes to secret's data.
+    /// More details: [Kubernetes Secrets](<https://kubernetes.io/docs/concepts/configuration/secret/#secret-immutable)>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
+    pub secret_name: Option<String>,
+    /// Configuration for object storage buckets. Only applies when external storage is configured, ie. .spec.ObjectStorageProviderOptions is non-nil.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageBucketNameOptions")]
+    pub storage_bucket_name_options: Option<CryostatObjectStorageOptionsStorageBucketNameOptions>,
+}
+
+/// Configuration for external object storage providers.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CryostatObjectStorageOptionsProvider {
+    /// The strategy Cryostat will use for storing files' metadata. The default 'tagging' strategy stores all metadata as object Tags.
+    /// The 'metadata' strategy stores metadata as object Metadata, which is immutable but allows for more entries than Tags.
+    /// The 'bucket' strategy stores metadata as separate files (ex. JSON object maps) in a dedicated bucket,
+    /// with prefixes to differentiate the kind of object the metadata belongs to.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metadataMode")]
+    pub metadata_mode: Option<CryostatObjectStorageOptionsProviderMetadataMode>,
+    /// The object storage provider region.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub region: Option<String>,
+    /// Whether Cryostat should trust all TLS certificates presented by the external object storage provider. Defaults to false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsTrustAll")]
+    pub tls_trust_all: Option<bool>,
+    /// The complete URL (not including authentication information) to the external object storage provider.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
+    /// Whether virtual host subdomain access should be used, as opposed to path-style access. Defaults to false for compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useVirtualHostAccess")]
+    pub use_virtual_host_access: Option<bool>,
+}
+
+/// Configuration for external object storage providers.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum CryostatObjectStorageOptionsProviderMetadataMode {
+    #[serde(rename = "tagging")]
+    Tagging,
+    #[serde(rename = "metadata")]
+    Metadata,
+    #[serde(rename = "bucket")]
+    Bucket,
+}
+
+/// Configuration for object storage buckets. Only applies when external storage is configured, ie. .spec.ObjectStorageProviderOptions is non-nil.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CryostatObjectStorageOptionsStorageBucketNameOptions {
+    /// The name of the bucket used to store Archived JFR files.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "archivedRecordings")]
+    pub archived_recordings: Option<String>,
+    /// The name of the bucket used to store a cache of Automated Analysis reports attached to Archived JFR files.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "archivedReports")]
+    pub archived_reports: Option<String>,
+    /// The name of the bucket used to store custom Event Templates.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "eventTemplates")]
+    pub event_templates: Option<String>,
+    /// The name of the bucket used to store JVM heap dumps.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "heapDumps")]
+    pub heap_dumps: Option<String>,
+    /// The name of the bucket used to store JMC Agent Probe templates.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmcAgentProbeTemplates")]
+    pub jmc_agent_probe_templates: Option<String>,
+    /// The name of the bucket used to storage metadata for other objects (ex. archived recordings). This is only used if the .spec.objectStorageOptions.provider.metadataMode is set to 'bucket'.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<String>,
+    /// The name of the bucket used to storage JVM thread dumps.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "threadDumps")]
+    pub thread_dumps: Option<String>,
 }
 
 /// Options to configure the Cryostat deployments and pods metadata

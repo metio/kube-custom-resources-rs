@@ -49,6 +49,8 @@ pub struct OpenSearchClusterBootstrap {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<OpenSearchClusterBootstrapAffinity>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub jvm: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keystore: Option<Vec<OpenSearchClusterBootstrapKeystore>>,

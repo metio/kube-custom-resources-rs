@@ -1553,10 +1553,19 @@ pub struct KialiExternalServicesTracingTempoConfig {
     /// The unique identifier (uid) of the Tempo datasource in Grafana.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub datasource_uid: Option<String>,
+    /// The name of the Tempo instance for the `url_format` of `openshift` in the Plugin UI.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// The namespace of the Tempo instance for the `url_format` of `openshift` in the Plugin UI.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
     /// The Id of the organization that the dashboard is in. Default to 1 (the first and default organization).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub org_id: Option<String>,
-    /// The URL format for the external url. Can be 'jaeger' or 'grafana'. Default to 'grafana'. Grafana will need a Grafana url in the Grafana settings.
+    /// The name of the Tempo tenant for the `url_format` of `openshift` in the Plugin UI.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tenant: Option<String>,
+    /// The URL format for the external url. Can be 'jaeger', 'grafana' or 'openshift'. Default to 'grafana'. Openshift will need the name, namespace and tenant in the `tempo_config` settings.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url_format: Option<KialiExternalServicesTracingTempoConfigUrlFormat>,
 }
@@ -1568,6 +1577,8 @@ pub enum KialiExternalServicesTracingTempoConfigUrlFormat {
     Jaeger,
     #[serde(rename = "grafana")]
     Grafana,
+    #[serde(rename = "openshift")]
+    Openshift,
 }
 
 /// This section defines what it means for nodes to be healthy. For more details, see <https://kiali.io/docs/configuration/health/>

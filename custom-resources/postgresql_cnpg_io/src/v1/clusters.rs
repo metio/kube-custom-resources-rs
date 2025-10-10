@@ -192,7 +192,7 @@ pub struct ClusterSpec {
     pub service_account_template: Option<ClusterServiceAccountTemplate>,
     /// The time in seconds that controls the window of time reserved for the smart shutdown of Postgres to complete.
     /// Make sure you reserve enough time for the operator to request a fast shutdown of Postgres
-    /// (that is: `stopDelay` - `smartShutdownTimeout`).
+    /// (that is: `stopDelay` - `smartShutdownTimeout`). Default is 180 seconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "smartShutdownTimeout")]
     pub smart_shutdown_timeout: Option<i32>,
     /// The time in seconds that is allowed for a PostgreSQL instance to

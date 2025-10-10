@@ -8,6 +8,7 @@ mod prelude {
     pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
     pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
@@ -48,12 +49,14 @@ pub struct TenantSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressOptions")]
     pub ingress_options: Option<TenantIngressOptions>,
     /// Specifies the resource min/max usage restrictions to the Tenant. The assigned values are inherited by any namespace created in the Tenant. Optional.
+    /// Deprecated: Use Tenant Replications instead (<https://projectcapsule.dev/docs/replications/)>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitRanges")]
     pub limit_ranges: Option<TenantLimitRanges>,
     /// Specifies options for the Namespaces, such as additional metadata or maximum number of namespaces allowed for that Tenant. Once the namespace quota assigned to the Tenant has been reached, the Tenant owner cannot create further namespaces. Optional.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceOptions")]
     pub namespace_options: Option<TenantNamespaceOptions>,
     /// Specifies the NetworkPolicies assigned to the Tenant. The assigned NetworkPolicies are inherited by any namespace created in the Tenant. Optional.
+    /// Deprecated: Use Tenant Replications instead (<https://projectcapsule.dev/docs/replications/)>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkPolicies")]
     pub network_policies: Option<TenantNetworkPolicies>,
     /// Specifies the label to control the placement of pods on a given pool of worker nodes. All namespaces created within the Tenant will have the node selector annotation. This annotation tells the Kubernetes scheduler to place pods on the nodes having the selector label. Optional.
@@ -256,6 +259,7 @@ pub enum TenantIngressOptionsHostnameCollisionScope {
 }
 
 /// Specifies the resource min/max usage restrictions to the Tenant. The assigned values are inherited by any namespace created in the Tenant. Optional.
+/// Deprecated: Use Tenant Replications instead (<https://projectcapsule.dev/docs/replications/)>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantLimitRanges {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -296,6 +300,7 @@ pub struct TenantLimitRangesItemsLimits {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantNamespaceOptions {
     /// Specifies additional labels and annotations the Capsule operator places on any Namespace resource in the Tenant. Optional.
+    /// Deprecated: Use additionalMetadataList instead
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalMetadata")]
     pub additional_metadata: Option<TenantNamespaceOptionsAdditionalMetadata>,
     /// Specifies additional labels and annotations the Capsule operator places on any Namespace resource in the Tenant via a list. Optional.
@@ -307,12 +312,16 @@ pub struct TenantNamespaceOptions {
     /// Define the labels that a Tenant Owner cannot set for their Namespace resources.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forbiddenLabels")]
     pub forbidden_labels: Option<TenantNamespaceOptionsForbiddenLabels>,
+    /// If enabled only metadata from additionalMetadata is reconciled to the namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managedMetadataOnly")]
+    pub managed_metadata_only: Option<bool>,
     /// Specifies the maximum number of namespaces allowed for that Tenant. Once the namespace quota assigned to the Tenant has been reached, the Tenant owner cannot create further namespaces. Optional.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub quota: Option<i32>,
 }
 
 /// Specifies additional labels and annotations the Capsule operator places on any Namespace resource in the Tenant. Optional.
+/// Deprecated: Use additionalMetadataList instead
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantNamespaceOptionsAdditionalMetadata {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -385,6 +394,7 @@ pub struct TenantNamespaceOptionsForbiddenLabels {
 }
 
 /// Specifies the NetworkPolicies assigned to the Tenant. The assigned NetworkPolicies are inherited by any namespace created in the Tenant. Optional.
+/// Deprecated: Use Tenant Replications instead (<https://projectcapsule.dev/docs/replications/)>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantNetworkPolicies {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1075,13 +1085,43 @@ pub struct TenantStorageClassesMatchExpressions {
 /// Returns the observed state of the Tenant.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantStatus {
-    /// List of namespaces assigned to the Tenant.
+    /// Tenant Condition
+    pub conditions: Vec<Condition>,
+    /// List of namespaces assigned to the Tenant. (Deprecated)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// How many namespaces are assigned to the Tenant.
     pub size: i64,
+    /// Tracks state for the namespaces associated with this tenant
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub spaces: Option<Vec<TenantStatusSpaces>>,
     /// The operational state of the Tenant. Possible values are "Active", "Cordoned".
     pub state: TenantStatusState,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TenantStatusSpaces {
+    /// Conditions
+    pub conditions: Vec<Condition>,
+    /// Managed Metadata
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<TenantStatusSpacesMetadata>,
+    /// Namespace Name
+    pub name: String,
+    /// Namespace UID
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uid: Option<String>,
+}
+
+/// Managed Metadata
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TenantStatusSpacesMetadata {
+    /// Managed Annotations
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Managed Labels
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
 }
 
 /// Returns the observed state of the Tenant.

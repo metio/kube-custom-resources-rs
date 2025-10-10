@@ -123,7 +123,7 @@ pub struct ClusterInputDummy {
     /// Sample events to generate.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub samples: Option<i32>,
-    /// Tag name associated to all records comming from this plugin.
+    /// Tag name associated to all records coming from this plugin.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tag: Option<String>,
 }
@@ -175,7 +175,7 @@ pub struct ClusterInputFluentBitMetrics {
 /// Forward defines forward  input plugin configuration
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterInputForward {
-    /// Specify maximum buffer memory size used to recieve a forward message.
+    /// Specify maximum buffer memory size used to receive a forward message.
     /// The value must be according to the Unit Size specification.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bufferMaxSize")]
     pub buffer_max_size: Option<String>,
@@ -199,7 +199,7 @@ pub struct ClusterInputForward {
     /// Threaded mechanism allows input plugin to run in a separate thread which helps to desaturate the main pipeline.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub threaded: Option<String>,
-    /// Specify the path to unix socket to recieve a forward message. If set, Listen and port are ignnored.
+    /// Specify the path to unix socket to receive a forward message. If set, Listen and port are ignnored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "unixPath")]
     pub unix_path: Option<String>,
     /// Set the permission of unix socket file.
@@ -307,9 +307,7 @@ pub struct ClusterInputHttpTlsKeyPasswordValueFromSecretKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -357,7 +355,7 @@ pub struct ClusterInputKubernetesEvents {
     /// API Server end-point
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeURL")]
     pub kube_url: Option<String>,
-    /// Tag name associated to all records comming from this plugin.
+    /// Tag name associated to all records coming from this plugin.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tag: Option<String>,
     /// Debug level between 0 (nothing) and 4 (every detail).
@@ -424,7 +422,7 @@ pub struct ClusterInputNodeExporterMetrics {
     /// The rate at which metrics are collected from the host operating system, default is 5 seconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeInterval")]
     pub scrape_interval: Option<String>,
-    /// Tag name associated to all records comming from this plugin.
+    /// Tag name associated to all records coming from this plugin.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tag: Option<String>,
 }
@@ -486,7 +484,7 @@ pub struct ClusterInputPrometheusScrapeMetrics {
     /// The interval to scrape metrics, default: 10s
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeInterval")]
     pub scrape_interval: Option<String>,
-    /// Tag name associated to all records comming from this plugin
+    /// Tag name associated to all records coming from this plugin
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tag: Option<String>,
 }
@@ -626,9 +624,7 @@ pub struct ClusterInputSyslogTlsKeyPasswordValueFromSecretKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined

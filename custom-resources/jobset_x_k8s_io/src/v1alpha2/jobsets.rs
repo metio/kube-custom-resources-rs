@@ -12,7 +12,7 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// JobSetSpec defines the desired state of JobSet
+/// spec is the specification for jobset
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "jobset.x-k8s.io", version = "v1alpha2", kind = "JobSet", plural = "jobsets")]
 #[kube(namespaced)]
@@ -21,20 +21,20 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct JobSetSpec {
-    /// Coordinator can be used to assign a specific pod as the coordinator for
+    /// coordinator can be used to assign a specific pod as the coordinator for
     /// the JobSet. If defined, an annotation will be added to all Jobs and pods with
     /// coordinator pod, which contains the stable network endpoint where the
     /// coordinator pod can be reached.
     /// jobset.sigs.k8s.io/coordinator=<pod hostname>.<headless service>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub coordinator: Option<JobSetCoordinator>,
-    /// FailurePolicy, if set, configures when to declare the JobSet as
+    /// failurePolicy configures when to declare the JobSet as
     /// failed.
     /// The JobSet is always declared failed if any job in the set
     /// finished with status failed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failurePolicy")]
     pub failure_policy: Option<JobSetFailurePolicy>,
-    /// ManagedBy is used to indicate the controller or entity that manages a JobSet.
+    /// managedBy is used to indicate the controller or entity that manages a JobSet.
     /// The built-in JobSet controller reconciles JobSets which don't have this
     /// field at all or the field value is the reserved string
     /// `jobset.sigs.k8s.io/jobset-controller`, but skips reconciling JobSets
@@ -47,26 +47,26 @@ pub struct JobSetSpec {
     /// The field is immutable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "managedBy")]
     pub managed_by: Option<String>,
-    /// Network defines the networking options for the jobset.
+    /// network defines the networking options for the jobset.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub network: Option<JobSetNetwork>,
-    /// ReplicatedJobs is the group of jobs that will form the set.
+    /// replicatedJobs is the group of jobs that will form the set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicatedJobs")]
     pub replicated_jobs: Option<Vec<JobSetReplicatedJobs>>,
-    /// StartupPolicy, if set, configures in what order jobs must be started
+    /// startupPolicy configures in what order jobs must be started
     /// Deprecated: StartupPolicy is deprecated, please use the DependsOn API.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupPolicy")]
     pub startup_policy: Option<JobSetStartupPolicy>,
-    /// SuccessPolicy configures when to declare the JobSet as
+    /// successPolicy configures when to declare the JobSet as
     /// succeeded.
     /// The JobSet is always declared succeeded if all jobs in the set
     /// finished with status complete.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successPolicy")]
     pub success_policy: Option<JobSetSuccessPolicy>,
-    /// Suspend suspends all running child Jobs when set to true.
+    /// suspend suspends all running child Jobs when set to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub suspend: Option<bool>,
-    /// TTLSecondsAfterFinished limits the lifetime of a JobSet that has finished
+    /// ttlSecondsAfterFinished limits the lifetime of a JobSet that has finished
     /// execution (either Complete or Failed). If this field is set,
     /// TTLSecondsAfterFinished after the JobSet finishes, it is eligible to be
     /// automatically deleted. When the JobSet is being deleted, its lifecycle
@@ -77,41 +77,41 @@ pub struct JobSetSpec {
     pub ttl_seconds_after_finished: Option<i32>,
 }
 
-/// Coordinator can be used to assign a specific pod as the coordinator for
+/// coordinator can be used to assign a specific pod as the coordinator for
 /// the JobSet. If defined, an annotation will be added to all Jobs and pods with
 /// coordinator pod, which contains the stable network endpoint where the
 /// coordinator pod can be reached.
 /// jobset.sigs.k8s.io/coordinator=<pod hostname>.<headless service>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobSetCoordinator {
-    /// JobIndex is the index of Job which contains the coordinator pod
+    /// jobIndex is the index of Job which contains the coordinator pod
     /// (i.e., for a ReplicatedJob with N replicas, there are Job indexes 0 to N-1).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobIndex")]
     pub job_index: Option<i64>,
-    /// PodIndex is the Job completion index of the coordinator pod.
+    /// podIndex is the Job completion index of the coordinator pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podIndex")]
     pub pod_index: Option<i64>,
-    /// ReplicatedJob is the name of the ReplicatedJob which contains
+    /// replicatedJob is the name of the ReplicatedJob which contains
     /// the coordinator pod.
     #[serde(rename = "replicatedJob")]
     pub replicated_job: String,
 }
 
-/// FailurePolicy, if set, configures when to declare the JobSet as
+/// failurePolicy configures when to declare the JobSet as
 /// failed.
 /// The JobSet is always declared failed if any job in the set
 /// finished with status failed.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobSetFailurePolicy {
-    /// MaxRestarts defines the limit on the number of JobSet restarts.
+    /// maxRestarts defines the limit on the number of JobSet restarts.
     /// A restart is achieved by recreating all active child jobs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRestarts")]
     pub max_restarts: Option<i32>,
-    /// RestartStrategy defines the strategy to use when restarting the JobSet.
+    /// restartStrategy defines the strategy to use when restarting the JobSet.
     /// Defaults to Recreate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartStrategy")]
     pub restart_strategy: Option<JobSetFailurePolicyRestartStrategy>,
-    /// List of failure policy rules for this JobSet.
+    /// rules is a list of failure policy rules for this JobSet.
     /// For a given Job failure, the rules will be evaluated in order,
     /// and only the first matching rule will be executed.
     /// If no matching rule is found, the RestartJobSet action is applied.
@@ -119,7 +119,7 @@ pub struct JobSetFailurePolicy {
     pub rules: Option<Vec<JobSetFailurePolicyRules>>,
 }
 
-/// FailurePolicy, if set, configures when to declare the JobSet as
+/// failurePolicy configures when to declare the JobSet as
 /// failed.
 /// The JobSet is always declared failed if any job in the set
 /// finished with status failed.
@@ -136,13 +136,14 @@ pub enum JobSetFailurePolicyRestartStrategy {
 /// order and the first matching rule is executed.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct JobSetFailurePolicyRules {
-    /// The action to take if the rule is matched.
+    /// action to take if the rule is matched.
     pub action: JobSetFailurePolicyRulesAction,
-    /// The name of the failure policy rule.
+    /// name of the failure policy rule.
     /// The name is defaulted to 'failurePolicyRuleN' where N is the index of the failure policy rule.
     /// The name must match the regular expression "^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$".
     pub name: String,
-    /// The requirement on the job failure message. The requirement is satisfied
+    /// onJobFailureMessagePatterns is a requirement on the job failure messages.
+    /// The requirement is satisfied
     /// if at least one pattern (regex) matches the job failure message. An
     /// empty list matches any job failure message.
     /// The syntax of the regular expressions accepted is the same general
@@ -152,12 +153,13 @@ pub struct JobSetFailurePolicyRules {
     /// <https://pkg.go.dev/regexp/syntax.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "onJobFailureMessagePatterns")]
     pub on_job_failure_message_patterns: Option<Vec<String>>,
-    /// The requirement on the job failure reasons. The requirement is satisfied
+    /// onJobFailureReasons is a list of job failures reasons.
+    /// The requirement is satisfied
     /// if at least one reason matches the list. An empty list matches any job
     /// failure reason.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "onJobFailureReasons")]
     pub on_job_failure_reasons: Option<Vec<String>>,
-    /// TargetReplicatedJobs are the names of the replicated jobs the operator applies to.
+    /// targetReplicatedJobs are the names of the replicated jobs the operator applies to.
     /// An empty list will apply to all replicatedJobs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetReplicatedJobs")]
     pub target_replicated_jobs: Option<Vec<String>>,
@@ -175,19 +177,19 @@ pub enum JobSetFailurePolicyRulesAction {
     RestartJobSetAndIgnoreMaxRestarts,
 }
 
-/// Network defines the networking options for the jobset.
+/// network defines the networking options for the jobset.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobSetNetwork {
-    /// EnableDNSHostnames allows pods to be reached via their hostnames.
+    /// enableDNSHostnames allows pods to be reached via their hostnames.
     /// Pods will be reachable using the fully qualified pod hostname:
     /// <jobSet.name>-<spec.replicatedJob.name>-<job-index>-<pod-index>.<subdomain>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableDNSHostnames")]
     pub enable_dns_hostnames: Option<bool>,
-    /// Indicates if DNS records of pods should be published before the pods are ready.
+    /// publishNotReadyAddresses indicates if DNS records of pods should be published before the pods are ready.
     /// Defaults to True.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "publishNotReadyAddresses")]
     pub publish_not_ready_addresses: Option<bool>,
-    /// Subdomain is an explicit choice for a network subdomain name
+    /// subdomain is an explicit choice for a network subdomain name
     /// When set, any replicated job in the set is added to this network.
     /// Defaults to <jobSet.name> if not set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -196,7 +198,7 @@ pub struct JobSetNetwork {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobSetReplicatedJobs {
-    /// DependsOn is an optional list that specifies the preceding ReplicatedJobs upon which
+    /// dependsOn is an optional list that specifies the preceding ReplicatedJobs upon which
     /// the current ReplicatedJob depends. If specified, the ReplicatedJob will be created
     /// only after the referenced ReplicatedJobs reach their desired state.
     /// The Order of ReplicatedJobs is defined by their enumeration in the slice.
@@ -207,26 +209,26 @@ pub struct JobSetReplicatedJobs {
     /// This API is mutually exclusive with the StartupPolicy API.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dependsOn")]
     pub depends_on: Option<Vec<JobSetReplicatedJobsDependsOn>>,
-    /// GroupName defines the name of the group this ReplicatedJob belongs to. Defaults to "default"
+    /// groupName defines the name of the group this ReplicatedJob belongs to. Defaults to "default"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupName")]
     pub group_name: Option<String>,
-    /// Name is the name of the entry and will be used as a suffix
+    /// name is the name of the entry and will be used as a suffix
     /// for the Job name.
     pub name: String,
-    /// Replicas is the number of jobs that will be created from this ReplicatedJob's template.
+    /// replicas is the number of jobs that will be created from this ReplicatedJob's template.
     /// Jobs names will be in the format: <jobSet.name>-<spec.replicatedJob.name>-<job-index>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    /// Template defines the template of the Job that will be created.
+    /// template defines the template of the Job that will be created.
     pub template: JobSetReplicatedJobsTemplate,
 }
 
 /// DependsOn defines the dependency on the previous ReplicatedJob status.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct JobSetReplicatedJobsDependsOn {
-    /// Name of the previous ReplicatedJob.
+    /// name of the previous ReplicatedJob.
     pub name: String,
-    /// Status defines the condition for the ReplicatedJob. Only Ready or Complete status can be set.
+    /// status defines the condition for the ReplicatedJob. Only Ready or Complete status can be set.
     pub status: JobSetReplicatedJobsDependsOnStatus,
 }
 
@@ -237,7 +239,7 @@ pub enum JobSetReplicatedJobsDependsOnStatus {
     Complete,
 }
 
-/// Template defines the template of the Job that will be created.
+/// template defines the template of the Job that will be created.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobSetReplicatedJobsTemplate {
     /// Standard object's metadata of the jobs created from this template.
@@ -7844,11 +7846,11 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecVolumesVsphereVolume {
     pub volume_path: String,
 }
 
-/// StartupPolicy, if set, configures in what order jobs must be started
+/// startupPolicy configures in what order jobs must be started
 /// Deprecated: StartupPolicy is deprecated, please use the DependsOn API.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct JobSetStartupPolicy {
-    /// StartupPolicyOrder determines the startup order of the ReplicatedJobs.
+    /// startupPolicyOrder determines the startup order of the ReplicatedJobs.
     /// AnyOrder means to start replicated jobs in any order.
     /// InOrder means to start them as they are listed in the JobSet. A ReplicatedJob is started only
     /// when all the jobs of the previous one are ready.
@@ -7856,7 +7858,7 @@ pub struct JobSetStartupPolicy {
     pub startup_policy_order: JobSetStartupPolicyStartupPolicyOrder,
 }
 
-/// StartupPolicy, if set, configures in what order jobs must be started
+/// startupPolicy configures in what order jobs must be started
 /// Deprecated: StartupPolicy is deprecated, please use the DependsOn API.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum JobSetStartupPolicyStartupPolicyOrder {
@@ -7864,21 +7866,21 @@ pub enum JobSetStartupPolicyStartupPolicyOrder {
     InOrder,
 }
 
-/// SuccessPolicy configures when to declare the JobSet as
+/// successPolicy configures when to declare the JobSet as
 /// succeeded.
 /// The JobSet is always declared succeeded if all jobs in the set
 /// finished with status complete.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct JobSetSuccessPolicy {
-    /// Operator determines either All or Any of the selected jobs should succeed to consider the JobSet successful
+    /// operator determines either All or Any of the selected jobs should succeed to consider the JobSet successful
     pub operator: JobSetSuccessPolicyOperator,
-    /// TargetReplicatedJobs are the names of the replicated jobs the operator will apply to.
+    /// targetReplicatedJobs are the names of the replicated jobs the operator will apply to.
     /// A null or empty list will apply to all replicatedJobs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetReplicatedJobs")]
     pub target_replicated_jobs: Option<Vec<String>>,
 }
 
-/// SuccessPolicy configures when to declare the JobSet as
+/// successPolicy configures when to declare the JobSet as
 /// succeeded.
 /// The JobSet is always declared succeeded if all jobs in the set
 /// finished with status complete.
@@ -7888,21 +7890,22 @@ pub enum JobSetSuccessPolicyOperator {
     Any,
 }
 
-/// JobSetStatus defines the observed state of JobSet
+/// status is the status of the jobset
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobSetStatus {
+    /// conditions track status
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// ReplicatedJobsStatus track the number of JobsReady for each replicatedJob.
+    /// replicatedJobsStatus track the number of JobsReady for each replicatedJob.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicatedJobsStatus")]
     pub replicated_jobs_status: Option<Vec<JobSetStatusReplicatedJobsStatus>>,
-    /// Restarts tracks the number of times the JobSet has restarted (i.e. recreated in case of RecreateAll policy).
+    /// restarts tracks the number of times the JobSet has restarted (i.e. recreated in case of RecreateAll policy).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub restarts: Option<i32>,
-    /// RestartsCountTowardsMax tracks the number of times the JobSet has restarted that counts towards the maximum allowed number of restarts.
+    /// restartsCountTowardsMax tracks the number of times the JobSet has restarted that counts towards the maximum allowed number of restarts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartsCountTowardsMax")]
     pub restarts_count_towards_max: Option<i32>,
-    /// TerminalState the state of the JobSet when it finishes execution.
+    /// terminalState the state of the JobSet when it finishes execution.
     /// It can be either Completed or Failed. Otherwise, it is empty by default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminalState")]
     pub terminal_state: Option<String>,
@@ -7911,20 +7914,20 @@ pub struct JobSetStatus {
 /// ReplicatedJobStatus defines the observed ReplicatedJobs Readiness.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobSetStatusReplicatedJobsStatus {
-    /// Active is the number of child Jobs with at least 1 pod in a running or pending state
+    /// active is the number of child Jobs with at least 1 pod in a running or pending state
     /// which are not marked for deletion.
     pub active: i32,
-    /// Failed is the number of failed child Jobs.
+    /// failed is the number of failed child Jobs.
     pub failed: i32,
-    /// Name of the ReplicatedJob.
+    /// name of the ReplicatedJob.
     pub name: String,
-    /// Ready is the number of child Jobs where the number of ready pods and completed pods
+    /// ready is the number of child Jobs where the number of ready pods and completed pods
     /// is greater than or equal to the total expected pod count for the Job (i.e., the minimum
     /// of job.spec.parallelism and job.spec.completions).
     pub ready: i32,
-    /// Succeeded is the number of successfully completed child Jobs.
+    /// succeeded is the number of successfully completed child Jobs.
     pub succeeded: i32,
-    /// Suspended is the number of child Jobs which are in a suspended state.
+    /// suspended is the number of child Jobs which are in a suspended state.
     pub suspended: i32,
 }
 

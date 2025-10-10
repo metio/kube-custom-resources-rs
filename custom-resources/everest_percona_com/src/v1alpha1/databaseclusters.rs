@@ -459,9 +459,12 @@ pub struct DatabaseClusterStatus {
     /// Ready is the number of ready pods
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ready: Option<i32>,
-    /// RecommendedCRVersion is the recommended version of the CR to use.
-    /// If set, the CR needs to be updated to this version before upgrading the operator.
-    /// If unset, the CR is already at the recommended version.
+    /// RecommendedCRVersion indicates the target version that the underlying CR should be updated to.
+    /// When this field is set, it means the CR is running an outdated version and requires an update.
+    /// The following restrictions apply until the CR is updated to the recommended version:
+    /// - The operator cannot be upgraded
+    /// - The database engine version (.spec.engine.version) cannot be modified
+    /// This field is unset when the CR is already running at the latest recommended version.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "recommendedCRVersion")]
     pub recommended_cr_version: Option<String>,
     /// Size is the total number of pods

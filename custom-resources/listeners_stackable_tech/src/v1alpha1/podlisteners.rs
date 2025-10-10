@@ -12,7 +12,9 @@ use self::prelude::*;
 
 /// Informs users about Listeners that are bound by a given Pod.
 /// 
-/// This is not expected to be created or modified by users. It will be created by the Stackable Listener Operator when mounting the listener volume, and is always named `pod-{pod.metadata.uid}`.
+/// This is not expected to be created or modified by users. It will be created by
+/// the Stackable Listener Operator when mounting the listener volume, and is always
+/// named `pod-{pod.metadata.uid}`.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "listeners.stackable.tech", version = "v1alpha1", kind = "PodListeners", plural = "podlisteners")]
 #[kube(namespaced)]

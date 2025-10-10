@@ -2101,6 +2101,10 @@ pub struct PrometheusAlertingAlertmanagersSigv4 {
     /// variable `AWS_SECRET_ACCESS_KEY` is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKey")]
     pub secret_key: Option<PrometheusAlertingAlertmanagersSigv4SecretKey>,
+    /// useFIPSSTSEndpoint defines the FIPS mode for the AWS STS endpoint.
+    /// It requires Prometheus >= v2.54.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useFIPSSTSEndpoint")]
+    pub use_fipssts_endpoint: Option<bool>,
 }
 
 /// accessKey defines the AWS API key. If not specified, the environment variable
@@ -7140,6 +7144,10 @@ pub struct PrometheusRemoteWriteSigv4 {
     /// variable `AWS_SECRET_ACCESS_KEY` is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKey")]
     pub secret_key: Option<PrometheusRemoteWriteSigv4SecretKey>,
+    /// useFIPSSTSEndpoint defines the FIPS mode for the AWS STS endpoint.
+    /// It requires Prometheus >= v2.54.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useFIPSSTSEndpoint")]
+    pub use_fipssts_endpoint: Option<bool>,
 }
 
 /// accessKey defines the AWS API key. If not specified, the environment variable

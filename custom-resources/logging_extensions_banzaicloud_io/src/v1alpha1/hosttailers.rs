@@ -2039,6 +2039,8 @@ pub struct HostTailerWorkloadOverridesVolumesProjectedSources {
     pub config_map: Option<HostTailerWorkloadOverridesVolumesProjectedSourcesConfigMap>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<HostTailerWorkloadOverridesVolumesProjectedSourcesDownwardApi>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podCertificate")]
+    pub pod_certificate: Option<HostTailerWorkloadOverridesVolumesProjectedSourcesPodCertificate>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<HostTailerWorkloadOverridesVolumesProjectedSourcesSecret>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
@@ -2124,6 +2126,22 @@ pub struct HostTailerWorkloadOverridesVolumesProjectedSourcesDownwardApiItemsRes
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub divisor: Option<IntOrString>,
     pub resource: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HostTailerWorkloadOverridesVolumesProjectedSourcesPodCertificate {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateChainPath")]
+    pub certificate_chain_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialBundlePath")]
+    pub credential_bundle_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyPath")]
+    pub key_path: Option<String>,
+    #[serde(rename = "keyType")]
+    pub key_type: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxExpirationSeconds")]
+    pub max_expiration_seconds: Option<i32>,
+    #[serde(rename = "signerName")]
+    pub signer_name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

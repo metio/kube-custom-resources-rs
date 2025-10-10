@@ -119,6 +119,10 @@ pub struct ReplicationDestinationRclone {
     /// The service account needs to exist in the same namespace as this CR.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "moverServiceAccount")]
     pub mover_service_account: Option<String>,
+    /// MoverVolumes are PVCs or Secrets that should additionally be mounted to the mover job pod.
+    /// This should only be used by advanced users.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "moverVolumes")]
+    pub mover_volumes: Option<Vec<ReplicationDestinationRcloneMoverVolumes>>,
     /// RcloneConfig is the rclone secret name
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rcloneConfig")]
     pub rclone_config: Option<String>,
@@ -369,7 +373,6 @@ pub struct ReplicationDestinationRcloneMoverAffinityPodAffinityPreferredDuringSc
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -380,7 +383,6 @@ pub struct ReplicationDestinationRcloneMoverAffinityPodAffinityPreferredDuringSc
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -490,7 +492,6 @@ pub struct ReplicationDestinationRcloneMoverAffinityPodAffinityRequiredDuringSch
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -501,7 +502,6 @@ pub struct ReplicationDestinationRcloneMoverAffinityPodAffinityRequiredDuringSch
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -600,8 +600,8 @@ pub struct ReplicationDestinationRcloneMoverAffinityPodAntiAffinity {
     /// most preferred is the one with the greatest sum of weights, i.e.
     /// for each node that meets all of the scheduling requirements (resource
     /// request, requiredDuringScheduling anti-affinity expressions, etc.),
-    /// compute a sum by iterating through the elements of this field and adding
-    /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
+    /// compute a sum by iterating through the elements of this field and subtracting
+    /// "weight" from the sum if the node has pods which matches the corresponding podAffinityTerm; the
     /// node(s) with the highest sum are the most preferred.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
     pub preferred_during_scheduling_ignored_during_execution: Option<Vec<ReplicationDestinationRcloneMoverAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
@@ -642,7 +642,6 @@ pub struct ReplicationDestinationRcloneMoverAffinityPodAntiAffinityPreferredDuri
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -653,7 +652,6 @@ pub struct ReplicationDestinationRcloneMoverAffinityPodAntiAffinityPreferredDuri
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -763,7 +761,6 @@ pub struct ReplicationDestinationRcloneMoverAffinityPodAntiAffinityRequiredDurin
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -774,7 +771,6 @@ pub struct ReplicationDestinationRcloneMoverAffinityPodAntiAffinityRequiredDurin
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -874,7 +870,7 @@ pub struct ReplicationDestinationRcloneMoverResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// 
     /// This field is immutable. It can only be set for containers.
@@ -1125,6 +1121,100 @@ pub struct ReplicationDestinationRcloneMoverSecurityContextWindowsOptions {
     pub run_as_user_name: Option<String>,
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ReplicationDestinationRcloneMoverVolumes {
+    /// Path to give the volume when mounting under /mnt in the mover job pod.
+    /// For example if mountPath is 'my-pvc' then this moverVolume will be mounted in the mover pod
+    /// at /mnt/my-pvc
+    #[serde(rename = "mountPath")]
+    pub mount_path: String,
+    /// volumeSource represents the secret or PersistentVolumeClaim that should be mounted to the mover pod.
+    #[serde(rename = "volumeSource")]
+    pub volume_source: ReplicationDestinationRcloneMoverVolumesVolumeSource,
+}
+
+/// volumeSource represents the secret or PersistentVolumeClaim that should be mounted to the mover pod.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ReplicationDestinationRcloneMoverVolumesVolumeSource {
+    /// persistentVolumeClaimVolumeSource represents a reference to a
+    /// PersistentVolumeClaim in the same namespace.
+    /// More info: <https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims>
+    /// nolint:lll
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
+    pub persistent_volume_claim: Option<ReplicationDestinationRcloneMoverVolumesVolumeSourcePersistentVolumeClaim>,
+    /// secret represents a secret that should populate this volume.
+    /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#secret>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<ReplicationDestinationRcloneMoverVolumesVolumeSourceSecret>,
+}
+
+/// persistentVolumeClaimVolumeSource represents a reference to a
+/// PersistentVolumeClaim in the same namespace.
+/// More info: <https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims>
+/// nolint:lll
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ReplicationDestinationRcloneMoverVolumesVolumeSourcePersistentVolumeClaim {
+    /// claimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume.
+    /// More info: <https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims>
+    #[serde(rename = "claimName")]
+    pub claim_name: String,
+    /// readOnly Will force the ReadOnly setting in VolumeMounts.
+    /// Default false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+}
+
+/// secret represents a secret that should populate this volume.
+/// More info: <https://kubernetes.io/docs/concepts/storage/volumes#secret>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ReplicationDestinationRcloneMoverVolumesVolumeSourceSecret {
+    /// defaultMode is Optional: mode bits used to set permissions on created files by default.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values
+    /// for mode bits. Defaults to 0644.
+    /// Directories within the path are not affected by this setting.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
+    pub default_mode: Option<i32>,
+    /// items If unspecified, each key-value pair in the Data field of the referenced
+    /// Secret will be projected into the volume as a file whose name is the
+    /// key and content is the value. If specified, the listed keys will be
+    /// projected into the specified paths, and unlisted keys will not be
+    /// present. If a key is specified which is not present in the Secret,
+    /// the volume setup will error unless it is marked optional. Paths must be
+    /// relative and may not contain the '..' path or start with '..'.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<ReplicationDestinationRcloneMoverVolumesVolumeSourceSecretItems>>,
+    /// optional field specify whether the Secret or its keys must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    /// secretName is the name of the secret in the pod's namespace to use.
+    /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#secret>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
+    pub secret_name: Option<String>,
+}
+
+/// Maps a string key to a path within a volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ReplicationDestinationRcloneMoverVolumesVolumeSourceSecretItems {
+    /// key is the key to project.
+    pub key: String,
+    /// mode is Optional: mode bits used to set permissions on this file.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i32>,
+    /// path is the relative path of the file to map the key to.
+    /// May not be an absolute path.
+    /// May not contain the path element '..'.
+    /// May not start with the string '..'.
+    pub path: String,
+}
+
 /// restic defines the configuration when using Restic-based replication.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ReplicationDestinationRestic {
@@ -1204,6 +1294,10 @@ pub struct ReplicationDestinationRestic {
     /// The service account needs to exist in the same namespace as this CR.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "moverServiceAccount")]
     pub mover_service_account: Option<String>,
+    /// MoverVolumes are PVCs or Secrets that should additionally be mounted to the mover job pod.
+    /// This should only be used by advanced users.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "moverVolumes")]
+    pub mover_volumes: Option<Vec<ReplicationDestinationResticMoverVolumes>>,
     /// Previous specifies the number of image to skip before selecting one to restore from
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub previous: Option<i32>,
@@ -1454,7 +1548,6 @@ pub struct ReplicationDestinationResticMoverAffinityPodAffinityPreferredDuringSc
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -1465,7 +1558,6 @@ pub struct ReplicationDestinationResticMoverAffinityPodAffinityPreferredDuringSc
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1575,7 +1667,6 @@ pub struct ReplicationDestinationResticMoverAffinityPodAffinityRequiredDuringSch
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -1586,7 +1677,6 @@ pub struct ReplicationDestinationResticMoverAffinityPodAffinityRequiredDuringSch
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1685,8 +1775,8 @@ pub struct ReplicationDestinationResticMoverAffinityPodAntiAffinity {
     /// most preferred is the one with the greatest sum of weights, i.e.
     /// for each node that meets all of the scheduling requirements (resource
     /// request, requiredDuringScheduling anti-affinity expressions, etc.),
-    /// compute a sum by iterating through the elements of this field and adding
-    /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
+    /// compute a sum by iterating through the elements of this field and subtracting
+    /// "weight" from the sum if the node has pods which matches the corresponding podAffinityTerm; the
     /// node(s) with the highest sum are the most preferred.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
     pub preferred_during_scheduling_ignored_during_execution: Option<Vec<ReplicationDestinationResticMoverAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
@@ -1727,7 +1817,6 @@ pub struct ReplicationDestinationResticMoverAffinityPodAntiAffinityPreferredDuri
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -1738,7 +1827,6 @@ pub struct ReplicationDestinationResticMoverAffinityPodAntiAffinityPreferredDuri
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1848,7 +1936,6 @@ pub struct ReplicationDestinationResticMoverAffinityPodAntiAffinityRequiredDurin
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -1859,7 +1946,6 @@ pub struct ReplicationDestinationResticMoverAffinityPodAntiAffinityRequiredDurin
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1959,7 +2045,7 @@ pub struct ReplicationDestinationResticMoverResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// 
     /// This field is immutable. It can only be set for containers.
@@ -2210,6 +2296,100 @@ pub struct ReplicationDestinationResticMoverSecurityContextWindowsOptions {
     pub run_as_user_name: Option<String>,
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ReplicationDestinationResticMoverVolumes {
+    /// Path to give the volume when mounting under /mnt in the mover job pod.
+    /// For example if mountPath is 'my-pvc' then this moverVolume will be mounted in the mover pod
+    /// at /mnt/my-pvc
+    #[serde(rename = "mountPath")]
+    pub mount_path: String,
+    /// volumeSource represents the secret or PersistentVolumeClaim that should be mounted to the mover pod.
+    #[serde(rename = "volumeSource")]
+    pub volume_source: ReplicationDestinationResticMoverVolumesVolumeSource,
+}
+
+/// volumeSource represents the secret or PersistentVolumeClaim that should be mounted to the mover pod.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ReplicationDestinationResticMoverVolumesVolumeSource {
+    /// persistentVolumeClaimVolumeSource represents a reference to a
+    /// PersistentVolumeClaim in the same namespace.
+    /// More info: <https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims>
+    /// nolint:lll
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
+    pub persistent_volume_claim: Option<ReplicationDestinationResticMoverVolumesVolumeSourcePersistentVolumeClaim>,
+    /// secret represents a secret that should populate this volume.
+    /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#secret>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<ReplicationDestinationResticMoverVolumesVolumeSourceSecret>,
+}
+
+/// persistentVolumeClaimVolumeSource represents a reference to a
+/// PersistentVolumeClaim in the same namespace.
+/// More info: <https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims>
+/// nolint:lll
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ReplicationDestinationResticMoverVolumesVolumeSourcePersistentVolumeClaim {
+    /// claimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume.
+    /// More info: <https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims>
+    #[serde(rename = "claimName")]
+    pub claim_name: String,
+    /// readOnly Will force the ReadOnly setting in VolumeMounts.
+    /// Default false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+}
+
+/// secret represents a secret that should populate this volume.
+/// More info: <https://kubernetes.io/docs/concepts/storage/volumes#secret>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ReplicationDestinationResticMoverVolumesVolumeSourceSecret {
+    /// defaultMode is Optional: mode bits used to set permissions on created files by default.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values
+    /// for mode bits. Defaults to 0644.
+    /// Directories within the path are not affected by this setting.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
+    pub default_mode: Option<i32>,
+    /// items If unspecified, each key-value pair in the Data field of the referenced
+    /// Secret will be projected into the volume as a file whose name is the
+    /// key and content is the value. If specified, the listed keys will be
+    /// projected into the specified paths, and unlisted keys will not be
+    /// present. If a key is specified which is not present in the Secret,
+    /// the volume setup will error unless it is marked optional. Paths must be
+    /// relative and may not contain the '..' path or start with '..'.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<ReplicationDestinationResticMoverVolumesVolumeSourceSecretItems>>,
+    /// optional field specify whether the Secret or its keys must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    /// secretName is the name of the secret in the pod's namespace to use.
+    /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#secret>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
+    pub secret_name: Option<String>,
+}
+
+/// Maps a string key to a path within a volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ReplicationDestinationResticMoverVolumesVolumeSourceSecretItems {
+    /// key is the key to project.
+    pub key: String,
+    /// mode is Optional: mode bits used to set permissions on this file.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i32>,
+    /// path is the relative path of the file to map the key to.
+    /// May not be an absolute path.
+    /// May not contain the path element '..'.
+    /// May not start with the string '..'.
+    pub path: String,
+}
+
 /// rsync defines the configuration when using Rsync-based replication.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ReplicationDestinationRsync {
@@ -2315,7 +2495,7 @@ pub struct ReplicationDestinationRsyncMoverResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// 
     /// This field is immutable. It can only be set for containers.
@@ -2405,6 +2585,10 @@ pub struct ReplicationDestinationRsyncTls {
     /// The service account needs to exist in the same namespace as this CR.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "moverServiceAccount")]
     pub mover_service_account: Option<String>,
+    /// MoverVolumes are PVCs or Secrets that should additionally be mounted to the mover job pod.
+    /// This should only be used by advanced users.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "moverVolumes")]
+    pub mover_volumes: Option<Vec<ReplicationDestinationRsyncTlsMoverVolumes>>,
     /// serviceAnnotations defines annotations that will be added to the
     /// service created for incoming SSH connections.  If set, these annotations
     /// will be used instead of any VolSync default values.
@@ -2643,7 +2827,6 @@ pub struct ReplicationDestinationRsyncTlsMoverAffinityPodAffinityPreferredDuring
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -2654,7 +2837,6 @@ pub struct ReplicationDestinationRsyncTlsMoverAffinityPodAffinityPreferredDuring
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -2764,7 +2946,6 @@ pub struct ReplicationDestinationRsyncTlsMoverAffinityPodAffinityRequiredDuringS
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -2775,7 +2956,6 @@ pub struct ReplicationDestinationRsyncTlsMoverAffinityPodAffinityRequiredDuringS
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -2874,8 +3054,8 @@ pub struct ReplicationDestinationRsyncTlsMoverAffinityPodAntiAffinity {
     /// most preferred is the one with the greatest sum of weights, i.e.
     /// for each node that meets all of the scheduling requirements (resource
     /// request, requiredDuringScheduling anti-affinity expressions, etc.),
-    /// compute a sum by iterating through the elements of this field and adding
-    /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
+    /// compute a sum by iterating through the elements of this field and subtracting
+    /// "weight" from the sum if the node has pods which matches the corresponding podAffinityTerm; the
     /// node(s) with the highest sum are the most preferred.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
     pub preferred_during_scheduling_ignored_during_execution: Option<Vec<ReplicationDestinationRsyncTlsMoverAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
@@ -2916,7 +3096,6 @@ pub struct ReplicationDestinationRsyncTlsMoverAffinityPodAntiAffinityPreferredDu
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -2927,7 +3106,6 @@ pub struct ReplicationDestinationRsyncTlsMoverAffinityPodAntiAffinityPreferredDu
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -3037,7 +3215,6 @@ pub struct ReplicationDestinationRsyncTlsMoverAffinityPodAntiAffinityRequiredDur
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -3048,7 +3225,6 @@ pub struct ReplicationDestinationRsyncTlsMoverAffinityPodAntiAffinityRequiredDur
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -3148,7 +3324,7 @@ pub struct ReplicationDestinationRsyncTlsMoverResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// 
     /// This field is immutable. It can only be set for containers.
@@ -3397,6 +3573,100 @@ pub struct ReplicationDestinationRsyncTlsMoverSecurityContextWindowsOptions {
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ReplicationDestinationRsyncTlsMoverVolumes {
+    /// Path to give the volume when mounting under /mnt in the mover job pod.
+    /// For example if mountPath is 'my-pvc' then this moverVolume will be mounted in the mover pod
+    /// at /mnt/my-pvc
+    #[serde(rename = "mountPath")]
+    pub mount_path: String,
+    /// volumeSource represents the secret or PersistentVolumeClaim that should be mounted to the mover pod.
+    #[serde(rename = "volumeSource")]
+    pub volume_source: ReplicationDestinationRsyncTlsMoverVolumesVolumeSource,
+}
+
+/// volumeSource represents the secret or PersistentVolumeClaim that should be mounted to the mover pod.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ReplicationDestinationRsyncTlsMoverVolumesVolumeSource {
+    /// persistentVolumeClaimVolumeSource represents a reference to a
+    /// PersistentVolumeClaim in the same namespace.
+    /// More info: <https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims>
+    /// nolint:lll
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
+    pub persistent_volume_claim: Option<ReplicationDestinationRsyncTlsMoverVolumesVolumeSourcePersistentVolumeClaim>,
+    /// secret represents a secret that should populate this volume.
+    /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#secret>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<ReplicationDestinationRsyncTlsMoverVolumesVolumeSourceSecret>,
+}
+
+/// persistentVolumeClaimVolumeSource represents a reference to a
+/// PersistentVolumeClaim in the same namespace.
+/// More info: <https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims>
+/// nolint:lll
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ReplicationDestinationRsyncTlsMoverVolumesVolumeSourcePersistentVolumeClaim {
+    /// claimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume.
+    /// More info: <https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims>
+    #[serde(rename = "claimName")]
+    pub claim_name: String,
+    /// readOnly Will force the ReadOnly setting in VolumeMounts.
+    /// Default false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+}
+
+/// secret represents a secret that should populate this volume.
+/// More info: <https://kubernetes.io/docs/concepts/storage/volumes#secret>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ReplicationDestinationRsyncTlsMoverVolumesVolumeSourceSecret {
+    /// defaultMode is Optional: mode bits used to set permissions on created files by default.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values
+    /// for mode bits. Defaults to 0644.
+    /// Directories within the path are not affected by this setting.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
+    pub default_mode: Option<i32>,
+    /// items If unspecified, each key-value pair in the Data field of the referenced
+    /// Secret will be projected into the volume as a file whose name is the
+    /// key and content is the value. If specified, the listed keys will be
+    /// projected into the specified paths, and unlisted keys will not be
+    /// present. If a key is specified which is not present in the Secret,
+    /// the volume setup will error unless it is marked optional. Paths must be
+    /// relative and may not contain the '..' path or start with '..'.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<ReplicationDestinationRsyncTlsMoverVolumesVolumeSourceSecretItems>>,
+    /// optional field specify whether the Secret or its keys must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    /// secretName is the name of the secret in the pod's namespace to use.
+    /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#secret>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
+    pub secret_name: Option<String>,
+}
+
+/// Maps a string key to a path within a volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ReplicationDestinationRsyncTlsMoverVolumesVolumeSourceSecretItems {
+    /// key is the key to project.
+    pub key: String,
+    /// mode is Optional: mode bits used to set permissions on this file.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i32>,
+    /// path is the relative path of the file to map the key to.
+    /// May not be an absolute path.
+    /// May not contain the path element '..'.
+    /// May not start with the string '..'.
+    pub path: String,
 }
 
 /// trigger determines if/when the destination should attempt to synchronize

@@ -478,6 +478,16 @@ pub struct CephFilesystemMetadataServer {
     /// The annotations-related configuration to add/set on each Pod related object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
+    /// CacheMemoryLimitFactor is the factor applied to the memory limit to determine the MDS cache memory limit.
+    /// MDS cache memory limit should be set to 50-60% of RAM reserved for the MDS container.
+    /// MDS uses approximately 125% of the value of mds_cache_memory_limit in RAM.
+    /// This factor is applied when resources.limits.memory is set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheMemoryLimitFactor")]
+    pub cache_memory_limit_factor: Option<f64>,
+    /// CacheMemoryRequestFactor is the factor applied to the memory request to determine the MDS cache memory limit.
+    /// This factor is applied when resources.requests.memory is set and resources.limits.memory is not set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheMemoryRequestFactor")]
+    pub cache_memory_request_factor: Option<f64>,
     /// The labels-related configuration to add/set on each Pod related object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,

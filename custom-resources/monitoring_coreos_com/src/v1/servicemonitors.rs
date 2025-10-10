@@ -129,6 +129,13 @@ pub struct ServiceMonitorSpec {
     /// It requires Prometheus >= v2.17.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "selectorMechanism")]
     pub selector_mechanism: Option<ServiceMonitorSelectorMechanism>,
+    /// serviceDiscoveryRole defines the service discovery role used to discover targets.
+    /// 
+    /// If set, the value should be either "Endpoints" or "EndpointSlice".
+    /// Otherwise it defaults to the value defined in the
+    /// Prometheus/PrometheusAgent resource.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceDiscoveryRole")]
+    pub service_discovery_role: Option<ServiceMonitorServiceDiscoveryRole>,
     /// targetLabels defines the labels which are transferred from the
     /// associated Kubernetes `Service` object onto the ingested metrics.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabels")]
@@ -1150,6 +1157,14 @@ pub struct ServiceMonitorSelectorMatchExpressions {
 pub enum ServiceMonitorSelectorMechanism {
     RelabelConfig,
     RoleSelector,
+}
+
+/// spec defines the specification of desired Service selection for target discovery by
+/// Prometheus.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ServiceMonitorServiceDiscoveryRole {
+    Endpoints,
+    EndpointSlice,
 }
 
 /// status defines the status subresource. It is under active development and is updated only when the

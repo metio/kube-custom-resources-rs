@@ -587,6 +587,10 @@ spec:
                           items:
                             type: "string"
                           type: "array"
+                        grpcPort:
+                          default: "8010"
+                          description: "The gRPC port for the management service (BeeGFS 8+ only)."
+                          type: "string"
                       type: "object"
                     fileSystemSpecificConfigs:
                       description: "A list of file system specific configurations that override the default configuration for specific file systems."
@@ -621,6 +625,10 @@ spec:
                                 items:
                                   type: "string"
                                 type: "array"
+                              grpcPort:
+                                default: "8010"
+                                description: "The gRPC port for the management service (BeeGFS 8+ only)."
+                                type: "string"
                             type: "object"
                           sysMgmtdHost:
                             description: "The sysMgmtdHost used by the BeeGFS client service to make initial contact with the BeeGFS mgmtd service."
@@ -662,6 +670,10 @@ spec:
                                 items:
                                   type: "string"
                                 type: "array"
+                              grpcPort:
+                                default: "8010"
+                                description: "The gRPC port for the management service (BeeGFS 8+ only)."
+                                type: "string"
                             type: "object"
                           fileSystemSpecificConfigs:
                             description: "A list of file system specific configurations that override the default configuration for specific file systems\non these nodes."
@@ -696,6 +708,10 @@ spec:
                                       items:
                                         type: "string"
                                       type: "array"
+                                    grpcPort:
+                                      default: "8010"
+                                      description: "The gRPC port for the management service (BeeGFS 8+ only)."
+                                      type: "string"
                                   type: "object"
                                 sysMgmtdHost:
                                   description: "The sysMgmtdHost used by the BeeGFS client service to make initial contact with the BeeGFS mgmtd service."

@@ -704,6 +704,9 @@ pub struct BeegfsDriverPluginConfigConfig {
     /// Often not required. See beegfs-client.conf for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "connTcpOnlyFilter")]
     pub conn_tcp_only_filter: Option<Vec<String>>,
+    /// The gRPC port for the management service (BeeGFS 8+ only).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "grpcPort")]
+    pub grpc_port: Option<String>,
 }
 
 /// A file system specific configuration that overrides the default configuration for a specific file system.
@@ -750,6 +753,9 @@ pub struct BeegfsDriverPluginConfigFileSystemSpecificConfigsConfig {
     /// Often not required. See beegfs-client.conf for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "connTcpOnlyFilter")]
     pub conn_tcp_only_filter: Option<Vec<String>>,
+    /// The gRPC port for the management service (BeeGFS 8+ only).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "grpcPort")]
+    pub grpc_port: Option<String>,
 }
 
 /// A node specific configuration that overrides file system specific configurations and the default configuration on
@@ -802,6 +808,9 @@ pub struct BeegfsDriverPluginConfigNodeSpecificConfigsConfig {
     /// Often not required. See beegfs-client.conf for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "connTcpOnlyFilter")]
     pub conn_tcp_only_filter: Option<Vec<String>>,
+    /// The gRPC port for the management service (BeeGFS 8+ only).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "grpcPort")]
+    pub grpc_port: Option<String>,
 }
 
 /// A file system specific configuration that overrides the default configuration for a specific file system.
@@ -848,6 +857,9 @@ pub struct BeegfsDriverPluginConfigNodeSpecificConfigsFileSystemSpecificConfigsC
     /// Often not required. See beegfs-client.conf for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "connTcpOnlyFilter")]
     pub conn_tcp_only_filter: Option<Vec<String>>,
+    /// The gRPC port for the management service (BeeGFS 8+ only).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "grpcPort")]
+    pub grpc_port: Option<String>,
 }
 
 /// BeegfsDriverStatus defines the observed state of BeegfsDriver

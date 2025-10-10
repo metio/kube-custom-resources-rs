@@ -114,7 +114,7 @@ pub struct IntegrationKitSources {
 /// traits that the kit will execute
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationKitTraits {
-    /// The collection of addon trait configurations
+    /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub addons: Option<BTreeMap<String, BTreeMap<String, serde_json::Value>>>,
     /// The builder trait is internally used to determine the best strategy to build and configure IntegrationKits.

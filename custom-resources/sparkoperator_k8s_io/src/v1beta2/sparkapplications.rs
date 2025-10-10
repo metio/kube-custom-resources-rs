@@ -117,6 +117,14 @@ pub struct SparkApplicationSpec {
     /// SparkVersion is the version of Spark the application uses.
     #[serde(rename = "sparkVersion")]
     pub spark_version: String,
+    /// Suspend indicates whether the SparkApplication should be suspended.
+    /// When true, the controller skips submitting the Spark job.
+    /// If a SparkApplication is suspended after creation
+    /// (i.e. the flag goes from false to true), the Spark operator will delete
+    /// all active Pods associated with this SparkApplication.
+    /// Users must design their Spark application to gracefully handle this.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub suspend: Option<bool>,
     /// TimeToLiveSeconds defines the Time-To-Live (TTL) duration in seconds for this SparkApplication
     /// after its termination.
     /// The SparkApplication object will be garbage collected if the current time is more than the

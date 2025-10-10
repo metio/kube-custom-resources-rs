@@ -345,7 +345,6 @@ pub struct FluentBitAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExe
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -356,7 +355,6 @@ pub struct FluentBitAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExe
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -466,7 +464,6 @@ pub struct FluentBitAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExec
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -477,7 +474,6 @@ pub struct FluentBitAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExec
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -618,7 +614,6 @@ pub struct FluentBitAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDurin
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -629,7 +624,6 @@ pub struct FluentBitAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDurin
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -739,7 +733,6 @@ pub struct FluentBitAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuring
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -750,7 +743,6 @@ pub struct FluentBitAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuring
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -869,7 +861,7 @@ pub struct FluentBitContainerSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
     /// procMount denotes the type of proc mount to use for the containers.
-    /// The default is DefaultProcMount which uses the container runtime defaults for
+    /// The default value is Default which uses the container runtime defaults for
     /// readonly paths and masked paths.
     /// This requires the ProcMountType feature flag to be enabled.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -992,7 +984,6 @@ pub struct FluentBitContainerSecurityContextSeccompProfile {
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
     /// 
-    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -1077,9 +1068,7 @@ pub struct FluentBitEnvVarsValueFromConfigMapKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -1122,9 +1111,7 @@ pub struct FluentBitEnvVarsValueFromSecretKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1151,9 +1138,7 @@ pub struct FluentBitImagePullSecrets {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -1374,9 +1359,7 @@ pub struct FluentBitInitContainersEnvValueFromConfigMapKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -1419,9 +1402,7 @@ pub struct FluentBitInitContainersEnvValueFromSecretKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1429,13 +1410,13 @@ pub struct FluentBitInitContainersEnvValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
-/// EnvFromSource represents the source of a set of ConfigMaps
+/// EnvFromSource represents the source of a set of ConfigMaps or Secrets
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitInitContainersEnvFrom {
     /// The ConfigMap to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<FluentBitInitContainersEnvFromConfigMapRef>,
-    /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
+    /// Optional text to prepend to the name of each environment variable. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// The Secret to select from
@@ -1450,9 +1431,7 @@ pub struct FluentBitInitContainersEnvFromConfigMapRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap must be defined
@@ -1467,9 +1446,7 @@ pub struct FluentBitInitContainersEnvFromSecretRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret must be defined
@@ -1498,6 +1475,11 @@ pub struct FluentBitInitContainersLifecycle {
     /// More info: <https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<FluentBitInitContainersLifecyclePreStop>,
+    /// StopSignal defines which signal will be sent to a container when it is being stopped.
+    /// If not specified, the default is defined by the container runtime in use.
+    /// StopSignal can only be set for Pods with a non-empty .spec.os.name
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
 }
 
 /// PostStart is called immediately after a container is created. If the handler fails,
@@ -1506,23 +1488,23 @@ pub struct FluentBitInitContainersLifecycle {
 /// More info: <https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitInitContainersLifecyclePostStart {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<FluentBitInitContainersLifecyclePostStartExec>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<FluentBitInitContainersLifecyclePostStartHttpGet>,
-    /// Sleep represents the duration that the container should sleep before being terminated.
+    /// Sleep represents a duration that the container should sleep.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sleep: Option<FluentBitInitContainersLifecyclePostStartSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-    /// for the backward compatibility. There are no validation of this field and
-    /// lifecycle hooks will fail in runtime when tcp handler is specified.
+    /// for backward compatibility. There is no validation of this field and
+    /// lifecycle hooks will fail at runtime when it is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<FluentBitInitContainersLifecyclePostStartTcpSocket>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitInitContainersLifecyclePostStartExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -1534,7 +1516,7 @@ pub struct FluentBitInitContainersLifecyclePostStartExec {
     pub command: Option<Vec<String>>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitInitContainersLifecyclePostStartHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -1567,7 +1549,7 @@ pub struct FluentBitInitContainersLifecyclePostStartHttpGetHttpHeaders {
     pub value: String,
 }
 
-/// Sleep represents the duration that the container should sleep before being terminated.
+/// Sleep represents a duration that the container should sleep.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitInitContainersLifecyclePostStartSleep {
     /// Seconds is the number of seconds to sleep.
@@ -1575,8 +1557,8 @@ pub struct FluentBitInitContainersLifecyclePostStartSleep {
 }
 
 /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-/// for the backward compatibility. There are no validation of this field and
-/// lifecycle hooks will fail in runtime when tcp handler is specified.
+/// for backward compatibility. There is no validation of this field and
+/// lifecycle hooks will fail at runtime when it is specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitInitContainersLifecyclePostStartTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -1599,23 +1581,23 @@ pub struct FluentBitInitContainersLifecyclePostStartTcpSocket {
 /// More info: <https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitInitContainersLifecyclePreStop {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<FluentBitInitContainersLifecyclePreStopExec>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<FluentBitInitContainersLifecyclePreStopHttpGet>,
-    /// Sleep represents the duration that the container should sleep before being terminated.
+    /// Sleep represents a duration that the container should sleep.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sleep: Option<FluentBitInitContainersLifecyclePreStopSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-    /// for the backward compatibility. There are no validation of this field and
-    /// lifecycle hooks will fail in runtime when tcp handler is specified.
+    /// for backward compatibility. There is no validation of this field and
+    /// lifecycle hooks will fail at runtime when it is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<FluentBitInitContainersLifecyclePreStopTcpSocket>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitInitContainersLifecyclePreStopExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -1627,7 +1609,7 @@ pub struct FluentBitInitContainersLifecyclePreStopExec {
     pub command: Option<Vec<String>>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitInitContainersLifecyclePreStopHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -1660,7 +1642,7 @@ pub struct FluentBitInitContainersLifecyclePreStopHttpGetHttpHeaders {
     pub value: String,
 }
 
-/// Sleep represents the duration that the container should sleep before being terminated.
+/// Sleep represents a duration that the container should sleep.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitInitContainersLifecyclePreStopSleep {
     /// Seconds is the number of seconds to sleep.
@@ -1668,8 +1650,8 @@ pub struct FluentBitInitContainersLifecyclePreStopSleep {
 }
 
 /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-/// for the backward compatibility. There are no validation of this field and
-/// lifecycle hooks will fail in runtime when tcp handler is specified.
+/// for backward compatibility. There is no validation of this field and
+/// lifecycle hooks will fail at runtime when it is specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitInitContainersLifecyclePreStopTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -1687,17 +1669,17 @@ pub struct FluentBitInitContainersLifecyclePreStopTcpSocket {
 /// More info: <https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitInitContainersLivenessProbe {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<FluentBitInitContainersLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<FluentBitInitContainersLivenessProbeGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<FluentBitInitContainersLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -1712,7 +1694,7 @@ pub struct FluentBitInitContainersLivenessProbe {
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<FluentBitInitContainersLivenessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
@@ -1734,7 +1716,7 @@ pub struct FluentBitInitContainersLivenessProbe {
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitInitContainersLivenessProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -1746,7 +1728,7 @@ pub struct FluentBitInitContainersLivenessProbeExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitInitContainersLivenessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -1754,13 +1736,12 @@ pub struct FluentBitInitContainersLivenessProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see <https://github.com/grpc/grpc/blob/master/doc/health-checking.md).>
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitInitContainersLivenessProbeHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -1793,7 +1774,7 @@ pub struct FluentBitInitContainersLivenessProbeHttpGetHttpHeaders {
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitInitContainersLivenessProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -1838,17 +1819,17 @@ pub struct FluentBitInitContainersPorts {
 /// More info: <https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitInitContainersReadinessProbe {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<FluentBitInitContainersReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<FluentBitInitContainersReadinessProbeGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<FluentBitInitContainersReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -1863,7 +1844,7 @@ pub struct FluentBitInitContainersReadinessProbe {
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<FluentBitInitContainersReadinessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
@@ -1885,7 +1866,7 @@ pub struct FluentBitInitContainersReadinessProbe {
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitInitContainersReadinessProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -1897,7 +1878,7 @@ pub struct FluentBitInitContainersReadinessProbeExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitInitContainersReadinessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -1905,13 +1886,12 @@ pub struct FluentBitInitContainersReadinessProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see <https://github.com/grpc/grpc/blob/master/doc/health-checking.md).>
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitInitContainersReadinessProbeHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -1944,7 +1924,7 @@ pub struct FluentBitInitContainersReadinessProbeHttpGetHttpHeaders {
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitInitContainersReadinessProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -1977,10 +1957,8 @@ pub struct FluentBitInitContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2004,6 +1982,11 @@ pub struct FluentBitInitContainersResourcesClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// SecurityContext defines the security options the container should be run with.
@@ -2037,7 +2020,7 @@ pub struct FluentBitInitContainersSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
     /// procMount denotes the type of proc mount to use for the containers.
-    /// The default is DefaultProcMount which uses the container runtime defaults for
+    /// The default value is Default which uses the container runtime defaults for
     /// readonly paths and masked paths.
     /// This requires the ProcMountType feature flag to be enabled.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -2160,7 +2143,6 @@ pub struct FluentBitInitContainersSecurityContextSeccompProfile {
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
     /// 
-    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -2205,17 +2187,17 @@ pub struct FluentBitInitContainersSecurityContextWindowsOptions {
 /// More info: <https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitInitContainersStartupProbe {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<FluentBitInitContainersStartupProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<FluentBitInitContainersStartupProbeGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<FluentBitInitContainersStartupProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -2230,7 +2212,7 @@ pub struct FluentBitInitContainersStartupProbe {
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<FluentBitInitContainersStartupProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
@@ -2252,7 +2234,7 @@ pub struct FluentBitInitContainersStartupProbe {
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitInitContainersStartupProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -2264,7 +2246,7 @@ pub struct FluentBitInitContainersStartupProbeExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitInitContainersStartupProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -2272,13 +2254,12 @@ pub struct FluentBitInitContainersStartupProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see <https://github.com/grpc/grpc/blob/master/doc/health-checking.md).>
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitInitContainersStartupProbeHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -2311,7 +2292,7 @@ pub struct FluentBitInitContainersStartupProbeHttpGetHttpHeaders {
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitInitContainersStartupProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -2357,9 +2338,7 @@ pub struct FluentBitInitContainersVolumeMounts {
     /// RecursiveReadOnly specifies whether read-only mounts should be handled
     /// recursively.
     /// 
-    /// 
     /// If ReadOnly is false, this field has no meaning and must be unspecified.
-    /// 
     /// 
     /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
     /// recursively read-only.  If this field is set to IfPossible, the mount is made
@@ -2368,10 +2347,8 @@ pub struct FluentBitInitContainersVolumeMounts {
     /// supported by the container runtime, otherwise the pod will not be started and
     /// an error will be generated to indicate the reason.
     /// 
-    /// 
     /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
     /// None (or be unspecified, which defaults to None).
-    /// 
     /// 
     /// If this field is not specified, it is treated as an equivalent of Disabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
@@ -2399,17 +2376,17 @@ pub enum FluentBitInternalMountPropagation {
 /// LivenessProbe represents the pod's liveness probe.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitLivenessProbe {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<FluentBitLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<FluentBitLivenessProbeGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<FluentBitLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -2424,7 +2401,7 @@ pub struct FluentBitLivenessProbe {
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<FluentBitLivenessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
@@ -2446,7 +2423,7 @@ pub struct FluentBitLivenessProbe {
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitLivenessProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -2458,7 +2435,7 @@ pub struct FluentBitLivenessProbeExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitLivenessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -2466,13 +2443,12 @@ pub struct FluentBitLivenessProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see <https://github.com/grpc/grpc/blob/master/doc/health-checking.md).>
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitLivenessProbeHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -2505,7 +2481,7 @@ pub struct FluentBitLivenessProbeHttpGetHttpHeaders {
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitLivenessProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -2579,26 +2555,35 @@ pub struct FluentBitPorts {
 pub struct FluentBitPositionDb {
     /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
+    /// Deprecated: AWSElasticBlockStore is deprecated. All operations for the in-tree
+    /// awsElasticBlockStore type are redirected to the ebs.csi.aws.com CSI driver.
     /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
     pub aws_elastic_block_store: Option<FluentBitPositionDbAwsElasticBlockStore>,
     /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
+    /// Deprecated: AzureDisk is deprecated. All operations for the in-tree azureDisk type
+    /// are redirected to the disk.csi.azure.com CSI driver.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
     pub azure_disk: Option<FluentBitPositionDbAzureDisk>,
     /// azureFile represents an Azure File Service mount on the host and bind mount to the pod.
+    /// Deprecated: AzureFile is deprecated. All operations for the in-tree azureFile type
+    /// are redirected to the file.csi.azure.com CSI driver.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureFile")]
     pub azure_file: Option<FluentBitPositionDbAzureFile>,
-    /// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime
+    /// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime.
+    /// Deprecated: CephFS is deprecated and the in-tree cephfs type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cephfs: Option<FluentBitPositionDbCephfs>,
     /// cinder represents a cinder volume attached and mounted on kubelets host machine.
+    /// Deprecated: Cinder is deprecated. All operations for the in-tree cinder type
+    /// are redirected to the cinder.csi.openstack.org CSI driver.
     /// More info: <https://examples.k8s.io/mysql-cinder-pd/README.md>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cinder: Option<FluentBitPositionDbCinder>,
     /// configMap represents a configMap that should populate this volume
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<FluentBitPositionDbConfigMap>,
-    /// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature).
+    /// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<FluentBitPositionDbCsi>,
     /// downwardAPI represents downward API about the pod that should populate this volume
@@ -2612,7 +2597,6 @@ pub struct FluentBitPositionDb {
     /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
     /// and deleted when the pod is removed.
     /// 
-    /// 
     /// Use this if:
     /// a) the volume is only needed while the pod runs,
     /// b) features of normal volumes like restoring from snapshot or capacity
@@ -2623,16 +2607,13 @@ pub struct FluentBitPositionDb {
     ///    information on the connection between this volume type
     ///    and PersistentVolumeClaim).
     /// 
-    /// 
     /// Use PersistentVolumeClaim or one of the vendor-specific
     /// APIs for volumes that persist for longer than the lifecycle
     /// of an individual pod.
     /// 
-    /// 
     /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
     /// be used that way - see the documentation of the driver for
     /// more information.
-    /// 
     /// 
     /// A pod can use both types of ephemeral volumes and
     /// persistent volumes at the same time.
@@ -2643,23 +2624,28 @@ pub struct FluentBitPositionDb {
     pub fc: Option<FluentBitPositionDbFc>,
     /// flexVolume represents a generic volume resource that is
     /// provisioned/attached using an exec based plugin.
+    /// Deprecated: FlexVolume is deprecated. Consider using a CSIDriver instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
     pub flex_volume: Option<FluentBitPositionDbFlexVolume>,
-    /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
+    /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running.
+    /// Deprecated: Flocker is deprecated and the in-tree flocker type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub flocker: Option<FluentBitPositionDbFlocker>,
     /// gcePersistentDisk represents a GCE Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
+    /// Deprecated: GCEPersistentDisk is deprecated. All operations for the in-tree
+    /// gcePersistentDisk type are redirected to the pd.csi.storage.gke.io CSI driver.
     /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
     pub gce_persistent_disk: Option<FluentBitPositionDbGcePersistentDisk>,
     /// gitRepo represents a git repository at a particular revision.
-    /// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
+    /// Deprecated: GitRepo is deprecated. To provision a container with a git repo, mount an
     /// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
     /// into the Pod's container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitRepo")]
     pub git_repo: Option<FluentBitPositionDbGitRepo>,
     /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
+    /// Deprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer supported.
     /// More info: <https://examples.k8s.io/volumes/glusterfs/README.md>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub glusterfs: Option<FluentBitPositionDbGlusterfs>,
@@ -2668,11 +2654,24 @@ pub struct FluentBitPositionDb {
     /// used for system agents or other privileged things that are allowed
     /// to see the host machine. Most containers will NOT need this.
     /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#hostpath>
-    /// ---
-    /// TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not
-    /// mount host directories as read/write.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
     pub host_path: Option<FluentBitPositionDbHostPath>,
+    /// image represents an OCI object (a container image or artifact) pulled and mounted on the kubelet's host machine.
+    /// The volume is resolved at pod startup depending on which PullPolicy value is provided:
+    /// 
+    /// - Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
+    /// - Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
+    /// - IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
+    /// 
+    /// The volume gets re-resolved if the pod gets deleted and recreated, which means that new remote content will become available on pod recreation.
+    /// A failure to resolve or pull the image during pod startup will block containers from starting and may add significant latency. Failures will be retried using normal volume backoff and will be reported on the pod reason and message.
+    /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
+    /// The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
+    /// The volume will be mounted read-only (ro) and non-executable files (noexec).
+    /// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.
+    /// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<FluentBitPositionDbImage>,
     /// iscsi represents an ISCSI Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: <https://examples.k8s.io/volumes/iscsi/README.md>
@@ -2687,23 +2686,30 @@ pub struct FluentBitPositionDb {
     /// More info: <https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<FluentBitPositionDbPersistentVolumeClaim>,
-    /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
+    /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine.
+    /// Deprecated: PhotonPersistentDisk is deprecated and the in-tree photonPersistentDisk type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
     pub photon_persistent_disk: Option<FluentBitPositionDbPhotonPersistentDisk>,
-    /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
+    /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine.
+    /// Deprecated: PortworxVolume is deprecated. All operations for the in-tree portworxVolume type
+    /// are redirected to the pxd.portworx.com CSI driver when the CSIMigrationPortworx feature-gate
+    /// is on.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
     pub portworx_volume: Option<FluentBitPositionDbPortworxVolume>,
     /// projected items for all in one resources secrets, configmaps, and downward API
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub projected: Option<FluentBitPositionDbProjected>,
-    /// quobyte represents a Quobyte mount on the host that shares a pod's lifetime
+    /// quobyte represents a Quobyte mount on the host that shares a pod's lifetime.
+    /// Deprecated: Quobyte is deprecated and the in-tree quobyte type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub quobyte: Option<FluentBitPositionDbQuobyte>,
     /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
+    /// Deprecated: RBD is deprecated and the in-tree rbd type is no longer supported.
     /// More info: <https://examples.k8s.io/volumes/rbd/README.md>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rbd: Option<FluentBitPositionDbRbd>,
     /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
+    /// Deprecated: ScaleIO is deprecated and the in-tree scaleIO type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleIO")]
     pub scale_io: Option<FluentBitPositionDbScaleIo>,
     /// secret represents a secret that should populate this volume.
@@ -2711,15 +2717,20 @@ pub struct FluentBitPositionDb {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<FluentBitPositionDbSecret>,
     /// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
+    /// Deprecated: StorageOS is deprecated and the in-tree storageos type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storageos: Option<FluentBitPositionDbStorageos>,
-    /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
+    /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine.
+    /// Deprecated: VsphereVolume is deprecated. All operations for the in-tree vsphereVolume type
+    /// are redirected to the csi.vsphere.vmware.com CSI driver.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
     pub vsphere_volume: Option<FluentBitPositionDbVsphereVolume>,
 }
 
 /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
 /// kubelet's host machine and then exposed to the pod.
+/// Deprecated: AWSElasticBlockStore is deprecated. All operations for the in-tree
+/// awsElasticBlockStore type are redirected to the ebs.csi.aws.com CSI driver.
 /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitPositionDbAwsElasticBlockStore {
@@ -2727,7 +2738,6 @@ pub struct FluentBitPositionDbAwsElasticBlockStore {
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
     /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore>
-    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// partition is the partition in the volume that you want to mount.
@@ -2747,6 +2757,8 @@ pub struct FluentBitPositionDbAwsElasticBlockStore {
 }
 
 /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
+/// Deprecated: AzureDisk is deprecated. All operations for the in-tree azureDisk type
+/// are redirected to the disk.csi.azure.com CSI driver.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitPositionDbAzureDisk {
     /// cachingMode is the Host Caching mode: None, Read Only, Read Write.
@@ -2773,6 +2785,8 @@ pub struct FluentBitPositionDbAzureDisk {
 }
 
 /// azureFile represents an Azure File Service mount on the host and bind mount to the pod.
+/// Deprecated: AzureFile is deprecated. All operations for the in-tree azureFile type
+/// are redirected to the file.csi.azure.com CSI driver.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitPositionDbAzureFile {
     /// readOnly defaults to false (read/write). ReadOnly here will force
@@ -2787,7 +2801,8 @@ pub struct FluentBitPositionDbAzureFile {
     pub share_name: String,
 }
 
-/// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime
+/// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime.
+/// Deprecated: CephFS is deprecated and the in-tree cephfs type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitPositionDbCephfs {
     /// monitors is Required: Monitors is a collection of Ceph monitors
@@ -2823,14 +2838,14 @@ pub struct FluentBitPositionDbCephfsSecretRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
 /// cinder represents a cinder volume attached and mounted on kubelets host machine.
+/// Deprecated: Cinder is deprecated. All operations for the in-tree cinder type
+/// are redirected to the cinder.csi.openstack.org CSI driver.
 /// More info: <https://examples.k8s.io/mysql-cinder-pd/README.md>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitPositionDbCinder {
@@ -2863,9 +2878,7 @@ pub struct FluentBitPositionDbCinderSecretRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -2895,9 +2908,7 @@ pub struct FluentBitPositionDbConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional specify whether the ConfigMap or its keys must be defined
@@ -2925,7 +2936,7 @@ pub struct FluentBitPositionDbConfigMapItems {
     pub path: String,
 }
 
-/// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature).
+/// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitPositionDbCsi {
     /// driver is the name of the CSI driver that handles this volume.
@@ -2964,9 +2975,7 @@ pub struct FluentBitPositionDbCsiNodePublishSecretRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -3060,7 +3069,6 @@ pub struct FluentBitPositionDbEmptyDir {
 /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
 /// and deleted when the pod is removed.
 /// 
-/// 
 /// Use this if:
 /// a) the volume is only needed while the pod runs,
 /// b) features of normal volumes like restoring from snapshot or capacity
@@ -3071,16 +3079,13 @@ pub struct FluentBitPositionDbEmptyDir {
 ///    information on the connection between this volume type
 ///    and PersistentVolumeClaim).
 /// 
-/// 
 /// Use PersistentVolumeClaim or one of the vendor-specific
 /// APIs for volumes that persist for longer than the lifecycle
 /// of an individual pod.
 /// 
-/// 
 /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
 /// be used that way - see the documentation of the driver for
 /// more information.
-/// 
 /// 
 /// A pod can use both types of ephemeral volumes and
 /// persistent volumes at the same time.
@@ -3094,7 +3099,6 @@ pub struct FluentBitPositionDbEphemeral {
     /// entry. Pod validation will reject the pod if the concatenated name
     /// is not valid for a PVC (for example, too long).
     /// 
-    /// 
     /// An existing PVC with that name that is not owned by the pod
     /// will *not* be used for the pod to avoid using an unrelated
     /// volume by mistake. Starting the pod is then blocked until
@@ -3104,10 +3108,8 @@ pub struct FluentBitPositionDbEphemeral {
     /// this should not be necessary, but it may be useful when
     /// manually reconstructing a broken cluster.
     /// 
-    /// 
     /// This field is read-only and no changes will be made by Kubernetes
     /// to the PVC after it has been created.
-    /// 
     /// 
     /// Required, must not be nil.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
@@ -3122,7 +3124,6 @@ pub struct FluentBitPositionDbEphemeral {
 /// entry. Pod validation will reject the pod if the concatenated name
 /// is not valid for a PVC (for example, too long).
 /// 
-/// 
 /// An existing PVC with that name that is not owned by the pod
 /// will *not* be used for the pod to avoid using an unrelated
 /// volume by mistake. Starting the pod is then blocked until
@@ -3132,10 +3133,8 @@ pub struct FluentBitPositionDbEphemeral {
 /// this should not be necessary, but it may be useful when
 /// manually reconstructing a broken cluster.
 /// 
-/// 
 /// This field is read-only and no changes will be made by Kubernetes
 /// to the PVC after it has been created.
-/// 
 /// 
 /// Required, must not be nil.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3239,7 +3238,7 @@ pub struct FluentBitPositionDbEphemeralVolumeClaimTemplateSpec {
     /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
     /// exists.
     /// More info: <https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/>
-    /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
+    /// (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
@@ -3368,7 +3367,6 @@ pub struct FluentBitPositionDbFc {
     /// fsType is the filesystem type to mount.
     /// Must be a filesystem type supported by the host operating system.
     /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
-    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// lun is Optional: FC target lun number
@@ -3389,6 +3387,7 @@ pub struct FluentBitPositionDbFc {
 
 /// flexVolume represents a generic volume resource that is
 /// provisioned/attached using an exec based plugin.
+/// Deprecated: FlexVolume is deprecated. Consider using a CSIDriver instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitPositionDbFlexVolume {
     /// driver is the name of the driver to use for this volume.
@@ -3425,14 +3424,13 @@ pub struct FluentBitPositionDbFlexVolumeSecretRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
+/// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running.
+/// Deprecated: Flocker is deprecated and the in-tree flocker type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitPositionDbFlocker {
     /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker
@@ -3446,6 +3444,8 @@ pub struct FluentBitPositionDbFlocker {
 
 /// gcePersistentDisk represents a GCE Disk resource that is attached to a
 /// kubelet's host machine and then exposed to the pod.
+/// Deprecated: GCEPersistentDisk is deprecated. All operations for the in-tree
+/// gcePersistentDisk type are redirected to the pd.csi.storage.gke.io CSI driver.
 /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitPositionDbGcePersistentDisk {
@@ -3453,7 +3453,6 @@ pub struct FluentBitPositionDbGcePersistentDisk {
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
     /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk>
-    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// partition is the partition in the volume that you want to mount.
@@ -3475,7 +3474,7 @@ pub struct FluentBitPositionDbGcePersistentDisk {
 }
 
 /// gitRepo represents a git repository at a particular revision.
-/// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
+/// Deprecated: GitRepo is deprecated. To provision a container with a git repo, mount an
 /// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
 /// into the Pod's container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3494,6 +3493,7 @@ pub struct FluentBitPositionDbGitRepo {
 }
 
 /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
+/// Deprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer supported.
 /// More info: <https://examples.k8s.io/volumes/glusterfs/README.md>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitPositionDbGlusterfs {
@@ -3515,9 +3515,6 @@ pub struct FluentBitPositionDbGlusterfs {
 /// used for system agents or other privileged things that are allowed
 /// to see the host machine. Most containers will NOT need this.
 /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#hostpath>
-/// ---
-/// TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not
-/// mount host directories as read/write.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitPositionDbHostPath {
     /// path of the directory on the host.
@@ -3529,6 +3526,39 @@ pub struct FluentBitPositionDbHostPath {
     /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#hostpath>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
+}
+
+/// image represents an OCI object (a container image or artifact) pulled and mounted on the kubelet's host machine.
+/// The volume is resolved at pod startup depending on which PullPolicy value is provided:
+/// 
+/// - Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
+/// - Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
+/// - IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
+/// 
+/// The volume gets re-resolved if the pod gets deleted and recreated, which means that new remote content will become available on pod recreation.
+/// A failure to resolve or pull the image during pod startup will block containers from starting and may add significant latency. Failures will be retried using normal volume backoff and will be reported on the pod reason and message.
+/// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
+/// The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
+/// The volume will be mounted read-only (ro) and non-executable files (noexec).
+/// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.
+/// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FluentBitPositionDbImage {
+    /// Policy for pulling OCI objects. Possible values are:
+    /// Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
+    /// Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
+    /// IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
+    /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
+    pub pull_policy: Option<String>,
+    /// Required: Image or artifact reference to be used.
+    /// Behaves in the same way as pod.spec.containers[*].image.
+    /// Pull secrets will be assembled in the same way as for the container image by looking up node credentials, SA image pull secrets, and pod spec image pull secrets.
+    /// More info: <https://kubernetes.io/docs/concepts/containers/images>
+    /// This field is optional to allow higher level config management to default or override
+    /// container images in workload controllers like Deployments and StatefulSets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reference: Option<String>,
 }
 
 /// iscsi represents an ISCSI Disk resource that is attached to a
@@ -3546,7 +3576,6 @@ pub struct FluentBitPositionDbIscsi {
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
     /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#iscsi>
-    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// initiatorName is the custom iSCSI Initiator Name.
@@ -3586,9 +3615,7 @@ pub struct FluentBitPositionDbIscsiSecretRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -3625,7 +3652,8 @@ pub struct FluentBitPositionDbPersistentVolumeClaim {
     pub read_only: Option<bool>,
 }
 
-/// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
+/// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine.
+/// Deprecated: PhotonPersistentDisk is deprecated and the in-tree photonPersistentDisk type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitPositionDbPhotonPersistentDisk {
     /// fsType is the filesystem type to mount.
@@ -3638,7 +3666,10 @@ pub struct FluentBitPositionDbPhotonPersistentDisk {
     pub pd_id: String,
 }
 
-/// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
+/// portworxVolume represents a portworx volume attached and mounted on kubelets host machine.
+/// Deprecated: PortworxVolume is deprecated. All operations for the in-tree portworxVolume type
+/// are redirected to the pxd.portworx.com CSI driver when the CSIMigrationPortworx feature-gate
+/// is on.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitPositionDbPortworxVolume {
     /// fSType represents the filesystem type to mount
@@ -3666,24 +3697,23 @@ pub struct FluentBitPositionDbProjected {
     /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    /// sources is the list of volume projections
+    /// sources is the list of volume projections. Each entry in this list
+    /// handles one source.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sources: Option<Vec<FluentBitPositionDbProjectedSources>>,
 }
 
-/// Projection that may be projected along with other supported volume types
+/// Projection that may be projected along with other supported volume types.
+/// Exactly one of these fields must be set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitPositionDbProjectedSources {
     /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
     /// of ClusterTrustBundle objects in an auto-updating file.
     /// 
-    /// 
     /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-    /// 
     /// 
     /// ClusterTrustBundle objects can either be selected by name, or by the
     /// combination of signer name and a label selector.
-    /// 
     /// 
     /// Kubelet performs aggressive normalization of the PEM contents written
     /// into the pod filesystem.  Esoteric PEM features such as inter-block
@@ -3709,13 +3739,10 @@ pub struct FluentBitPositionDbProjectedSources {
 /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
 /// of ClusterTrustBundle objects in an auto-updating file.
 /// 
-/// 
 /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-/// 
 /// 
 /// ClusterTrustBundle objects can either be selected by name, or by the
 /// combination of signer name and a label selector.
-/// 
 /// 
 /// Kubelet performs aggressive normalization of the PEM contents written
 /// into the pod filesystem.  Esoteric PEM features such as inter-block
@@ -3799,9 +3826,7 @@ pub struct FluentBitPositionDbProjectedSourcesConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional specify whether the ConfigMap or its keys must be defined
@@ -3900,9 +3925,7 @@ pub struct FluentBitPositionDbProjectedSourcesSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional field specify whether the Secret or its key must be defined
@@ -3952,7 +3975,8 @@ pub struct FluentBitPositionDbProjectedSourcesServiceAccountToken {
     pub path: String,
 }
 
-/// quobyte represents a Quobyte mount on the host that shares a pod's lifetime
+/// quobyte represents a Quobyte mount on the host that shares a pod's lifetime.
+/// Deprecated: Quobyte is deprecated and the in-tree quobyte type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitPositionDbQuobyte {
     /// group to map volume access to
@@ -3980,6 +4004,7 @@ pub struct FluentBitPositionDbQuobyte {
 }
 
 /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
+/// Deprecated: RBD is deprecated and the in-tree rbd type is no longer supported.
 /// More info: <https://examples.k8s.io/volumes/rbd/README.md>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitPositionDbRbd {
@@ -3987,7 +4012,6 @@ pub struct FluentBitPositionDbRbd {
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
     /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#rbd>
-    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// image is the rados image name.
@@ -4034,14 +4058,13 @@ pub struct FluentBitPositionDbRbdSecretRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
 /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
+/// Deprecated: ScaleIO is deprecated and the in-tree scaleIO type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitPositionDbScaleIo {
     /// fsType is the filesystem type to mount.
@@ -4089,9 +4112,7 @@ pub struct FluentBitPositionDbScaleIoSecretRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -4148,6 +4169,7 @@ pub struct FluentBitPositionDbSecretItems {
 }
 
 /// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
+/// Deprecated: StorageOS is deprecated and the in-tree storageos type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitPositionDbStorageos {
     /// fsType is the filesystem type to mount.
@@ -4185,14 +4207,14 @@ pub struct FluentBitPositionDbStorageosSecretRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
+/// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine.
+/// Deprecated: VsphereVolume is deprecated. All operations for the in-tree vsphereVolume type
+/// are redirected to the csi.vsphere.vmware.com CSI driver.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitPositionDbVsphereVolume {
     /// fsType is filesystem type to mount.
@@ -4237,17 +4259,17 @@ pub struct FluentBitRbacRules {
 /// ReadinessProbe represents the pod's readiness probe.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitReadinessProbe {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<FluentBitReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<FluentBitReadinessProbeGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<FluentBitReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -4262,7 +4284,7 @@ pub struct FluentBitReadinessProbe {
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<FluentBitReadinessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
@@ -4284,7 +4306,7 @@ pub struct FluentBitReadinessProbe {
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitReadinessProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -4296,7 +4318,7 @@ pub struct FluentBitReadinessProbeExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitReadinessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -4304,13 +4326,12 @@ pub struct FluentBitReadinessProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see <https://github.com/grpc/grpc/blob/master/doc/health-checking.md).>
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitReadinessProbeHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -4343,7 +4364,7 @@ pub struct FluentBitReadinessProbeHttpGetHttpHeaders {
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitReadinessProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -4361,10 +4382,8 @@ pub struct FluentBitResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4388,6 +4407,11 @@ pub struct FluentBitResourcesClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// SecurityContext holds pod-level security attributes and common container settings.
@@ -4401,11 +4425,9 @@ pub struct FluentBitSecurityContext {
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
     /// 
-    /// 
     /// 1. The owning GID will be the FSGroup
     /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
     /// 3. The permission bits are OR'd with rw-rw----
-    /// 
     /// 
     /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -4444,6 +4466,31 @@ pub struct FluentBitSecurityContext {
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
+    /// seLinuxChangePolicy defines how the container's SELinux label is applied to all volumes used by the Pod.
+    /// It has no effect on nodes that do not support SELinux or to volumes does not support SELinux.
+    /// Valid values are "MountOption" and "Recursive".
+    /// 
+    /// "Recursive" means relabeling of all files on all Pod volumes by the container runtime.
+    /// This may be slow for large volumes, but allows mixing privileged and unprivileged Pods sharing the same volume on the same node.
+    /// 
+    /// "MountOption" mounts all eligible Pod volumes with `-o context` mount option.
+    /// This requires all Pods that share the same volume to use the same SELinux label.
+    /// It is not possible to share the same volume among privileged and unprivileged Pods.
+    /// Eligible volumes are in-tree FibreChannel and iSCSI volumes, and all CSI volumes
+    /// whose CSI driver announces SELinux support by setting spec.seLinuxMount: true in their
+    /// CSIDriver instance. Other volumes are always re-labelled recursively.
+    /// "MountOption" value is allowed only when SELinuxMount feature gate is enabled.
+    /// 
+    /// If not specified and SELinuxMount feature gate is enabled, "MountOption" is used.
+    /// If not specified and SELinuxMount feature gate is disabled, "MountOption" is used for ReadWriteOncePod volumes
+    /// and "Recursive" for all other volumes.
+    /// 
+    /// This field affects only Pods that have SELinux label set, either in PodSecurityContext or in SecurityContext of all containers.
+    /// 
+    /// All Pods that use the same volume should use the same seLinuxChangePolicy, otherwise some pods can get stuck in ContainerCreating state.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxChangePolicy")]
+    pub se_linux_change_policy: Option<String>,
     /// The SELinux context to be applied to all containers.
     /// If unspecified, the container runtime will allocate a random SELinux context for each
     /// container.  May also be set in SecurityContext.  If set in
@@ -4456,15 +4503,24 @@ pub struct FluentBitSecurityContext {
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<FluentBitSecurityContextSeccompProfile>,
-    /// A list of groups applied to the first process run in each container, in addition
-    /// to the container's primary GID, the fsGroup (if specified), and group memberships
-    /// defined in the container image for the uid of the container process. If unspecified,
-    /// no additional groups are added to any container. Note that group memberships
-    /// defined in the container image for the uid of the container process are still effective,
-    /// even if they are not included in this list.
+    /// A list of groups applied to the first process run in each container, in
+    /// addition to the container's primary GID and fsGroup (if specified).  If
+    /// the SupplementalGroupsPolicy feature is enabled, the
+    /// supplementalGroupsPolicy field determines whether these are in addition
+    /// to or instead of any group memberships defined in the container image.
+    /// If unspecified, no additional groups are added, though group memberships
+    /// defined in the container image may still be used, depending on the
+    /// supplementalGroupsPolicy field.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
+    /// Defines how supplemental groups of the first container processes are calculated.
+    /// Valid values are "Merge" and "Strict". If not specified, "Merge" is used.
+    /// (Alpha) Using the field requires the SupplementalGroupsPolicy feature gate to be enabled
+    /// and the container runtime must implement support for this feature.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
+    pub supplemental_groups_policy: Option<String>,
     /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
     /// sysctls (by the container runtime) might fail to launch.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -4531,7 +4587,6 @@ pub struct FluentBitSecurityContextSeccompProfile {
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    /// 
     /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
@@ -4626,26 +4681,35 @@ pub struct FluentBitTolerations {
 pub struct FluentBitVolumes {
     /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
+    /// Deprecated: AWSElasticBlockStore is deprecated. All operations for the in-tree
+    /// awsElasticBlockStore type are redirected to the ebs.csi.aws.com CSI driver.
     /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
     pub aws_elastic_block_store: Option<FluentBitVolumesAwsElasticBlockStore>,
     /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
+    /// Deprecated: AzureDisk is deprecated. All operations for the in-tree azureDisk type
+    /// are redirected to the disk.csi.azure.com CSI driver.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
     pub azure_disk: Option<FluentBitVolumesAzureDisk>,
     /// azureFile represents an Azure File Service mount on the host and bind mount to the pod.
+    /// Deprecated: AzureFile is deprecated. All operations for the in-tree azureFile type
+    /// are redirected to the file.csi.azure.com CSI driver.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureFile")]
     pub azure_file: Option<FluentBitVolumesAzureFile>,
-    /// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime
+    /// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime.
+    /// Deprecated: CephFS is deprecated and the in-tree cephfs type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cephfs: Option<FluentBitVolumesCephfs>,
     /// cinder represents a cinder volume attached and mounted on kubelets host machine.
+    /// Deprecated: Cinder is deprecated. All operations for the in-tree cinder type
+    /// are redirected to the cinder.csi.openstack.org CSI driver.
     /// More info: <https://examples.k8s.io/mysql-cinder-pd/README.md>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cinder: Option<FluentBitVolumesCinder>,
     /// configMap represents a configMap that should populate this volume
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<FluentBitVolumesConfigMap>,
-    /// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature).
+    /// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<FluentBitVolumesCsi>,
     /// downwardAPI represents downward API about the pod that should populate this volume
@@ -4659,7 +4723,6 @@ pub struct FluentBitVolumes {
     /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
     /// and deleted when the pod is removed.
     /// 
-    /// 
     /// Use this if:
     /// a) the volume is only needed while the pod runs,
     /// b) features of normal volumes like restoring from snapshot or capacity
@@ -4670,16 +4733,13 @@ pub struct FluentBitVolumes {
     ///    information on the connection between this volume type
     ///    and PersistentVolumeClaim).
     /// 
-    /// 
     /// Use PersistentVolumeClaim or one of the vendor-specific
     /// APIs for volumes that persist for longer than the lifecycle
     /// of an individual pod.
     /// 
-    /// 
     /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
     /// be used that way - see the documentation of the driver for
     /// more information.
-    /// 
     /// 
     /// A pod can use both types of ephemeral volumes and
     /// persistent volumes at the same time.
@@ -4690,23 +4750,28 @@ pub struct FluentBitVolumes {
     pub fc: Option<FluentBitVolumesFc>,
     /// flexVolume represents a generic volume resource that is
     /// provisioned/attached using an exec based plugin.
+    /// Deprecated: FlexVolume is deprecated. Consider using a CSIDriver instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
     pub flex_volume: Option<FluentBitVolumesFlexVolume>,
-    /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
+    /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running.
+    /// Deprecated: Flocker is deprecated and the in-tree flocker type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub flocker: Option<FluentBitVolumesFlocker>,
     /// gcePersistentDisk represents a GCE Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
+    /// Deprecated: GCEPersistentDisk is deprecated. All operations for the in-tree
+    /// gcePersistentDisk type are redirected to the pd.csi.storage.gke.io CSI driver.
     /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
     pub gce_persistent_disk: Option<FluentBitVolumesGcePersistentDisk>,
     /// gitRepo represents a git repository at a particular revision.
-    /// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
+    /// Deprecated: GitRepo is deprecated. To provision a container with a git repo, mount an
     /// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
     /// into the Pod's container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitRepo")]
     pub git_repo: Option<FluentBitVolumesGitRepo>,
     /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
+    /// Deprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer supported.
     /// More info: <https://examples.k8s.io/volumes/glusterfs/README.md>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub glusterfs: Option<FluentBitVolumesGlusterfs>,
@@ -4715,11 +4780,24 @@ pub struct FluentBitVolumes {
     /// used for system agents or other privileged things that are allowed
     /// to see the host machine. Most containers will NOT need this.
     /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#hostpath>
-    /// ---
-    /// TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not
-    /// mount host directories as read/write.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
     pub host_path: Option<FluentBitVolumesHostPath>,
+    /// image represents an OCI object (a container image or artifact) pulled and mounted on the kubelet's host machine.
+    /// The volume is resolved at pod startup depending on which PullPolicy value is provided:
+    /// 
+    /// - Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
+    /// - Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
+    /// - IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
+    /// 
+    /// The volume gets re-resolved if the pod gets deleted and recreated, which means that new remote content will become available on pod recreation.
+    /// A failure to resolve or pull the image during pod startup will block containers from starting and may add significant latency. Failures will be retried using normal volume backoff and will be reported on the pod reason and message.
+    /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
+    /// The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
+    /// The volume will be mounted read-only (ro) and non-executable files (noexec).
+    /// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.
+    /// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<FluentBitVolumesImage>,
     /// iscsi represents an ISCSI Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: <https://examples.k8s.io/volumes/iscsi/README.md>
@@ -4738,23 +4816,30 @@ pub struct FluentBitVolumes {
     /// More info: <https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<FluentBitVolumesPersistentVolumeClaim>,
-    /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
+    /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine.
+    /// Deprecated: PhotonPersistentDisk is deprecated and the in-tree photonPersistentDisk type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
     pub photon_persistent_disk: Option<FluentBitVolumesPhotonPersistentDisk>,
-    /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
+    /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine.
+    /// Deprecated: PortworxVolume is deprecated. All operations for the in-tree portworxVolume type
+    /// are redirected to the pxd.portworx.com CSI driver when the CSIMigrationPortworx feature-gate
+    /// is on.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
     pub portworx_volume: Option<FluentBitVolumesPortworxVolume>,
     /// projected items for all in one resources secrets, configmaps, and downward API
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub projected: Option<FluentBitVolumesProjected>,
-    /// quobyte represents a Quobyte mount on the host that shares a pod's lifetime
+    /// quobyte represents a Quobyte mount on the host that shares a pod's lifetime.
+    /// Deprecated: Quobyte is deprecated and the in-tree quobyte type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub quobyte: Option<FluentBitVolumesQuobyte>,
     /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
+    /// Deprecated: RBD is deprecated and the in-tree rbd type is no longer supported.
     /// More info: <https://examples.k8s.io/volumes/rbd/README.md>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rbd: Option<FluentBitVolumesRbd>,
     /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
+    /// Deprecated: ScaleIO is deprecated and the in-tree scaleIO type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleIO")]
     pub scale_io: Option<FluentBitVolumesScaleIo>,
     /// secret represents a secret that should populate this volume.
@@ -4762,15 +4847,20 @@ pub struct FluentBitVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<FluentBitVolumesSecret>,
     /// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
+    /// Deprecated: StorageOS is deprecated and the in-tree storageos type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storageos: Option<FluentBitVolumesStorageos>,
-    /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
+    /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine.
+    /// Deprecated: VsphereVolume is deprecated. All operations for the in-tree vsphereVolume type
+    /// are redirected to the csi.vsphere.vmware.com CSI driver.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
     pub vsphere_volume: Option<FluentBitVolumesVsphereVolume>,
 }
 
 /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
 /// kubelet's host machine and then exposed to the pod.
+/// Deprecated: AWSElasticBlockStore is deprecated. All operations for the in-tree
+/// awsElasticBlockStore type are redirected to the ebs.csi.aws.com CSI driver.
 /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitVolumesAwsElasticBlockStore {
@@ -4778,7 +4868,6 @@ pub struct FluentBitVolumesAwsElasticBlockStore {
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
     /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore>
-    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// partition is the partition in the volume that you want to mount.
@@ -4798,6 +4887,8 @@ pub struct FluentBitVolumesAwsElasticBlockStore {
 }
 
 /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
+/// Deprecated: AzureDisk is deprecated. All operations for the in-tree azureDisk type
+/// are redirected to the disk.csi.azure.com CSI driver.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitVolumesAzureDisk {
     /// cachingMode is the Host Caching mode: None, Read Only, Read Write.
@@ -4824,6 +4915,8 @@ pub struct FluentBitVolumesAzureDisk {
 }
 
 /// azureFile represents an Azure File Service mount on the host and bind mount to the pod.
+/// Deprecated: AzureFile is deprecated. All operations for the in-tree azureFile type
+/// are redirected to the file.csi.azure.com CSI driver.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitVolumesAzureFile {
     /// readOnly defaults to false (read/write). ReadOnly here will force
@@ -4838,7 +4931,8 @@ pub struct FluentBitVolumesAzureFile {
     pub share_name: String,
 }
 
-/// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime
+/// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime.
+/// Deprecated: CephFS is deprecated and the in-tree cephfs type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitVolumesCephfs {
     /// monitors is Required: Monitors is a collection of Ceph monitors
@@ -4874,14 +4968,14 @@ pub struct FluentBitVolumesCephfsSecretRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
 /// cinder represents a cinder volume attached and mounted on kubelets host machine.
+/// Deprecated: Cinder is deprecated. All operations for the in-tree cinder type
+/// are redirected to the cinder.csi.openstack.org CSI driver.
 /// More info: <https://examples.k8s.io/mysql-cinder-pd/README.md>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitVolumesCinder {
@@ -4914,9 +5008,7 @@ pub struct FluentBitVolumesCinderSecretRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -4946,9 +5038,7 @@ pub struct FluentBitVolumesConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional specify whether the ConfigMap or its keys must be defined
@@ -4976,7 +5066,7 @@ pub struct FluentBitVolumesConfigMapItems {
     pub path: String,
 }
 
-/// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature).
+/// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitVolumesCsi {
     /// driver is the name of the CSI driver that handles this volume.
@@ -5015,9 +5105,7 @@ pub struct FluentBitVolumesCsiNodePublishSecretRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -5111,7 +5199,6 @@ pub struct FluentBitVolumesEmptyDir {
 /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
 /// and deleted when the pod is removed.
 /// 
-/// 
 /// Use this if:
 /// a) the volume is only needed while the pod runs,
 /// b) features of normal volumes like restoring from snapshot or capacity
@@ -5122,16 +5209,13 @@ pub struct FluentBitVolumesEmptyDir {
 ///    information on the connection between this volume type
 ///    and PersistentVolumeClaim).
 /// 
-/// 
 /// Use PersistentVolumeClaim or one of the vendor-specific
 /// APIs for volumes that persist for longer than the lifecycle
 /// of an individual pod.
 /// 
-/// 
 /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
 /// be used that way - see the documentation of the driver for
 /// more information.
-/// 
 /// 
 /// A pod can use both types of ephemeral volumes and
 /// persistent volumes at the same time.
@@ -5145,7 +5229,6 @@ pub struct FluentBitVolumesEphemeral {
     /// entry. Pod validation will reject the pod if the concatenated name
     /// is not valid for a PVC (for example, too long).
     /// 
-    /// 
     /// An existing PVC with that name that is not owned by the pod
     /// will *not* be used for the pod to avoid using an unrelated
     /// volume by mistake. Starting the pod is then blocked until
@@ -5155,10 +5238,8 @@ pub struct FluentBitVolumesEphemeral {
     /// this should not be necessary, but it may be useful when
     /// manually reconstructing a broken cluster.
     /// 
-    /// 
     /// This field is read-only and no changes will be made by Kubernetes
     /// to the PVC after it has been created.
-    /// 
     /// 
     /// Required, must not be nil.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
@@ -5173,7 +5254,6 @@ pub struct FluentBitVolumesEphemeral {
 /// entry. Pod validation will reject the pod if the concatenated name
 /// is not valid for a PVC (for example, too long).
 /// 
-/// 
 /// An existing PVC with that name that is not owned by the pod
 /// will *not* be used for the pod to avoid using an unrelated
 /// volume by mistake. Starting the pod is then blocked until
@@ -5183,10 +5263,8 @@ pub struct FluentBitVolumesEphemeral {
 /// this should not be necessary, but it may be useful when
 /// manually reconstructing a broken cluster.
 /// 
-/// 
 /// This field is read-only and no changes will be made by Kubernetes
 /// to the PVC after it has been created.
-/// 
 /// 
 /// Required, must not be nil.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5290,7 +5368,7 @@ pub struct FluentBitVolumesEphemeralVolumeClaimTemplateSpec {
     /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
     /// exists.
     /// More info: <https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/>
-    /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
+    /// (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
@@ -5419,7 +5497,6 @@ pub struct FluentBitVolumesFc {
     /// fsType is the filesystem type to mount.
     /// Must be a filesystem type supported by the host operating system.
     /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
-    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// lun is Optional: FC target lun number
@@ -5440,6 +5517,7 @@ pub struct FluentBitVolumesFc {
 
 /// flexVolume represents a generic volume resource that is
 /// provisioned/attached using an exec based plugin.
+/// Deprecated: FlexVolume is deprecated. Consider using a CSIDriver instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitVolumesFlexVolume {
     /// driver is the name of the driver to use for this volume.
@@ -5476,14 +5554,13 @@ pub struct FluentBitVolumesFlexVolumeSecretRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
+/// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running.
+/// Deprecated: Flocker is deprecated and the in-tree flocker type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitVolumesFlocker {
     /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker
@@ -5497,6 +5574,8 @@ pub struct FluentBitVolumesFlocker {
 
 /// gcePersistentDisk represents a GCE Disk resource that is attached to a
 /// kubelet's host machine and then exposed to the pod.
+/// Deprecated: GCEPersistentDisk is deprecated. All operations for the in-tree
+/// gcePersistentDisk type are redirected to the pd.csi.storage.gke.io CSI driver.
 /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitVolumesGcePersistentDisk {
@@ -5504,7 +5583,6 @@ pub struct FluentBitVolumesGcePersistentDisk {
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
     /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk>
-    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// partition is the partition in the volume that you want to mount.
@@ -5526,7 +5604,7 @@ pub struct FluentBitVolumesGcePersistentDisk {
 }
 
 /// gitRepo represents a git repository at a particular revision.
-/// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
+/// Deprecated: GitRepo is deprecated. To provision a container with a git repo, mount an
 /// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
 /// into the Pod's container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5545,6 +5623,7 @@ pub struct FluentBitVolumesGitRepo {
 }
 
 /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
+/// Deprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer supported.
 /// More info: <https://examples.k8s.io/volumes/glusterfs/README.md>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitVolumesGlusterfs {
@@ -5566,9 +5645,6 @@ pub struct FluentBitVolumesGlusterfs {
 /// used for system agents or other privileged things that are allowed
 /// to see the host machine. Most containers will NOT need this.
 /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#hostpath>
-/// ---
-/// TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not
-/// mount host directories as read/write.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitVolumesHostPath {
     /// path of the directory on the host.
@@ -5580,6 +5656,39 @@ pub struct FluentBitVolumesHostPath {
     /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#hostpath>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
+}
+
+/// image represents an OCI object (a container image or artifact) pulled and mounted on the kubelet's host machine.
+/// The volume is resolved at pod startup depending on which PullPolicy value is provided:
+/// 
+/// - Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
+/// - Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
+/// - IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
+/// 
+/// The volume gets re-resolved if the pod gets deleted and recreated, which means that new remote content will become available on pod recreation.
+/// A failure to resolve or pull the image during pod startup will block containers from starting and may add significant latency. Failures will be retried using normal volume backoff and will be reported on the pod reason and message.
+/// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
+/// The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
+/// The volume will be mounted read-only (ro) and non-executable files (noexec).
+/// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.
+/// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FluentBitVolumesImage {
+    /// Policy for pulling OCI objects. Possible values are:
+    /// Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
+    /// Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
+    /// IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
+    /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
+    pub pull_policy: Option<String>,
+    /// Required: Image or artifact reference to be used.
+    /// Behaves in the same way as pod.spec.containers[*].image.
+    /// Pull secrets will be assembled in the same way as for the container image by looking up node credentials, SA image pull secrets, and pod spec image pull secrets.
+    /// More info: <https://kubernetes.io/docs/concepts/containers/images>
+    /// This field is optional to allow higher level config management to default or override
+    /// container images in workload controllers like Deployments and StatefulSets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reference: Option<String>,
 }
 
 /// iscsi represents an ISCSI Disk resource that is attached to a
@@ -5597,7 +5706,6 @@ pub struct FluentBitVolumesIscsi {
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
     /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#iscsi>
-    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// initiatorName is the custom iSCSI Initiator Name.
@@ -5637,9 +5745,7 @@ pub struct FluentBitVolumesIscsiSecretRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -5676,7 +5782,8 @@ pub struct FluentBitVolumesPersistentVolumeClaim {
     pub read_only: Option<bool>,
 }
 
-/// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
+/// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine.
+/// Deprecated: PhotonPersistentDisk is deprecated and the in-tree photonPersistentDisk type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitVolumesPhotonPersistentDisk {
     /// fsType is the filesystem type to mount.
@@ -5689,7 +5796,10 @@ pub struct FluentBitVolumesPhotonPersistentDisk {
     pub pd_id: String,
 }
 
-/// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
+/// portworxVolume represents a portworx volume attached and mounted on kubelets host machine.
+/// Deprecated: PortworxVolume is deprecated. All operations for the in-tree portworxVolume type
+/// are redirected to the pxd.portworx.com CSI driver when the CSIMigrationPortworx feature-gate
+/// is on.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitVolumesPortworxVolume {
     /// fSType represents the filesystem type to mount
@@ -5717,24 +5827,23 @@ pub struct FluentBitVolumesProjected {
     /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    /// sources is the list of volume projections
+    /// sources is the list of volume projections. Each entry in this list
+    /// handles one source.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sources: Option<Vec<FluentBitVolumesProjectedSources>>,
 }
 
-/// Projection that may be projected along with other supported volume types
+/// Projection that may be projected along with other supported volume types.
+/// Exactly one of these fields must be set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitVolumesProjectedSources {
     /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
     /// of ClusterTrustBundle objects in an auto-updating file.
     /// 
-    /// 
     /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-    /// 
     /// 
     /// ClusterTrustBundle objects can either be selected by name, or by the
     /// combination of signer name and a label selector.
-    /// 
     /// 
     /// Kubelet performs aggressive normalization of the PEM contents written
     /// into the pod filesystem.  Esoteric PEM features such as inter-block
@@ -5760,13 +5869,10 @@ pub struct FluentBitVolumesProjectedSources {
 /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
 /// of ClusterTrustBundle objects in an auto-updating file.
 /// 
-/// 
 /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-/// 
 /// 
 /// ClusterTrustBundle objects can either be selected by name, or by the
 /// combination of signer name and a label selector.
-/// 
 /// 
 /// Kubelet performs aggressive normalization of the PEM contents written
 /// into the pod filesystem.  Esoteric PEM features such as inter-block
@@ -5850,9 +5956,7 @@ pub struct FluentBitVolumesProjectedSourcesConfigMap {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional specify whether the ConfigMap or its keys must be defined
@@ -5951,9 +6055,7 @@ pub struct FluentBitVolumesProjectedSourcesSecret {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional field specify whether the Secret or its key must be defined
@@ -6003,7 +6105,8 @@ pub struct FluentBitVolumesProjectedSourcesServiceAccountToken {
     pub path: String,
 }
 
-/// quobyte represents a Quobyte mount on the host that shares a pod's lifetime
+/// quobyte represents a Quobyte mount on the host that shares a pod's lifetime.
+/// Deprecated: Quobyte is deprecated and the in-tree quobyte type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitVolumesQuobyte {
     /// group to map volume access to
@@ -6031,6 +6134,7 @@ pub struct FluentBitVolumesQuobyte {
 }
 
 /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
+/// Deprecated: RBD is deprecated and the in-tree rbd type is no longer supported.
 /// More info: <https://examples.k8s.io/volumes/rbd/README.md>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitVolumesRbd {
@@ -6038,7 +6142,6 @@ pub struct FluentBitVolumesRbd {
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
     /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#rbd>
-    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// image is the rados image name.
@@ -6085,14 +6188,13 @@ pub struct FluentBitVolumesRbdSecretRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
 /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
+/// Deprecated: ScaleIO is deprecated and the in-tree scaleIO type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitVolumesScaleIo {
     /// fsType is the filesystem type to mount.
@@ -6140,9 +6242,7 @@ pub struct FluentBitVolumesScaleIoSecretRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -6199,6 +6299,7 @@ pub struct FluentBitVolumesSecretItems {
 }
 
 /// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
+/// Deprecated: StorageOS is deprecated and the in-tree storageos type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitVolumesStorageos {
     /// fsType is the filesystem type to mount.
@@ -6236,14 +6337,14 @@ pub struct FluentBitVolumesStorageosSecretRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
+/// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine.
+/// Deprecated: VsphereVolume is deprecated. All operations for the in-tree vsphereVolume type
+/// are redirected to the csi.vsphere.vmware.com CSI driver.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitVolumesVsphereVolume {
     /// fsType is filesystem type to mount.
@@ -6286,9 +6387,7 @@ pub struct FluentBitVolumesMounts {
     /// RecursiveReadOnly specifies whether read-only mounts should be handled
     /// recursively.
     /// 
-    /// 
     /// If ReadOnly is false, this field has no meaning and must be unspecified.
-    /// 
     /// 
     /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
     /// recursively read-only.  If this field is set to IfPossible, the mount is made
@@ -6297,10 +6396,8 @@ pub struct FluentBitVolumesMounts {
     /// supported by the container runtime, otherwise the pod will not be started and
     /// an error will be generated to indicate the reason.
     /// 
-    /// 
     /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
     /// None (or be unspecified, which defaults to None).
-    /// 
     /// 
     /// If this field is not specified, it is treated as an equivalent of Disabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]

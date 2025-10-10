@@ -128,7 +128,7 @@ pub struct OperatorConfigDriverSpecDefaultsControllerPlugin {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// DeploymentStrategy describes how to replace existing pods with new ones
-    /// Default value is RollingUpdate with MaxUnavailable and MaxSurege as 25% (kubernetes default)
+    /// Default value is Recreate
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploymentStrategy")]
     pub deployment_strategy: Option<OperatorConfigDriverSpecDefaultsControllerPluginDeploymentStrategy>,
     /// hostNetwork setting to be propagated to CSI controller plugin pods
@@ -859,7 +859,7 @@ pub struct OperatorConfigDriverSpecDefaultsControllerPluginAffinityPodAntiAffini
 }
 
 /// DeploymentStrategy describes how to replace existing pods with new ones
-/// Default value is RollingUpdate with MaxUnavailable and MaxSurege as 25% (kubernetes default)
+/// Default value is Recreate
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OperatorConfigDriverSpecDefaultsControllerPluginDeploymentStrategy {
     /// Rolling update config params. Present only if DeploymentStrategyType =

@@ -405,9 +405,7 @@ pub struct ClusterOutputOutputsCloudWatchAwsKeyIdValueFromSecretKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -440,9 +438,7 @@ pub struct ClusterOutputOutputsCloudWatchAwsSecKeyValueFromSecretKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -570,9 +566,7 @@ pub struct ClusterOutputOutputsDatadogApiKeyValueFromSecretKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -707,9 +701,7 @@ pub struct ClusterOutputOutputsElasticsearchClientKeyPasswordValueFromSecretKeyR
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -742,9 +734,7 @@ pub struct ClusterOutputOutputsElasticsearchCloudAuthValueFromSecretKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -778,9 +768,7 @@ pub struct ClusterOutputOutputsElasticsearchCloudIdValueFromSecretKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -813,9 +801,7 @@ pub struct ClusterOutputOutputsElasticsearchPasswordValueFromSecretKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -848,9 +834,7 @@ pub struct ClusterOutputOutputsElasticsearchUserValueFromSecretKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -994,9 +978,7 @@ pub struct ClusterOutputOutputsElasticsearchDataStreamClientKeyPasswordValueFrom
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1029,9 +1011,7 @@ pub struct ClusterOutputOutputsElasticsearchDataStreamCloudAuthValueFromSecretKe
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1065,9 +1045,7 @@ pub struct ClusterOutputOutputsElasticsearchDataStreamCloudIdValueFromSecretKeyR
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1100,9 +1078,7 @@ pub struct ClusterOutputOutputsElasticsearchDataStreamPasswordValueFromSecretKey
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1135,9 +1111,7 @@ pub struct ClusterOutputOutputsElasticsearchDataStreamUserValueFromSecretKeyRef 
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1397,9 +1371,7 @@ pub struct ClusterOutputOutputsForwardSecurityUserPasswordValueFromSecretKeyRef 
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1432,9 +1404,7 @@ pub struct ClusterOutputOutputsForwardSecurityUserUsernameValueFromSecretKeyRef 
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1505,9 +1475,7 @@ pub struct ClusterOutputOutputsForwardServersPasswordValueFromSecretKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1540,9 +1508,7 @@ pub struct ClusterOutputOutputsForwardServersUsernameValueFromSecretKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1654,9 +1620,7 @@ pub struct ClusterOutputOutputsForwardServiceDiscoveryServerPasswordValueFromSec
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1689,9 +1653,7 @@ pub struct ClusterOutputOutputsForwardServiceDiscoveryServerUsernameValueFromSec
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1826,9 +1788,7 @@ pub struct ClusterOutputOutputsHttpAuthPasswordValueFromSecretKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1861,9 +1821,7 @@ pub struct ClusterOutputOutputsHttpAuthUsernameValueFromSecretKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2084,9 +2042,7 @@ pub struct ClusterOutputOutputsLokiHttpPasswordValueFromSecretKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2119,9 +2075,7 @@ pub struct ClusterOutputOutputsLokiHttpUserValueFromSecretKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2164,9 +2118,7 @@ pub struct ClusterOutputOutputsLokiTenantIdValueFromSecretKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2245,9 +2197,7 @@ pub struct ClusterOutputOutputsOpensearchPasswordValueFromSecretKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2280,9 +2230,7 @@ pub struct ClusterOutputOutputsOpensearchUserValueFromSecretKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2377,9 +2325,7 @@ pub struct ClusterOutputOutputsS3AwsKeyIdFromSecretValueFromSecretKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -2412,9 +2358,7 @@ pub struct ClusterOutputOutputsS3AwsSecKeyFromSecretValueFromSecretKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it <https://github.com/kubernetes-sigs/kubebuilder/issues/3896.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined

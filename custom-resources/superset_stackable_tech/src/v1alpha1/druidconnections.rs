@@ -9,7 +9,8 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// The DruidConnection resource can be used to automatically deploy a Druid datasource in Superset. Learn more about it in the [Superset operator usage guide](<https://docs.stackable.tech/home/nightly/superset/usage-guide/connecting-druid).>
+/// The DruidConnection resource can be used to automatically deploy a Druid datasource in Superset.
+/// Learn more about it in the [Superset operator usage guide](<https://docs.stackable.tech/home/nightly/superset/usage-guide/connecting-druid).>
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "superset.stackable.tech", version = "v1alpha1", kind = "DruidConnection", plural = "druidconnections")]
 #[kube(namespaced)]

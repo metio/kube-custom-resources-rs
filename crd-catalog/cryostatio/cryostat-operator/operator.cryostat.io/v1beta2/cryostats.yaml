@@ -389,6 +389,61 @@ spec:
                           type: "boolean"
                       type: "object"
                   type: "object"
+                objectStorageOptions:
+                  description: "Options to configure the Cryostat application's object storage. If not provided, a managed instance will be automatically provisioned."
+                  properties:
+                    provider:
+                      description: "Configuration for external object storage providers."
+                      properties:
+                        metadataMode:
+                          description: "The strategy Cryostat will use for storing files' metadata. The default 'tagging' strategy stores all metadata as object Tags.\nThe 'metadata' strategy stores metadata as object Metadata, which is immutable but allows for more entries than Tags.\nThe 'bucket' strategy stores metadata as separate files (ex. JSON object maps) in a dedicated bucket,\nwith prefixes to differentiate the kind of object the metadata belongs to."
+                          enum:
+                            - "tagging"
+                            - "metadata"
+                            - "bucket"
+                          type: "string"
+                        region:
+                          description: "The object storage provider region."
+                          type: "string"
+                        tlsTrustAll:
+                          description: "Whether Cryostat should trust all TLS certificates presented by the external object storage provider. Defaults to false."
+                          type: "boolean"
+                        url:
+                          description: "The complete URL (not including authentication information) to the external object storage provider."
+                          type: "string"
+                        useVirtualHostAccess:
+                          description: "Whether virtual host subdomain access should be used, as opposed to path-style access. Defaults to false for compatibility."
+                          type: "boolean"
+                      type: "object"
+                    secretName:
+                      description: "Name of the secret containing the object storage secret access key. This secret must contain a\nACCESS_KEY secret which is the object storage access key ID, and a SECRET_KEY secret which is the object storage secret access key.\nIf using an external S3 provider requiring authentication then this must be provided.\nIt is recommended that the secret should be marked as immutable to avoid accidental changes to secret's data.\nMore details: [Kubernetes Secrets](https://kubernetes.io/docs/concepts/configuration/secret/#secret-immutable)"
+                      type: "string"
+                    storageBucketNameOptions:
+                      description: "Configuration for object storage buckets. Only applies when external storage is configured, ie. .spec.ObjectStorageProviderOptions is non-nil."
+                      properties:
+                        archivedRecordings:
+                          description: "The name of the bucket used to store Archived JFR files."
+                          type: "string"
+                        archivedReports:
+                          description: "The name of the bucket used to store a cache of Automated Analysis reports attached to Archived JFR files."
+                          type: "string"
+                        eventTemplates:
+                          description: "The name of the bucket used to store custom Event Templates."
+                          type: "string"
+                        heapDumps:
+                          description: "The name of the bucket used to store JVM heap dumps."
+                          type: "string"
+                        jmcAgentProbeTemplates:
+                          description: "The name of the bucket used to store JMC Agent Probe templates."
+                          type: "string"
+                        metadata:
+                          description: "The name of the bucket used to storage metadata for other objects (ex. archived recordings). This is only used if the .spec.objectStorageOptions.provider.metadataMode is set to 'bucket'."
+                          type: "string"
+                        threadDumps:
+                          description: "The name of the bucket used to storage JVM thread dumps."
+                          type: "string"
+                      type: "object"
+                  type: "object"
                 operandMetadata:
                   description: "Options to configure the Cryostat deployments and pods metadata"
                   properties:

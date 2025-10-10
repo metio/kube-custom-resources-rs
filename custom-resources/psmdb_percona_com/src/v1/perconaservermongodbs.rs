@@ -20536,10 +20536,10 @@ pub struct PerconaServerMongoDbUsersRoles {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PerconaServerMongoDbStatus {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub backup: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupConfigHash")]
     pub backup_config_hash: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupImage")]
+    pub backup_image: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupVersion")]
     pub backup_version: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
