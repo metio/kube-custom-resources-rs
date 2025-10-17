@@ -61,8 +61,14 @@ pub struct TenantSpec {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantAdditionalRoleBindings {
+    /// Additional Annotations for the synchronized rolebindings
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
     #[serde(rename = "clusterRoleName")]
     pub cluster_role_name: String,
+    /// Additional Labels for the synchronized rolebindings
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
     /// kubebuilder:validation:Minimum=1
     pub subjects: Vec<TenantAdditionalRoleBindingsSubjects>,
 }

@@ -59,6 +59,8 @@ pub struct ThinRuntimeProfileFuse {
     pub node_selector: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub options: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podMetadata")]
+    pub pod_metadata: Option<ThinRuntimeProfileFusePodMetadata>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<ThinRuntimeProfileFusePorts>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
@@ -306,6 +308,14 @@ pub enum ThinRuntimeProfileFuseNetworkMode {
     #[serde(rename = "")]
     KopiumEmpty,
     ContainerNetwork,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThinRuntimeProfileFusePodMetadata {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

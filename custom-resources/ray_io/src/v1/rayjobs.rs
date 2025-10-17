@@ -62,20 +62,70 @@ pub struct RayJobSpec {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RayJobDeletionStrategy {
-    #[serde(rename = "onFailure")]
-    pub on_failure: RayJobDeletionStrategyOnFailure,
-    #[serde(rename = "onSuccess")]
-    pub on_success: RayJobDeletionStrategyOnSuccess,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletionRules")]
+    pub deletion_rules: Option<Vec<RayJobDeletionStrategyDeletionRules>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "onFailure")]
+    pub on_failure: Option<RayJobDeletionStrategyOnFailure>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "onSuccess")]
+    pub on_success: Option<RayJobDeletionStrategyOnSuccess>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct RayJobDeletionStrategyDeletionRules {
+    pub condition: RayJobDeletionStrategyDeletionRulesCondition,
+    pub policy: RayJobDeletionStrategyDeletionRulesPolicy,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct RayJobDeletionStrategyDeletionRulesCondition {
+    #[serde(rename = "jobStatus")]
+    pub job_status: RayJobDeletionStrategyDeletionRulesConditionJobStatus,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ttlSeconds")]
+    pub ttl_seconds: Option<i32>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum RayJobDeletionStrategyDeletionRulesConditionJobStatus {
+    #[serde(rename = "SUCCEEDED")]
+    Succeeded,
+    #[serde(rename = "FAILED")]
+    Failed,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum RayJobDeletionStrategyDeletionRulesPolicy {
+    DeleteCluster,
+    DeleteWorkers,
+    DeleteSelf,
+    DeleteNone,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RayJobDeletionStrategyOnFailure {
-    pub policy: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub policy: Option<RayJobDeletionStrategyOnFailurePolicy>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum RayJobDeletionStrategyOnFailurePolicy {
+    DeleteCluster,
+    DeleteWorkers,
+    DeleteSelf,
+    DeleteNone,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RayJobDeletionStrategyOnSuccess {
-    pub policy: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub policy: Option<RayJobDeletionStrategyOnSuccessPolicy>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum RayJobDeletionStrategyOnSuccessPolicy {
+    DeleteCluster,
+    DeleteWorkers,
+    DeleteSelf,
+    DeleteNone,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -459,8 +509,12 @@ pub struct RayJobRayClusterSpecHeadGroupSpec {
     pub enable_ingress: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "headService")]
     pub head_service: Option<RayJobRayClusterSpecHeadGroupSpecHeadService>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rayStartParams")]
     pub ray_start_params: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceType")]
     pub service_type: Option<String>,
     pub template: RayJobRayClusterSpecHeadGroupSpecTemplate,
@@ -3630,6 +3684,8 @@ pub struct RayJobRayClusterSpecWorkerGroupSpecs {
     pub group_name: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "idleTimeoutSeconds")]
     pub idle_timeout_seconds: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
     #[serde(rename = "maxReplicas")]
     pub max_replicas: i32,
     #[serde(rename = "minReplicas")]
@@ -3640,6 +3696,8 @@ pub struct RayJobRayClusterSpecWorkerGroupSpecs {
     pub ray_start_params: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleStrategy")]
     pub scale_strategy: Option<RayJobRayClusterSpecWorkerGroupSpecsScaleStrategy>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

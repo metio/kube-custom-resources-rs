@@ -24,7 +24,7 @@ pub struct EndpointConfigSpec {
     /// (<https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_runtime_InvokeEndpointAsync.html).>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "asyncInferenceConfig")]
     pub async_inference_config: Option<EndpointConfigAsyncInferenceConfig>,
-    /// Configuration to control how SageMaker captures inference data.
+    /// Configuration to control how SageMaker AI captures inference data.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataCaptureConfig")]
     pub data_capture_config: Option<EndpointConfigDataCaptureConfig>,
     /// Sets whether all model containers deployed to the endpoint are isolated.
@@ -39,11 +39,11 @@ pub struct EndpointConfigSpec {
     /// Regex Pattern: `^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}$`
     #[serde(rename = "endpointConfigName")]
     pub endpoint_config_name: String,
-    /// The Amazon Resource Name (ARN) of an IAM role that Amazon SageMaker can assume
-    /// to perform actions on your behalf. For more information, see SageMaker Roles
-    /// (<https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-roles.html).>
+    /// The Amazon Resource Name (ARN) of an IAM role that Amazon SageMaker AI can
+    /// assume to perform actions on your behalf. For more information, see SageMaker
+    /// AI Roles (<https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-roles.html).>
     /// 
-    /// To be able to pass this role to Amazon SageMaker, the caller of this action
+    /// To be able to pass this role to Amazon SageMaker AI, the caller of this action
     /// must have the iam:PassRole permission.
     /// 
     /// Regex Pattern: `^arn:aws[a-z\-]*:iam::\d{12}:role/?[a-zA-Z_0-9+=,.@\-_/]+$`
@@ -153,12 +153,12 @@ pub struct EndpointConfigAsyncInferenceConfigOutputConfigNotificationConfig {
     pub success_topic: Option<String>,
 }
 
-/// Configuration to control how SageMaker captures inference data.
+/// Configuration to control how SageMaker AI captures inference data.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EndpointConfigDataCaptureConfig {
     /// Configuration specifying how to treat different headers. If no headers are
-    /// specified Amazon SageMaker will by default base64 encode when capturing the
-    /// data.
+    /// specified Amazon SageMaker AI will by default base64 encode when capturing
+    /// the data.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "captureContentTypeHeader")]
     pub capture_content_type_header: Option<EndpointConfigDataCaptureConfigCaptureContentTypeHeader>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "captureOptions")]
@@ -174,8 +174,8 @@ pub struct EndpointConfigDataCaptureConfig {
 }
 
 /// Configuration specifying how to treat different headers. If no headers are
-/// specified Amazon SageMaker will by default base64 encode when capturing the
-/// data.
+/// specified Amazon SageMaker AI will by default base64 encode when capturing
+/// the data.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EndpointConfigDataCaptureConfigCaptureContentTypeHeader {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "csvContentTypes")]
@@ -199,6 +199,10 @@ pub struct EndpointConfigDataCaptureConfigCaptureOptions {
 pub struct EndpointConfigProductionVariants {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "acceleratorType")]
     pub accelerator_type: Option<String>,
+    /// Settings for the capacity reservation for the compute instances that SageMaker
+    /// AI reserves for an endpoint.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "capacityReservationConfig")]
+    pub capacity_reservation_config: Option<EndpointConfigProductionVariantsCapacityReservationConfig>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerStartupHealthCheckTimeoutInSeconds")]
     pub container_startup_health_check_timeout_in_seconds: Option<i64>,
     /// Specifies configuration for a core dump from the model container when the
@@ -232,6 +236,16 @@ pub struct EndpointConfigProductionVariants {
     pub variant_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSizeInGB")]
     pub volume_size_in_gb: Option<i64>,
+}
+
+/// Settings for the capacity reservation for the compute instances that SageMaker
+/// AI reserves for an endpoint.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct EndpointConfigProductionVariantsCapacityReservationConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "capacityReservationPreference")]
+    pub capacity_reservation_preference: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mlReservationARN")]
+    pub ml_reservation_arn: Option<String>,
 }
 
 /// Specifies configuration for a core dump from the model container when the

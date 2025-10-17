@@ -77,7 +77,7 @@ spec:
                   format: "int32"
                   type: "integer"
                 monitoring:
-                  description: "The configuration of the monitoring infrastructure of this pooler."
+                  description: "The configuration of the monitoring infrastructure of this pooler.\n\nDeprecated: This feature will be removed in an upcoming release. If\nyou need this functionality, you can create a PodMonitor manually."
                   properties:
                     enablePodMonitor:
                       default: false

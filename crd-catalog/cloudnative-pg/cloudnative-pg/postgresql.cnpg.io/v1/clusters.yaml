@@ -2414,10 +2414,10 @@ spec:
                       type: "boolean"
                     enablePodMonitor:
                       default: false
-                      description: "Enable or disable the `PodMonitor`"
+                      description: "Enable or disable the `PodMonitor`\n\nDeprecated: This feature will be removed in an upcoming release. If\nyou need this functionality, you can create a PodMonitor manually."
                       type: "boolean"
                     podMonitorMetricRelabelings:
-                      description: "The list of metric relabelings for the `PodMonitor`. Applied to samples before ingestion."
+                      description: "The list of metric relabelings for the `PodMonitor`. Applied to samples before ingestion.\n\nDeprecated: This feature will be removed in an upcoming release. If\nyou need this functionality, you can create a PodMonitor manually."
                       items:
                         description: "RelabelConfig allows dynamic rewriting of the label set for targets, alerts,\nscraped samples and remote write samples.\n\nMore info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config"
                         properties:
@@ -2474,7 +2474,7 @@ spec:
                         type: "object"
                       type: "array"
                     podMonitorRelabelings:
-                      description: "The list of relabelings for the `PodMonitor`. Applied to samples before scraping."
+                      description: "The list of relabelings for the `PodMonitor`. Applied to samples before scraping.\n\nDeprecated: This feature will be removed in an upcoming release. If\nyou need this functionality, you can create a PodMonitor manually."
                       items:
                         description: "RelabelConfig allows dynamic rewriting of the label set for targets, alerts,\nscraped samples and remote write samples.\n\nMore info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config"
                         properties:

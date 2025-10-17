@@ -258,6 +258,9 @@ pub struct InputManifestNodePoolsDynamicMachineSpec {
 /// Collection of provider data to be used while creating the nodepool.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InputManifestNodePoolsDynamicProviderSpec {
+    /// Name of the external provider network to which the nodes will be connected to. Currently only required for OpenStack.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalNetworkName")]
+    pub external_network_name: Option<String>,
     /// Name of the provider instance specified in providers
     pub name: String,
     /// Region of the nodepool.
@@ -383,6 +386,8 @@ pub enum InputManifestProvidersProviderType {
     Hetznerdns,
     #[serde(rename = "genesiscloud")]
     Genesiscloud,
+    #[serde(rename = "openstack")]
+    Openstack,
 }
 
 /// SecretReference represents a Secret Reference. It has enough information to retrieve secret

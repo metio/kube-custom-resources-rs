@@ -100,8 +100,14 @@ pub struct TenantSpec {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantAdditionalRoleBindings {
+    /// Additional Annotations for the synchronized rolebindings
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
     #[serde(rename = "clusterRoleName")]
     pub cluster_role_name: String,
+    /// Additional Labels for the synchronized rolebindings
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
     /// kubebuilder:validation:Minimum=1
     pub subjects: Vec<TenantAdditionalRoleBindingsSubjects>,
 }
@@ -784,11 +790,17 @@ pub struct TenantNetworkPoliciesItemsPodSelectorMatchExpressions {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantOwners {
+    /// Additional Annotations for the synchronized rolebindings
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
     /// Defines additional cluster-roles for the specific Owner.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterRoles")]
     pub cluster_roles: Option<Vec<String>>,
     /// Kind of tenant owner. Possible values are "User", "Group", and "ServiceAccount"
     pub kind: TenantOwnersKind,
+    /// Additional Labels for the synchronized rolebindings
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
     /// Name of tenant owner.
     pub name: String,
     /// Proxy settings for tenant owner.

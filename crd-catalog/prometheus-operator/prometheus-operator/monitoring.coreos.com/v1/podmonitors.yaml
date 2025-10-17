@@ -595,10 +595,12 @@ spec:
                           type: "object"
                         type: "array"
                       scheme:
-                        description: "scheme defines the HTTP scheme to use for scraping.\n\n`http` and `https` are the expected values unless you rewrite the\n`__scheme__` label via relabeling.\n\nIf empty, Prometheus uses the default value `http`."
+                        description: "scheme defines the HTTP scheme to use for scraping."
                         enum:
                           - "http"
                           - "https"
+                          - "HTTP"
+                          - "HTTPS"
                         type: "string"
                       scrapeTimeout:
                         description: "scrapeTimeout defines the timeout after which Prometheus considers the scrape to be failed.\n\nIf empty, Prometheus uses the global scrape timeout unless it is less\nthan the target's scrape interval value in which the latter is used.\nThe value cannot be greater than the scrape interval otherwise the operator will reject the resource."

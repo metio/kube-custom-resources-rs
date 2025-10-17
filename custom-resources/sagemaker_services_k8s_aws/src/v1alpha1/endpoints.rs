@@ -464,6 +464,9 @@ pub struct EndpointStatusPendingDeploymentSummaryProductionVariantsVariantStatus
 /// values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EndpointStatusProductionVariants {
+    /// Details about an ML capacity reservation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "capacityReservationConfig")]
+    pub capacity_reservation_config: Option<EndpointStatusProductionVariantsCapacityReservationConfig>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentInstanceCount")]
     pub current_instance_count: Option<i64>,
     /// Specifies the serverless configuration for an endpoint variant.
@@ -492,6 +495,36 @@ pub struct EndpointStatusProductionVariants {
     pub variant_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "variantStatus")]
     pub variant_status: Option<Vec<EndpointStatusProductionVariantsVariantStatus>>,
+}
+
+/// Details about an ML capacity reservation.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct EndpointStatusProductionVariantsCapacityReservationConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableInstanceCount")]
+    pub available_instance_count: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "capacityReservationPreference")]
+    pub capacity_reservation_preference: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ec2CapacityReservations")]
+    pub ec2_capacity_reservations: Option<Vec<EndpointStatusProductionVariantsCapacityReservationConfigEc2CapacityReservations>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mlReservationARN")]
+    pub ml_reservation_arn: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "totalInstanceCount")]
+    pub total_instance_count: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "usedByCurrentEndpoint")]
+    pub used_by_current_endpoint: Option<i64>,
+}
+
+/// The EC2 capacity reservations that are shared to an ML capacity reservation.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct EndpointStatusProductionVariantsCapacityReservationConfigEc2CapacityReservations {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableInstanceCount")]
+    pub available_instance_count: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ec2CapacityReservationID")]
+    pub ec2_capacity_reservation_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "totalInstanceCount")]
+    pub total_instance_count: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "usedByCurrentEndpoint")]
+    pub used_by_current_endpoint: Option<i64>,
 }
 
 /// Specifies the serverless configuration for an endpoint variant.

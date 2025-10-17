@@ -22,7 +22,7 @@ pub struct DomainSpec {
     /// Specifies the VPC used for non-EFS traffic. The default value is PublicInternetOnly.
     /// 
     ///    * PublicInternetOnly - Non-EFS traffic is through a VPC managed by Amazon
-    ///    SageMaker, which allows direct internet access
+    ///    SageMaker AI, which allows direct internet access
     /// 
     ///    * VpcOnly - All traffic is through the specified VPC and subnets
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "appNetworkAccessType")]
@@ -37,6 +37,9 @@ pub struct DomainSpec {
     /// The mode of authentication that members use to access the domain.
     #[serde(rename = "authMode")]
     pub auth_mode: String,
+    /// The default settings for shared spaces that users create in the domain.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultSpaceSettings")]
+    pub default_space_settings: Option<DomainDefaultSpaceSettings>,
     /// The default settings to use to create a user profile when UserSettings isn't
     /// specified in the call to the CreateUserProfile API.
     /// 
@@ -58,16 +61,19 @@ pub struct DomainSpec {
     /// Regex Pattern: `^[a-zA-Z0-9:/_-]*$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "homeEFSFileSystemKMSKeyID")]
     pub home_efs_file_system_kms_key_id: Option<String>,
-    /// SageMaker uses Amazon Web Services KMS to encrypt EFS and EBS volumes attached
-    /// to the domain with an Amazon Web Services managed key by default. For more
-    /// control, specify a customer managed key.
+    /// SageMaker AI uses Amazon Web Services KMS to encrypt EFS and EBS volumes
+    /// attached to the domain with an Amazon Web Services managed key by default.
+    /// For more control, specify a customer managed key.
     /// 
     /// Regex Pattern: `^[a-zA-Z0-9:/_-]*$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyID")]
     pub kms_key_id: Option<String>,
     /// The VPC subnets that the domain uses for communication.
-    #[serde(rename = "subnetIDs")]
-    pub subnet_i_ds: Vec<String>,
+    /// 
+    /// The field is optional when the AppNetworkAccessType parameter is set to PublicInternetOnly
+    /// for domains created from Amazon SageMaker Unified Studio.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetIDs")]
+    pub subnet_i_ds: Option<Vec<String>>,
     /// Tags to associated with the Domain. Each tag consists of a key and an optional
     /// value. Tag keys must be unique per resource. Tags are searchable using the
     /// Search API.
@@ -79,9 +85,278 @@ pub struct DomainSpec {
     /// The ID of the Amazon Virtual Private Cloud (VPC) that the domain uses for
     /// communication.
     /// 
+    /// The field is optional when the AppNetworkAccessType parameter is set to PublicInternetOnly
+    /// for domains created from Amazon SageMaker Unified Studio.
+    /// 
     /// Regex Pattern: `^[-0-9a-zA-Z]+$`
-    #[serde(rename = "vpcID")]
-    pub vpc_id: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcID")]
+    pub vpc_id: Option<String>,
+}
+
+/// The default settings for shared spaces that users create in the domain.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DomainDefaultSpaceSettings {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customFileSystemConfigs")]
+    pub custom_file_system_configs: Option<Vec<DomainDefaultSpaceSettingsCustomFileSystemConfigs>>,
+    /// Details about the POSIX identity that is used for file system operations.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customPosixUserConfig")]
+    pub custom_posix_user_config: Option<DomainDefaultSpaceSettingsCustomPosixUserConfig>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "executionRole")]
+    pub execution_role: Option<String>,
+    /// The settings for the JupyterLab application.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jupyterLabAppSettings")]
+    pub jupyter_lab_app_settings: Option<DomainDefaultSpaceSettingsJupyterLabAppSettings>,
+    /// The JupyterServer app settings.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jupyterServerAppSettings")]
+    pub jupyter_server_app_settings: Option<DomainDefaultSpaceSettingsJupyterServerAppSettings>,
+    /// The KernelGateway app settings.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kernelGatewayAppSettings")]
+    pub kernel_gateway_app_settings: Option<DomainDefaultSpaceSettingsKernelGatewayAppSettings>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroups")]
+    pub security_groups: Option<Vec<String>>,
+    /// The default storage settings for a space.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "spaceStorageSettings")]
+    pub space_storage_settings: Option<DomainDefaultSpaceSettingsSpaceStorageSettings>,
+}
+
+/// The settings for assigning a custom file system to a user profile or space
+/// for an Amazon SageMaker AI Domain. Permitted users can access this file system
+/// in Amazon SageMaker AI Studio.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DomainDefaultSpaceSettingsCustomFileSystemConfigs {
+    /// The settings for assigning a custom Amazon EFS file system to a user profile
+    /// or space for an Amazon SageMaker AI Domain.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "efsFileSystemConfig")]
+    pub efs_file_system_config: Option<DomainDefaultSpaceSettingsCustomFileSystemConfigsEfsFileSystemConfig>,
+    /// The settings for assigning a custom Amazon FSx for Lustre file system to
+    /// a user profile or space for an Amazon SageMaker Domain.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fSxLustreFileSystemConfig")]
+    pub f_sx_lustre_file_system_config: Option<DomainDefaultSpaceSettingsCustomFileSystemConfigsFSxLustreFileSystemConfig>,
+    /// Configuration for the custom Amazon S3 file system.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3FileSystemConfig")]
+    pub s3_file_system_config: Option<DomainDefaultSpaceSettingsCustomFileSystemConfigsS3FileSystemConfig>,
+}
+
+/// The settings for assigning a custom Amazon EFS file system to a user profile
+/// or space for an Amazon SageMaker AI Domain.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DomainDefaultSpaceSettingsCustomFileSystemConfigsEfsFileSystemConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemID")]
+    pub file_system_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemPath")]
+    pub file_system_path: Option<String>,
+}
+
+/// The settings for assigning a custom Amazon FSx for Lustre file system to
+/// a user profile or space for an Amazon SageMaker Domain.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DomainDefaultSpaceSettingsCustomFileSystemConfigsFSxLustreFileSystemConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemID")]
+    pub file_system_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemPath")]
+    pub file_system_path: Option<String>,
+}
+
+/// Configuration for the custom Amazon S3 file system.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DomainDefaultSpaceSettingsCustomFileSystemConfigsS3FileSystemConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPath")]
+    pub mount_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3URI")]
+    pub s3_uri: Option<String>,
+}
+
+/// Details about the POSIX identity that is used for file system operations.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DomainDefaultSpaceSettingsCustomPosixUserConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub gid: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uid: Option<i64>,
+}
+
+/// The settings for the JupyterLab application.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DomainDefaultSpaceSettingsJupyterLabAppSettings {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "codeRepositories")]
+    pub code_repositories: Option<Vec<DomainDefaultSpaceSettingsJupyterLabAppSettingsCodeRepositories>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customImages")]
+    pub custom_images: Option<Vec<DomainDefaultSpaceSettingsJupyterLabAppSettingsCustomImages>>,
+    /// Specifies the ARN's of a SageMaker AI image and SageMaker AI image version,
+    /// and the instance type that the version runs on.
+    /// 
+    /// When both SageMakerImageVersionArn and SageMakerImageArn are passed, SageMakerImageVersionArn
+    /// is used. Any updates to SageMakerImageArn will not take effect if SageMakerImageVersionArn
+    /// already exists in the ResourceSpec because SageMakerImageVersionArn always
+    /// takes precedence. To clear the value set for SageMakerImageVersionArn, pass
+    /// None as the value.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultResourceSpec")]
+    pub default_resource_spec: Option<DomainDefaultSpaceSettingsJupyterLabAppSettingsDefaultResourceSpec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lifecycleConfigARNs")]
+    pub lifecycle_config_ar_ns: Option<Vec<String>>,
+}
+
+/// A Git repository that SageMaker AI automatically displays to users for cloning
+/// in the JupyterServer application.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DomainDefaultSpaceSettingsJupyterLabAppSettingsCodeRepositories {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "repositoryURL")]
+    pub repository_url: Option<String>,
+}
+
+/// A custom SageMaker AI image. For more information, see Bring your own SageMaker
+/// AI image (<https://docs.aws.amazon.com/sagemaker/latest/dg/studio-byoi.html).>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DomainDefaultSpaceSettingsJupyterLabAppSettingsCustomImages {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appImageConfigName")]
+    pub app_image_config_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageName")]
+    pub image_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageVersionNumber")]
+    pub image_version_number: Option<i64>,
+}
+
+/// Specifies the ARN's of a SageMaker AI image and SageMaker AI image version,
+/// and the instance type that the version runs on.
+/// 
+/// When both SageMakerImageVersionArn and SageMakerImageArn are passed, SageMakerImageVersionArn
+/// is used. Any updates to SageMakerImageArn will not take effect if SageMakerImageVersionArn
+/// already exists in the ResourceSpec because SageMakerImageVersionArn always
+/// takes precedence. To clear the value set for SageMakerImageVersionArn, pass
+/// None as the value.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DomainDefaultSpaceSettingsJupyterLabAppSettingsDefaultResourceSpec {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
+    pub instance_type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lifecycleConfigARN")]
+    pub lifecycle_config_arn: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sageMakerImageARN")]
+    pub sage_maker_image_arn: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sageMakerImageVersionARN")]
+    pub sage_maker_image_version_arn: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sageMakerImageVersionAlias")]
+    pub sage_maker_image_version_alias: Option<String>,
+}
+
+/// The JupyterServer app settings.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DomainDefaultSpaceSettingsJupyterServerAppSettings {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "codeRepositories")]
+    pub code_repositories: Option<Vec<DomainDefaultSpaceSettingsJupyterServerAppSettingsCodeRepositories>>,
+    /// Specifies the ARN's of a SageMaker AI image and SageMaker AI image version,
+    /// and the instance type that the version runs on.
+    /// 
+    /// When both SageMakerImageVersionArn and SageMakerImageArn are passed, SageMakerImageVersionArn
+    /// is used. Any updates to SageMakerImageArn will not take effect if SageMakerImageVersionArn
+    /// already exists in the ResourceSpec because SageMakerImageVersionArn always
+    /// takes precedence. To clear the value set for SageMakerImageVersionArn, pass
+    /// None as the value.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultResourceSpec")]
+    pub default_resource_spec: Option<DomainDefaultSpaceSettingsJupyterServerAppSettingsDefaultResourceSpec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lifecycleConfigARNs")]
+    pub lifecycle_config_ar_ns: Option<Vec<String>>,
+}
+
+/// A Git repository that SageMaker AI automatically displays to users for cloning
+/// in the JupyterServer application.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DomainDefaultSpaceSettingsJupyterServerAppSettingsCodeRepositories {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "repositoryURL")]
+    pub repository_url: Option<String>,
+}
+
+/// Specifies the ARN's of a SageMaker AI image and SageMaker AI image version,
+/// and the instance type that the version runs on.
+/// 
+/// When both SageMakerImageVersionArn and SageMakerImageArn are passed, SageMakerImageVersionArn
+/// is used. Any updates to SageMakerImageArn will not take effect if SageMakerImageVersionArn
+/// already exists in the ResourceSpec because SageMakerImageVersionArn always
+/// takes precedence. To clear the value set for SageMakerImageVersionArn, pass
+/// None as the value.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DomainDefaultSpaceSettingsJupyterServerAppSettingsDefaultResourceSpec {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
+    pub instance_type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lifecycleConfigARN")]
+    pub lifecycle_config_arn: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sageMakerImageARN")]
+    pub sage_maker_image_arn: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sageMakerImageVersionARN")]
+    pub sage_maker_image_version_arn: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sageMakerImageVersionAlias")]
+    pub sage_maker_image_version_alias: Option<String>,
+}
+
+/// The KernelGateway app settings.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DomainDefaultSpaceSettingsKernelGatewayAppSettings {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customImages")]
+    pub custom_images: Option<Vec<DomainDefaultSpaceSettingsKernelGatewayAppSettingsCustomImages>>,
+    /// Specifies the ARN's of a SageMaker AI image and SageMaker AI image version,
+    /// and the instance type that the version runs on.
+    /// 
+    /// When both SageMakerImageVersionArn and SageMakerImageArn are passed, SageMakerImageVersionArn
+    /// is used. Any updates to SageMakerImageArn will not take effect if SageMakerImageVersionArn
+    /// already exists in the ResourceSpec because SageMakerImageVersionArn always
+    /// takes precedence. To clear the value set for SageMakerImageVersionArn, pass
+    /// None as the value.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultResourceSpec")]
+    pub default_resource_spec: Option<DomainDefaultSpaceSettingsKernelGatewayAppSettingsDefaultResourceSpec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lifecycleConfigARNs")]
+    pub lifecycle_config_ar_ns: Option<Vec<String>>,
+}
+
+/// A custom SageMaker AI image. For more information, see Bring your own SageMaker
+/// AI image (<https://docs.aws.amazon.com/sagemaker/latest/dg/studio-byoi.html).>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DomainDefaultSpaceSettingsKernelGatewayAppSettingsCustomImages {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appImageConfigName")]
+    pub app_image_config_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageName")]
+    pub image_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageVersionNumber")]
+    pub image_version_number: Option<i64>,
+}
+
+/// Specifies the ARN's of a SageMaker AI image and SageMaker AI image version,
+/// and the instance type that the version runs on.
+/// 
+/// When both SageMakerImageVersionArn and SageMakerImageArn are passed, SageMakerImageVersionArn
+/// is used. Any updates to SageMakerImageArn will not take effect if SageMakerImageVersionArn
+/// already exists in the ResourceSpec because SageMakerImageVersionArn always
+/// takes precedence. To clear the value set for SageMakerImageVersionArn, pass
+/// None as the value.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DomainDefaultSpaceSettingsKernelGatewayAppSettingsDefaultResourceSpec {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
+    pub instance_type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lifecycleConfigARN")]
+    pub lifecycle_config_arn: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sageMakerImageARN")]
+    pub sage_maker_image_arn: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sageMakerImageVersionARN")]
+    pub sage_maker_image_version_arn: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sageMakerImageVersionAlias")]
+    pub sage_maker_image_version_alias: Option<String>,
+}
+
+/// The default storage settings for a space.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DomainDefaultSpaceSettingsSpaceStorageSettings {
+    /// A collection of default EBS storage settings that apply to spaces created
+    /// within a domain or user profile.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultEBSStorageSettings")]
+    pub default_ebs_storage_settings: Option<DomainDefaultSpaceSettingsSpaceStorageSettingsDefaultEbsStorageSettings>,
+}
+
+/// A collection of default EBS storage settings that apply to spaces created
+/// within a domain or user profile.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DomainDefaultSpaceSettingsSpaceStorageSettingsDefaultEbsStorageSettings {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultEBSVolumeSizeInGb")]
+    pub default_ebs_volume_size_in_gb: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumEBSVolumeSizeInGb")]
+    pub maximum_ebs_volume_size_in_gb: Option<i64>,
 }
 
 /// The default settings to use to create a user profile when UserSettings isn't
@@ -122,10 +397,11 @@ pub struct DomainDefaultUserSettings {
     pub r_studio_server_pro_app_settings: Option<DomainDefaultUserSettingsRStudioServerProAppSettings>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroups")]
     pub security_groups: Option<Vec<String>>,
-    /// Specifies options for sharing Amazon SageMaker Studio notebooks. These settings
-    /// are specified as part of DefaultUserSettings when the CreateDomain API is
-    /// called, and as part of UserSettings when the CreateUserProfile API is called.
-    /// When SharingSettings is not specified, notebook sharing isn't allowed.
+    /// Specifies options for sharing Amazon SageMaker AI Studio notebooks. These
+    /// settings are specified as part of DefaultUserSettings when the CreateDomain
+    /// API is called, and as part of UserSettings when the CreateUserProfile API
+    /// is called. When SharingSettings is not specified, notebook sharing isn't
+    /// allowed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sharingSettings")]
     pub sharing_settings: Option<DomainDefaultUserSettingsSharingSettings>,
     /// The default storage settings for a space.
@@ -144,16 +420,28 @@ pub struct DomainDefaultUserSettings {
 /// in Amazon SageMaker (<https://docs.aws.amazon.com/sagemaker/latest/dg/code-editor.html).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainDefaultUserSettingsCodeEditorAppSettings {
-    /// Specifies the ARN's of a SageMaker image and SageMaker image version, and
-    /// the instance type that the version runs on.
+    /// Specifies the ARN's of a SageMaker AI image and SageMaker AI image version,
+    /// and the instance type that the version runs on.
+    /// 
+    /// When both SageMakerImageVersionArn and SageMakerImageArn are passed, SageMakerImageVersionArn
+    /// is used. Any updates to SageMakerImageArn will not take effect if SageMakerImageVersionArn
+    /// already exists in the ResourceSpec because SageMakerImageVersionArn always
+    /// takes precedence. To clear the value set for SageMakerImageVersionArn, pass
+    /// None as the value.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultResourceSpec")]
     pub default_resource_spec: Option<DomainDefaultUserSettingsCodeEditorAppSettingsDefaultResourceSpec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lifecycleConfigARNs")]
     pub lifecycle_config_ar_ns: Option<Vec<String>>,
 }
 
-/// Specifies the ARN's of a SageMaker image and SageMaker image version, and
-/// the instance type that the version runs on.
+/// Specifies the ARN's of a SageMaker AI image and SageMaker AI image version,
+/// and the instance type that the version runs on.
+/// 
+/// When both SageMakerImageVersionArn and SageMakerImageArn are passed, SageMakerImageVersionArn
+/// is used. Any updates to SageMakerImageArn will not take effect if SageMakerImageVersionArn
+/// already exists in the ResourceSpec because SageMakerImageVersionArn always
+/// takes precedence. To clear the value set for SageMakerImageVersionArn, pass
+/// None as the value.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainDefaultUserSettingsCodeEditorAppSettingsDefaultResourceSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
@@ -169,24 +457,50 @@ pub struct DomainDefaultUserSettingsCodeEditorAppSettingsDefaultResourceSpec {
 }
 
 /// The settings for assigning a custom file system to a user profile or space
-/// for an Amazon SageMaker Domain. Permitted users can access this file system
-/// in Amazon SageMaker Studio.
+/// for an Amazon SageMaker AI Domain. Permitted users can access this file system
+/// in Amazon SageMaker AI Studio.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainDefaultUserSettingsCustomFileSystemConfigs {
     /// The settings for assigning a custom Amazon EFS file system to a user profile
-    /// or space for an Amazon SageMaker Domain.
+    /// or space for an Amazon SageMaker AI Domain.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "efsFileSystemConfig")]
     pub efs_file_system_config: Option<DomainDefaultUserSettingsCustomFileSystemConfigsEfsFileSystemConfig>,
+    /// The settings for assigning a custom Amazon FSx for Lustre file system to
+    /// a user profile or space for an Amazon SageMaker Domain.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fSxLustreFileSystemConfig")]
+    pub f_sx_lustre_file_system_config: Option<DomainDefaultUserSettingsCustomFileSystemConfigsFSxLustreFileSystemConfig>,
+    /// Configuration for the custom Amazon S3 file system.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3FileSystemConfig")]
+    pub s3_file_system_config: Option<DomainDefaultUserSettingsCustomFileSystemConfigsS3FileSystemConfig>,
 }
 
 /// The settings for assigning a custom Amazon EFS file system to a user profile
-/// or space for an Amazon SageMaker Domain.
+/// or space for an Amazon SageMaker AI Domain.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainDefaultUserSettingsCustomFileSystemConfigsEfsFileSystemConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemID")]
     pub file_system_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemPath")]
     pub file_system_path: Option<String>,
+}
+
+/// The settings for assigning a custom Amazon FSx for Lustre file system to
+/// a user profile or space for an Amazon SageMaker Domain.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DomainDefaultUserSettingsCustomFileSystemConfigsFSxLustreFileSystemConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemID")]
+    pub file_system_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemPath")]
+    pub file_system_path: Option<String>,
+}
+
+/// Configuration for the custom Amazon S3 file system.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DomainDefaultUserSettingsCustomFileSystemConfigsS3FileSystemConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPath")]
+    pub mount_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3URI")]
+    pub s3_uri: Option<String>,
 }
 
 /// Details about the POSIX identity that is used for file system operations.
@@ -201,18 +515,34 @@ pub struct DomainDefaultUserSettingsCustomPosixUserConfig {
 /// The settings for the JupyterLab application.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainDefaultUserSettingsJupyterLabAppSettings {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "codeRepositories")]
+    pub code_repositories: Option<Vec<DomainDefaultUserSettingsJupyterLabAppSettingsCodeRepositories>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "customImages")]
     pub custom_images: Option<Vec<DomainDefaultUserSettingsJupyterLabAppSettingsCustomImages>>,
-    /// Specifies the ARN's of a SageMaker image and SageMaker image version, and
-    /// the instance type that the version runs on.
+    /// Specifies the ARN's of a SageMaker AI image and SageMaker AI image version,
+    /// and the instance type that the version runs on.
+    /// 
+    /// When both SageMakerImageVersionArn and SageMakerImageArn are passed, SageMakerImageVersionArn
+    /// is used. Any updates to SageMakerImageArn will not take effect if SageMakerImageVersionArn
+    /// already exists in the ResourceSpec because SageMakerImageVersionArn always
+    /// takes precedence. To clear the value set for SageMakerImageVersionArn, pass
+    /// None as the value.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultResourceSpec")]
     pub default_resource_spec: Option<DomainDefaultUserSettingsJupyterLabAppSettingsDefaultResourceSpec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lifecycleConfigARNs")]
     pub lifecycle_config_ar_ns: Option<Vec<String>>,
 }
 
-/// A custom SageMaker image. For more information, see Bring your own SageMaker
-/// image (<https://docs.aws.amazon.com/sagemaker/latest/dg/studio-byoi.html).>
+/// A Git repository that SageMaker AI automatically displays to users for cloning
+/// in the JupyterServer application.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DomainDefaultUserSettingsJupyterLabAppSettingsCodeRepositories {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "repositoryURL")]
+    pub repository_url: Option<String>,
+}
+
+/// A custom SageMaker AI image. For more information, see Bring your own SageMaker
+/// AI image (<https://docs.aws.amazon.com/sagemaker/latest/dg/studio-byoi.html).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainDefaultUserSettingsJupyterLabAppSettingsCustomImages {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "appImageConfigName")]
@@ -223,8 +553,14 @@ pub struct DomainDefaultUserSettingsJupyterLabAppSettingsCustomImages {
     pub image_version_number: Option<i64>,
 }
 
-/// Specifies the ARN's of a SageMaker image and SageMaker image version, and
-/// the instance type that the version runs on.
+/// Specifies the ARN's of a SageMaker AI image and SageMaker AI image version,
+/// and the instance type that the version runs on.
+/// 
+/// When both SageMakerImageVersionArn and SageMakerImageArn are passed, SageMakerImageVersionArn
+/// is used. Any updates to SageMakerImageArn will not take effect if SageMakerImageVersionArn
+/// already exists in the ResourceSpec because SageMakerImageVersionArn always
+/// takes precedence. To clear the value set for SageMakerImageVersionArn, pass
+/// None as the value.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainDefaultUserSettingsJupyterLabAppSettingsDefaultResourceSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
@@ -242,16 +578,38 @@ pub struct DomainDefaultUserSettingsJupyterLabAppSettingsDefaultResourceSpec {
 /// The JupyterServer app settings.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainDefaultUserSettingsJupyterServerAppSettings {
-    /// Specifies the ARN's of a SageMaker image and SageMaker image version, and
-    /// the instance type that the version runs on.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "codeRepositories")]
+    pub code_repositories: Option<Vec<DomainDefaultUserSettingsJupyterServerAppSettingsCodeRepositories>>,
+    /// Specifies the ARN's of a SageMaker AI image and SageMaker AI image version,
+    /// and the instance type that the version runs on.
+    /// 
+    /// When both SageMakerImageVersionArn and SageMakerImageArn are passed, SageMakerImageVersionArn
+    /// is used. Any updates to SageMakerImageArn will not take effect if SageMakerImageVersionArn
+    /// already exists in the ResourceSpec because SageMakerImageVersionArn always
+    /// takes precedence. To clear the value set for SageMakerImageVersionArn, pass
+    /// None as the value.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultResourceSpec")]
     pub default_resource_spec: Option<DomainDefaultUserSettingsJupyterServerAppSettingsDefaultResourceSpec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lifecycleConfigARNs")]
     pub lifecycle_config_ar_ns: Option<Vec<String>>,
 }
 
-/// Specifies the ARN's of a SageMaker image and SageMaker image version, and
-/// the instance type that the version runs on.
+/// A Git repository that SageMaker AI automatically displays to users for cloning
+/// in the JupyterServer application.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DomainDefaultUserSettingsJupyterServerAppSettingsCodeRepositories {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "repositoryURL")]
+    pub repository_url: Option<String>,
+}
+
+/// Specifies the ARN's of a SageMaker AI image and SageMaker AI image version,
+/// and the instance type that the version runs on.
+/// 
+/// When both SageMakerImageVersionArn and SageMakerImageArn are passed, SageMakerImageVersionArn
+/// is used. Any updates to SageMakerImageArn will not take effect if SageMakerImageVersionArn
+/// already exists in the ResourceSpec because SageMakerImageVersionArn always
+/// takes precedence. To clear the value set for SageMakerImageVersionArn, pass
+/// None as the value.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainDefaultUserSettingsJupyterServerAppSettingsDefaultResourceSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
@@ -271,16 +629,22 @@ pub struct DomainDefaultUserSettingsJupyterServerAppSettingsDefaultResourceSpec 
 pub struct DomainDefaultUserSettingsKernelGatewayAppSettings {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "customImages")]
     pub custom_images: Option<Vec<DomainDefaultUserSettingsKernelGatewayAppSettingsCustomImages>>,
-    /// Specifies the ARN's of a SageMaker image and SageMaker image version, and
-    /// the instance type that the version runs on.
+    /// Specifies the ARN's of a SageMaker AI image and SageMaker AI image version,
+    /// and the instance type that the version runs on.
+    /// 
+    /// When both SageMakerImageVersionArn and SageMakerImageArn are passed, SageMakerImageVersionArn
+    /// is used. Any updates to SageMakerImageArn will not take effect if SageMakerImageVersionArn
+    /// already exists in the ResourceSpec because SageMakerImageVersionArn always
+    /// takes precedence. To clear the value set for SageMakerImageVersionArn, pass
+    /// None as the value.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultResourceSpec")]
     pub default_resource_spec: Option<DomainDefaultUserSettingsKernelGatewayAppSettingsDefaultResourceSpec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lifecycleConfigARNs")]
     pub lifecycle_config_ar_ns: Option<Vec<String>>,
 }
 
-/// A custom SageMaker image. For more information, see Bring your own SageMaker
-/// image (<https://docs.aws.amazon.com/sagemaker/latest/dg/studio-byoi.html).>
+/// A custom SageMaker AI image. For more information, see Bring your own SageMaker
+/// AI image (<https://docs.aws.amazon.com/sagemaker/latest/dg/studio-byoi.html).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainDefaultUserSettingsKernelGatewayAppSettingsCustomImages {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "appImageConfigName")]
@@ -291,8 +655,14 @@ pub struct DomainDefaultUserSettingsKernelGatewayAppSettingsCustomImages {
     pub image_version_number: Option<i64>,
 }
 
-/// Specifies the ARN's of a SageMaker image and SageMaker image version, and
-/// the instance type that the version runs on.
+/// Specifies the ARN's of a SageMaker AI image and SageMaker AI image version,
+/// and the instance type that the version runs on.
+/// 
+/// When both SageMakerImageVersionArn and SageMakerImageArn are passed, SageMakerImageVersionArn
+/// is used. Any updates to SageMakerImageArn will not take effect if SageMakerImageVersionArn
+/// already exists in the ResourceSpec because SageMakerImageVersionArn always
+/// takes precedence. To clear the value set for SageMakerImageVersionArn, pass
+/// None as the value.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainDefaultUserSettingsKernelGatewayAppSettingsDefaultResourceSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
@@ -317,10 +687,11 @@ pub struct DomainDefaultUserSettingsRStudioServerProAppSettings {
     pub user_group: Option<String>,
 }
 
-/// Specifies options for sharing Amazon SageMaker Studio notebooks. These settings
-/// are specified as part of DefaultUserSettings when the CreateDomain API is
-/// called, and as part of UserSettings when the CreateUserProfile API is called.
-/// When SharingSettings is not specified, notebook sharing isn't allowed.
+/// Specifies options for sharing Amazon SageMaker AI Studio notebooks. These
+/// settings are specified as part of DefaultUserSettings when the CreateDomain
+/// API is called, and as part of UserSettings when the CreateUserProfile API
+/// is called. When SharingSettings is not specified, notebook sharing isn't
+/// allowed.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainDefaultUserSettingsSharingSettings {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "notebookOutputOption")]
@@ -353,14 +724,26 @@ pub struct DomainDefaultUserSettingsSpaceStorageSettingsDefaultEbsStorageSetting
 /// The TensorBoard app settings.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainDefaultUserSettingsTensorBoardAppSettings {
-    /// Specifies the ARN's of a SageMaker image and SageMaker image version, and
-    /// the instance type that the version runs on.
+    /// Specifies the ARN's of a SageMaker AI image and SageMaker AI image version,
+    /// and the instance type that the version runs on.
+    /// 
+    /// When both SageMakerImageVersionArn and SageMakerImageArn are passed, SageMakerImageVersionArn
+    /// is used. Any updates to SageMakerImageArn will not take effect if SageMakerImageVersionArn
+    /// already exists in the ResourceSpec because SageMakerImageVersionArn always
+    /// takes precedence. To clear the value set for SageMakerImageVersionArn, pass
+    /// None as the value.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultResourceSpec")]
     pub default_resource_spec: Option<DomainDefaultUserSettingsTensorBoardAppSettingsDefaultResourceSpec>,
 }
 
-/// Specifies the ARN's of a SageMaker image and SageMaker image version, and
-/// the instance type that the version runs on.
+/// Specifies the ARN's of a SageMaker AI image and SageMaker AI image version,
+/// and the instance type that the version runs on.
+/// 
+/// When both SageMakerImageVersionArn and SageMakerImageArn are passed, SageMakerImageVersionArn
+/// is used. Any updates to SageMakerImageArn will not take effect if SageMakerImageVersionArn
+/// already exists in the ResourceSpec because SageMakerImageVersionArn always
+/// takes precedence. To clear the value set for SageMakerImageVersionArn, pass
+/// None as the value.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainDefaultUserSettingsTensorBoardAppSettingsDefaultResourceSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
@@ -381,12 +764,23 @@ pub struct DomainDomainSettings {
     /// A collection of settings that configure the domain's Docker interaction.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dockerSettings")]
     pub docker_settings: Option<DomainDomainSettingsDockerSettings>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipAddressType")]
+    pub ip_address_type: Option<String>,
     /// A collection of settings that configure the RStudioServerPro Domain-level
     /// app.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rStudioServerProDomainSettings")]
     pub r_studio_server_pro_domain_settings: Option<DomainDomainSettingsRStudioServerProDomainSettings>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupIDs")]
     pub security_group_i_ds: Option<Vec<String>>,
+    /// The Trusted Identity Propagation (TIP) settings for the SageMaker domain.
+    /// These settings determine how user identities from IAM Identity Center are
+    /// propagated through the domain to TIP enabled Amazon Web Services services.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trustedIdentityPropagationSettings")]
+    pub trusted_identity_propagation_settings: Option<DomainDomainSettingsTrustedIdentityPropagationSettings>,
+    /// The settings that apply to an Amazon SageMaker AI domain when you use it
+    /// in Amazon SageMaker Unified Studio.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unifiedStudioSettings")]
+    pub unified_studio_settings: Option<DomainDomainSettingsUnifiedStudioSettings>,
 }
 
 /// A collection of settings that configure the domain's Docker interaction.
@@ -394,6 +788,8 @@ pub struct DomainDomainSettings {
 pub struct DomainDomainSettingsDockerSettings {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableDockerAccess")]
     pub enable_docker_access: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rootlessDocker")]
+    pub rootless_docker: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcOnlyTrustedAccounts")]
     pub vpc_only_trusted_accounts: Option<Vec<String>>,
 }
@@ -402,8 +798,14 @@ pub struct DomainDomainSettingsDockerSettings {
 /// app.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainDomainSettingsRStudioServerProDomainSettings {
-    /// Specifies the ARN's of a SageMaker image and SageMaker image version, and
-    /// the instance type that the version runs on.
+    /// Specifies the ARN's of a SageMaker AI image and SageMaker AI image version,
+    /// and the instance type that the version runs on.
+    /// 
+    /// When both SageMakerImageVersionArn and SageMakerImageArn are passed, SageMakerImageVersionArn
+    /// is used. Any updates to SageMakerImageArn will not take effect if SageMakerImageVersionArn
+    /// already exists in the ResourceSpec because SageMakerImageVersionArn always
+    /// takes precedence. To clear the value set for SageMakerImageVersionArn, pass
+    /// None as the value.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultResourceSpec")]
     pub default_resource_spec: Option<DomainDomainSettingsRStudioServerProDomainSettingsDefaultResourceSpec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "domainExecutionRoleARN")]
@@ -414,8 +816,14 @@ pub struct DomainDomainSettingsRStudioServerProDomainSettings {
     pub r_studio_package_manager_url: Option<String>,
 }
 
-/// Specifies the ARN's of a SageMaker image and SageMaker image version, and
-/// the instance type that the version runs on.
+/// Specifies the ARN's of a SageMaker AI image and SageMaker AI image version,
+/// and the instance type that the version runs on.
+/// 
+/// When both SageMakerImageVersionArn and SageMakerImageArn are passed, SageMakerImageVersionArn
+/// is used. Any updates to SageMakerImageArn will not take effect if SageMakerImageVersionArn
+/// already exists in the ResourceSpec because SageMakerImageVersionArn always
+/// takes precedence. To clear the value set for SageMakerImageVersionArn, pass
+/// None as the value.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DomainDomainSettingsRStudioServerProDomainSettingsDefaultResourceSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
@@ -428,6 +836,37 @@ pub struct DomainDomainSettingsRStudioServerProDomainSettingsDefaultResourceSpec
     pub sage_maker_image_version_arn: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sageMakerImageVersionAlias")]
     pub sage_maker_image_version_alias: Option<String>,
+}
+
+/// The Trusted Identity Propagation (TIP) settings for the SageMaker domain.
+/// These settings determine how user identities from IAM Identity Center are
+/// propagated through the domain to TIP enabled Amazon Web Services services.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DomainDomainSettingsTrustedIdentityPropagationSettings {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub status: Option<String>,
+}
+
+/// The settings that apply to an Amazon SageMaker AI domain when you use it
+/// in Amazon SageMaker Unified Studio.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DomainDomainSettingsUnifiedStudioSettings {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "domainAccountID")]
+    pub domain_account_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "domainID")]
+    pub domain_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "domainRegion")]
+    pub domain_region: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "environmentID")]
+    pub environment_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "projectID")]
+    pub project_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "projectS3Path")]
+    pub project_s3_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "singleSignOnApplicationARN")]
+    pub single_sign_on_application_arn: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "studioWebPortalAccess")]
+    pub studio_web_portal_access: Option<String>,
 }
 
 /// A tag object that consists of a key and an optional value, used to manage

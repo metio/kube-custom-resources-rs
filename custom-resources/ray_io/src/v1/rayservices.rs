@@ -419,8 +419,12 @@ pub struct RayServiceRayClusterConfigHeadGroupSpec {
     pub enable_ingress: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "headService")]
     pub head_service: Option<RayServiceRayClusterConfigHeadGroupSpecHeadService>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rayStartParams")]
     pub ray_start_params: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceType")]
     pub service_type: Option<String>,
     pub template: RayServiceRayClusterConfigHeadGroupSpecTemplate,
@@ -3590,6 +3594,8 @@ pub struct RayServiceRayClusterConfigWorkerGroupSpecs {
     pub group_name: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "idleTimeoutSeconds")]
     pub idle_timeout_seconds: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
     #[serde(rename = "maxReplicas")]
     pub max_replicas: i32,
     #[serde(rename = "minReplicas")]
@@ -3600,6 +3606,8 @@ pub struct RayServiceRayClusterConfigWorkerGroupSpecs {
     pub ray_start_params: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleStrategy")]
     pub scale_strategy: Option<RayServiceRayClusterConfigWorkerGroupSpecsScaleStrategy>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

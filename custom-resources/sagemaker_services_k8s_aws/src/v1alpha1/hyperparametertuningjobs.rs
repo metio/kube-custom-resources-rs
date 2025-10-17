@@ -643,14 +643,62 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionInputDataConfigDataSource
 pub struct HyperParameterTuningJobTrainingJobDefinitionInputDataConfigDataSourceS3DataSource {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "attributeNames")]
     pub attribute_names: Option<Vec<String>>,
+    /// The configuration for a private hub model reference that points to a public
+    /// SageMaker JumpStart model.
+    /// 
+    /// For more information about private hubs, see Private curated hubs for foundation
+    /// model access control in JumpStart (<https://docs.aws.amazon.com/sagemaker/latest/dg/jumpstart-curated-hubs.html).>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hubAccessConfig")]
+    pub hub_access_config: Option<HyperParameterTuningJobTrainingJobDefinitionInputDataConfigDataSourceS3DataSourceHubAccessConfig>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceGroupNames")]
     pub instance_group_names: Option<Vec<String>>,
+    /// The access configuration file to control access to the ML model. You can
+    /// explicitly accept the model end-user license agreement (EULA) within the
+    /// ModelAccessConfig.
+    /// 
+    ///    * If you are a Jumpstart user, see the End-user license agreements (<https://docs.aws.amazon.com/sagemaker/latest/dg/jumpstart-foundation-models-choose.html#jumpstart-foundation-models-choose-eula)>
+    ///    section for more details on accepting the EULA.
+    /// 
+    ///    * If you are an AutoML user, see the Optional Parameters section of Create
+    ///    an AutoML job to fine-tune text generation models using the API for details
+    ///    on How to set the EULA acceptance when fine-tuning a model using the AutoML
+    ///    API (<https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-create-experiment-finetune-llms.html#autopilot-llms-finetuning-api-optional-params).>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelAccessConfig")]
+    pub model_access_config: Option<HyperParameterTuningJobTrainingJobDefinitionInputDataConfigDataSourceS3DataSourceModelAccessConfig>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3DataDistributionType")]
     pub s3_data_distribution_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3DataType")]
     pub s3_data_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3URI")]
     pub s3_uri: Option<String>,
+}
+
+/// The configuration for a private hub model reference that points to a public
+/// SageMaker JumpStart model.
+/// 
+/// For more information about private hubs, see Private curated hubs for foundation
+/// model access control in JumpStart (<https://docs.aws.amazon.com/sagemaker/latest/dg/jumpstart-curated-hubs.html).>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HyperParameterTuningJobTrainingJobDefinitionInputDataConfigDataSourceS3DataSourceHubAccessConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hubContentARN")]
+    pub hub_content_arn: Option<String>,
+}
+
+/// The access configuration file to control access to the ML model. You can
+/// explicitly accept the model end-user license agreement (EULA) within the
+/// ModelAccessConfig.
+/// 
+///    * If you are a Jumpstart user, see the End-user license agreements (<https://docs.aws.amazon.com/sagemaker/latest/dg/jumpstart-foundation-models-choose.html#jumpstart-foundation-models-choose-eula)>
+///    section for more details on accepting the EULA.
+/// 
+///    * If you are an AutoML user, see the Optional Parameters section of Create
+///    an AutoML job to fine-tune text generation models using the API for details
+///    on How to set the EULA acceptance when fine-tuning a model using the AutoML
+///    API (<https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-create-experiment-finetune-llms.html#autopilot-llms-finetuning-api-optional-params).>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HyperParameterTuningJobTrainingJobDefinitionInputDataConfigDataSourceS3DataSourceModelAccessConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "acceptEula")]
+    pub accept_eula: Option<bool>,
 }
 
 /// A configuration for a shuffle option for input data in a channel. If you
@@ -692,6 +740,10 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionResourceConfig {
     pub instance_count: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceGroups")]
     pub instance_groups: Option<Vec<HyperParameterTuningJobTrainingJobDefinitionResourceConfigInstanceGroups>>,
+    /// Configuration for how instances are placed and allocated within UltraServers.
+    /// This is only applicable for UltraServer capacity.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instancePlacementConfig")]
+    pub instance_placement_config: Option<HyperParameterTuningJobTrainingJobDefinitionResourceConfigInstancePlacementConfig>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
     pub instance_type: Option<String>,
     /// Optional. Customer requested period in seconds for which the Training cluster
@@ -715,6 +767,25 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionResourceConfigInstanceGro
     pub instance_group_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
     pub instance_type: Option<String>,
+}
+
+/// Configuration for how instances are placed and allocated within UltraServers.
+/// This is only applicable for UltraServer capacity.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HyperParameterTuningJobTrainingJobDefinitionResourceConfigInstancePlacementConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableMultipleJobs")]
+    pub enable_multiple_jobs: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "placementSpecifications")]
+    pub placement_specifications: Option<Vec<HyperParameterTuningJobTrainingJobDefinitionResourceConfigInstancePlacementConfigPlacementSpecifications>>,
+}
+
+/// Specifies how instances should be placed on a specific UltraServer.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HyperParameterTuningJobTrainingJobDefinitionResourceConfigInstancePlacementConfigPlacementSpecifications {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceCount")]
+    pub instance_count: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ultraServerID")]
+    pub ultra_server_id: Option<String>,
 }
 
 /// The retry strategy to use when a training job fails due to an InternalServerError.
@@ -1118,14 +1189,62 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsInputDataConfigDataSourc
 pub struct HyperParameterTuningJobTrainingJobDefinitionsInputDataConfigDataSourceS3DataSource {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "attributeNames")]
     pub attribute_names: Option<Vec<String>>,
+    /// The configuration for a private hub model reference that points to a public
+    /// SageMaker JumpStart model.
+    /// 
+    /// For more information about private hubs, see Private curated hubs for foundation
+    /// model access control in JumpStart (<https://docs.aws.amazon.com/sagemaker/latest/dg/jumpstart-curated-hubs.html).>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hubAccessConfig")]
+    pub hub_access_config: Option<HyperParameterTuningJobTrainingJobDefinitionsInputDataConfigDataSourceS3DataSourceHubAccessConfig>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceGroupNames")]
     pub instance_group_names: Option<Vec<String>>,
+    /// The access configuration file to control access to the ML model. You can
+    /// explicitly accept the model end-user license agreement (EULA) within the
+    /// ModelAccessConfig.
+    /// 
+    ///    * If you are a Jumpstart user, see the End-user license agreements (<https://docs.aws.amazon.com/sagemaker/latest/dg/jumpstart-foundation-models-choose.html#jumpstart-foundation-models-choose-eula)>
+    ///    section for more details on accepting the EULA.
+    /// 
+    ///    * If you are an AutoML user, see the Optional Parameters section of Create
+    ///    an AutoML job to fine-tune text generation models using the API for details
+    ///    on How to set the EULA acceptance when fine-tuning a model using the AutoML
+    ///    API (<https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-create-experiment-finetune-llms.html#autopilot-llms-finetuning-api-optional-params).>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelAccessConfig")]
+    pub model_access_config: Option<HyperParameterTuningJobTrainingJobDefinitionsInputDataConfigDataSourceS3DataSourceModelAccessConfig>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3DataDistributionType")]
     pub s3_data_distribution_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3DataType")]
     pub s3_data_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3URI")]
     pub s3_uri: Option<String>,
+}
+
+/// The configuration for a private hub model reference that points to a public
+/// SageMaker JumpStart model.
+/// 
+/// For more information about private hubs, see Private curated hubs for foundation
+/// model access control in JumpStart (<https://docs.aws.amazon.com/sagemaker/latest/dg/jumpstart-curated-hubs.html).>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HyperParameterTuningJobTrainingJobDefinitionsInputDataConfigDataSourceS3DataSourceHubAccessConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hubContentARN")]
+    pub hub_content_arn: Option<String>,
+}
+
+/// The access configuration file to control access to the ML model. You can
+/// explicitly accept the model end-user license agreement (EULA) within the
+/// ModelAccessConfig.
+/// 
+///    * If you are a Jumpstart user, see the End-user license agreements (<https://docs.aws.amazon.com/sagemaker/latest/dg/jumpstart-foundation-models-choose.html#jumpstart-foundation-models-choose-eula)>
+///    section for more details on accepting the EULA.
+/// 
+///    * If you are an AutoML user, see the Optional Parameters section of Create
+///    an AutoML job to fine-tune text generation models using the API for details
+///    on How to set the EULA acceptance when fine-tuning a model using the AutoML
+///    API (<https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-create-experiment-finetune-llms.html#autopilot-llms-finetuning-api-optional-params).>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HyperParameterTuningJobTrainingJobDefinitionsInputDataConfigDataSourceS3DataSourceModelAccessConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "acceptEula")]
+    pub accept_eula: Option<bool>,
 }
 
 /// A configuration for a shuffle option for input data in a channel. If you
@@ -1167,6 +1286,10 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsResourceConfig {
     pub instance_count: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceGroups")]
     pub instance_groups: Option<Vec<HyperParameterTuningJobTrainingJobDefinitionsResourceConfigInstanceGroups>>,
+    /// Configuration for how instances are placed and allocated within UltraServers.
+    /// This is only applicable for UltraServer capacity.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instancePlacementConfig")]
+    pub instance_placement_config: Option<HyperParameterTuningJobTrainingJobDefinitionsResourceConfigInstancePlacementConfig>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
     pub instance_type: Option<String>,
     /// Optional. Customer requested period in seconds for which the Training cluster
@@ -1190,6 +1313,25 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsResourceConfigInstanceGr
     pub instance_group_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
     pub instance_type: Option<String>,
+}
+
+/// Configuration for how instances are placed and allocated within UltraServers.
+/// This is only applicable for UltraServer capacity.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HyperParameterTuningJobTrainingJobDefinitionsResourceConfigInstancePlacementConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableMultipleJobs")]
+    pub enable_multiple_jobs: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "placementSpecifications")]
+    pub placement_specifications: Option<Vec<HyperParameterTuningJobTrainingJobDefinitionsResourceConfigInstancePlacementConfigPlacementSpecifications>>,
+}
+
+/// Specifies how instances should be placed on a specific UltraServer.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HyperParameterTuningJobTrainingJobDefinitionsResourceConfigInstancePlacementConfigPlacementSpecifications {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceCount")]
+    pub instance_count: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ultraServerID")]
+    pub ultra_server_id: Option<String>,
 }
 
 /// The retry strategy to use when a training job fails due to an InternalServerError.

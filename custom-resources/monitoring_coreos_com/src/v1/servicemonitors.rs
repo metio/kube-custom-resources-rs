@@ -272,12 +272,7 @@ pub struct ServiceMonitorEndpoints {
     /// More info: <https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub relabelings: Option<Vec<ServiceMonitorEndpointsRelabelings>>,
-    /// scheme defines the HTTP scheme to use for scraping.
-    /// 
-    /// `http` and `https` are the expected values unless you rewrite the
-    /// `__scheme__` label via relabeling.
-    /// 
-    /// If empty, Prometheus uses the default value `http`.
+    /// scheme defines the HTTP scheme to use when scraping the metrics.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<ServiceMonitorEndpointsScheme>,
     /// scrapeTimeout defines the timeout after which Prometheus considers the scrape to be failed.
@@ -919,6 +914,10 @@ pub enum ServiceMonitorEndpointsScheme {
     Http,
     #[serde(rename = "https")]
     Https,
+    #[serde(rename = "HTTP")]
+    HttpX,
+    #[serde(rename = "HTTPS")]
+    HttpsX,
 }
 
 /// tlsConfig defines the TLS configuration to use when scraping the target.

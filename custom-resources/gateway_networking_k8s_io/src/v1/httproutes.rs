@@ -937,6 +937,12 @@ pub enum HttpRouteRulesBackendRefsFiltersRequestRedirectStatusCode {
     r#_301,
     #[serde(rename = "302")]
     r#_302,
+    #[serde(rename = "303")]
+    r#_303,
+    #[serde(rename = "307")]
+    r#_307,
+    #[serde(rename = "308")]
+    r#_308,
 }
 
 /// ResponseHeaderModifier defines a schema for a filter that modifies response
@@ -1599,6 +1605,12 @@ pub enum HttpRouteRulesFiltersRequestRedirectStatusCode {
     r#_301,
     #[serde(rename = "302")]
     r#_302,
+    #[serde(rename = "303")]
+    r#_303,
+    #[serde(rename = "307")]
+    r#_307,
+    #[serde(rename = "308")]
+    r#_308,
 }
 
 /// ResponseHeaderModifier defines a schema for a filter that modifies response

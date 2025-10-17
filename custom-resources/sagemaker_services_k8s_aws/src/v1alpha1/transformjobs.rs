@@ -239,6 +239,8 @@ pub struct TransformJobTransformResources {
     pub instance_count: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
     pub instance_type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "transformAMIVersion")]
+    pub transform_ami_version: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeKMSKeyID")]
     pub volume_kms_key_id: Option<String>,
 }

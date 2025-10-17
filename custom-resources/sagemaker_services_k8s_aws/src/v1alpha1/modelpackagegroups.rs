@@ -12,7 +12,7 @@ use self::prelude::*;
 
 /// ModelPackageGroupSpec defines the desired state of ModelPackageGroup.
 /// 
-/// A group of versioned models in the model registry.
+/// A group of versioned models in the Model Registry.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "sagemaker.services.k8s.aws", version = "v1alpha1", kind = "ModelPackageGroup", plural = "modelpackagegroups")]
 #[kube(namespaced)]

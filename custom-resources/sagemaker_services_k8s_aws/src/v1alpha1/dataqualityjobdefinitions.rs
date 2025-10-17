@@ -44,8 +44,8 @@ pub struct DataQualityJobDefinitionSpec {
     /// Specifies networking configuration for the monitoring job.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkConfig")]
     pub network_config: Option<DataQualityJobDefinitionNetworkConfig>,
-    /// The Amazon Resource Name (ARN) of an IAM role that Amazon SageMaker can assume
-    /// to perform tasks on your behalf.
+    /// The Amazon Resource Name (ARN) of an IAM role that Amazon SageMaker AI can
+    /// assume to perform tasks on your behalf.
     /// 
     /// Regex Pattern: `^arn:aws[a-z\-]*:iam::\d{12}:role/?[a-zA-Z_0-9+=,.@\-_/]+$`
     #[serde(rename = "roleARN")]

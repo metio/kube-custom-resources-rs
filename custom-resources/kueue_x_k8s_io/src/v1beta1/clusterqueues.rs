@@ -153,18 +153,20 @@ pub struct ClusterQueueFlavorFungibility {
     /// whenCanBorrow determines whether a workload should try the next flavor
     /// before borrowing in current flavor. The possible values are:
     /// 
-    /// - `Borrow` (default): allocate in current flavor if borrowing
-    ///   is possible.
-    /// - `TryNextFlavor`: try next flavor even if the current
-    ///   flavor has enough resources to borrow.
+    /// - `MayStopSearch` (default): stop the search for candidate flavors if workload
+    ///   fits or requires borrowing to fit.
+    /// - `TryNextFlavor`: try next flavor if workload requires borrowing to fit.
+    /// - `Borrow` (deprecated): old name for `MayStopSearch`; please use new name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "whenCanBorrow")]
     pub when_can_borrow: Option<ClusterQueueFlavorFungibilityWhenCanBorrow>,
     /// whenCanPreempt determines whether a workload should try the next flavor
     /// before borrowing in current flavor. The possible values are:
     /// 
-    /// - `Preempt`: allocate in current flavor if it's possible to preempt some workloads.
-    /// - `TryNextFlavor` (default): try next flavor even if there are enough
-    ///   candidates for preemption in the current flavor.
+    /// - `MayStopSearch`: stop the search for candidate flavors if workload fits or requires
+    ///   preemption to fit.
+    /// - `TryNextFlavor` (default): try next flavor if workload requires preemption
+    ///   to fit in current flavor.
+    /// - `Preempt` (deprecated): old name for `MayStopSearch`; please use new name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "whenCanPreempt")]
     pub when_can_preempt: Option<ClusterQueueFlavorFungibilityWhenCanPreempt>,
 }
@@ -173,16 +175,18 @@ pub struct ClusterQueueFlavorFungibility {
 /// before borrowing or preempting in the flavor being evaluated.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterQueueFlavorFungibilityWhenCanBorrow {
-    Borrow,
+    MayStopSearch,
     TryNextFlavor,
+    Borrow,
 }
 
 /// flavorFungibility defines whether a workload should try the next flavor
 /// before borrowing or preempting in the flavor being evaluated.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterQueueFlavorFungibilityWhenCanPreempt {
-    Preempt,
+    MayStopSearch,
     TryNextFlavor,
+    Preempt,
 }
 
 /// namespaceSelector defines which namespaces are allowed to submit workloads to

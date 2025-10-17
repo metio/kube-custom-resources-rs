@@ -834,6 +834,7 @@ spec:
                             type: "string"
                           pathPrefix:
                             description: "pathPrefix defines the prefix for the HTTP path alerts are pushed to."
+                            minLength: 1
                             type: "string"
                           port:
                             anyOf:
@@ -928,7 +929,12 @@ spec:
                               type: "object"
                             type: "array"
                           scheme:
-                            description: "scheme to use when firing alerts."
+                            description: "scheme defines the HTTP scheme to use when sending alerts."
+                            enum:
+                              - "http"
+                              - "https"
+                              - "HTTP"
+                              - "HTTPS"
                             type: "string"
                           sigv4:
                             description: "sigv4 defines AWS's Signature Verification 4 for the URL.\n\nIt requires Prometheus >= v2.48.0.\n\nCannot be set at the same time as `basicAuth`, `bearerTokenFile` or `authorization`."
@@ -4468,7 +4474,7 @@ spec:
                           - "V2.0"
                         type: "string"
                       metadataConfig:
-                        description: "metadataConfig defines how to send a series metadata to the remote storage."
+                        description: "metadataConfig defines how to send a series metadata to the remote storage.\n\nWhen the field is empty, **no metadata** is sent. But when the field is\nnull, metadata is sent."
                         properties:
                           maxSamplesPerSend:
                             description: "maxSamplesPerSend defines the maximum number of metadata samples per send.\n\nIt requires Prometheus >= v2.29.0."

@@ -259,6 +259,12 @@ pub struct MiniClusterContainersVolumes {
     /// You should also define items if you are using this
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapName")]
     pub config_map_name: Option<String>,
+    /// Add a csi driver type volume
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "csiDriver")]
+    pub csi_driver: Option<String>,
+    /// Add attributes for the csi driver
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "csiDriverAttributes")]
+    pub csi_driver_attributes: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<bool>,
     /// Add an empty directory custom type
@@ -749,6 +755,12 @@ pub struct MiniClusterServicesVolumes {
     /// You should also define items if you are using this
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapName")]
     pub config_map_name: Option<String>,
+    /// Add a csi driver type volume
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "csiDriver")]
+    pub csi_driver: Option<String>,
+    /// Add attributes for the csi driver
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "csiDriverAttributes")]
+    pub csi_driver_attributes: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<bool>,
     /// Add an empty directory custom type

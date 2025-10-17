@@ -3510,12 +3510,21 @@ pub struct ClusterMonitoring {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableDefaultQueries")]
     pub disable_default_queries: Option<bool>,
     /// Enable or disable the `PodMonitor`
+    /// 
+    /// Deprecated: This feature will be removed in an upcoming release. If
+    /// you need this functionality, you can create a PodMonitor manually.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enablePodMonitor")]
     pub enable_pod_monitor: Option<bool>,
     /// The list of metric relabelings for the `PodMonitor`. Applied to samples before ingestion.
+    /// 
+    /// Deprecated: This feature will be removed in an upcoming release. If
+    /// you need this functionality, you can create a PodMonitor manually.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podMonitorMetricRelabelings")]
     pub pod_monitor_metric_relabelings: Option<Vec<ClusterMonitoringPodMonitorMetricRelabelings>>,
     /// The list of relabelings for the `PodMonitor`. Applied to samples before scraping.
+    /// 
+    /// Deprecated: This feature will be removed in an upcoming release. If
+    /// you need this functionality, you can create a PodMonitor manually.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podMonitorRelabelings")]
     pub pod_monitor_relabelings: Option<Vec<ClusterMonitoringPodMonitorRelabelings>>,
     /// Configure TLS communication for the metrics endpoint.
