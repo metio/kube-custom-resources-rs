@@ -288,11 +288,6 @@ pub struct PodMonitorPodMetricsEndpoints {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub relabelings: Option<Vec<PodMonitorPodMetricsEndpointsRelabelings>>,
     /// scheme defines the HTTP scheme to use for scraping.
-    /// 
-    /// `http` and `https` are the expected values unless you rewrite the
-    /// `__scheme__` label via relabeling.
-    /// 
-    /// If empty, Prometheus uses the default value `http`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<PodMonitorPodMetricsEndpointsScheme>,
     /// scrapeTimeout defines the timeout after which Prometheus considers the scrape to be failed.
@@ -939,6 +934,10 @@ pub enum PodMonitorPodMetricsEndpointsScheme {
     Http,
     #[serde(rename = "https")]
     Https,
+    #[serde(rename = "HTTP")]
+    HttpX,
+    #[serde(rename = "HTTPS")]
+    HttpsX,
 }
 
 /// tlsConfig defines the TLS configuration used by the client.

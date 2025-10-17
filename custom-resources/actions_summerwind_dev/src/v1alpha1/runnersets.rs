@@ -105,8 +105,8 @@ pub struct RunnerSetSpec {
     /// the network identity of the set. Pods get DNS/hostnames that follow the
     /// pattern: pod-specific-string.serviceName.default.svc.cluster.local
     /// where "pod-specific-string" is managed by the StatefulSet controller.
-    #[serde(rename = "serviceName")]
-    pub service_name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
+    pub service_name: Option<String>,
     /// template is the object that describes the pod that will be created if
     /// insufficient replicas are detected. Each pod stamped out by the StatefulSet
     /// will fulfill this Template, but have a unique identity from the rest
@@ -309,7 +309,9 @@ pub struct RunnerSetTemplateSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostIPC")]
     pub host_ipc: Option<bool>,
     /// Host networking requested for this pod. Use the host's network namespace.
-    /// If this option is set, the ports that will be used must be specified.
+    /// When using HostNetwork you should specify ports so the scheduler is aware.
+    /// When `hostNetwork` is true, specified `hostPort` fields in port definitions must match `containerPort`,
+    /// and unspecified `hostPort` fields in port definitions are defaulted to match `containerPort`.
     /// Default to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetwork")]
     pub host_network: Option<bool>,
@@ -332,6 +334,18 @@ pub struct RunnerSetTemplateSpec {
     /// If not specified, the pod's hostname will be set to a system-defined value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
+    /// HostnameOverride specifies an explicit override for the pod's hostname as perceived by the pod.
+    /// This field only specifies the pod's hostname and does not affect its DNS records.
+    /// When this field is set to a non-empty string:
+    /// - It takes precedence over the values set in `hostname` and `subdomain`.
+    /// - The Pod's hostname will be set to this value.
+    /// - `setHostnameAsFQDN` must be nil or set to false.
+    /// - `hostNetwork` must be set to false.
+    /// 
+    /// This field must be a valid DNS subdomain as defined in RFC 1123 and contain at most 64 characters.
+    /// Requires the HostnameOverride feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostnameOverride")]
+    pub hostname_override: Option<String>,
     /// ImagePullSecrets is an optional list of references to secrets in the same namespace to use for pulling any of the images used by this PodSpec.
     /// If specified, these secrets will be passed to individual puller implementations for them to use.
     /// More info: <https://kubernetes.io/docs/concepts/containers/images#specifying-imagepullsecrets-on-a-pod>
@@ -345,7 +359,7 @@ pub struct RunnerSetTemplateSpec {
     /// Init containers may not have Lifecycle actions, Readiness probes, Liveness probes, or Startup probes.
     /// The resourceRequirements of an init container are taken into account during scheduling
     /// by finding the highest request/limit for each resource type, and then using the max of
-    /// of that value or the sum of the normal containers. Limits are applied to init containers
+    /// that value or the sum of the normal containers. Limits are applied to init containers
     /// in a similar fashion.
     /// Init containers cannot currently be added or removed.
     /// Cannot be updated.
@@ -374,6 +388,7 @@ pub struct RunnerSetTemplateSpec {
     /// - spec.hostPID
     /// - spec.hostIPC
     /// - spec.hostUsers
+    /// - spec.resources
     /// - spec.securityContext.appArmorProfile
     /// - spec.securityContext.seLinuxOptions
     /// - spec.securityContext.seccompProfile
@@ -445,7 +460,7 @@ pub struct RunnerSetTemplateSpec {
     pub resource_claims: Option<Vec<RunnerSetTemplateSpecResourceClaims>>,
     /// Resources is the total amount of CPU and Memory resources required by all
     /// containers in the pod. It supports specifying Requests and Limits for
-    /// "cpu" and "memory" resource names only. ResourceClaims are not supported.
+    /// "cpu", "memory" and "hugepages-" resource names only. ResourceClaims are not supported.
     /// 
     /// This field enables fine-grained control over resource allocation for the
     /// entire pod, allowing resource sharing among containers in a pod.
@@ -738,7 +753,6 @@ pub struct RunnerSetTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgno
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -749,7 +763,6 @@ pub struct RunnerSetTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgno
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -859,7 +872,6 @@ pub struct RunnerSetTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnor
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -870,7 +882,6 @@ pub struct RunnerSetTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnor
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -969,8 +980,8 @@ pub struct RunnerSetTemplateSpecAffinityPodAntiAffinity {
     /// most preferred is the one with the greatest sum of weights, i.e.
     /// for each node that meets all of the scheduling requirements (resource
     /// request, requiredDuringScheduling anti-affinity expressions, etc.),
-    /// compute a sum by iterating through the elements of this field and adding
-    /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
+    /// compute a sum by iterating through the elements of this field and subtracting
+    /// "weight" from the sum if the node has pods which matches the corresponding podAffinityTerm; the
     /// node(s) with the highest sum are the most preferred.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
     pub preferred_during_scheduling_ignored_during_execution: Option<Vec<RunnerSetTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
@@ -1011,7 +1022,6 @@ pub struct RunnerSetTemplateSpecAffinityPodAntiAffinityPreferredDuringScheduling
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -1022,7 +1032,6 @@ pub struct RunnerSetTemplateSpecAffinityPodAntiAffinityPreferredDuringScheduling
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1132,7 +1141,6 @@ pub struct RunnerSetTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingI
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -1143,7 +1151,6 @@ pub struct RunnerSetTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingI
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1261,8 +1268,8 @@ pub struct RunnerSetTemplateSpecContainers {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<RunnerSetTemplateSpecContainersEnv>>,
     /// List of sources to populate environment variables in the container.
-    /// The keys defined within a source must be a C_IDENTIFIER. All invalid keys
-    /// will be reported as an event when the container is starting. When a key exists in multiple
+    /// The keys defined within a source may consist of any printable ASCII characters except '='.
+    /// When a key exists in multiple
     /// sources, the value associated with the last source will take precedence.
     /// Values defined by an Env with a duplicate key will take precedence.
     /// Cannot be updated.
@@ -1319,10 +1326,10 @@ pub struct RunnerSetTemplateSpecContainers {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<RunnerSetTemplateSpecContainersResources>,
     /// RestartPolicy defines the restart behavior of individual containers in a pod.
-    /// This field may only be set for init containers, and the only allowed value is "Always".
-    /// For non-init containers or when this field is not specified,
+    /// This overrides the pod-level restart policy. When this field is not specified,
     /// the restart behavior is defined by the Pod's restart policy and the container type.
-    /// Setting the RestartPolicy as "Always" for the init container will have the following effect:
+    /// Additionally, setting the RestartPolicy as "Always" for the init container will
+    /// have the following effect:
     /// this init container will be continually restarted on
     /// exit until all regular containers have terminated. Once all regular
     /// containers have completed, all init containers with restartPolicy "Always"
@@ -1335,6 +1342,19 @@ pub struct RunnerSetTemplateSpecContainers {
     /// completed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
+    /// Represents a list of rules to be checked to determine if the
+    /// container should be restarted on exit. The rules are evaluated in
+    /// order. Once a rule matches a container exit condition, the remaining
+    /// rules are ignored. If no rule matches the container exit condition,
+    /// the Container-level restart policy determines the whether the container
+    /// is restarted or not. Constraints on the rules:
+    /// - At most 20 rules are allowed.
+    /// - Rules can have the same action.
+    /// - Identical rules are not forbidden in validations.
+    /// When rules are specified, container MUST set RestartPolicy explicitly
+    /// even it if matches the Pod's RestartPolicy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicyRules")]
+    pub restart_policy_rules: Option<Vec<RunnerSetTemplateSpecContainersRestartPolicyRules>>,
     /// SecurityContext defines the security options the container should be run with.
     /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
     /// More info: <https://kubernetes.io/docs/tasks/configure-pod-container/security-context/>
@@ -1403,7 +1423,8 @@ pub struct RunnerSetTemplateSpecContainers {
 /// EnvVar represents an environment variable present in a Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RunnerSetTemplateSpecContainersEnv {
-    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    /// Name of the environment variable.
+    /// May consist of any printable ASCII characters except '='.
     pub name: String,
     /// Variable references $(VAR_NAME) are expanded
     /// using the previously defined environment variables in the container and
@@ -1431,6 +1452,10 @@ pub struct RunnerSetTemplateSpecContainersEnvValueFrom {
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<RunnerSetTemplateSpecContainersEnvValueFromFieldRef>,
+    /// FileKeyRef selects a key of the env file.
+    /// Requires the EnvFiles feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileKeyRef")]
+    pub file_key_ref: Option<RunnerSetTemplateSpecContainersEnvValueFromFileKeyRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
@@ -1469,6 +1494,31 @@ pub struct RunnerSetTemplateSpecContainersEnvValueFromFieldRef {
     pub field_path: String,
 }
 
+/// FileKeyRef selects a key of the env file.
+/// Requires the EnvFiles feature gate to be enabled.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RunnerSetTemplateSpecContainersEnvValueFromFileKeyRef {
+    /// The key within the env file. An invalid key will prevent the pod from starting.
+    /// The keys defined within a source may consist of any printable ASCII characters except '='.
+    /// During Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters.
+    pub key: String,
+    /// Specify whether the file or its key must be defined. If the file or key
+    /// does not exist, then the env var is not published.
+    /// If optional is set to true and the specified key does not exist,
+    /// the environment variable will not be set in the Pod's containers.
+    /// 
+    /// If optional is set to false and the specified key does not exist,
+    /// an error will be returned during Pod creation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    /// The path within the volume from which to select the file.
+    /// Must be relative and may not contain the '..' path or start with '..'.
+    pub path: String,
+    /// The name of the volume mount containing the env file.
+    #[serde(rename = "volumeName")]
+    pub volume_name: String,
+}
+
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1500,13 +1550,14 @@ pub struct RunnerSetTemplateSpecContainersEnvValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
-/// EnvFromSource represents the source of a set of ConfigMaps
+/// EnvFromSource represents the source of a set of ConfigMaps or Secrets
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RunnerSetTemplateSpecContainersEnvFrom {
     /// The ConfigMap to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<RunnerSetTemplateSpecContainersEnvFromConfigMapRef>,
-    /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
+    /// Optional text to prepend to the name of each environment variable.
+    /// May consist of any printable ASCII characters except '='.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// The Secret to select from
@@ -1565,6 +1616,11 @@ pub struct RunnerSetTemplateSpecContainersLifecycle {
     /// More info: <https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<RunnerSetTemplateSpecContainersLifecyclePreStop>,
+    /// StopSignal defines which signal will be sent to a container when it is being stopped.
+    /// If not specified, the default is defined by the container runtime in use.
+    /// StopSignal can only be set for Pods with a non-empty .spec.os.name
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
 }
 
 /// PostStart is called immediately after a container is created. If the handler fails,
@@ -2042,7 +2098,7 @@ pub struct RunnerSetTemplateSpecContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// 
     /// This field is immutable. It can only be set for containers.
@@ -2072,6 +2128,34 @@ pub struct RunnerSetTemplateSpecContainersResourcesClaims {
     /// only the result of this request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub request: Option<String>,
+}
+
+/// ContainerRestartRule describes how a container exit is handled.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RunnerSetTemplateSpecContainersRestartPolicyRules {
+    /// Specifies the action taken on a container exit if the requirements
+    /// are satisfied. The only possible value is "Restart" to restart the
+    /// container.
+    pub action: String,
+    /// Represents the exit codes to check on container exits.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exitCodes")]
+    pub exit_codes: Option<RunnerSetTemplateSpecContainersRestartPolicyRulesExitCodes>,
+}
+
+/// Represents the exit codes to check on container exits.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RunnerSetTemplateSpecContainersRestartPolicyRulesExitCodes {
+    /// Represents the relationship between the container exit code(s) and the
+    /// specified values. Possible values are:
+    /// - In: the requirement is satisfied if the container exit code is in the
+    ///   set of specified values.
+    /// - NotIn: the requirement is satisfied if the container exit code is
+    ///   not in the set of specified values.
+    pub operator: String,
+    /// Specifies the set of values to check for container exit codes.
+    /// At most 255 elements are allowed.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<i64>>,
 }
 
 /// SecurityContext defines the security options the container should be run with.
@@ -2520,8 +2604,8 @@ pub struct RunnerSetTemplateSpecEphemeralContainers {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<RunnerSetTemplateSpecEphemeralContainersEnv>>,
     /// List of sources to populate environment variables in the container.
-    /// The keys defined within a source must be a C_IDENTIFIER. All invalid keys
-    /// will be reported as an event when the container is starting. When a key exists in multiple
+    /// The keys defined within a source may consist of any printable ASCII characters except '='.
+    /// When a key exists in multiple
     /// sources, the value associated with the last source will take precedence.
     /// Values defined by an Env with a duplicate key will take precedence.
     /// Cannot be updated.
@@ -2562,10 +2646,14 @@ pub struct RunnerSetTemplateSpecEphemeralContainers {
     pub resources: Option<RunnerSetTemplateSpecEphemeralContainersResources>,
     /// Restart policy for the container to manage the restart behavior of each
     /// container within a pod.
-    /// This may only be set for init containers. You cannot set this field on
-    /// ephemeral containers.
+    /// You cannot set this field on ephemeral containers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
+    /// Represents a list of rules to be checked to determine if the
+    /// container should be restarted on exit. You cannot set this field on
+    /// ephemeral containers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicyRules")]
+    pub restart_policy_rules: Option<Vec<RunnerSetTemplateSpecEphemeralContainersRestartPolicyRules>>,
     /// Optional: SecurityContext defines the security options the ephemeral container should be run with.
     /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
@@ -2635,7 +2723,8 @@ pub struct RunnerSetTemplateSpecEphemeralContainers {
 /// EnvVar represents an environment variable present in a Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RunnerSetTemplateSpecEphemeralContainersEnv {
-    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    /// Name of the environment variable.
+    /// May consist of any printable ASCII characters except '='.
     pub name: String,
     /// Variable references $(VAR_NAME) are expanded
     /// using the previously defined environment variables in the container and
@@ -2663,6 +2752,10 @@ pub struct RunnerSetTemplateSpecEphemeralContainersEnvValueFrom {
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<RunnerSetTemplateSpecEphemeralContainersEnvValueFromFieldRef>,
+    /// FileKeyRef selects a key of the env file.
+    /// Requires the EnvFiles feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileKeyRef")]
+    pub file_key_ref: Option<RunnerSetTemplateSpecEphemeralContainersEnvValueFromFileKeyRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
@@ -2701,6 +2794,31 @@ pub struct RunnerSetTemplateSpecEphemeralContainersEnvValueFromFieldRef {
     pub field_path: String,
 }
 
+/// FileKeyRef selects a key of the env file.
+/// Requires the EnvFiles feature gate to be enabled.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RunnerSetTemplateSpecEphemeralContainersEnvValueFromFileKeyRef {
+    /// The key within the env file. An invalid key will prevent the pod from starting.
+    /// The keys defined within a source may consist of any printable ASCII characters except '='.
+    /// During Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters.
+    pub key: String,
+    /// Specify whether the file or its key must be defined. If the file or key
+    /// does not exist, then the env var is not published.
+    /// If optional is set to true and the specified key does not exist,
+    /// the environment variable will not be set in the Pod's containers.
+    /// 
+    /// If optional is set to false and the specified key does not exist,
+    /// an error will be returned during Pod creation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    /// The path within the volume from which to select the file.
+    /// Must be relative and may not contain the '..' path or start with '..'.
+    pub path: String,
+    /// The name of the volume mount containing the env file.
+    #[serde(rename = "volumeName")]
+    pub volume_name: String,
+}
+
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2732,13 +2850,14 @@ pub struct RunnerSetTemplateSpecEphemeralContainersEnvValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
-/// EnvFromSource represents the source of a set of ConfigMaps
+/// EnvFromSource represents the source of a set of ConfigMaps or Secrets
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RunnerSetTemplateSpecEphemeralContainersEnvFrom {
     /// The ConfigMap to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<RunnerSetTemplateSpecEphemeralContainersEnvFromConfigMapRef>,
-    /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
+    /// Optional text to prepend to the name of each environment variable.
+    /// May consist of any printable ASCII characters except '='.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// The Secret to select from
@@ -2796,6 +2915,11 @@ pub struct RunnerSetTemplateSpecEphemeralContainersLifecycle {
     /// More info: <https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<RunnerSetTemplateSpecEphemeralContainersLifecyclePreStop>,
+    /// StopSignal defines which signal will be sent to a container when it is being stopped.
+    /// If not specified, the default is defined by the container runtime in use.
+    /// StopSignal can only be set for Pods with a non-empty .spec.os.name
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
 }
 
 /// PostStart is called immediately after a container is created. If the handler fails,
@@ -3266,7 +3390,7 @@ pub struct RunnerSetTemplateSpecEphemeralContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// 
     /// This field is immutable. It can only be set for containers.
@@ -3296,6 +3420,34 @@ pub struct RunnerSetTemplateSpecEphemeralContainersResourcesClaims {
     /// only the result of this request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub request: Option<String>,
+}
+
+/// ContainerRestartRule describes how a container exit is handled.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RunnerSetTemplateSpecEphemeralContainersRestartPolicyRules {
+    /// Specifies the action taken on a container exit if the requirements
+    /// are satisfied. The only possible value is "Restart" to restart the
+    /// container.
+    pub action: String,
+    /// Represents the exit codes to check on container exits.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exitCodes")]
+    pub exit_codes: Option<RunnerSetTemplateSpecEphemeralContainersRestartPolicyRulesExitCodes>,
+}
+
+/// Represents the exit codes to check on container exits.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RunnerSetTemplateSpecEphemeralContainersRestartPolicyRulesExitCodes {
+    /// Represents the relationship between the container exit code(s) and the
+    /// specified values. Possible values are:
+    /// - In: the requirement is satisfied if the container exit code is in the
+    ///   set of specified values.
+    /// - NotIn: the requirement is satisfied if the container exit code is
+    ///   not in the set of specified values.
+    pub operator: String,
+    /// Specifies the set of values to check for container exit codes.
+    /// At most 255 elements are allowed.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<i64>>,
 }
 
 /// Optional: SecurityContext defines the security options the ephemeral container should be run with.
@@ -3719,8 +3871,8 @@ pub struct RunnerSetTemplateSpecInitContainers {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<RunnerSetTemplateSpecInitContainersEnv>>,
     /// List of sources to populate environment variables in the container.
-    /// The keys defined within a source must be a C_IDENTIFIER. All invalid keys
-    /// will be reported as an event when the container is starting. When a key exists in multiple
+    /// The keys defined within a source may consist of any printable ASCII characters except '='.
+    /// When a key exists in multiple
     /// sources, the value associated with the last source will take precedence.
     /// Values defined by an Env with a duplicate key will take precedence.
     /// Cannot be updated.
@@ -3777,10 +3929,10 @@ pub struct RunnerSetTemplateSpecInitContainers {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<RunnerSetTemplateSpecInitContainersResources>,
     /// RestartPolicy defines the restart behavior of individual containers in a pod.
-    /// This field may only be set for init containers, and the only allowed value is "Always".
-    /// For non-init containers or when this field is not specified,
+    /// This overrides the pod-level restart policy. When this field is not specified,
     /// the restart behavior is defined by the Pod's restart policy and the container type.
-    /// Setting the RestartPolicy as "Always" for the init container will have the following effect:
+    /// Additionally, setting the RestartPolicy as "Always" for the init container will
+    /// have the following effect:
     /// this init container will be continually restarted on
     /// exit until all regular containers have terminated. Once all regular
     /// containers have completed, all init containers with restartPolicy "Always"
@@ -3793,6 +3945,19 @@ pub struct RunnerSetTemplateSpecInitContainers {
     /// completed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
+    /// Represents a list of rules to be checked to determine if the
+    /// container should be restarted on exit. The rules are evaluated in
+    /// order. Once a rule matches a container exit condition, the remaining
+    /// rules are ignored. If no rule matches the container exit condition,
+    /// the Container-level restart policy determines the whether the container
+    /// is restarted or not. Constraints on the rules:
+    /// - At most 20 rules are allowed.
+    /// - Rules can have the same action.
+    /// - Identical rules are not forbidden in validations.
+    /// When rules are specified, container MUST set RestartPolicy explicitly
+    /// even it if matches the Pod's RestartPolicy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicyRules")]
+    pub restart_policy_rules: Option<Vec<RunnerSetTemplateSpecInitContainersRestartPolicyRules>>,
     /// SecurityContext defines the security options the container should be run with.
     /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
     /// More info: <https://kubernetes.io/docs/tasks/configure-pod-container/security-context/>
@@ -3861,7 +4026,8 @@ pub struct RunnerSetTemplateSpecInitContainers {
 /// EnvVar represents an environment variable present in a Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RunnerSetTemplateSpecInitContainersEnv {
-    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    /// Name of the environment variable.
+    /// May consist of any printable ASCII characters except '='.
     pub name: String,
     /// Variable references $(VAR_NAME) are expanded
     /// using the previously defined environment variables in the container and
@@ -3889,6 +4055,10 @@ pub struct RunnerSetTemplateSpecInitContainersEnvValueFrom {
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<RunnerSetTemplateSpecInitContainersEnvValueFromFieldRef>,
+    /// FileKeyRef selects a key of the env file.
+    /// Requires the EnvFiles feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileKeyRef")]
+    pub file_key_ref: Option<RunnerSetTemplateSpecInitContainersEnvValueFromFileKeyRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
@@ -3927,6 +4097,31 @@ pub struct RunnerSetTemplateSpecInitContainersEnvValueFromFieldRef {
     pub field_path: String,
 }
 
+/// FileKeyRef selects a key of the env file.
+/// Requires the EnvFiles feature gate to be enabled.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RunnerSetTemplateSpecInitContainersEnvValueFromFileKeyRef {
+    /// The key within the env file. An invalid key will prevent the pod from starting.
+    /// The keys defined within a source may consist of any printable ASCII characters except '='.
+    /// During Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters.
+    pub key: String,
+    /// Specify whether the file or its key must be defined. If the file or key
+    /// does not exist, then the env var is not published.
+    /// If optional is set to true and the specified key does not exist,
+    /// the environment variable will not be set in the Pod's containers.
+    /// 
+    /// If optional is set to false and the specified key does not exist,
+    /// an error will be returned during Pod creation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    /// The path within the volume from which to select the file.
+    /// Must be relative and may not contain the '..' path or start with '..'.
+    pub path: String,
+    /// The name of the volume mount containing the env file.
+    #[serde(rename = "volumeName")]
+    pub volume_name: String,
+}
+
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3958,13 +4153,14 @@ pub struct RunnerSetTemplateSpecInitContainersEnvValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
-/// EnvFromSource represents the source of a set of ConfigMaps
+/// EnvFromSource represents the source of a set of ConfigMaps or Secrets
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RunnerSetTemplateSpecInitContainersEnvFrom {
     /// The ConfigMap to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<RunnerSetTemplateSpecInitContainersEnvFromConfigMapRef>,
-    /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
+    /// Optional text to prepend to the name of each environment variable.
+    /// May consist of any printable ASCII characters except '='.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// The Secret to select from
@@ -4023,6 +4219,11 @@ pub struct RunnerSetTemplateSpecInitContainersLifecycle {
     /// More info: <https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<RunnerSetTemplateSpecInitContainersLifecyclePreStop>,
+    /// StopSignal defines which signal will be sent to a container when it is being stopped.
+    /// If not specified, the default is defined by the container runtime in use.
+    /// StopSignal can only be set for Pods with a non-empty .spec.os.name
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
 }
 
 /// PostStart is called immediately after a container is created. If the handler fails,
@@ -4500,7 +4701,7 @@ pub struct RunnerSetTemplateSpecInitContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// 
     /// This field is immutable. It can only be set for containers.
@@ -4530,6 +4731,34 @@ pub struct RunnerSetTemplateSpecInitContainersResourcesClaims {
     /// only the result of this request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub request: Option<String>,
+}
+
+/// ContainerRestartRule describes how a container exit is handled.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RunnerSetTemplateSpecInitContainersRestartPolicyRules {
+    /// Specifies the action taken on a container exit if the requirements
+    /// are satisfied. The only possible value is "Restart" to restart the
+    /// container.
+    pub action: String,
+    /// Represents the exit codes to check on container exits.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exitCodes")]
+    pub exit_codes: Option<RunnerSetTemplateSpecInitContainersRestartPolicyRulesExitCodes>,
+}
+
+/// Represents the exit codes to check on container exits.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RunnerSetTemplateSpecInitContainersRestartPolicyRulesExitCodes {
+    /// Represents the relationship between the container exit code(s) and the
+    /// specified values. Possible values are:
+    /// - In: the requirement is satisfied if the container exit code is in the
+    ///   set of specified values.
+    /// - NotIn: the requirement is satisfied if the container exit code is
+    ///   not in the set of specified values.
+    pub operator: String,
+    /// Specifies the set of values to check for container exit codes.
+    /// At most 255 elements are allowed.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<i64>>,
 }
 
 /// SecurityContext defines the security options the container should be run with.
@@ -4918,6 +5147,7 @@ pub struct RunnerSetTemplateSpecInitContainersVolumeMounts {
 /// - spec.hostPID
 /// - spec.hostIPC
 /// - spec.hostUsers
+/// - spec.resources
 /// - spec.securityContext.appArmorProfile
 /// - spec.securityContext.seLinuxOptions
 /// - spec.securityContext.seccompProfile
@@ -4995,7 +5225,7 @@ pub struct RunnerSetTemplateSpecResourceClaims {
 
 /// Resources is the total amount of CPU and Memory resources required by all
 /// containers in the pod. It supports specifying Requests and Limits for
-/// "cpu" and "memory" resource names only. ResourceClaims are not supported.
+/// "cpu", "memory" and "hugepages-" resource names only. ResourceClaims are not supported.
 /// 
 /// This field enables fine-grained control over resource allocation for the
 /// entire pod, allowing resource sharing among containers in a pod.
@@ -5007,7 +5237,7 @@ pub struct RunnerSetTemplateSpecResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// 
     /// This field is immutable. It can only be set for containers.
@@ -5362,7 +5592,6 @@ pub struct RunnerSetTemplateSpecTopologySpreadConstraints {
     /// - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
     /// 
     /// If this value is nil, the behavior is equivalent to the Honor policy.
-    /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
     pub node_affinity_policy: Option<String>,
     /// NodeTaintsPolicy indicates how we will treat node taints when calculating
@@ -5372,7 +5601,6 @@ pub struct RunnerSetTemplateSpecTopologySpreadConstraints {
     /// - Ignore: node taints are ignored. All nodes are included.
     /// 
     /// If this value is nil, the behavior is equivalent to the Ignore policy.
-    /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
     pub node_taints_policy: Option<String>,
     /// TopologyKey is the key of node labels. Nodes that have a label with this key
@@ -5537,7 +5765,6 @@ pub struct RunnerSetTemplateSpecVolumes {
     pub git_repo: Option<RunnerSetTemplateSpecVolumesGitRepo>,
     /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
     /// Deprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer supported.
-    /// More info: <https://examples.k8s.io/volumes/glusterfs/README.md>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub glusterfs: Option<RunnerSetTemplateSpecVolumesGlusterfs>,
     /// hostPath represents a pre-existing file or directory on the host
@@ -5559,13 +5786,13 @@ pub struct RunnerSetTemplateSpecVolumes {
     /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
     /// The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
     /// The volume will be mounted read-only (ro) and non-executable files (noexec).
-    /// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath).
+    /// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.
     /// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<RunnerSetTemplateSpecVolumesImage>,
     /// iscsi represents an ISCSI Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
-    /// More info: <https://examples.k8s.io/volumes/iscsi/README.md>
+    /// More info: <https://kubernetes.io/docs/concepts/storage/volumes/#iscsi>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub iscsi: Option<RunnerSetTemplateSpecVolumesIscsi>,
     /// name of the volume.
@@ -5600,7 +5827,6 @@ pub struct RunnerSetTemplateSpecVolumes {
     pub quobyte: Option<RunnerSetTemplateSpecVolumesQuobyte>,
     /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
     /// Deprecated: RBD is deprecated and the in-tree rbd type is no longer supported.
-    /// More info: <https://examples.k8s.io/volumes/rbd/README.md>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rbd: Option<RunnerSetTemplateSpecVolumesRbd>,
     /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
@@ -6125,15 +6351,13 @@ pub struct RunnerSetTemplateSpecVolumesEphemeralVolumeClaimTemplateSpec {
     /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
     /// If specified, the CSI driver will create or update the volume with the attributes defined
     /// in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,
-    /// it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass
-    /// will be applied to the claim but it's not allowed to reset this field to empty string once it is set.
-    /// If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass
-    /// will be set by the persistentvolume controller if it exists.
+    /// it can be changed after the claim is created. An empty string or nil value indicates that no
+    /// VolumeAttributesClass will be applied to the claim. If the claim enters an Infeasible error state,
+    /// this field can be reset to its previous value (including nil) to cancel the modification.
     /// If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
     /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
     /// exists.
     /// More info: <https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/>
-    /// (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
@@ -6389,11 +6613,9 @@ pub struct RunnerSetTemplateSpecVolumesGitRepo {
 
 /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
 /// Deprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer supported.
-/// More info: <https://examples.k8s.io/volumes/glusterfs/README.md>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RunnerSetTemplateSpecVolumesGlusterfs {
     /// endpoints is the endpoint name that details Glusterfs topology.
-    /// More info: <https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod>
     pub endpoints: String,
     /// path is the Glusterfs volume path.
     /// More info: <https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod>
@@ -6435,7 +6657,7 @@ pub struct RunnerSetTemplateSpecVolumesHostPath {
 /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
 /// The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
 /// The volume will be mounted read-only (ro) and non-executable files (noexec).
-/// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath).
+/// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.
 /// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RunnerSetTemplateSpecVolumesImage {
@@ -6458,7 +6680,7 @@ pub struct RunnerSetTemplateSpecVolumesImage {
 
 /// iscsi represents an ISCSI Disk resource that is attached to a
 /// kubelet's host machine and then exposed to the pod.
-/// More info: <https://examples.k8s.io/volumes/iscsi/README.md>
+/// More info: <https://kubernetes.io/docs/concepts/storage/volumes/#iscsi>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RunnerSetTemplateSpecVolumesIscsi {
     /// chapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication
@@ -6623,6 +6845,42 @@ pub struct RunnerSetTemplateSpecVolumesProjectedSources {
     /// downwardAPI information about the downwardAPI data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<RunnerSetTemplateSpecVolumesProjectedSourcesDownwardApi>,
+    /// Projects an auto-rotating credential bundle (private key and certificate
+    /// chain) that the pod can use either as a TLS client or server.
+    /// 
+    /// Kubelet generates a private key and uses it to send a
+    /// PodCertificateRequest to the named signer.  Once the signer approves the
+    /// request and issues a certificate chain, Kubelet writes the key and
+    /// certificate chain to the pod filesystem.  The pod does not start until
+    /// certificates have been issued for each podCertificate projected volume
+    /// source in its spec.
+    /// 
+    /// Kubelet will begin trying to rotate the certificate at the time indicated
+    /// by the signer using the PodCertificateRequest.Status.BeginRefreshAt
+    /// timestamp.
+    /// 
+    /// Kubelet can write a single file, indicated by the credentialBundlePath
+    /// field, or separate files, indicated by the keyPath and
+    /// certificateChainPath fields.
+    /// 
+    /// The credential bundle is a single file in PEM format.  The first PEM
+    /// entry is the private key (in PKCS#8 format), and the remaining PEM
+    /// entries are the certificate chain issued by the signer (typically,
+    /// signers will return their certificate chain in leaf-to-root order).
+    /// 
+    /// Prefer using the credential bundle format, since your application code
+    /// can read it atomically.  If you use keyPath and certificateChainPath,
+    /// your application must make two separate file reads. If these coincide
+    /// with a certificate rotation, it is possible that the private key and leaf
+    /// certificate you read may not correspond to each other.  Your application
+    /// will need to check for this condition, and re-read until they are
+    /// consistent.
+    /// 
+    /// The named signer controls chooses the format of the certificate it
+    /// issues; consult the signer implementation's documentation to learn how to
+    /// use the certificates it issues.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podCertificate")]
+    pub pod_certificate: Option<RunnerSetTemplateSpecVolumesProjectedSourcesPodCertificate>,
     /// secret information about the secret data to project
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<RunnerSetTemplateSpecVolumesProjectedSourcesSecret>,
@@ -6804,6 +7062,101 @@ pub struct RunnerSetTemplateSpecVolumesProjectedSourcesDownwardApiItemsResourceF
     pub resource: String,
 }
 
+/// Projects an auto-rotating credential bundle (private key and certificate
+/// chain) that the pod can use either as a TLS client or server.
+/// 
+/// Kubelet generates a private key and uses it to send a
+/// PodCertificateRequest to the named signer.  Once the signer approves the
+/// request and issues a certificate chain, Kubelet writes the key and
+/// certificate chain to the pod filesystem.  The pod does not start until
+/// certificates have been issued for each podCertificate projected volume
+/// source in its spec.
+/// 
+/// Kubelet will begin trying to rotate the certificate at the time indicated
+/// by the signer using the PodCertificateRequest.Status.BeginRefreshAt
+/// timestamp.
+/// 
+/// Kubelet can write a single file, indicated by the credentialBundlePath
+/// field, or separate files, indicated by the keyPath and
+/// certificateChainPath fields.
+/// 
+/// The credential bundle is a single file in PEM format.  The first PEM
+/// entry is the private key (in PKCS#8 format), and the remaining PEM
+/// entries are the certificate chain issued by the signer (typically,
+/// signers will return their certificate chain in leaf-to-root order).
+/// 
+/// Prefer using the credential bundle format, since your application code
+/// can read it atomically.  If you use keyPath and certificateChainPath,
+/// your application must make two separate file reads. If these coincide
+/// with a certificate rotation, it is possible that the private key and leaf
+/// certificate you read may not correspond to each other.  Your application
+/// will need to check for this condition, and re-read until they are
+/// consistent.
+/// 
+/// The named signer controls chooses the format of the certificate it
+/// issues; consult the signer implementation's documentation to learn how to
+/// use the certificates it issues.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RunnerSetTemplateSpecVolumesProjectedSourcesPodCertificate {
+    /// Write the certificate chain at this path in the projected volume.
+    /// 
+    /// Most applications should use credentialBundlePath.  When using keyPath
+    /// and certificateChainPath, your application needs to check that the key
+    /// and leaf certificate are consistent, because it is possible to read the
+    /// files mid-rotation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateChainPath")]
+    pub certificate_chain_path: Option<String>,
+    /// Write the credential bundle at this path in the projected volume.
+    /// 
+    /// The credential bundle is a single file that contains multiple PEM blocks.
+    /// The first PEM block is a PRIVATE KEY block, containing a PKCS#8 private
+    /// key.
+    /// 
+    /// The remaining blocks are CERTIFICATE blocks, containing the issued
+    /// certificate chain from the signer (leaf and any intermediates).
+    /// 
+    /// Using credentialBundlePath lets your Pod's application code make a single
+    /// atomic read that retrieves a consistent key and certificate chain.  If you
+    /// project them to separate files, your application code will need to
+    /// additionally check that the leaf certificate was issued to the key.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialBundlePath")]
+    pub credential_bundle_path: Option<String>,
+    /// Write the key at this path in the projected volume.
+    /// 
+    /// Most applications should use credentialBundlePath.  When using keyPath
+    /// and certificateChainPath, your application needs to check that the key
+    /// and leaf certificate are consistent, because it is possible to read the
+    /// files mid-rotation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyPath")]
+    pub key_path: Option<String>,
+    /// The type of keypair Kubelet will generate for the pod.
+    /// 
+    /// Valid values are "RSA3072", "RSA4096", "ECDSAP256", "ECDSAP384",
+    /// "ECDSAP521", and "ED25519".
+    #[serde(rename = "keyType")]
+    pub key_type: String,
+    /// maxExpirationSeconds is the maximum lifetime permitted for the
+    /// certificate.
+    /// 
+    /// Kubelet copies this value verbatim into the PodCertificateRequests it
+    /// generates for this projection.
+    /// 
+    /// If omitted, kube-apiserver will set it to 86400(24 hours). kube-apiserver
+    /// will reject values shorter than 3600 (1 hour).  The maximum allowable
+    /// value is 7862400 (91 days).
+    /// 
+    /// The signer implementation is then free to issue a certificate with any
+    /// lifetime *shorter* than MaxExpirationSeconds, but no shorter than 3600
+    /// seconds (1 hour).  This constraint is enforced by kube-apiserver.
+    /// `kubernetes.io` signers will never issue certificates with a lifetime
+    /// longer than 24 hours.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxExpirationSeconds")]
+    pub max_expiration_seconds: Option<i32>,
+    /// Kubelet's generated CSRs will be addressed to this signer.
+    #[serde(rename = "signerName")]
+    pub signer_name: String,
+}
+
 /// secret information about the secret data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RunnerSetTemplateSpecVolumesProjectedSourcesSecret {
@@ -6900,7 +7253,6 @@ pub struct RunnerSetTemplateSpecVolumesQuobyte {
 
 /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
 /// Deprecated: RBD is deprecated and the in-tree rbd type is no longer supported.
-/// More info: <https://examples.k8s.io/volumes/rbd/README.md>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RunnerSetTemplateSpecVolumesRbd {
     /// fsType is the filesystem type of the volume that you want to mount.
@@ -7269,15 +7621,13 @@ pub struct RunnerSetVolumeClaimTemplatesSpec {
     /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
     /// If specified, the CSI driver will create or update the volume with the attributes defined
     /// in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,
-    /// it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass
-    /// will be applied to the claim but it's not allowed to reset this field to empty string once it is set.
-    /// If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass
-    /// will be set by the persistentvolume controller if it exists.
+    /// it can be changed after the claim is created. An empty string or nil value indicates that no
+    /// VolumeAttributesClass will be applied to the claim. If the claim enters an Infeasible error state,
+    /// this field can be reset to its previous value (including nil) to cancel the modification.
     /// If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
     /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
     /// exists.
     /// More info: <https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/>
-    /// (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
@@ -7479,12 +7829,10 @@ pub struct RunnerSetVolumeClaimTemplatesStatus {
     pub conditions: Option<Vec<Condition>>,
     /// currentVolumeAttributesClassName is the current name of the VolumeAttributesClass the PVC is using.
     /// When unset, there is no VolumeAttributeClass applied to this PersistentVolumeClaim
-    /// This is a beta field and requires enabling VolumeAttributesClass feature (off by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentVolumeAttributesClassName")]
     pub current_volume_attributes_class_name: Option<String>,
     /// ModifyVolumeStatus represents the status object of ControllerModifyVolume operation.
     /// When this is unset, there is no ModifyVolume operation being attempted.
-    /// This is a beta field and requires enabling VolumeAttributesClass feature (off by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "modifyVolumeStatus")]
     pub modify_volume_status: Option<RunnerSetVolumeClaimTemplatesStatusModifyVolumeStatus>,
     /// phase represents the current phase of PersistentVolumeClaim.
@@ -7494,7 +7842,6 @@ pub struct RunnerSetVolumeClaimTemplatesStatus {
 
 /// ModifyVolumeStatus represents the status object of ControllerModifyVolume operation.
 /// When this is unset, there is no ModifyVolume operation being attempted.
-/// This is a beta field and requires enabling VolumeAttributesClass feature (off by default).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RunnerSetVolumeClaimTemplatesStatusModifyVolumeStatus {
     /// status is the status of the ControllerModifyVolume operation. It can be in any of following states:

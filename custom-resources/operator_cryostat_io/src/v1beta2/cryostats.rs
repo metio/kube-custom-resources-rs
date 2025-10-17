@@ -642,6 +642,12 @@ pub struct CryostatObjectStorageOptions {
 /// Configuration for external object storage providers.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CryostatObjectStorageOptionsProvider {
+    /// Whether file downloads from storage to the user's browser should be performed using presigned URLs, or by Cryostat acting as a "network pipe." Enabling this reduces network utilization and latency and removes some I/O from Cryostat, but requires that the object storage container URLs are accessible to the user's browser. Defaults to inheriting the .spec.objectStorageProviderOptions.disablePresignedFileTransfers value.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disablePresignedDownloads")]
+    pub disable_presigned_downloads: Option<bool>,
+    /// Whether file transfers should be performed using presigned URLs, or by Cryostat acting as a "network pipe" to the other containers. Defaults to false (presigned transfers enabled) for performance.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disablePresignedFileTransfers")]
+    pub disable_presigned_file_transfers: Option<bool>,
     /// The strategy Cryostat will use for storing files' metadata. The default 'tagging' strategy stores all metadata as object Tags.
     /// The 'metadata' strategy stores metadata as object Metadata, which is immutable but allows for more entries than Tags.
     /// The 'bucket' strategy stores metadata as separate files (ex. JSON object maps) in a dedicated bucket,

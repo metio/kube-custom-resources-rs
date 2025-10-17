@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.16.2"
+    controller-gen.kubebuilder.io/version: "v0.19.0"
   name: "domains.sagemaker.services.k8s.aws"
 spec:
   group: "sagemaker.services.k8s.aws"
@@ -14,6 +14,9 @@ spec:
   scope: "Namespaced"
   versions:
     - additionalPrinterColumns:
+        - jsonPath: ".status.domainID"
+          name: "DOMAIN-ID"
+          type: "string"
         - jsonPath: ".status.domainID"
           name: "DOMAIN-ID"
           type: "string"
@@ -37,7 +40,7 @@ spec:
               description: "DomainSpec defines the desired state of Domain."
               properties:
                 appNetworkAccessType:
-                  description: "Specifies the VPC used for non-EFS traffic. The default value is PublicInternetOnly.\n\n   * PublicInternetOnly - Non-EFS traffic is through a VPC managed by Amazon\n   SageMaker, which allows direct internet access\n\n   * VpcOnly - All traffic is through the specified VPC and subnets"
+                  description: "Specifies the VPC used for non-EFS traffic. The default value is PublicInternetOnly.\n\n   * PublicInternetOnly - Non-EFS traffic is through a VPC managed by Amazon\n   SageMaker AI, which allows direct internet access\n\n   * VpcOnly - All traffic is through the specified VPC and subnets"
                   type: "string"
                 appSecurityGroupManagement:
                   description: "The entity that creates and manages the required security groups for inter-app\ncommunication in VPCOnly mode. Required when CreateDomain.AppNetworkAccessType\nis VPCOnly and DomainSettings.RStudioServerProDomainSettings.DomainExecutionRoleArn\nis provided. If setting up the domain for use with RStudio, this value must\nbe set to Service."
@@ -45,41 +48,35 @@ spec:
                 authMode:
                   description: "The mode of authentication that members use to access the domain."
                   type: "string"
-                defaultUserSettings:
-                  description: "The default settings to use to create a user profile when UserSettings isn't\nspecified in the call to the CreateUserProfile API.\n\nSecurityGroups is aggregated when specified in both calls. For all other\nsettings in UserSettings, the values specified in CreateUserProfile take\nprecedence over those specified in CreateDomain."
+                defaultSpaceSettings:
+                  description: "The default settings for shared spaces that users create in the domain."
                   properties:
-                    codeEditorAppSettings:
-                      description: "The Code Editor application settings.\n\nFor more information about Code Editor, see Get started with Code Editor\nin Amazon SageMaker (https://docs.aws.amazon.com/sagemaker/latest/dg/code-editor.html)."
-                      properties:
-                        defaultResourceSpec:
-                          description: "Specifies the ARN's of a SageMaker image and SageMaker image version, and\nthe instance type that the version runs on."
-                          properties:
-                            instanceType:
-                              type: "string"
-                            lifecycleConfigARN:
-                              type: "string"
-                            sageMakerImageARN:
-                              type: "string"
-                            sageMakerImageVersionARN:
-                              type: "string"
-                            sageMakerImageVersionAlias:
-                              type: "string"
-                          type: "object"
-                        lifecycleConfigARNs:
-                          items:
-                            type: "string"
-                          type: "array"
-                      type: "object"
                     customFileSystemConfigs:
                       items:
-                        description: "The settings for assigning a custom file system to a user profile or space\nfor an Amazon SageMaker Domain. Permitted users can access this file system\nin Amazon SageMaker Studio."
+                        description: "The settings for assigning a custom file system to a user profile or space\nfor an Amazon SageMaker AI Domain. Permitted users can access this file system\nin Amazon SageMaker AI Studio."
                         properties:
                           efsFileSystemConfig:
-                            description: "The settings for assigning a custom Amazon EFS file system to a user profile\nor space for an Amazon SageMaker Domain."
+                            description: "The settings for assigning a custom Amazon EFS file system to a user profile\nor space for an Amazon SageMaker AI Domain."
                             properties:
                               fileSystemID:
                                 type: "string"
                               fileSystemPath:
+                                type: "string"
+                            type: "object"
+                          fSxLustreFileSystemConfig:
+                            description: "The settings for assigning a custom Amazon FSx for Lustre file system to\na user profile or space for an Amazon SageMaker Domain."
+                            properties:
+                              fileSystemID:
+                                type: "string"
+                              fileSystemPath:
+                                type: "string"
+                            type: "object"
+                          s3FileSystemConfig:
+                            description: "Configuration for the custom Amazon S3 file system."
+                            properties:
+                              mountPath:
+                                type: "string"
+                              s3URI:
                                 type: "string"
                             type: "object"
                         type: "object"
@@ -94,16 +91,22 @@ spec:
                           format: "int64"
                           type: "integer"
                       type: "object"
-                    defaultLandingURI:
-                      type: "string"
                     executionRole:
                       type: "string"
                     jupyterLabAppSettings:
                       description: "The settings for the JupyterLab application."
                       properties:
+                        codeRepositories:
+                          items:
+                            description: "A Git repository that SageMaker AI automatically displays to users for cloning\nin the JupyterServer application."
+                            properties:
+                              repositoryURL:
+                                type: "string"
+                            type: "object"
+                          type: "array"
                         customImages:
                           items:
-                            description: "A custom SageMaker image. For more information, see Bring your own SageMaker\nimage (https://docs.aws.amazon.com/sagemaker/latest/dg/studio-byoi.html)."
+                            description: "A custom SageMaker AI image. For more information, see Bring your own SageMaker\nAI image (https://docs.aws.amazon.com/sagemaker/latest/dg/studio-byoi.html)."
                             properties:
                               appImageConfigName:
                                 type: "string"
@@ -115,7 +118,7 @@ spec:
                             type: "object"
                           type: "array"
                         defaultResourceSpec:
-                          description: "Specifies the ARN's of a SageMaker image and SageMaker image version, and\nthe instance type that the version runs on."
+                          description: "Specifies the ARN's of a SageMaker AI image and SageMaker AI image version,\nand the instance type that the version runs on.\n\nWhen both SageMakerImageVersionArn and SageMakerImageArn are passed, SageMakerImageVersionArn\nis used. Any updates to SageMakerImageArn will not take effect if SageMakerImageVersionArn\nalready exists in the ResourceSpec because SageMakerImageVersionArn always\ntakes precedence. To clear the value set for SageMakerImageVersionArn, pass\nNone as the value."
                           properties:
                             instanceType:
                               type: "string"
@@ -136,8 +139,16 @@ spec:
                     jupyterServerAppSettings:
                       description: "The JupyterServer app settings."
                       properties:
+                        codeRepositories:
+                          items:
+                            description: "A Git repository that SageMaker AI automatically displays to users for cloning\nin the JupyterServer application."
+                            properties:
+                              repositoryURL:
+                                type: "string"
+                            type: "object"
+                          type: "array"
                         defaultResourceSpec:
-                          description: "Specifies the ARN's of a SageMaker image and SageMaker image version, and\nthe instance type that the version runs on."
+                          description: "Specifies the ARN's of a SageMaker AI image and SageMaker AI image version,\nand the instance type that the version runs on.\n\nWhen both SageMakerImageVersionArn and SageMakerImageArn are passed, SageMakerImageVersionArn\nis used. Any updates to SageMakerImageArn will not take effect if SageMakerImageVersionArn\nalready exists in the ResourceSpec because SageMakerImageVersionArn always\ntakes precedence. To clear the value set for SageMakerImageVersionArn, pass\nNone as the value."
                           properties:
                             instanceType:
                               type: "string"
@@ -160,7 +171,7 @@ spec:
                       properties:
                         customImages:
                           items:
-                            description: "A custom SageMaker image. For more information, see Bring your own SageMaker\nimage (https://docs.aws.amazon.com/sagemaker/latest/dg/studio-byoi.html)."
+                            description: "A custom SageMaker AI image. For more information, see Bring your own SageMaker\nAI image (https://docs.aws.amazon.com/sagemaker/latest/dg/studio-byoi.html)."
                             properties:
                               appImageConfigName:
                                 type: "string"
@@ -172,7 +183,203 @@ spec:
                             type: "object"
                           type: "array"
                         defaultResourceSpec:
-                          description: "Specifies the ARN's of a SageMaker image and SageMaker image version, and\nthe instance type that the version runs on."
+                          description: "Specifies the ARN's of a SageMaker AI image and SageMaker AI image version,\nand the instance type that the version runs on.\n\nWhen both SageMakerImageVersionArn and SageMakerImageArn are passed, SageMakerImageVersionArn\nis used. Any updates to SageMakerImageArn will not take effect if SageMakerImageVersionArn\nalready exists in the ResourceSpec because SageMakerImageVersionArn always\ntakes precedence. To clear the value set for SageMakerImageVersionArn, pass\nNone as the value."
+                          properties:
+                            instanceType:
+                              type: "string"
+                            lifecycleConfigARN:
+                              type: "string"
+                            sageMakerImageARN:
+                              type: "string"
+                            sageMakerImageVersionARN:
+                              type: "string"
+                            sageMakerImageVersionAlias:
+                              type: "string"
+                          type: "object"
+                        lifecycleConfigARNs:
+                          items:
+                            type: "string"
+                          type: "array"
+                      type: "object"
+                    securityGroups:
+                      items:
+                        type: "string"
+                      type: "array"
+                    spaceStorageSettings:
+                      description: "The default storage settings for a space."
+                      properties:
+                        defaultEBSStorageSettings:
+                          description: "A collection of default EBS storage settings that apply to spaces created\nwithin a domain or user profile."
+                          properties:
+                            defaultEBSVolumeSizeInGb:
+                              format: "int64"
+                              type: "integer"
+                            maximumEBSVolumeSizeInGb:
+                              format: "int64"
+                              type: "integer"
+                          type: "object"
+                      type: "object"
+                  type: "object"
+                defaultUserSettings:
+                  description: "The default settings to use to create a user profile when UserSettings isn't\nspecified in the call to the CreateUserProfile API.\n\nSecurityGroups is aggregated when specified in both calls. For all other\nsettings in UserSettings, the values specified in CreateUserProfile take\nprecedence over those specified in CreateDomain."
+                  properties:
+                    codeEditorAppSettings:
+                      description: "The Code Editor application settings.\n\nFor more information about Code Editor, see Get started with Code Editor\nin Amazon SageMaker (https://docs.aws.amazon.com/sagemaker/latest/dg/code-editor.html)."
+                      properties:
+                        defaultResourceSpec:
+                          description: "Specifies the ARN's of a SageMaker AI image and SageMaker AI image version,\nand the instance type that the version runs on.\n\nWhen both SageMakerImageVersionArn and SageMakerImageArn are passed, SageMakerImageVersionArn\nis used. Any updates to SageMakerImageArn will not take effect if SageMakerImageVersionArn\nalready exists in the ResourceSpec because SageMakerImageVersionArn always\ntakes precedence. To clear the value set for SageMakerImageVersionArn, pass\nNone as the value."
+                          properties:
+                            instanceType:
+                              type: "string"
+                            lifecycleConfigARN:
+                              type: "string"
+                            sageMakerImageARN:
+                              type: "string"
+                            sageMakerImageVersionARN:
+                              type: "string"
+                            sageMakerImageVersionAlias:
+                              type: "string"
+                          type: "object"
+                        lifecycleConfigARNs:
+                          items:
+                            type: "string"
+                          type: "array"
+                      type: "object"
+                    customFileSystemConfigs:
+                      items:
+                        description: "The settings for assigning a custom file system to a user profile or space\nfor an Amazon SageMaker AI Domain. Permitted users can access this file system\nin Amazon SageMaker AI Studio."
+                        properties:
+                          efsFileSystemConfig:
+                            description: "The settings for assigning a custom Amazon EFS file system to a user profile\nor space for an Amazon SageMaker AI Domain."
+                            properties:
+                              fileSystemID:
+                                type: "string"
+                              fileSystemPath:
+                                type: "string"
+                            type: "object"
+                          fSxLustreFileSystemConfig:
+                            description: "The settings for assigning a custom Amazon FSx for Lustre file system to\na user profile or space for an Amazon SageMaker Domain."
+                            properties:
+                              fileSystemID:
+                                type: "string"
+                              fileSystemPath:
+                                type: "string"
+                            type: "object"
+                          s3FileSystemConfig:
+                            description: "Configuration for the custom Amazon S3 file system."
+                            properties:
+                              mountPath:
+                                type: "string"
+                              s3URI:
+                                type: "string"
+                            type: "object"
+                        type: "object"
+                      type: "array"
+                    customPosixUserConfig:
+                      description: "Details about the POSIX identity that is used for file system operations."
+                      properties:
+                        gid:
+                          format: "int64"
+                          type: "integer"
+                        uid:
+                          format: "int64"
+                          type: "integer"
+                      type: "object"
+                    defaultLandingURI:
+                      type: "string"
+                    executionRole:
+                      type: "string"
+                    jupyterLabAppSettings:
+                      description: "The settings for the JupyterLab application."
+                      properties:
+                        codeRepositories:
+                          items:
+                            description: "A Git repository that SageMaker AI automatically displays to users for cloning\nin the JupyterServer application."
+                            properties:
+                              repositoryURL:
+                                type: "string"
+                            type: "object"
+                          type: "array"
+                        customImages:
+                          items:
+                            description: "A custom SageMaker AI image. For more information, see Bring your own SageMaker\nAI image (https://docs.aws.amazon.com/sagemaker/latest/dg/studio-byoi.html)."
+                            properties:
+                              appImageConfigName:
+                                type: "string"
+                              imageName:
+                                type: "string"
+                              imageVersionNumber:
+                                format: "int64"
+                                type: "integer"
+                            type: "object"
+                          type: "array"
+                        defaultResourceSpec:
+                          description: "Specifies the ARN's of a SageMaker AI image and SageMaker AI image version,\nand the instance type that the version runs on.\n\nWhen both SageMakerImageVersionArn and SageMakerImageArn are passed, SageMakerImageVersionArn\nis used. Any updates to SageMakerImageArn will not take effect if SageMakerImageVersionArn\nalready exists in the ResourceSpec because SageMakerImageVersionArn always\ntakes precedence. To clear the value set for SageMakerImageVersionArn, pass\nNone as the value."
+                          properties:
+                            instanceType:
+                              type: "string"
+                            lifecycleConfigARN:
+                              type: "string"
+                            sageMakerImageARN:
+                              type: "string"
+                            sageMakerImageVersionARN:
+                              type: "string"
+                            sageMakerImageVersionAlias:
+                              type: "string"
+                          type: "object"
+                        lifecycleConfigARNs:
+                          items:
+                            type: "string"
+                          type: "array"
+                      type: "object"
+                    jupyterServerAppSettings:
+                      description: "The JupyterServer app settings."
+                      properties:
+                        codeRepositories:
+                          items:
+                            description: "A Git repository that SageMaker AI automatically displays to users for cloning\nin the JupyterServer application."
+                            properties:
+                              repositoryURL:
+                                type: "string"
+                            type: "object"
+                          type: "array"
+                        defaultResourceSpec:
+                          description: "Specifies the ARN's of a SageMaker AI image and SageMaker AI image version,\nand the instance type that the version runs on.\n\nWhen both SageMakerImageVersionArn and SageMakerImageArn are passed, SageMakerImageVersionArn\nis used. Any updates to SageMakerImageArn will not take effect if SageMakerImageVersionArn\nalready exists in the ResourceSpec because SageMakerImageVersionArn always\ntakes precedence. To clear the value set for SageMakerImageVersionArn, pass\nNone as the value."
+                          properties:
+                            instanceType:
+                              type: "string"
+                            lifecycleConfigARN:
+                              type: "string"
+                            sageMakerImageARN:
+                              type: "string"
+                            sageMakerImageVersionARN:
+                              type: "string"
+                            sageMakerImageVersionAlias:
+                              type: "string"
+                          type: "object"
+                        lifecycleConfigARNs:
+                          items:
+                            type: "string"
+                          type: "array"
+                      type: "object"
+                    kernelGatewayAppSettings:
+                      description: "The KernelGateway app settings."
+                      properties:
+                        customImages:
+                          items:
+                            description: "A custom SageMaker AI image. For more information, see Bring your own SageMaker\nAI image (https://docs.aws.amazon.com/sagemaker/latest/dg/studio-byoi.html)."
+                            properties:
+                              appImageConfigName:
+                                type: "string"
+                              imageName:
+                                type: "string"
+                              imageVersionNumber:
+                                format: "int64"
+                                type: "integer"
+                            type: "object"
+                          type: "array"
+                        defaultResourceSpec:
+                          description: "Specifies the ARN's of a SageMaker AI image and SageMaker AI image version,\nand the instance type that the version runs on.\n\nWhen both SageMakerImageVersionArn and SageMakerImageArn are passed, SageMakerImageVersionArn\nis used. Any updates to SageMakerImageArn will not take effect if SageMakerImageVersionArn\nalready exists in the ResourceSpec because SageMakerImageVersionArn always\ntakes precedence. To clear the value set for SageMakerImageVersionArn, pass\nNone as the value."
                           properties:
                             instanceType:
                               type: "string"
@@ -203,7 +410,7 @@ spec:
                         type: "string"
                       type: "array"
                     sharingSettings:
-                      description: "Specifies options for sharing Amazon SageMaker Studio notebooks. These settings\nare specified as part of DefaultUserSettings when the CreateDomain API is\ncalled, and as part of UserSettings when the CreateUserProfile API is called.\nWhen SharingSettings is not specified, notebook sharing isn't allowed."
+                      description: "Specifies options for sharing Amazon SageMaker AI Studio notebooks. These\nsettings are specified as part of DefaultUserSettings when the CreateDomain\nAPI is called, and as part of UserSettings when the CreateUserProfile API\nis called. When SharingSettings is not specified, notebook sharing isn't\nallowed."
                       properties:
                         notebookOutputOption:
                           type: "string"
@@ -232,7 +439,7 @@ spec:
                       description: "The TensorBoard app settings."
                       properties:
                         defaultResourceSpec:
-                          description: "Specifies the ARN's of a SageMaker image and SageMaker image version, and\nthe instance type that the version runs on."
+                          description: "Specifies the ARN's of a SageMaker AI image and SageMaker AI image version,\nand the instance type that the version runs on.\n\nWhen both SageMakerImageVersionArn and SageMakerImageArn are passed, SageMakerImageVersionArn\nis used. Any updates to SageMakerImageArn will not take effect if SageMakerImageVersionArn\nalready exists in the ResourceSpec because SageMakerImageVersionArn always\ntakes precedence. To clear the value set for SageMakerImageVersionArn, pass\nNone as the value."
                           properties:
                             instanceType:
                               type: "string"
@@ -258,16 +465,20 @@ spec:
                       properties:
                         enableDockerAccess:
                           type: "string"
+                        rootlessDocker:
+                          type: "string"
                         vpcOnlyTrustedAccounts:
                           items:
                             type: "string"
                           type: "array"
                       type: "object"
+                    ipAddressType:
+                      type: "string"
                     rStudioServerProDomainSettings:
                       description: "A collection of settings that configure the RStudioServerPro Domain-level\napp."
                       properties:
                         defaultResourceSpec:
-                          description: "Specifies the ARN's of a SageMaker image and SageMaker image version, and\nthe instance type that the version runs on."
+                          description: "Specifies the ARN's of a SageMaker AI image and SageMaker AI image version,\nand the instance type that the version runs on.\n\nWhen both SageMakerImageVersionArn and SageMakerImageArn are passed, SageMakerImageVersionArn\nis used. Any updates to SageMakerImageArn will not take effect if SageMakerImageVersionArn\nalready exists in the ResourceSpec because SageMakerImageVersionArn always\ntakes precedence. To clear the value set for SageMakerImageVersionArn, pass\nNone as the value."
                           properties:
                             instanceType:
                               type: "string"
@@ -291,15 +502,41 @@ spec:
                       items:
                         type: "string"
                       type: "array"
+                    trustedIdentityPropagationSettings:
+                      description: "The Trusted Identity Propagation (TIP) settings for the SageMaker domain.\nThese settings determine how user identities from IAM Identity Center are\npropagated through the domain to TIP enabled Amazon Web Services services."
+                      properties:
+                        status:
+                          type: "string"
+                      type: "object"
+                    unifiedStudioSettings:
+                      description: "The settings that apply to an Amazon SageMaker AI domain when you use it\nin Amazon SageMaker Unified Studio."
+                      properties:
+                        domainAccountID:
+                          type: "string"
+                        domainID:
+                          type: "string"
+                        domainRegion:
+                          type: "string"
+                        environmentID:
+                          type: "string"
+                        projectID:
+                          type: "string"
+                        projectS3Path:
+                          type: "string"
+                        singleSignOnApplicationARN:
+                          type: "string"
+                        studioWebPortalAccess:
+                          type: "string"
+                      type: "object"
                   type: "object"
                 homeEFSFileSystemKMSKeyID:
                   description: "Use KmsKeyId.\n\nRegex Pattern: `^[a-zA-Z0-9:/_-]*$`"
                   type: "string"
                 kmsKeyID:
-                  description: "SageMaker uses Amazon Web Services KMS to encrypt EFS and EBS volumes attached\nto the domain with an Amazon Web Services managed key by default. For more\ncontrol, specify a customer managed key.\n\nRegex Pattern: `^[a-zA-Z0-9:/_-]*$`"
+                  description: "SageMaker AI uses Amazon Web Services KMS to encrypt EFS and EBS volumes\nattached to the domain with an Amazon Web Services managed key by default.\nFor more control, specify a customer managed key.\n\nRegex Pattern: `^[a-zA-Z0-9:/_-]*$`"
                   type: "string"
                 subnetIDs:
-                  description: "The VPC subnets that the domain uses for communication."
+                  description: "The VPC subnets that the domain uses for communication.\n\nThe field is optional when the AppNetworkAccessType parameter is set to PublicInternetOnly\nfor domains created from Amazon SageMaker Unified Studio."
                   items:
                     type: "string"
                   type: "array"
@@ -315,14 +552,12 @@ spec:
                     type: "object"
                   type: "array"
                 vpcID:
-                  description: "The ID of the Amazon Virtual Private Cloud (VPC) that the domain uses for\ncommunication.\n\nRegex Pattern: `^[-0-9a-zA-Z]+$`"
+                  description: "The ID of the Amazon Virtual Private Cloud (VPC) that the domain uses for\ncommunication.\n\nThe field is optional when the AppNetworkAccessType parameter is set to PublicInternetOnly\nfor domains created from Amazon SageMaker Unified Studio.\n\nRegex Pattern: `^[-0-9a-zA-Z]+$`"
                   type: "string"
               required:
                 - "authMode"
                 - "defaultUserSettings"
                 - "domainName"
-                - "subnetIDs"
-                - "vpcID"
               type: "object"
             status:
               description: "DomainStatus defines the observed state of Domain"

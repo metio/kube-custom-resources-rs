@@ -126,6 +126,9 @@ pub struct ForkliftControllerSpec {
     /// Enable OCP live migration (default: false)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub feature_ocp_live_migration: Option<ForkliftControllerFeatureOcpLiveMigration>,
+    /// Enable OVA appliance management endpoints (default: false)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub feature_ova_appliance_management: Option<ForkliftControllerFeatureOvaApplianceManagement>,
     /// Enable UI plugin (default: true)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub feature_ui_plugin: Option<ForkliftControllerFeatureUiPlugin>,
@@ -186,6 +189,21 @@ pub struct ForkliftControllerSpec {
     /// OVA provider server image
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ova_provider_server_fqin: Option<String>,
+    /// OVA Proxy CPU limit (default: 1000m)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ova_proxy_container_limits_cpu: Option<String>,
+    /// OVA Proxy memory limit (default: 1Gi)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ova_proxy_container_limits_memory: Option<String>,
+    /// OVA Proxy CPU request (default: 250m)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ova_proxy_container_requests_cpu: Option<String>,
+    /// OVA Proxy memory request (default: 512Mi)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ova_proxy_container_requests_memory: Option<String>,
+    /// OVA inventory proxy image
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ova_proxy_fqin: Option<String>,
     /// Volume populator controller image
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub populator_controller_image_fqin: Option<String>,
@@ -326,6 +344,15 @@ pub enum ForkliftControllerFeatureCopyOffload {
 /// Spec defines the desired state of ForkliftController
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ForkliftControllerFeatureOcpLiveMigration {
+    #[serde(rename = "true")]
+    True,
+    #[serde(rename = "false")]
+    False,
+}
+
+/// Spec defines the desired state of ForkliftController
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ForkliftControllerFeatureOvaApplianceManagement {
     #[serde(rename = "true")]
     True,
     #[serde(rename = "false")]

@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.16.2"
+    controller-gen.kubebuilder.io/version: "v0.19.0"
   name: "dataqualityjobdefinitions.sagemaker.services.k8s.aws"
 spec:
   group: "sagemaker.services.k8s.aws"
@@ -163,7 +163,7 @@ spec:
                       type: "object"
                   type: "object"
                 roleARN:
-                  description: "The Amazon Resource Name (ARN) of an IAM role that Amazon SageMaker can assume\nto perform tasks on your behalf.\n\nRegex Pattern: `^arn:aws[a-z\\-]*:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$`"
+                  description: "The Amazon Resource Name (ARN) of an IAM role that Amazon SageMaker AI can\nassume to perform tasks on your behalf.\n\nRegex Pattern: `^arn:aws[a-z\\-]*:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$`"
                   type: "string"
                 stoppingCondition:
                   description: "A time limit for how long the monitoring job is allowed to run before stopping."

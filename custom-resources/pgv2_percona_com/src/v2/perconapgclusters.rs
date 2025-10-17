@@ -8482,11 +8482,11 @@ pub struct PerconaPgClusterExtensionsStorage {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bucket: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableSSL")]
-    pub disable_ssl: Option<String>,
+    pub disable_ssl: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forcePathStyle")]
-    pub force_path_style: Option<String>,
+    pub force_path_style: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
     /// Adapts a secret into a projected volume.

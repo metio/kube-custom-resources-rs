@@ -235,12 +235,38 @@ pub struct CanaryAnalysisSessionAffinity {
     /// CookieName is the key that will be used for the session affinity cookie.
     #[serde(rename = "cookieName")]
     pub cookie_name: String,
+    /// Domain defines the host to which the cookie will be sent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub domain: Option<String>,
+    /// HttpOnly forbids JavaScript from accessing the cookie, for example, through the Document.cookie property.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpOnly")]
+    pub http_only: Option<bool>,
     /// MaxAge indicates the number of seconds until the session affinity cookie will expire.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxAge")]
     pub max_age: Option<f64>,
+    /// Partitioned indicates that the cookie should be stored using partitioned storage.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub partitioned: Option<bool>,
+    /// Path indicates the path that must exist in the requested URL for the browser to send the Cookie header.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
     /// CookieName is the key that will be used for the session affinity cookie.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "primaryCookieName")]
     pub primary_cookie_name: Option<String>,
+    /// SameSite controls whether or not a cookie is sent with cross-site requests.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sameSite")]
+    pub same_site: Option<CanaryAnalysisSessionAffinitySameSite>,
+    /// Secure indicates that the cookie is sent to the server only when a request is made with the https: scheme (except on localhost)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secure: Option<bool>,
+}
+
+/// SessionAffinity represents the session affinity settings for a canary run.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum CanaryAnalysisSessionAffinitySameSite {
+    Strict,
+    Lax,
+    None,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -399,7 +425,7 @@ pub struct CanaryService {
     pub name: Option<String>,
     /// Container port number
     pub port: f64,
-    /// Enable port dicovery
+    /// Enable port discovery
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portDiscovery")]
     pub port_discovery: Option<bool>,
     /// Container port name
@@ -420,9 +446,15 @@ pub struct CanaryService {
     /// HTTP or gRPC request timeout
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
+    /// Traffic distribution of the service
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trafficDistribution")]
+    pub traffic_distribution: Option<CanaryServiceTrafficDistribution>,
     /// Istio traffic policy
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "trafficPolicy")]
     pub traffic_policy: Option<CanaryServiceTrafficPolicy>,
+    /// UnmanagedMetadata is a list of metadata keys that should be ignored by Flagger.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unmanagedMetadata")]
+    pub unmanaged_metadata: Option<CanaryServiceUnmanagedMetadata>,
 }
 
 /// Metadata to add to the apex service
@@ -688,6 +720,14 @@ pub struct CanaryServiceRewrite {
     pub uri: Option<String>,
 }
 
+/// Kubernetes Service spec
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum CanaryServiceTrafficDistribution {
+    PreferClose,
+    PreferSameZone,
+    PreferSameNode,
+}
+
 /// Istio traffic policy
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryServiceTrafficPolicy {
@@ -891,6 +931,15 @@ pub enum CanaryServiceTrafficPolicyTlsMode {
     Mutual,
     #[serde(rename = "ISTIO_MUTUAL")]
     IstioMutual,
+}
+
+/// UnmanagedMetadata is a list of metadata keys that should be ignored by Flagger.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CanaryServiceUnmanagedMetadata {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<Vec<String>>,
 }
 
 /// Target selector

@@ -674,12 +674,14 @@ pub struct ProbeProber {
     /// proxyUrl defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
     pub proxy_url: Option<String>,
-    /// scheme defines the HTTP scheme to use for scraping.
-    /// `http` and `https` are the expected values unless you rewrite the `__scheme__` label via relabeling.
-    /// If empty, Prometheus uses the default value `http`.
+    /// scheme defines the HTTP scheme to use when scraping the prober.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<ProbeProberScheme>,
-    /// url defines the mandatory URL of the prober.
+    /// url defines the address of the prober.
+    /// 
+    /// Unlike what the name indicates, the value should be in the form of
+    /// `address:port` without any scheme which should be specified in the
+    /// `scheme` field.
     pub url: String,
 }
 
@@ -708,6 +710,10 @@ pub enum ProbeProberScheme {
     Http,
     #[serde(rename = "https")]
     Https,
+    #[serde(rename = "HTTP")]
+    HttpX,
+    #[serde(rename = "HTTPS")]
+    HttpsX,
 }
 
 /// targets defines a set of static or dynamically discovered targets to probe.

@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.16.2"
+    controller-gen.kubebuilder.io/version: "v0.19.0"
   name: "notebookinstances.sagemaker.services.k8s.aws"
 spec:
   group: "sagemaker.services.k8s.aws"
@@ -43,21 +43,24 @@ spec:
                     type: "string"
                   type: "array"
                 additionalCodeRepositories:
-                  description: "An array of up to three Git repositories to associate with the notebook instance.\nThese can be either the names of Git repositories stored as resources in\nyour account, or the URL of Git repositories in Amazon Web Services CodeCommit\n(https://docs.aws.amazon.com/codecommit/latest/userguide/welcome.html) or\nin any other Git repository. These repositories are cloned at the same level\nas the default repository of your notebook instance. For more information,\nsee Associating Git Repositories with SageMaker Notebook Instances (https://docs.aws.amazon.com/sagemaker/latest/dg/nbi-git-repo.html)."
+                  description: "An array of up to three Git repositories to associate with the notebook instance.\nThese can be either the names of Git repositories stored as resources in\nyour account, or the URL of Git repositories in Amazon Web Services CodeCommit\n(https://docs.aws.amazon.com/codecommit/latest/userguide/welcome.html) or\nin any other Git repository. These repositories are cloned at the same level\nas the default repository of your notebook instance. For more information,\nsee Associating Git Repositories with SageMaker AI Notebook Instances (https://docs.aws.amazon.com/sagemaker/latest/dg/nbi-git-repo.html)."
                   items:
                     type: "string"
                   type: "array"
                 defaultCodeRepository:
-                  description: "A Git repository to associate with the notebook instance as its default code\nrepository. This can be either the name of a Git repository stored as a resource\nin your account, or the URL of a Git repository in Amazon Web Services CodeCommit\n(https://docs.aws.amazon.com/codecommit/latest/userguide/welcome.html) or\nin any other Git repository. When you open a notebook instance, it opens\nin the directory that contains this repository. For more information, see\nAssociating Git Repositories with SageMaker Notebook Instances (https://docs.aws.amazon.com/sagemaker/latest/dg/nbi-git-repo.html).\n\nRegex Pattern: `^https://([^/]+)/?(.*)$|^[a-zA-Z0-9](-*[a-zA-Z0-9])*$`"
+                  description: "A Git repository to associate with the notebook instance as its default code\nrepository. This can be either the name of a Git repository stored as a resource\nin your account, or the URL of a Git repository in Amazon Web Services CodeCommit\n(https://docs.aws.amazon.com/codecommit/latest/userguide/welcome.html) or\nin any other Git repository. When you open a notebook instance, it opens\nin the directory that contains this repository. For more information, see\nAssociating Git Repositories with SageMaker AI Notebook Instances (https://docs.aws.amazon.com/sagemaker/latest/dg/nbi-git-repo.html).\n\nRegex Pattern: `^https://([^/]+)/?(.*)$|^[a-zA-Z0-9](-*[a-zA-Z0-9])*$`"
                   type: "string"
                 directInternetAccess:
-                  description: "Sets whether SageMaker provides internet access to the notebook instance.\nIf you set this to Disabled this notebook instance is able to access resources\nonly in your VPC, and is not be able to connect to SageMaker training and\nendpoint services unless you configure a NAT Gateway in your VPC.\n\nFor more information, see Notebook Instances Are Internet-Enabled by Default\n(https://docs.aws.amazon.com/sagemaker/latest/dg/appendix-additional-considerations.html#appendix-notebook-and-internet-access).\nYou can set the value of this parameter to Disabled only if you set a value\nfor the SubnetId parameter."
+                  description: "Sets whether SageMaker AI provides internet access to the notebook instance.\nIf you set this to Disabled this notebook instance is able to access resources\nonly in your VPC, and is not be able to connect to SageMaker AI training\nand endpoint services unless you configure a NAT Gateway in your VPC.\n\nFor more information, see Notebook Instances Are Internet-Enabled by Default\n(https://docs.aws.amazon.com/sagemaker/latest/dg/appendix-additional-considerations.html#appendix-notebook-and-internet-access).\nYou can set the value of this parameter to Disabled only if you set a value\nfor the SubnetId parameter."
                   type: "string"
                 instanceType:
                   description: "The type of ML compute instance to launch for the notebook instance."
                   type: "string"
+                ipAddressType:
+                  description: "The IP address type for the notebook instance. Specify ipv4 for IPv4-only\nconnectivity or dualstack for both IPv4 and IPv6 connectivity. When you specify\ndualstack, the subnet must support IPv6 CIDR blocks. If not specified, defaults\nto ipv4."
+                  type: "string"
                 kmsKeyID:
-                  description: "The Amazon Resource Name (ARN) of a Amazon Web Services Key Management Service\nkey that SageMaker uses to encrypt data on the storage volume attached to\nyour notebook instance. The KMS key you provide must be enabled. For information,\nsee Enabling and Disabling Keys (https://docs.aws.amazon.com/kms/latest/developerguide/enabling-keys.html)\nin the Amazon Web Services Key Management Service Developer Guide.\n\nRegex Pattern: `^[a-zA-Z0-9:/_-]*$`"
+                  description: "The Amazon Resource Name (ARN) of a Amazon Web Services Key Management Service\nkey that SageMaker AI uses to encrypt data on the storage volume attached\nto your notebook instance. The KMS key you provide must be enabled. For information,\nsee Enabling and Disabling Keys (https://docs.aws.amazon.com/kms/latest/developerguide/enabling-keys.html)\nin the Amazon Web Services Key Management Service Developer Guide.\n\nRegex Pattern: `^[a-zA-Z0-9:/_-]*$`"
                   type: "string"
                 lifecycleConfigName:
                   description: "The name of a lifecycle configuration to associate with the notebook instance.\nFor information about lifestyle configurations, see Step 2.1: (Optional)\nCustomize a Notebook Instance (https://docs.aws.amazon.com/sagemaker/latest/dg/notebook-lifecycle-config.html).\n\nRegex Pattern: `^[a-zA-Z0-9](-*[a-zA-Z0-9])*$`"
@@ -66,10 +69,10 @@ spec:
                   description: "The name of the new notebook instance.\n\nRegex Pattern: `^[a-zA-Z0-9](-*[a-zA-Z0-9])*$`"
                   type: "string"
                 platformIdentifier:
-                  description: "The platform identifier of the notebook instance runtime environment.\n\nRegex Pattern: `^(notebook-al1-v1|notebook-al2-v1|notebook-al2-v2|notebook-al2-v3)$`"
+                  description: "The platform identifier of the notebook instance runtime environment.\n\nRegex Pattern: `^(notebook-al1-v1|notebook-al2-v1|notebook-al2-v2|notebook-al2-v3|notebook-al2023-v1)$`"
                   type: "string"
                 roleARN:
-                  description: "When you send any requests to Amazon Web Services resources from the notebook\ninstance, SageMaker assumes this role to perform tasks on your behalf. You\nmust grant this role necessary permissions so SageMaker can perform these\ntasks. The policy must allow the SageMaker service principal (sagemaker.amazonaws.com)\npermissions to assume this role. For more information, see SageMaker Roles\n(https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-roles.html).\n\nTo be able to pass this role to SageMaker, the caller of this API must have\nthe iam:PassRole permission.\n\nRegex Pattern: `^arn:aws[a-z\\-]*:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$`"
+                  description: "When you send any requests to Amazon Web Services resources from the notebook\ninstance, SageMaker AI assumes this role to perform tasks on your behalf.\nYou must grant this role necessary permissions so SageMaker AI can perform\nthese tasks. The policy must allow the SageMaker AI service principal (sagemaker.amazonaws.com)\npermissions to assume this role. For more information, see SageMaker AI Roles\n(https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-roles.html).\n\nTo be able to pass this role to SageMaker AI, the caller of this API must\nhave the iam:PassRole permission.\n\nRegex Pattern: `^arn:aws[a-z\\-]*:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$`"
                   type: "string"
                 rootAccess:
                   description: "Whether root access is enabled or disabled for users of the notebook instance.\nThe default value is Enabled.\n\nLifecycle configurations need root access to be able to set up a notebook\ninstance. Because of this, lifecycle configurations associated with a notebook\ninstance always run with root access even if you disable root access for\nusers."

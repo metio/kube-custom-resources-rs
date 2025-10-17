@@ -208,7 +208,6 @@ pub struct ScrapeConfigSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scalewaySDConfigs")]
     pub scaleway_sd_configs: Option<Vec<ScrapeConfigScalewaySdConfigs>>,
     /// scheme defines the protocol scheme used for requests.
-    /// If empty, Prometheus uses HTTP by default.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<ScrapeConfigScheme>,
     /// scrapeClass defines the scrape class to apply.
@@ -1077,7 +1076,7 @@ pub struct ScrapeConfigConsulSdConfigs {
     /// If not set, Prometheus uses its default value.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
     pub refresh_interval: Option<String>,
-    /// scheme defines the HTTP Scheme default "http"
+    /// scheme defines the HTTP Scheme.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<ScrapeConfigConsulSdConfigsScheme>,
     /// server defines the consul server address. A valid string consisting of a hostname or IP followed by an optional port number.
@@ -1502,10 +1501,14 @@ pub struct ScrapeConfigConsulSdConfigsProxyConnectHeader {
 /// See <https://prometheus.io/docs/prometheus/latest/configuration/configuration/#consul_sd_config>
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ScrapeConfigConsulSdConfigsScheme {
-    #[serde(rename = "HTTP")]
+    #[serde(rename = "http")]
     Http,
-    #[serde(rename = "HTTPS")]
+    #[serde(rename = "https")]
     Https,
+    #[serde(rename = "HTTP")]
+    HttpX,
+    #[serde(rename = "HTTPS")]
+    HttpsX,
 }
 
 /// tlsConfig defines the TLS configuration to connect to the Consul API.
@@ -11293,10 +11296,14 @@ pub enum ScrapeConfigScalewaySdConfigsTlsConfigMinVersion {
 /// spec defines the specification of ScrapeConfigSpec.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ScrapeConfigScheme {
-    #[serde(rename = "HTTP")]
+    #[serde(rename = "http")]
     Http,
-    #[serde(rename = "HTTPS")]
+    #[serde(rename = "https")]
     Https,
+    #[serde(rename = "HTTP")]
+    HttpX,
+    #[serde(rename = "HTTPS")]
+    HttpsX,
 }
 
 /// StaticConfig defines a Prometheus static configuration.

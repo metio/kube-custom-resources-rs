@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.16.2"
+    controller-gen.kubebuilder.io/version: "v0.19.0"
   name: "endpointconfigs.sagemaker.services.k8s.aws"
 spec:
   group: "sagemaker.services.k8s.aws"
@@ -63,10 +63,10 @@ spec:
                       type: "object"
                   type: "object"
                 dataCaptureConfig:
-                  description: "Configuration to control how SageMaker captures inference data."
+                  description: "Configuration to control how SageMaker AI captures inference data."
                   properties:
                     captureContentTypeHeader:
-                      description: "Configuration specifying how to treat different headers. If no headers are\nspecified Amazon SageMaker will by default base64 encode when capturing the\ndata."
+                      description: "Configuration specifying how to treat different headers. If no headers are\nspecified Amazon SageMaker AI will by default base64 encode when capturing\nthe data."
                       properties:
                         csvContentTypes:
                           items:
@@ -102,7 +102,7 @@ spec:
                   description: "The name of the endpoint configuration. You specify this name in a CreateEndpoint\n(https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateEndpoint.html)\nrequest.\n\nRegex Pattern: `^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}$`"
                   type: "string"
                 executionRoleARN:
-                  description: "The Amazon Resource Name (ARN) of an IAM role that Amazon SageMaker can assume\nto perform actions on your behalf. For more information, see SageMaker Roles\n(https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-roles.html).\n\nTo be able to pass this role to Amazon SageMaker, the caller of this action\nmust have the iam:PassRole permission.\n\nRegex Pattern: `^arn:aws[a-z\\-]*:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$`"
+                  description: "The Amazon Resource Name (ARN) of an IAM role that Amazon SageMaker AI can\nassume to perform actions on your behalf. For more information, see SageMaker\nAI Roles (https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-roles.html).\n\nTo be able to pass this role to Amazon SageMaker AI, the caller of this action\nmust have the iam:PassRole permission.\n\nRegex Pattern: `^arn:aws[a-z\\-]*:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$`"
                   type: "string"
                 kmsKeyID:
                   description: "The Amazon Resource Name (ARN) of a Amazon Web Services Key Management Service\nkey that SageMaker uses to encrypt data on the storage volume attached to\nthe ML compute instance that hosts the endpoint.\n\nThe KmsKeyId can be any of the following formats:\n\n   * Key ID: 1234abcd-12ab-34cd-56ef-1234567890ab\n\n   * Key ARN: arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab\n\n   * Alias name: alias/ExampleAlias\n\n   * Alias name ARN: arn:aws:kms:us-west-2:111122223333:alias/ExampleAlias\n\nThe KMS key policy must grant permission to the IAM role that you specify\nin your CreateEndpoint, UpdateEndpoint requests. For more information, refer\nto the Amazon Web Services Key Management Service section Using Key Policies\nin Amazon Web Services KMS (https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html)\n\nCertain Nitro-based instances include local storage, dependent on the instance\ntype. Local storage volumes are encrypted using a hardware module on the\ninstance. You can't request a KmsKeyId when using an instance type with local\nstorage. If any of the models that you specify in the ProductionVariants\nparameter use nitro-based instances with local storage, do not specify a\nvalue for the KmsKeyId parameter. If you specify a value for KmsKeyId when\nusing any nitro-based instances with local storage, the call to CreateEndpointConfig\nfails.\n\nFor a list of instance types that support local instance storage, see Instance\nStore Volumes (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/InstanceStorage.html#instance-store-volumes).\n\nFor more information about local instance storage encryption, see SSD Instance\nStore Volumes (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ssd-instance-store.html).\n\nRegex Pattern: `^[a-zA-Z0-9:/_-]*$`"
@@ -114,6 +114,14 @@ spec:
                     properties:
                       acceleratorType:
                         type: "string"
+                      capacityReservationConfig:
+                        description: "Settings for the capacity reservation for the compute instances that SageMaker\nAI reserves for an endpoint."
+                        properties:
+                          capacityReservationPreference:
+                            type: "string"
+                          mlReservationARN:
+                            type: "string"
+                        type: "object"
                       containerStartupHealthCheckTimeoutInSeconds:
                         format: "int64"
                         type: "integer"

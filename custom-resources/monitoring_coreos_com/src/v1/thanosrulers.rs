@@ -4197,6 +4197,9 @@ pub struct ThanosRulerRemoteWrite {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "messageVersion")]
     pub message_version: Option<ThanosRulerRemoteWriteMessageVersion>,
     /// metadataConfig defines how to send a series metadata to the remote storage.
+    /// 
+    /// When the field is empty, **no metadata** is sent. But when the field is
+    /// null, metadata is sent.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metadataConfig")]
     pub metadata_config: Option<ThanosRulerRemoteWriteMetadataConfig>,
     /// name of the remote write queue, it must be unique if specified. The
@@ -4482,6 +4485,9 @@ pub enum ThanosRulerRemoteWriteMessageVersion {
 }
 
 /// metadataConfig defines how to send a series metadata to the remote storage.
+/// 
+/// When the field is empty, **no metadata** is sent. But when the field is
+/// null, metadata is sent.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ThanosRulerRemoteWriteMetadataConfig {
     /// maxSamplesPerSend defines the maximum number of metadata samples per send.

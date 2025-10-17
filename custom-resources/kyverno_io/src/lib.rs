@@ -33,6 +33,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `CleanupPolicy`
 - `ClusterCleanupPolicy`
 - `ClusterPolicy`
+- `GlobalContextEntry`
 - `Policy`
 - `PolicyException`
 */

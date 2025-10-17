@@ -1759,9 +1759,9 @@ pub struct PrometheusAlertingAlertmanagers {
     /// relabelings defines the relabel configuration applied to the discovered Alertmanagers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub relabelings: Option<Vec<PrometheusAlertingAlertmanagersRelabelings>>,
-    /// scheme to use when firing alerts.
+    /// scheme defines the HTTP scheme to use when sending alerts.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub scheme: Option<String>,
+    pub scheme: Option<PrometheusAlertingAlertmanagersScheme>,
     /// sigv4 defines AWS's Signature Verification 4 for the URL.
     /// 
     /// It requires Prometheus >= v2.48.0.
@@ -2075,6 +2075,20 @@ pub enum PrometheusAlertingAlertmanagersRelabelingsAction {
     #[serde(rename = "dropequal")]
     Dropequal,
     DropEqual,
+}
+
+/// AlertmanagerEndpoints defines a selection of a single Endpoints object
+/// containing Alertmanager IPs to fire alerts against.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PrometheusAlertingAlertmanagersScheme {
+    #[serde(rename = "http")]
+    Http,
+    #[serde(rename = "https")]
+    Https,
+    #[serde(rename = "HTTP")]
+    HttpX,
+    #[serde(rename = "HTTPS")]
+    HttpsX,
 }
 
 /// sigv4 defines AWS's Signature Verification 4 for the URL.
@@ -6464,6 +6478,9 @@ pub struct PrometheusRemoteWrite {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "messageVersion")]
     pub message_version: Option<PrometheusRemoteWriteMessageVersion>,
     /// metadataConfig defines how to send a series metadata to the remote storage.
+    /// 
+    /// When the field is empty, **no metadata** is sent. But when the field is
+    /// null, metadata is sent.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metadataConfig")]
     pub metadata_config: Option<PrometheusRemoteWriteMetadataConfig>,
     /// name of the remote write queue, it must be unique if specified. The
@@ -6749,6 +6766,9 @@ pub enum PrometheusRemoteWriteMessageVersion {
 }
 
 /// metadataConfig defines how to send a series metadata to the remote storage.
+/// 
+/// When the field is empty, **no metadata** is sent. But when the field is
+/// null, metadata is sent.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusRemoteWriteMetadataConfig {
     /// maxSamplesPerSend defines the maximum number of metadata samples per send.

@@ -260,13 +260,35 @@ spec:
                         cookieName:
                           description: "CookieName is the key that will be used for the session affinity cookie."
                           type: "string"
+                        domain:
+                          description: "Domain defines the host to which the cookie will be sent."
+                          type: "string"
+                        httpOnly:
+                          description: "HttpOnly forbids JavaScript from accessing the cookie, for example, through the Document.cookie property."
+                          type: "boolean"
                         maxAge:
                           default: 86400
                           description: "MaxAge indicates the number of seconds until the session affinity cookie will expire."
                           type: "number"
+                        partitioned:
+                          description: "Partitioned indicates that the cookie should be stored using partitioned storage."
+                          type: "boolean"
+                        path:
+                          description: "Path indicates the path that must exist in the requested URL for the browser to send the Cookie header."
+                          type: "string"
                         primaryCookieName:
                           description: "CookieName is the key that will be used for the session affinity cookie."
                           type: "string"
+                        sameSite:
+                          description: "SameSite controls whether or not a cookie is sent with cross-site requests."
+                          enum:
+                            - "Strict"
+                            - "Lax"
+                            - "None"
+                          type: "string"
+                        secure:
+                          description: "Secure indicates that the cookie is sent to the server only when a request is made with the https: scheme (except on localhost)"
+                          type: "boolean"
                       required:
                         - "cookieName"
                       type: "object"
@@ -874,7 +896,7 @@ spec:
                       description: "Container port number"
                       type: "number"
                     portDiscovery:
-                      description: "Enable port dicovery"
+                      description: "Enable port discovery"
                       type: "boolean"
                     portName:
                       description: "Container port name"
@@ -924,6 +946,13 @@ spec:
                       x-kubernetes-int-or-string: true
                     timeout:
                       description: "HTTP or gRPC request timeout"
+                      type: "string"
+                    trafficDistribution:
+                      description: "Traffic distribution of the service"
+                      enum:
+                        - "PreferClose"
+                        - "PreferSameZone"
+                        - "PreferSameNode"
                       type: "string"
                     trafficPolicy:
                       description: "Istio traffic policy"
@@ -1113,6 +1142,18 @@ spec:
                                 type: "string"
                               type: "array"
                           type: "object"
+                      type: "object"
+                    unmanagedMetadata:
+                      description: "UnmanagedMetadata is a list of metadata keys that should be ignored by Flagger."
+                      properties:
+                        annotations:
+                          items:
+                            type: "string"
+                          type: "array"
+                        labels:
+                          items:
+                            type: "string"
+                          type: "array"
                       type: "object"
                   required:
                     - "port"

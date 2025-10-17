@@ -32,8 +32,11 @@ pub struct AppSpec {
     /// Regex Pattern: `^d-(-*[a-z0-9]){1,61}$`
     #[serde(rename = "domainID")]
     pub domain_id: String,
-    /// The instance type and the Amazon Resource Name (ARN) of the SageMaker image
-    /// created on the instance.
+    /// Indicates whether the application is launched in recovery mode.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recoveryMode")]
+    pub recovery_mode: Option<bool>,
+    /// The instance type and the Amazon Resource Name (ARN) of the SageMaker AI
+    /// image created on the instance.
     /// 
     /// The value of InstanceType passed as part of the ResourceSpec in the CreateApp
     /// call overrides the value passed as part of the ResourceSpec configured for
@@ -42,6 +45,12 @@ pub struct AppSpec {
     /// fails with a request validation error.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceSpec")]
     pub resource_spec: Option<AppResourceSpec>,
+    /// The name of the space. If this value is not set, then UserProfileName must
+    /// be set.
+    /// 
+    /// Regex Pattern: `^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}$`
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "spaceName")]
+    pub space_name: Option<String>,
     /// Each tag consists of a key and an optional value. Tag keys must be unique
     /// per resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -53,8 +62,8 @@ pub struct AppSpec {
     pub user_profile_name: Option<String>,
 }
 
-/// The instance type and the Amazon Resource Name (ARN) of the SageMaker image
-/// created on the instance.
+/// The instance type and the Amazon Resource Name (ARN) of the SageMaker AI
+/// image created on the instance.
 /// 
 /// The value of InstanceType passed as part of the ResourceSpec in the CreateApp
 /// call overrides the value passed as part of the ResourceSpec configured for

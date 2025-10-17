@@ -205,6 +205,14 @@ spec:
                             configMapName:
                               description: "Config map name if the existing volume is a config map\nYou should also define items if you are using this"
                               type: "string"
+                            csiDriver:
+                              description: "Add a csi driver type volume"
+                              type: "string"
+                            csiDriverAttributes:
+                              additionalProperties:
+                                type: "string"
+                              description: "Add attributes for the csi driver"
+                              type: "object"
                             emptyDir:
                               default: false
                               type: "boolean"
@@ -684,6 +692,14 @@ spec:
                             configMapName:
                               description: "Config map name if the existing volume is a config map\nYou should also define items if you are using this"
                               type: "string"
+                            csiDriver:
+                              description: "Add a csi driver type volume"
+                              type: "string"
+                            csiDriverAttributes:
+                              additionalProperties:
+                                type: "string"
+                              description: "Add attributes for the csi driver"
+                              type: "object"
                             emptyDir:
                               default: false
                               type: "boolean"

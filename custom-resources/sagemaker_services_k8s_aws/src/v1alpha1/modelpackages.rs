@@ -13,7 +13,16 @@ use self::prelude::*;
 
 /// ModelPackageSpec defines the desired state of ModelPackage.
 /// 
-/// A versioned model that can be deployed for SageMaker inference.
+/// A container for your trained model that can be deployed for SageMaker inference.
+/// This can include inference code, artifacts, and metadata. The model package
+/// type can be one of the following.
+/// 
+///    * Versioned model: A part of a model package group in Model Registry.
+/// 
+///    * Unversioned model: Not part of a model package group and used in Amazon
+///    Web Services Marketplace.
+/// 
+/// For more information, see CreateModelPackage (<https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateModelPackage.html).>
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "sagemaker.services.k8s.aws", version = "v1alpha1", kind = "ModelPackage", plural = "modelpackages")]
 #[kube(namespaced)]
@@ -770,6 +779,8 @@ pub struct ModelPackageValidationSpecificationValidationProfilesTransformJobDefi
     pub instance_count: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
     pub instance_type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "transformAMIVersion")]
+    pub transform_ami_version: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeKMSKeyID")]
     pub volume_kms_key_id: Option<String>,
 }

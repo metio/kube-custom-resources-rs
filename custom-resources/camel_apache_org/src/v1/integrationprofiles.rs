@@ -309,7 +309,7 @@ pub struct IntegrationProfileKameletRepositories {
 /// list of traits to be executed for all the Integration/IntegrationKits built from this IntegrationProfile
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationProfileTraits {
-    /// Deprecated: for backward compatibility.
+    /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "3scale")]
     pub r#_3scale: Option<IntegrationProfileTraits3scale>,
     /// Deprecated: no longer in use.
@@ -362,6 +362,7 @@ pub struct IntegrationProfileTraits {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub istio: Option<IntegrationProfileTraitsIstio>,
     /// The configuration of Jolokia trait
+    /// Deprecated: use jvm.agent instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub jolokia: Option<IntegrationProfileTraitsJolokia>,
     /// The configuration of JVM trait
@@ -389,6 +390,7 @@ pub struct IntegrationProfileTraits {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mount: Option<IntegrationProfileTraitsMount>,
     /// The configuration of OpenAPI trait
+    /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub openapi: Option<IntegrationProfileTraitsOpenapi>,
     /// The configuration of Owner trait
@@ -401,6 +403,7 @@ pub struct IntegrationProfileTraits {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub platform: Option<IntegrationProfileTraitsPlatform>,
     /// The configuration of Pod trait
+    /// Deprecated: use init-containers instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pod: Option<IntegrationProfileTraitsPod>,
     /// The configuration of Prometheus trait
@@ -417,6 +420,7 @@ pub struct IntegrationProfileTraits {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub registry: Option<IntegrationProfileTraitsRegistry>,
     /// The configuration of Route trait
+    /// Deprecated: use ingress instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub route: Option<IntegrationProfileTraitsRoute>,
     /// The configuration of Security Context trait
@@ -429,7 +433,7 @@ pub struct IntegrationProfileTraits {
     /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "service-binding")]
     pub service_binding: Option<IntegrationProfileTraitsServiceBinding>,
-    /// Deprecated: for backward compatibility.
+    /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub strimzi: Option<IntegrationProfileTraitsStrimzi>,
     /// The configuration of Telemetry trait
@@ -438,12 +442,12 @@ pub struct IntegrationProfileTraits {
     /// The configuration of Toleration trait
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub toleration: Option<IntegrationProfileTraitsToleration>,
-    /// Deprecated: for backward compatibility.
+    /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tracing: Option<IntegrationProfileTraitsTracing>,
 }
 
-/// Deprecated: for backward compatibility.
+/// Deprecated: no longer in use.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationProfileTraits3scale {
     /// TraitConfiguration parameters configuration
@@ -791,12 +795,12 @@ pub struct IntegrationProfileTraitsDeployer {
     /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    /// Allows to explicitly select the desired deployment kind between `deployment`, `cron-job` or `knative-service` when creating the resources for running the integration.
+    /// Deprecated: this feature will be removed in future releases.
+    /// Allows to explicitly select the desired deployment kind between `deployment`, `cron-job` or `knative-service`
+    /// when creating the resources for running the integration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<IntegrationProfileTraitsDeployerKind>,
-    /// Deprecated: won't be able to enforce client side update in the future.
-    /// Use server-side apply to update the owned resources (default `true`).
-    /// Note that it automatically falls back to client-side patching, if SSA is not available, e.g., on old Kubernetes clusters.
+    /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useSSA")]
     pub use_ssa: Option<bool>,
 }
@@ -1102,6 +1106,7 @@ pub struct IntegrationProfileTraitsIstio {
 }
 
 /// The configuration of Jolokia trait
+/// Deprecated: use jvm.agent instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationProfileTraitsJolokia {
     /// The PEM encoded CA certification file path, used to verify client certificates,
@@ -1533,6 +1538,7 @@ pub struct IntegrationProfileTraitsMount {
 }
 
 /// The configuration of OpenAPI trait
+/// Deprecated: no longer in use.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationProfileTraitsOpenapi {
     /// The configmaps holding the spec of the OpenAPI (compatible with > 3.0 spec only).
@@ -1590,28 +1596,26 @@ pub struct IntegrationProfileTraitsPdb {
 /// The configuration of Platform trait
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationProfileTraitsPlatform {
-    /// To automatically detect from the environment if a default platform can be created (it will be created on OpenShift or when a registry address is set).
-    /// Deprecated: Platform is auto generated by the operator install procedure - maintained for backward compatibility
+    /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auto: Option<bool>,
     /// Legacy trait configuration parameters.
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
-    /// To create a default (empty) platform when the platform is missing.
-    /// Deprecated: Platform is auto generated by the operator install procedure - maintained for backward compatibility
+    /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "createDefault")]
     pub create_default: Option<bool>,
     /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    /// Indicates if the platform should be created globally in the case of global operator (default true).
-    /// Deprecated: Platform is auto generated by the operator install procedure - maintained for backward compatibility
+    /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub global: Option<bool>,
 }
 
 /// The configuration of Pod trait
+/// Deprecated: use init-containers instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationProfileTraitsPod {
     /// Legacy trait configuration parameters.
@@ -1708,6 +1712,7 @@ pub struct IntegrationProfileTraitsRegistry {
 }
 
 /// The configuration of Route trait
+/// Deprecated: use ingress instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationProfileTraitsRoute {
     /// The annotations added to route.
@@ -1783,6 +1788,7 @@ pub struct IntegrationProfileTraitsRoute {
 }
 
 /// The configuration of Route trait
+/// Deprecated: use ingress instead.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum IntegrationProfileTraitsRouteTlsInsecureEdgeTerminationPolicy {
     None,
@@ -1791,6 +1797,7 @@ pub enum IntegrationProfileTraitsRouteTlsInsecureEdgeTerminationPolicy {
 }
 
 /// The configuration of Route trait
+/// Deprecated: use ingress instead.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum IntegrationProfileTraitsRouteTlsTermination {
     #[serde(rename = "edge")]
@@ -1889,7 +1896,7 @@ pub struct IntegrationProfileTraitsServiceBinding {
     pub services: Option<Vec<String>>,
 }
 
-/// Deprecated: for backward compatibility.
+/// Deprecated: no longer in use.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationProfileTraitsStrimzi {
     /// TraitConfiguration parameters configuration
@@ -1941,7 +1948,7 @@ pub struct IntegrationProfileTraitsToleration {
     pub taints: Option<Vec<String>>,
 }
 
-/// Deprecated: for backward compatibility.
+/// Deprecated: no longer in use.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationProfileTraitsTracing {
     /// TraitConfiguration parameters configuration
@@ -2248,7 +2255,7 @@ pub struct IntegrationProfileStatusKameletRepositories {
 /// list of traits to be executed for all the Integration/IntegrationKits built from this IntegrationProfile
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationProfileStatusTraits {
-    /// Deprecated: for backward compatibility.
+    /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "3scale")]
     pub r#_3scale: Option<IntegrationProfileStatusTraits3scale>,
     /// Deprecated: no longer in use.
@@ -2301,6 +2308,7 @@ pub struct IntegrationProfileStatusTraits {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub istio: Option<IntegrationProfileStatusTraitsIstio>,
     /// The configuration of Jolokia trait
+    /// Deprecated: use jvm.agent instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub jolokia: Option<IntegrationProfileStatusTraitsJolokia>,
     /// The configuration of JVM trait
@@ -2328,6 +2336,7 @@ pub struct IntegrationProfileStatusTraits {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mount: Option<IntegrationProfileStatusTraitsMount>,
     /// The configuration of OpenAPI trait
+    /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub openapi: Option<IntegrationProfileStatusTraitsOpenapi>,
     /// The configuration of Owner trait
@@ -2340,6 +2349,7 @@ pub struct IntegrationProfileStatusTraits {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub platform: Option<IntegrationProfileStatusTraitsPlatform>,
     /// The configuration of Pod trait
+    /// Deprecated: use init-containers instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pod: Option<IntegrationProfileStatusTraitsPod>,
     /// The configuration of Prometheus trait
@@ -2356,6 +2366,7 @@ pub struct IntegrationProfileStatusTraits {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub registry: Option<IntegrationProfileStatusTraitsRegistry>,
     /// The configuration of Route trait
+    /// Deprecated: use ingress instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub route: Option<IntegrationProfileStatusTraitsRoute>,
     /// The configuration of Security Context trait
@@ -2368,7 +2379,7 @@ pub struct IntegrationProfileStatusTraits {
     /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "service-binding")]
     pub service_binding: Option<IntegrationProfileStatusTraitsServiceBinding>,
-    /// Deprecated: for backward compatibility.
+    /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub strimzi: Option<IntegrationProfileStatusTraitsStrimzi>,
     /// The configuration of Telemetry trait
@@ -2377,12 +2388,12 @@ pub struct IntegrationProfileStatusTraits {
     /// The configuration of Toleration trait
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub toleration: Option<IntegrationProfileStatusTraitsToleration>,
-    /// Deprecated: for backward compatibility.
+    /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tracing: Option<IntegrationProfileStatusTraitsTracing>,
 }
 
-/// Deprecated: for backward compatibility.
+/// Deprecated: no longer in use.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationProfileStatusTraits3scale {
     /// TraitConfiguration parameters configuration
@@ -2730,12 +2741,12 @@ pub struct IntegrationProfileStatusTraitsDeployer {
     /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    /// Allows to explicitly select the desired deployment kind between `deployment`, `cron-job` or `knative-service` when creating the resources for running the integration.
+    /// Deprecated: this feature will be removed in future releases.
+    /// Allows to explicitly select the desired deployment kind between `deployment`, `cron-job` or `knative-service`
+    /// when creating the resources for running the integration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<IntegrationProfileStatusTraitsDeployerKind>,
-    /// Deprecated: won't be able to enforce client side update in the future.
-    /// Use server-side apply to update the owned resources (default `true`).
-    /// Note that it automatically falls back to client-side patching, if SSA is not available, e.g., on old Kubernetes clusters.
+    /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useSSA")]
     pub use_ssa: Option<bool>,
 }
@@ -3041,6 +3052,7 @@ pub struct IntegrationProfileStatusTraitsIstio {
 }
 
 /// The configuration of Jolokia trait
+/// Deprecated: use jvm.agent instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationProfileStatusTraitsJolokia {
     /// The PEM encoded CA certification file path, used to verify client certificates,
@@ -3472,6 +3484,7 @@ pub struct IntegrationProfileStatusTraitsMount {
 }
 
 /// The configuration of OpenAPI trait
+/// Deprecated: no longer in use.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationProfileStatusTraitsOpenapi {
     /// The configmaps holding the spec of the OpenAPI (compatible with > 3.0 spec only).
@@ -3529,28 +3542,26 @@ pub struct IntegrationProfileStatusTraitsPdb {
 /// The configuration of Platform trait
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationProfileStatusTraitsPlatform {
-    /// To automatically detect from the environment if a default platform can be created (it will be created on OpenShift or when a registry address is set).
-    /// Deprecated: Platform is auto generated by the operator install procedure - maintained for backward compatibility
+    /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auto: Option<bool>,
     /// Legacy trait configuration parameters.
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
-    /// To create a default (empty) platform when the platform is missing.
-    /// Deprecated: Platform is auto generated by the operator install procedure - maintained for backward compatibility
+    /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "createDefault")]
     pub create_default: Option<bool>,
     /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    /// Indicates if the platform should be created globally in the case of global operator (default true).
-    /// Deprecated: Platform is auto generated by the operator install procedure - maintained for backward compatibility
+    /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub global: Option<bool>,
 }
 
 /// The configuration of Pod trait
+/// Deprecated: use init-containers instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationProfileStatusTraitsPod {
     /// Legacy trait configuration parameters.
@@ -3647,6 +3658,7 @@ pub struct IntegrationProfileStatusTraitsRegistry {
 }
 
 /// The configuration of Route trait
+/// Deprecated: use ingress instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationProfileStatusTraitsRoute {
     /// The annotations added to route.
@@ -3722,6 +3734,7 @@ pub struct IntegrationProfileStatusTraitsRoute {
 }
 
 /// The configuration of Route trait
+/// Deprecated: use ingress instead.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum IntegrationProfileStatusTraitsRouteTlsInsecureEdgeTerminationPolicy {
     None,
@@ -3730,6 +3743,7 @@ pub enum IntegrationProfileStatusTraitsRouteTlsInsecureEdgeTerminationPolicy {
 }
 
 /// The configuration of Route trait
+/// Deprecated: use ingress instead.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum IntegrationProfileStatusTraitsRouteTlsTermination {
     #[serde(rename = "edge")]
@@ -3828,7 +3842,7 @@ pub struct IntegrationProfileStatusTraitsServiceBinding {
     pub services: Option<Vec<String>>,
 }
 
-/// Deprecated: for backward compatibility.
+/// Deprecated: no longer in use.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationProfileStatusTraitsStrimzi {
     /// TraitConfiguration parameters configuration
@@ -3880,7 +3894,7 @@ pub struct IntegrationProfileStatusTraitsToleration {
     pub taints: Option<Vec<String>>,
 }
 
-/// Deprecated: for backward compatibility.
+/// Deprecated: no longer in use.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationProfileStatusTraitsTracing {
     /// TraitConfiguration parameters configuration

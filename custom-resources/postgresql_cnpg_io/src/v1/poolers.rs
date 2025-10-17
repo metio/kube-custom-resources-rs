@@ -31,6 +31,9 @@ pub struct PoolerSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub instances: Option<i32>,
     /// The configuration of the monitoring infrastructure of this pooler.
+    /// 
+    /// Deprecated: This feature will be removed in an upcoming release. If
+    /// you need this functionality, you can create a PodMonitor manually.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub monitoring: Option<PoolerMonitoring>,
     /// The PgBouncer configuration
@@ -98,6 +101,9 @@ pub struct PoolerDeploymentStrategyRollingUpdate {
 }
 
 /// The configuration of the monitoring infrastructure of this pooler.
+/// 
+/// Deprecated: This feature will be removed in an upcoming release. If
+/// you need this functionality, you can create a PodMonitor manually.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PoolerMonitoring {
     /// Enable or disable the `PodMonitor`

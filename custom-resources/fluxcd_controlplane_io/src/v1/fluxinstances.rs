@@ -176,8 +176,23 @@ pub struct FluxInstanceDistribution {
     /// Registry address to pull the distribution images from
     /// e.g. 'ghcr.io/fluxcd'.
     pub registry: String,
+    /// Variant specifies the Flux distribution flavor stored
+    /// in the registry.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub variant: Option<FluxInstanceDistributionVariant>,
     /// Version semver expression e.g. '2.x', '2.3.x'.
     pub version: String,
+}
+
+/// Distribution specifies the version and container registry to pull images from.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum FluxInstanceDistributionVariant {
+    #[serde(rename = "upstream-alpine")]
+    UpstreamAlpine,
+    #[serde(rename = "enterprise-alpine")]
+    EnterpriseAlpine,
+    #[serde(rename = "enterprise-distroless")]
+    EnterpriseDistroless,
 }
 
 /// Kustomize holds a set of patches that can be applied to the

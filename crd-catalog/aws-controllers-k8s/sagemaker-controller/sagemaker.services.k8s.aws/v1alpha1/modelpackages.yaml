@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.16.2"
+    controller-gen.kubebuilder.io/version: "v0.19.0"
   name: "modelpackages.sagemaker.services.k8s.aws"
 spec:
   group: "sagemaker.services.k8s.aws"
@@ -31,7 +31,7 @@ spec:
             metadata:
               type: "object"
             spec:
-              description: "ModelPackageSpec defines the desired state of ModelPackage.\n\nA versioned model that can be deployed for SageMaker inference."
+              description: "ModelPackageSpec defines the desired state of ModelPackage.\n\nA container for your trained model that can be deployed for SageMaker inference.\nThis can include inference code, artifacts, and metadata. The model package\ntype can be one of the following.\n\n   * Versioned model: A part of a model package group in Model Registry.\n\n   * Unversioned model: Not part of a model package group and used in Amazon\n   Web Services Marketplace.\n\nFor more information, see CreateModelPackage (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateModelPackage.html)."
               properties:
                 additionalInferenceSpecifications:
                   description: "An array of additional Inference Specification objects. Each additional Inference\nSpecification specifies artifacts based on this model package that can be\nused on inference endpoints. Generally used with SageMaker Neo to store the\ncompiled artifacts."
@@ -514,6 +514,8 @@ spec:
                                     format: "int64"
                                     type: "integer"
                                   instanceType:
+                                    type: "string"
+                                  transformAMIVersion:
                                     type: "string"
                                   volumeKMSKeyID:
                                     type: "string"

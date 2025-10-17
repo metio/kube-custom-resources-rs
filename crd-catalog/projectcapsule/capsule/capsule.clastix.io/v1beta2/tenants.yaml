@@ -64,8 +64,18 @@ spec:
                   description: "Specifies additional RoleBindings assigned to the Tenant. Capsule will ensure that all namespaces in the Tenant always contain the RoleBinding for the given ClusterRole. Optional."
                   items:
                     properties:
+                      annotations:
+                        additionalProperties:
+                          type: "string"
+                        description: "Additional Annotations for the synchronized rolebindings"
+                        type: "object"
                       clusterRoleName:
                         type: "string"
+                      labels:
+                        additionalProperties:
+                          type: "string"
+                        description: "Additional Labels for the synchronized rolebindings"
+                        type: "object"
                       subjects:
                         description: "kubebuilder:validation:Minimum=1"
                         items:
@@ -682,6 +692,11 @@ spec:
                   description: "Specifies the owners of the Tenant.\nOptional"
                   items:
                     properties:
+                      annotations:
+                        additionalProperties:
+                          type: "string"
+                        description: "Additional Annotations for the synchronized rolebindings"
+                        type: "object"
                       clusterRoles:
                         default:
                           - "admin"
@@ -697,6 +712,11 @@ spec:
                           - "Group"
                           - "ServiceAccount"
                         type: "string"
+                      labels:
+                        additionalProperties:
+                          type: "string"
+                        description: "Additional Labels for the synchronized rolebindings"
+                        type: "object"
                       name:
                         description: "Name of tenant owner."
                         type: "string"
