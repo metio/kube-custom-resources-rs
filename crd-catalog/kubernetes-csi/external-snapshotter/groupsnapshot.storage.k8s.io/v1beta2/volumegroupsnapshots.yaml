@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    api-approved.kubernetes.io: "https://github.com/kubernetes-csi/external-snapshotter/pull/1150"
+    api-approved.kubernetes.io: "https://github.com/kubernetes-csi/external-snapshotter/pull/1337"
     controller-gen.kubebuilder.io/version: "v0.15.0"
   name: "volumegroupsnapshots.groupsnapshot.storage.k8s.io"
 spec:
@@ -120,8 +120,11 @@ spec:
                 boundVolumeGroupSnapshotContentName:
                   description: "BoundVolumeGroupSnapshotContentName is the name of the VolumeGroupSnapshotContent\nobject to which this VolumeGroupSnapshot object intends to bind to.\nIf not specified, it indicates that the VolumeGroupSnapshot object has not\nbeen successfully bound to a VolumeGroupSnapshotContent object yet.\nNOTE: To avoid possible security issues, consumers must verify binding between\nVolumeGroupSnapshot and VolumeGroupSnapshotContent objects is successful\n(by validating that both VolumeGroupSnapshot and VolumeGroupSnapshotContent\npoint at each other) before using this object."
                   type: "string"
+                  x-kubernetes-validations:
+                    - message: "boundVolumeGroupSnapshotContentName is immutable once set"
+                      rule: "self == oldSelf"
                 creationTime:
-                  description: "CreationTime is the timestamp when the point-in-time group snapshot is taken\nby the underlying storage system.\nIf not specified, it may indicate that the creation time of the group snapshot\nis unknown.\nThe format of this field is a Unix nanoseconds time encoded as an int64.\nOn Unix, the command date +%s%N returns the current time in nanoseconds\nsince 1970-01-01 00:00:00 UTC.\nThis field is updated based on the CreationTime field in VolumeGroupSnapshotContentStatus"
+                  description: "CreationTime is the timestamp when the point-in-time group snapshot is taken\nby the underlying storage system.\nIf not specified, it may indicate that the creation time of the group snapshot\nis unknown.\nThis field is updated based on the CreationTime field in VolumeGroupSnapshotContentStatus"
                   format: "date-time"
                   type: "string"
                 error:

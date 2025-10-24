@@ -158,9 +158,10 @@ pub struct SecretStoreProvider {
     /// Oracle configures this store to sync secrets using Oracle Vault provider
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oracle: Option<SecretStoreProviderOracle>,
+    /// PassboltProvider defines configuration for the Passbolt provider.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub passbolt: Option<SecretStoreProviderPassbolt>,
-    /// Configures a store to sync secrets with a Password Depot instance.
+    /// PasswordDepotProvider configures a store to sync secrets with a Password Depot instance.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub passworddepot: Option<SecretStoreProviderPassworddepot>,
     /// Previder configures this store to sync secrets using the Previder provider
@@ -294,11 +295,11 @@ pub struct SecretStoreProviderAkeylessAuthSecretRefSecretRef {
     /// The SecretAccessID is used for authentication
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessID")]
     pub access_id: Option<SecretStoreProviderAkeylessAuthSecretRefSecretRefAccessId>,
-    /// A reference to a specific 'key' within a Secret resource.
+    /// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
     /// In some instances, `key` is a required field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessType")]
     pub access_type: Option<SecretStoreProviderAkeylessAuthSecretRefSecretRefAccessType>,
-    /// A reference to a specific 'key' within a Secret resource.
+    /// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
     /// In some instances, `key` is a required field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessTypeParam")]
     pub access_type_param: Option<SecretStoreProviderAkeylessAuthSecretRefSecretRefAccessTypeParam>,
@@ -320,7 +321,7 @@ pub struct SecretStoreProviderAkeylessAuthSecretRefSecretRefAccessId {
     pub namespace: Option<String>,
 }
 
-/// A reference to a specific 'key' within a Secret resource.
+/// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
 /// In some instances, `key` is a required field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderAkeylessAuthSecretRefSecretRefAccessType {
@@ -337,7 +338,7 @@ pub struct SecretStoreProviderAkeylessAuthSecretRefSecretRefAccessType {
     pub namespace: Option<String>,
 }
 
-/// A reference to a specific 'key' within a Secret resource.
+/// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
 /// In some instances, `key` is a required field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderAkeylessAuthSecretRefSecretRefAccessTypeParam {
@@ -391,7 +392,7 @@ pub struct SecretStoreProviderAlibaba {
 /// AlibabaAuth contains a secretRef for credentials.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderAlibabaAuth {
-    /// Authenticate against Alibaba using RRSA.
+    /// AlibabaRRSAAuth authenticates against Alibaba using RRSA (Resource-oriented RAM-based Service Authentication).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rrsa: Option<SecretStoreProviderAlibabaAuthRrsa>,
     /// AlibabaAuthSecretRef holds secret references for Alibaba credentials.
@@ -399,7 +400,7 @@ pub struct SecretStoreProviderAlibabaAuth {
     pub secret_ref: Option<SecretStoreProviderAlibabaAuthSecretRef>,
 }
 
-/// Authenticate against Alibaba using RRSA.
+/// AlibabaRRSAAuth authenticates against Alibaba using RRSA (Resource-oriented RAM-based Service Authentication).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderAlibabaAuthRrsa {
     #[serde(rename = "oidcProviderArn")]
@@ -495,7 +496,7 @@ pub struct SecretStoreProviderAws {
 /// see: <https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/configuring-sdk.html#specifying-credentials>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderAwsAuth {
-    /// Authenticate against AWS using service account tokens.
+    /// AWSJWTAuth authenticates against AWS using service account tokens from the Kubernetes cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub jwt: Option<SecretStoreProviderAwsAuthJwt>,
     /// AWSAuthSecretRef holds secret references for AWS credentials
@@ -504,15 +505,15 @@ pub struct SecretStoreProviderAwsAuth {
     pub secret_ref: Option<SecretStoreProviderAwsAuthSecretRef>,
 }
 
-/// Authenticate against AWS using service account tokens.
+/// AWSJWTAuth authenticates against AWS using service account tokens from the Kubernetes cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderAwsAuthJwt {
-    /// A reference to a ServiceAccount resource.
+    /// ServiceAccountSelector is a reference to a ServiceAccount resource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountRef")]
     pub service_account_ref: Option<SecretStoreProviderAwsAuthJwtServiceAccountRef>,
 }
 
-/// A reference to a ServiceAccount resource.
+/// ServiceAccountSelector is a reference to a ServiceAccount resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderAwsAuthJwtServiceAccountRef {
     /// Audience specifies the `aud` claim for the service account token
@@ -621,6 +622,7 @@ pub enum SecretStoreProviderAwsService {
     ParameterStore,
 }
 
+/// Tag defines a tag key and value for AWS resources.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderAwsSessionTags {
     pub key: String,
@@ -1397,10 +1399,12 @@ pub struct SecretStoreProviderDevice42 {
 /// Auth configures how secret-manager authenticates with a Device42 instance.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderDevice42Auth {
+    /// Device42SecretRef defines a reference to a secret containing credentials for the Device42 provider.
     #[serde(rename = "secretRef")]
     pub secret_ref: SecretStoreProviderDevice42AuthSecretRef,
 }
 
+/// Device42SecretRef defines a reference to a secret containing credentials for the Device42 provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderDevice42AuthSecretRef {
     /// Username / Password is used for authentication.
@@ -1446,10 +1450,12 @@ pub struct SecretStoreProviderDoppler {
 /// Auth configures how the Operator authenticates with the Doppler API
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderDopplerAuth {
+    /// DopplerAuthSecretRef defines a reference to a secret containing credentials for the Doppler provider.
     #[serde(rename = "secretRef")]
     pub secret_ref: SecretStoreProviderDopplerAuthSecretRef,
 }
 
+/// DopplerAuthSecretRef defines a reference to a secret containing credentials for the Doppler provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderDopplerAuthSecretRef {
     /// The DopplerToken is used for authentication.
@@ -1515,6 +1521,7 @@ pub struct SecretStoreProviderFake {
     pub data: Vec<SecretStoreProviderFakeData>,
 }
 
+/// FakeProviderData defines a key-value pair for the fake provider used in testing.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderFakeData {
     pub key: String,
@@ -1575,12 +1582,15 @@ pub struct SecretStoreProviderGcpsm {
 /// Auth defines the information necessary to authenticate against GCP
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderGcpsmAuth {
+    /// GCPSMAuthSecretRef defines a reference to a secret containing credentials for the GCP Secret Manager provider.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<SecretStoreProviderGcpsmAuthSecretRef>,
+    /// GCPWorkloadIdentity defines configuration for using GCP Workload Identity authentication.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workloadIdentity")]
     pub workload_identity: Option<SecretStoreProviderGcpsmAuthWorkloadIdentity>,
 }
 
+/// GCPSMAuthSecretRef defines a reference to a secret containing credentials for the GCP Secret Manager provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderGcpsmAuthSecretRef {
     /// The SecretAccessKey is used for authentication
@@ -1604,6 +1614,7 @@ pub struct SecretStoreProviderGcpsmAuthSecretRefSecretAccessKeySecretRef {
     pub namespace: Option<String>,
 }
 
+/// GCPWorkloadIdentity defines configuration for using GCP Workload Identity authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderGcpsmAuthWorkloadIdentity {
     /// ClusterLocation is the location of the cluster
@@ -1618,12 +1629,12 @@ pub struct SecretStoreProviderGcpsmAuthWorkloadIdentity {
     /// If not specified, it fetches information from the metadata server
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterProjectID")]
     pub cluster_project_id: Option<String>,
-    /// A reference to a ServiceAccount resource.
+    /// ServiceAccountSelector is a reference to a ServiceAccount resource.
     #[serde(rename = "serviceAccountRef")]
     pub service_account_ref: SecretStoreProviderGcpsmAuthWorkloadIdentityServiceAccountRef,
 }
 
-/// A reference to a ServiceAccount resource.
+/// ServiceAccountSelector is a reference to a ServiceAccount resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderGcpsmAuthWorkloadIdentityServiceAccountRef {
     /// Audience specifies the `aud` claim for the service account token
@@ -1669,13 +1680,13 @@ pub struct SecretStoreProviderGithub {
 /// auth configures how secret-manager authenticates with a Github instance.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderGithubAuth {
-    /// A reference to a specific 'key' within a Secret resource.
+    /// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
     /// In some instances, `key` is a required field.
     #[serde(rename = "privateKey")]
     pub private_key: SecretStoreProviderGithubAuthPrivateKey,
 }
 
-/// A reference to a specific 'key' within a Secret resource.
+/// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
 /// In some instances, `key` is a required field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderGithubAuthPrivateKey {
@@ -1724,10 +1735,12 @@ pub struct SecretStoreProviderGitlab {
 /// Auth configures how secret-manager authenticates with a GitLab instance.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderGitlabAuth {
+    /// GitlabSecretRef defines a reference to a secret containing credentials for the GitLab provider.
     #[serde(rename = "SecretRef")]
     pub secret_ref: SecretStoreProviderGitlabAuthSecretRef,
 }
 
+/// GitlabSecretRef defines a reference to a secret containing credentials for the GitLab provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderGitlabAuthSecretRef {
     /// AccessToken is used for authentication.
@@ -1788,14 +1801,15 @@ pub struct SecretStoreProviderIbm {
 /// Auth configures how secret-manager authenticates with the IBM secrets manager.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderIbmAuth {
-    /// IBM Container-based auth with IAM Trusted Profile.
+    /// IBMAuthContainerAuth defines authentication using IBM Container-based auth with IAM Trusted Profile.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerAuth")]
     pub container_auth: Option<SecretStoreProviderIbmAuthContainerAuth>,
+    /// IBMAuthSecretRef defines a reference to a secret containing credentials for the IBM provider.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<SecretStoreProviderIbmAuthSecretRef>,
 }
 
-/// IBM Container-based auth with IAM Trusted Profile.
+/// IBMAuthContainerAuth defines authentication using IBM Container-based auth with IAM Trusted Profile.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderIbmAuthContainerAuth {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "iamEndpoint")]
@@ -1807,6 +1821,7 @@ pub struct SecretStoreProviderIbmAuthContainerAuth {
     pub token_location: Option<String>,
 }
 
+/// IBMAuthSecretRef defines a reference to a secret containing credentials for the IBM provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderIbmAuthSecretRef {
     /// The SecretAccessKey is used for authentication
@@ -1846,23 +1861,25 @@ pub struct SecretStoreProviderInfisical {
 /// Auth configures how the Operator authenticates with the Infisical API
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderInfisicalAuth {
+    /// UniversalAuthCredentials defines the credentials for Infisical Universal Auth.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "universalAuthCredentials")]
     pub universal_auth_credentials: Option<SecretStoreProviderInfisicalAuthUniversalAuthCredentials>,
 }
 
+/// UniversalAuthCredentials defines the credentials for Infisical Universal Auth.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderInfisicalAuthUniversalAuthCredentials {
-    /// A reference to a specific 'key' within a Secret resource.
+    /// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
     /// In some instances, `key` is a required field.
     #[serde(rename = "clientId")]
     pub client_id: SecretStoreProviderInfisicalAuthUniversalAuthCredentialsClientId,
-    /// A reference to a specific 'key' within a Secret resource.
+    /// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
     /// In some instances, `key` is a required field.
     #[serde(rename = "clientSecret")]
     pub client_secret: SecretStoreProviderInfisicalAuthUniversalAuthCredentialsClientSecret,
 }
 
-/// A reference to a specific 'key' within a Secret resource.
+/// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
 /// In some instances, `key` is a required field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderInfisicalAuthUniversalAuthCredentialsClientId {
@@ -1879,7 +1896,7 @@ pub struct SecretStoreProviderInfisicalAuthUniversalAuthCredentialsClientId {
     pub namespace: Option<String>,
 }
 
-/// A reference to a specific 'key' within a Secret resource.
+/// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
 /// In some instances, `key` is a required field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderInfisicalAuthUniversalAuthCredentialsClientSecret {
@@ -1919,7 +1936,7 @@ pub struct SecretStoreProviderInfisicalSecretsScope {
 /// KeeperSecurity configures this store to sync secrets using the KeeperSecurity provider
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderKeepersecurity {
-    /// A reference to a specific 'key' within a Secret resource.
+    /// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
     /// In some instances, `key` is a required field.
     #[serde(rename = "authRef")]
     pub auth_ref: SecretStoreProviderKeepersecurityAuthRef,
@@ -1927,7 +1944,7 @@ pub struct SecretStoreProviderKeepersecurity {
     pub folder_id: String,
 }
 
-/// A reference to a specific 'key' within a Secret resource.
+/// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
 /// In some instances, `key` is a required field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderKeepersecurityAuthRef {
@@ -1978,17 +1995,17 @@ pub struct SecretStoreProviderKubernetesAuth {
 /// has both clientCert and clientKey as secretKeySelector
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderKubernetesAuthCert {
-    /// A reference to a specific 'key' within a Secret resource.
+    /// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
     /// In some instances, `key` is a required field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCert")]
     pub client_cert: Option<SecretStoreProviderKubernetesAuthCertClientCert>,
-    /// A reference to a specific 'key' within a Secret resource.
+    /// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
     /// In some instances, `key` is a required field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientKey")]
     pub client_key: Option<SecretStoreProviderKubernetesAuthCertClientKey>,
 }
 
-/// A reference to a specific 'key' within a Secret resource.
+/// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
 /// In some instances, `key` is a required field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderKubernetesAuthCertClientCert {
@@ -2005,7 +2022,7 @@ pub struct SecretStoreProviderKubernetesAuthCertClientCert {
     pub namespace: Option<String>,
 }
 
-/// A reference to a specific 'key' within a Secret resource.
+/// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
 /// In some instances, `key` is a required field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderKubernetesAuthCertClientKey {
@@ -2041,13 +2058,13 @@ pub struct SecretStoreProviderKubernetesAuthServiceAccount {
 /// use static token to authenticate with
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderKubernetesAuthToken {
-    /// A reference to a specific 'key' within a Secret resource.
+    /// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
     /// In some instances, `key` is a required field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerToken")]
     pub bearer_token: Option<SecretStoreProviderKubernetesAuthTokenBearerToken>,
 }
 
-/// A reference to a specific 'key' within a Secret resource.
+/// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
 /// In some instances, `key` is a required field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderKubernetesAuthTokenBearerToken {
@@ -2332,6 +2349,7 @@ pub struct SecretStoreProviderOracleServiceAccountRef {
     pub namespace: Option<String>,
 }
 
+/// PassboltProvider defines configuration for the Passbolt provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderPassbolt {
     /// Auth defines the information necessary to authenticate against Passbolt Server
@@ -2343,18 +2361,15 @@ pub struct SecretStoreProviderPassbolt {
 /// Auth defines the information necessary to authenticate against Passbolt Server
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderPassboltAuth {
-    /// A reference to a specific 'key' within a Secret resource.
-    /// In some instances, `key` is a required field.
+    /// PasswordSecretRef is a reference to the secret containing the Passbolt password
     #[serde(rename = "passwordSecretRef")]
     pub password_secret_ref: SecretStoreProviderPassboltAuthPasswordSecretRef,
-    /// A reference to a specific 'key' within a Secret resource.
-    /// In some instances, `key` is a required field.
+    /// PrivateKeySecretRef is a reference to the secret containing the Passbolt private key
     #[serde(rename = "privateKeySecretRef")]
     pub private_key_secret_ref: SecretStoreProviderPassboltAuthPrivateKeySecretRef,
 }
 
-/// A reference to a specific 'key' within a Secret resource.
-/// In some instances, `key` is a required field.
+/// PasswordSecretRef is a reference to the secret containing the Passbolt password
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderPassboltAuthPasswordSecretRef {
     /// A key in the referenced Secret.
@@ -2370,8 +2385,7 @@ pub struct SecretStoreProviderPassboltAuthPasswordSecretRef {
     pub namespace: Option<String>,
 }
 
-/// A reference to a specific 'key' within a Secret resource.
-/// In some instances, `key` is a required field.
+/// PrivateKeySecretRef is a reference to the secret containing the Passbolt private key
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderPassboltAuthPrivateKeySecretRef {
     /// A key in the referenced Secret.
@@ -2387,7 +2401,7 @@ pub struct SecretStoreProviderPassboltAuthPrivateKeySecretRef {
     pub namespace: Option<String>,
 }
 
-/// Configures a store to sync secrets with a Password Depot instance.
+/// PasswordDepotProvider configures a store to sync secrets with a Password Depot instance.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderPassworddepot {
     /// Auth configures how secret-manager authenticates with a Password Depot instance.
@@ -2401,10 +2415,12 @@ pub struct SecretStoreProviderPassworddepot {
 /// Auth configures how secret-manager authenticates with a Password Depot instance.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderPassworddepotAuth {
+    /// PasswordDepotSecretRef defines a reference to a secret containing credentials for the Password Depot provider.
     #[serde(rename = "secretRef")]
     pub secret_ref: SecretStoreProviderPassworddepotAuthSecretRef,
 }
 
+/// PasswordDepotSecretRef defines a reference to a secret containing credentials for the Password Depot provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderPassworddepotAuthSecretRef {
     /// Username / Password is used for authentication.
@@ -2674,13 +2690,13 @@ pub struct SecretStoreProviderSenhasegura {
 pub struct SecretStoreProviderSenhaseguraAuth {
     #[serde(rename = "clientId")]
     pub client_id: String,
-    /// A reference to a specific 'key' within a Secret resource.
+    /// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
     /// In some instances, `key` is a required field.
     #[serde(rename = "clientSecretSecretRef")]
     pub client_secret_secret_ref: SecretStoreProviderSenhaseguraAuthClientSecretSecretRef,
 }
 
-/// A reference to a specific 'key' within a Secret resource.
+/// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
 /// In some instances, `key` is a required field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderSenhaseguraAuthClientSecretSecretRef {
@@ -2939,12 +2955,12 @@ pub struct SecretStoreProviderVaultAuthIam {
 /// Specify a service account with IRSA enabled
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderVaultAuthIamJwt {
-    /// A reference to a ServiceAccount resource.
+    /// ServiceAccountSelector is a reference to a ServiceAccount resource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountRef")]
     pub service_account_ref: Option<SecretStoreProviderVaultAuthIamJwtServiceAccountRef>,
 }
 
-/// A reference to a ServiceAccount resource.
+/// ServiceAccountSelector is a reference to a ServiceAccount resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderVaultAuthIamJwtServiceAccountRef {
     /// Audience specifies the `aud` claim for the service account token
@@ -3386,17 +3402,17 @@ pub struct SecretStoreProviderWebhookAuth {
 /// NTLMProtocol configures the store to use NTLM for auth
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderWebhookAuthNtlm {
-    /// A reference to a specific 'key' within a Secret resource.
+    /// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
     /// In some instances, `key` is a required field.
     #[serde(rename = "passwordSecret")]
     pub password_secret: SecretStoreProviderWebhookAuthNtlmPasswordSecret,
-    /// A reference to a specific 'key' within a Secret resource.
+    /// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
     /// In some instances, `key` is a required field.
     #[serde(rename = "usernameSecret")]
     pub username_secret: SecretStoreProviderWebhookAuthNtlmUsernameSecret,
 }
 
-/// A reference to a specific 'key' within a Secret resource.
+/// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
 /// In some instances, `key` is a required field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderWebhookAuthNtlmPasswordSecret {
@@ -3413,7 +3429,7 @@ pub struct SecretStoreProviderWebhookAuthNtlmPasswordSecret {
     pub namespace: Option<String>,
 }
 
-/// A reference to a specific 'key' within a Secret resource.
+/// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
 /// In some instances, `key` is a required field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderWebhookAuthNtlmUsernameSecret {
@@ -3461,6 +3477,7 @@ pub struct SecretStoreProviderWebhookResult {
     pub json_path: Option<String>,
 }
 
+/// WebhookSecret defines a secret to be used in webhook templates.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderWebhookSecrets {
     /// Name of this secret in templates
@@ -3526,13 +3543,13 @@ pub struct SecretStoreProviderYandexcertificatemanagerAuthAuthorizedKeySecretRef
 /// The provider for the CA bundle to use to validate Yandex.Cloud server certificate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderYandexcertificatemanagerCaProvider {
-    /// A reference to a specific 'key' within a Secret resource.
+    /// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
     /// In some instances, `key` is a required field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certSecretRef")]
     pub cert_secret_ref: Option<SecretStoreProviderYandexcertificatemanagerCaProviderCertSecretRef>,
 }
 
-/// A reference to a specific 'key' within a Secret resource.
+/// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
 /// In some instances, `key` is a required field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderYandexcertificatemanagerCaProviderCertSecretRef {
@@ -3589,13 +3606,13 @@ pub struct SecretStoreProviderYandexlockboxAuthAuthorizedKeySecretRef {
 /// The provider for the CA bundle to use to validate Yandex.Cloud server certificate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderYandexlockboxCaProvider {
-    /// A reference to a specific 'key' within a Secret resource.
+    /// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
     /// In some instances, `key` is a required field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certSecretRef")]
     pub cert_secret_ref: Option<SecretStoreProviderYandexlockboxCaProviderCertSecretRef>,
 }
 
-/// A reference to a specific 'key' within a Secret resource.
+/// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
 /// In some instances, `key` is a required field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderYandexlockboxCaProviderCertSecretRef {
@@ -3615,8 +3632,10 @@ pub struct SecretStoreProviderYandexlockboxCaProviderCertSecretRef {
 /// Used to configure http retries if failed
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreRetrySettings {
+    /// MaxRetries is the maximum number of retry attempts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
     pub max_retries: Option<i32>,
+    /// RetryInterval is the interval between retry attempts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
     pub retry_interval: Option<String>,
 }

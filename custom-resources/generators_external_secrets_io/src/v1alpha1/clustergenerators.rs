@@ -10,6 +10,7 @@ mod prelude {
 }
 use self::prelude::*;
 
+/// ClusterGeneratorSpec defines the desired state of a ClusterGenerator.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[kube(group = "generators.external-secrets.io", version = "v1alpha1", kind = "ClusterGenerator", plural = "clustergenerators")]
 #[kube(schema = "disabled")]
@@ -29,15 +30,19 @@ pub struct ClusterGeneratorGenerator {
     /// see: <https://github.com/Azure/acr/blob/main/docs/AAD-OAuth.md#overview>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "acrAccessTokenSpec")]
     pub acr_access_token_spec: Option<ClusterGeneratorGeneratorAcrAccessTokenSpec>,
+    /// CloudsmithAccessTokenSpec defines the configuration for generating a Cloudsmith access token using OIDC authentication.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cloudsmithAccessTokenSpec")]
     pub cloudsmith_access_token_spec: Option<ClusterGeneratorGeneratorCloudsmithAccessTokenSpec>,
+    /// ECRAuthorizationTokenSpec defines the desired state to generate an AWS ECR authorization token.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ecrAuthorizationTokenSpec")]
     pub ecr_authorization_token_spec: Option<ClusterGeneratorGeneratorEcrAuthorizationTokenSpec>,
     /// FakeSpec contains the static data.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fakeSpec")]
     pub fake_spec: Option<ClusterGeneratorGeneratorFakeSpec>,
+    /// GCRAccessTokenSpec defines the desired state to generate a Google Container Registry access token.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcrAccessTokenSpec")]
     pub gcr_access_token_spec: Option<ClusterGeneratorGeneratorGcrAccessTokenSpec>,
+    /// GithubAccessTokenSpec defines the desired state to generate a GitHub access token.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "githubAccessTokenSpec")]
     pub github_access_token_spec: Option<ClusterGeneratorGeneratorGithubAccessTokenSpec>,
     /// GrafanaSpec controls the behavior of the grafana generator.
@@ -49,16 +54,19 @@ pub struct ClusterGeneratorGenerator {
     /// PasswordSpec controls the behavior of the password generator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordSpec")]
     pub password_spec: Option<ClusterGeneratorGeneratorPasswordSpec>,
+    /// QuayAccessTokenSpec defines the desired state to generate a Quay access token.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "quayAccessTokenSpec")]
     pub quay_access_token_spec: Option<ClusterGeneratorGeneratorQuayAccessTokenSpec>,
     /// SSHKeySpec controls the behavior of the ssh key generator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sshKeySpec")]
     pub ssh_key_spec: Option<ClusterGeneratorGeneratorSshKeySpec>,
+    /// STSSessionTokenSpec defines the desired state to generate an AWS STS session token.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stsSessionTokenSpec")]
     pub sts_session_token_spec: Option<ClusterGeneratorGeneratorStsSessionTokenSpec>,
     /// UUIDSpec controls the behavior of the uuid generator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "uuidSpec")]
     pub uuid_spec: Option<ClusterGeneratorGeneratorUuidSpec>,
+    /// VaultDynamicSecretSpec defines the desired spec of VaultDynamicSecret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vaultDynamicSecretSpec")]
     pub vault_dynamic_secret_spec: Option<ClusterGeneratorGeneratorVaultDynamicSecretSpec>,
     /// WebhookSpec controls the behavior of the external generator. Any body parameters should be passed to the server through the parameters field.
@@ -71,9 +79,10 @@ pub struct ClusterGeneratorGenerator {
 /// see: <https://github.com/Azure/acr/blob/main/docs/AAD-OAuth.md#overview>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterGeneratorGeneratorAcrAccessTokenSpec {
+    /// ACRAuth defines the authentication methods for Azure Container Registry.
     pub auth: ClusterGeneratorGeneratorAcrAccessTokenSpecAuth,
     /// EnvironmentType specifies the Azure cloud environment endpoints to use for
-    /// connecting and authenticating with Azure. By default it points to the public cloud AAD endpoint.
+    /// connecting and authenticating with Azure. By default, it points to the public cloud AAD endpoint.
     /// The following endpoints are available, also see here: <https://github.com/Azure/go-autorest/blob/main/autorest/azure/environments.go#L152>
     /// PublicCloud, USGovernmentCloud, ChinaCloud, GermanCloud
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "environmentType")]
@@ -97,6 +106,7 @@ pub struct ClusterGeneratorGeneratorAcrAccessTokenSpec {
     pub tenant_id: Option<String>,
 }
 
+/// ACRAuth defines the authentication methods for Azure Container Registry.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterGeneratorGeneratorAcrAccessTokenSpecAuth {
     /// ManagedIdentity uses Azure Managed Identity to authenticate with Azure.
@@ -121,14 +131,14 @@ pub struct ClusterGeneratorGeneratorAcrAccessTokenSpecAuthManagedIdentity {
 /// ServicePrincipal uses Azure Service Principal credentials to authenticate with Azure.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterGeneratorGeneratorAcrAccessTokenSpecAuthServicePrincipal {
-    /// Configuration used to authenticate with Azure using static
-    /// credentials stored in a Kind=Secret.
+    /// AzureACRServicePrincipalAuthSecretRef defines the secret references for Azure Service Principal authentication.
+    /// It uses static credentials stored in a Kind=Secret.
     #[serde(rename = "secretRef")]
     pub secret_ref: ClusterGeneratorGeneratorAcrAccessTokenSpecAuthServicePrincipalSecretRef,
 }
 
-/// Configuration used to authenticate with Azure using static
-/// credentials stored in a Kind=Secret.
+/// AzureACRServicePrincipalAuthSecretRef defines the secret references for Azure Service Principal authentication.
+/// It uses static credentials stored in a Kind=Secret.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterGeneratorGeneratorAcrAccessTokenSpecAuthServicePrincipalSecretRef {
     /// The Azure clientId of the service principle used for authentication.
@@ -210,6 +220,7 @@ pub enum ClusterGeneratorGeneratorAcrAccessTokenSpecEnvironmentType {
     AzureStackCloud,
 }
 
+/// CloudsmithAccessTokenSpec defines the configuration for generating a Cloudsmith access token using OIDC authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterGeneratorGeneratorCloudsmithAccessTokenSpec {
     /// APIURL configures the Cloudsmith API URL. Defaults to <https://api.cloudsmith.io.>
@@ -242,6 +253,7 @@ pub struct ClusterGeneratorGeneratorCloudsmithAccessTokenSpecServiceAccountRef {
     pub namespace: Option<String>,
 }
 
+/// ECRAuthorizationTokenSpec defines the desired state to generate an AWS ECR authorization token.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterGeneratorGeneratorEcrAuthorizationTokenSpec {
     /// Auth defines how to authenticate with AWS
@@ -262,7 +274,7 @@ pub struct ClusterGeneratorGeneratorEcrAuthorizationTokenSpec {
 /// Auth defines how to authenticate with AWS
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterGeneratorGeneratorEcrAuthorizationTokenSpecAuth {
-    /// Authenticate against AWS using service account tokens.
+    /// AWSJWTAuth provides configuration to authenticate against AWS using service account tokens.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub jwt: Option<ClusterGeneratorGeneratorEcrAuthorizationTokenSpecAuthJwt>,
     /// AWSAuthSecretRef holds secret references for AWS credentials
@@ -271,15 +283,15 @@ pub struct ClusterGeneratorGeneratorEcrAuthorizationTokenSpecAuth {
     pub secret_ref: Option<ClusterGeneratorGeneratorEcrAuthorizationTokenSpecAuthSecretRef>,
 }
 
-/// Authenticate against AWS using service account tokens.
+/// AWSJWTAuth provides configuration to authenticate against AWS using service account tokens.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterGeneratorGeneratorEcrAuthorizationTokenSpecAuthJwt {
-    /// A reference to a ServiceAccount resource.
+    /// ServiceAccountSelector is a reference to a ServiceAccount resource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountRef")]
     pub service_account_ref: Option<ClusterGeneratorGeneratorEcrAuthorizationTokenSpecAuthJwtServiceAccountRef>,
 }
 
-/// A reference to a ServiceAccount resource.
+/// ServiceAccountSelector is a reference to a ServiceAccount resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterGeneratorGeneratorEcrAuthorizationTokenSpecAuthJwtServiceAccountRef {
     /// Audience specifies the `aud` claim for the service account token
@@ -375,6 +387,7 @@ pub struct ClusterGeneratorGeneratorFakeSpec {
     pub data: Option<BTreeMap<String, String>>,
 }
 
+/// GCRAccessTokenSpec defines the desired state to generate a Google Container Registry access token.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterGeneratorGeneratorGcrAccessTokenSpec {
     /// Auth defines the means for authenticating with GCP
@@ -387,8 +400,10 @@ pub struct ClusterGeneratorGeneratorGcrAccessTokenSpec {
 /// Auth defines the means for authenticating with GCP
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterGeneratorGeneratorGcrAccessTokenSpecAuth {
+    /// GCPSMAuthSecretRef defines the reference to a secret containing Google Cloud Platform credentials.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<ClusterGeneratorGeneratorGcrAccessTokenSpecAuthSecretRef>,
+    /// GCPWorkloadIdentity defines the configuration for using GCP Workload Identity authentication.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workloadIdentity")]
     pub workload_identity: Option<ClusterGeneratorGeneratorGcrAccessTokenSpecAuthWorkloadIdentity>,
     /// GCPWorkloadIdentityFederation holds the configurations required for generating federated access tokens.
@@ -396,6 +411,7 @@ pub struct ClusterGeneratorGeneratorGcrAccessTokenSpecAuth {
     pub workload_identity_federation: Option<ClusterGeneratorGeneratorGcrAccessTokenSpecAuthWorkloadIdentityFederation>,
 }
 
+/// GCPSMAuthSecretRef defines the reference to a secret containing Google Cloud Platform credentials.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterGeneratorGeneratorGcrAccessTokenSpecAuthSecretRef {
     /// The SecretAccessKey is used for authentication
@@ -419,6 +435,7 @@ pub struct ClusterGeneratorGeneratorGcrAccessTokenSpecAuthSecretRefSecretAccessK
     pub namespace: Option<String>,
 }
 
+/// GCPWorkloadIdentity defines the configuration for using GCP Workload Identity authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterGeneratorGeneratorGcrAccessTokenSpecAuthWorkloadIdentity {
     #[serde(rename = "clusterLocation")]
@@ -427,12 +444,12 @@ pub struct ClusterGeneratorGeneratorGcrAccessTokenSpecAuthWorkloadIdentity {
     pub cluster_name: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterProjectID")]
     pub cluster_project_id: Option<String>,
-    /// A reference to a ServiceAccount resource.
+    /// ServiceAccountSelector is a reference to a ServiceAccount resource.
     #[serde(rename = "serviceAccountRef")]
     pub service_account_ref: ClusterGeneratorGeneratorGcrAccessTokenSpecAuthWorkloadIdentityServiceAccountRef,
 }
 
-/// A reference to a ServiceAccount resource.
+/// ServiceAccountSelector is a reference to a ServiceAccount resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterGeneratorGeneratorGcrAccessTokenSpecAuthWorkloadIdentityServiceAccountRef {
     /// Audience specifies the `aud` claim for the service account token
@@ -536,6 +553,7 @@ pub struct ClusterGeneratorGeneratorGcrAccessTokenSpecAuthWorkloadIdentityFedera
     pub namespace: Option<String>,
 }
 
+/// GithubAccessTokenSpec defines the desired state to generate a GitHub access token.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterGeneratorGeneratorGithubAccessTokenSpec {
     #[serde(rename = "appID")]
@@ -551,7 +569,7 @@ pub struct ClusterGeneratorGeneratorGithubAccessTokenSpec {
     /// is installed to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repositories: Option<Vec<String>>,
-    /// URL configures the Github instance URL. Defaults to <https://github.com/.>
+    /// URL configures the GitHub instance URL. Defaults to <https://github.com/.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
 }
@@ -559,19 +577,21 @@ pub struct ClusterGeneratorGeneratorGithubAccessTokenSpec {
 /// Auth configures how ESO authenticates with a Github instance.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterGeneratorGeneratorGithubAccessTokenSpecAuth {
+    /// GithubSecretRef references a secret containing GitHub credentials.
     #[serde(rename = "privateKey")]
     pub private_key: ClusterGeneratorGeneratorGithubAccessTokenSpecAuthPrivateKey,
 }
 
+/// GithubSecretRef references a secret containing GitHub credentials.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterGeneratorGeneratorGithubAccessTokenSpecAuthPrivateKey {
-    /// A reference to a specific 'key' within a Secret resource.
+    /// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
     /// In some instances, `key` is a required field.
     #[serde(rename = "secretRef")]
     pub secret_ref: ClusterGeneratorGeneratorGithubAccessTokenSpecAuthPrivateKeySecretRef,
 }
 
-/// A reference to a specific 'key' within a Secret resource.
+/// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
 /// In some instances, `key` is a required field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterGeneratorGeneratorGithubAccessTokenSpecAuthPrivateKeySecretRef {
@@ -714,6 +734,15 @@ pub struct ClusterGeneratorGeneratorPasswordSpec {
     /// password. If omitted it defaults to 25% of the length of the password
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub digits: Option<i64>,
+    /// Encoding specifies the encoding of the generated password.
+    /// Valid values are:
+    /// - "raw" (default): no encoding
+    /// - "base64": standard base64 encoding
+    /// - "base64url": base64url encoding
+    /// - "base32": base32 encoding
+    /// - "hex": hexadecimal encoding
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub encoding: Option<ClusterGeneratorGeneratorPasswordSpecEncoding>,
     /// Length of the password to be generated.
     /// Defaults to 24
     pub length: i64,
@@ -730,6 +759,22 @@ pub struct ClusterGeneratorGeneratorPasswordSpec {
     pub symbols: Option<i64>,
 }
 
+/// PasswordSpec controls the behavior of the password generator.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterGeneratorGeneratorPasswordSpecEncoding {
+    #[serde(rename = "base64")]
+    Base64,
+    #[serde(rename = "base64url")]
+    Base64url,
+    #[serde(rename = "base32")]
+    Base32,
+    #[serde(rename = "hex")]
+    Hex,
+    #[serde(rename = "raw")]
+    Raw,
+}
+
+/// QuayAccessTokenSpec defines the desired state to generate a Quay access token.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterGeneratorGeneratorQuayAccessTokenSpec {
     /// Name of the robot account you are federating with
@@ -784,6 +829,7 @@ pub enum ClusterGeneratorGeneratorSshKeySpecKeyType {
     Ed25519,
 }
 
+/// STSSessionTokenSpec defines the desired state to generate an AWS STS session token.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterGeneratorGeneratorStsSessionTokenSpec {
     /// Auth defines how to authenticate with AWS
@@ -803,7 +849,7 @@ pub struct ClusterGeneratorGeneratorStsSessionTokenSpec {
 /// Auth defines how to authenticate with AWS
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterGeneratorGeneratorStsSessionTokenSpecAuth {
-    /// Authenticate against AWS using service account tokens.
+    /// AWSJWTAuth provides configuration to authenticate against AWS using service account tokens.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub jwt: Option<ClusterGeneratorGeneratorStsSessionTokenSpecAuthJwt>,
     /// AWSAuthSecretRef holds secret references for AWS credentials
@@ -812,15 +858,15 @@ pub struct ClusterGeneratorGeneratorStsSessionTokenSpecAuth {
     pub secret_ref: Option<ClusterGeneratorGeneratorStsSessionTokenSpecAuthSecretRef>,
 }
 
-/// Authenticate against AWS using service account tokens.
+/// AWSJWTAuth provides configuration to authenticate against AWS using service account tokens.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterGeneratorGeneratorStsSessionTokenSpecAuthJwt {
-    /// A reference to a ServiceAccount resource.
+    /// ServiceAccountSelector is a reference to a ServiceAccount resource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountRef")]
     pub service_account_ref: Option<ClusterGeneratorGeneratorStsSessionTokenSpecAuthJwtServiceAccountRef>,
 }
 
-/// A reference to a ServiceAccount resource.
+/// ServiceAccountSelector is a reference to a ServiceAccount resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterGeneratorGeneratorStsSessionTokenSpecAuthJwtServiceAccountRef {
     /// Audience specifies the `aud` claim for the service account token
@@ -924,6 +970,7 @@ pub struct ClusterGeneratorGeneratorStsSessionTokenSpecRequestParameters {
 pub struct ClusterGeneratorGeneratorUuidSpec {
 }
 
+/// VaultDynamicSecretSpec defines the desired spec of VaultDynamicSecret.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterGeneratorGeneratorVaultDynamicSecretSpec {
     /// Do not fail if no secrets are found. Useful for requests where no data is expected.
@@ -944,7 +991,7 @@ pub struct ClusterGeneratorGeneratorVaultDynamicSecretSpec {
     /// Vault provider common spec
     pub provider: ClusterGeneratorGeneratorVaultDynamicSecretSpecProvider,
     /// Result type defines which data is returned from the generator.
-    /// By default it is the "data" section of the Vault API response.
+    /// By default, it is the "data" section of the Vault API response.
     /// When using e.g. /auth/token/create the "data" section is empty but
     /// the "auth" section contains the generated token.
     /// Please refer to the vault docs regarding the result data structure.
@@ -1207,12 +1254,12 @@ pub struct ClusterGeneratorGeneratorVaultDynamicSecretSpecProviderAuthIam {
 /// Specify a service account with IRSA enabled
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterGeneratorGeneratorVaultDynamicSecretSpecProviderAuthIamJwt {
-    /// A reference to a ServiceAccount resource.
+    /// ServiceAccountSelector is a reference to a ServiceAccount resource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountRef")]
     pub service_account_ref: Option<ClusterGeneratorGeneratorVaultDynamicSecretSpecProviderAuthIamJwtServiceAccountRef>,
 }
 
-/// A reference to a ServiceAccount resource.
+/// ServiceAccountSelector is a reference to a ServiceAccount resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterGeneratorGeneratorVaultDynamicSecretSpecProviderAuthIamJwtServiceAccountRef {
     /// Audience specifies the `aud` claim for the service account token
@@ -1617,6 +1664,7 @@ pub enum ClusterGeneratorGeneratorVaultDynamicSecretSpecProviderVersion {
     V2,
 }
 
+/// VaultDynamicSecretSpec defines the desired spec of VaultDynamicSecret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterGeneratorGeneratorVaultDynamicSecretSpecResultType {
     Data,
@@ -1681,17 +1729,17 @@ pub struct ClusterGeneratorGeneratorWebhookSpecAuth {
 /// NTLMProtocol configures the store to use NTLM for auth
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterGeneratorGeneratorWebhookSpecAuthNtlm {
-    /// A reference to a specific 'key' within a Secret resource.
+    /// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
     /// In some instances, `key` is a required field.
     #[serde(rename = "passwordSecret")]
     pub password_secret: ClusterGeneratorGeneratorWebhookSpecAuthNtlmPasswordSecret,
-    /// A reference to a specific 'key' within a Secret resource.
+    /// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
     /// In some instances, `key` is a required field.
     #[serde(rename = "usernameSecret")]
     pub username_secret: ClusterGeneratorGeneratorWebhookSpecAuthNtlmUsernameSecret,
 }
 
-/// A reference to a specific 'key' within a Secret resource.
+/// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
 /// In some instances, `key` is a required field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterGeneratorGeneratorWebhookSpecAuthNtlmPasswordSecret {
@@ -1708,7 +1756,7 @@ pub struct ClusterGeneratorGeneratorWebhookSpecAuthNtlmPasswordSecret {
     pub namespace: Option<String>,
 }
 
-/// A reference to a specific 'key' within a Secret resource.
+/// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
 /// In some instances, `key` is a required field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterGeneratorGeneratorWebhookSpecAuthNtlmUsernameSecret {
@@ -1756,6 +1804,7 @@ pub struct ClusterGeneratorGeneratorWebhookSpecResult {
     pub json_path: Option<String>,
 }
 
+/// WebhookSecret defines a secret reference that will be used in webhook templates.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterGeneratorGeneratorWebhookSpecSecrets {
     /// Name of this secret in templates
@@ -1776,6 +1825,7 @@ pub struct ClusterGeneratorGeneratorWebhookSpecSecretsSecretRef {
     pub name: Option<String>,
 }
 
+/// ClusterGeneratorSpec defines the desired state of a ClusterGenerator.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterGeneratorKind {
     #[serde(rename = "ACRAccessToken")]

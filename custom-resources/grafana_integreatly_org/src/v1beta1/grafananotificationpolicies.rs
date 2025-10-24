@@ -72,6 +72,8 @@ pub struct GrafanaNotificationPolicyInstanceSelectorMatchExpressions {
 /// Routes for alerts to match against
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GrafanaNotificationPolicyRoute {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub active_time_intervals: Option<Vec<String>>,
     /// continue
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "continue")]
     pub r#continue: Option<bool>,

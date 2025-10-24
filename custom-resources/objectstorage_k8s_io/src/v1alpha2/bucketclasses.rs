@@ -6,37 +6,36 @@
 mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
+    pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
-/// spec defines the desired state of BucketClass
-#[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+/// spec defines the BucketClass. spec is entirely immutable.
+#[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[kube(group = "objectstorage.k8s.io", version = "v1alpha2", kind = "BucketClass", plural = "bucketclasses")]
-#[kube(namespaced)]
-#[kube(status = "BucketClassStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct BucketClassSpec {
-    /// foo is an example field of BucketClass. Edit bucketclass_types.go to remove/update
+    /// deletionPolicy determines whether a Bucket created through the BucketClass should be deleted
+    /// when its bound BucketClaim is deleted.
+    /// Possible values:
+    ///  - Retain: keep both the Bucket object and the backend bucket
+    ///  - Delete: delete both the Bucket object and the backend bucket
+    #[serde(rename = "deletionPolicy")]
+    pub deletion_policy: BucketClassDeletionPolicy,
+    /// driverName is the name of the driver that fulfills requests for this BucketClass.
+    #[serde(rename = "driverName")]
+    pub driver_name: String,
+    /// parameters is an opaque map of driver-specific configuration items passed to the driver that
+    /// fulfills requests for this BucketClass.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub foo: Option<String>,
+    pub parameters: Option<BTreeMap<String, String>>,
 }
 
-/// status defines the observed state of BucketClass
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct BucketClassStatus {
-    /// conditions represent the current state of the BucketClass resource.
-    /// Each condition has a unique type and reflects the status of a specific aspect of the resource.
-    /// 
-    /// Standard condition types include:
-    /// - "Available": the resource is fully functional
-    /// - "Progressing": the resource is being created or updated
-    /// - "Degraded": the resource failed to reach or maintain its desired state
-    /// 
-    /// The status of each condition is one of True, False, or Unknown.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub conditions: Option<Vec<Condition>>,
+/// spec defines the BucketClass. spec is entirely immutable.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum BucketClassDeletionPolicy {
+    Retain,
+    Delete,
 }
 

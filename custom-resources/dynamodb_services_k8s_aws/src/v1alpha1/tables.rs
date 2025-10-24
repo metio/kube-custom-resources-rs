@@ -140,6 +140,20 @@ pub struct TableSpec {
     /// in the Amazon DynamoDB Developer Guide.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "provisionedThroughput")]
     pub provisioned_throughput: Option<TableProvisionedThroughput>,
+    /// An Amazon Web Services resource-based policy document in JSON format.
+    /// 
+    ///    * The maximum size supported for a resource-based policy document is 20
+    ///    KB. DynamoDB counts whitespaces when calculating the size of a policy
+    ///    against this limit.
+    /// 
+    ///    * Within a resource-based policy, if the action for a DynamoDB service-linked
+    ///    role (SLR) to replicate data for a global table is denied, adding or deleting
+    ///    a replica will fail with an error.
+    /// 
+    /// For a full list of all considerations that apply while attaching a resource-based
+    /// policy, see Resource-based policy considerations (<https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/rbac-considerations.html).>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourcePolicy")]
+    pub resource_policy: Option<String>,
     /// Represents the settings used to enable server-side encryption.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sseSpecification")]
     pub sse_specification: Option<TableSseSpecification>,

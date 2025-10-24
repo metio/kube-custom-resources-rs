@@ -9,6 +9,7 @@ mod prelude {
 }
 use self::prelude::*;
 
+/// QuayAccessTokenSpec defines the desired state to generate a Quay access token.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "generators.external-secrets.io", version = "v1alpha1", kind = "QuayAccessToken", plural = "quayaccesstokens")]
 #[kube(namespaced)]

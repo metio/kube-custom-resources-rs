@@ -255,13 +255,27 @@ pub struct NutanixMachineConfigStatus {
 }
 
 /// MachineAddress contains information for the node's address.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct NutanixMachineConfigStatusAddresses {
-    /// The machine address.
+    /// address is the machine address.
     pub address: String,
-    /// Machine address type, one of Hostname, ExternalIP, InternalIP, ExternalDNS or InternalDNS.
+    /// type is the machine address type, one of Hostname, ExternalIP, InternalIP, ExternalDNS or InternalDNS.
     #[serde(rename = "type")]
-    pub r#type: String,
+    pub r#type: NutanixMachineConfigStatusAddressesType,
+}
+
+/// MachineAddress contains information for the node's address.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum NutanixMachineConfigStatusAddressesType {
+    Hostname,
+    #[serde(rename = "ExternalIP")]
+    ExternalIp,
+    #[serde(rename = "InternalIP")]
+    InternalIp,
+    #[serde(rename = "ExternalDNS")]
+    ExternalDns,
+    #[serde(rename = "InternalDNS")]
+    InternalDns,
 }
 
 /// NodeRef is a reference to the corresponding workload cluster Node if it exists.

@@ -615,6 +615,8 @@ spec:
                       additionalProperties:
                         type: "string"
                       type: "object"
+                    initContainers:
+                      x-kubernetes-preserve-unknown-fields: true
                     jvm:
                       type: "string"
                     keystore:
@@ -3457,6 +3459,8 @@ spec:
                             - "name"
                           type: "object"
                         type: "array"
+                      initContainers:
+                        x-kubernetes-preserve-unknown-fields: true
                       jvm:
                         type: "string"
                       labels:
@@ -3635,6 +3639,8 @@ spec:
                         items:
                           type: "string"
                         type: "array"
+                      sidecarContainers:
+                        x-kubernetes-preserve-unknown-fields: true
                       tolerations:
                         items:
                           description: "The pod this Toleration is attached to tolerates any taint that matches\nthe triple <key,value,effect> using the matching operator <operator>."

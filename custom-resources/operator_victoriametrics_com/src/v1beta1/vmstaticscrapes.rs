@@ -26,6 +26,9 @@ pub struct VmStaticScrapeSpec {
     /// SampleLimit defines per-scrape limit on number of scraped samples that will be accepted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sampleLimit")]
     pub sample_limit: Option<i64>,
+    /// ScrapeClass defined scrape class to apply
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeClass")]
+    pub scrape_class: Option<String>,
     /// SeriesLimit defines per-scrape limit on number of unique time series
     /// a single target can expose during all the scrapes on the time window of 24h.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seriesLimit")]

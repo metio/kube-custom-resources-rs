@@ -30,6 +30,19 @@ pub struct ListenerClassSpec {
     /// Ignored unless serviceType is LoadBalancer.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerClass")]
     pub load_balancer_class: Option<String>,
+    /// Whether or not a Pod exposed using a NodePort should be pinned to a specific Kubernetes node.
+    /// 
+    /// By pinning the Pod to a specific (stable) Kubernetes node, stable addresses can be
+    /// provided using NodePorts. The pinning is achieved by listener-operator setting the
+    /// `volume.kubernetes.io/selected-node` annotation on the Listener PVC.
+    /// 
+    /// However, this only works on setups with long-living nodes. If your nodes are rotated on
+    /// a regular basis, the Pods previously running on a removed node will be stuck in Pending
+    /// until you delete the PVC with the pinning.
+    /// 
+    /// Because of this we don't enable pinning by default to support all environments.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pinnedNodePorts")]
+    pub pinned_node_ports: Option<bool>,
     /// Whether addresses should prefer using the IP address (`IP`) or the hostname (`Hostname`).
     /// Can also be set to `HostnameConservative`, which will use `IP` for `NodePort` service types, but `Hostname` for everything else.
     /// 

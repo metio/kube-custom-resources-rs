@@ -1,0 +1,10 @@
+pub mod admissionchecks;
+pub mod clusterqueues;
+pub mod cohorts;
+pub mod localqueues;
+pub mod multikueueclusters;
+pub mod multikueueconfigs;
+pub mod provisioningrequestconfigs;
+pub mod resourceflavors;
+pub mod workloadpriorityclasses;
+pub mod workloads;

@@ -41,6 +41,7 @@ pub struct PushSecretSpec {
     pub update_policy: Option<PushSecretUpdatePolicy>,
 }
 
+/// PushSecretData defines data to be pushed to the provider and associated metadata.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PushSecretData {
     /// Used to define a conversion Strategy for the secret keys
@@ -55,6 +56,7 @@ pub struct PushSecretData {
     pub metadata: Option<serde_json::Value>,
 }
 
+/// PushSecretData defines data to be pushed to the provider and associated metadata.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PushSecretDataConversionStrategy {
     None,
@@ -90,6 +92,7 @@ pub enum PushSecretDeletionPolicy {
     None,
 }
 
+/// PushSecretStoreRef contains a reference on how to sync to a SecretStore.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PushSecretSecretStoreRefs {
     /// Kind of the SecretStore resource (SecretStore or ClusterSecretStore)
@@ -103,6 +106,7 @@ pub struct PushSecretSecretStoreRefs {
     pub name: Option<String>,
 }
 
+/// PushSecretStoreRef contains a reference on how to sync to a SecretStore.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PushSecretSecretStoreRefsKind {
     SecretStore,
@@ -242,6 +246,7 @@ pub struct PushSecretTemplate {
     /// template specified in .data and .templateFrom[].
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "engineVersion")]
     pub engine_version: Option<PushSecretTemplateEngineVersion>,
+    /// TemplateMergePolicy defines how the rendered template should be merged with the existing Secret data.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mergePolicy")]
     pub merge_policy: Option<PushSecretTemplateMergePolicy>,
     /// ExternalSecretTemplateMetadata defines metadata fields for the Secret blueprint.
@@ -278,18 +283,24 @@ pub struct PushSecretTemplateMetadata {
     pub labels: Option<BTreeMap<String, String>>,
 }
 
+/// TemplateFrom specifies a source for templates.
+/// Each item in the list can either reference a ConfigMap or a Secret resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PushSecretTemplateTemplateFrom {
+    /// TemplateRef specifies a reference to either a ConfigMap or a Secret resource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<PushSecretTemplateTemplateFromConfigMap>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub literal: Option<String>,
+    /// TemplateRef specifies a reference to either a ConfigMap or a Secret resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<PushSecretTemplateTemplateFromSecret>,
+    /// TemplateTarget specifies where the rendered templates should be applied.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub target: Option<PushSecretTemplateTemplateFromTarget>,
 }
 
+/// TemplateRef specifies a reference to either a ConfigMap or a Secret resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PushSecretTemplateTemplateFromConfigMap {
     /// A list of keys in the ConfigMap/Secret to use as templates for Secret data
@@ -298,20 +309,24 @@ pub struct PushSecretTemplateTemplateFromConfigMap {
     pub name: String,
 }
 
+/// TemplateRefItem specifies a key in the ConfigMap/Secret to use as a template for Secret data.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PushSecretTemplateTemplateFromConfigMapItems {
     /// A key in the ConfigMap/Secret
     pub key: String,
+    /// TemplateScope specifies how the template keys should be interpreted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateAs")]
     pub template_as: Option<PushSecretTemplateTemplateFromConfigMapItemsTemplateAs>,
 }
 
+/// TemplateRefItem specifies a key in the ConfigMap/Secret to use as a template for Secret data.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PushSecretTemplateTemplateFromConfigMapItemsTemplateAs {
     Values,
     KeysAndValues,
 }
 
+/// TemplateRef specifies a reference to either a ConfigMap or a Secret resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PushSecretTemplateTemplateFromSecret {
     /// A list of keys in the ConfigMap/Secret to use as templates for Secret data
@@ -320,20 +335,25 @@ pub struct PushSecretTemplateTemplateFromSecret {
     pub name: String,
 }
 
+/// TemplateRefItem specifies a key in the ConfigMap/Secret to use as a template for Secret data.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PushSecretTemplateTemplateFromSecretItems {
     /// A key in the ConfigMap/Secret
     pub key: String,
+    /// TemplateScope specifies how the template keys should be interpreted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateAs")]
     pub template_as: Option<PushSecretTemplateTemplateFromSecretItemsTemplateAs>,
 }
 
+/// TemplateRefItem specifies a key in the ConfigMap/Secret to use as a template for Secret data.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PushSecretTemplateTemplateFromSecretItemsTemplateAs {
     Values,
     KeysAndValues,
 }
 
+/// TemplateFrom specifies a source for templates.
+/// Each item in the list can either reference a ConfigMap or a Secret resource.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PushSecretTemplateTemplateFromTarget {
     Data,

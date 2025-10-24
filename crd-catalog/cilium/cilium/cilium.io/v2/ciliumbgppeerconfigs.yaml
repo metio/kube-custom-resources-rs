@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.17.3"
+    controller-gen.kubebuilder.io/version: "v0.19.0"
   name: "ciliumbgppeerconfigs.cilium.io"
 spec:
   group: "cilium.io"
@@ -53,7 +53,7 @@ spec:
                     description: "CiliumBGPFamilyWithAdverts represents a AFI/SAFI address family pair along with reference to BGP Advertisements."
                     properties:
                       advertisements:
-                        description: "Advertisements selects group of BGP Advertisement(s) to advertise for this family.\n\nIf not specified, no advertisements are sent for this family.\n\nThis field is ignored in CiliumBGPNeighbor which is used in CiliumBGPPeeringPolicy.\nUse CiliumBGPPeeringPolicy advertisement options instead."
+                        description: "Advertisements selects group of BGP Advertisement(s) to advertise for this family.\n\nIf not specified, no advertisements are sent for this family."
                         properties:
                           matchExpressions:
                             description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."

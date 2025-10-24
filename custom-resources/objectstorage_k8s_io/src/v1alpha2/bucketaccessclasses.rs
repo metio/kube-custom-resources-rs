@@ -13,7 +13,6 @@ use self::prelude::*;
 /// spec defines the desired state of BucketAccessClass
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "objectstorage.k8s.io", version = "v1alpha2", kind = "BucketAccessClass", plural = "bucketaccessclasses")]
-#[kube(namespaced)]
 #[kube(status = "BucketAccessClassStatus")]
 #[kube(schema = "disabled")]
 #[kube(derive="Default")]

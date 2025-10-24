@@ -10,6 +10,7 @@ mod prelude {
 }
 use self::prelude::*;
 
+/// VaultDynamicSecretSpec defines the desired spec of VaultDynamicSecret.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "generators.external-secrets.io", version = "v1alpha1", kind = "VaultDynamicSecret", plural = "vaultdynamicsecrets")]
 #[kube(namespaced)]
@@ -35,7 +36,7 @@ pub struct VaultDynamicSecretSpec {
     /// Vault provider common spec
     pub provider: VaultDynamicSecretProvider,
     /// Result type defines which data is returned from the generator.
-    /// By default it is the "data" section of the Vault API response.
+    /// By default, it is the "data" section of the Vault API response.
     /// When using e.g. /auth/token/create the "data" section is empty but
     /// the "auth" section contains the generated token.
     /// Please refer to the vault docs regarding the result data structure.
@@ -298,12 +299,12 @@ pub struct VaultDynamicSecretProviderAuthIam {
 /// Specify a service account with IRSA enabled
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VaultDynamicSecretProviderAuthIamJwt {
-    /// A reference to a ServiceAccount resource.
+    /// ServiceAccountSelector is a reference to a ServiceAccount resource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountRef")]
     pub service_account_ref: Option<VaultDynamicSecretProviderAuthIamJwtServiceAccountRef>,
 }
 
-/// A reference to a ServiceAccount resource.
+/// ServiceAccountSelector is a reference to a ServiceAccount resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VaultDynamicSecretProviderAuthIamJwtServiceAccountRef {
     /// Audience specifies the `aud` claim for the service account token
@@ -708,6 +709,7 @@ pub enum VaultDynamicSecretProviderVersion {
     V2,
 }
 
+/// VaultDynamicSecretSpec defines the desired spec of VaultDynamicSecret.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum VaultDynamicSecretResultType {
     Data,

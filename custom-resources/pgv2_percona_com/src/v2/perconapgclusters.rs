@@ -172,7 +172,8 @@ pub struct PerconaPgClusterBackupsPgbackrest {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "repoHost")]
     pub repo_host: Option<PerconaPgClusterBackupsPgbackrestRepoHost>,
     /// Defines a pgBackRest repository
-    pub repos: Vec<PerconaPgClusterBackupsPgbackrestRepos>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub repos: Option<Vec<PerconaPgClusterBackupsPgbackrestRepos>>,
     /// Defines details for performing an in-place restore using pgBackRest
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub restore: Option<PerconaPgClusterBackupsPgbackrestRestore>,
@@ -17584,6 +17585,9 @@ pub struct PerconaPgClusterStatus {
     pub observed_generation: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub patroni: Option<PerconaPgClusterStatusPatroni>,
+    /// Deprecated: Use Patroni instead. This field will be removed in a future release.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "patroniVersion")]
+    pub patroni_version: Option<String>,
     /// Status information for pgBackRest
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pgbackrest: Option<PerconaPgClusterStatusPgbackrest>,

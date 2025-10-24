@@ -63,17 +63,17 @@ pub struct WebhookAuth {
 /// NTLMProtocol configures the store to use NTLM for auth
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WebhookAuthNtlm {
-    /// A reference to a specific 'key' within a Secret resource.
+    /// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
     /// In some instances, `key` is a required field.
     #[serde(rename = "passwordSecret")]
     pub password_secret: WebhookAuthNtlmPasswordSecret,
-    /// A reference to a specific 'key' within a Secret resource.
+    /// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
     /// In some instances, `key` is a required field.
     #[serde(rename = "usernameSecret")]
     pub username_secret: WebhookAuthNtlmUsernameSecret,
 }
 
-/// A reference to a specific 'key' within a Secret resource.
+/// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
 /// In some instances, `key` is a required field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WebhookAuthNtlmPasswordSecret {
@@ -90,7 +90,7 @@ pub struct WebhookAuthNtlmPasswordSecret {
     pub namespace: Option<String>,
 }
 
-/// A reference to a specific 'key' within a Secret resource.
+/// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
 /// In some instances, `key` is a required field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WebhookAuthNtlmUsernameSecret {
@@ -138,6 +138,7 @@ pub struct WebhookResult {
     pub json_path: Option<String>,
 }
 
+/// WebhookSecret defines a secret reference that will be used in webhook templates.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WebhookSecrets {
     /// Name of this secret in templates

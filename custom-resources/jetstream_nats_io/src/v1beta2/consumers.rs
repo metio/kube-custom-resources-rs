@@ -100,12 +100,21 @@ pub struct ConsumerSpec {
     /// Time format must be RFC3339.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "optStartTime")]
     pub opt_start_time: Option<String>,
+    /// TTL for pinned client when using pinned_client priority policy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pinnedTtl")]
+    pub pinned_ttl: Option<String>,
     /// When true, the managed Consumer will not be deleted when the resource is deleted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preventDelete")]
     pub prevent_delete: Option<bool>,
     /// When true, the managed Consumer will not be updated when the resource is updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preventUpdate")]
     pub prevent_update: Option<bool>,
+    /// List of priority groups for the consumer. For now, only one group is supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityGroups")]
+    pub priority_groups: Option<Vec<String>>,
+    /// Priority policy for consumer (pinned_client, overflow, prioritized, or none).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityPolicy")]
+    pub priority_policy: Option<String>,
     /// Rate at which messages will be delivered to clients, expressed in bit per second.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rateLimitBps")]
     pub rate_limit_bps: Option<i64>,

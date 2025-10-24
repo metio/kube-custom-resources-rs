@@ -6,7 +6,6 @@
 mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
@@ -19,24 +18,53 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct BucketClaimSpec {
-    /// foo is an example field of BucketClaim. Edit bucketclaim_types.go to remove/update
+    /// bucketClassName selects the BucketClass for provisioning the BucketClaim.
+    /// This field is used only for BucketClaim dynamic provisioning.
+    /// If unspecified, existingBucketName must be specified for binding to an existing Bucket.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bucketClassName")]
+    pub bucket_class_name: Option<String>,
+    /// existingBucketName selects the name of an existing Bucket resource that this BucketClaim
+    /// should bind to.
+    /// This field is used only for BucketClaim static provisioning.
+    /// If unspecified, bucketClassName must be specified for dynamically provisioning a new bucket.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "existingBucketName")]
+    pub existing_bucket_name: Option<String>,
+    /// protocols lists object storage protocols that the provisioned Bucket must support.
+    /// If specified, COSI will verify that each item is advertised as supported by the driver.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub foo: Option<String>,
+    pub protocols: Option<Vec<String>>,
 }
 
 /// status defines the observed state of BucketClaim
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketClaimStatus {
-    /// conditions represent the current state of the BucketClaim resource.
-    /// Each condition has a unique type and reflects the status of a specific aspect of the resource.
-    /// 
-    /// Standard condition types include:
-    /// - "Available": the resource is fully functional
-    /// - "Progressing": the resource is being created or updated
-    /// - "Degraded": the resource failed to reach or maintain its desired state
-    /// 
-    /// The status of each condition is one of True, False, or Unknown.
+    /// boundBucketName is the name of the Bucket this BucketClaim is bound to.
+    /// Once set, this is immutable.
+    #[serde(rename = "boundBucketName")]
+    pub bound_bucket_name: String,
+    /// error holds the most recent error message, with a timestamp.
+    /// This is cleared when provisioning is successful.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub conditions: Option<Vec<Condition>>,
+    pub error: Option<BucketClaimStatusError>,
+    /// protocols is the set of protocols the bound Bucket reports to support. BucketAccesses can
+    /// request access to this BucketClaim using any of the protocols reported here.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub protocols: Option<Vec<String>>,
+    /// readyToUse indicates that the bucket is ready for consumption by workloads.
+    #[serde(rename = "readyToUse")]
+    pub ready_to_use: bool,
+}
+
+/// error holds the most recent error message, with a timestamp.
+/// This is cleared when provisioning is successful.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BucketClaimStatusError {
+    /// message is a string detailing the encountered error.
+    /// NOTE: message will be logged, and it should not contain sensitive information.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub message: Option<String>,
+    /// time is the timestamp when the error was encountered.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub time: Option<String>,
 }
 

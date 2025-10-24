@@ -1319,6 +1319,9 @@ pub struct KialiExternalServicesPerses {
     /// The name of the project where the Dashboards are defined.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub project: Option<String>,
+    /// The url format. Use `openshift` when using Perses Dashboards via the Cluster Observability operator in OpenShift. Use `default` for standard Perses upstream. 
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub url_format: Option<KialiExternalServicesPersesUrlFormat>,
 }
 
 /// Settings used to authenticate with the Perses instance.
@@ -1333,9 +1336,12 @@ pub struct KialiExternalServicesPersesAuth {
     /// Password to be used when making requests to Perses, for basic authentication. May refer to a secret.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<String>,
-    /// The type of authentication to use when contacting the server. Use `basic` to connect with username and password credentials. Use `none` to not use any authentication.
+    /// The type of authentication to use when contacting the server. Use `bearer` to send the token to the Perses server. Use `basic` to connect with username and password credentials. Use `none` to not use any authentication.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
+    /// When true and if `auth.type` is `bearer`, Kiali Service Account token will be used for the API calls to Perses (in this case, `auth.token` config is ignored).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub use_kiali_token: Option<bool>,
     /// Username to be used when making requests to Perses with `basic` authentication. May refer to a secret.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
@@ -1370,6 +1376,15 @@ pub struct KialiExternalServicesPersesDashboardsVariables {
     /// The name of a variable that holds the workload name, if used in that dashboard (else it must be omitted).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub workload: Option<String>,
+}
+
+/// Configuration used to access the Perses dashboards.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KialiExternalServicesPersesUrlFormat {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    #[serde(rename = "openshift")]
+    Openshift,
 }
 
 /// The Prometheus configuration defined here refers to the Prometheus instance that is used by Istio to store its telemetry.

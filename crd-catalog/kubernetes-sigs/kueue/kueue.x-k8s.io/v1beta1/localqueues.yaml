@@ -200,8 +200,9 @@ spec:
                     - "name"
                   x-kubernetes-list-type: "map"
                 flavors:
-                  description: "flavors lists all currently available ResourceFlavors in specified ClusterQueue."
+                  description: "flavors lists all currently available ResourceFlavors in specified ClusterQueue.\nDeprecated: Flavors is deprecated and marked for removal in v1beta2."
                   items:
+                    description: "Deprecated: LocalQueueFlavorStatus is deprecated and marked for removal in v1beta2."
                     properties:
                       name:
                         description: "name of the flavor."

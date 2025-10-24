@@ -46,6 +46,9 @@ spec:
                   description: "SampleLimit defines per-scrape limit on number of scraped samples that will be accepted."
                   format: "int64"
                   type: "integer"
+                scrapeClass:
+                  description: "ScrapeClass defined scrape class to apply"
+                  type: "string"
                 seriesLimit:
                   description: "SeriesLimit defines per-scrape limit on number of unique time series\na single target can expose during all the scrapes on the time window of 24h."
                   format: "int64"

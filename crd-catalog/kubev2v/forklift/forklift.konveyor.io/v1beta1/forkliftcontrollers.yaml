@@ -70,12 +70,10 @@ spec:
                   type: "string"
                 controller_block_overhead:
                   description: "Block overhead in bytes (default: 0)"
-                  pattern: "^[0-9]+$"
-                  type: "string"
+                  x-kubernetes-int-or-string: true
                 controller_cleanup_retries:
                   description: "Cleanup retry count (default: 10)"
-                  pattern: "^[1-9][0-9]*$"
-                  type: "string"
+                  x-kubernetes-int-or-string: true
                 controller_container_limits_cpu:
                   description: "Controller CPU limit (default: 500m)"
                   example: "1000m"
@@ -94,28 +92,23 @@ spec:
                   type: "string"
                 controller_dv_status_check_retries:
                   description: "DataVolume status check retries (default: 10)"
-                  pattern: "^[1-9][0-9]*$"
-                  type: "string"
+                  x-kubernetes-int-or-string: true
                 controller_filesystem_overhead:
                   description: "Filesystem overhead percentage (default: 10)"
-                  pattern: "^(0|[1-9][0-9]?|100)$"
-                  type: "string"
+                  x-kubernetes-int-or-string: true
                 controller_image_fqin:
                   description: "Controller pod image"
                   example: "quay.io/kubev2v/forklift-controller:latest"
                   type: "string"
                 controller_log_level:
                   description: "Log verbosity level (default: 3)"
-                  pattern: "^([0-9]|10)$"
-                  type: "string"
+                  x-kubernetes-int-or-string: true
                 controller_max_concurrent_reconciles:
                   description: "Max concurrent reconciles (default: 10)"
-                  pattern: "^[1-9][0-9]*$"
-                  type: "string"
+                  x-kubernetes-int-or-string: true
                 controller_max_vm_inflight:
                   description: "Max concurrent VM migrations (default: 20)"
-                  pattern: "^[1-9][0-9]*$"
-                  type: "string"
+                  x-kubernetes-int-or-string: true
                 controller_ovirt_warm_migration:
                   description: "Enable oVirt warm migration (default: true)"
                   enum:
@@ -124,8 +117,7 @@ spec:
                   type: "string"
                 controller_precopy_interval:
                   description: "Precopy interval in minutes (default: 60)"
-                  pattern: "^[1-9][0-9]*$"
-                  type: "string"
+                  x-kubernetes-int-or-string: true
                 controller_retain_precopy_importer_pods:
                   description: "Retain precopy pods (default: false)"
                   enum:
@@ -134,16 +126,13 @@ spec:
                   type: "string"
                 controller_snapshot_removal_check_retries:
                   description: "Snapshot removal retries (default: 20)"
-                  pattern: "^[1-9][0-9]*$"
-                  type: "string"
+                  x-kubernetes-int-or-string: true
                 controller_snapshot_removal_timeout_minuts:
                   description: "Snapshot removal timeout in minutes (default: 120)"
-                  pattern: "^[1-9][0-9]*$"
-                  type: "string"
+                  x-kubernetes-int-or-string: true
                 controller_snapshot_status_check_rate_seconds:
                   description: "Snapshot status check rate in seconds (default: 10)"
-                  pattern: "^[1-9][0-9]*$"
-                  type: "string"
+                  x-kubernetes-int-or-string: true
                 controller_static_udn_ip_addresses:
                   description: "Enable static udn IP addresses feature (default: false)"
                   enum:
@@ -152,12 +141,10 @@ spec:
                   type: "string"
                 controller_tls_connection_timeout_sec:
                   description: "TLS connection timeout seconds (default: 5)"
-                  pattern: "^[1-9][0-9]*$"
-                  type: "string"
+                  x-kubernetes-int-or-string: true
                 controller_vddk_job_active_deadline_sec:
                   description: "VDDK job timeout in seconds (default: 300)"
-                  pattern: "^[1-9][0-9]*$"
-                  type: "string"
+                  x-kubernetes-int-or-string: true
                 controller_vsphere_incremental_backup:
                   description: "Use vSphere incremental backup (default: true)"
                   enum:
@@ -257,11 +244,19 @@ spec:
                   description: "Inventory memory request (default: 500Mi)"
                   example: "1Gi"
                   type: "string"
+                inventory_route_timeout:
+                  description: "Inventory route timeout (default: 360s)"
+                  example: "600s"
+                  type: "string"
                 k8s_cluster:
                   description: "Whether running on Kubernetes (vs OpenShift) (default: false)"
                   enum:
                     - "true"
                     - "false"
+                  type: "string"
+                metric_interval:
+                  description: "Metrics scrape interval (default: 30s)"
+                  example: "60s"
                   type: "string"
                 must_gather_image_fqin:
                   description: "Must-gather debugging image"
@@ -306,6 +301,14 @@ spec:
                 ova_proxy_fqin:
                   description: "OVA inventory proxy image"
                   example: "quay.io/kubev2v/forklift-ova-proxy:latest"
+                  type: "string"
+                ova_proxy_route_timeout:
+                  description: "OVA Proxy route timeout (default: 360s)"
+                  example: "600s"
+                  type: "string"
+                ovirt_osmap_configmap_name:
+                  description: "ConfigMap name for oVirt OS mappings (default: forklift-ovirt-osmap)"
+                  example: "custom-ovirt-osmap"
                   type: "string"
                 populator_controller_image_fqin:
                   description: "Volume populator controller image"
@@ -359,17 +362,28 @@ spec:
                   description: "Validation memory request (default: 50Mi)"
                   example: "100Mi"
                   type: "string"
+                validation_extra_volume_mountpath:
+                  description: "Mount path for extra validation rules (default: /usr/share/opa/policies/extra)"
+                  example: "/custom/validation/path"
+                  type: "string"
+                validation_extra_volume_name:
+                  description: "Volume name for extra validation rules (default: validation-extra-rules)"
+                  example: "custom-validation-rules"
+                  type: "string"
                 validation_image_fqin:
                   description: "Validation service image"
                   example: "quay.io/kubev2v/forklift-validation:latest"
                   type: "string"
                 validation_policy_agent_search_interval:
                   description: "Policy agent search interval in seconds (default: 120)"
-                  pattern: "^[1-9][0-9]*$"
-                  type: "string"
+                  x-kubernetes-int-or-string: true
                 vddk_image:
                   description: "VDDK image for VMware disk access"
                   example: "quay.io/kubev2v/vddk:7.0.3"
+                  type: "string"
+                virt_customize_configmap_name:
+                  description: "ConfigMap name for virt-customize configuration (default: forklift-virt-customize)"
+                  example: "custom-virt-customize"
                   type: "string"
                 virt_v2v_container_limits_cpu:
                   description: "virt-v2v CPU limit (default: 4000m)"
@@ -403,6 +417,10 @@ spec:
                 virt_v2v_image_fqin:
                   description: "Virt-v2v conversion image used by migration pods"
                   example: "quay.io/kubev2v/forklift-virt-v2v:latest"
+                  type: "string"
+                vsphere_osmap_configmap_name:
+                  description: "ConfigMap name for vSphere OS mappings (default: forklift-vsphere-osmap)"
+                  example: "custom-vsphere-osmap"
                   type: "string"
               type: "object"
             status:

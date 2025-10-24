@@ -1421,6 +1421,9 @@ spec:
                       type: "array"
                       x-kubernetes-list-type: "atomic"
                   type: "object"
+                primaryServer:
+                  description: "PrimaryServer specifies the desired primary server. Setting this field triggers a switchover operation in MaxScale to the desired server.\nThis option is only valid when using monitors that support switchover, currently limited to the MariaDB monitor."
+                  type: "string"
                 priorityClassName:
                   description: "PriorityClassName to be used in the Pod."
                   type: "string"

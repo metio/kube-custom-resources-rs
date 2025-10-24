@@ -10,6 +10,7 @@ mod prelude {
 }
 use self::prelude::*;
 
+/// GithubAccessTokenSpec defines the desired state to generate a GitHub access token.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "generators.external-secrets.io", version = "v1alpha1", kind = "GithubAccessToken", plural = "githubaccesstokens")]
 #[kube(namespaced)]
@@ -30,7 +31,7 @@ pub struct GithubAccessTokenSpec {
     /// is installed to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repositories: Option<Vec<String>>,
-    /// URL configures the Github instance URL. Defaults to <https://github.com/.>
+    /// URL configures the GitHub instance URL. Defaults to <https://github.com/.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
 }
@@ -38,19 +39,21 @@ pub struct GithubAccessTokenSpec {
 /// Auth configures how ESO authenticates with a Github instance.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GithubAccessTokenAuth {
+    /// GithubSecretRef references a secret containing GitHub credentials.
     #[serde(rename = "privateKey")]
     pub private_key: GithubAccessTokenAuthPrivateKey,
 }
 
+/// GithubSecretRef references a secret containing GitHub credentials.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GithubAccessTokenAuthPrivateKey {
-    /// A reference to a specific 'key' within a Secret resource.
+    /// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
     /// In some instances, `key` is a required field.
     #[serde(rename = "secretRef")]
     pub secret_ref: GithubAccessTokenAuthPrivateKeySecretRef,
 }
 
-/// A reference to a specific 'key' within a Secret resource.
+/// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
 /// In some instances, `key` is a required field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GithubAccessTokenAuthPrivateKeySecretRef {

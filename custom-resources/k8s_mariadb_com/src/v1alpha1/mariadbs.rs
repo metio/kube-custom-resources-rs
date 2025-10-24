@@ -1166,7 +1166,7 @@ pub struct MariaDbEnvFromSecretRef {
 /// Replication configures high availability via Galera.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGalera {
-    /// GaleraAgent is a sidecar agent that co-operates with mariadb-operator.
+    /// Agent is a sidecar agent that co-operates with mariadb-operator.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub agent: Option<MariaDbGaleraAgent>,
     /// AvailableWhenDonor indicates whether a donor node should be responding to queries. It defaults to false.
@@ -1209,7 +1209,7 @@ pub struct MariaDbGalera {
     pub sst: Option<MariaDbGaleraSst>,
 }
 
-/// GaleraAgent is a sidecar agent that co-operates with mariadb-operator.
+/// Agent is a sidecar agent that co-operates with mariadb-operator.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraAgent {
     /// Args to be used in the Container.
@@ -1368,7 +1368,7 @@ pub struct MariaDbGaleraAgentEnvFromSecretRef {
     pub name: Option<String>,
 }
 
-/// GaleraAgent is a sidecar agent that co-operates with mariadb-operator.
+/// Agent is a sidecar agent that co-operates with mariadb-operator.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum MariaDbGaleraAgentImagePullPolicy {
     Always,
@@ -2062,9 +2062,9 @@ pub struct MariaDbGaleraInitJobResources {
 /// Primary is the Galera configuration for the primary node.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraPrimary {
-    /// AutomaticFailover indicates whether the operator should automatically update PodIndex to perform an automatic primary failover.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "automaticFailover")]
-    pub automatic_failover: Option<bool>,
+    /// AutoFailover indicates whether the operator should automatically update PodIndex to perform an automatic primary failover.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoFailover")]
+    pub auto_failover: Option<bool>,
     /// PodIndex is the StatefulSet index of the primary node. The user may change this field to perform a manual switchover.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podIndex")]
     pub pod_index: Option<i64>,
@@ -4375,34 +4375,788 @@ pub struct MariaDbReadinessProbeTcpSocket {
 /// Replication configures high availability via replication. This feature is still in alpha, use Galera if you are looking for a more production-ready HA.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplication {
-    /// Enabled is a flag to enable Replication.
+    /// Agent is a sidecar agent that runs in the MariaDB Pod and co-operates with mariadb-operator.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub agent: Option<MariaDbReplicationAgent>,
+    /// Enabled is a flag to enable replication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
+    /// GtidStrictMode determines whether the GTID strict mode is enabled.
+    /// See: <https://mariadb.com/docs/server/ha-and-performance/standard-replication/gtid#gtid_strict_mode.>
+    /// It is enabled by default.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gtidStrictMode")]
+    pub gtid_strict_mode: Option<bool>,
+    /// InitContainer is an init container that runs in the MariaDB Pod and co-operates with mariadb-operator.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainer")]
+    pub init_container: Option<MariaDbReplicationInitContainer>,
     /// Primary is the replication configuration for the primary node.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub primary: Option<MariaDbReplicationPrimary>,
-    /// ProbesEnabled indicates to use replication specific liveness and readiness probes.
-    /// This probes check that the primary can receive queries and that the replica has the replication thread running.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "probesEnabled")]
-    pub probes_enabled: Option<bool>,
     /// ReplicaReplication is the replication configuration for the replica nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replica: Option<MariaDbReplicationReplica>,
+    /// SemiSyncAckTimeout for the replica to acknowledge transactions to the primary.
+    /// It requires semi-synchronous replication to be enabled.
+    /// See: <https://mariadb.com/docs/server/ha-and-performance/standard-replication/semisynchronous-replication#rpl_semi_sync_master_timeout>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "semiSyncAckTimeout")]
+    pub semi_sync_ack_timeout: Option<String>,
+    /// SemiSyncEnabled determines whether semi-synchronous replication is enabled.
+    /// Semi-synchronous replication requires that at least one replica should have sent an ACK to the primary node
+    /// before committing the transaction back to the client.
+    /// See: <https://mariadb.com/docs/server/ha-and-performance/standard-replication/semisynchronous-replication>
+    /// It is enabled by default
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "semiSyncEnabled")]
+    pub semi_sync_enabled: Option<bool>,
+    /// SemiSyncWaitPoint determines whether the transaction should wait for an ACK after having synced the binlog (AfterSync)
+    /// or after having committed to the storage engine (AfterCommit, the default).
+    /// It requires semi-synchronous replication to be enabled.
+    /// See: <https://mariadb.com/kb/en/semisynchronous-replication/#rpl_semi_sync_master_wait_point.>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "semiSyncWaitPoint")]
+    pub semi_sync_wait_point: Option<MariaDbReplicationSemiSyncWaitPoint>,
     /// SyncBinlog indicates after how many events the binary log is synchronized to the disk.
-    /// The default is 1, flushing the binary log to disk after every write, which trades off performance for consistency. See: <https://mariadb.com/docs/server/ha-and-performance/standard-replication/replication-and-binary-log-system-variables#sync_binlog>
+    /// See: <https://mariadb.com/docs/server/ha-and-performance/standard-replication/replication-and-binary-log-system-variables#sync_binlog>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncBinlog")]
     pub sync_binlog: Option<i64>,
+}
+
+/// Agent is a sidecar agent that runs in the MariaDB Pod and co-operates with mariadb-operator.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationAgent {
+    /// Args to be used in the Container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub args: Option<Vec<String>>,
+    /// BasicAuth to be used by the agent container
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
+    pub basic_auth: Option<MariaDbReplicationAgentBasicAuth>,
+    /// Command to be used in the Container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+    /// Env represents the environment variables to be injected in a container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub env: Option<Vec<MariaDbReplicationAgentEnv>>,
+    /// EnvFrom represents the references (via ConfigMap and Secrets) to environment variables to be injected in the container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envFrom")]
+    pub env_from: Option<Vec<MariaDbReplicationAgentEnvFrom>>,
+    /// GracefulShutdownTimeout is the time we give to the agent container in order to gracefully terminate in-flight requests.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracefulShutdownTimeout")]
+    pub graceful_shutdown_timeout: Option<String>,
+    /// Image name to be used by the MariaDB instances. The supported format is `<image>:<tag>`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<String>,
+    /// ImagePullPolicy is the image pull policy. One of `Always`, `Never` or `IfNotPresent`. If not defined, it defaults to `IfNotPresent`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
+    pub image_pull_policy: Option<MariaDbReplicationAgentImagePullPolicy>,
+    /// KubernetesAuth to be used by the agent container
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuth")]
+    pub kubernetes_auth: Option<MariaDbReplicationAgentKubernetesAuth>,
+    /// LivenessProbe to be used in the Container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
+    pub liveness_probe: Option<MariaDbReplicationAgentLivenessProbe>,
+    /// Port where the agent will be listening for API connections.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i32>,
+    /// Port where the agent will be listening for probe connections.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "probePort")]
+    pub probe_port: Option<i32>,
+    /// ReadinessProbe to be used in the Container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
+    pub readiness_probe: Option<MariaDbReplicationAgentReadinessProbe>,
+    /// Resources describes the compute resource requirements.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<MariaDbReplicationAgentResources>,
+    /// SecurityContext holds security configuration that will be applied to a container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
+    pub security_context: Option<MariaDbReplicationAgentSecurityContext>,
+    /// StartupProbe to be used in the Container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
+    pub startup_probe: Option<MariaDbReplicationAgentStartupProbe>,
+    /// VolumeMounts to be used in the Container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<MariaDbReplicationAgentVolumeMounts>>,
+}
+
+/// BasicAuth to be used by the agent container
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationAgentBasicAuth {
+    /// Enabled is a flag to enable BasicAuth
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// PasswordSecretKeyRef to be used for basic authentication
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordSecretKeyRef")]
+    pub password_secret_key_ref: Option<MariaDbReplicationAgentBasicAuthPasswordSecretKeyRef>,
+    /// Username to be used for basic authentication
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub username: Option<String>,
+}
+
+/// PasswordSecretKeyRef to be used for basic authentication
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationAgentBasicAuthPasswordSecretKeyRef {
+    /// Generate indicates whether the Secret should be generated if the Secret referenced is not present.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub generate: Option<bool>,
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#envvarsource-v1-core.>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationAgentEnv {
+    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#envvarsource-v1-core.>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<MariaDbReplicationAgentEnvValueFrom>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#envvarsource-v1-core.>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationAgentEnvValueFrom {
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#configmapkeyselector-v1-core.>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<MariaDbReplicationAgentEnvValueFromConfigMapKeyRef>,
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#objectfieldselector-v1-core.>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
+    pub field_ref: Option<MariaDbReplicationAgentEnvValueFromFieldRef>,
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#secretkeyselector-v1-core.>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<MariaDbReplicationAgentEnvValueFromSecretKeyRef>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#configmapkeyselector-v1-core.>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationAgentEnvValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#objectfieldselector-v1-core.>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationAgentEnvValueFromFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#secretkeyselector-v1-core.>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationAgentEnvValueFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#envfromsource-v1-core.>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationAgentEnvFrom {
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#localobjectreference-v1-core.>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
+    pub config_map_ref: Option<MariaDbReplicationAgentEnvFromConfigMapRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub prefix: Option<String>,
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#localobjectreference-v1-core.>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<MariaDbReplicationAgentEnvFromSecretRef>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#localobjectreference-v1-core.>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationAgentEnvFromConfigMapRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#localobjectreference-v1-core.>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationAgentEnvFromSecretRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// Agent is a sidecar agent that runs in the MariaDB Pod and co-operates with mariadb-operator.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum MariaDbReplicationAgentImagePullPolicy {
+    Always,
+    Never,
+    IfNotPresent,
+}
+
+/// KubernetesAuth to be used by the agent container
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationAgentKubernetesAuth {
+    /// AuthDelegatorRoleName is the name of the ClusterRoleBinding that is associated with the "system:auth-delegator" ClusterRole.
+    /// It is necessary for creating TokenReview objects in order for the agent to validate the service account token.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authDelegatorRoleName")]
+    pub auth_delegator_role_name: Option<String>,
+    /// Enabled is a flag to enable KubernetesAuth
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+
+/// LivenessProbe to be used in the Container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationAgentLivenessProbe {
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#execaction-v1-core.>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<MariaDbReplicationAgentLivenessProbeExec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i32>,
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#httpgetaction-v1-core.>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<MariaDbReplicationAgentLivenessProbeHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
+    pub initial_delay_seconds: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
+    pub period_seconds: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
+    pub success_threshold: Option<i32>,
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#tcpsocketaction-v1-core.>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<MariaDbReplicationAgentLivenessProbeTcpSocket>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#execaction-v1-core.>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationAgentLivenessProbeExec {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#httpgetaction-v1-core.>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationAgentLivenessProbeHttpGet {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    pub port: IntOrString,
+    /// URIScheme identifies the scheme used for connection to a host for Get actions
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#tcpsocketaction-v1-core.>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationAgentLivenessProbeTcpSocket {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    pub port: IntOrString,
+}
+
+/// ReadinessProbe to be used in the Container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationAgentReadinessProbe {
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#execaction-v1-core.>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<MariaDbReplicationAgentReadinessProbeExec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i32>,
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#httpgetaction-v1-core.>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<MariaDbReplicationAgentReadinessProbeHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
+    pub initial_delay_seconds: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
+    pub period_seconds: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
+    pub success_threshold: Option<i32>,
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#tcpsocketaction-v1-core.>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<MariaDbReplicationAgentReadinessProbeTcpSocket>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#execaction-v1-core.>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationAgentReadinessProbeExec {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#httpgetaction-v1-core.>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationAgentReadinessProbeHttpGet {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    pub port: IntOrString,
+    /// URIScheme identifies the scheme used for connection to a host for Get actions
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#tcpsocketaction-v1-core.>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationAgentReadinessProbeTcpSocket {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    pub port: IntOrString,
+}
+
+/// Resources describes the compute resource requirements.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationAgentResources {
+    /// ResourceList is a set of (resource name, quantity) pairs.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// ResourceList is a set of (resource name, quantity) pairs.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// SecurityContext holds security configuration that will be applied to a container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationAgentSecurityContext {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
+    pub allow_privilege_escalation: Option<bool>,
+    /// Adds and removes POSIX capabilities from running containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub capabilities: Option<MariaDbReplicationAgentSecurityContextCapabilities>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub privileged: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
+    pub read_only_root_filesystem: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
+    pub run_as_group: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
+    pub run_as_non_root: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
+    pub run_as_user: Option<i64>,
+}
+
+/// Adds and removes POSIX capabilities from running containers.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationAgentSecurityContextCapabilities {
+    /// Added capabilities
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub add: Option<Vec<String>>,
+    /// Removed capabilities
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub drop: Option<Vec<String>>,
+}
+
+/// StartupProbe to be used in the Container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationAgentStartupProbe {
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#execaction-v1-core.>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<MariaDbReplicationAgentStartupProbeExec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i32>,
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#httpgetaction-v1-core.>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<MariaDbReplicationAgentStartupProbeHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
+    pub initial_delay_seconds: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
+    pub period_seconds: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
+    pub success_threshold: Option<i32>,
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#tcpsocketaction-v1-core.>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<MariaDbReplicationAgentStartupProbeTcpSocket>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#execaction-v1-core.>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationAgentStartupProbeExec {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#httpgetaction-v1-core.>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationAgentStartupProbeHttpGet {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    pub port: IntOrString,
+    /// URIScheme identifies the scheme used for connection to a host for Get actions
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#tcpsocketaction-v1-core.>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationAgentStartupProbeTcpSocket {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    pub port: IntOrString,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#volumemount-v1-core.>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationAgentVolumeMounts {
+    #[serde(rename = "mountPath")]
+    pub mount_path: String,
+    /// This must match the Name of a Volume.
+    pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
+    pub sub_path: Option<String>,
+}
+
+/// InitContainer is an init container that runs in the MariaDB Pod and co-operates with mariadb-operator.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationInitContainer {
+    /// Args to be used in the Container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub args: Option<Vec<String>>,
+    /// Command to be used in the Container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+    /// Env represents the environment variables to be injected in a container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub env: Option<Vec<MariaDbReplicationInitContainerEnv>>,
+    /// EnvFrom represents the references (via ConfigMap and Secrets) to environment variables to be injected in the container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envFrom")]
+    pub env_from: Option<Vec<MariaDbReplicationInitContainerEnvFrom>>,
+    /// Image name to be used by the MariaDB instances. The supported format is `<image>:<tag>`.
+    pub image: String,
+    /// ImagePullPolicy is the image pull policy. One of `Always`, `Never` or `IfNotPresent`. If not defined, it defaults to `IfNotPresent`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
+    pub image_pull_policy: Option<MariaDbReplicationInitContainerImagePullPolicy>,
+    /// LivenessProbe to be used in the Container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
+    pub liveness_probe: Option<MariaDbReplicationInitContainerLivenessProbe>,
+    /// ReadinessProbe to be used in the Container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
+    pub readiness_probe: Option<MariaDbReplicationInitContainerReadinessProbe>,
+    /// Resources describes the compute resource requirements.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<MariaDbReplicationInitContainerResources>,
+    /// SecurityContext holds security configuration that will be applied to a container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
+    pub security_context: Option<MariaDbReplicationInitContainerSecurityContext>,
+    /// StartupProbe to be used in the Container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
+    pub startup_probe: Option<MariaDbReplicationInitContainerStartupProbe>,
+    /// VolumeMounts to be used in the Container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<MariaDbReplicationInitContainerVolumeMounts>>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#envvarsource-v1-core.>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationInitContainerEnv {
+    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#envvarsource-v1-core.>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<MariaDbReplicationInitContainerEnvValueFrom>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#envvarsource-v1-core.>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationInitContainerEnvValueFrom {
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#configmapkeyselector-v1-core.>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<MariaDbReplicationInitContainerEnvValueFromConfigMapKeyRef>,
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#objectfieldselector-v1-core.>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
+    pub field_ref: Option<MariaDbReplicationInitContainerEnvValueFromFieldRef>,
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#secretkeyselector-v1-core.>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<MariaDbReplicationInitContainerEnvValueFromSecretKeyRef>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#configmapkeyselector-v1-core.>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationInitContainerEnvValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#objectfieldselector-v1-core.>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationInitContainerEnvValueFromFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#secretkeyselector-v1-core.>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationInitContainerEnvValueFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#envfromsource-v1-core.>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationInitContainerEnvFrom {
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#localobjectreference-v1-core.>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
+    pub config_map_ref: Option<MariaDbReplicationInitContainerEnvFromConfigMapRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub prefix: Option<String>,
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#localobjectreference-v1-core.>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<MariaDbReplicationInitContainerEnvFromSecretRef>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#localobjectreference-v1-core.>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationInitContainerEnvFromConfigMapRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#localobjectreference-v1-core.>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationInitContainerEnvFromSecretRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// InitContainer is an init container that runs in the MariaDB Pod and co-operates with mariadb-operator.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum MariaDbReplicationInitContainerImagePullPolicy {
+    Always,
+    Never,
+    IfNotPresent,
+}
+
+/// LivenessProbe to be used in the Container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationInitContainerLivenessProbe {
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#execaction-v1-core.>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<MariaDbReplicationInitContainerLivenessProbeExec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i32>,
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#httpgetaction-v1-core.>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<MariaDbReplicationInitContainerLivenessProbeHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
+    pub initial_delay_seconds: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
+    pub period_seconds: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
+    pub success_threshold: Option<i32>,
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#tcpsocketaction-v1-core.>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<MariaDbReplicationInitContainerLivenessProbeTcpSocket>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#execaction-v1-core.>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationInitContainerLivenessProbeExec {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#httpgetaction-v1-core.>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationInitContainerLivenessProbeHttpGet {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    pub port: IntOrString,
+    /// URIScheme identifies the scheme used for connection to a host for Get actions
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#tcpsocketaction-v1-core.>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationInitContainerLivenessProbeTcpSocket {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    pub port: IntOrString,
+}
+
+/// ReadinessProbe to be used in the Container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationInitContainerReadinessProbe {
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#execaction-v1-core.>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<MariaDbReplicationInitContainerReadinessProbeExec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i32>,
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#httpgetaction-v1-core.>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<MariaDbReplicationInitContainerReadinessProbeHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
+    pub initial_delay_seconds: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
+    pub period_seconds: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
+    pub success_threshold: Option<i32>,
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#tcpsocketaction-v1-core.>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<MariaDbReplicationInitContainerReadinessProbeTcpSocket>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#execaction-v1-core.>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationInitContainerReadinessProbeExec {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#httpgetaction-v1-core.>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationInitContainerReadinessProbeHttpGet {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    pub port: IntOrString,
+    /// URIScheme identifies the scheme used for connection to a host for Get actions
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#tcpsocketaction-v1-core.>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationInitContainerReadinessProbeTcpSocket {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    pub port: IntOrString,
+}
+
+/// Resources describes the compute resource requirements.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationInitContainerResources {
+    /// ResourceList is a set of (resource name, quantity) pairs.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// ResourceList is a set of (resource name, quantity) pairs.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// SecurityContext holds security configuration that will be applied to a container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationInitContainerSecurityContext {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
+    pub allow_privilege_escalation: Option<bool>,
+    /// Adds and removes POSIX capabilities from running containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub capabilities: Option<MariaDbReplicationInitContainerSecurityContextCapabilities>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub privileged: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
+    pub read_only_root_filesystem: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
+    pub run_as_group: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
+    pub run_as_non_root: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
+    pub run_as_user: Option<i64>,
+}
+
+/// Adds and removes POSIX capabilities from running containers.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationInitContainerSecurityContextCapabilities {
+    /// Added capabilities
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub add: Option<Vec<String>>,
+    /// Removed capabilities
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub drop: Option<Vec<String>>,
+}
+
+/// StartupProbe to be used in the Container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationInitContainerStartupProbe {
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#execaction-v1-core.>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<MariaDbReplicationInitContainerStartupProbeExec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i32>,
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#httpgetaction-v1-core.>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<MariaDbReplicationInitContainerStartupProbeHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
+    pub initial_delay_seconds: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
+    pub period_seconds: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
+    pub success_threshold: Option<i32>,
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#tcpsocketaction-v1-core.>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<MariaDbReplicationInitContainerStartupProbeTcpSocket>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#execaction-v1-core.>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationInitContainerStartupProbeExec {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#httpgetaction-v1-core.>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationInitContainerStartupProbeHttpGet {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    pub port: IntOrString,
+    /// URIScheme identifies the scheme used for connection to a host for Get actions
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#tcpsocketaction-v1-core.>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationInitContainerStartupProbeTcpSocket {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    pub port: IntOrString,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#volumemount-v1-core.>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationInitContainerVolumeMounts {
+    #[serde(rename = "mountPath")]
+    pub mount_path: String,
+    /// This must match the Name of a Volume.
+    pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
+    pub sub_path: Option<String>,
 }
 
 /// Primary is the replication configuration for the primary node.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationPrimary {
-    /// AutomaticFailover indicates whether the operator should automatically update PodIndex to perform an automatic primary failover.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "automaticFailover")]
-    pub automatic_failover: Option<bool>,
-    /// AutomaticFailoverDelay indicates the duration before performing an automatic primary failover. By default, no extra delay is added.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "automaticFailoverDelay")]
-    pub automatic_failover_delay: Option<String>,
+    /// AutoFailover indicates whether the operator should automatically update PodIndex to perform an automatic primary failover.
+    /// It is enabled by default.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoFailover")]
+    pub auto_failover: Option<bool>,
+    /// AutoFailoverDelay indicates the duration before performing an automatic primary failover.
+    /// By default, no extra delay is added.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoFailoverDelay")]
+    pub auto_failover_delay: Option<String>,
     /// PodIndex is the StatefulSet index of the primary node. The user may change this field to perform a manual switchover.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podIndex")]
     pub pod_index: Option<i64>,
@@ -4411,27 +5165,321 @@ pub struct MariaDbReplicationPrimary {
 /// ReplicaReplication is the replication configuration for the replica nodes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationReplica {
-    /// ConnectionRetries to be used when the replica connects to the primary.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionRetries")]
-    pub connection_retries: Option<i64>,
-    /// ConnectionTimeout to be used when the replica connects to the primary.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionTimeout")]
-    pub connection_timeout: Option<String>,
-    /// Gtid indicates which Global Transaction ID should be used when connecting a replica to the master.
-    /// See: <https://mariadb.com/kb/en/gtid/#using-current_pos-vs-slave_pos.>
+    /// ReplicaBootstrapFrom defines the data sources used to bootstrap new replicas.
+    /// This will be used as part of the scaling out and recovery operations, when new replicas are created.
+    /// If not provided, scale out and recovery operations will return an error.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootstrapFrom")]
+    pub bootstrap_from: Option<MariaDbReplicationReplicaBootstrapFrom>,
+    /// ConnectionRetrySeconds is the number of seconds that the replica will wait between connection retries.
+    /// See: <https://mariadb.com/docs/server/reference/sql-statements/administrative-sql-statements/replication-statements/change-master-to#master_connect_retry.>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionRetrySeconds")]
+    pub connection_retry_seconds: Option<i64>,
+    /// Gtid indicates which Global Transaction ID (GTID) position mode should be used when connecting a replica to the master.
+    /// By default, CurrentPos is used.
+    /// See: <https://mariadb.com/docs/server/reference/sql-statements/administrative-sql-statements/replication-statements/change-master-to#master_use_gtid.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gtid: Option<MariaDbReplicationReplicaGtid>,
+    /// MaxLagSeconds is the maximum number of seconds that replicas are allowed to lag behind the primary.
+    /// If a replica exceeds this threshold, it is marked as not ready and read queries will no longer be forwarded to it.
+    /// If not provided, it defaults to 0, which means that replicas are not allowed to lag behind the primary (recommended).
+    /// Lagged replicas will not be taken into account as candidates for the new primary during failover,
+    /// and they will block other operations, such as switchover and upgrade.
+    /// This field is not taken into account by MaxScale, you can define the maximum lag as router parameters.
+    /// See: <https://mariadb.com/docs/maxscale/reference/maxscale-routers/maxscale-readwritesplit#max_replication_lag.>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxLagSeconds")]
+    pub max_lag_seconds: Option<i64>,
+    /// ReplicaRecovery defines how the replicas should be recovered after they enter an error state.
+    /// This process deletes data from faulty replicas and recreates them using the source defined in the bootstrapFrom field.
+    /// It is disabled by default, and it requires the bootstrapFrom field to be set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub recovery: Option<MariaDbReplicationReplicaRecovery>,
     /// ReplPasswordSecretKeyRef provides a reference to the Secret to use as password for the replication user.
+    /// By default, a random password will be generated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replPasswordSecretKeyRef")]
     pub repl_password_secret_key_ref: Option<MariaDbReplicationReplicaReplPasswordSecretKeyRef>,
-    /// SyncTimeout defines the timeout for a replica to be synced with the primary when performing a primary switchover.
-    /// If the timeout is reached, the replica GTID will be reset and the switchover will continue.
+    /// SyncTimeout defines the timeout for the synchronization phase during switchover and failover operations.
+    /// During switchover, all replicas must be synced with the current primary before promoting the new primary.
+    /// During failover, the new primary must be synced before being promoted as primary. This implies processing all the events in the relay log.
+    /// When the timeout is reached, the operator restarts the operation from the beginning.
+    /// It defaults to 10s.
+    /// See: <https://mariadb.com/docs/server/reference/sql-functions/secondary-functions/miscellaneous-functions/master_gtid_wait>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncTimeout")]
     pub sync_timeout: Option<String>,
-    /// WaitPoint defines whether the transaction should wait for ACK before committing to the storage engine.
-    /// More info: <https://mariadb.com/kb/en/semisynchronous-replication/#rpl_semi_sync_master_wait_point.>
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "waitPoint")]
-    pub wait_point: Option<MariaDbReplicationReplicaWaitPoint>,
+}
+
+/// ReplicaBootstrapFrom defines the data sources used to bootstrap new replicas.
+/// This will be used as part of the scaling out and recovery operations, when new replicas are created.
+/// If not provided, scale out and recovery operations will return an error.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationReplicaBootstrapFrom {
+    /// PhysicalBackupTemplateRef is a reference to a PhysicalBackup object that will be used as template to create a new PhysicalBackup object
+    /// used synchronize the data from an up to date replica to the new replica to be bootstrapped.
+    #[serde(rename = "physicalBackupTemplateRef")]
+    pub physical_backup_template_ref: MariaDbReplicationReplicaBootstrapFromPhysicalBackupTemplateRef,
+    /// RestoreJob defines additional properties for the Job used to perform the restoration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restoreJob")]
+    pub restore_job: Option<MariaDbReplicationReplicaBootstrapFromRestoreJob>,
+}
+
+/// PhysicalBackupTemplateRef is a reference to a PhysicalBackup object that will be used as template to create a new PhysicalBackup object
+/// used synchronize the data from an up to date replica to the new replica to be bootstrapped.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationReplicaBootstrapFromPhysicalBackupTemplateRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// RestoreJob defines additional properties for the Job used to perform the restoration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationReplicaBootstrapFromRestoreJob {
+    /// Affinity to be used in the Pod.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub affinity: Option<MariaDbReplicationReplicaBootstrapFromRestoreJobAffinity>,
+    /// Args to be used in the Container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub args: Option<Vec<String>>,
+    /// Metadata defines additional metadata for the bootstrap Jobs.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<MariaDbReplicationReplicaBootstrapFromRestoreJobMetadata>,
+    /// NodeSelector to be used in the Pod.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<BTreeMap<String, String>>,
+    /// Resources describes the compute resource requirements.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<MariaDbReplicationReplicaBootstrapFromRestoreJobResources>,
+    /// Tolerations to be used in the Pod.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tolerations: Option<Vec<MariaDbReplicationReplicaBootstrapFromRestoreJobTolerations>>,
+}
+
+/// Affinity to be used in the Pod.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinity {
+    /// AntiAffinityEnabled configures PodAntiAffinity so each Pod is scheduled in a different Node, enabling HA.
+    /// Make sure you have at least as many Nodes available as the replicas to not end up with unscheduled Pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "antiAffinityEnabled")]
+    pub anti_affinity_enabled: Option<bool>,
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#nodeaffinity-v1-core>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
+    pub node_affinity: Option<MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityNodeAffinity>,
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#podantiaffinity-v1-core.>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityPodAntiAffinity>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#nodeaffinity-v1-core>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityNodeAffinity {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#nodeselector-v1-core>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#preferredschedulingterm-v1-core>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#nodeselectorterm-v1-core>
+    pub preference: MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
+    pub weight: i32,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#nodeselectorterm-v1-core>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFields")]
+    pub match_fields: Option<Vec<MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields>>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#nodeselectorrequirement-v1-core>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
+    pub key: String,
+    /// A node selector operator is the set of operators that can be used in
+    /// a node selector requirement.
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#nodeselectorrequirement-v1-core>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
+    pub key: String,
+    /// A node selector operator is the set of operators that can be used in
+    /// a node selector requirement.
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#nodeselector-v1-core>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution {
+    #[serde(rename = "nodeSelectorTerms")]
+    pub node_selector_terms: Vec<MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#nodeselectorterm-v1-core>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFields")]
+    pub match_fields: Option<Vec<MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields>>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#nodeselectorrequirement-v1-core>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
+    pub key: String,
+    /// A node selector operator is the set of operators that can be used in
+    /// a node selector requirement.
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#nodeselectorrequirement-v1-core>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
+    pub key: String,
+    /// A node selector operator is the set of operators that can be used in
+    /// a node selector requirement.
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#podantiaffinity-v1-core.>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityPodAntiAffinity {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#weightedpodaffinityterm-v1-core.>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution {
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#podaffinityterm-v1-core.>
+    #[serde(rename = "podAffinityTerm")]
+    pub pod_affinity_term: MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
+    pub weight: i32,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#podaffinityterm-v1-core.>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#labelselector-v1-meta>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    #[serde(rename = "topologyKey")]
+    pub topology_key: String,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#labelselector-v1-meta>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#labelselectorrequirement-v1-meta>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
+    pub key: String,
+    /// A label selector operator is the set of operators that can be used in a selector requirement.
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#podaffinityterm-v1-core.>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#labelselector-v1-meta>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    #[serde(rename = "topologyKey")]
+    pub topology_key: String,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#labelselector-v1-meta>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#labelselectorrequirement-v1-meta>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+    pub key: String,
+    /// A label selector operator is the set of operators that can be used in a selector requirement.
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Metadata defines additional metadata for the bootstrap Jobs.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobMetadata {
+    /// Annotations to be added to children resources.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Labels to be added to children resources.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+}
+
+/// Resources describes the compute resource requirements.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobResources {
+    /// ResourceList is a set of (resource name, quantity) pairs.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// ResourceList is a set of (resource name, quantity) pairs.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// The pod this Toleration is attached to tolerates any taint that matches
+/// the triple <key,value,effect> using the matching operator <operator>.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobTolerations {
+    /// Effect indicates the taint effect to match. Empty means match all taint effects.
+    /// When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub effect: Option<String>,
+    /// Key is the taint key that the toleration applies to. Empty means match all taint keys.
+    /// If the key is empty, operator must be Exists; this combination means to match all values and all keys.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// Operator represents a key's relationship to the value.
+    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Exists is equivalent to wildcard for value, so that a pod can
+    /// tolerate all taints of a particular category.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operator: Option<String>,
+    /// TolerationSeconds represents the period of time the toleration (which must be
+    /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
+    /// it is not set, which means tolerate the taint forever (do not evict). Zero and
+    /// negative values will be treated as 0 (evict immediately) by the system.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
+    pub toleration_seconds: Option<i64>,
+    /// Value is the taint value the toleration matches to.
+    /// If the operator is Exists, the value should be empty, otherwise just a regular string.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
 }
 
 /// ReplicaReplication is the replication configuration for the replica nodes.
@@ -4441,7 +5489,24 @@ pub enum MariaDbReplicationReplicaGtid {
     SlavePos,
 }
 
+/// ReplicaRecovery defines how the replicas should be recovered after they enter an error state.
+/// This process deletes data from faulty replicas and recreates them using the source defined in the bootstrapFrom field.
+/// It is disabled by default, and it requires the bootstrapFrom field to be set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbReplicationReplicaRecovery {
+    /// Enabled is a flag to enable replica recovery.
+    pub enabled: bool,
+    /// ErrorDurationThreshold defines the time duration after which, if a replica continues to report errors,
+    /// the operator will initiate the recovery process for that replica.
+    /// This threshold applies only to error codes not identified as recoverable by the operator.
+    /// Errors identified as recoverable will trigger the recovery process immediately.
+    /// It defaults to 5 minutes.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorDurationThreshold")]
+    pub error_duration_threshold: Option<String>,
+}
+
 /// ReplPasswordSecretKeyRef provides a reference to the Secret to use as password for the replication user.
+/// By default, a random password will be generated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationReplicaReplPasswordSecretKeyRef {
     /// Generate indicates whether the Secret should be generated if the Secret referenced is not present.
@@ -4452,9 +5517,9 @@ pub struct MariaDbReplicationReplicaReplPasswordSecretKeyRef {
     pub name: Option<String>,
 }
 
-/// ReplicaReplication is the replication configuration for the replica nodes.
+/// Replication configures high availability via replication. This feature is still in alpha, use Galera if you are looking for a more production-ready HA.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum MariaDbReplicationReplicaWaitPoint {
+pub enum MariaDbReplicationSemiSyncWaitPoint {
     AfterSync,
     AfterCommit,
 }
@@ -5350,9 +6415,12 @@ pub struct MariaDbStatus {
     /// Replicas indicates the number of current instances.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    /// ReplicationStatus is the replication current state for each Pod.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicationStatus")]
-    pub replication_status: Option<BTreeMap<String, String>>,
+    /// Replication is the replication current status per each Pod.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub replication: Option<MariaDbStatusReplication>,
+    /// ScaleOutInitialIndex is the initial index where the scale out operation started.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleOutInitialIndex")]
+    pub scale_out_initial_index: Option<i64>,
     /// TLS aggregates the status of the certificates used by the MariaDB instance.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<MariaDbStatusTls>,
@@ -5404,6 +6472,55 @@ pub struct MariaDbStatusGaleraRecoveryState {
     pub uuid: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
+}
+
+/// Replication is the replication current status per each Pod.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbStatusReplication {
+    /// ReplicaToRecover is the replica that is being recovered by the operator.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaToRecover")]
+    pub replica_to_recover: Option<String>,
+    /// Replicas is the observed replication status for each replica.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub replicas: Option<BTreeMap<String, MariaDbStatusReplicationReplicas>>,
+    /// Roles is the observed replication roles for each Pod.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub roles: Option<BTreeMap<String, String>>,
+}
+
+/// Replicas is the observed replication status for each replica.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbStatusReplicationReplicas {
+    /// GtidCurrentPos is the last GTID position executed by the SQL thread.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gtidCurrentPos")]
+    pub gtid_current_pos: Option<String>,
+    /// GtidIOPos is the last GTID position received by the IO thread and written to the relay log.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gtidIOPos")]
+    pub gtid_io_pos: Option<String>,
+    /// LastErrorTransitionTime is the last time the replica transitioned to an error state.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastErrorTransitionTime")]
+    pub last_error_transition_time: Option<String>,
+    /// LastIOErrno is the error code returned by the IO thread.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastIOErrno")]
+    pub last_io_errno: Option<i64>,
+    /// LastIOErrno is the error message returned by the IO thread.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastIOError")]
+    pub last_io_error: Option<String>,
+    /// LastSQLErrno is the error code returned by the SQL thread.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSQLErrno")]
+    pub last_sql_errno: Option<i64>,
+    /// LastSQLError is the error message returned by the SQL thread.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSQLError")]
+    pub last_sql_error: Option<String>,
+    /// SecondsBehindMaster measures the replication lag with the primary.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secondsBehindMaster")]
+    pub seconds_behind_master: Option<i64>,
+    /// SlaveIORunning indicates whether the slave IO thread is running.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "slaveIORunning")]
+    pub slave_io_running: Option<bool>,
+    /// SlaveSQLRunning indicates whether the slave SQL thread is running.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "slaveSQLRunning")]
+    pub slave_sql_running: Option<bool>,
 }
 
 /// TLS aggregates the status of the certificates used by the MariaDB instance.

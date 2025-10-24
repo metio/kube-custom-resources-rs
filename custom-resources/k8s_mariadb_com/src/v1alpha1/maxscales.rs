@@ -91,6 +91,10 @@ pub struct MaxScaleSpec {
     /// SecurityContext holds pod-level security attributes and common container settings.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurityContext")]
     pub pod_security_context: Option<MaxScalePodSecurityContext>,
+    /// PrimaryServer specifies the desired primary server. Setting this field triggers a switchover operation in MaxScale to the desired server.
+    /// This option is only valid when using monitors that support switchover, currently limited to the MariaDB monitor.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "primaryServer")]
+    pub primary_server: Option<String>,
     /// PriorityClassName to be used in the Pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,

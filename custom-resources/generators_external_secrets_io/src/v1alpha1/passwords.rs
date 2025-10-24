@@ -24,6 +24,15 @@ pub struct PasswordSpec {
     /// password. If omitted it defaults to 25% of the length of the password
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub digits: Option<i64>,
+    /// Encoding specifies the encoding of the generated password.
+    /// Valid values are:
+    /// - "raw" (default): no encoding
+    /// - "base64": standard base64 encoding
+    /// - "base64url": base64url encoding
+    /// - "base32": base32 encoding
+    /// - "hex": hexadecimal encoding
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub encoding: Option<PasswordEncoding>,
     /// Length of the password to be generated.
     /// Defaults to 24
     pub length: i64,
@@ -38,5 +47,20 @@ pub struct PasswordSpec {
     /// password. If omitted it defaults to 25% of the length of the password
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub symbols: Option<i64>,
+}
+
+/// PasswordSpec controls the behavior of the password generator.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PasswordEncoding {
+    #[serde(rename = "base64")]
+    Base64,
+    #[serde(rename = "base64url")]
+    Base64url,
+    #[serde(rename = "base32")]
+    Base32,
+    #[serde(rename = "hex")]
+    Hex,
+    #[serde(rename = "raw")]
+    Raw,
 }
 

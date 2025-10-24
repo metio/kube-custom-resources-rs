@@ -169,9 +169,6 @@ pub struct VolumeGroupSnapshotContentStatus {
     /// by the underlying storage system.
     /// If not specified, it indicates the creation time is unknown.
     /// If not specified, it means the readiness of a group snapshot is unknown.
-    /// The format of this field is a Unix nanoseconds time encoded as an int64.
-    /// On Unix, the command date +%s%N returns the current time in nanoseconds
-    /// since 1970-01-01 00:00:00 UTC.
     /// This field is the source for the CreationTime field in VolumeGroupSnapshotStatus
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "creationTime")]
     pub creation_time: Option<String>,
@@ -224,15 +221,15 @@ pub struct VolumeGroupSnapshotContentStatusVolumeSnapshotInfoList {
     /// ReadyToUse indicates if the snapshot is ready to be used to restore a volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyToUse")]
     pub ready_to_use: Option<bool>,
-    /// RestoreSize represents the complete size of the snapshot in bytes.
+    /// RestoreSize represents the minimum size of volume required to create a volume
+    /// from this snapshot.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restoreSize")]
     pub restore_size: Option<i64>,
-    /// SnapshotHandle is a unique id returned by the CSI driver to identify a volume
-    /// snapshot on the storage system
+    /// SnapshotHandle is the CSI "snapshot_id" of this snapshot on the underlying storage system.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotHandle")]
     pub snapshot_handle: Option<String>,
-    /// VolumeHandle is a unique id returned by the CSI driver to identify a volume
-    /// on the storage system
+    /// VolumeHandle specifies the CSI "volume_id" of the volume from which this snapshot
+    /// was taken from.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeHandle")]
     pub volume_handle: Option<String>,
 }

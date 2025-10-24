@@ -16,5 +16,6 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 - `PolicyException`
 - `ValidatingPolicy`
 ### policies.kyverno.io/v1beta1
+- `ImageValidatingPolicy`
 - `PolicyException`
 - `ValidatingPolicy`

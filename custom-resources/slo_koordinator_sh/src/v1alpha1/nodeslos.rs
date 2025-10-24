@@ -31,6 +31,7 @@ pub struct NodeSloSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceQOSStrategy")]
     pub resource_qos_strategy: Option<NodeSloResourceQosStrategy>,
     /// BE pods will be limited if node resource usage overload
+    /// TODO: ResourceUsedThresholdWithBE need to rename
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceUsedThresholdWithBE")]
     pub resource_used_threshold_with_be: Option<NodeSloResourceUsedThresholdWithBe>,
     /// node global system config
@@ -1270,6 +1271,7 @@ pub struct NodeSloResourceQosStrategySystemClassResctrlQos {
 }
 
 /// BE pods will be limited if node resource usage overload
+/// TODO: ResourceUsedThresholdWithBE need to rename
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeSloResourceUsedThresholdWithBe {
     /// be.satisfactionRate = be.CPURealLimit/be.CPURequest; be.cpuUsage = be.CPUUsed/be.CPURealLimit
@@ -1284,10 +1286,17 @@ pub struct NodeSloResourceUsedThresholdWithBe {
     /// if be.cpuUsage >= CPUEvictBEUsageThresholdPercent/100, then start to calculate the resources need to be released.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuEvictBEUsageThresholdPercent")]
     pub cpu_evict_be_usage_threshold_percent: Option<i64>,
+    /// lower: CPU release util usage under CPUEvictLowerPercent, default = CPUEvictLowerPercent - 2
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuEvictLowerPercent")]
+    pub cpu_evict_lower_percent: Option<i64>,
     /// CPUEvictPolicy defines the policy for the BECPUEvict feature.
     /// Default: `evictByRealLimit`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuEvictPolicy")]
     pub cpu_evict_policy: Option<String>,
+    /// Note: used for feature: CPUEvict
+    /// upper: CPU evict threshold percentage (0,100)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuEvictThresholdPercent")]
+    pub cpu_evict_threshold_percent: Option<i64>,
     /// when avg(cpuusage) > CPUEvictThresholdPercent, will start to evict pod by cpu,
     /// and avg(cpuusage) is calculated based on the most recent CPUEvictTimeWindowSeconds data
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuEvictTimeWindowSeconds")]
@@ -1304,6 +1313,9 @@ pub struct NodeSloResourceUsedThresholdWithBe {
     /// whether the strategy is enabled, default = false
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
+    /// EvictEnabledPriorityThreshold defines the highest priority for the xxxEvict feature.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "evictEnabledPriorityThreshold")]
+    pub evict_enabled_priority_threshold: Option<i32>,
     /// lower: memory release util usage under MemoryEvictLowerPercent, default = MemoryEvictThresholdPercent - 2
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "memoryEvictLowerPercent")]
     pub memory_evict_lower_percent: Option<i64>,

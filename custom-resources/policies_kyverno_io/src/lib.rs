@@ -8,6 +8,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `PolicyException`
 - `ValidatingPolicy`
 ## policies.kyverno.io/v1beta1
+- `ImageValidatingPolicy`
 - `PolicyException`
 - `ValidatingPolicy`
 */

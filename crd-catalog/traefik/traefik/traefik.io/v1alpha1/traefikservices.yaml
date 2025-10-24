@@ -175,11 +175,12 @@ spec:
                                 type: "object"
                             type: "object"
                           strategy:
-                            description: "Strategy defines the load balancing strategy between the servers.\nSupported values are: wrr (Weighed round-robin), p2c (Power of two choices), and hrw (Highest Random Weight).\nRoundRobin value is deprecated and supported for backward compatibility."
+                            description: "Strategy defines the load balancing strategy between the servers.\nSupported values are: wrr (Weighed round-robin), p2c (Power of two choices), hrw (Highest Random Weight), and leasttime (Least-Time).\nRoundRobin value is deprecated and supported for backward compatibility."
                             enum:
                               - "wrr"
                               - "p2c"
                               - "hrw"
+                              - "leasttime"
                               - "RoundRobin"
                             type: "string"
                           weight:
@@ -404,11 +405,12 @@ spec:
                                 type: "object"
                             type: "object"
                           strategy:
-                            description: "Strategy defines the load balancing strategy between the servers.\nSupported values are: wrr (Weighed round-robin), p2c (Power of two choices), and hrw (Highest Random Weight).\nRoundRobin value is deprecated and supported for backward compatibility."
+                            description: "Strategy defines the load balancing strategy between the servers.\nSupported values are: wrr (Weighed round-robin), p2c (Power of two choices), hrw (Highest Random Weight), and leasttime (Least-Time).\nRoundRobin value is deprecated and supported for backward compatibility."
                             enum:
                               - "wrr"
                               - "p2c"
                               - "hrw"
+                              - "leasttime"
                               - "RoundRobin"
                             type: "string"
                           weight:
@@ -500,11 +502,12 @@ spec:
                           type: "object"
                       type: "object"
                     strategy:
-                      description: "Strategy defines the load balancing strategy between the servers.\nSupported values are: wrr (Weighed round-robin), p2c (Power of two choices), and hrw (Highest Random Weight).\nRoundRobin value is deprecated and supported for backward compatibility."
+                      description: "Strategy defines the load balancing strategy between the servers.\nSupported values are: wrr (Weighed round-robin), p2c (Power of two choices), hrw (Highest Random Weight), and leasttime (Least-Time).\nRoundRobin value is deprecated and supported for backward compatibility."
                       enum:
                         - "wrr"
                         - "p2c"
                         - "hrw"
+                        - "leasttime"
                         - "RoundRobin"
                       type: "string"
                     weight:
@@ -660,11 +663,12 @@ spec:
                                 type: "object"
                             type: "object"
                           strategy:
-                            description: "Strategy defines the load balancing strategy between the servers.\nSupported values are: wrr (Weighed round-robin), p2c (Power of two choices), and hrw (Highest Random Weight).\nRoundRobin value is deprecated and supported for backward compatibility."
+                            description: "Strategy defines the load balancing strategy between the servers.\nSupported values are: wrr (Weighed round-robin), p2c (Power of two choices), hrw (Highest Random Weight), and leasttime (Least-Time).\nRoundRobin value is deprecated and supported for backward compatibility."
                             enum:
                               - "wrr"
                               - "p2c"
                               - "hrw"
+                              - "leasttime"
                               - "RoundRobin"
                             type: "string"
                           weight:

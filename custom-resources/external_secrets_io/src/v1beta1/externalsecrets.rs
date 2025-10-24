@@ -193,6 +193,7 @@ pub enum ExternalSecretDataSourceRefStoreRefKind {
     ClusterSecretStore,
 }
 
+/// ExternalSecretDataFromRemoteRef defines a reference to multiple secrets in the provider to be fetched using options.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ExternalSecretDataFrom {
     /// Used to extract multiple key/value pairs from one secret
@@ -315,6 +316,7 @@ pub struct ExternalSecretDataFromFindName {
     pub regexp: Option<String>,
 }
 
+/// ExternalSecretRewrite defines rules on how to rewrite secret keys.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ExternalSecretDataFromRewrite {
     /// Used to rewrite with regular expressions.
@@ -498,6 +500,7 @@ pub struct ExternalSecretTargetTemplate {
     /// template specified in .data and .templateFrom[].
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "engineVersion")]
     pub engine_version: Option<ExternalSecretTargetTemplateEngineVersion>,
+    /// TemplateMergePolicy defines how template values should be merged when generating a secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mergePolicy")]
     pub merge_policy: Option<ExternalSecretTargetTemplateMergePolicy>,
     /// ExternalSecretTemplateMetadata defines metadata fields for the Secret blueprint.
@@ -532,18 +535,23 @@ pub struct ExternalSecretTargetTemplateMetadata {
     pub labels: Option<BTreeMap<String, String>>,
 }
 
+/// TemplateFrom defines a source for template data.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ExternalSecretTargetTemplateTemplateFrom {
+    /// TemplateRef defines a reference to a template source in a ConfigMap or Secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<ExternalSecretTargetTemplateTemplateFromConfigMap>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub literal: Option<String>,
+    /// TemplateRef defines a reference to a template source in a ConfigMap or Secret.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<ExternalSecretTargetTemplateTemplateFromSecret>,
+    /// TemplateTarget defines the target field where the template result will be stored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub target: Option<ExternalSecretTargetTemplateTemplateFromTarget>,
 }
 
+/// TemplateRef defines a reference to a template source in a ConfigMap or Secret.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ExternalSecretTargetTemplateTemplateFromConfigMap {
     /// A list of keys in the ConfigMap/Secret to use as templates for Secret data
@@ -552,20 +560,24 @@ pub struct ExternalSecretTargetTemplateTemplateFromConfigMap {
     pub name: String,
 }
 
+/// TemplateRefItem defines which key in the referenced ConfigMap or Secret to use as a template.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ExternalSecretTargetTemplateTemplateFromConfigMapItems {
     /// A key in the ConfigMap/Secret
     pub key: String,
+    /// TemplateScope defines the scope of the template when processing template data.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateAs")]
     pub template_as: Option<ExternalSecretTargetTemplateTemplateFromConfigMapItemsTemplateAs>,
 }
 
+/// TemplateRefItem defines which key in the referenced ConfigMap or Secret to use as a template.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ExternalSecretTargetTemplateTemplateFromConfigMapItemsTemplateAs {
     Values,
     KeysAndValues,
 }
 
+/// TemplateRef defines a reference to a template source in a ConfigMap or Secret.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ExternalSecretTargetTemplateTemplateFromSecret {
     /// A list of keys in the ConfigMap/Secret to use as templates for Secret data
@@ -574,20 +586,24 @@ pub struct ExternalSecretTargetTemplateTemplateFromSecret {
     pub name: String,
 }
 
+/// TemplateRefItem defines which key in the referenced ConfigMap or Secret to use as a template.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ExternalSecretTargetTemplateTemplateFromSecretItems {
     /// A key in the ConfigMap/Secret
     pub key: String,
+    /// TemplateScope defines the scope of the template when processing template data.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateAs")]
     pub template_as: Option<ExternalSecretTargetTemplateTemplateFromSecretItemsTemplateAs>,
 }
 
+/// TemplateRefItem defines which key in the referenced ConfigMap or Secret to use as a template.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ExternalSecretTargetTemplateTemplateFromSecretItemsTemplateAs {
     Values,
     KeysAndValues,
 }
 
+/// TemplateFrom defines a source for template data.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ExternalSecretTargetTemplateTemplateFromTarget {
     Data,
@@ -595,6 +611,7 @@ pub enum ExternalSecretTargetTemplateTemplateFromTarget {
     Labels,
 }
 
+/// ExternalSecretStatus defines the observed state of ExternalSecret.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ExternalSecretStatus {
     /// Binding represents a servicebinding.io Provisioned Service reference to the secret
