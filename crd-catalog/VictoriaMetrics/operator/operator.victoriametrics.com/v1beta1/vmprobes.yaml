@@ -309,6 +309,9 @@ spec:
                     - "HTTPS"
                     - "HTTP"
                   type: "string"
+                scrapeClass:
+                  description: "ScrapeClass defined scrape class to apply"
+                  type: "string"
                 scrapeTimeout:
                   description: "Timeout after which the scrape is ended"
                   type: "string"

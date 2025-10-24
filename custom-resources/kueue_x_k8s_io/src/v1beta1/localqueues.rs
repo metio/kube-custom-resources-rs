@@ -88,6 +88,7 @@ pub struct LocalQueueStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flavorUsage")]
     pub flavor_usage: Option<Vec<LocalQueueStatusFlavorUsage>>,
     /// flavors lists all currently available ResourceFlavors in specified ClusterQueue.
+    /// Deprecated: Flavors is deprecated and marked for removal in v1beta2.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub flavors: Option<Vec<LocalQueueStatusFlavors>>,
     /// flavorsReservation are the reserved quotas, by flavor currently in use by the
@@ -150,6 +151,7 @@ pub struct LocalQueueStatusFlavorUsageResources {
     pub total: Option<IntOrString>,
 }
 
+/// Deprecated: LocalQueueFlavorStatus is deprecated and marked for removal in v1beta2.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct LocalQueueStatusFlavors {
     /// name of the flavor.

@@ -62,9 +62,6 @@ pub struct CiliumBgpPeerConfigFamilies {
     /// Advertisements selects group of BGP Advertisement(s) to advertise for this family.
     /// 
     /// If not specified, no advertisements are sent for this family.
-    /// 
-    /// This field is ignored in CiliumBGPNeighbor which is used in CiliumBGPPeeringPolicy.
-    /// Use CiliumBGPPeeringPolicy advertisement options instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub advertisements: Option<CiliumBgpPeerConfigFamiliesAdvertisements>,
     /// Afi is the Address Family Identifier (AFI) of the family.
@@ -76,9 +73,6 @@ pub struct CiliumBgpPeerConfigFamilies {
 /// Advertisements selects group of BGP Advertisement(s) to advertise for this family.
 /// 
 /// If not specified, no advertisements are sent for this family.
-/// 
-/// This field is ignored in CiliumBGPNeighbor which is used in CiliumBGPPeeringPolicy.
-/// Use CiliumBGPPeeringPolicy advertisement options instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumBgpPeerConfigFamiliesAdvertisements {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.

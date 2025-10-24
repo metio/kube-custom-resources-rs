@@ -9,6 +9,7 @@ mod prelude {
 }
 use self::prelude::*;
 
+/// STSSessionTokenSpec defines the desired state to generate an AWS STS session token.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "generators.external-secrets.io", version = "v1alpha1", kind = "STSSessionToken", plural = "stssessiontokens")]
 #[kube(namespaced)]
@@ -33,7 +34,7 @@ pub struct StsSessionTokenSpec {
 /// Auth defines how to authenticate with AWS
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct StsSessionTokenAuth {
-    /// Authenticate against AWS using service account tokens.
+    /// AWSJWTAuth provides configuration to authenticate against AWS using service account tokens.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub jwt: Option<StsSessionTokenAuthJwt>,
     /// AWSAuthSecretRef holds secret references for AWS credentials
@@ -42,15 +43,15 @@ pub struct StsSessionTokenAuth {
     pub secret_ref: Option<StsSessionTokenAuthSecretRef>,
 }
 
-/// Authenticate against AWS using service account tokens.
+/// AWSJWTAuth provides configuration to authenticate against AWS using service account tokens.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct StsSessionTokenAuthJwt {
-    /// A reference to a ServiceAccount resource.
+    /// ServiceAccountSelector is a reference to a ServiceAccount resource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountRef")]
     pub service_account_ref: Option<StsSessionTokenAuthJwtServiceAccountRef>,
 }
 
-/// A reference to a ServiceAccount resource.
+/// ServiceAccountSelector is a reference to a ServiceAccount resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct StsSessionTokenAuthJwtServiceAccountRef {
     /// Audience specifies the `aud` claim for the service account token

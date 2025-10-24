@@ -113,9 +113,6 @@ pub struct VolumeGroupSnapshotStatus {
     /// by the underlying storage system.
     /// If not specified, it may indicate that the creation time of the group snapshot
     /// is unknown.
-    /// The format of this field is a Unix nanoseconds time encoded as an int64.
-    /// On Unix, the command date +%s%N returns the current time in nanoseconds
-    /// since 1970-01-01 00:00:00 UTC.
     /// This field is updated based on the CreationTime field in VolumeGroupSnapshotContentStatus
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "creationTime")]
     pub creation_time: Option<String>,

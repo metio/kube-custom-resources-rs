@@ -2896,8 +2896,9 @@ pub struct ClusterExternalClustersPlugin {
     /// Enabled is true if this plugin will be used
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    /// Only one plugin can be declared as WALArchiver.
-    /// Cannot be active if ".spec.backup.barmanObjectStore" configuration is present.
+    /// Marks the plugin as the WAL archiver. At most one plugin can be
+    /// designated as a WAL archiver. This cannot be enabled if the
+    /// `.spec.backup.barmanObjectStore` configuration is present.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isWALArchiver")]
     pub is_wal_archiver: Option<bool>,
     /// Name is the plugin name
@@ -3559,7 +3560,7 @@ pub struct ClusterMonitoringCustomQueriesSecret {
 /// More info: <https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterMonitoringPodMonitorMetricRelabelings {
-    /// Action to perform based on the regex matching.
+    /// action to perform based on the regex matching.
     /// 
     /// `Uppercase` and `Lowercase` actions require Prometheus >= v2.36.0.
     /// `DropEqual` and `KeepEqual` actions require Prometheus >= v2.41.0.
@@ -3567,29 +3568,29 @@ pub struct ClusterMonitoringPodMonitorMetricRelabelings {
     /// Default: "Replace"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<ClusterMonitoringPodMonitorMetricRelabelingsAction>,
-    /// Modulus to take of the hash of the source label values.
+    /// modulus to take of the hash of the source label values.
     /// 
     /// Only applicable when the action is `HashMod`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub modulus: Option<i64>,
-    /// Regular expression against which the extracted value is matched.
+    /// regex defines the regular expression against which the extracted value is matched.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<String>,
-    /// Replacement value against which a Replace action is performed if the
+    /// replacement value against which a Replace action is performed if the
     /// regular expression matches.
     /// 
     /// Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replacement: Option<String>,
-    /// Separator is the string between concatenated SourceLabels.
+    /// separator defines the string between concatenated SourceLabels.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub separator: Option<String>,
-    /// The source labels select values from existing labels. Their content is
+    /// sourceLabels defines the source labels select values from existing labels. Their content is
     /// concatenated using the configured Separator and matched against the
     /// configured regular expression.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceLabels")]
     pub source_labels: Option<Vec<String>>,
-    /// Label to which the resulting string is written in a replacement.
+    /// targetLabel defines the label to which the resulting string is written in a replacement.
     /// 
     /// It is mandatory for `Replace`, `HashMod`, `Lowercase`, `Uppercase`,
     /// `KeepEqual` and `DropEqual` actions.
@@ -3651,7 +3652,7 @@ pub enum ClusterMonitoringPodMonitorMetricRelabelingsAction {
 /// More info: <https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterMonitoringPodMonitorRelabelings {
-    /// Action to perform based on the regex matching.
+    /// action to perform based on the regex matching.
     /// 
     /// `Uppercase` and `Lowercase` actions require Prometheus >= v2.36.0.
     /// `DropEqual` and `KeepEqual` actions require Prometheus >= v2.41.0.
@@ -3659,29 +3660,29 @@ pub struct ClusterMonitoringPodMonitorRelabelings {
     /// Default: "Replace"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<ClusterMonitoringPodMonitorRelabelingsAction>,
-    /// Modulus to take of the hash of the source label values.
+    /// modulus to take of the hash of the source label values.
     /// 
     /// Only applicable when the action is `HashMod`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub modulus: Option<i64>,
-    /// Regular expression against which the extracted value is matched.
+    /// regex defines the regular expression against which the extracted value is matched.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<String>,
-    /// Replacement value against which a Replace action is performed if the
+    /// replacement value against which a Replace action is performed if the
     /// regular expression matches.
     /// 
     /// Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replacement: Option<String>,
-    /// Separator is the string between concatenated SourceLabels.
+    /// separator defines the string between concatenated SourceLabels.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub separator: Option<String>,
-    /// The source labels select values from existing labels. Their content is
+    /// sourceLabels defines the source labels select values from existing labels. Their content is
     /// concatenated using the configured Separator and matched against the
     /// configured regular expression.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceLabels")]
     pub source_labels: Option<Vec<String>>,
-    /// Label to which the resulting string is written in a replacement.
+    /// targetLabel defines the label to which the resulting string is written in a replacement.
     /// 
     /// It is mandatory for `Replace`, `HashMod`, `Lowercase`, `Uppercase`,
     /// `KeepEqual` and `DropEqual` actions.
@@ -3766,8 +3767,9 @@ pub struct ClusterPlugins {
     /// Enabled is true if this plugin will be used
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    /// Only one plugin can be declared as WALArchiver.
-    /// Cannot be active if ".spec.backup.barmanObjectStore" configuration is present.
+    /// Marks the plugin as the WAL archiver. At most one plugin can be
+    /// designated as a WAL archiver. This cannot be enabled if the
+    /// `.spec.backup.barmanObjectStore` configuration is present.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isWALArchiver")]
     pub is_wal_archiver: Option<bool>,
     /// Name is the plugin name

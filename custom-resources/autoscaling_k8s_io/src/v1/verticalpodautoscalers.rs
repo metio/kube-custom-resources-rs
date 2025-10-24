@@ -107,6 +107,12 @@ pub struct VerticalPodAutoscalerResourcePolicyContainerPolicies {
     /// Whether autoscaler is enabled for the container. The default is "Auto".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<VerticalPodAutoscalerResourcePolicyContainerPoliciesMode>,
+    /// oomBumpUpRatio is the ratio to increase memory when OOM is detected.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "oomBumpUpRatio")]
+    pub oom_bump_up_ratio: Option<IntOrString>,
+    /// oomMinBumpUp is the minimum increase in memory when OOM is detected.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "oomMinBumpUp")]
+    pub oom_min_bump_up: Option<IntOrString>,
 }
 
 /// ContainerResourcePolicy controls how autoscaler computes the recommended

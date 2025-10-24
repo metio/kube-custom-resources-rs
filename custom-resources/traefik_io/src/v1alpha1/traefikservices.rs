@@ -93,7 +93,7 @@ pub struct TraefikServiceHighestRandomWeightServices {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sticky: Option<TraefikServiceHighestRandomWeightServicesSticky>,
     /// Strategy defines the load balancing strategy between the servers.
-    /// Supported values are: wrr (Weighed round-robin), p2c (Power of two choices), and hrw (Highest Random Weight).
+    /// Supported values are: wrr (Weighed round-robin), p2c (Power of two choices), hrw (Highest Random Weight), and leasttime (Least-Time).
     /// RoundRobin value is deprecated and supported for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub strategy: Option<TraefikServiceHighestRandomWeightServicesStrategy>,
@@ -242,6 +242,8 @@ pub enum TraefikServiceHighestRandomWeightServicesStrategy {
     P2c,
     #[serde(rename = "hrw")]
     Hrw,
+    #[serde(rename = "leasttime")]
+    Leasttime,
     RoundRobin,
 }
 
@@ -312,7 +314,7 @@ pub struct TraefikServiceMirroring {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sticky: Option<TraefikServiceMirroringSticky>,
     /// Strategy defines the load balancing strategy between the servers.
-    /// Supported values are: wrr (Weighed round-robin), p2c (Power of two choices), and hrw (Highest Random Weight).
+    /// Supported values are: wrr (Weighed round-robin), p2c (Power of two choices), hrw (Highest Random Weight), and leasttime (Least-Time).
     /// RoundRobin value is deprecated and supported for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub strategy: Option<TraefikServiceMirroringStrategy>,
@@ -436,7 +438,7 @@ pub struct TraefikServiceMirroringMirrors {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sticky: Option<TraefikServiceMirroringMirrorsSticky>,
     /// Strategy defines the load balancing strategy between the servers.
-    /// Supported values are: wrr (Weighed round-robin), p2c (Power of two choices), and hrw (Highest Random Weight).
+    /// Supported values are: wrr (Weighed round-robin), p2c (Power of two choices), hrw (Highest Random Weight), and leasttime (Least-Time).
     /// RoundRobin value is deprecated and supported for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub strategy: Option<TraefikServiceMirroringMirrorsStrategy>,
@@ -585,6 +587,8 @@ pub enum TraefikServiceMirroringMirrorsStrategy {
     P2c,
     #[serde(rename = "hrw")]
     Hrw,
+    #[serde(rename = "leasttime")]
+    Leasttime,
     RoundRobin,
 }
 
@@ -672,6 +676,8 @@ pub enum TraefikServiceMirroringStrategy {
     P2c,
     #[serde(rename = "hrw")]
     Hrw,
+    #[serde(rename = "leasttime")]
+    Leasttime,
     RoundRobin,
 }
 
@@ -742,7 +748,7 @@ pub struct TraefikServiceWeightedServices {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sticky: Option<TraefikServiceWeightedServicesSticky>,
     /// Strategy defines the load balancing strategy between the servers.
-    /// Supported values are: wrr (Weighed round-robin), p2c (Power of two choices), and hrw (Highest Random Weight).
+    /// Supported values are: wrr (Weighed round-robin), p2c (Power of two choices), hrw (Highest Random Weight), and leasttime (Least-Time).
     /// RoundRobin value is deprecated and supported for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub strategy: Option<TraefikServiceWeightedServicesStrategy>,
@@ -891,6 +897,8 @@ pub enum TraefikServiceWeightedServicesStrategy {
     P2c,
     #[serde(rename = "hrw")]
     Hrw,
+    #[serde(rename = "leasttime")]
+    Leasttime,
     RoundRobin,
 }
 

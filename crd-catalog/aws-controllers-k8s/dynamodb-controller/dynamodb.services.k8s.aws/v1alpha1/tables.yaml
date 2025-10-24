@@ -167,6 +167,9 @@ spec:
                       format: "int64"
                       type: "integer"
                   type: "object"
+                resourcePolicy:
+                  description: "An Amazon Web Services resource-based policy document in JSON format.\n\n   * The maximum size supported for a resource-based policy document is 20\n   KB. DynamoDB counts whitespaces when calculating the size of a policy\n   against this limit.\n\n   * Within a resource-based policy, if the action for a DynamoDB service-linked\n   role (SLR) to replicate data for a global table is denied, adding or deleting\n   a replica will fail with an error.\n\nFor a full list of all considerations that apply while attaching a resource-based\npolicy, see Resource-based policy considerations (https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/rbac-considerations.html)."
+                  type: "string"
                 sseSpecification:
                   description: "Represents the settings used to enable server-side encryption."
                   properties:

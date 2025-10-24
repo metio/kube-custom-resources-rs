@@ -221,6 +221,12 @@ pub struct ClusterControlPlaneConfiguration {
     /// MachineHealthCheck is a control-plane level override for the timeouts and maxUnhealthy specified in the top-level MHC configuration. If not configured, the defaults in the top-level MHC configuration are used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineHealthCheck")]
     pub machine_health_check: Option<ClusterControlPlaneConfigurationMachineHealthCheck>,
+    /// SkipAdmissionForSystemResources skips admission plugin checks for system-level Kubernetes resources
+    /// When enabled, operations on system resources (such as kube-system ns resources Pods,
+    /// RBAC, API service registrations, flow control, etc. and system user operations) will bypass admission plugins
+    /// will bypass admission plugins to prevent potential deadlocks or failures for cluster operations.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipAdmissionForSystemResources")]
+    pub skip_admission_for_system_resources: Option<bool>,
     /// SkipLoadBalancerDeployment skip deploying control plane load balancer.
     /// Make sure your infrastructure can handle control plane load balancing when you set this field to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipLoadBalancerDeployment")]

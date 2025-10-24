@@ -50,6 +50,8 @@ pub struct OpenSearchClusterBootstrap {
     pub affinity: Option<OpenSearchClusterBootstrapAffinity>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
+    pub init_containers: Option<serde_json::Value>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub jvm: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3855,6 +3857,8 @@ pub struct OpenSearchClusterNodePools {
     pub disk_size: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<OpenSearchClusterNodePoolsEnv>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
+    pub init_containers: Option<serde_json::Value>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub jvm: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3875,6 +3879,8 @@ pub struct OpenSearchClusterNodePools {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<OpenSearchClusterNodePoolsResources>,
     pub roles: Vec<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sidecarContainers")]
+    pub sidecar_containers: Option<serde_json::Value>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<OpenSearchClusterNodePoolsTolerations>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]

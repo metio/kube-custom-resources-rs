@@ -29,6 +29,11 @@ pub struct LokiStackSpec {
     /// Default is managed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "managementState")]
     pub management_state: Option<LokiStackManagementState>,
+    /// NetworkPolicies defines the NetworkPolicies configuration for LokiStack components.
+    /// When enabled, the operator creates NetworkPolicies to control ingress/egress between
+    /// Loki components and related services.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkPolicies")]
+    pub network_policies: Option<LokiStackNetworkPolicies>,
     /// Proxy defines the spec for the object proxy to configure cluster proxy information.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy: Option<LokiStackProxy>,
@@ -505,6 +510,18 @@ pub struct LokiStackLimitsTenantsRetentionStreams {
 pub enum LokiStackManagementState {
     Managed,
     Unmanaged,
+}
+
+/// NetworkPolicies defines the NetworkPolicies configuration for LokiStack components.
+/// When enabled, the operator creates NetworkPolicies to control ingress/egress between
+/// Loki components and related services.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct LokiStackNetworkPolicies {
+    /// Disabled allows explicitly disabling NetworkPolicies.
+    /// When false, NetworkPolicies are enabled.
+    /// When true, NetworkPolicies are disabled.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub disabled: Option<bool>,
 }
 
 /// Proxy defines the spec for the object proxy to configure cluster proxy information.
@@ -3201,6 +3218,9 @@ pub struct LokiStackStatus {
     /// Conditions of the Loki deployment health.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
+    /// NetworkPolicies indicates whether NetworkPolicies are enabled or disabled for this LokiStack.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkPolicies")]
+    pub network_policies: Option<LokiStackStatusNetworkPolicies>,
     /// Storage provides summary of all changes that have occurred
     /// to the storage configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3235,6 +3255,13 @@ pub struct LokiStackStatusComponents {
     /// Ruler is a map to the per pod status of the lokistack ruler statefulset.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ruler: Option<BTreeMap<String, Vec<String>>>,
+}
+
+/// LokiStack CR spec Status.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum LokiStackStatusNetworkPolicies {
+    Enabled,
+    Disabled,
 }
 
 /// Storage provides summary of all changes that have occurred

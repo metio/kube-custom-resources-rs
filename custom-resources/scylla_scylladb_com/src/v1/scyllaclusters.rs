@@ -110,6 +110,8 @@ pub struct ScyllaClusterSpec {
     pub scylla_args: Option<String>,
     /// sysctls holds the sysctl properties to be applied during initialization given as a list of key=value pairs.
     /// Example: fs.aio-max-nr=232323
+    /// Deprecated: `sysctls` is deprecated. Use NodeConfig to configure sysctls instead.
+    /// See NodeConfig resource reference for details.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sysctls: Option<Vec<String>>,
     /// version is a version tag of Scylla to use.

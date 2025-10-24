@@ -29,6 +29,10 @@ pub struct NodeConfigSpec {
     pub local_disk_setup: Option<NodeConfigLocalDiskSetup>,
     /// placement contains scheduling rules for NodeConfig Pods.
     pub placement: NodeConfigPlacement,
+    /// sysctls specifies a list of sysctls to configure on the node.
+    /// Removing parameters from this list does not revert already applied configurations.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sysctls: Option<Vec<NodeConfigSysctls>>,
 }
 
 /// localDiskSetup contains options of automatic local disk setup.
@@ -861,6 +865,15 @@ pub struct NodeConfigPlacementTolerations {
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
+}
+
+/// Sysctl defines a kernel parameter to be set
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NodeConfigSysctls {
+    /// Name of a property to set
+    pub name: String,
+    /// Value of a property to set
+    pub value: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

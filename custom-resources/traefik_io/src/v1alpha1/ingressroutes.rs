@@ -25,12 +25,27 @@ pub struct IngressRouteSpec {
     /// Default: all.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "entryPoints")]
     pub entry_points: Option<Vec<String>>,
+    /// ParentRefs defines references to parent IngressRoute resources for multi-layer routing.
+    /// When set, this IngressRoute's routers will be children of the referenced parent IngressRoute's routers.
+    /// More info: <https://doc.traefik.io/traefik/v3.5/routing/routers/#parentrefs>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parentRefs")]
+    pub parent_refs: Option<Vec<IngressRouteParentRefs>>,
     /// Routes defines the list of routes.
     pub routes: Vec<IngressRouteRoutes>,
     /// TLS defines the TLS configuration.
     /// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/http/routing/router/#tls>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<IngressRouteTls>,
+}
+
+/// IngressRouteRef is a reference to an IngressRoute resource.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IngressRouteParentRefs {
+    /// Name defines the name of the referenced IngressRoute resource.
+    pub name: String,
+    /// Namespace defines the namespace of the referenced IngressRoute resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// Route holds the HTTP route configuration.
@@ -167,7 +182,7 @@ pub struct IngressRouteRoutesServices {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sticky: Option<IngressRouteRoutesServicesSticky>,
     /// Strategy defines the load balancing strategy between the servers.
-    /// Supported values are: wrr (Weighed round-robin), p2c (Power of two choices), and hrw (Highest Random Weight).
+    /// Supported values are: wrr (Weighed round-robin), p2c (Power of two choices), hrw (Highest Random Weight), and leasttime (Least-Time).
     /// RoundRobin value is deprecated and supported for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub strategy: Option<IngressRouteRoutesServicesStrategy>,
@@ -316,6 +331,8 @@ pub enum IngressRouteRoutesServicesStrategy {
     P2c,
     #[serde(rename = "hrw")]
     Hrw,
+    #[serde(rename = "leasttime")]
+    Leasttime,
     RoundRobin,
 }
 

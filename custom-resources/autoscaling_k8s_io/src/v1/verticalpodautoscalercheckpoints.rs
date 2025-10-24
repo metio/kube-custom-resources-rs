@@ -34,7 +34,7 @@ pub struct VerticalPodAutoscalerCheckpointStatus {
     /// Checkpoint of histogram for consumption of CPU.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuHistogram")]
     pub cpu_histogram: Option<VerticalPodAutoscalerCheckpointStatusCpuHistogram>,
-    /// Timestamp of the fist sample from the histograms.
+    /// Timestamp of the first sample from the histograms.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "firstSampleStart")]
     pub first_sample_start: Option<String>,
     /// Timestamp of the last sample from the histograms.

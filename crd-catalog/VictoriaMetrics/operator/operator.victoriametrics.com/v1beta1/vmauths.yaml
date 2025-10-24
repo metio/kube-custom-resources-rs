@@ -79,7 +79,7 @@ spec:
                   description: "ConfigReloaderResources config-reloader container resource request and limits, https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/\nif not defined default resources from operator config will be used"
                   properties:
                     claims:
-                      description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
+                      description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis field depends on the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                       items:
                         description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                         properties:
@@ -203,7 +203,7 @@ spec:
                     description: "EnvVar represents an environment variable present in a Container."
                     properties:
                       name:
-                        description: "Name of the environment variable. Must be a C_IDENTIFIER."
+                        description: "Name of the environment variable.\nMay consist of any printable ASCII characters except '='."
                         type: "string"
                       value:
                         description: "Variable references $(VAR_NAME) are expanded\nusing the previously defined environment variables in the container and\nany service environment variables. If a variable cannot be resolved,\nthe reference in the input string will be unchanged. Double $$ are reduced\nto a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.\n\"$$(VAR_NAME)\" will produce the string literal \"$(VAR_NAME)\".\nEscaped references will never be expanded, regardless of whether the variable\nexists or not.\nDefaults to \"\"."
@@ -216,7 +216,7 @@ spec:
                 extraEnvsFrom:
                   description: "ExtraEnvsFrom defines source of env variables for the application container\ncould either be secret or configmap"
                   items:
-                    description: "EnvFromSource represents the source of a set of ConfigMaps"
+                    description: "EnvFromSource represents the source of a set of ConfigMaps or Secrets"
                     properties:
                       configMapRef:
                         description: "The ConfigMap to select from"
@@ -231,7 +231,7 @@ spec:
                         type: "object"
                         x-kubernetes-map-type: "atomic"
                       prefix:
-                        description: "An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER."
+                        description: "Optional text to prepend to the name of each environment variable.\nMay consist of any printable ASCII characters except '='."
                         type: "string"
                       secretRef:
                         description: "The Secret to select from"
@@ -594,7 +594,7 @@ spec:
                   description: "Resources container resource request and limits, https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/\nif not defined default resources from operator config will be used"
                   properties:
                     claims:
-                      description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
+                      description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis field depends on the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                       items:
                         description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                         properties:

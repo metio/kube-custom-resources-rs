@@ -7,6 +7,7 @@ mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
@@ -50,10 +51,10 @@ pub struct ForkliftControllerSpec {
     pub cli_download_image_fqin: Option<String>,
     /// Block overhead in bytes (default: 0)
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub controller_block_overhead: Option<String>,
+    pub controller_block_overhead: Option<IntOrString>,
     /// Cleanup retry count (default: 10)
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub controller_cleanup_retries: Option<String>,
+    pub controller_cleanup_retries: Option<IntOrString>,
     /// Controller CPU limit (default: 500m)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub controller_container_limits_cpu: Option<String>,
@@ -68,49 +69,49 @@ pub struct ForkliftControllerSpec {
     pub controller_container_requests_memory: Option<String>,
     /// DataVolume status check retries (default: 10)
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub controller_dv_status_check_retries: Option<String>,
+    pub controller_dv_status_check_retries: Option<IntOrString>,
     /// Filesystem overhead percentage (default: 10)
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub controller_filesystem_overhead: Option<String>,
+    pub controller_filesystem_overhead: Option<IntOrString>,
     /// Controller pod image
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub controller_image_fqin: Option<String>,
     /// Log verbosity level (default: 3)
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub controller_log_level: Option<String>,
+    pub controller_log_level: Option<IntOrString>,
     /// Max concurrent reconciles (default: 10)
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub controller_max_concurrent_reconciles: Option<String>,
+    pub controller_max_concurrent_reconciles: Option<IntOrString>,
     /// Max concurrent VM migrations (default: 20)
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub controller_max_vm_inflight: Option<String>,
+    pub controller_max_vm_inflight: Option<IntOrString>,
     /// Enable oVirt warm migration (default: true)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub controller_ovirt_warm_migration: Option<ForkliftControllerControllerOvirtWarmMigration>,
     /// Precopy interval in minutes (default: 60)
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub controller_precopy_interval: Option<String>,
+    pub controller_precopy_interval: Option<IntOrString>,
     /// Retain precopy pods (default: false)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub controller_retain_precopy_importer_pods: Option<ForkliftControllerControllerRetainPrecopyImporterPods>,
     /// Snapshot removal retries (default: 20)
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub controller_snapshot_removal_check_retries: Option<String>,
+    pub controller_snapshot_removal_check_retries: Option<IntOrString>,
     /// Snapshot removal timeout in minutes (default: 120)
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub controller_snapshot_removal_timeout_minuts: Option<String>,
+    pub controller_snapshot_removal_timeout_minuts: Option<IntOrString>,
     /// Snapshot status check rate in seconds (default: 10)
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub controller_snapshot_status_check_rate_seconds: Option<String>,
+    pub controller_snapshot_status_check_rate_seconds: Option<IntOrString>,
     /// Enable static udn IP addresses feature (default: false)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub controller_static_udn_ip_addresses: Option<ForkliftControllerControllerStaticUdnIpAddresses>,
     /// TLS connection timeout seconds (default: 5)
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub controller_tls_connection_timeout_sec: Option<String>,
+    pub controller_tls_connection_timeout_sec: Option<IntOrString>,
     /// VDDK job timeout in seconds (default: 300)
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub controller_vddk_job_active_deadline_sec: Option<String>,
+    pub controller_vddk_job_active_deadline_sec: Option<IntOrString>,
     /// Use vSphere incremental backup (default: true)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub controller_vsphere_incremental_backup: Option<ForkliftControllerControllerVsphereIncrementalBackup>,
@@ -168,9 +169,15 @@ pub struct ForkliftControllerSpec {
     /// Inventory memory request (default: 500Mi)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub inventory_container_requests_memory: Option<String>,
+    /// Inventory route timeout (default: 360s)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub inventory_route_timeout: Option<String>,
     /// Whether running on Kubernetes (vs OpenShift) (default: false)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub k8s_cluster: Option<ForkliftControllerK8sCluster>,
+    /// Metrics scrape interval (default: 30s)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metric_interval: Option<String>,
     /// Must-gather debugging image
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub must_gather_image_fqin: Option<String>,
@@ -204,6 +211,12 @@ pub struct ForkliftControllerSpec {
     /// OVA inventory proxy image
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ova_proxy_fqin: Option<String>,
+    /// OVA Proxy route timeout (default: 360s)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ova_proxy_route_timeout: Option<String>,
+    /// ConfigMap name for oVirt OS mappings (default: forklift-ovirt-osmap)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ovirt_osmap_configmap_name: Option<String>,
     /// Volume populator controller image
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub populator_controller_image_fqin: Option<String>,
@@ -243,15 +256,24 @@ pub struct ForkliftControllerSpec {
     /// Validation memory request (default: 50Mi)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub validation_container_requests_memory: Option<String>,
+    /// Mount path for extra validation rules (default: /usr/share/opa/policies/extra)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub validation_extra_volume_mountpath: Option<String>,
+    /// Volume name for extra validation rules (default: validation-extra-rules)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub validation_extra_volume_name: Option<String>,
     /// Validation service image
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub validation_image_fqin: Option<String>,
     /// Policy agent search interval in seconds (default: 120)
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub validation_policy_agent_search_interval: Option<String>,
+    pub validation_policy_agent_search_interval: Option<IntOrString>,
     /// VDDK image for VMware disk access
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub vddk_image: Option<String>,
+    /// ConfigMap name for virt-customize configuration (default: forklift-virt-customize)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub virt_customize_configmap_name: Option<String>,
     /// virt-v2v CPU limit (default: 4000m)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub virt_v2v_container_limits_cpu: Option<String>,
@@ -276,6 +298,9 @@ pub struct ForkliftControllerSpec {
     /// Virt-v2v conversion image used by migration pods
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub virt_v2v_image_fqin: Option<String>,
+    /// ConfigMap name for vSphere OS mappings (default: forklift-vsphere-osmap)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub vsphere_osmap_configmap_name: Option<String>,
 }
 
 /// Spec defines the desired state of ForkliftController

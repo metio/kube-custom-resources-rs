@@ -92,7 +92,6 @@ spec:
                   description: "Raw json with folder permissions, potentially exported from Grafana"
                   type: "string"
                 resyncPeriod:
-                  default: "10m0s"
                   description: "How often the resource is synced, defaults to 10m0s if not set"
                   pattern: "^([0-9]+(\\.[0-9]+)?(ns|us|µs|ms|s|m|h))+$"
                   type: "string"

@@ -9,6 +9,7 @@ mod prelude {
 }
 use self::prelude::*;
 
+/// GCRAccessTokenSpec defines the desired state to generate a Google Container Registry access token.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "generators.external-secrets.io", version = "v1alpha1", kind = "GCRAccessToken", plural = "gcraccesstokens")]
 #[kube(namespaced)]
@@ -26,8 +27,10 @@ pub struct GcrAccessTokenSpec {
 /// Auth defines the means for authenticating with GCP
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GcrAccessTokenAuth {
+    /// GCPSMAuthSecretRef defines the reference to a secret containing Google Cloud Platform credentials.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<GcrAccessTokenAuthSecretRef>,
+    /// GCPWorkloadIdentity defines the configuration for using GCP Workload Identity authentication.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workloadIdentity")]
     pub workload_identity: Option<GcrAccessTokenAuthWorkloadIdentity>,
     /// GCPWorkloadIdentityFederation holds the configurations required for generating federated access tokens.
@@ -35,6 +38,7 @@ pub struct GcrAccessTokenAuth {
     pub workload_identity_federation: Option<GcrAccessTokenAuthWorkloadIdentityFederation>,
 }
 
+/// GCPSMAuthSecretRef defines the reference to a secret containing Google Cloud Platform credentials.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GcrAccessTokenAuthSecretRef {
     /// The SecretAccessKey is used for authentication
@@ -58,6 +62,7 @@ pub struct GcrAccessTokenAuthSecretRefSecretAccessKeySecretRef {
     pub namespace: Option<String>,
 }
 
+/// GCPWorkloadIdentity defines the configuration for using GCP Workload Identity authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GcrAccessTokenAuthWorkloadIdentity {
     #[serde(rename = "clusterLocation")]
@@ -66,12 +71,12 @@ pub struct GcrAccessTokenAuthWorkloadIdentity {
     pub cluster_name: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterProjectID")]
     pub cluster_project_id: Option<String>,
-    /// A reference to a ServiceAccount resource.
+    /// ServiceAccountSelector is a reference to a ServiceAccount resource.
     #[serde(rename = "serviceAccountRef")]
     pub service_account_ref: GcrAccessTokenAuthWorkloadIdentityServiceAccountRef,
 }
 
-/// A reference to a ServiceAccount resource.
+/// ServiceAccountSelector is a reference to a ServiceAccount resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GcrAccessTokenAuthWorkloadIdentityServiceAccountRef {
     /// Audience specifies the `aud` claim for the service account token

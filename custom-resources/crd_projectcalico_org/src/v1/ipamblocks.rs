@@ -18,6 +18,8 @@ use self::prelude::*;
 pub struct IpamBlockSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "affinityClaimTime")]
+    pub affinity_claim_time: Option<String>,
     pub allocations: Vec<i64>,
     pub attributes: Vec<IpamBlockAttributes>,
     pub cidr: String,

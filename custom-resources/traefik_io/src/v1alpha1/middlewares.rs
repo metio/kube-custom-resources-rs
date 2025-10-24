@@ -383,7 +383,7 @@ pub struct MiddlewareErrorsService {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sticky: Option<MiddlewareErrorsServiceSticky>,
     /// Strategy defines the load balancing strategy between the servers.
-    /// Supported values are: wrr (Weighed round-robin), p2c (Power of two choices), and hrw (Highest Random Weight).
+    /// Supported values are: wrr (Weighed round-robin), p2c (Power of two choices), hrw (Highest Random Weight), and leasttime (Least-Time).
     /// RoundRobin value is deprecated and supported for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub strategy: Option<MiddlewareErrorsServiceStrategy>,
@@ -534,6 +534,8 @@ pub enum MiddlewareErrorsServiceStrategy {
     P2c,
     #[serde(rename = "hrw")]
     Hrw,
+    #[serde(rename = "leasttime")]
+    Leasttime,
     RoundRobin,
 }
 

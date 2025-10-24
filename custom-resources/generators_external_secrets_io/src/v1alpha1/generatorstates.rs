@@ -10,6 +10,7 @@ mod prelude {
 }
 use self::prelude::*;
 
+/// GeneratorStateSpec defines the desired state of a generator state resource.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "generators.external-secrets.io", version = "v1alpha1", kind = "GeneratorState", plural = "generatorstates")]
 #[kube(namespaced)]
@@ -35,6 +36,7 @@ pub struct GeneratorStateSpec {
     pub state: serde_json::Value,
 }
 
+/// GeneratorStateStatus defines the observed state of a generator state resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GeneratorStateStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]

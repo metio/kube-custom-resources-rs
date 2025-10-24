@@ -22,9 +22,18 @@ pub struct StreamSpec {
     /// Name of the account to which the Stream belongs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub account: Option<String>,
+    /// When true, enables atomic batch publishing.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowAtomicPublish")]
+    pub allow_atomic_publish: Option<bool>,
     /// When true, allow higher performance, direct access to get individual messages.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowDirect")]
     pub allow_direct: Option<bool>,
+    /// When true, enables message counters for the stream.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowMsgCounter")]
+    pub allow_msg_counter: Option<bool>,
+    /// When true, enables message scheduling.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowMsgSchedules")]
+    pub allow_msg_schedules: Option<bool>,
     /// When true, allows header initiated per-message TTLs. If disabled, then the `NATS-TTL` header will be ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowMsgTtl")]
     pub allow_msg_ttl: Option<bool>,
@@ -99,6 +108,9 @@ pub struct StreamSpec {
     /// Disables acknowledging messages that are received by the Stream.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noAck")]
     pub no_ack: Option<bool>,
+    /// Configures stream persistence settings (async or default).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistMode")]
+    pub persist_mode: Option<String>,
     /// A stream's placement.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub placement: Option<StreamPlacement>,

@@ -6,20 +6,64 @@
 mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
+    pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// spec defines the desired state of Bucket
-#[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[kube(group = "objectstorage.k8s.io", version = "v1alpha2", kind = "Bucket", plural = "buckets")]
-#[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct BucketSpec {
-    /// foo is an example field of Bucket. Edit bucket_types.go to remove/update
+    /// bucketClaim references the BucketClaim that resulted in the creation of this Bucket.
+    /// For statically-provisioned buckets, set the namespace and name of the BucketClaim that is
+    /// allowed to bind to this Bucket.
+    #[serde(rename = "bucketClaim")]
+    pub bucket_claim: BucketBucketClaim,
+    /// deletionPolicy determines whether a Bucket should be deleted when its bound BucketClaim is
+    /// deleted. This is mutable to allow Admins to change the policy after creation.
+    /// Possible values:
+    ///  - Retain: keep both the Bucket object and the backend bucket
+    ///  - Delete: delete both the Bucket object and the backend bucket
+    #[serde(rename = "deletionPolicy")]
+    pub deletion_policy: BucketDeletionPolicy,
+    /// driverName is the name of the driver that fulfills requests for this Bucket.
+    #[serde(rename = "driverName")]
+    pub driver_name: String,
+    /// parameters is an opaque map of driver-specific configuration items passed to the driver that
+    /// fulfills requests for this Bucket.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub foo: Option<String>,
+    pub parameters: Option<BTreeMap<String, String>>,
+    /// protocols lists object store protocols that the provisioned Bucket must support.
+    /// If specified, COSI will verify that each item is advertised as supported by the driver.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub protocols: Option<Vec<String>>,
+}
+
+/// bucketClaim references the BucketClaim that resulted in the creation of this Bucket.
+/// For statically-provisioned buckets, set the namespace and name of the BucketClaim that is
+/// allowed to bind to this Bucket.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BucketBucketClaim {
+    /// name is the name of the BucketClaim being referenced.
+    pub name: String,
+    /// namespace is the namespace of the BucketClaim being referenced.
+    /// If empty, the Kubernetes 'default' namespace is assumed.
+    /// namespace is immutable except to update '' to 'default'.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+    /// uid is the UID of the BucketClaim being referenced.
+    /// Once set, the UID is immutable.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uid: Option<String>,
+}
+
+/// spec defines the desired state of Bucket
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum BucketDeletionPolicy {
+    Retain,
+    Delete,
 }
 
 /// status defines the observed state of Bucket

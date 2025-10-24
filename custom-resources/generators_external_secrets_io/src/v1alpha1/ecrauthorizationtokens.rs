@@ -9,6 +9,7 @@ mod prelude {
 }
 use self::prelude::*;
 
+/// ECRAuthorizationTokenSpec defines the desired state to generate an AWS ECR authorization token.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "generators.external-secrets.io", version = "v1alpha1", kind = "ECRAuthorizationToken", plural = "ecrauthorizationtokens")]
 #[kube(namespaced)]
@@ -34,7 +35,7 @@ pub struct EcrAuthorizationTokenSpec {
 /// Auth defines how to authenticate with AWS
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EcrAuthorizationTokenAuth {
-    /// Authenticate against AWS using service account tokens.
+    /// AWSJWTAuth provides configuration to authenticate against AWS using service account tokens.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub jwt: Option<EcrAuthorizationTokenAuthJwt>,
     /// AWSAuthSecretRef holds secret references for AWS credentials
@@ -43,15 +44,15 @@ pub struct EcrAuthorizationTokenAuth {
     pub secret_ref: Option<EcrAuthorizationTokenAuthSecretRef>,
 }
 
-/// Authenticate against AWS using service account tokens.
+/// AWSJWTAuth provides configuration to authenticate against AWS using service account tokens.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EcrAuthorizationTokenAuthJwt {
-    /// A reference to a ServiceAccount resource.
+    /// ServiceAccountSelector is a reference to a ServiceAccount resource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountRef")]
     pub service_account_ref: Option<EcrAuthorizationTokenAuthJwtServiceAccountRef>,
 }
 
-/// A reference to a ServiceAccount resource.
+/// ServiceAccountSelector is a reference to a ServiceAccount resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EcrAuthorizationTokenAuthJwtServiceAccountRef {
     /// Audience specifies the `aud` claim for the service account token

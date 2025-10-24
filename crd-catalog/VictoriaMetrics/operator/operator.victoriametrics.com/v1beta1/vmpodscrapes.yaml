@@ -627,6 +627,9 @@ spec:
                   description: "SampleLimit defines per-scrape limit on number of scraped samples that will be accepted."
                   format: "int64"
                   type: "integer"
+                scrapeClass:
+                  description: "ScrapeClass defined scrape class to apply"
+                  type: "string"
                 selector:
                   description: "Selector to select Pod objects."
                   properties:

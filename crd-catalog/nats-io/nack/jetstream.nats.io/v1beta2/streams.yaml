@@ -33,9 +33,21 @@ spec:
                   description: "Name of the account to which the Stream belongs."
                   pattern: "^[^.*>]*$"
                   type: "string"
+                allowAtomicPublish:
+                  default: false
+                  description: "When true, enables atomic batch publishing."
+                  type: "boolean"
                 allowDirect:
                   default: false
                   description: "When true, allow higher performance, direct access to get individual messages."
+                  type: "boolean"
+                allowMsgCounter:
+                  default: false
+                  description: "When true, enables message counters for the stream."
+                  type: "boolean"
+                allowMsgSchedules:
+                  default: false
+                  description: "When true, enables message scheduling."
                   type: "boolean"
                 allowMsgTtl:
                   default: false
@@ -178,6 +190,10 @@ spec:
                   default: false
                   description: "Disables acknowledging messages that are received by the Stream."
                   type: "boolean"
+                persistMode:
+                  default: ""
+                  description: "Configures stream persistence settings (async or default)."
+                  type: "string"
                 placement:
                   description: "A stream's placement."
                   properties:

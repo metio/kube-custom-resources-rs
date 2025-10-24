@@ -3105,11 +3105,17 @@ pub struct InstanaAgentCluster {
 pub struct InstanaAgentK8sSensor {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deployment: Option<InstanaAgentK8sSensorDeployment>,
+    /// ETCD configuration for secure scraping
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub etcd: Option<InstanaAgentK8sSensorEtcd>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<InstanaAgentK8sSensorImage>,
     /// Toggles the PDB for the K8s Sensor
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podDisruptionBudget")]
     pub pod_disruption_budget: Option<InstanaAgentK8sSensorPodDisruptionBudget>,
+    /// REST client configuration
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restClient")]
+    pub rest_client: Option<InstanaAgentK8sSensorRestClient>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3900,6 +3906,34 @@ pub struct InstanaAgentK8sSensorDeploymentPodTolerations {
     pub value: Option<String>,
 }
 
+/// ETCD configuration for secure scraping
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstanaAgentK8sSensorEtcd {
+    /// CA configuration for ETCD
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ca: Option<InstanaAgentK8sSensorEtcdCa>,
+    /// Whether to use insecure connection to ETCD (default: false)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub insecure: Option<bool>,
+    /// Optional ETCD targets for vanilla clusters
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub targets: Option<Vec<String>>,
+}
+
+/// CA configuration for ETCD
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstanaAgentK8sSensorEtcdCa {
+    /// Name of the file containing the CA Certificate (key in the Kubernetes Secret)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub filename: Option<String>,
+    /// Path where the CA should be mounted
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPath")]
+    pub mount_path: Option<String>,
+    /// Kubernetes Secret name containing the CA certificate
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
+    pub secret_name: Option<String>,
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstanaAgentK8sSensorImage {
     /// Digest (a.k.a. Image ID) of the agent container image. If specified, it has priority over `agent.image.tag`,
@@ -3922,6 +3956,31 @@ pub struct InstanaAgentK8sSensorImage {
 pub struct InstanaAgentK8sSensorPodDisruptionBudget {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
+}
+
+/// REST client configuration
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstanaAgentK8sSensorRestClient {
+    /// CA configuration for control plane
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ca: Option<InstanaAgentK8sSensorRestClientCa>,
+    /// List of hosts allowed for REST client connections
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAllowlist")]
+    pub host_allowlist: Option<Vec<String>>,
+}
+
+/// CA configuration for control plane
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstanaAgentK8sSensorRestClientCa {
+    /// Name of the file containing the CA Certificate (key in the Kubernetes Secret)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub filename: Option<String>,
+    /// Path where the CA should be mounted
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPath")]
+    pub mount_path: Option<String>,
+    /// Kubernetes Secret name containing the CA certificate
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
+    pub secret_name: Option<String>,
 }
 
 /// Allows for installment of the Kubernetes Sensor as separate pod. Which allows for better tailored resource settings

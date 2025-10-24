@@ -19,9 +19,10 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct AcrAccessTokenSpec {
+    /// ACRAuth defines the authentication methods for Azure Container Registry.
     pub auth: AcrAccessTokenAuth,
     /// EnvironmentType specifies the Azure cloud environment endpoints to use for
-    /// connecting and authenticating with Azure. By default it points to the public cloud AAD endpoint.
+    /// connecting and authenticating with Azure. By default, it points to the public cloud AAD endpoint.
     /// The following endpoints are available, also see here: <https://github.com/Azure/go-autorest/blob/main/autorest/azure/environments.go#L152>
     /// PublicCloud, USGovernmentCloud, ChinaCloud, GermanCloud
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "environmentType")]
@@ -45,6 +46,7 @@ pub struct AcrAccessTokenSpec {
     pub tenant_id: Option<String>,
 }
 
+/// ACRAuth defines the authentication methods for Azure Container Registry.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AcrAccessTokenAuth {
     /// ManagedIdentity uses Azure Managed Identity to authenticate with Azure.
@@ -69,14 +71,14 @@ pub struct AcrAccessTokenAuthManagedIdentity {
 /// ServicePrincipal uses Azure Service Principal credentials to authenticate with Azure.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AcrAccessTokenAuthServicePrincipal {
-    /// Configuration used to authenticate with Azure using static
-    /// credentials stored in a Kind=Secret.
+    /// AzureACRServicePrincipalAuthSecretRef defines the secret references for Azure Service Principal authentication.
+    /// It uses static credentials stored in a Kind=Secret.
     #[serde(rename = "secretRef")]
     pub secret_ref: AcrAccessTokenAuthServicePrincipalSecretRef,
 }
 
-/// Configuration used to authenticate with Azure using static
-/// credentials stored in a Kind=Secret.
+/// AzureACRServicePrincipalAuthSecretRef defines the secret references for Azure Service Principal authentication.
+/// It uses static credentials stored in a Kind=Secret.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AcrAccessTokenAuthServicePrincipalSecretRef {
     /// The Azure clientId of the service principle used for authentication.

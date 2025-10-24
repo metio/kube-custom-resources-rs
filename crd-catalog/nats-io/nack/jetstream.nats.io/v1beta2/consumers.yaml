@@ -143,6 +143,10 @@ spec:
                 optStartTime:
                   description: "Time format must be RFC3339."
                   type: "string"
+                pinnedTtl:
+                  default: ""
+                  description: "TTL for pinned client when using pinned_client priority policy."
+                  type: "string"
                 preventDelete:
                   default: false
                   description: "When true, the managed Consumer will not be deleted when the resource is deleted."
@@ -151,6 +155,15 @@ spec:
                   default: false
                   description: "When true, the managed Consumer will not be updated when the resource is updated."
                   type: "boolean"
+                priorityGroups:
+                  description: "List of priority groups for the consumer. For now, only one group is supported."
+                  items:
+                    type: "string"
+                  type: "array"
+                priorityPolicy:
+                  default: ""
+                  description: "Priority policy for consumer (pinned_client, overflow, prioritized, or none)."
+                  type: "string"
                 rateLimitBps:
                   description: "Rate at which messages will be delivered to clients, expressed in bit per second."
                   type: "integer"

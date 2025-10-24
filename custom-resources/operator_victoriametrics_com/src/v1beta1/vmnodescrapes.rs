@@ -79,6 +79,9 @@ pub struct VmNodeScrapeSpec {
     /// HTTP scheme to use for scraping.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<VmNodeScrapeScheme>,
+    /// ScrapeClass defined scrape class to apply
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeClass")]
+    pub scrape_class: Option<String>,
     /// Timeout after which the scrape is ended
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeTimeout")]
     pub scrape_timeout: Option<String>,

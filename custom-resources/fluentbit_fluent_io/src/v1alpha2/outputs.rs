@@ -132,6 +132,12 @@ pub struct OutputAzureBlob {
     /// Specify the desired blob type. Must be `appendblob` or `blockblob`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "blobType")]
     pub blob_type: Option<OutputAzureBlobBlobType>,
+    /// Enable buffering into disk before ingesting into Azure Blob.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bufferingEnabled")]
+    pub buffering_enabled: Option<bool>,
+    /// Optional: Enables GZIP compression in the final blockblob file. This option isn't compatible when blob_type = appendblob.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressBlob")]
+    pub compress_blob: Option<OutputAzureBlobCompressBlob>,
     /// Name of the container that will contain the blobs
     #[serde(rename = "containerName")]
     pub container_name: String,
@@ -153,6 +159,12 @@ pub struct OutputAzureBlob {
     /// Enable/Disable TLS Encryption. Azure services require TLS to be enabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<OutputAzureBlobTls>,
+    /// Specifies the size of files to be uploaded in MB. Defaults to 200M.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "uploadFileSize")]
+    pub upload_file_size: Option<String>,
+    /// Optional. Specify a timeout for uploads. Fluent Bit will start ingesting buffer files which have been created more than x minutes ago and haven't reached upload_file_size limit yet. Defaults to 30m.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "uploadTimeout")]
+    pub upload_timeout: Option<String>,
 }
 
 /// AzureBlob defines AzureBlob Output Configuration
@@ -171,6 +183,15 @@ pub enum OutputAzureBlobBlobType {
     Appendblob,
     #[serde(rename = "blockblob")]
     Blockblob,
+}
+
+/// AzureBlob defines AzureBlob Output Configuration
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputAzureBlobCompressBlob {
+    #[serde(rename = "on")]
+    On,
+    #[serde(rename = "off")]
+    Off,
 }
 
 /// AzureBlob defines AzureBlob Output Configuration
@@ -4040,6 +4061,9 @@ pub struct OutputStackdriver {
     /// Identifier for a task within a namespace. Required if Resource is generic_task
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "taskID")]
     pub task_id: Option<String>,
+    /// The key used to select the text payload from the record
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "textPayloadKey")]
+    pub text_payload_key: Option<String>,
     /// Number of dedicated threads for the Stackdriver Output Plugin
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub workers: Option<i32>,
