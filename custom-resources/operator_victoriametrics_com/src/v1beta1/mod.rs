@@ -1,9 +1,16 @@
+pub mod vlogs;
+pub mod vmagents;
 pub mod vmalertmanagerconfigs;
+pub mod vmalertmanagers;
+pub mod vmalerts;
+pub mod vmauths;
+pub mod vmclusters;
 pub mod vmnodescrapes;
 pub mod vmpodscrapes;
 pub mod vmprobes;
 pub mod vmrules;
 pub mod vmscrapeconfigs;
 pub mod vmservicescrapes;
+pub mod vmsingles;
 pub mod vmstaticscrapes;
 pub mod vmusers;
