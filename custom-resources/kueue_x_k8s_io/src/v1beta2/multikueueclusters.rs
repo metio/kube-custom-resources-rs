@@ -47,6 +47,7 @@ pub enum MultiKueueClusterKubeConfigLocationType {
 pub struct MultiKueueClusterStatus {
     /// conditions hold the latest available observations of the MultiKueueCluster
     /// current state.
+    /// conditions are limited to 16 elements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }

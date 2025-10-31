@@ -21,22 +21,22 @@ use self::prelude::*;
 pub struct MiddlewareSpec {
     /// AddPrefix holds the add prefix middleware configuration.
     /// This middleware updates the path of a request before forwarding it.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/middlewares/http/addprefix/>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/middlewares/http/addprefix/>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "addPrefix")]
     pub add_prefix: Option<MiddlewareAddPrefix>,
     /// BasicAuth holds the basic auth middleware configuration.
     /// This middleware restricts access to your services to known users.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/http/middlewares/basicauth/>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/http/middlewares/basicauth/>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<MiddlewareBasicAuth>,
     /// Buffering holds the buffering middleware configuration.
     /// This middleware retries or limits the size of requests that can be forwarded to backends.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/middlewares/http/buffering/#maxrequestbodybytes>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/middlewares/http/buffering/#maxrequestbodybytes>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub buffering: Option<MiddlewareBuffering>,
     /// Chain holds the configuration of the chain middleware.
     /// This middleware enables to define reusable combinations of other pieces of middleware.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/http/middlewares/chain/>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/http/middlewares/chain/>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub chain: Option<MiddlewareChain>,
     /// CircuitBreaker holds the circuit breaker configuration.
@@ -44,7 +44,7 @@ pub struct MiddlewareSpec {
     pub circuit_breaker: Option<MiddlewareCircuitBreaker>,
     /// Compress holds the compress middleware configuration.
     /// This middleware compresses responses before sending them to the client, using gzip, brotli, or zstd compression.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/http/middlewares/compress/>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/http/middlewares/compress/>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub compress: Option<MiddlewareCompress>,
     /// ContentType holds the content-type middleware configuration.
@@ -53,17 +53,17 @@ pub struct MiddlewareSpec {
     pub content_type: Option<MiddlewareContentType>,
     /// DigestAuth holds the digest auth middleware configuration.
     /// This middleware restricts access to your services to known users.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/http/middlewares/digestauth/>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/http/middlewares/digestauth/>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "digestAuth")]
     pub digest_auth: Option<MiddlewareDigestAuth>,
     /// ErrorPage holds the custom error middleware configuration.
     /// This middleware returns a custom page in lieu of the default, according to configured ranges of HTTP Status codes.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/http/middlewares/errorpages/>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/http/middlewares/errorpages/>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub errors: Option<MiddlewareErrors>,
     /// ForwardAuth holds the forward auth middleware configuration.
     /// This middleware delegates the request authentication to a Service.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/http/middlewares/forwardauth/>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/http/middlewares/forwardauth/>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forwardAuth")]
     pub forward_auth: Option<MiddlewareForwardAuth>,
     /// GrpcWeb holds the gRPC web middleware configuration.
@@ -72,17 +72,17 @@ pub struct MiddlewareSpec {
     pub grpc_web: Option<MiddlewareGrpcWeb>,
     /// Headers holds the headers middleware configuration.
     /// This middleware manages the requests and responses headers.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/middlewares/http/headers/#customrequestheaders>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/middlewares/http/headers/#customrequestheaders>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<MiddlewareHeaders>,
     /// InFlightReq holds the in-flight request middleware configuration.
     /// This middleware limits the number of requests being processed and served concurrently.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/middlewares/http/inflightreq/>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/middlewares/http/inflightreq/>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "inFlightReq")]
     pub in_flight_req: Option<MiddlewareInFlightReq>,
     /// IPAllowList holds the IP allowlist middleware configuration.
     /// This middleware limits allowed requests based on the client IP.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/middlewares/http/ipallowlist/>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/middlewares/http/ipallowlist/>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipAllowList")]
     pub ip_allow_list: Option<MiddlewareIpAllowList>,
     /// Deprecated: please use IPAllowList instead.
@@ -90,59 +90,59 @@ pub struct MiddlewareSpec {
     pub ip_white_list: Option<MiddlewareIpWhiteList>,
     /// PassTLSClientCert holds the pass TLS client cert middleware configuration.
     /// This middleware adds the selected data from the passed client TLS certificate to a header.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/middlewares/http/passtlsclientcert/>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/middlewares/http/passtlsclientcert/>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "passTLSClientCert")]
     pub pass_tls_client_cert: Option<MiddlewarePassTlsClientCert>,
     /// Plugin defines the middleware plugin configuration.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/http/middlewares/overview/#community-middlewares>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/http/middlewares/overview/#community-middlewares>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub plugin: Option<BTreeMap<String, serde_json::Value>>,
     /// RateLimit holds the rate limit configuration.
     /// This middleware ensures that services will receive a fair amount of requests, and allows one to define what fair is.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/http/middlewares/ratelimit/>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/http/middlewares/ratelimit/>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rateLimit")]
     pub rate_limit: Option<MiddlewareRateLimit>,
     /// RedirectRegex holds the redirect regex middleware configuration.
     /// This middleware redirects a request using regex matching and replacement.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/middlewares/http/redirectregex/#regex>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/middlewares/http/redirectregex/#regex>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "redirectRegex")]
     pub redirect_regex: Option<MiddlewareRedirectRegex>,
     /// RedirectScheme holds the redirect scheme middleware configuration.
     /// This middleware redirects requests from a scheme/port to another.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/middlewares/http/redirectscheme/>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/middlewares/http/redirectscheme/>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "redirectScheme")]
     pub redirect_scheme: Option<MiddlewareRedirectScheme>,
     /// ReplacePath holds the replace path middleware configuration.
     /// This middleware replaces the path of the request URL and store the original path in an X-Replaced-Path header.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/middlewares/http/replacepath/>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/middlewares/http/replacepath/>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replacePath")]
     pub replace_path: Option<MiddlewareReplacePath>,
     /// ReplacePathRegex holds the replace path regex middleware configuration.
     /// This middleware replaces the path of a URL using regex matching and replacement.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/middlewares/http/replacepathregex/>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/middlewares/http/replacepathregex/>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replacePathRegex")]
     pub replace_path_regex: Option<MiddlewareReplacePathRegex>,
     /// Retry holds the retry middleware configuration.
     /// This middleware reissues requests a given number of times to a backend server if that server does not reply.
     /// As soon as the server answers, the middleware stops retrying, regardless of the response status.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/http/middlewares/retry/>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/http/middlewares/retry/>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retry: Option<MiddlewareRetry>,
     /// StripPrefix holds the strip prefix middleware configuration.
     /// This middleware removes the specified prefixes from the URL path.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/middlewares/http/stripprefix/>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/middlewares/http/stripprefix/>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stripPrefix")]
     pub strip_prefix: Option<MiddlewareStripPrefix>,
     /// StripPrefixRegex holds the strip prefix regex middleware configuration.
     /// This middleware removes the matching prefixes from the URL path.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/middlewares/http/stripprefixregex/>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/middlewares/http/stripprefixregex/>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stripPrefixRegex")]
     pub strip_prefix_regex: Option<MiddlewareStripPrefixRegex>,
 }
 
 /// AddPrefix holds the add prefix middleware configuration.
 /// This middleware updates the path of a request before forwarding it.
-/// More info: <https://doc.traefik.io/traefik/v3.5/middlewares/http/addprefix/>
+/// More info: <https://doc.traefik.io/traefik/v3.6/middlewares/http/addprefix/>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MiddlewareAddPrefix {
     /// Prefix is the string to add before the current path in the requested URL.
@@ -153,11 +153,11 @@ pub struct MiddlewareAddPrefix {
 
 /// BasicAuth holds the basic auth middleware configuration.
 /// This middleware restricts access to your services to known users.
-/// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/http/middlewares/basicauth/>
+/// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/http/middlewares/basicauth/>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MiddlewareBasicAuth {
     /// HeaderField defines a header field to store the authenticated user.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/http/middlewares/basicauth/#headerfield>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/http/middlewares/basicauth/#headerfield>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "headerField")]
     pub header_field: Option<String>,
     /// Realm allows the protected resources on a server to be partitioned into a set of protection spaces, each with its own authentication scheme.
@@ -175,7 +175,7 @@ pub struct MiddlewareBasicAuth {
 
 /// Buffering holds the buffering middleware configuration.
 /// This middleware retries or limits the size of requests that can be forwarded to backends.
-/// More info: <https://doc.traefik.io/traefik/v3.5/middlewares/http/buffering/#maxrequestbodybytes>
+/// More info: <https://doc.traefik.io/traefik/v3.6/middlewares/http/buffering/#maxrequestbodybytes>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MiddlewareBuffering {
     /// MaxRequestBodyBytes defines the maximum allowed body size for the request (in bytes).
@@ -198,14 +198,14 @@ pub struct MiddlewareBuffering {
     pub mem_response_body_bytes: Option<i64>,
     /// RetryExpression defines the retry conditions.
     /// It is a logical combination of functions with operators AND (&&) and OR (||).
-    /// More info: <https://doc.traefik.io/traefik/v3.5/middlewares/http/buffering/#retryexpression>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/middlewares/http/buffering/#retryexpression>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryExpression")]
     pub retry_expression: Option<String>,
 }
 
 /// Chain holds the configuration of the chain middleware.
 /// This middleware enables to define reusable combinations of other pieces of middleware.
-/// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/http/middlewares/chain/>
+/// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/http/middlewares/chain/>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MiddlewareChain {
     /// Middlewares is the list of MiddlewareRef which composes the chain.
@@ -245,7 +245,7 @@ pub struct MiddlewareCircuitBreaker {
 
 /// Compress holds the compress middleware configuration.
 /// This middleware compresses responses before sending them to the client, using gzip, brotli, or zstd compression.
-/// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/http/middlewares/compress/>
+/// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/http/middlewares/compress/>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MiddlewareCompress {
     /// DefaultEncoding specifies the default encoding if the `Accept-Encoding` header is not in the request or contains a wildcard (`*`).
@@ -280,11 +280,11 @@ pub struct MiddlewareContentType {
 
 /// DigestAuth holds the digest auth middleware configuration.
 /// This middleware restricts access to your services to known users.
-/// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/http/middlewares/digestauth/>
+/// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/http/middlewares/digestauth/>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MiddlewareDigestAuth {
     /// HeaderField defines a header field to store the authenticated user.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/http/middlewares/digestauth/#headerfield>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/http/middlewares/digestauth/#headerfield>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "headerField")]
     pub header_field: Option<String>,
     /// Realm allows the protected resources on a server to be partitioned into a set of protection spaces, each with its own authentication scheme.
@@ -301,7 +301,7 @@ pub struct MiddlewareDigestAuth {
 
 /// ErrorPage holds the custom error middleware configuration.
 /// This middleware returns a custom page in lieu of the default, according to configured ranges of HTTP Status codes.
-/// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/http/middlewares/errorpages/>
+/// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/http/middlewares/errorpages/>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MiddlewareErrors {
     /// Query defines the URL for the error page (hosted by service).
@@ -311,7 +311,7 @@ pub struct MiddlewareErrors {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub query: Option<String>,
     /// Service defines the reference to a Kubernetes Service that will serve the error page.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/http/middlewares/errorpages/#service>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/http/middlewares/errorpages/#service>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<MiddlewareErrorsService>,
     /// Status defines which status or range of statuses should result in an error page.
@@ -328,7 +328,7 @@ pub struct MiddlewareErrors {
 }
 
 /// Service defines the reference to a Kubernetes Service that will serve the error page.
-/// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/http/middlewares/errorpages/#service>
+/// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/http/middlewares/errorpages/#service>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MiddlewareErrorsService {
     /// Healthcheck defines health checks for ExternalName services.
@@ -379,7 +379,7 @@ pub struct MiddlewareErrorsService {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serversTransport")]
     pub servers_transport: Option<String>,
     /// Sticky defines the sticky sessions configuration.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/http/load-balancing/service/#sticky-sessions>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/http/load-balancing/service/#sticky-sessions>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sticky: Option<MiddlewareErrorsServiceSticky>,
     /// Strategy defines the load balancing strategy between the servers.
@@ -442,7 +442,7 @@ pub struct MiddlewareErrorsServiceHealthCheck {
 }
 
 /// Service defines the reference to a Kubernetes Service that will serve the error page.
-/// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/http/middlewares/errorpages/#service>
+/// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/http/middlewares/errorpages/#service>
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum MiddlewareErrorsServiceKind {
     Service,
@@ -473,7 +473,7 @@ pub struct MiddlewareErrorsServiceResponseForwarding {
 }
 
 /// Sticky defines the sticky sessions configuration.
-/// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/http/load-balancing/service/#sticky-sessions>
+/// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/http/load-balancing/service/#sticky-sessions>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MiddlewareErrorsServiceSticky {
     /// Cookie defines the sticky cookie configuration.
@@ -525,7 +525,7 @@ pub enum MiddlewareErrorsServiceStickyCookieSameSite {
 }
 
 /// Service defines the reference to a Kubernetes Service that will serve the error page.
-/// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/http/middlewares/errorpages/#service>
+/// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/http/middlewares/errorpages/#service>
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum MiddlewareErrorsServiceStrategy {
     #[serde(rename = "wrr")]
@@ -541,7 +541,7 @@ pub enum MiddlewareErrorsServiceStrategy {
 
 /// ForwardAuth holds the forward auth middleware configuration.
 /// This middleware delegates the request authentication to a Service.
-/// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/http/middlewares/forwardauth/>
+/// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/http/middlewares/forwardauth/>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MiddlewareForwardAuth {
     /// AddAuthCookiesToResponse defines the list of cookies to copy from the authentication server response to the response.
@@ -558,14 +558,14 @@ pub struct MiddlewareForwardAuth {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authResponseHeaders")]
     pub auth_response_headers: Option<Vec<String>>,
     /// AuthResponseHeadersRegex defines the regex to match headers to copy from the authentication server response and set on forwarded request, after stripping all headers that match the regex.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/http/middlewares/forwardauth/#authresponseheadersregex>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/http/middlewares/forwardauth/#authresponseheadersregex>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authResponseHeadersRegex")]
     pub auth_response_headers_regex: Option<String>,
     /// ForwardBody defines whether to send the request body to the authentication server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forwardBody")]
     pub forward_body: Option<bool>,
     /// HeaderField defines a header field to store the authenticated user.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/http/middlewares/forwardauth/#headerfield>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/http/middlewares/forwardauth/#headerfield>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "headerField")]
     pub header_field: Option<String>,
     /// MaxBodySize defines the maximum body size in bytes allowed to be forwarded to the authentication server.
@@ -616,7 +616,7 @@ pub struct MiddlewareGrpcWeb {
 
 /// Headers holds the headers middleware configuration.
 /// This middleware manages the requests and responses headers.
-/// More info: <https://doc.traefik.io/traefik/v3.5/middlewares/http/headers/#customrequestheaders>
+/// More info: <https://doc.traefik.io/traefik/v3.6/middlewares/http/headers/#customrequestheaders>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MiddlewareHeaders {
     /// AccessControlAllowCredentials defines whether the request can include user credentials.
@@ -731,7 +731,7 @@ pub struct MiddlewareHeaders {
 
 /// InFlightReq holds the in-flight request middleware configuration.
 /// This middleware limits the number of requests being processed and served concurrently.
-/// More info: <https://doc.traefik.io/traefik/v3.5/middlewares/http/inflightreq/>
+/// More info: <https://doc.traefik.io/traefik/v3.6/middlewares/http/inflightreq/>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MiddlewareInFlightReq {
     /// Amount defines the maximum amount of allowed simultaneous in-flight request.
@@ -741,7 +741,7 @@ pub struct MiddlewareInFlightReq {
     /// SourceCriterion defines what criterion is used to group requests as originating from a common source.
     /// If several strategies are defined at the same time, an error will be raised.
     /// If none are set, the default is to use the requestHost.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/middlewares/http/inflightreq/#sourcecriterion>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/middlewares/http/inflightreq/#sourcecriterion>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceCriterion")]
     pub source_criterion: Option<MiddlewareInFlightReqSourceCriterion>,
 }
@@ -749,11 +749,11 @@ pub struct MiddlewareInFlightReq {
 /// SourceCriterion defines what criterion is used to group requests as originating from a common source.
 /// If several strategies are defined at the same time, an error will be raised.
 /// If none are set, the default is to use the requestHost.
-/// More info: <https://doc.traefik.io/traefik/v3.5/middlewares/http/inflightreq/#sourcecriterion>
+/// More info: <https://doc.traefik.io/traefik/v3.6/middlewares/http/inflightreq/#sourcecriterion>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MiddlewareInFlightReqSourceCriterion {
     /// IPStrategy holds the IP strategy configuration used by Traefik to determine the client IP.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/middlewares/http/ipallowlist/#ipstrategy>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/middlewares/http/ipallowlist/#ipstrategy>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipStrategy")]
     pub ip_strategy: Option<MiddlewareInFlightReqSourceCriterionIpStrategy>,
     /// RequestHeaderName defines the name of the header used to group incoming requests.
@@ -765,7 +765,7 @@ pub struct MiddlewareInFlightReqSourceCriterion {
 }
 
 /// IPStrategy holds the IP strategy configuration used by Traefik to determine the client IP.
-/// More info: <https://doc.traefik.io/traefik/v3.5/middlewares/http/ipallowlist/#ipstrategy>
+/// More info: <https://doc.traefik.io/traefik/v3.6/middlewares/http/ipallowlist/#ipstrategy>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MiddlewareInFlightReqSourceCriterionIpStrategy {
     /// Depth tells Traefik to use the X-Forwarded-For header and take the IP located at the depth position (starting from the right).
@@ -781,11 +781,11 @@ pub struct MiddlewareInFlightReqSourceCriterionIpStrategy {
 
 /// IPAllowList holds the IP allowlist middleware configuration.
 /// This middleware limits allowed requests based on the client IP.
-/// More info: <https://doc.traefik.io/traefik/v3.5/middlewares/http/ipallowlist/>
+/// More info: <https://doc.traefik.io/traefik/v3.6/middlewares/http/ipallowlist/>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MiddlewareIpAllowList {
     /// IPStrategy holds the IP strategy configuration used by Traefik to determine the client IP.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/middlewares/http/ipallowlist/#ipstrategy>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/middlewares/http/ipallowlist/#ipstrategy>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipStrategy")]
     pub ip_strategy: Option<MiddlewareIpAllowListIpStrategy>,
     /// RejectStatusCode defines the HTTP status code used for refused requests.
@@ -798,7 +798,7 @@ pub struct MiddlewareIpAllowList {
 }
 
 /// IPStrategy holds the IP strategy configuration used by Traefik to determine the client IP.
-/// More info: <https://doc.traefik.io/traefik/v3.5/middlewares/http/ipallowlist/#ipstrategy>
+/// More info: <https://doc.traefik.io/traefik/v3.6/middlewares/http/ipallowlist/#ipstrategy>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MiddlewareIpAllowListIpStrategy {
     /// Depth tells Traefik to use the X-Forwarded-For header and take the IP located at the depth position (starting from the right).
@@ -816,7 +816,7 @@ pub struct MiddlewareIpAllowListIpStrategy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MiddlewareIpWhiteList {
     /// IPStrategy holds the IP strategy configuration used by Traefik to determine the client IP.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/middlewares/http/ipallowlist/#ipstrategy>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/middlewares/http/ipallowlist/#ipstrategy>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipStrategy")]
     pub ip_strategy: Option<MiddlewareIpWhiteListIpStrategy>,
     /// SourceRange defines the set of allowed IPs (or ranges of allowed IPs by using CIDR notation). Required.
@@ -825,7 +825,7 @@ pub struct MiddlewareIpWhiteList {
 }
 
 /// IPStrategy holds the IP strategy configuration used by Traefik to determine the client IP.
-/// More info: <https://doc.traefik.io/traefik/v3.5/middlewares/http/ipallowlist/#ipstrategy>
+/// More info: <https://doc.traefik.io/traefik/v3.6/middlewares/http/ipallowlist/#ipstrategy>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MiddlewareIpWhiteListIpStrategy {
     /// Depth tells Traefik to use the X-Forwarded-For header and take the IP located at the depth position (starting from the right).
@@ -841,7 +841,7 @@ pub struct MiddlewareIpWhiteListIpStrategy {
 
 /// PassTLSClientCert holds the pass TLS client cert middleware configuration.
 /// This middleware adds the selected data from the passed client TLS certificate to a header.
-/// More info: <https://doc.traefik.io/traefik/v3.5/middlewares/http/passtlsclientcert/>
+/// More info: <https://doc.traefik.io/traefik/v3.6/middlewares/http/passtlsclientcert/>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MiddlewarePassTlsClientCert {
     /// Info selects the specific client certificate details you want to add to the X-Forwarded-Tls-Client-Cert-Info header.
@@ -932,7 +932,7 @@ pub struct MiddlewarePassTlsClientCertInfoSubject {
 
 /// RateLimit holds the rate limit configuration.
 /// This middleware ensures that services will receive a fair amount of requests, and allows one to define what fair is.
-/// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/http/middlewares/ratelimit/>
+/// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/http/middlewares/ratelimit/>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MiddlewareRateLimit {
     /// Average is the maximum rate, by default in requests/s, allowed for the given source.
@@ -1027,7 +1027,7 @@ pub struct MiddlewareRateLimitRedisTls {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MiddlewareRateLimitSourceCriterion {
     /// IPStrategy holds the IP strategy configuration used by Traefik to determine the client IP.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/middlewares/http/ipallowlist/#ipstrategy>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/middlewares/http/ipallowlist/#ipstrategy>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipStrategy")]
     pub ip_strategy: Option<MiddlewareRateLimitSourceCriterionIpStrategy>,
     /// RequestHeaderName defines the name of the header used to group incoming requests.
@@ -1039,7 +1039,7 @@ pub struct MiddlewareRateLimitSourceCriterion {
 }
 
 /// IPStrategy holds the IP strategy configuration used by Traefik to determine the client IP.
-/// More info: <https://doc.traefik.io/traefik/v3.5/middlewares/http/ipallowlist/#ipstrategy>
+/// More info: <https://doc.traefik.io/traefik/v3.6/middlewares/http/ipallowlist/#ipstrategy>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MiddlewareRateLimitSourceCriterionIpStrategy {
     /// Depth tells Traefik to use the X-Forwarded-For header and take the IP located at the depth position (starting from the right).
@@ -1055,7 +1055,7 @@ pub struct MiddlewareRateLimitSourceCriterionIpStrategy {
 
 /// RedirectRegex holds the redirect regex middleware configuration.
 /// This middleware redirects a request using regex matching and replacement.
-/// More info: <https://doc.traefik.io/traefik/v3.5/middlewares/http/redirectregex/#regex>
+/// More info: <https://doc.traefik.io/traefik/v3.6/middlewares/http/redirectregex/#regex>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MiddlewareRedirectRegex {
     /// Permanent defines whether the redirection is permanent (308).
@@ -1071,7 +1071,7 @@ pub struct MiddlewareRedirectRegex {
 
 /// RedirectScheme holds the redirect scheme middleware configuration.
 /// This middleware redirects requests from a scheme/port to another.
-/// More info: <https://doc.traefik.io/traefik/v3.5/middlewares/http/redirectscheme/>
+/// More info: <https://doc.traefik.io/traefik/v3.6/middlewares/http/redirectscheme/>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MiddlewareRedirectScheme {
     /// Permanent defines whether the redirection is permanent (308).
@@ -1087,7 +1087,7 @@ pub struct MiddlewareRedirectScheme {
 
 /// ReplacePath holds the replace path middleware configuration.
 /// This middleware replaces the path of the request URL and store the original path in an X-Replaced-Path header.
-/// More info: <https://doc.traefik.io/traefik/v3.5/middlewares/http/replacepath/>
+/// More info: <https://doc.traefik.io/traefik/v3.6/middlewares/http/replacepath/>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MiddlewareReplacePath {
     /// Path defines the path to use as replacement in the request URL.
@@ -1097,7 +1097,7 @@ pub struct MiddlewareReplacePath {
 
 /// ReplacePathRegex holds the replace path regex middleware configuration.
 /// This middleware replaces the path of a URL using regex matching and replacement.
-/// More info: <https://doc.traefik.io/traefik/v3.5/middlewares/http/replacepathregex/>
+/// More info: <https://doc.traefik.io/traefik/v3.6/middlewares/http/replacepathregex/>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MiddlewareReplacePathRegex {
     /// Regex defines the regular expression used to match and capture the path from the request URL.
@@ -1111,7 +1111,7 @@ pub struct MiddlewareReplacePathRegex {
 /// Retry holds the retry middleware configuration.
 /// This middleware reissues requests a given number of times to a backend server if that server does not reply.
 /// As soon as the server answers, the middleware stops retrying, regardless of the response status.
-/// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/http/middlewares/retry/>
+/// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/http/middlewares/retry/>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MiddlewareRetry {
     /// Attempts defines how many times the request should be retried.
@@ -1128,7 +1128,7 @@ pub struct MiddlewareRetry {
 
 /// StripPrefix holds the strip prefix middleware configuration.
 /// This middleware removes the specified prefixes from the URL path.
-/// More info: <https://doc.traefik.io/traefik/v3.5/middlewares/http/stripprefix/>
+/// More info: <https://doc.traefik.io/traefik/v3.6/middlewares/http/stripprefix/>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MiddlewareStripPrefix {
     /// Deprecated: ForceSlash option is deprecated, please remove any usage of this option.
@@ -1143,7 +1143,7 @@ pub struct MiddlewareStripPrefix {
 
 /// StripPrefixRegex holds the strip prefix regex middleware configuration.
 /// This middleware removes the matching prefixes from the URL path.
-/// More info: <https://doc.traefik.io/traefik/v3.5/middlewares/http/stripprefixregex/>
+/// More info: <https://doc.traefik.io/traefik/v3.6/middlewares/http/stripprefixregex/>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MiddlewareStripPrefixRegex {
     /// Regex defines the regular expression to match the path prefix from the request URL.

@@ -87,10 +87,6 @@ spec:
                     originRevision:
                       description: "(DEPRECATED) Branch, tag or commit in the upstream git repository. Does not support short-sha's. Default to HEAD"
                       type: "string"
-                    pollInterval:
-                      default: 180
-                      description: "Interval in seconds to poll for drifts between origin and target repositories. Default: 180 seconds"
-                      type: "integer"
                     targetRepo:
                       description: "Git repo containing the pattern to deploy. Must use https/http or, for ssh, git@server:foo/bar.git"
                       type: "string"

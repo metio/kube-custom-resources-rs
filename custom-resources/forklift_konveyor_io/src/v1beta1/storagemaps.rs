@@ -93,6 +93,8 @@ pub struct StorageMapMapOffloadPluginVsphereXcopyConfig {
 /// to offload the copy to Vsphere and the storage array.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum StorageMapMapOffloadPluginVsphereXcopyConfigStorageVendorProduct {
+    #[serde(rename = "flashsystem")]
+    Flashsystem,
     #[serde(rename = "vantara")]
     Vantara,
     #[serde(rename = "ontap")]
@@ -107,6 +109,8 @@ pub enum StorageMapMapOffloadPluginVsphereXcopyConfigStorageVendorProduct {
     Powermax,
     #[serde(rename = "powerstore")]
     Powerstore,
+    #[serde(rename = "infinibox")]
+    Infinibox,
 }
 
 /// Source storage.

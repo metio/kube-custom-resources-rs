@@ -6,6 +6,7 @@
 mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
+    pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
@@ -24,6 +25,9 @@ pub struct DeviceModelSpec {
     /// Required: Protocol name used by the device.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
+    /// Optional: Any config data.It can be overridden in the device instance.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protocolConfigData")]
+    pub protocol_config_data: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 /// ModelProperty describes an individual device property / attribute like temperature / humidity etc.
@@ -49,6 +53,9 @@ pub struct DeviceModelProperties {
     /// The unit of the property
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub unit: Option<String>,
+    /// Note: It can be overridden in the device instance
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub visitors: Option<DeviceModelPropertiesVisitors>,
 }
 
 /// ModelProperty describes an individual device property / attribute like temperature / humidity etc.
@@ -75,5 +82,16 @@ pub enum DeviceModelPropertiesType {
     Bytes,
     #[serde(rename = "STREAM")]
     Stream,
+}
+
+/// Note: It can be overridden in the device instance
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DeviceModelPropertiesVisitors {
+    /// Required: The configData of customized protocol
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configData")]
+    pub config_data: Option<BTreeMap<String, serde_json::Value>>,
+    /// Required: name of customized protocol
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protocolName")]
+    pub protocol_name: Option<String>,
 }
 

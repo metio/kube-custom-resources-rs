@@ -7252,7 +7252,7 @@ spec:
                       type: "string"
                     imagePullPolicy:
                       type: "string"
-                    livenessProbes:
+                    livenessProbe:
                       properties:
                         exec:
                           properties:
@@ -7335,7 +7335,7 @@ spec:
                       type: "object"
                     mysqlParams:
                       type: "string"
-                    readinessProbes:
+                    readinessProbe:
                       properties:
                         exec:
                           properties:
@@ -10205,10 +10205,8 @@ spec:
                     issuerConf:
                       properties:
                         group:
-                          default: "cert-manager.io"
                           type: "string"
                         kind:
-                          default: "Issuer"
                           type: "string"
                         name:
                           type: "string"

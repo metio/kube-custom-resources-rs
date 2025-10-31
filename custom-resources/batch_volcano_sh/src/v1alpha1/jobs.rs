@@ -202,6 +202,8 @@ pub struct JobTasksTemplateSpec {
     pub host_users: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostnameOverride")]
+    pub hostname_override: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<JobTasksTemplateSpecImagePullSecrets>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
@@ -585,6 +587,8 @@ pub struct JobTasksTemplateSpecContainers {
     pub resources: Option<JobTasksTemplateSpecContainersResources>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicyRules")]
+    pub restart_policy_rules: Option<Vec<JobTasksTemplateSpecContainersRestartPolicyRules>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<JobTasksTemplateSpecContainersSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
@@ -622,6 +626,8 @@ pub struct JobTasksTemplateSpecContainersEnvValueFrom {
     pub config_map_key_ref: Option<JobTasksTemplateSpecContainersEnvValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<JobTasksTemplateSpecContainersEnvValueFromFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileKeyRef")]
+    pub file_key_ref: Option<JobTasksTemplateSpecContainersEnvValueFromFileKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<JobTasksTemplateSpecContainersEnvValueFromResourceFieldRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
@@ -643,6 +649,16 @@ pub struct JobTasksTemplateSpecContainersEnvValueFromFieldRef {
     pub api_version: Option<String>,
     #[serde(rename = "fieldPath")]
     pub field_path: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobTasksTemplateSpecContainersEnvValueFromFileKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    pub path: String,
+    #[serde(rename = "volumeName")]
+    pub volume_name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -963,6 +979,20 @@ pub struct JobTasksTemplateSpecContainersResourcesClaims {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobTasksTemplateSpecContainersRestartPolicyRules {
+    pub action: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exitCodes")]
+    pub exit_codes: Option<JobTasksTemplateSpecContainersRestartPolicyRulesExitCodes>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobTasksTemplateSpecContainersRestartPolicyRulesExitCodes {
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<i64>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobTasksTemplateSpecContainersSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
@@ -1172,6 +1202,8 @@ pub struct JobTasksTemplateSpecEphemeralContainers {
     pub resources: Option<JobTasksTemplateSpecEphemeralContainersResources>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicyRules")]
+    pub restart_policy_rules: Option<Vec<JobTasksTemplateSpecEphemeralContainersRestartPolicyRules>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<JobTasksTemplateSpecEphemeralContainersSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
@@ -1211,6 +1243,8 @@ pub struct JobTasksTemplateSpecEphemeralContainersEnvValueFrom {
     pub config_map_key_ref: Option<JobTasksTemplateSpecEphemeralContainersEnvValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<JobTasksTemplateSpecEphemeralContainersEnvValueFromFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileKeyRef")]
+    pub file_key_ref: Option<JobTasksTemplateSpecEphemeralContainersEnvValueFromFileKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<JobTasksTemplateSpecEphemeralContainersEnvValueFromResourceFieldRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
@@ -1232,6 +1266,16 @@ pub struct JobTasksTemplateSpecEphemeralContainersEnvValueFromFieldRef {
     pub api_version: Option<String>,
     #[serde(rename = "fieldPath")]
     pub field_path: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobTasksTemplateSpecEphemeralContainersEnvValueFromFileKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    pub path: String,
+    #[serde(rename = "volumeName")]
+    pub volume_name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1552,6 +1596,20 @@ pub struct JobTasksTemplateSpecEphemeralContainersResourcesClaims {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobTasksTemplateSpecEphemeralContainersRestartPolicyRules {
+    pub action: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exitCodes")]
+    pub exit_codes: Option<JobTasksTemplateSpecEphemeralContainersRestartPolicyRulesExitCodes>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobTasksTemplateSpecEphemeralContainersRestartPolicyRulesExitCodes {
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<i64>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobTasksTemplateSpecEphemeralContainersSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
@@ -1756,6 +1814,8 @@ pub struct JobTasksTemplateSpecInitContainers {
     pub resources: Option<JobTasksTemplateSpecInitContainersResources>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicyRules")]
+    pub restart_policy_rules: Option<Vec<JobTasksTemplateSpecInitContainersRestartPolicyRules>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<JobTasksTemplateSpecInitContainersSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
@@ -1793,6 +1853,8 @@ pub struct JobTasksTemplateSpecInitContainersEnvValueFrom {
     pub config_map_key_ref: Option<JobTasksTemplateSpecInitContainersEnvValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<JobTasksTemplateSpecInitContainersEnvValueFromFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileKeyRef")]
+    pub file_key_ref: Option<JobTasksTemplateSpecInitContainersEnvValueFromFileKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<JobTasksTemplateSpecInitContainersEnvValueFromResourceFieldRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
@@ -1814,6 +1876,16 @@ pub struct JobTasksTemplateSpecInitContainersEnvValueFromFieldRef {
     pub api_version: Option<String>,
     #[serde(rename = "fieldPath")]
     pub field_path: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobTasksTemplateSpecInitContainersEnvValueFromFileKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    pub path: String,
+    #[serde(rename = "volumeName")]
+    pub volume_name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2131,6 +2203,20 @@ pub struct JobTasksTemplateSpecInitContainersResourcesClaims {
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub request: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobTasksTemplateSpecInitContainersRestartPolicyRules {
+    pub action: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exitCodes")]
+    pub exit_codes: Option<JobTasksTemplateSpecInitContainersRestartPolicyRulesExitCodes>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobTasksTemplateSpecInitContainersRestartPolicyRulesExitCodes {
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<i64>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2945,6 +3031,8 @@ pub struct JobTasksTemplateSpecVolumesProjectedSources {
     pub config_map: Option<JobTasksTemplateSpecVolumesProjectedSourcesConfigMap>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<JobTasksTemplateSpecVolumesProjectedSourcesDownwardApi>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podCertificate")]
+    pub pod_certificate: Option<JobTasksTemplateSpecVolumesProjectedSourcesPodCertificate>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<JobTasksTemplateSpecVolumesProjectedSourcesSecret>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
@@ -3030,6 +3118,22 @@ pub struct JobTasksTemplateSpecVolumesProjectedSourcesDownwardApiItemsResourceFi
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub divisor: Option<IntOrString>,
     pub resource: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobTasksTemplateSpecVolumesProjectedSourcesPodCertificate {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateChainPath")]
+    pub certificate_chain_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialBundlePath")]
+    pub credential_bundle_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyPath")]
+    pub key_path: Option<String>,
+    #[serde(rename = "keyType")]
+    pub key_type: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxExpirationSeconds")]
+    pub max_expiration_seconds: Option<i32>,
+    #[serde(rename = "signerName")]
+    pub signer_name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

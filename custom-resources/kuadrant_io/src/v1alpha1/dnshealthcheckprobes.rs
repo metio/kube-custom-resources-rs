@@ -29,7 +29,8 @@ pub struct DnsHealthCheckProbeSpec {
     /// this is primarily used in development or testing environments and is set by the --insecure-health-checks flag
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowInsecureCertificate")]
     pub allow_insecure_certificate: Option<bool>,
-    /// FailureThreshold is a limit of consecutive failures that must occur for a host to be considered unhealthy
+    /// FailureThreshold is the number of consecutive failures that must be exceeded for a host to be considered unhealthy.
+    /// When the number of consecutive failures exceeds this threshold, the health check will be marked as unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i64>,
     /// Hostname is the value sent in the host header, to route the request to the correct service

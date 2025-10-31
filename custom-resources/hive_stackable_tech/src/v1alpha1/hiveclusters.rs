@@ -11,7 +11,9 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// A Hive cluster stacklet. This resource is managed by the Stackable operator for Apache Hive. Find more information on how to use it and the resources that the operator generates in the [operator documentation](<https://docs.stackable.tech/home/nightly/hive/).>
+/// A Hive cluster stacklet. This resource is managed by the Stackable operator for Apache Hive.
+/// Find more information on how to use it and the resources that the operator generates in the
+/// [operator documentation](<https://docs.stackable.tech/home/nightly/hive/).>
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[kube(group = "hive.stackable.tech", version = "v1alpha1", kind = "HiveCluster", plural = "hiveclusters")]
 #[kube(namespaced)]
@@ -19,22 +21,34 @@ use self::prelude::*;
 #[kube(schema = "disabled")]
 #[kube(derive="PartialEq")]
 pub struct HiveClusterSpec {
-    /// Hive metastore settings that affect all roles and role groups. The settings in the `clusterConfig` are cluster wide settings that do not need to be configurable at role or role group level.
+    /// Hive metastore settings that affect all roles and role groups.
+    /// The settings in the `clusterConfig` are cluster wide settings that do not need to be configurable at role or role group level.
     #[serde(rename = "clusterConfig")]
     pub cluster_config: HiveClusterClusterConfig,
-    /// [Cluster operations](<https://docs.stackable.tech/home/nightly/concepts/operations/cluster_operations)> properties, allow stopping the product instance as well as pausing reconciliation.
+    /// [Cluster operations](<https://docs.stackable.tech/home/nightly/concepts/operations/cluster_operations)>
+    /// properties, allow stopping the product instance as well as pausing reconciliation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterOperation")]
     pub cluster_operation: Option<HiveClusterClusterOperation>,
-    /// Specify which image to use, the easiest way is to only configure the `productVersion`. You can also configure a custom image registry to pull from, as well as completely custom images.
+    /// Specify which image to use, the easiest way is to only configure the `productVersion`.
+    /// You can also configure a custom image registry to pull from, as well as completely custom
+    /// images.
     /// 
-    /// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)> for details.
+    /// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)>
+    /// for details.
     pub image: HiveClusterImage,
-    /// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured on role level. There is also a second form of config, which can only be configured at role level, the `roleConfig`. You can learn more about this in the [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
+    /// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing
+    /// all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable
+    /// at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured
+    /// on role level. There is also a second form of config, which can only be configured
+    /// at role level, the `roleConfig`.
+    /// You can learn more about this in the
+    /// [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metastore: Option<HiveClusterMetastore>,
 }
 
-/// Hive metastore settings that affect all roles and role groups. The settings in the `clusterConfig` are cluster wide settings that do not need to be configurable at role or role group level.
+/// Hive metastore settings that affect all roles and role groups.
+/// The settings in the `clusterConfig` are cluster wide settings that do not need to be configurable at role or role group level.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HiveClusterClusterConfig {
     /// Settings related to user [authentication](<https://docs.stackable.tech/home/nightly/usage-guide/security).>
@@ -45,10 +59,14 @@ pub struct HiveClusterClusterConfig {
     /// HDFS connection specification.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hdfs: Option<HiveClusterClusterConfigHdfs>,
-    /// S3 connection specification. This can be either `inline` or a `reference` to an S3Connection object. Read the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3)> to learn more.
+    /// S3 connection specification. This can be either `inline` or a `reference` to an
+    /// S3Connection object. Read the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3)> to learn more.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub s3: Option<HiveClusterClusterConfigS3>,
-    /// Name of the Vector aggregator [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery).> It must contain the key `ADDRESS` with the address of the Vector aggregator. Follow the [logging tutorial](<https://docs.stackable.tech/home/nightly/tutorials/logging-vector-aggregator)> to learn how to configure log aggregation with Vector.
+    /// Name of the Vector aggregator [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery).>
+    /// It must contain the key `ADDRESS` with the address of the Vector aggregator.
+    /// Follow the [logging tutorial](<https://docs.stackable.tech/home/nightly/tutorials/logging-vector-aggregator)>
+    /// to learn how to configure log aggregation with Vector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vectorAggregatorConfigMapName")]
     pub vector_aggregator_config_map_name: Option<String>,
 }
@@ -71,13 +89,17 @@ pub struct HiveClusterClusterConfigAuthenticationKerberos {
 /// Database connection specification for the metadata database.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HiveClusterClusterConfigDatabase {
-    /// A connection string for the database. For example: `jdbc:postgresql://hivehdfs-postgresql:5432/hivehdfs`
+    /// A connection string for the database. For example:
+    /// `jdbc:postgresql://hivehdfs-postgresql:5432/hivehdfs`
     #[serde(rename = "connString")]
     pub conn_string: String,
-    /// A reference to a Secret containing the database credentials. The Secret needs to contain the keys `username` and `password`.
+    /// A reference to a Secret containing the database credentials.
+    /// The Secret needs to contain the keys `username` and `password`.
     #[serde(rename = "credentialsSecret")]
     pub credentials_secret: String,
-    /// The type of database to connect to. Supported are: `postgres`, `mysql`, `oracle`, `mssql` and `derby`. This value is used to configure the jdbc driver class.
+    /// The type of database to connect to. Supported are:
+    /// `postgres`, `mysql`, `oracle`, `mssql` and `derby`.
+    /// This value is used to configure the jdbc driver class.
     #[serde(rename = "dbType")]
     pub db_type: HiveClusterClusterConfigDatabaseDbType,
 }
@@ -100,33 +122,44 @@ pub enum HiveClusterClusterConfigDatabaseDbType {
 /// HDFS connection specification.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HiveClusterClusterConfigHdfs {
-    /// Name of the [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery)> providing information about the HDFS cluster. See also the [Stackable Operator for HDFS](<https://docs.stackable.tech/home/nightly/hdfs/)> to learn more about setting up an HDFS cluster.
+    /// Name of the [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery)>
+    /// providing information about the HDFS cluster.
+    /// See also the [Stackable Operator for HDFS](<https://docs.stackable.tech/home/nightly/hdfs/)> to learn
+    /// more about setting up an HDFS cluster.
     #[serde(rename = "configMap")]
     pub config_map: String,
 }
 
-/// S3 connection specification. This can be either `inline` or a `reference` to an S3Connection object. Read the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3)> to learn more.
+/// S3 connection specification. This can be either `inline` or a `reference` to an
+/// S3Connection object. Read the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3)> to learn more.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HiveClusterClusterConfigS3 {
-    /// S3 connection definition as a resource. Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
+    /// S3 connection definition as a resource.
+    /// Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub inline: Option<HiveClusterClusterConfigS3Inline>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reference: Option<String>,
 }
 
-/// S3 connection definition as a resource. Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
+/// S3 connection definition as a resource.
+/// Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HiveClusterClusterConfigS3Inline {
-    /// Which access style to use. Defaults to virtual hosted-style as most of the data products out there. Have a look at the [AWS documentation](<https://docs.aws.amazon.com/AmazonS3/latest/userguide/VirtualHosting.html).>
+    /// Which access style to use.
+    /// Defaults to virtual hosted-style as most of the data products out there.
+    /// Have a look at the [AWS documentation](<https://docs.aws.amazon.com/AmazonS3/latest/userguide/VirtualHosting.html).>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessStyle")]
     pub access_style: Option<HiveClusterClusterConfigS3InlineAccessStyle>,
-    /// If the S3 uses authentication you have to specify you S3 credentials. In the most cases a [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> providing `accessKey` and `secretKey` is sufficient.
+    /// If the S3 uses authentication you have to specify you S3 credentials.
+    /// In the most cases a [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)>
+    /// providing `accessKey` and `secretKey` is sufficient.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<HiveClusterClusterConfigS3InlineCredentials>,
     /// Host of the S3 server without any protocol or port. For example: `west1.my-cloud.com`.
     pub host: String,
-    /// Port the S3 server listens on. If not specified the product will determine the port to use.
+    /// Port the S3 server listens on.
+    /// If not specified the product will determine the port to use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<u16>,
     /// Bucket region used for signing headers (sigv4).
@@ -141,17 +174,21 @@ pub struct HiveClusterClusterConfigS3Inline {
     pub tls: Option<HiveClusterClusterConfigS3InlineTls>,
 }
 
-/// S3 connection definition as a resource. Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
+/// S3 connection definition as a resource.
+/// Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum HiveClusterClusterConfigS3InlineAccessStyle {
     Path,
     VirtualHosted,
 }
 
-/// If the S3 uses authentication you have to specify you S3 credentials. In the most cases a [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> providing `accessKey` and `secretKey` is sufficient.
+/// If the S3 uses authentication you have to specify you S3 credentials.
+/// In the most cases a [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)>
+/// providing `accessKey` and `secretKey` is sufficient.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HiveClusterClusterConfigS3InlineCredentials {
-    /// [Scope](<https://docs.stackable.tech/home/nightly/secret-operator/scope)> of the [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass).>
+    /// [Scope](<https://docs.stackable.tech/home/nightly/secret-operator/scope)> of the
+    /// [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scope: Option<HiveClusterClusterConfigS3InlineCredentialsScope>,
     /// [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> containing the LDAP bind credentials.
@@ -159,19 +196,24 @@ pub struct HiveClusterClusterConfigS3InlineCredentials {
     pub secret_class: String,
 }
 
-/// [Scope](<https://docs.stackable.tech/home/nightly/secret-operator/scope)> of the [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass).>
+/// [Scope](<https://docs.stackable.tech/home/nightly/secret-operator/scope)> of the
+/// [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HiveClusterClusterConfigS3InlineCredentialsScope {
-    /// The listener volume scope allows Node and Service scopes to be inferred from the applicable listeners. This must correspond to Volume names in the Pod that mount Listeners.
+    /// The listener volume scope allows Node and Service scopes to be inferred from the applicable listeners.
+    /// This must correspond to Volume names in the Pod that mount Listeners.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenerVolumes")]
     pub listener_volumes: Option<Vec<String>>,
-    /// The node scope is resolved to the name of the Kubernetes Node object that the Pod is running on. This will typically be the DNS name of the node.
+    /// The node scope is resolved to the name of the Kubernetes Node object that the Pod is running on.
+    /// This will typically be the DNS name of the node.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub node: Option<bool>,
-    /// The pod scope is resolved to the name of the Kubernetes Pod. This allows the secret to differentiate between StatefulSet replicas.
+    /// The pod scope is resolved to the name of the Kubernetes Pod.
+    /// This allows the secret to differentiate between StatefulSet replicas.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pod: Option<bool>,
-    /// The service scope allows Pod objects to specify custom scopes. This should typically correspond to Service objects that the Pod participates in.
+    /// The service scope allows Pod objects to specify custom scopes.
+    /// This should typically correspond to Service objects that the Pod participates in.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<String>>,
 }
@@ -221,36 +263,54 @@ pub struct HiveClusterClusterConfigS3InlineTlsVerificationServer {
 /// CA cert to verify the server.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HiveClusterClusterConfigS3InlineTlsVerificationServerCaCert {
-    /// Name of the [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> which will provide the CA certificate. Note that a SecretClass does not need to have a key but can also work with just a CA certificate, so if you got provided with a CA cert but don't have access to the key you can still use this method.
+    /// Name of the [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> which will provide the CA certificate.
+    /// Note that a SecretClass does not need to have a key but can also work with just a CA certificate,
+    /// so if you got provided with a CA cert but don't have access to the key you can still use this method.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretClass")]
     pub secret_class: Option<String>,
-    /// Use TLS and the CA certificates trusted by the common web browsers to verify the server. This can be useful when you e.g. use public AWS S3 or other public available services.
+    /// Use TLS and the CA certificates trusted by the common web browsers to verify the server.
+    /// This can be useful when you e.g. use public AWS S3 or other public available services.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "webPki")]
     pub web_pki: Option<HiveClusterClusterConfigS3InlineTlsVerificationServerCaCertWebPki>,
 }
 
-/// Use TLS and the CA certificates trusted by the common web browsers to verify the server. This can be useful when you e.g. use public AWS S3 or other public available services.
+/// Use TLS and the CA certificates trusted by the common web browsers to verify the server.
+/// This can be useful when you e.g. use public AWS S3 or other public available services.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HiveClusterClusterConfigS3InlineTlsVerificationServerCaCertWebPki {
 }
 
-/// [Cluster operations](<https://docs.stackable.tech/home/nightly/concepts/operations/cluster_operations)> properties, allow stopping the product instance as well as pausing reconciliation.
+/// [Cluster operations](<https://docs.stackable.tech/home/nightly/concepts/operations/cluster_operations)>
+/// properties, allow stopping the product instance as well as pausing reconciliation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HiveClusterClusterOperation {
-    /// Flag to stop cluster reconciliation by the operator. This means that all changes in the custom resource spec are ignored until this flag is set to false or removed. The operator will however still watch the deployed resources at the time and update the custom resource status field. If applied at the same time with `stopped`, `reconciliationPaused` will take precedence over `stopped` and stop the reconciliation immediately.
+    /// Flag to stop cluster reconciliation by the operator. This means that all changes in the
+    /// custom resource spec are ignored until this flag is set to false or removed. The operator
+    /// will however still watch the deployed resources at the time and update the custom resource
+    /// status field.
+    /// If applied at the same time with `stopped`, `reconciliationPaused` will take precedence over
+    /// `stopped` and stop the reconciliation immediately.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconciliationPaused")]
     pub reconciliation_paused: Option<bool>,
-    /// Flag to stop the cluster. This means all deployed resources (e.g. Services, StatefulSets, ConfigMaps) are kept but all deployed Pods (e.g. replicas from a StatefulSet) are scaled to 0 and therefore stopped and removed. If applied at the same time with `reconciliationPaused`, the latter will pause reconciliation and `stopped` will take no effect until `reconciliationPaused` is set to false or removed.
+    /// Flag to stop the cluster. This means all deployed resources (e.g. Services, StatefulSets,
+    /// ConfigMaps) are kept but all deployed Pods (e.g. replicas from a StatefulSet) are scaled to 0
+    /// and therefore stopped and removed.
+    /// If applied at the same time with `reconciliationPaused`, the latter will pause reconciliation
+    /// and `stopped` will take no effect until `reconciliationPaused` is set to false or removed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub stopped: Option<bool>,
 }
 
-/// Specify which image to use, the easiest way is to only configure the `productVersion`. You can also configure a custom image registry to pull from, as well as completely custom images.
+/// Specify which image to use, the easiest way is to only configure the `productVersion`.
+/// You can also configure a custom image registry to pull from, as well as completely custom
+/// images.
 /// 
-/// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)> for details.
+/// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)>
+/// for details.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HiveClusterImage {
-    /// Overwrite the docker image. Specify the full docker image name, e.g. `oci.stackable.tech/sdp/superset:1.4.1-stackable2.1.0`
+    /// Overwrite the docker image.
+    /// Specify the full docker image name, e.g. `oci.stackable.tech/sdp/superset:1.4.1-stackable2.1.0`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom: Option<String>,
     /// Version of the product, e.g. `1.4.1`.
@@ -265,14 +325,19 @@ pub struct HiveClusterImage {
     /// Name of the docker repo, e.g. `oci.stackable.tech/sdp`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repo: Option<String>,
-    /// Stackable version of the product, e.g. `23.4`, `23.4.1` or `0.0.0-dev`. If not specified, the operator will use its own version, e.g. `23.4.1`. When using a nightly operator or a pr version, it will use the nightly `0.0.0-dev` image.
+    /// Stackable version of the product, e.g. `23.4`, `23.4.1` or `0.0.0-dev`.
+    /// If not specified, the operator will use its own version, e.g. `23.4.1`.
+    /// When using a nightly operator or a pr version, it will use the nightly `0.0.0-dev` image.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stackableVersion")]
     pub stackable_version: Option<String>,
 }
 
-/// Specify which image to use, the easiest way is to only configure the `productVersion`. You can also configure a custom image registry to pull from, as well as completely custom images.
+/// Specify which image to use, the easiest way is to only configure the `productVersion`.
+/// You can also configure a custom image registry to pull from, as well as completely custom
+/// images.
 /// 
-/// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)> for details.
+/// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)>
+/// for details.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum HiveClusterImagePullPolicy {
     IfNotPresent,
@@ -287,23 +352,45 @@ pub struct HiveClusterImagePullSecrets {
     pub name: String,
 }
 
-/// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured on role level. There is also a second form of config, which can only be configured at role level, the `roleConfig`. You can learn more about this in the [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
+/// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing
+/// all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable
+/// at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured
+/// on role level. There is also a second form of config, which can only be configured
+/// at role level, the `roleConfig`.
+/// You can learn more about this in the
+/// [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HiveClusterMetastore {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cliOverrides")]
     pub cli_overrides: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<HiveClusterMetastoreConfig>,
-    /// The `configOverrides` can be used to configure properties in product config files that are not exposed in the CRD. Read the [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)> and consult the operator specific usage guide documentation for details on the available config files and settings for the specific product.
+    /// The `configOverrides` can be used to configure properties in product config files
+    /// that are not exposed in the CRD. Read the
+    /// [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)>
+    /// and consult the operator specific usage guide documentation for details on the
+    /// available config files and settings for the specific product.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configOverrides")]
     pub config_overrides: Option<BTreeMap<String, BTreeMap<String, String>>>,
-    /// `envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)> for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available.
+    /// `envOverrides` configure environment variables to be set in the Pods.
+    /// It is a map from strings to strings - environment variables and the value to set.
+    /// Read the
+    /// [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)>
+    /// for more information and consult the operator specific usage guide to find out about
+    /// the product specific environment variables that are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envOverrides")]
     pub env_overrides: Option<BTreeMap<String, String>>,
-    /// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+    /// Allows overriding JVM arguments.
+    /// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+    /// for details on the usage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
     pub jvm_argument_overrides: Option<HiveClusterMetastoreJvmArgumentOverrides>,
-    /// In the `podOverrides` property you can define a [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)> to override any property that can be set on a Kubernetes Pod. Read the [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)> for more information.
+    /// In the `podOverrides` property you can define a
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// to override any property that can be set on a Kubernetes Pod.
+    /// Read the
+    /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
+    /// for more information.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podOverrides")]
     pub pod_overrides: Option<BTreeMap<String, serde_json::Value>>,
     /// This is a product-agnostic RoleConfig, which is sufficient for most of the products.
@@ -315,7 +402,8 @@ pub struct HiveClusterMetastore {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HiveClusterMetastoreConfig {
-    /// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+    /// These configuration settings control
+    /// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<HiveClusterMetastoreConfigAffinity>,
     /// Time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Consult the operator documentation for details.
@@ -324,15 +412,18 @@ pub struct HiveClusterMetastoreConfig {
     /// Logging configuration, learn more in the [logging concept documentation](<https://docs.stackable.tech/home/nightly/concepts/logging).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<HiveClusterMetastoreConfigLogging>,
-    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+    /// usage, if this role needs any.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<HiveClusterMetastoreConfigResources>,
-    /// The location of default database for the Hive warehouse. Maps to the `hive.metastore.warehouse.dir` setting.
+    /// The location of default database for the Hive warehouse.
+    /// Maps to the `hive.metastore.warehouse.dir` setting.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "warehouseDir")]
     pub warehouse_dir: Option<String>,
 }
 
-/// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+/// These configuration settings control
+/// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HiveClusterMetastoreConfigAffinity {
     /// Same as the `spec.affinity.nodeAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
@@ -366,7 +457,7 @@ pub struct HiveClusterMetastoreConfigLoggingContainers {
     /// Configuration for the console appender
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub console: Option<HiveClusterMetastoreConfigLoggingContainersConsole>,
-    /// Custom log configuration provided in a ConfigMap
+    /// Log configuration provided in a ConfigMap
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom: Option<HiveClusterMetastoreConfigLoggingContainersCustom>,
     /// Configuration for the file appender
@@ -380,7 +471,8 @@ pub struct HiveClusterMetastoreConfigLoggingContainers {
 /// Configuration for the console appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HiveClusterMetastoreConfigLoggingContainersConsole {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<HiveClusterMetastoreConfigLoggingContainersConsoleLevel>,
 }
@@ -404,7 +496,7 @@ pub enum HiveClusterMetastoreConfigLoggingContainersConsoleLevel {
     None,
 }
 
-/// Custom log configuration provided in a ConfigMap
+/// Log configuration provided in a ConfigMap
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HiveClusterMetastoreConfigLoggingContainersCustom {
     /// ConfigMap containing the log configuration files
@@ -415,7 +507,8 @@ pub struct HiveClusterMetastoreConfigLoggingContainersCustom {
 /// Configuration for the file appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HiveClusterMetastoreConfigLoggingContainersFile {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<HiveClusterMetastoreConfigLoggingContainersFileLevel>,
 }
@@ -442,7 +535,8 @@ pub enum HiveClusterMetastoreConfigLoggingContainersFileLevel {
 /// Configuration per logger
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HiveClusterMetastoreConfigLoggingContainersLoggers {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<HiveClusterMetastoreConfigLoggingContainersLoggersLevel>,
 }
@@ -466,7 +560,8 @@ pub enum HiveClusterMetastoreConfigLoggingContainersLoggersLevel {
     None,
 }
 
-/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+/// usage, if this role needs any.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HiveClusterMetastoreConfigResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -479,17 +574,28 @@ pub struct HiveClusterMetastoreConfigResources {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HiveClusterMetastoreConfigResourcesCpu {
-    /// The maximum amount of CPU cores that can be requested by Pods. Equivalent to the `limit` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The maximum amount of CPU cores that can be requested by Pods.
+    /// Equivalent to the `limit` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max: Option<String>,
-    /// The minimal amount of CPU cores that Pods need to run. Equivalent to the `request` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The minimal amount of CPU cores that Pods need to run.
+    /// Equivalent to the `request` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub min: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HiveClusterMetastoreConfigResourcesMemory {
-    /// The maximum amount of memory that should be available to the Pod. Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),> which means these suffixes are supported: E, P, T, G, M, k. You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki. For example, the following represent roughly the same value: `128974848, 129e6, 129M,  128974848000m, 123Mi`
+    /// The maximum amount of memory that should be available to the Pod.
+    /// Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),>
+    /// which means these suffixes are supported: E, P, T, G, M, k.
+    /// You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki.
+    /// For example, the following represent roughly the same value:
+    /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<String>,
     /// Additional options that can be specified.
@@ -504,12 +610,14 @@ pub struct HiveClusterMetastoreConfigResourcesMemoryRuntimeLimits {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HiveClusterMetastoreConfigResourcesStorage {
-    /// This field is deprecated. It was never used by Hive and will be removed in a future CRD version. The controller will warn if it's set to a non zero value.
+    /// This field is deprecated. It was never used by Hive and will be removed in a future
+    /// CRD version. The controller will warn if it's set to a non zero value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<HiveClusterMetastoreConfigResourcesStorageData>,
 }
 
-/// This field is deprecated. It was never used by Hive and will be removed in a future CRD version. The controller will warn if it's set to a non zero value.
+/// This field is deprecated. It was never used by Hive and will be removed in a future
+/// CRD version. The controller will warn if it's set to a non zero value.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HiveClusterMetastoreConfigResourcesStorageData {
     /// Quantity is a fixed-point representation of a number. It provides convenient marshaling/unmarshaling in JSON and YAML, in addition to String() and AsInt64() accessors.
@@ -581,7 +689,9 @@ pub struct HiveClusterMetastoreConfigResourcesStorageDataSelectorsMatchExpressio
     pub values: Option<Vec<String>>,
 }
 
-/// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+/// Allows overriding JVM arguments.
+/// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+/// for details on the usage.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HiveClusterMetastoreJvmArgumentOverrides {
     /// JVM arguments to be added
@@ -603,24 +713,32 @@ pub struct HiveClusterMetastoreRoleConfig {
     pub listener_class: Option<String>,
     /// This struct is used to configure:
     /// 
-    /// 1. If PodDisruptionBudgets are created by the operator 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
+    /// 1. If PodDisruptionBudgets are created by the operator
+    /// 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
     /// 
-    /// Learn more in the [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
+    /// Learn more in the
+    /// [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podDisruptionBudget")]
     pub pod_disruption_budget: Option<HiveClusterMetastoreRoleConfigPodDisruptionBudget>,
 }
 
 /// This struct is used to configure:
 /// 
-/// 1. If PodDisruptionBudgets are created by the operator 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
+/// 1. If PodDisruptionBudgets are created by the operator
+/// 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
 /// 
-/// Learn more in the [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
+/// Learn more in the
+/// [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HiveClusterMetastoreRoleConfigPodDisruptionBudget {
-    /// Whether a PodDisruptionBudget should be written out for this role. Disabling this enables you to specify your own - custom - one. Defaults to true.
+    /// Whether a PodDisruptionBudget should be written out for this role.
+    /// Disabling this enables you to specify your own - custom - one.
+    /// Defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    /// The number of Pods that are allowed to be down because of voluntary disruptions. If you don't explicitly set this, the operator will use a sane default based upon knowledge about the individual product.
+    /// The number of Pods that are allowed to be down because of voluntary disruptions.
+    /// If you don't explicitly set this, the operator will use a sane default based
+    /// upon knowledge about the individual product.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<u16>,
 }
@@ -631,16 +749,32 @@ pub struct HiveClusterMetastoreRoleGroups {
     pub cli_overrides: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<HiveClusterMetastoreRoleGroupsConfig>,
-    /// The `configOverrides` can be used to configure properties in product config files that are not exposed in the CRD. Read the [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)> and consult the operator specific usage guide documentation for details on the available config files and settings for the specific product.
+    /// The `configOverrides` can be used to configure properties in product config files
+    /// that are not exposed in the CRD. Read the
+    /// [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)>
+    /// and consult the operator specific usage guide documentation for details on the
+    /// available config files and settings for the specific product.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configOverrides")]
     pub config_overrides: Option<BTreeMap<String, BTreeMap<String, String>>>,
-    /// `envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)> for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available.
+    /// `envOverrides` configure environment variables to be set in the Pods.
+    /// It is a map from strings to strings - environment variables and the value to set.
+    /// Read the
+    /// [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)>
+    /// for more information and consult the operator specific usage guide to find out about
+    /// the product specific environment variables that are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envOverrides")]
     pub env_overrides: Option<BTreeMap<String, String>>,
-    /// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+    /// Allows overriding JVM arguments.
+    /// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+    /// for details on the usage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
     pub jvm_argument_overrides: Option<HiveClusterMetastoreRoleGroupsJvmArgumentOverrides>,
-    /// In the `podOverrides` property you can define a [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)> to override any property that can be set on a Kubernetes Pod. Read the [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)> for more information.
+    /// In the `podOverrides` property you can define a
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// to override any property that can be set on a Kubernetes Pod.
+    /// Read the
+    /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
+    /// for more information.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podOverrides")]
     pub pod_overrides: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -649,7 +783,8 @@ pub struct HiveClusterMetastoreRoleGroups {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HiveClusterMetastoreRoleGroupsConfig {
-    /// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+    /// These configuration settings control
+    /// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<HiveClusterMetastoreRoleGroupsConfigAffinity>,
     /// Time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Consult the operator documentation for details.
@@ -658,15 +793,18 @@ pub struct HiveClusterMetastoreRoleGroupsConfig {
     /// Logging configuration, learn more in the [logging concept documentation](<https://docs.stackable.tech/home/nightly/concepts/logging).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<HiveClusterMetastoreRoleGroupsConfigLogging>,
-    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+    /// usage, if this role needs any.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<HiveClusterMetastoreRoleGroupsConfigResources>,
-    /// The location of default database for the Hive warehouse. Maps to the `hive.metastore.warehouse.dir` setting.
+    /// The location of default database for the Hive warehouse.
+    /// Maps to the `hive.metastore.warehouse.dir` setting.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "warehouseDir")]
     pub warehouse_dir: Option<String>,
 }
 
-/// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+/// These configuration settings control
+/// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HiveClusterMetastoreRoleGroupsConfigAffinity {
     /// Same as the `spec.affinity.nodeAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
@@ -700,7 +838,7 @@ pub struct HiveClusterMetastoreRoleGroupsConfigLoggingContainers {
     /// Configuration for the console appender
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub console: Option<HiveClusterMetastoreRoleGroupsConfigLoggingContainersConsole>,
-    /// Custom log configuration provided in a ConfigMap
+    /// Log configuration provided in a ConfigMap
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom: Option<HiveClusterMetastoreRoleGroupsConfigLoggingContainersCustom>,
     /// Configuration for the file appender
@@ -714,7 +852,8 @@ pub struct HiveClusterMetastoreRoleGroupsConfigLoggingContainers {
 /// Configuration for the console appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HiveClusterMetastoreRoleGroupsConfigLoggingContainersConsole {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<HiveClusterMetastoreRoleGroupsConfigLoggingContainersConsoleLevel>,
 }
@@ -738,7 +877,7 @@ pub enum HiveClusterMetastoreRoleGroupsConfigLoggingContainersConsoleLevel {
     None,
 }
 
-/// Custom log configuration provided in a ConfigMap
+/// Log configuration provided in a ConfigMap
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HiveClusterMetastoreRoleGroupsConfigLoggingContainersCustom {
     /// ConfigMap containing the log configuration files
@@ -749,7 +888,8 @@ pub struct HiveClusterMetastoreRoleGroupsConfigLoggingContainersCustom {
 /// Configuration for the file appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HiveClusterMetastoreRoleGroupsConfigLoggingContainersFile {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<HiveClusterMetastoreRoleGroupsConfigLoggingContainersFileLevel>,
 }
@@ -776,7 +916,8 @@ pub enum HiveClusterMetastoreRoleGroupsConfigLoggingContainersFileLevel {
 /// Configuration per logger
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HiveClusterMetastoreRoleGroupsConfigLoggingContainersLoggers {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<HiveClusterMetastoreRoleGroupsConfigLoggingContainersLoggersLevel>,
 }
@@ -800,7 +941,8 @@ pub enum HiveClusterMetastoreRoleGroupsConfigLoggingContainersLoggersLevel {
     None,
 }
 
-/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+/// usage, if this role needs any.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HiveClusterMetastoreRoleGroupsConfigResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -813,17 +955,28 @@ pub struct HiveClusterMetastoreRoleGroupsConfigResources {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HiveClusterMetastoreRoleGroupsConfigResourcesCpu {
-    /// The maximum amount of CPU cores that can be requested by Pods. Equivalent to the `limit` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The maximum amount of CPU cores that can be requested by Pods.
+    /// Equivalent to the `limit` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max: Option<String>,
-    /// The minimal amount of CPU cores that Pods need to run. Equivalent to the `request` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The minimal amount of CPU cores that Pods need to run.
+    /// Equivalent to the `request` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub min: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HiveClusterMetastoreRoleGroupsConfigResourcesMemory {
-    /// The maximum amount of memory that should be available to the Pod. Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),> which means these suffixes are supported: E, P, T, G, M, k. You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki. For example, the following represent roughly the same value: `128974848, 129e6, 129M,  128974848000m, 123Mi`
+    /// The maximum amount of memory that should be available to the Pod.
+    /// Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),>
+    /// which means these suffixes are supported: E, P, T, G, M, k.
+    /// You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki.
+    /// For example, the following represent roughly the same value:
+    /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<String>,
     /// Additional options that can be specified.
@@ -838,12 +991,14 @@ pub struct HiveClusterMetastoreRoleGroupsConfigResourcesMemoryRuntimeLimits {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HiveClusterMetastoreRoleGroupsConfigResourcesStorage {
-    /// This field is deprecated. It was never used by Hive and will be removed in a future CRD version. The controller will warn if it's set to a non zero value.
+    /// This field is deprecated. It was never used by Hive and will be removed in a future
+    /// CRD version. The controller will warn if it's set to a non zero value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<HiveClusterMetastoreRoleGroupsConfigResourcesStorageData>,
 }
 
-/// This field is deprecated. It was never used by Hive and will be removed in a future CRD version. The controller will warn if it's set to a non zero value.
+/// This field is deprecated. It was never used by Hive and will be removed in a future
+/// CRD version. The controller will warn if it's set to a non zero value.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HiveClusterMetastoreRoleGroupsConfigResourcesStorageData {
     /// Quantity is a fixed-point representation of a number. It provides convenient marshaling/unmarshaling in JSON and YAML, in addition to String() and AsInt64() accessors.
@@ -915,7 +1070,9 @@ pub struct HiveClusterMetastoreRoleGroupsConfigResourcesStorageDataSelectorsMatc
     pub values: Option<Vec<String>>,
 }
 
-/// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+/// Allows overriding JVM arguments.
+/// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+/// for details on the usage.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HiveClusterMetastoreRoleGroupsJvmArgumentOverrides {
     /// JVM arguments to be added

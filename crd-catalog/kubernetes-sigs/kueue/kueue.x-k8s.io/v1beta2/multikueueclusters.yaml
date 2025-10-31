@@ -43,6 +43,7 @@ spec:
                   properties:
                     location:
                       description: "location of the KubeConfig.\n\nIf LocationType is Secret then Location is the name of the secret inside the namespace in\nwhich the kueue controller manager is running. The config should be stored in the \"kubeconfig\" key."
+                      maxLength: 256
                       type: "string"
                     locationType:
                       default: "Secret"
@@ -62,7 +63,7 @@ spec:
               description: "status is the status of the MultiKueueCluster."
               properties:
                 conditions:
-                  description: "conditions hold the latest available observations of the MultiKueueCluster\ncurrent state."
+                  description: "conditions hold the latest available observations of the MultiKueueCluster\ncurrent state.\nconditions are limited to 16 elements."
                   items:
                     description: "Condition contains details for one aspect of the current state of this API Resource."
                     properties:
@@ -104,6 +105,7 @@ spec:
                       - "status"
                       - "type"
                     type: "object"
+                  maxItems: 16
                   type: "array"
                   x-kubernetes-list-map-keys:
                     - "type"

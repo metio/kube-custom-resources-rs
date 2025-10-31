@@ -49,7 +49,7 @@ spec:
                   description: "AllowInsecureCertificate will instruct the health check probe to not fail on a self-signed or otherwise invalid SSL certificate\nthis is primarily used in development or testing environments and is set by the --insecure-health-checks flag"
                   type: "boolean"
                 failureThreshold:
-                  description: "FailureThreshold is a limit of consecutive failures that must occur for a host to be considered unhealthy"
+                  description: "FailureThreshold is the number of consecutive failures that must be exceeded for a host to be considered unhealthy.\nWhen the number of consecutive failures exceeds this threshold, the health check will be marked as unhealthy."
                   type: "integer"
                   x-kubernetes-validations:
                     - message: "Failure threshold must be greater than 0"

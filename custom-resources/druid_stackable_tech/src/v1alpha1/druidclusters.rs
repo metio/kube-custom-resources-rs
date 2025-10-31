@@ -11,7 +11,9 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// A Druid cluster stacklet. This resource is managed by the Stackable operator for Apache Druid. Find more information on how to use it and the resources that the operator generates in the [operator documentation](<https://docs.stackable.tech/home/nightly/druid/).>
+/// A Druid cluster stacklet. This resource is managed by the Stackable operator for Apache Druid.
+/// Find more information on how to use it and the resources that the operator generates in the
+/// [operator documentation](<https://docs.stackable.tech/home/nightly/druid/).>
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[kube(group = "druid.stackable.tech", version = "v1alpha1", kind = "DruidCluster", plural = "druidclusters")]
 #[kube(namespaced)]
@@ -19,46 +21,102 @@ use self::prelude::*;
 #[kube(schema = "disabled")]
 #[kube(derive="PartialEq")]
 pub struct DruidClusterSpec {
-    /// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured on role level. There is also a second form of config, which can only be configured at role level, the `roleConfig`. You can learn more about this in the [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
+    /// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing
+    /// all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable
+    /// at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured
+    /// on role level. There is also a second form of config, which can only be configured
+    /// at role level, the `roleConfig`.
+    /// You can learn more about this in the
+    /// [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
     pub brokers: DruidClusterBrokers,
     /// Common cluster wide configuration that can not differ or be overridden on a role or role group level.
     #[serde(rename = "clusterConfig")]
     pub cluster_config: DruidClusterClusterConfig,
-    /// [Cluster operations](<https://docs.stackable.tech/home/nightly/concepts/operations/cluster_operations)> properties, allow stopping the product instance as well as pausing reconciliation.
+    /// [Cluster operations](<https://docs.stackable.tech/home/nightly/concepts/operations/cluster_operations)>
+    /// properties, allow stopping the product instance as well as pausing reconciliation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterOperation")]
     pub cluster_operation: Option<DruidClusterClusterOperation>,
-    /// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured on role level. There is also a second form of config, which can only be configured at role level, the `roleConfig`. You can learn more about this in the [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
+    /// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing
+    /// all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable
+    /// at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured
+    /// on role level. There is also a second form of config, which can only be configured
+    /// at role level, the `roleConfig`.
+    /// You can learn more about this in the
+    /// [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
     pub coordinators: DruidClusterCoordinators,
-    /// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured on role level. There is also a second form of config, which can only be configured at role level, the `roleConfig`. You can learn more about this in the [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
+    /// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing
+    /// all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable
+    /// at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured
+    /// on role level. There is also a second form of config, which can only be configured
+    /// at role level, the `roleConfig`.
+    /// You can learn more about this in the
+    /// [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
     pub historicals: DruidClusterHistoricals,
-    /// Specify which image to use, the easiest way is to only configure the `productVersion`. You can also configure a custom image registry to pull from, as well as completely custom images.
+    /// Specify which image to use, the easiest way is to only configure the `productVersion`.
+    /// You can also configure a custom image registry to pull from, as well as completely custom
+    /// images.
     /// 
-    /// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)> for details.
+    /// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)>
+    /// for details.
     pub image: DruidClusterImage,
-    /// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured on role level. There is also a second form of config, which can only be configured at role level, the `roleConfig`. You can learn more about this in the [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
+    /// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing
+    /// all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable
+    /// at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured
+    /// on role level. There is also a second form of config, which can only be configured
+    /// at role level, the `roleConfig`.
+    /// You can learn more about this in the
+    /// [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
     #[serde(rename = "middleManagers")]
     pub middle_managers: DruidClusterMiddleManagers,
-    /// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured on role level. There is also a second form of config, which can only be configured at role level, the `roleConfig`. You can learn more about this in the [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
+    /// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing
+    /// all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable
+    /// at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured
+    /// on role level. There is also a second form of config, which can only be configured
+    /// at role level, the `roleConfig`.
+    /// You can learn more about this in the
+    /// [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
     pub routers: DruidClusterRouters,
 }
 
-/// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured on role level. There is also a second form of config, which can only be configured at role level, the `roleConfig`. You can learn more about this in the [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
+/// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing
+/// all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable
+/// at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured
+/// on role level. There is also a second form of config, which can only be configured
+/// at role level, the `roleConfig`.
+/// You can learn more about this in the
+/// [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterBrokers {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cliOverrides")]
     pub cli_overrides: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<DruidClusterBrokersConfig>,
-    /// The `configOverrides` can be used to configure properties in product config files that are not exposed in the CRD. Read the [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)> and consult the operator specific usage guide documentation for details on the available config files and settings for the specific product.
+    /// The `configOverrides` can be used to configure properties in product config files
+    /// that are not exposed in the CRD. Read the
+    /// [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)>
+    /// and consult the operator specific usage guide documentation for details on the
+    /// available config files and settings for the specific product.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configOverrides")]
     pub config_overrides: Option<BTreeMap<String, BTreeMap<String, String>>>,
-    /// `envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)> for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available.
+    /// `envOverrides` configure environment variables to be set in the Pods.
+    /// It is a map from strings to strings - environment variables and the value to set.
+    /// Read the
+    /// [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)>
+    /// for more information and consult the operator specific usage guide to find out about
+    /// the product specific environment variables that are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envOverrides")]
     pub env_overrides: Option<BTreeMap<String, String>>,
-    /// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+    /// Allows overriding JVM arguments.
+    /// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+    /// for details on the usage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
     pub jvm_argument_overrides: Option<DruidClusterBrokersJvmArgumentOverrides>,
-    /// In the `podOverrides` property you can define a [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)> to override any property that can be set on a Kubernetes Pod. Read the [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)> for more information.
+    /// In the `podOverrides` property you can define a
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// to override any property that can be set on a Kubernetes Pod.
+    /// Read the
+    /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
+    /// for more information.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podOverrides")]
     pub pod_overrides: Option<BTreeMap<String, serde_json::Value>>,
     /// This is a product-agnostic RoleConfig, which is sufficient for most of the products.
@@ -70,24 +128,30 @@ pub struct DruidClusterBrokers {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterBrokersConfig {
-    /// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+    /// These configuration settings control
+    /// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<DruidClusterBrokersConfigAffinity>,
-    /// The time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Read more about graceful shutdown in the [graceful shutdown documentation](<https://docs.stackable.tech/home/nightly/druid/usage-guide/operations/graceful-shutdown).>
+    /// The time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`.
+    /// Read more about graceful shutdown in the
+    /// [graceful shutdown documentation](<https://docs.stackable.tech/home/nightly/druid/usage-guide/operations/graceful-shutdown).>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracefulShutdownTimeout")]
     pub graceful_shutdown_timeout: Option<String>,
     /// Logging configuration, learn more in the [logging concept documentation](<https://docs.stackable.tech/home/nightly/concepts/logging).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<DruidClusterBrokersConfigLogging>,
-    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`. This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
+    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`.
+    /// This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestedSecretLifetime")]
     pub requested_secret_lifetime: Option<String>,
-    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+    /// usage, if this role needs any.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<DruidClusterBrokersConfigResources>,
 }
 
-/// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+/// These configuration settings control
+/// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterBrokersConfigAffinity {
     /// Same as the `spec.affinity.nodeAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
@@ -121,7 +185,7 @@ pub struct DruidClusterBrokersConfigLoggingContainers {
     /// Configuration for the console appender
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub console: Option<DruidClusterBrokersConfigLoggingContainersConsole>,
-    /// Custom log configuration provided in a ConfigMap
+    /// Log configuration provided in a ConfigMap
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom: Option<DruidClusterBrokersConfigLoggingContainersCustom>,
     /// Configuration for the file appender
@@ -135,7 +199,8 @@ pub struct DruidClusterBrokersConfigLoggingContainers {
 /// Configuration for the console appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterBrokersConfigLoggingContainersConsole {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<DruidClusterBrokersConfigLoggingContainersConsoleLevel>,
 }
@@ -159,7 +224,7 @@ pub enum DruidClusterBrokersConfigLoggingContainersConsoleLevel {
     None,
 }
 
-/// Custom log configuration provided in a ConfigMap
+/// Log configuration provided in a ConfigMap
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterBrokersConfigLoggingContainersCustom {
     /// ConfigMap containing the log configuration files
@@ -170,7 +235,8 @@ pub struct DruidClusterBrokersConfigLoggingContainersCustom {
 /// Configuration for the file appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterBrokersConfigLoggingContainersFile {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<DruidClusterBrokersConfigLoggingContainersFileLevel>,
 }
@@ -197,7 +263,8 @@ pub enum DruidClusterBrokersConfigLoggingContainersFileLevel {
 /// Configuration per logger
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterBrokersConfigLoggingContainersLoggers {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<DruidClusterBrokersConfigLoggingContainersLoggersLevel>,
 }
@@ -221,31 +288,44 @@ pub enum DruidClusterBrokersConfigLoggingContainersLoggersLevel {
     None,
 }
 
-/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+/// usage, if this role needs any.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterBrokersConfigResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<DruidClusterBrokersConfigResourcesCpu>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<DruidClusterBrokersConfigResourcesMemory>,
-    /// This role does not have any storage settings. Only the Historical role uses disk storage.
+    /// This role does not have any storage settings.
+    /// Only the Historical role uses disk storage.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage: Option<DruidClusterBrokersConfigResourcesStorage>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterBrokersConfigResourcesCpu {
-    /// The maximum amount of CPU cores that can be requested by Pods. Equivalent to the `limit` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The maximum amount of CPU cores that can be requested by Pods.
+    /// Equivalent to the `limit` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max: Option<String>,
-    /// The minimal amount of CPU cores that Pods need to run. Equivalent to the `request` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The minimal amount of CPU cores that Pods need to run.
+    /// Equivalent to the `request` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub min: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterBrokersConfigResourcesMemory {
-    /// The maximum amount of memory that should be available to the Pod. Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),> which means these suffixes are supported: E, P, T, G, M, k. You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki. For example, the following represent roughly the same value: `128974848, 129e6, 129M,  128974848000m, 123Mi`
+    /// The maximum amount of memory that should be available to the Pod.
+    /// Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),>
+    /// which means these suffixes are supported: E, P, T, G, M, k.
+    /// You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki.
+    /// For example, the following represent roughly the same value:
+    /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<String>,
     /// Additional options that can be specified.
@@ -258,12 +338,15 @@ pub struct DruidClusterBrokersConfigResourcesMemory {
 pub struct DruidClusterBrokersConfigResourcesMemoryRuntimeLimits {
 }
 
-/// This role does not have any storage settings. Only the Historical role uses disk storage.
+/// This role does not have any storage settings.
+/// Only the Historical role uses disk storage.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterBrokersConfigResourcesStorage {
 }
 
-/// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+/// Allows overriding JVM arguments.
+/// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+/// for details on the usage.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterBrokersJvmArgumentOverrides {
     /// JVM arguments to be added
@@ -284,24 +367,32 @@ pub struct DruidClusterBrokersRoleConfig {
     pub listener_class: Option<String>,
     /// This struct is used to configure:
     /// 
-    /// 1. If PodDisruptionBudgets are created by the operator 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
+    /// 1. If PodDisruptionBudgets are created by the operator
+    /// 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
     /// 
-    /// Learn more in the [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
+    /// Learn more in the
+    /// [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podDisruptionBudget")]
     pub pod_disruption_budget: Option<DruidClusterBrokersRoleConfigPodDisruptionBudget>,
 }
 
 /// This struct is used to configure:
 /// 
-/// 1. If PodDisruptionBudgets are created by the operator 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
+/// 1. If PodDisruptionBudgets are created by the operator
+/// 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
 /// 
-/// Learn more in the [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
+/// Learn more in the
+/// [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterBrokersRoleConfigPodDisruptionBudget {
-    /// Whether a PodDisruptionBudget should be written out for this role. Disabling this enables you to specify your own - custom - one. Defaults to true.
+    /// Whether a PodDisruptionBudget should be written out for this role.
+    /// Disabling this enables you to specify your own - custom - one.
+    /// Defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    /// The number of Pods that are allowed to be down because of voluntary disruptions. If you don't explicitly set this, the operator will use a sane default based upon knowledge about the individual product.
+    /// The number of Pods that are allowed to be down because of voluntary disruptions.
+    /// If you don't explicitly set this, the operator will use a sane default based
+    /// upon knowledge about the individual product.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<u16>,
 }
@@ -312,16 +403,32 @@ pub struct DruidClusterBrokersRoleGroups {
     pub cli_overrides: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<DruidClusterBrokersRoleGroupsConfig>,
-    /// The `configOverrides` can be used to configure properties in product config files that are not exposed in the CRD. Read the [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)> and consult the operator specific usage guide documentation for details on the available config files and settings for the specific product.
+    /// The `configOverrides` can be used to configure properties in product config files
+    /// that are not exposed in the CRD. Read the
+    /// [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)>
+    /// and consult the operator specific usage guide documentation for details on the
+    /// available config files and settings for the specific product.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configOverrides")]
     pub config_overrides: Option<BTreeMap<String, BTreeMap<String, String>>>,
-    /// `envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)> for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available.
+    /// `envOverrides` configure environment variables to be set in the Pods.
+    /// It is a map from strings to strings - environment variables and the value to set.
+    /// Read the
+    /// [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)>
+    /// for more information and consult the operator specific usage guide to find out about
+    /// the product specific environment variables that are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envOverrides")]
     pub env_overrides: Option<BTreeMap<String, String>>,
-    /// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+    /// Allows overriding JVM arguments.
+    /// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+    /// for details on the usage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
     pub jvm_argument_overrides: Option<DruidClusterBrokersRoleGroupsJvmArgumentOverrides>,
-    /// In the `podOverrides` property you can define a [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)> to override any property that can be set on a Kubernetes Pod. Read the [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)> for more information.
+    /// In the `podOverrides` property you can define a
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// to override any property that can be set on a Kubernetes Pod.
+    /// Read the
+    /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
+    /// for more information.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podOverrides")]
     pub pod_overrides: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -330,24 +437,30 @@ pub struct DruidClusterBrokersRoleGroups {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterBrokersRoleGroupsConfig {
-    /// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+    /// These configuration settings control
+    /// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<DruidClusterBrokersRoleGroupsConfigAffinity>,
-    /// The time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Read more about graceful shutdown in the [graceful shutdown documentation](<https://docs.stackable.tech/home/nightly/druid/usage-guide/operations/graceful-shutdown).>
+    /// The time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`.
+    /// Read more about graceful shutdown in the
+    /// [graceful shutdown documentation](<https://docs.stackable.tech/home/nightly/druid/usage-guide/operations/graceful-shutdown).>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracefulShutdownTimeout")]
     pub graceful_shutdown_timeout: Option<String>,
     /// Logging configuration, learn more in the [logging concept documentation](<https://docs.stackable.tech/home/nightly/concepts/logging).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<DruidClusterBrokersRoleGroupsConfigLogging>,
-    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`. This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
+    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`.
+    /// This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestedSecretLifetime")]
     pub requested_secret_lifetime: Option<String>,
-    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+    /// usage, if this role needs any.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<DruidClusterBrokersRoleGroupsConfigResources>,
 }
 
-/// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+/// These configuration settings control
+/// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterBrokersRoleGroupsConfigAffinity {
     /// Same as the `spec.affinity.nodeAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
@@ -381,7 +494,7 @@ pub struct DruidClusterBrokersRoleGroupsConfigLoggingContainers {
     /// Configuration for the console appender
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub console: Option<DruidClusterBrokersRoleGroupsConfigLoggingContainersConsole>,
-    /// Custom log configuration provided in a ConfigMap
+    /// Log configuration provided in a ConfigMap
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom: Option<DruidClusterBrokersRoleGroupsConfigLoggingContainersCustom>,
     /// Configuration for the file appender
@@ -395,7 +508,8 @@ pub struct DruidClusterBrokersRoleGroupsConfigLoggingContainers {
 /// Configuration for the console appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterBrokersRoleGroupsConfigLoggingContainersConsole {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<DruidClusterBrokersRoleGroupsConfigLoggingContainersConsoleLevel>,
 }
@@ -419,7 +533,7 @@ pub enum DruidClusterBrokersRoleGroupsConfigLoggingContainersConsoleLevel {
     None,
 }
 
-/// Custom log configuration provided in a ConfigMap
+/// Log configuration provided in a ConfigMap
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterBrokersRoleGroupsConfigLoggingContainersCustom {
     /// ConfigMap containing the log configuration files
@@ -430,7 +544,8 @@ pub struct DruidClusterBrokersRoleGroupsConfigLoggingContainersCustom {
 /// Configuration for the file appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterBrokersRoleGroupsConfigLoggingContainersFile {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<DruidClusterBrokersRoleGroupsConfigLoggingContainersFileLevel>,
 }
@@ -457,7 +572,8 @@ pub enum DruidClusterBrokersRoleGroupsConfigLoggingContainersFileLevel {
 /// Configuration per logger
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterBrokersRoleGroupsConfigLoggingContainersLoggers {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<DruidClusterBrokersRoleGroupsConfigLoggingContainersLoggersLevel>,
 }
@@ -481,31 +597,44 @@ pub enum DruidClusterBrokersRoleGroupsConfigLoggingContainersLoggersLevel {
     None,
 }
 
-/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+/// usage, if this role needs any.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterBrokersRoleGroupsConfigResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<DruidClusterBrokersRoleGroupsConfigResourcesCpu>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<DruidClusterBrokersRoleGroupsConfigResourcesMemory>,
-    /// This role does not have any storage settings. Only the Historical role uses disk storage.
+    /// This role does not have any storage settings.
+    /// Only the Historical role uses disk storage.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage: Option<DruidClusterBrokersRoleGroupsConfigResourcesStorage>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterBrokersRoleGroupsConfigResourcesCpu {
-    /// The maximum amount of CPU cores that can be requested by Pods. Equivalent to the `limit` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The maximum amount of CPU cores that can be requested by Pods.
+    /// Equivalent to the `limit` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max: Option<String>,
-    /// The minimal amount of CPU cores that Pods need to run. Equivalent to the `request` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The minimal amount of CPU cores that Pods need to run.
+    /// Equivalent to the `request` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub min: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterBrokersRoleGroupsConfigResourcesMemory {
-    /// The maximum amount of memory that should be available to the Pod. Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),> which means these suffixes are supported: E, P, T, G, M, k. You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki. For example, the following represent roughly the same value: `128974848, 129e6, 129M,  128974848000m, 123Mi`
+    /// The maximum amount of memory that should be available to the Pod.
+    /// Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),>
+    /// which means these suffixes are supported: E, P, T, G, M, k.
+    /// You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki.
+    /// For example, the following represent roughly the same value:
+    /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<String>,
     /// Additional options that can be specified.
@@ -518,12 +647,15 @@ pub struct DruidClusterBrokersRoleGroupsConfigResourcesMemory {
 pub struct DruidClusterBrokersRoleGroupsConfigResourcesMemoryRuntimeLimits {
 }
 
-/// This role does not have any storage settings. Only the Historical role uses disk storage.
+/// This role does not have any storage settings.
+/// Only the Historical role uses disk storage.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterBrokersRoleGroupsConfigResourcesStorage {
 }
 
-/// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+/// Allows overriding JVM arguments.
+/// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+/// for details on the usage.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterBrokersRoleGroupsJvmArgumentOverrides {
     /// JVM arguments to be added
@@ -540,21 +672,31 @@ pub struct DruidClusterBrokersRoleGroupsJvmArgumentOverrides {
 /// Common cluster wide configuration that can not differ or be overridden on a role or role group level.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DruidClusterClusterConfig {
-    /// Additional extensions to load in Druid. The operator will automatically load all extensions needed based on the cluster configuration, but for extra functionality which the operator cannot anticipate, it can sometimes be necessary to load additional extensions. Add configuration for additional extensions using [configuration override for Druid](<https://docs.stackable.tech/home/nightly/druid/usage-guide/overrides).>
+    /// Additional extensions to load in Druid.
+    /// The operator will automatically load all extensions needed based on the cluster
+    /// configuration, but for extra functionality which the operator cannot anticipate, it can
+    /// sometimes be necessary to load additional extensions.
+    /// Add configuration for additional extensions using [configuration override for Druid](<https://docs.stackable.tech/home/nightly/druid/usage-guide/overrides).>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalExtensions")]
     pub additional_extensions: Option<Vec<String>>,
-    /// List of [AuthenticationClasses](<https://docs.stackable.tech/home/nightly/concepts/authentication)> to use for authenticating users. TLS, LDAP and OIDC authentication are supported. More information in the [Druid operator security documentation](<https://docs.stackable.tech/home/nightly/druid/usage-guide/security#_authentication).>
+    /// List of [AuthenticationClasses](<https://docs.stackable.tech/home/nightly/concepts/authentication)>
+    /// to use for authenticating users. TLS, LDAP and OIDC authentication are supported. More information in
+    /// the [Druid operator security documentation](<https://docs.stackable.tech/home/nightly/druid/usage-guide/security#_authentication).>
     /// 
-    /// For TLS: Please note that the SecretClass used to authenticate users needs to be the same as the SecretClass used for internal communication.
+    /// For TLS: Please note that the SecretClass used to authenticate users needs to be the same
+    /// as the SecretClass used for internal communication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authentication: Option<Vec<DruidClusterClusterConfigAuthentication>>,
     /// Authorization settings for Druid like OPA
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<DruidClusterClusterConfigAuthorization>,
-    /// [Druid deep storage configuration](<https://docs.stackable.tech/home/nightly/druid/usage-guide/deep-storage).> Only one backend can be used at a time. Either HDFS or S3 are supported.
+    /// [Druid deep storage configuration](<https://docs.stackable.tech/home/nightly/druid/usage-guide/deep-storage).>
+    /// Only one backend can be used at a time. Either HDFS or S3 are supported.
     #[serde(rename = "deepStorage")]
     pub deep_storage: DruidClusterClusterConfigDeepStorage,
-    /// Extra volumes similar to `.spec.volumes` on a Pod to mount into every container, this can be useful to for example make client certificates, keytabs or similar things available to processors. These volumes will be mounted into all pods at `/stackable/userdata/{volumename}`.
+    /// Extra volumes similar to `.spec.volumes` on a Pod to mount into every container, this can be useful to for
+    /// example make client certificates, keytabs or similar things available to processors. These volumes will be
+    /// mounted into all pods at `/stackable/userdata/{volumename}`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraVolumes")]
     pub extra_volumes: Option<Vec<BTreeMap<String, serde_json::Value>>>,
     /// Configuration properties for data ingestion tasks.
@@ -563,13 +705,22 @@ pub struct DruidClusterClusterConfig {
     /// Druid requires an SQL database to store metadata into. Specify connection information here.
     #[serde(rename = "metadataStorageDatabase")]
     pub metadata_storage_database: DruidClusterClusterConfigMetadataStorageDatabase,
-    /// TLS encryption settings for Druid, more information in the [security documentation](<https://docs.stackable.tech/home/nightly/druid/usage-guide/security).> This setting only affects server and internal communication. It does not affect client tls authentication, use `clusterConfig.authentication` instead.
+    /// TLS encryption settings for Druid, more information in the
+    /// [security documentation](<https://docs.stackable.tech/home/nightly/druid/usage-guide/security).>
+    /// This setting only affects server and internal communication.
+    /// It does not affect client tls authentication, use `clusterConfig.authentication` instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<DruidClusterClusterConfigTls>,
-    /// Name of the Vector aggregator [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery).> It must contain the key `ADDRESS` with the address of the Vector aggregator. Follow the [logging tutorial](<https://docs.stackable.tech/home/nightly/tutorials/logging-vector-aggregator)> to learn how to configure log aggregation with Vector.
+    /// Name of the Vector aggregator [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery).>
+    /// It must contain the key `ADDRESS` with the address of the Vector aggregator.
+    /// Follow the [logging tutorial](<https://docs.stackable.tech/home/nightly/tutorials/logging-vector-aggregator)>
+    /// to learn how to configure log aggregation with Vector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vectorAggregatorConfigMapName")]
     pub vector_aggregator_config_map_name: Option<String>,
-    /// Druid requires a ZooKeeper cluster connection to run. Provide the name of the ZooKeeper [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery)> here. When using the [Stackable operator for Apache ZooKeeper](<https://docs.stackable.tech/home/nightly/zookeeper/)> to deploy a ZooKeeper cluster, this will simply be the name of your ZookeeperCluster resource.
+    /// Druid requires a ZooKeeper cluster connection to run.
+    /// Provide the name of the ZooKeeper [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery)>
+    /// here. When using the [Stackable operator for Apache ZooKeeper](<https://docs.stackable.tech/home/nightly/zookeeper/)>
+    /// to deploy a ZooKeeper cluster, this will simply be the name of your ZookeeperCluster resource.
     #[serde(rename = "zookeeperConfigMapName")]
     pub zookeeper_config_map_name: String,
 }
@@ -587,7 +738,8 @@ pub struct DruidClusterClusterConfigAuthentication {
 /// This field contains OIDC-specific configuration. It is only required in case OIDC is used.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterClusterConfigAuthenticationOidc {
-    /// A reference to the OIDC client credentials secret. The secret contains the client id and secret.
+    /// A reference to the OIDC client credentials secret. The secret contains
+    /// the client id and secret.
     #[serde(rename = "clientCredentialsSecret")]
     pub client_credentials_secret: String,
     /// An optional list of extra scopes which get merged with the scopes defined in the AuthenticationClass
@@ -598,14 +750,25 @@ pub struct DruidClusterClusterConfigAuthenticationOidc {
 /// Authorization settings for Druid like OPA
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterClusterConfigAuthorization {
-    /// Configure the OPA stacklet [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery)> and the name of the Rego package containing your Druid authorization rules. Consult the [OPA authorization documentation](<https://docs.stackable.tech/home/nightly/concepts/opa)> to learn how to deploy Rego authorization rules with OPA. Read the [Druid operator security documentation](<https://docs.stackable.tech/home/nightly/druid/usage-guide/security)> for more information on how to write rules specifically for Druid.
+    /// Configure the OPA stacklet [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery)>
+    /// and the name of the Rego package containing your Druid authorization rules.
+    /// Consult the [OPA authorization documentation](<https://docs.stackable.tech/home/nightly/concepts/opa)>
+    /// to learn how to deploy Rego authorization rules with OPA.
+    /// Read the [Druid operator security documentation](<https://docs.stackable.tech/home/nightly/druid/usage-guide/security)>
+    /// for more information on how to write rules specifically for Druid.
     pub opa: DruidClusterClusterConfigAuthorizationOpa,
 }
 
-/// Configure the OPA stacklet [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery)> and the name of the Rego package containing your Druid authorization rules. Consult the [OPA authorization documentation](<https://docs.stackable.tech/home/nightly/concepts/opa)> to learn how to deploy Rego authorization rules with OPA. Read the [Druid operator security documentation](<https://docs.stackable.tech/home/nightly/druid/usage-guide/security)> for more information on how to write rules specifically for Druid.
+/// Configure the OPA stacklet [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery)>
+/// and the name of the Rego package containing your Druid authorization rules.
+/// Consult the [OPA authorization documentation](<https://docs.stackable.tech/home/nightly/concepts/opa)>
+/// to learn how to deploy Rego authorization rules with OPA.
+/// Read the [Druid operator security documentation](<https://docs.stackable.tech/home/nightly/druid/usage-guide/security)>
+/// for more information on how to write rules specifically for Druid.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterClusterConfigAuthorizationOpa {
-    /// The [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery)> for the OPA stacklet that should be used for authorization requests.
+    /// The [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery)>
+    /// for the OPA stacklet that should be used for authorization requests.
     #[serde(rename = "configMapName")]
     pub config_map_name: String,
     /// The name of the Rego package containing the Rego rules for the product.
@@ -613,10 +776,12 @@ pub struct DruidClusterClusterConfigAuthorizationOpa {
     pub package: Option<String>,
 }
 
-/// [Druid deep storage configuration](<https://docs.stackable.tech/home/nightly/druid/usage-guide/deep-storage).> Only one backend can be used at a time. Either HDFS or S3 are supported.
+/// [Druid deep storage configuration](<https://docs.stackable.tech/home/nightly/druid/usage-guide/deep-storage).>
+/// Only one backend can be used at a time. Either HDFS or S3 are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterClusterConfigDeepStorage {
-    /// [The HDFS deep storage configuration](<https://docs.stackable.tech/home/nightly/druid/usage-guide/deep-storage#_hdfs).> You can run an HDFS cluster with the [Stackable operator for Apache HDFS](<https://docs.stackable.tech/home/nightly/hdfs/).>
+    /// [The HDFS deep storage configuration](<https://docs.stackable.tech/home/nightly/druid/usage-guide/deep-storage#_hdfs).>
+    /// You can run an HDFS cluster with the [Stackable operator for Apache HDFS](<https://docs.stackable.tech/home/nightly/hdfs/).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hdfs: Option<DruidClusterClusterConfigDeepStorageHdfs>,
     /// [The S3 deep storage configuration](<https://docs.stackable.tech/home/nightly/druid/usage-guide/deep-storage#_s3).>
@@ -624,10 +789,13 @@ pub struct DruidClusterClusterConfigDeepStorage {
     pub s3: Option<DruidClusterClusterConfigDeepStorageS3>,
 }
 
-/// [The HDFS deep storage configuration](<https://docs.stackable.tech/home/nightly/druid/usage-guide/deep-storage#_hdfs).> You can run an HDFS cluster with the [Stackable operator for Apache HDFS](<https://docs.stackable.tech/home/nightly/hdfs/).>
+/// [The HDFS deep storage configuration](<https://docs.stackable.tech/home/nightly/druid/usage-guide/deep-storage#_hdfs).>
+/// You can run an HDFS cluster with the [Stackable operator for Apache HDFS](<https://docs.stackable.tech/home/nightly/hdfs/).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterClusterConfigDeepStorageHdfs {
-    /// The [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery)> for the HDFS instance. When running an HDFS cluster with the Stackable operator, the operator will create this ConfigMap for you. It has the same name as your HDFSCluster resource.
+    /// The [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery)>
+    /// for the HDFS instance. When running an HDFS cluster with the Stackable operator, the operator
+    /// will create this ConfigMap for you. It has the same name as your HDFSCluster resource.
     #[serde(rename = "configMapName")]
     pub config_map_name: String,
     /// The directory inside of HDFS where Druid should store its data.
@@ -637,24 +805,30 @@ pub struct DruidClusterClusterConfigDeepStorageHdfs {
 /// [The S3 deep storage configuration](<https://docs.stackable.tech/home/nightly/druid/usage-guide/deep-storage#_s3).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterClusterConfigDeepStorageS3 {
-    /// The `baseKey` is similar to the `directory` in HDFS; it is the root key at which Druid will create its deep storage. If no `baseKey` is given, the bucket root will be used.
+    /// The `baseKey` is similar to the `directory` in HDFS; it is the root key at which
+    /// Druid will create its deep storage. If no `baseKey` is given, the bucket root
+    /// will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseKey")]
     pub base_key: Option<String>,
-    /// The S3 bucket to use for deep storage. Can either be defined inline or as a reference, read the [S3 bucket docs](<https://docs.stackable.tech/home/nightly/concepts/s3)> to learn more.
+    /// The S3 bucket to use for deep storage. Can either be defined inline or as a reference,
+    /// read the [S3 bucket docs](<https://docs.stackable.tech/home/nightly/concepts/s3)> to learn more.
     pub bucket: DruidClusterClusterConfigDeepStorageS3Bucket,
 }
 
-/// The S3 bucket to use for deep storage. Can either be defined inline or as a reference, read the [S3 bucket docs](<https://docs.stackable.tech/home/nightly/concepts/s3)> to learn more.
+/// The S3 bucket to use for deep storage. Can either be defined inline or as a reference,
+/// read the [S3 bucket docs](<https://docs.stackable.tech/home/nightly/concepts/s3)> to learn more.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterClusterConfigDeepStorageS3Bucket {
-    /// S3 bucket specification containing the bucket name and an inlined or referenced connection specification. Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
+    /// S3 bucket specification containing the bucket name and an inlined or referenced connection specification.
+    /// Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub inline: Option<DruidClusterClusterConfigDeepStorageS3BucketInline>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reference: Option<String>,
 }
 
-/// S3 bucket specification containing the bucket name and an inlined or referenced connection specification. Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
+/// S3 bucket specification containing the bucket name and an inlined or referenced connection specification.
+/// Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterClusterConfigDeepStorageS3BucketInline {
     /// The name of the S3 bucket.
@@ -667,25 +841,32 @@ pub struct DruidClusterClusterConfigDeepStorageS3BucketInline {
 /// The definition of an S3 connection, either inline or as a reference.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterClusterConfigDeepStorageS3BucketInlineConnection {
-    /// S3 connection definition as a resource. Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
+    /// S3 connection definition as a resource.
+    /// Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub inline: Option<DruidClusterClusterConfigDeepStorageS3BucketInlineConnectionInline>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reference: Option<String>,
 }
 
-/// S3 connection definition as a resource. Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
+/// S3 connection definition as a resource.
+/// Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterClusterConfigDeepStorageS3BucketInlineConnectionInline {
-    /// Which access style to use. Defaults to virtual hosted-style as most of the data products out there. Have a look at the [AWS documentation](<https://docs.aws.amazon.com/AmazonS3/latest/userguide/VirtualHosting.html).>
+    /// Which access style to use.
+    /// Defaults to virtual hosted-style as most of the data products out there.
+    /// Have a look at the [AWS documentation](<https://docs.aws.amazon.com/AmazonS3/latest/userguide/VirtualHosting.html).>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessStyle")]
     pub access_style: Option<DruidClusterClusterConfigDeepStorageS3BucketInlineConnectionInlineAccessStyle>,
-    /// If the S3 uses authentication you have to specify you S3 credentials. In the most cases a [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> providing `accessKey` and `secretKey` is sufficient.
+    /// If the S3 uses authentication you have to specify you S3 credentials.
+    /// In the most cases a [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)>
+    /// providing `accessKey` and `secretKey` is sufficient.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<DruidClusterClusterConfigDeepStorageS3BucketInlineConnectionInlineCredentials>,
     /// Host of the S3 server without any protocol or port. For example: `west1.my-cloud.com`.
     pub host: String,
-    /// Port the S3 server listens on. If not specified the product will determine the port to use.
+    /// Port the S3 server listens on.
+    /// If not specified the product will determine the port to use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<u16>,
     /// Bucket region used for signing headers (sigv4).
@@ -700,17 +881,21 @@ pub struct DruidClusterClusterConfigDeepStorageS3BucketInlineConnectionInline {
     pub tls: Option<DruidClusterClusterConfigDeepStorageS3BucketInlineConnectionInlineTls>,
 }
 
-/// S3 connection definition as a resource. Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
+/// S3 connection definition as a resource.
+/// Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum DruidClusterClusterConfigDeepStorageS3BucketInlineConnectionInlineAccessStyle {
     Path,
     VirtualHosted,
 }
 
-/// If the S3 uses authentication you have to specify you S3 credentials. In the most cases a [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> providing `accessKey` and `secretKey` is sufficient.
+/// If the S3 uses authentication you have to specify you S3 credentials.
+/// In the most cases a [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)>
+/// providing `accessKey` and `secretKey` is sufficient.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterClusterConfigDeepStorageS3BucketInlineConnectionInlineCredentials {
-    /// [Scope](<https://docs.stackable.tech/home/nightly/secret-operator/scope)> of the [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass).>
+    /// [Scope](<https://docs.stackable.tech/home/nightly/secret-operator/scope)> of the
+    /// [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scope: Option<DruidClusterClusterConfigDeepStorageS3BucketInlineConnectionInlineCredentialsScope>,
     /// [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> containing the LDAP bind credentials.
@@ -718,19 +903,24 @@ pub struct DruidClusterClusterConfigDeepStorageS3BucketInlineConnectionInlineCre
     pub secret_class: String,
 }
 
-/// [Scope](<https://docs.stackable.tech/home/nightly/secret-operator/scope)> of the [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass).>
+/// [Scope](<https://docs.stackable.tech/home/nightly/secret-operator/scope)> of the
+/// [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterClusterConfigDeepStorageS3BucketInlineConnectionInlineCredentialsScope {
-    /// The listener volume scope allows Node and Service scopes to be inferred from the applicable listeners. This must correspond to Volume names in the Pod that mount Listeners.
+    /// The listener volume scope allows Node and Service scopes to be inferred from the applicable listeners.
+    /// This must correspond to Volume names in the Pod that mount Listeners.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenerVolumes")]
     pub listener_volumes: Option<Vec<String>>,
-    /// The node scope is resolved to the name of the Kubernetes Node object that the Pod is running on. This will typically be the DNS name of the node.
+    /// The node scope is resolved to the name of the Kubernetes Node object that the Pod is running on.
+    /// This will typically be the DNS name of the node.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub node: Option<bool>,
-    /// The pod scope is resolved to the name of the Kubernetes Pod. This allows the secret to differentiate between StatefulSet replicas.
+    /// The pod scope is resolved to the name of the Kubernetes Pod.
+    /// This allows the secret to differentiate between StatefulSet replicas.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pod: Option<bool>,
-    /// The service scope allows Pod objects to specify custom scopes. This should typically correspond to Service objects that the Pod participates in.
+    /// The service scope allows Pod objects to specify custom scopes.
+    /// This should typically correspond to Service objects that the Pod participates in.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<String>>,
 }
@@ -780,15 +970,19 @@ pub struct DruidClusterClusterConfigDeepStorageS3BucketInlineConnectionInlineTls
 /// CA cert to verify the server.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterClusterConfigDeepStorageS3BucketInlineConnectionInlineTlsVerificationServerCaCert {
-    /// Name of the [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> which will provide the CA certificate. Note that a SecretClass does not need to have a key but can also work with just a CA certificate, so if you got provided with a CA cert but don't have access to the key you can still use this method.
+    /// Name of the [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> which will provide the CA certificate.
+    /// Note that a SecretClass does not need to have a key but can also work with just a CA certificate,
+    /// so if you got provided with a CA cert but don't have access to the key you can still use this method.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretClass")]
     pub secret_class: Option<String>,
-    /// Use TLS and the CA certificates trusted by the common web browsers to verify the server. This can be useful when you e.g. use public AWS S3 or other public available services.
+    /// Use TLS and the CA certificates trusted by the common web browsers to verify the server.
+    /// This can be useful when you e.g. use public AWS S3 or other public available services.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "webPki")]
     pub web_pki: Option<DruidClusterClusterConfigDeepStorageS3BucketInlineConnectionInlineTlsVerificationServerCaCertWebPki>,
 }
 
-/// Use TLS and the CA certificates trusted by the common web browsers to verify the server. This can be useful when you e.g. use public AWS S3 or other public available services.
+/// Use TLS and the CA certificates trusted by the common web browsers to verify the server.
+/// This can be useful when you e.g. use public AWS S3 or other public available services.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterClusterConfigDeepStorageS3BucketInlineConnectionInlineTlsVerificationServerCaCertWebPki {
 }
@@ -796,33 +990,46 @@ pub struct DruidClusterClusterConfigDeepStorageS3BucketInlineConnectionInlineTls
 /// Configuration properties for data ingestion tasks.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterClusterConfigIngestion {
-    /// Druid supports ingesting data from S3 buckets where the bucket name is specified in the ingestion task. However, the S3 connection has to be specified in advance and only a single S3 connection is supported. S3 connections can either be specified `inline` or as a `reference`. Read the [S3 resource concept docs](<https://docs.stackable.tech/home/nightly/concepts/s3)> to learn more.
+    /// Druid supports ingesting data from S3 buckets where the bucket name is specified in the ingestion task.
+    /// However, the S3 connection has to be specified in advance and only a single S3 connection is supported.
+    /// S3 connections can either be specified `inline` or as a `reference`.
+    /// Read the [S3 resource concept docs](<https://docs.stackable.tech/home/nightly/concepts/s3)> to learn more.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub s3connection: Option<DruidClusterClusterConfigIngestionS3connection>,
 }
 
-/// Druid supports ingesting data from S3 buckets where the bucket name is specified in the ingestion task. However, the S3 connection has to be specified in advance and only a single S3 connection is supported. S3 connections can either be specified `inline` or as a `reference`. Read the [S3 resource concept docs](<https://docs.stackable.tech/home/nightly/concepts/s3)> to learn more.
+/// Druid supports ingesting data from S3 buckets where the bucket name is specified in the ingestion task.
+/// However, the S3 connection has to be specified in advance and only a single S3 connection is supported.
+/// S3 connections can either be specified `inline` or as a `reference`.
+/// Read the [S3 resource concept docs](<https://docs.stackable.tech/home/nightly/concepts/s3)> to learn more.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterClusterConfigIngestionS3connection {
-    /// S3 connection definition as a resource. Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
+    /// S3 connection definition as a resource.
+    /// Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub inline: Option<DruidClusterClusterConfigIngestionS3connectionInline>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reference: Option<String>,
 }
 
-/// S3 connection definition as a resource. Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
+/// S3 connection definition as a resource.
+/// Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterClusterConfigIngestionS3connectionInline {
-    /// Which access style to use. Defaults to virtual hosted-style as most of the data products out there. Have a look at the [AWS documentation](<https://docs.aws.amazon.com/AmazonS3/latest/userguide/VirtualHosting.html).>
+    /// Which access style to use.
+    /// Defaults to virtual hosted-style as most of the data products out there.
+    /// Have a look at the [AWS documentation](<https://docs.aws.amazon.com/AmazonS3/latest/userguide/VirtualHosting.html).>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessStyle")]
     pub access_style: Option<DruidClusterClusterConfigIngestionS3connectionInlineAccessStyle>,
-    /// If the S3 uses authentication you have to specify you S3 credentials. In the most cases a [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> providing `accessKey` and `secretKey` is sufficient.
+    /// If the S3 uses authentication you have to specify you S3 credentials.
+    /// In the most cases a [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)>
+    /// providing `accessKey` and `secretKey` is sufficient.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<DruidClusterClusterConfigIngestionS3connectionInlineCredentials>,
     /// Host of the S3 server without any protocol or port. For example: `west1.my-cloud.com`.
     pub host: String,
-    /// Port the S3 server listens on. If not specified the product will determine the port to use.
+    /// Port the S3 server listens on.
+    /// If not specified the product will determine the port to use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<u16>,
     /// Bucket region used for signing headers (sigv4).
@@ -837,17 +1044,21 @@ pub struct DruidClusterClusterConfigIngestionS3connectionInline {
     pub tls: Option<DruidClusterClusterConfigIngestionS3connectionInlineTls>,
 }
 
-/// S3 connection definition as a resource. Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
+/// S3 connection definition as a resource.
+/// Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum DruidClusterClusterConfigIngestionS3connectionInlineAccessStyle {
     Path,
     VirtualHosted,
 }
 
-/// If the S3 uses authentication you have to specify you S3 credentials. In the most cases a [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> providing `accessKey` and `secretKey` is sufficient.
+/// If the S3 uses authentication you have to specify you S3 credentials.
+/// In the most cases a [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)>
+/// providing `accessKey` and `secretKey` is sufficient.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterClusterConfigIngestionS3connectionInlineCredentials {
-    /// [Scope](<https://docs.stackable.tech/home/nightly/secret-operator/scope)> of the [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass).>
+    /// [Scope](<https://docs.stackable.tech/home/nightly/secret-operator/scope)> of the
+    /// [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scope: Option<DruidClusterClusterConfigIngestionS3connectionInlineCredentialsScope>,
     /// [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> containing the LDAP bind credentials.
@@ -855,19 +1066,24 @@ pub struct DruidClusterClusterConfigIngestionS3connectionInlineCredentials {
     pub secret_class: String,
 }
 
-/// [Scope](<https://docs.stackable.tech/home/nightly/secret-operator/scope)> of the [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass).>
+/// [Scope](<https://docs.stackable.tech/home/nightly/secret-operator/scope)> of the
+/// [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterClusterConfigIngestionS3connectionInlineCredentialsScope {
-    /// The listener volume scope allows Node and Service scopes to be inferred from the applicable listeners. This must correspond to Volume names in the Pod that mount Listeners.
+    /// The listener volume scope allows Node and Service scopes to be inferred from the applicable listeners.
+    /// This must correspond to Volume names in the Pod that mount Listeners.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenerVolumes")]
     pub listener_volumes: Option<Vec<String>>,
-    /// The node scope is resolved to the name of the Kubernetes Node object that the Pod is running on. This will typically be the DNS name of the node.
+    /// The node scope is resolved to the name of the Kubernetes Node object that the Pod is running on.
+    /// This will typically be the DNS name of the node.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub node: Option<bool>,
-    /// The pod scope is resolved to the name of the Kubernetes Pod. This allows the secret to differentiate between StatefulSet replicas.
+    /// The pod scope is resolved to the name of the Kubernetes Pod.
+    /// This allows the secret to differentiate between StatefulSet replicas.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pod: Option<bool>,
-    /// The service scope allows Pod objects to specify custom scopes. This should typically correspond to Service objects that the Pod participates in.
+    /// The service scope allows Pod objects to specify custom scopes.
+    /// This should typically correspond to Service objects that the Pod participates in.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<String>>,
 }
@@ -917,15 +1133,19 @@ pub struct DruidClusterClusterConfigIngestionS3connectionInlineTlsVerificationSe
 /// CA cert to verify the server.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterClusterConfigIngestionS3connectionInlineTlsVerificationServerCaCert {
-    /// Name of the [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> which will provide the CA certificate. Note that a SecretClass does not need to have a key but can also work with just a CA certificate, so if you got provided with a CA cert but don't have access to the key you can still use this method.
+    /// Name of the [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> which will provide the CA certificate.
+    /// Note that a SecretClass does not need to have a key but can also work with just a CA certificate,
+    /// so if you got provided with a CA cert but don't have access to the key you can still use this method.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretClass")]
     pub secret_class: Option<String>,
-    /// Use TLS and the CA certificates trusted by the common web browsers to verify the server. This can be useful when you e.g. use public AWS S3 or other public available services.
+    /// Use TLS and the CA certificates trusted by the common web browsers to verify the server.
+    /// This can be useful when you e.g. use public AWS S3 or other public available services.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "webPki")]
     pub web_pki: Option<DruidClusterClusterConfigIngestionS3connectionInlineTlsVerificationServerCaCertWebPki>,
 }
 
-/// Use TLS and the CA certificates trusted by the common web browsers to verify the server. This can be useful when you e.g. use public AWS S3 or other public available services.
+/// Use TLS and the CA certificates trusted by the common web browsers to verify the server.
+/// This can be useful when you e.g. use public AWS S3 or other public available services.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterClusterConfigIngestionS3connectionInlineTlsVerificationServerCaCertWebPki {
 }
@@ -933,13 +1153,17 @@ pub struct DruidClusterClusterConfigIngestionS3connectionInlineTlsVerificationSe
 /// Druid requires an SQL database to store metadata into. Specify connection information here.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct DruidClusterClusterConfigMetadataStorageDatabase {
-    /// The connect string for the database, for Postgres this could look like: `jdbc:postgresql://postgresql-druid/druid`
+    /// The connect string for the database, for Postgres this could look like:
+    /// `jdbc:postgresql://postgresql-druid/druid`
     #[serde(rename = "connString")]
     pub conn_string: String,
-    /// A reference to a Secret containing the database credentials. The Secret needs to contain the keys `username` and `password`.
+    /// A reference to a Secret containing the database credentials.
+    /// The Secret needs to contain the keys `username` and `password`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsSecret")]
     pub credentials_secret: Option<String>,
-    /// The database type. Supported values are: `derby`, `mysql` and `postgres`. Note that a Derby database created locally in the container is not persisted! Derby is not suitable for production use.
+    /// The database type. Supported values are: `derby`, `mysql` and `postgres`.
+    /// Note that a Derby database created locally in the container is not persisted!
+    /// Derby is not suitable for production use.
     #[serde(rename = "dbType")]
     pub db_type: DruidClusterClusterConfigMetadataStorageDatabaseDbType,
     /// The host, i.e. `postgresql-druid`.
@@ -959,42 +1183,80 @@ pub enum DruidClusterClusterConfigMetadataStorageDatabaseDbType {
     Postgresql,
 }
 
-/// TLS encryption settings for Druid, more information in the [security documentation](<https://docs.stackable.tech/home/nightly/druid/usage-guide/security).> This setting only affects server and internal communication. It does not affect client tls authentication, use `clusterConfig.authentication` instead.
+/// TLS encryption settings for Druid, more information in the
+/// [security documentation](<https://docs.stackable.tech/home/nightly/druid/usage-guide/security).>
+/// This setting only affects server and internal communication.
+/// It does not affect client tls authentication, use `clusterConfig.authentication` instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterClusterConfigTls {
-    /// This setting controls client as well as internal tls usage: - If TLS encryption is used at all - Which cert the servers should use to authenticate themselves against the clients - Which cert the servers should use to authenticate themselves among each other
+    /// This setting controls client as well as internal tls usage:
+    /// - If TLS encryption is used at all
+    /// - Which cert the servers should use to authenticate themselves against the clients
+    /// - Which cert the servers should use to authenticate themselves among each other
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverAndInternalSecretClass")]
     pub server_and_internal_secret_class: Option<String>,
 }
 
-/// [Cluster operations](<https://docs.stackable.tech/home/nightly/concepts/operations/cluster_operations)> properties, allow stopping the product instance as well as pausing reconciliation.
+/// [Cluster operations](<https://docs.stackable.tech/home/nightly/concepts/operations/cluster_operations)>
+/// properties, allow stopping the product instance as well as pausing reconciliation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterClusterOperation {
-    /// Flag to stop cluster reconciliation by the operator. This means that all changes in the custom resource spec are ignored until this flag is set to false or removed. The operator will however still watch the deployed resources at the time and update the custom resource status field. If applied at the same time with `stopped`, `reconciliationPaused` will take precedence over `stopped` and stop the reconciliation immediately.
+    /// Flag to stop cluster reconciliation by the operator. This means that all changes in the
+    /// custom resource spec are ignored until this flag is set to false or removed. The operator
+    /// will however still watch the deployed resources at the time and update the custom resource
+    /// status field.
+    /// If applied at the same time with `stopped`, `reconciliationPaused` will take precedence over
+    /// `stopped` and stop the reconciliation immediately.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconciliationPaused")]
     pub reconciliation_paused: Option<bool>,
-    /// Flag to stop the cluster. This means all deployed resources (e.g. Services, StatefulSets, ConfigMaps) are kept but all deployed Pods (e.g. replicas from a StatefulSet) are scaled to 0 and therefore stopped and removed. If applied at the same time with `reconciliationPaused`, the latter will pause reconciliation and `stopped` will take no effect until `reconciliationPaused` is set to false or removed.
+    /// Flag to stop the cluster. This means all deployed resources (e.g. Services, StatefulSets,
+    /// ConfigMaps) are kept but all deployed Pods (e.g. replicas from a StatefulSet) are scaled to 0
+    /// and therefore stopped and removed.
+    /// If applied at the same time with `reconciliationPaused`, the latter will pause reconciliation
+    /// and `stopped` will take no effect until `reconciliationPaused` is set to false or removed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub stopped: Option<bool>,
 }
 
-/// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured on role level. There is also a second form of config, which can only be configured at role level, the `roleConfig`. You can learn more about this in the [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
+/// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing
+/// all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable
+/// at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured
+/// on role level. There is also a second form of config, which can only be configured
+/// at role level, the `roleConfig`.
+/// You can learn more about this in the
+/// [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterCoordinators {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cliOverrides")]
     pub cli_overrides: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<DruidClusterCoordinatorsConfig>,
-    /// The `configOverrides` can be used to configure properties in product config files that are not exposed in the CRD. Read the [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)> and consult the operator specific usage guide documentation for details on the available config files and settings for the specific product.
+    /// The `configOverrides` can be used to configure properties in product config files
+    /// that are not exposed in the CRD. Read the
+    /// [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)>
+    /// and consult the operator specific usage guide documentation for details on the
+    /// available config files and settings for the specific product.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configOverrides")]
     pub config_overrides: Option<BTreeMap<String, BTreeMap<String, String>>>,
-    /// `envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)> for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available.
+    /// `envOverrides` configure environment variables to be set in the Pods.
+    /// It is a map from strings to strings - environment variables and the value to set.
+    /// Read the
+    /// [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)>
+    /// for more information and consult the operator specific usage guide to find out about
+    /// the product specific environment variables that are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envOverrides")]
     pub env_overrides: Option<BTreeMap<String, String>>,
-    /// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+    /// Allows overriding JVM arguments.
+    /// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+    /// for details on the usage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
     pub jvm_argument_overrides: Option<DruidClusterCoordinatorsJvmArgumentOverrides>,
-    /// In the `podOverrides` property you can define a [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)> to override any property that can be set on a Kubernetes Pod. Read the [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)> for more information.
+    /// In the `podOverrides` property you can define a
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// to override any property that can be set on a Kubernetes Pod.
+    /// Read the
+    /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
+    /// for more information.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podOverrides")]
     pub pod_overrides: Option<BTreeMap<String, serde_json::Value>>,
     /// This is a product-agnostic RoleConfig, which is sufficient for most of the products.
@@ -1006,24 +1268,30 @@ pub struct DruidClusterCoordinators {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterCoordinatorsConfig {
-    /// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+    /// These configuration settings control
+    /// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<DruidClusterCoordinatorsConfigAffinity>,
-    /// The time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Read more about graceful shutdown in the [graceful shutdown documentation](<https://docs.stackable.tech/home/nightly/druid/usage-guide/operations/graceful-shutdown).>
+    /// The time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`.
+    /// Read more about graceful shutdown in the
+    /// [graceful shutdown documentation](<https://docs.stackable.tech/home/nightly/druid/usage-guide/operations/graceful-shutdown).>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracefulShutdownTimeout")]
     pub graceful_shutdown_timeout: Option<String>,
     /// Logging configuration, learn more in the [logging concept documentation](<https://docs.stackable.tech/home/nightly/concepts/logging).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<DruidClusterCoordinatorsConfigLogging>,
-    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`. This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
+    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`.
+    /// This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestedSecretLifetime")]
     pub requested_secret_lifetime: Option<String>,
-    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+    /// usage, if this role needs any.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<DruidClusterCoordinatorsConfigResources>,
 }
 
-/// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+/// These configuration settings control
+/// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterCoordinatorsConfigAffinity {
     /// Same as the `spec.affinity.nodeAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
@@ -1057,7 +1325,7 @@ pub struct DruidClusterCoordinatorsConfigLoggingContainers {
     /// Configuration for the console appender
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub console: Option<DruidClusterCoordinatorsConfigLoggingContainersConsole>,
-    /// Custom log configuration provided in a ConfigMap
+    /// Log configuration provided in a ConfigMap
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom: Option<DruidClusterCoordinatorsConfigLoggingContainersCustom>,
     /// Configuration for the file appender
@@ -1071,7 +1339,8 @@ pub struct DruidClusterCoordinatorsConfigLoggingContainers {
 /// Configuration for the console appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterCoordinatorsConfigLoggingContainersConsole {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<DruidClusterCoordinatorsConfigLoggingContainersConsoleLevel>,
 }
@@ -1095,7 +1364,7 @@ pub enum DruidClusterCoordinatorsConfigLoggingContainersConsoleLevel {
     None,
 }
 
-/// Custom log configuration provided in a ConfigMap
+/// Log configuration provided in a ConfigMap
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterCoordinatorsConfigLoggingContainersCustom {
     /// ConfigMap containing the log configuration files
@@ -1106,7 +1375,8 @@ pub struct DruidClusterCoordinatorsConfigLoggingContainersCustom {
 /// Configuration for the file appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterCoordinatorsConfigLoggingContainersFile {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<DruidClusterCoordinatorsConfigLoggingContainersFileLevel>,
 }
@@ -1133,7 +1403,8 @@ pub enum DruidClusterCoordinatorsConfigLoggingContainersFileLevel {
 /// Configuration per logger
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterCoordinatorsConfigLoggingContainersLoggers {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<DruidClusterCoordinatorsConfigLoggingContainersLoggersLevel>,
 }
@@ -1157,31 +1428,44 @@ pub enum DruidClusterCoordinatorsConfigLoggingContainersLoggersLevel {
     None,
 }
 
-/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+/// usage, if this role needs any.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterCoordinatorsConfigResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<DruidClusterCoordinatorsConfigResourcesCpu>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<DruidClusterCoordinatorsConfigResourcesMemory>,
-    /// This role does not have any storage settings. Only the Historical role uses disk storage.
+    /// This role does not have any storage settings.
+    /// Only the Historical role uses disk storage.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage: Option<DruidClusterCoordinatorsConfigResourcesStorage>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterCoordinatorsConfigResourcesCpu {
-    /// The maximum amount of CPU cores that can be requested by Pods. Equivalent to the `limit` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The maximum amount of CPU cores that can be requested by Pods.
+    /// Equivalent to the `limit` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max: Option<String>,
-    /// The minimal amount of CPU cores that Pods need to run. Equivalent to the `request` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The minimal amount of CPU cores that Pods need to run.
+    /// Equivalent to the `request` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub min: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterCoordinatorsConfigResourcesMemory {
-    /// The maximum amount of memory that should be available to the Pod. Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),> which means these suffixes are supported: E, P, T, G, M, k. You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki. For example, the following represent roughly the same value: `128974848, 129e6, 129M,  128974848000m, 123Mi`
+    /// The maximum amount of memory that should be available to the Pod.
+    /// Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),>
+    /// which means these suffixes are supported: E, P, T, G, M, k.
+    /// You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki.
+    /// For example, the following represent roughly the same value:
+    /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<String>,
     /// Additional options that can be specified.
@@ -1194,12 +1478,15 @@ pub struct DruidClusterCoordinatorsConfigResourcesMemory {
 pub struct DruidClusterCoordinatorsConfigResourcesMemoryRuntimeLimits {
 }
 
-/// This role does not have any storage settings. Only the Historical role uses disk storage.
+/// This role does not have any storage settings.
+/// Only the Historical role uses disk storage.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterCoordinatorsConfigResourcesStorage {
 }
 
-/// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+/// Allows overriding JVM arguments.
+/// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+/// for details on the usage.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterCoordinatorsJvmArgumentOverrides {
     /// JVM arguments to be added
@@ -1220,24 +1507,32 @@ pub struct DruidClusterCoordinatorsRoleConfig {
     pub listener_class: Option<String>,
     /// This struct is used to configure:
     /// 
-    /// 1. If PodDisruptionBudgets are created by the operator 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
+    /// 1. If PodDisruptionBudgets are created by the operator
+    /// 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
     /// 
-    /// Learn more in the [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
+    /// Learn more in the
+    /// [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podDisruptionBudget")]
     pub pod_disruption_budget: Option<DruidClusterCoordinatorsRoleConfigPodDisruptionBudget>,
 }
 
 /// This struct is used to configure:
 /// 
-/// 1. If PodDisruptionBudgets are created by the operator 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
+/// 1. If PodDisruptionBudgets are created by the operator
+/// 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
 /// 
-/// Learn more in the [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
+/// Learn more in the
+/// [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterCoordinatorsRoleConfigPodDisruptionBudget {
-    /// Whether a PodDisruptionBudget should be written out for this role. Disabling this enables you to specify your own - custom - one. Defaults to true.
+    /// Whether a PodDisruptionBudget should be written out for this role.
+    /// Disabling this enables you to specify your own - custom - one.
+    /// Defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    /// The number of Pods that are allowed to be down because of voluntary disruptions. If you don't explicitly set this, the operator will use a sane default based upon knowledge about the individual product.
+    /// The number of Pods that are allowed to be down because of voluntary disruptions.
+    /// If you don't explicitly set this, the operator will use a sane default based
+    /// upon knowledge about the individual product.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<u16>,
 }
@@ -1248,16 +1543,32 @@ pub struct DruidClusterCoordinatorsRoleGroups {
     pub cli_overrides: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<DruidClusterCoordinatorsRoleGroupsConfig>,
-    /// The `configOverrides` can be used to configure properties in product config files that are not exposed in the CRD. Read the [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)> and consult the operator specific usage guide documentation for details on the available config files and settings for the specific product.
+    /// The `configOverrides` can be used to configure properties in product config files
+    /// that are not exposed in the CRD. Read the
+    /// [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)>
+    /// and consult the operator specific usage guide documentation for details on the
+    /// available config files and settings for the specific product.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configOverrides")]
     pub config_overrides: Option<BTreeMap<String, BTreeMap<String, String>>>,
-    /// `envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)> for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available.
+    /// `envOverrides` configure environment variables to be set in the Pods.
+    /// It is a map from strings to strings - environment variables and the value to set.
+    /// Read the
+    /// [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)>
+    /// for more information and consult the operator specific usage guide to find out about
+    /// the product specific environment variables that are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envOverrides")]
     pub env_overrides: Option<BTreeMap<String, String>>,
-    /// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+    /// Allows overriding JVM arguments.
+    /// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+    /// for details on the usage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
     pub jvm_argument_overrides: Option<DruidClusterCoordinatorsRoleGroupsJvmArgumentOverrides>,
-    /// In the `podOverrides` property you can define a [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)> to override any property that can be set on a Kubernetes Pod. Read the [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)> for more information.
+    /// In the `podOverrides` property you can define a
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// to override any property that can be set on a Kubernetes Pod.
+    /// Read the
+    /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
+    /// for more information.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podOverrides")]
     pub pod_overrides: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1266,24 +1577,30 @@ pub struct DruidClusterCoordinatorsRoleGroups {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterCoordinatorsRoleGroupsConfig {
-    /// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+    /// These configuration settings control
+    /// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<DruidClusterCoordinatorsRoleGroupsConfigAffinity>,
-    /// The time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Read more about graceful shutdown in the [graceful shutdown documentation](<https://docs.stackable.tech/home/nightly/druid/usage-guide/operations/graceful-shutdown).>
+    /// The time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`.
+    /// Read more about graceful shutdown in the
+    /// [graceful shutdown documentation](<https://docs.stackable.tech/home/nightly/druid/usage-guide/operations/graceful-shutdown).>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracefulShutdownTimeout")]
     pub graceful_shutdown_timeout: Option<String>,
     /// Logging configuration, learn more in the [logging concept documentation](<https://docs.stackable.tech/home/nightly/concepts/logging).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<DruidClusterCoordinatorsRoleGroupsConfigLogging>,
-    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`. This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
+    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`.
+    /// This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestedSecretLifetime")]
     pub requested_secret_lifetime: Option<String>,
-    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+    /// usage, if this role needs any.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<DruidClusterCoordinatorsRoleGroupsConfigResources>,
 }
 
-/// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+/// These configuration settings control
+/// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterCoordinatorsRoleGroupsConfigAffinity {
     /// Same as the `spec.affinity.nodeAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
@@ -1317,7 +1634,7 @@ pub struct DruidClusterCoordinatorsRoleGroupsConfigLoggingContainers {
     /// Configuration for the console appender
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub console: Option<DruidClusterCoordinatorsRoleGroupsConfigLoggingContainersConsole>,
-    /// Custom log configuration provided in a ConfigMap
+    /// Log configuration provided in a ConfigMap
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom: Option<DruidClusterCoordinatorsRoleGroupsConfigLoggingContainersCustom>,
     /// Configuration for the file appender
@@ -1331,7 +1648,8 @@ pub struct DruidClusterCoordinatorsRoleGroupsConfigLoggingContainers {
 /// Configuration for the console appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterCoordinatorsRoleGroupsConfigLoggingContainersConsole {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<DruidClusterCoordinatorsRoleGroupsConfigLoggingContainersConsoleLevel>,
 }
@@ -1355,7 +1673,7 @@ pub enum DruidClusterCoordinatorsRoleGroupsConfigLoggingContainersConsoleLevel {
     None,
 }
 
-/// Custom log configuration provided in a ConfigMap
+/// Log configuration provided in a ConfigMap
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterCoordinatorsRoleGroupsConfigLoggingContainersCustom {
     /// ConfigMap containing the log configuration files
@@ -1366,7 +1684,8 @@ pub struct DruidClusterCoordinatorsRoleGroupsConfigLoggingContainersCustom {
 /// Configuration for the file appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterCoordinatorsRoleGroupsConfigLoggingContainersFile {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<DruidClusterCoordinatorsRoleGroupsConfigLoggingContainersFileLevel>,
 }
@@ -1393,7 +1712,8 @@ pub enum DruidClusterCoordinatorsRoleGroupsConfigLoggingContainersFileLevel {
 /// Configuration per logger
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterCoordinatorsRoleGroupsConfigLoggingContainersLoggers {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<DruidClusterCoordinatorsRoleGroupsConfigLoggingContainersLoggersLevel>,
 }
@@ -1417,31 +1737,44 @@ pub enum DruidClusterCoordinatorsRoleGroupsConfigLoggingContainersLoggersLevel {
     None,
 }
 
-/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+/// usage, if this role needs any.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterCoordinatorsRoleGroupsConfigResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<DruidClusterCoordinatorsRoleGroupsConfigResourcesCpu>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<DruidClusterCoordinatorsRoleGroupsConfigResourcesMemory>,
-    /// This role does not have any storage settings. Only the Historical role uses disk storage.
+    /// This role does not have any storage settings.
+    /// Only the Historical role uses disk storage.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage: Option<DruidClusterCoordinatorsRoleGroupsConfigResourcesStorage>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterCoordinatorsRoleGroupsConfigResourcesCpu {
-    /// The maximum amount of CPU cores that can be requested by Pods. Equivalent to the `limit` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The maximum amount of CPU cores that can be requested by Pods.
+    /// Equivalent to the `limit` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max: Option<String>,
-    /// The minimal amount of CPU cores that Pods need to run. Equivalent to the `request` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The minimal amount of CPU cores that Pods need to run.
+    /// Equivalent to the `request` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub min: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterCoordinatorsRoleGroupsConfigResourcesMemory {
-    /// The maximum amount of memory that should be available to the Pod. Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),> which means these suffixes are supported: E, P, T, G, M, k. You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki. For example, the following represent roughly the same value: `128974848, 129e6, 129M,  128974848000m, 123Mi`
+    /// The maximum amount of memory that should be available to the Pod.
+    /// Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),>
+    /// which means these suffixes are supported: E, P, T, G, M, k.
+    /// You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki.
+    /// For example, the following represent roughly the same value:
+    /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<String>,
     /// Additional options that can be specified.
@@ -1454,12 +1787,15 @@ pub struct DruidClusterCoordinatorsRoleGroupsConfigResourcesMemory {
 pub struct DruidClusterCoordinatorsRoleGroupsConfigResourcesMemoryRuntimeLimits {
 }
 
-/// This role does not have any storage settings. Only the Historical role uses disk storage.
+/// This role does not have any storage settings.
+/// Only the Historical role uses disk storage.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterCoordinatorsRoleGroupsConfigResourcesStorage {
 }
 
-/// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+/// Allows overriding JVM arguments.
+/// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+/// for details on the usage.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterCoordinatorsRoleGroupsJvmArgumentOverrides {
     /// JVM arguments to be added
@@ -1473,23 +1809,45 @@ pub struct DruidClusterCoordinatorsRoleGroupsJvmArgumentOverrides {
     pub remove_regex: Option<Vec<String>>,
 }
 
-/// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured on role level. There is also a second form of config, which can only be configured at role level, the `roleConfig`. You can learn more about this in the [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
+/// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing
+/// all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable
+/// at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured
+/// on role level. There is also a second form of config, which can only be configured
+/// at role level, the `roleConfig`.
+/// You can learn more about this in the
+/// [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterHistoricals {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cliOverrides")]
     pub cli_overrides: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<DruidClusterHistoricalsConfig>,
-    /// The `configOverrides` can be used to configure properties in product config files that are not exposed in the CRD. Read the [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)> and consult the operator specific usage guide documentation for details on the available config files and settings for the specific product.
+    /// The `configOverrides` can be used to configure properties in product config files
+    /// that are not exposed in the CRD. Read the
+    /// [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)>
+    /// and consult the operator specific usage guide documentation for details on the
+    /// available config files and settings for the specific product.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configOverrides")]
     pub config_overrides: Option<BTreeMap<String, BTreeMap<String, String>>>,
-    /// `envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)> for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available.
+    /// `envOverrides` configure environment variables to be set in the Pods.
+    /// It is a map from strings to strings - environment variables and the value to set.
+    /// Read the
+    /// [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)>
+    /// for more information and consult the operator specific usage guide to find out about
+    /// the product specific environment variables that are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envOverrides")]
     pub env_overrides: Option<BTreeMap<String, String>>,
-    /// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+    /// Allows overriding JVM arguments.
+    /// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+    /// for details on the usage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
     pub jvm_argument_overrides: Option<DruidClusterHistoricalsJvmArgumentOverrides>,
-    /// In the `podOverrides` property you can define a [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)> to override any property that can be set on a Kubernetes Pod. Read the [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)> for more information.
+    /// In the `podOverrides` property you can define a
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// to override any property that can be set on a Kubernetes Pod.
+    /// Read the
+    /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
+    /// for more information.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podOverrides")]
     pub pod_overrides: Option<BTreeMap<String, serde_json::Value>>,
     /// This is a product-agnostic RoleConfig, which is sufficient for most of the products.
@@ -1501,24 +1859,30 @@ pub struct DruidClusterHistoricals {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterHistoricalsConfig {
-    /// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+    /// These configuration settings control
+    /// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<DruidClusterHistoricalsConfigAffinity>,
-    /// The time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Read more about graceful shutdown in the [graceful shutdown documentation](<https://docs.stackable.tech/home/nightly/druid/usage-guide/operations/graceful-shutdown).>
+    /// The time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`.
+    /// Read more about graceful shutdown in the
+    /// [graceful shutdown documentation](<https://docs.stackable.tech/home/nightly/druid/usage-guide/operations/graceful-shutdown).>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracefulShutdownTimeout")]
     pub graceful_shutdown_timeout: Option<String>,
     /// Logging configuration, learn more in the [logging concept documentation](<https://docs.stackable.tech/home/nightly/concepts/logging).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<DruidClusterHistoricalsConfigLogging>,
-    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`. This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
+    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`.
+    /// This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestedSecretLifetime")]
     pub requested_secret_lifetime: Option<String>,
-    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+    /// usage, if this role needs any.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<DruidClusterHistoricalsConfigResources>,
 }
 
-/// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+/// These configuration settings control
+/// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterHistoricalsConfigAffinity {
     /// Same as the `spec.affinity.nodeAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
@@ -1552,7 +1916,7 @@ pub struct DruidClusterHistoricalsConfigLoggingContainers {
     /// Configuration for the console appender
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub console: Option<DruidClusterHistoricalsConfigLoggingContainersConsole>,
-    /// Custom log configuration provided in a ConfigMap
+    /// Log configuration provided in a ConfigMap
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom: Option<DruidClusterHistoricalsConfigLoggingContainersCustom>,
     /// Configuration for the file appender
@@ -1566,7 +1930,8 @@ pub struct DruidClusterHistoricalsConfigLoggingContainers {
 /// Configuration for the console appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterHistoricalsConfigLoggingContainersConsole {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<DruidClusterHistoricalsConfigLoggingContainersConsoleLevel>,
 }
@@ -1590,7 +1955,7 @@ pub enum DruidClusterHistoricalsConfigLoggingContainersConsoleLevel {
     None,
 }
 
-/// Custom log configuration provided in a ConfigMap
+/// Log configuration provided in a ConfigMap
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterHistoricalsConfigLoggingContainersCustom {
     /// ConfigMap containing the log configuration files
@@ -1601,7 +1966,8 @@ pub struct DruidClusterHistoricalsConfigLoggingContainersCustom {
 /// Configuration for the file appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterHistoricalsConfigLoggingContainersFile {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<DruidClusterHistoricalsConfigLoggingContainersFileLevel>,
 }
@@ -1628,7 +1994,8 @@ pub enum DruidClusterHistoricalsConfigLoggingContainersFileLevel {
 /// Configuration per logger
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterHistoricalsConfigLoggingContainersLoggers {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<DruidClusterHistoricalsConfigLoggingContainersLoggersLevel>,
 }
@@ -1652,31 +2019,45 @@ pub enum DruidClusterHistoricalsConfigLoggingContainersLoggersLevel {
     None,
 }
 
-/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+/// usage, if this role needs any.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterHistoricalsConfigResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<DruidClusterHistoricalsConfigResourcesCpu>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<DruidClusterHistoricalsConfigResourcesMemory>,
-    /// The storage settings for the Historical process. Read more in the [storage and resource documentation](<https://docs.stackable.tech/home/nightly/druid/usage-guide/resources-and-storage#_historical_resources).>
+    /// The storage settings for the Historical process.
+    /// Read more in the
+    /// [storage and resource documentation](<https://docs.stackable.tech/home/nightly/druid/usage-guide/resources-and-storage#_historical_resources).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage: Option<DruidClusterHistoricalsConfigResourcesStorage>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterHistoricalsConfigResourcesCpu {
-    /// The maximum amount of CPU cores that can be requested by Pods. Equivalent to the `limit` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The maximum amount of CPU cores that can be requested by Pods.
+    /// Equivalent to the `limit` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max: Option<String>,
-    /// The minimal amount of CPU cores that Pods need to run. Equivalent to the `request` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The minimal amount of CPU cores that Pods need to run.
+    /// Equivalent to the `request` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub min: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterHistoricalsConfigResourcesMemory {
-    /// The maximum amount of memory that should be available to the Pod. Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),> which means these suffixes are supported: E, P, T, G, M, k. You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki. For example, the following represent roughly the same value: `128974848, 129e6, 129M,  128974848000m, 123Mi`
+    /// The maximum amount of memory that should be available to the Pod.
+    /// Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),>
+    /// which means these suffixes are supported: E, P, T, G, M, k.
+    /// You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki.
+    /// For example, the following represent roughly the same value:
+    /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<String>,
     /// Additional options that can be specified.
@@ -1689,7 +2070,9 @@ pub struct DruidClusterHistoricalsConfigResourcesMemory {
 pub struct DruidClusterHistoricalsConfigResourcesMemoryRuntimeLimits {
 }
 
-/// The storage settings for the Historical process. Read more in the [storage and resource documentation](<https://docs.stackable.tech/home/nightly/druid/usage-guide/resources-and-storage#_historical_resources).>
+/// The storage settings for the Historical process.
+/// Read more in the
+/// [storage and resource documentation](<https://docs.stackable.tech/home/nightly/druid/usage-guide/resources-and-storage#_historical_resources).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterHistoricalsConfigResourcesStorage {
     /// Configure the size and backing storage type of the Druid segment cache.
@@ -1711,15 +2094,26 @@ pub struct DruidClusterHistoricalsConfigResourcesStorageSegmentCache {
 /// Configuration settings for the empty dir volume where the cache is located.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterHistoricalsConfigResourcesStorageSegmentCacheEmptyDir {
-    /// The size of the empty dir volume. This size is also configured as the segment cache size in Druid (minus the freePercentage). Specified as a [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),> which means these suffixes are supported: E, P, T, G, M, k. You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki. For example, the following represent roughly the same value: 128974848, 129e6, 129M, 128974848000m, 123Mi
+    /// The size of the empty dir volume.
+    /// This size is also configured as the segment cache size in Druid
+    /// (minus the freePercentage).
+    /// Specified as a [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),>
+    /// which means these suffixes are supported: E, P, T, G, M, k.
+    /// You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki.
+    /// For example, the following represent roughly the same value: 128974848, 129e6, 129M, 128974848000m, 123Mi
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capacity: Option<String>,
-    /// The `medium` field controls where the `emptyDir` is stored. By default it is stored on the default storage backing the node the Pod is running on. Read more about [`emptyDir`](<https://kubernetes.io/docs/concepts/storage/volumes/#emptydir)> in the Kubernetes documentation.
+    /// The `medium` field controls where the `emptyDir` is stored.
+    /// By default it is stored on the default storage backing the node the Pod is running on.
+    /// Read more about [`emptyDir`](<https://kubernetes.io/docs/concepts/storage/volumes/#emptydir)>
+    /// in the Kubernetes documentation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub medium: Option<String>,
 }
 
-/// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+/// Allows overriding JVM arguments.
+/// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+/// for details on the usage.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterHistoricalsJvmArgumentOverrides {
     /// JVM arguments to be added
@@ -1738,24 +2132,32 @@ pub struct DruidClusterHistoricalsJvmArgumentOverrides {
 pub struct DruidClusterHistoricalsRoleConfig {
     /// This struct is used to configure:
     /// 
-    /// 1. If PodDisruptionBudgets are created by the operator 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
+    /// 1. If PodDisruptionBudgets are created by the operator
+    /// 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
     /// 
-    /// Learn more in the [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
+    /// Learn more in the
+    /// [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podDisruptionBudget")]
     pub pod_disruption_budget: Option<DruidClusterHistoricalsRoleConfigPodDisruptionBudget>,
 }
 
 /// This struct is used to configure:
 /// 
-/// 1. If PodDisruptionBudgets are created by the operator 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
+/// 1. If PodDisruptionBudgets are created by the operator
+/// 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
 /// 
-/// Learn more in the [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
+/// Learn more in the
+/// [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterHistoricalsRoleConfigPodDisruptionBudget {
-    /// Whether a PodDisruptionBudget should be written out for this role. Disabling this enables you to specify your own - custom - one. Defaults to true.
+    /// Whether a PodDisruptionBudget should be written out for this role.
+    /// Disabling this enables you to specify your own - custom - one.
+    /// Defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    /// The number of Pods that are allowed to be down because of voluntary disruptions. If you don't explicitly set this, the operator will use a sane default based upon knowledge about the individual product.
+    /// The number of Pods that are allowed to be down because of voluntary disruptions.
+    /// If you don't explicitly set this, the operator will use a sane default based
+    /// upon knowledge about the individual product.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<u16>,
 }
@@ -1766,16 +2168,32 @@ pub struct DruidClusterHistoricalsRoleGroups {
     pub cli_overrides: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<DruidClusterHistoricalsRoleGroupsConfig>,
-    /// The `configOverrides` can be used to configure properties in product config files that are not exposed in the CRD. Read the [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)> and consult the operator specific usage guide documentation for details on the available config files and settings for the specific product.
+    /// The `configOverrides` can be used to configure properties in product config files
+    /// that are not exposed in the CRD. Read the
+    /// [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)>
+    /// and consult the operator specific usage guide documentation for details on the
+    /// available config files and settings for the specific product.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configOverrides")]
     pub config_overrides: Option<BTreeMap<String, BTreeMap<String, String>>>,
-    /// `envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)> for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available.
+    /// `envOverrides` configure environment variables to be set in the Pods.
+    /// It is a map from strings to strings - environment variables and the value to set.
+    /// Read the
+    /// [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)>
+    /// for more information and consult the operator specific usage guide to find out about
+    /// the product specific environment variables that are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envOverrides")]
     pub env_overrides: Option<BTreeMap<String, String>>,
-    /// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+    /// Allows overriding JVM arguments.
+    /// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+    /// for details on the usage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
     pub jvm_argument_overrides: Option<DruidClusterHistoricalsRoleGroupsJvmArgumentOverrides>,
-    /// In the `podOverrides` property you can define a [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)> to override any property that can be set on a Kubernetes Pod. Read the [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)> for more information.
+    /// In the `podOverrides` property you can define a
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// to override any property that can be set on a Kubernetes Pod.
+    /// Read the
+    /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
+    /// for more information.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podOverrides")]
     pub pod_overrides: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1784,24 +2202,30 @@ pub struct DruidClusterHistoricalsRoleGroups {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterHistoricalsRoleGroupsConfig {
-    /// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+    /// These configuration settings control
+    /// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<DruidClusterHistoricalsRoleGroupsConfigAffinity>,
-    /// The time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Read more about graceful shutdown in the [graceful shutdown documentation](<https://docs.stackable.tech/home/nightly/druid/usage-guide/operations/graceful-shutdown).>
+    /// The time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`.
+    /// Read more about graceful shutdown in the
+    /// [graceful shutdown documentation](<https://docs.stackable.tech/home/nightly/druid/usage-guide/operations/graceful-shutdown).>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracefulShutdownTimeout")]
     pub graceful_shutdown_timeout: Option<String>,
     /// Logging configuration, learn more in the [logging concept documentation](<https://docs.stackable.tech/home/nightly/concepts/logging).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<DruidClusterHistoricalsRoleGroupsConfigLogging>,
-    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`. This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
+    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`.
+    /// This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestedSecretLifetime")]
     pub requested_secret_lifetime: Option<String>,
-    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+    /// usage, if this role needs any.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<DruidClusterHistoricalsRoleGroupsConfigResources>,
 }
 
-/// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+/// These configuration settings control
+/// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterHistoricalsRoleGroupsConfigAffinity {
     /// Same as the `spec.affinity.nodeAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
@@ -1835,7 +2259,7 @@ pub struct DruidClusterHistoricalsRoleGroupsConfigLoggingContainers {
     /// Configuration for the console appender
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub console: Option<DruidClusterHistoricalsRoleGroupsConfigLoggingContainersConsole>,
-    /// Custom log configuration provided in a ConfigMap
+    /// Log configuration provided in a ConfigMap
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom: Option<DruidClusterHistoricalsRoleGroupsConfigLoggingContainersCustom>,
     /// Configuration for the file appender
@@ -1849,7 +2273,8 @@ pub struct DruidClusterHistoricalsRoleGroupsConfigLoggingContainers {
 /// Configuration for the console appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterHistoricalsRoleGroupsConfigLoggingContainersConsole {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<DruidClusterHistoricalsRoleGroupsConfigLoggingContainersConsoleLevel>,
 }
@@ -1873,7 +2298,7 @@ pub enum DruidClusterHistoricalsRoleGroupsConfigLoggingContainersConsoleLevel {
     None,
 }
 
-/// Custom log configuration provided in a ConfigMap
+/// Log configuration provided in a ConfigMap
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterHistoricalsRoleGroupsConfigLoggingContainersCustom {
     /// ConfigMap containing the log configuration files
@@ -1884,7 +2309,8 @@ pub struct DruidClusterHistoricalsRoleGroupsConfigLoggingContainersCustom {
 /// Configuration for the file appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterHistoricalsRoleGroupsConfigLoggingContainersFile {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<DruidClusterHistoricalsRoleGroupsConfigLoggingContainersFileLevel>,
 }
@@ -1911,7 +2337,8 @@ pub enum DruidClusterHistoricalsRoleGroupsConfigLoggingContainersFileLevel {
 /// Configuration per logger
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterHistoricalsRoleGroupsConfigLoggingContainersLoggers {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<DruidClusterHistoricalsRoleGroupsConfigLoggingContainersLoggersLevel>,
 }
@@ -1935,31 +2362,45 @@ pub enum DruidClusterHistoricalsRoleGroupsConfigLoggingContainersLoggersLevel {
     None,
 }
 
-/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+/// usage, if this role needs any.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterHistoricalsRoleGroupsConfigResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<DruidClusterHistoricalsRoleGroupsConfigResourcesCpu>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<DruidClusterHistoricalsRoleGroupsConfigResourcesMemory>,
-    /// The storage settings for the Historical process. Read more in the [storage and resource documentation](<https://docs.stackable.tech/home/nightly/druid/usage-guide/resources-and-storage#_historical_resources).>
+    /// The storage settings for the Historical process.
+    /// Read more in the
+    /// [storage and resource documentation](<https://docs.stackable.tech/home/nightly/druid/usage-guide/resources-and-storage#_historical_resources).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage: Option<DruidClusterHistoricalsRoleGroupsConfigResourcesStorage>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterHistoricalsRoleGroupsConfigResourcesCpu {
-    /// The maximum amount of CPU cores that can be requested by Pods. Equivalent to the `limit` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The maximum amount of CPU cores that can be requested by Pods.
+    /// Equivalent to the `limit` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max: Option<String>,
-    /// The minimal amount of CPU cores that Pods need to run. Equivalent to the `request` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The minimal amount of CPU cores that Pods need to run.
+    /// Equivalent to the `request` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub min: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterHistoricalsRoleGroupsConfigResourcesMemory {
-    /// The maximum amount of memory that should be available to the Pod. Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),> which means these suffixes are supported: E, P, T, G, M, k. You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki. For example, the following represent roughly the same value: `128974848, 129e6, 129M,  128974848000m, 123Mi`
+    /// The maximum amount of memory that should be available to the Pod.
+    /// Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),>
+    /// which means these suffixes are supported: E, P, T, G, M, k.
+    /// You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki.
+    /// For example, the following represent roughly the same value:
+    /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<String>,
     /// Additional options that can be specified.
@@ -1972,7 +2413,9 @@ pub struct DruidClusterHistoricalsRoleGroupsConfigResourcesMemory {
 pub struct DruidClusterHistoricalsRoleGroupsConfigResourcesMemoryRuntimeLimits {
 }
 
-/// The storage settings for the Historical process. Read more in the [storage and resource documentation](<https://docs.stackable.tech/home/nightly/druid/usage-guide/resources-and-storage#_historical_resources).>
+/// The storage settings for the Historical process.
+/// Read more in the
+/// [storage and resource documentation](<https://docs.stackable.tech/home/nightly/druid/usage-guide/resources-and-storage#_historical_resources).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterHistoricalsRoleGroupsConfigResourcesStorage {
     /// Configure the size and backing storage type of the Druid segment cache.
@@ -1994,15 +2437,26 @@ pub struct DruidClusterHistoricalsRoleGroupsConfigResourcesStorageSegmentCache {
 /// Configuration settings for the empty dir volume where the cache is located.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterHistoricalsRoleGroupsConfigResourcesStorageSegmentCacheEmptyDir {
-    /// The size of the empty dir volume. This size is also configured as the segment cache size in Druid (minus the freePercentage). Specified as a [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),> which means these suffixes are supported: E, P, T, G, M, k. You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki. For example, the following represent roughly the same value: 128974848, 129e6, 129M, 128974848000m, 123Mi
+    /// The size of the empty dir volume.
+    /// This size is also configured as the segment cache size in Druid
+    /// (minus the freePercentage).
+    /// Specified as a [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),>
+    /// which means these suffixes are supported: E, P, T, G, M, k.
+    /// You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki.
+    /// For example, the following represent roughly the same value: 128974848, 129e6, 129M, 128974848000m, 123Mi
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capacity: Option<String>,
-    /// The `medium` field controls where the `emptyDir` is stored. By default it is stored on the default storage backing the node the Pod is running on. Read more about [`emptyDir`](<https://kubernetes.io/docs/concepts/storage/volumes/#emptydir)> in the Kubernetes documentation.
+    /// The `medium` field controls where the `emptyDir` is stored.
+    /// By default it is stored on the default storage backing the node the Pod is running on.
+    /// Read more about [`emptyDir`](<https://kubernetes.io/docs/concepts/storage/volumes/#emptydir)>
+    /// in the Kubernetes documentation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub medium: Option<String>,
 }
 
-/// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+/// Allows overriding JVM arguments.
+/// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+/// for details on the usage.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterHistoricalsRoleGroupsJvmArgumentOverrides {
     /// JVM arguments to be added
@@ -2016,12 +2470,16 @@ pub struct DruidClusterHistoricalsRoleGroupsJvmArgumentOverrides {
     pub remove_regex: Option<Vec<String>>,
 }
 
-/// Specify which image to use, the easiest way is to only configure the `productVersion`. You can also configure a custom image registry to pull from, as well as completely custom images.
+/// Specify which image to use, the easiest way is to only configure the `productVersion`.
+/// You can also configure a custom image registry to pull from, as well as completely custom
+/// images.
 /// 
-/// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)> for details.
+/// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)>
+/// for details.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterImage {
-    /// Overwrite the docker image. Specify the full docker image name, e.g. `oci.stackable.tech/sdp/superset:1.4.1-stackable2.1.0`
+    /// Overwrite the docker image.
+    /// Specify the full docker image name, e.g. `oci.stackable.tech/sdp/superset:1.4.1-stackable2.1.0`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom: Option<String>,
     /// Version of the product, e.g. `1.4.1`.
@@ -2036,14 +2494,19 @@ pub struct DruidClusterImage {
     /// Name of the docker repo, e.g. `oci.stackable.tech/sdp`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repo: Option<String>,
-    /// Stackable version of the product, e.g. `23.4`, `23.4.1` or `0.0.0-dev`. If not specified, the operator will use its own version, e.g. `23.4.1`. When using a nightly operator or a pr version, it will use the nightly `0.0.0-dev` image.
+    /// Stackable version of the product, e.g. `23.4`, `23.4.1` or `0.0.0-dev`.
+    /// If not specified, the operator will use its own version, e.g. `23.4.1`.
+    /// When using a nightly operator or a pr version, it will use the nightly `0.0.0-dev` image.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stackableVersion")]
     pub stackable_version: Option<String>,
 }
 
-/// Specify which image to use, the easiest way is to only configure the `productVersion`. You can also configure a custom image registry to pull from, as well as completely custom images.
+/// Specify which image to use, the easiest way is to only configure the `productVersion`.
+/// You can also configure a custom image registry to pull from, as well as completely custom
+/// images.
 /// 
-/// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)> for details.
+/// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)>
+/// for details.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum DruidClusterImagePullPolicy {
     IfNotPresent,
@@ -2058,23 +2521,45 @@ pub struct DruidClusterImagePullSecrets {
     pub name: String,
 }
 
-/// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured on role level. There is also a second form of config, which can only be configured at role level, the `roleConfig`. You can learn more about this in the [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
+/// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing
+/// all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable
+/// at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured
+/// on role level. There is also a second form of config, which can only be configured
+/// at role level, the `roleConfig`.
+/// You can learn more about this in the
+/// [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterMiddleManagers {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cliOverrides")]
     pub cli_overrides: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<DruidClusterMiddleManagersConfig>,
-    /// The `configOverrides` can be used to configure properties in product config files that are not exposed in the CRD. Read the [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)> and consult the operator specific usage guide documentation for details on the available config files and settings for the specific product.
+    /// The `configOverrides` can be used to configure properties in product config files
+    /// that are not exposed in the CRD. Read the
+    /// [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)>
+    /// and consult the operator specific usage guide documentation for details on the
+    /// available config files and settings for the specific product.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configOverrides")]
     pub config_overrides: Option<BTreeMap<String, BTreeMap<String, String>>>,
-    /// `envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)> for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available.
+    /// `envOverrides` configure environment variables to be set in the Pods.
+    /// It is a map from strings to strings - environment variables and the value to set.
+    /// Read the
+    /// [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)>
+    /// for more information and consult the operator specific usage guide to find out about
+    /// the product specific environment variables that are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envOverrides")]
     pub env_overrides: Option<BTreeMap<String, String>>,
-    /// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+    /// Allows overriding JVM arguments.
+    /// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+    /// for details on the usage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
     pub jvm_argument_overrides: Option<DruidClusterMiddleManagersJvmArgumentOverrides>,
-    /// In the `podOverrides` property you can define a [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)> to override any property that can be set on a Kubernetes Pod. Read the [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)> for more information.
+    /// In the `podOverrides` property you can define a
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// to override any property that can be set on a Kubernetes Pod.
+    /// Read the
+    /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
+    /// for more information.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podOverrides")]
     pub pod_overrides: Option<BTreeMap<String, serde_json::Value>>,
     /// This is a product-agnostic RoleConfig, which is sufficient for most of the products.
@@ -2086,24 +2571,30 @@ pub struct DruidClusterMiddleManagers {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterMiddleManagersConfig {
-    /// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+    /// These configuration settings control
+    /// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<DruidClusterMiddleManagersConfigAffinity>,
-    /// The time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Read more about graceful shutdown in the [graceful shutdown documentation](<https://docs.stackable.tech/home/nightly/druid/usage-guide/operations/graceful-shutdown).>
+    /// The time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`.
+    /// Read more about graceful shutdown in the
+    /// [graceful shutdown documentation](<https://docs.stackable.tech/home/nightly/druid/usage-guide/operations/graceful-shutdown).>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracefulShutdownTimeout")]
     pub graceful_shutdown_timeout: Option<String>,
     /// Logging configuration, learn more in the [logging concept documentation](<https://docs.stackable.tech/home/nightly/concepts/logging).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<DruidClusterMiddleManagersConfigLogging>,
-    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`. This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
+    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`.
+    /// This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestedSecretLifetime")]
     pub requested_secret_lifetime: Option<String>,
-    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+    /// usage, if this role needs any.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<DruidClusterMiddleManagersConfigResources>,
 }
 
-/// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+/// These configuration settings control
+/// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterMiddleManagersConfigAffinity {
     /// Same as the `spec.affinity.nodeAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
@@ -2137,7 +2628,7 @@ pub struct DruidClusterMiddleManagersConfigLoggingContainers {
     /// Configuration for the console appender
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub console: Option<DruidClusterMiddleManagersConfigLoggingContainersConsole>,
-    /// Custom log configuration provided in a ConfigMap
+    /// Log configuration provided in a ConfigMap
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom: Option<DruidClusterMiddleManagersConfigLoggingContainersCustom>,
     /// Configuration for the file appender
@@ -2151,7 +2642,8 @@ pub struct DruidClusterMiddleManagersConfigLoggingContainers {
 /// Configuration for the console appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterMiddleManagersConfigLoggingContainersConsole {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<DruidClusterMiddleManagersConfigLoggingContainersConsoleLevel>,
 }
@@ -2175,7 +2667,7 @@ pub enum DruidClusterMiddleManagersConfigLoggingContainersConsoleLevel {
     None,
 }
 
-/// Custom log configuration provided in a ConfigMap
+/// Log configuration provided in a ConfigMap
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterMiddleManagersConfigLoggingContainersCustom {
     /// ConfigMap containing the log configuration files
@@ -2186,7 +2678,8 @@ pub struct DruidClusterMiddleManagersConfigLoggingContainersCustom {
 /// Configuration for the file appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterMiddleManagersConfigLoggingContainersFile {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<DruidClusterMiddleManagersConfigLoggingContainersFileLevel>,
 }
@@ -2213,7 +2706,8 @@ pub enum DruidClusterMiddleManagersConfigLoggingContainersFileLevel {
 /// Configuration per logger
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterMiddleManagersConfigLoggingContainersLoggers {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<DruidClusterMiddleManagersConfigLoggingContainersLoggersLevel>,
 }
@@ -2237,31 +2731,44 @@ pub enum DruidClusterMiddleManagersConfigLoggingContainersLoggersLevel {
     None,
 }
 
-/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+/// usage, if this role needs any.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterMiddleManagersConfigResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<DruidClusterMiddleManagersConfigResourcesCpu>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<DruidClusterMiddleManagersConfigResourcesMemory>,
-    /// This role does not have any storage settings. Only the Historical role uses disk storage.
+    /// This role does not have any storage settings.
+    /// Only the Historical role uses disk storage.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage: Option<DruidClusterMiddleManagersConfigResourcesStorage>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterMiddleManagersConfigResourcesCpu {
-    /// The maximum amount of CPU cores that can be requested by Pods. Equivalent to the `limit` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The maximum amount of CPU cores that can be requested by Pods.
+    /// Equivalent to the `limit` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max: Option<String>,
-    /// The minimal amount of CPU cores that Pods need to run. Equivalent to the `request` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The minimal amount of CPU cores that Pods need to run.
+    /// Equivalent to the `request` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub min: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterMiddleManagersConfigResourcesMemory {
-    /// The maximum amount of memory that should be available to the Pod. Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),> which means these suffixes are supported: E, P, T, G, M, k. You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki. For example, the following represent roughly the same value: `128974848, 129e6, 129M,  128974848000m, 123Mi`
+    /// The maximum amount of memory that should be available to the Pod.
+    /// Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),>
+    /// which means these suffixes are supported: E, P, T, G, M, k.
+    /// You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki.
+    /// For example, the following represent roughly the same value:
+    /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<String>,
     /// Additional options that can be specified.
@@ -2274,12 +2781,15 @@ pub struct DruidClusterMiddleManagersConfigResourcesMemory {
 pub struct DruidClusterMiddleManagersConfigResourcesMemoryRuntimeLimits {
 }
 
-/// This role does not have any storage settings. Only the Historical role uses disk storage.
+/// This role does not have any storage settings.
+/// Only the Historical role uses disk storage.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterMiddleManagersConfigResourcesStorage {
 }
 
-/// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+/// Allows overriding JVM arguments.
+/// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+/// for details on the usage.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterMiddleManagersJvmArgumentOverrides {
     /// JVM arguments to be added
@@ -2298,24 +2808,32 @@ pub struct DruidClusterMiddleManagersJvmArgumentOverrides {
 pub struct DruidClusterMiddleManagersRoleConfig {
     /// This struct is used to configure:
     /// 
-    /// 1. If PodDisruptionBudgets are created by the operator 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
+    /// 1. If PodDisruptionBudgets are created by the operator
+    /// 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
     /// 
-    /// Learn more in the [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
+    /// Learn more in the
+    /// [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podDisruptionBudget")]
     pub pod_disruption_budget: Option<DruidClusterMiddleManagersRoleConfigPodDisruptionBudget>,
 }
 
 /// This struct is used to configure:
 /// 
-/// 1. If PodDisruptionBudgets are created by the operator 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
+/// 1. If PodDisruptionBudgets are created by the operator
+/// 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
 /// 
-/// Learn more in the [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
+/// Learn more in the
+/// [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterMiddleManagersRoleConfigPodDisruptionBudget {
-    /// Whether a PodDisruptionBudget should be written out for this role. Disabling this enables you to specify your own - custom - one. Defaults to true.
+    /// Whether a PodDisruptionBudget should be written out for this role.
+    /// Disabling this enables you to specify your own - custom - one.
+    /// Defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    /// The number of Pods that are allowed to be down because of voluntary disruptions. If you don't explicitly set this, the operator will use a sane default based upon knowledge about the individual product.
+    /// The number of Pods that are allowed to be down because of voluntary disruptions.
+    /// If you don't explicitly set this, the operator will use a sane default based
+    /// upon knowledge about the individual product.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<u16>,
 }
@@ -2326,16 +2844,32 @@ pub struct DruidClusterMiddleManagersRoleGroups {
     pub cli_overrides: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<DruidClusterMiddleManagersRoleGroupsConfig>,
-    /// The `configOverrides` can be used to configure properties in product config files that are not exposed in the CRD. Read the [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)> and consult the operator specific usage guide documentation for details on the available config files and settings for the specific product.
+    /// The `configOverrides` can be used to configure properties in product config files
+    /// that are not exposed in the CRD. Read the
+    /// [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)>
+    /// and consult the operator specific usage guide documentation for details on the
+    /// available config files and settings for the specific product.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configOverrides")]
     pub config_overrides: Option<BTreeMap<String, BTreeMap<String, String>>>,
-    /// `envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)> for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available.
+    /// `envOverrides` configure environment variables to be set in the Pods.
+    /// It is a map from strings to strings - environment variables and the value to set.
+    /// Read the
+    /// [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)>
+    /// for more information and consult the operator specific usage guide to find out about
+    /// the product specific environment variables that are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envOverrides")]
     pub env_overrides: Option<BTreeMap<String, String>>,
-    /// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+    /// Allows overriding JVM arguments.
+    /// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+    /// for details on the usage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
     pub jvm_argument_overrides: Option<DruidClusterMiddleManagersRoleGroupsJvmArgumentOverrides>,
-    /// In the `podOverrides` property you can define a [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)> to override any property that can be set on a Kubernetes Pod. Read the [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)> for more information.
+    /// In the `podOverrides` property you can define a
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// to override any property that can be set on a Kubernetes Pod.
+    /// Read the
+    /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
+    /// for more information.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podOverrides")]
     pub pod_overrides: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2344,24 +2878,30 @@ pub struct DruidClusterMiddleManagersRoleGroups {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterMiddleManagersRoleGroupsConfig {
-    /// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+    /// These configuration settings control
+    /// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<DruidClusterMiddleManagersRoleGroupsConfigAffinity>,
-    /// The time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Read more about graceful shutdown in the [graceful shutdown documentation](<https://docs.stackable.tech/home/nightly/druid/usage-guide/operations/graceful-shutdown).>
+    /// The time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`.
+    /// Read more about graceful shutdown in the
+    /// [graceful shutdown documentation](<https://docs.stackable.tech/home/nightly/druid/usage-guide/operations/graceful-shutdown).>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracefulShutdownTimeout")]
     pub graceful_shutdown_timeout: Option<String>,
     /// Logging configuration, learn more in the [logging concept documentation](<https://docs.stackable.tech/home/nightly/concepts/logging).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<DruidClusterMiddleManagersRoleGroupsConfigLogging>,
-    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`. This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
+    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`.
+    /// This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestedSecretLifetime")]
     pub requested_secret_lifetime: Option<String>,
-    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+    /// usage, if this role needs any.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<DruidClusterMiddleManagersRoleGroupsConfigResources>,
 }
 
-/// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+/// These configuration settings control
+/// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterMiddleManagersRoleGroupsConfigAffinity {
     /// Same as the `spec.affinity.nodeAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
@@ -2395,7 +2935,7 @@ pub struct DruidClusterMiddleManagersRoleGroupsConfigLoggingContainers {
     /// Configuration for the console appender
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub console: Option<DruidClusterMiddleManagersRoleGroupsConfigLoggingContainersConsole>,
-    /// Custom log configuration provided in a ConfigMap
+    /// Log configuration provided in a ConfigMap
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom: Option<DruidClusterMiddleManagersRoleGroupsConfigLoggingContainersCustom>,
     /// Configuration for the file appender
@@ -2409,7 +2949,8 @@ pub struct DruidClusterMiddleManagersRoleGroupsConfigLoggingContainers {
 /// Configuration for the console appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterMiddleManagersRoleGroupsConfigLoggingContainersConsole {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<DruidClusterMiddleManagersRoleGroupsConfigLoggingContainersConsoleLevel>,
 }
@@ -2433,7 +2974,7 @@ pub enum DruidClusterMiddleManagersRoleGroupsConfigLoggingContainersConsoleLevel
     None,
 }
 
-/// Custom log configuration provided in a ConfigMap
+/// Log configuration provided in a ConfigMap
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterMiddleManagersRoleGroupsConfigLoggingContainersCustom {
     /// ConfigMap containing the log configuration files
@@ -2444,7 +2985,8 @@ pub struct DruidClusterMiddleManagersRoleGroupsConfigLoggingContainersCustom {
 /// Configuration for the file appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterMiddleManagersRoleGroupsConfigLoggingContainersFile {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<DruidClusterMiddleManagersRoleGroupsConfigLoggingContainersFileLevel>,
 }
@@ -2471,7 +3013,8 @@ pub enum DruidClusterMiddleManagersRoleGroupsConfigLoggingContainersFileLevel {
 /// Configuration per logger
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterMiddleManagersRoleGroupsConfigLoggingContainersLoggers {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<DruidClusterMiddleManagersRoleGroupsConfigLoggingContainersLoggersLevel>,
 }
@@ -2495,31 +3038,44 @@ pub enum DruidClusterMiddleManagersRoleGroupsConfigLoggingContainersLoggersLevel
     None,
 }
 
-/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+/// usage, if this role needs any.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterMiddleManagersRoleGroupsConfigResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<DruidClusterMiddleManagersRoleGroupsConfigResourcesCpu>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<DruidClusterMiddleManagersRoleGroupsConfigResourcesMemory>,
-    /// This role does not have any storage settings. Only the Historical role uses disk storage.
+    /// This role does not have any storage settings.
+    /// Only the Historical role uses disk storage.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage: Option<DruidClusterMiddleManagersRoleGroupsConfigResourcesStorage>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterMiddleManagersRoleGroupsConfigResourcesCpu {
-    /// The maximum amount of CPU cores that can be requested by Pods. Equivalent to the `limit` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The maximum amount of CPU cores that can be requested by Pods.
+    /// Equivalent to the `limit` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max: Option<String>,
-    /// The minimal amount of CPU cores that Pods need to run. Equivalent to the `request` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The minimal amount of CPU cores that Pods need to run.
+    /// Equivalent to the `request` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub min: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterMiddleManagersRoleGroupsConfigResourcesMemory {
-    /// The maximum amount of memory that should be available to the Pod. Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),> which means these suffixes are supported: E, P, T, G, M, k. You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki. For example, the following represent roughly the same value: `128974848, 129e6, 129M,  128974848000m, 123Mi`
+    /// The maximum amount of memory that should be available to the Pod.
+    /// Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),>
+    /// which means these suffixes are supported: E, P, T, G, M, k.
+    /// You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki.
+    /// For example, the following represent roughly the same value:
+    /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<String>,
     /// Additional options that can be specified.
@@ -2532,12 +3088,15 @@ pub struct DruidClusterMiddleManagersRoleGroupsConfigResourcesMemory {
 pub struct DruidClusterMiddleManagersRoleGroupsConfigResourcesMemoryRuntimeLimits {
 }
 
-/// This role does not have any storage settings. Only the Historical role uses disk storage.
+/// This role does not have any storage settings.
+/// Only the Historical role uses disk storage.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterMiddleManagersRoleGroupsConfigResourcesStorage {
 }
 
-/// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+/// Allows overriding JVM arguments.
+/// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+/// for details on the usage.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterMiddleManagersRoleGroupsJvmArgumentOverrides {
     /// JVM arguments to be added
@@ -2551,23 +3110,45 @@ pub struct DruidClusterMiddleManagersRoleGroupsJvmArgumentOverrides {
     pub remove_regex: Option<Vec<String>>,
 }
 
-/// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured on role level. There is also a second form of config, which can only be configured at role level, the `roleConfig`. You can learn more about this in the [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
+/// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing
+/// all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable
+/// at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured
+/// on role level. There is also a second form of config, which can only be configured
+/// at role level, the `roleConfig`.
+/// You can learn more about this in the
+/// [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterRouters {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cliOverrides")]
     pub cli_overrides: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<DruidClusterRoutersConfig>,
-    /// The `configOverrides` can be used to configure properties in product config files that are not exposed in the CRD. Read the [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)> and consult the operator specific usage guide documentation for details on the available config files and settings for the specific product.
+    /// The `configOverrides` can be used to configure properties in product config files
+    /// that are not exposed in the CRD. Read the
+    /// [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)>
+    /// and consult the operator specific usage guide documentation for details on the
+    /// available config files and settings for the specific product.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configOverrides")]
     pub config_overrides: Option<BTreeMap<String, BTreeMap<String, String>>>,
-    /// `envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)> for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available.
+    /// `envOverrides` configure environment variables to be set in the Pods.
+    /// It is a map from strings to strings - environment variables and the value to set.
+    /// Read the
+    /// [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)>
+    /// for more information and consult the operator specific usage guide to find out about
+    /// the product specific environment variables that are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envOverrides")]
     pub env_overrides: Option<BTreeMap<String, String>>,
-    /// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+    /// Allows overriding JVM arguments.
+    /// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+    /// for details on the usage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
     pub jvm_argument_overrides: Option<DruidClusterRoutersJvmArgumentOverrides>,
-    /// In the `podOverrides` property you can define a [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)> to override any property that can be set on a Kubernetes Pod. Read the [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)> for more information.
+    /// In the `podOverrides` property you can define a
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// to override any property that can be set on a Kubernetes Pod.
+    /// Read the
+    /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
+    /// for more information.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podOverrides")]
     pub pod_overrides: Option<BTreeMap<String, serde_json::Value>>,
     /// This is a product-agnostic RoleConfig, which is sufficient for most of the products.
@@ -2579,24 +3160,30 @@ pub struct DruidClusterRouters {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterRoutersConfig {
-    /// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+    /// These configuration settings control
+    /// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<DruidClusterRoutersConfigAffinity>,
-    /// The time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Read more about graceful shutdown in the [graceful shutdown documentation](<https://docs.stackable.tech/home/nightly/druid/usage-guide/operations/graceful-shutdown).>
+    /// The time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`.
+    /// Read more about graceful shutdown in the
+    /// [graceful shutdown documentation](<https://docs.stackable.tech/home/nightly/druid/usage-guide/operations/graceful-shutdown).>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracefulShutdownTimeout")]
     pub graceful_shutdown_timeout: Option<String>,
     /// Logging configuration, learn more in the [logging concept documentation](<https://docs.stackable.tech/home/nightly/concepts/logging).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<DruidClusterRoutersConfigLogging>,
-    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`. This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
+    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`.
+    /// This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestedSecretLifetime")]
     pub requested_secret_lifetime: Option<String>,
-    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+    /// usage, if this role needs any.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<DruidClusterRoutersConfigResources>,
 }
 
-/// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+/// These configuration settings control
+/// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterRoutersConfigAffinity {
     /// Same as the `spec.affinity.nodeAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
@@ -2630,7 +3217,7 @@ pub struct DruidClusterRoutersConfigLoggingContainers {
     /// Configuration for the console appender
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub console: Option<DruidClusterRoutersConfigLoggingContainersConsole>,
-    /// Custom log configuration provided in a ConfigMap
+    /// Log configuration provided in a ConfigMap
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom: Option<DruidClusterRoutersConfigLoggingContainersCustom>,
     /// Configuration for the file appender
@@ -2644,7 +3231,8 @@ pub struct DruidClusterRoutersConfigLoggingContainers {
 /// Configuration for the console appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterRoutersConfigLoggingContainersConsole {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<DruidClusterRoutersConfigLoggingContainersConsoleLevel>,
 }
@@ -2668,7 +3256,7 @@ pub enum DruidClusterRoutersConfigLoggingContainersConsoleLevel {
     None,
 }
 
-/// Custom log configuration provided in a ConfigMap
+/// Log configuration provided in a ConfigMap
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterRoutersConfigLoggingContainersCustom {
     /// ConfigMap containing the log configuration files
@@ -2679,7 +3267,8 @@ pub struct DruidClusterRoutersConfigLoggingContainersCustom {
 /// Configuration for the file appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterRoutersConfigLoggingContainersFile {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<DruidClusterRoutersConfigLoggingContainersFileLevel>,
 }
@@ -2706,7 +3295,8 @@ pub enum DruidClusterRoutersConfigLoggingContainersFileLevel {
 /// Configuration per logger
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterRoutersConfigLoggingContainersLoggers {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<DruidClusterRoutersConfigLoggingContainersLoggersLevel>,
 }
@@ -2730,31 +3320,44 @@ pub enum DruidClusterRoutersConfigLoggingContainersLoggersLevel {
     None,
 }
 
-/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+/// usage, if this role needs any.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterRoutersConfigResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<DruidClusterRoutersConfigResourcesCpu>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<DruidClusterRoutersConfigResourcesMemory>,
-    /// This role does not have any storage settings. Only the Historical role uses disk storage.
+    /// This role does not have any storage settings.
+    /// Only the Historical role uses disk storage.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage: Option<DruidClusterRoutersConfigResourcesStorage>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterRoutersConfigResourcesCpu {
-    /// The maximum amount of CPU cores that can be requested by Pods. Equivalent to the `limit` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The maximum amount of CPU cores that can be requested by Pods.
+    /// Equivalent to the `limit` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max: Option<String>,
-    /// The minimal amount of CPU cores that Pods need to run. Equivalent to the `request` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The minimal amount of CPU cores that Pods need to run.
+    /// Equivalent to the `request` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub min: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterRoutersConfigResourcesMemory {
-    /// The maximum amount of memory that should be available to the Pod. Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),> which means these suffixes are supported: E, P, T, G, M, k. You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki. For example, the following represent roughly the same value: `128974848, 129e6, 129M,  128974848000m, 123Mi`
+    /// The maximum amount of memory that should be available to the Pod.
+    /// Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),>
+    /// which means these suffixes are supported: E, P, T, G, M, k.
+    /// You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki.
+    /// For example, the following represent roughly the same value:
+    /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<String>,
     /// Additional options that can be specified.
@@ -2767,12 +3370,15 @@ pub struct DruidClusterRoutersConfigResourcesMemory {
 pub struct DruidClusterRoutersConfigResourcesMemoryRuntimeLimits {
 }
 
-/// This role does not have any storage settings. Only the Historical role uses disk storage.
+/// This role does not have any storage settings.
+/// Only the Historical role uses disk storage.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterRoutersConfigResourcesStorage {
 }
 
-/// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+/// Allows overriding JVM arguments.
+/// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+/// for details on the usage.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterRoutersJvmArgumentOverrides {
     /// JVM arguments to be added
@@ -2793,24 +3399,32 @@ pub struct DruidClusterRoutersRoleConfig {
     pub listener_class: Option<String>,
     /// This struct is used to configure:
     /// 
-    /// 1. If PodDisruptionBudgets are created by the operator 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
+    /// 1. If PodDisruptionBudgets are created by the operator
+    /// 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
     /// 
-    /// Learn more in the [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
+    /// Learn more in the
+    /// [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podDisruptionBudget")]
     pub pod_disruption_budget: Option<DruidClusterRoutersRoleConfigPodDisruptionBudget>,
 }
 
 /// This struct is used to configure:
 /// 
-/// 1. If PodDisruptionBudgets are created by the operator 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
+/// 1. If PodDisruptionBudgets are created by the operator
+/// 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
 /// 
-/// Learn more in the [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
+/// Learn more in the
+/// [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterRoutersRoleConfigPodDisruptionBudget {
-    /// Whether a PodDisruptionBudget should be written out for this role. Disabling this enables you to specify your own - custom - one. Defaults to true.
+    /// Whether a PodDisruptionBudget should be written out for this role.
+    /// Disabling this enables you to specify your own - custom - one.
+    /// Defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    /// The number of Pods that are allowed to be down because of voluntary disruptions. If you don't explicitly set this, the operator will use a sane default based upon knowledge about the individual product.
+    /// The number of Pods that are allowed to be down because of voluntary disruptions.
+    /// If you don't explicitly set this, the operator will use a sane default based
+    /// upon knowledge about the individual product.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<u16>,
 }
@@ -2821,16 +3435,32 @@ pub struct DruidClusterRoutersRoleGroups {
     pub cli_overrides: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<DruidClusterRoutersRoleGroupsConfig>,
-    /// The `configOverrides` can be used to configure properties in product config files that are not exposed in the CRD. Read the [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)> and consult the operator specific usage guide documentation for details on the available config files and settings for the specific product.
+    /// The `configOverrides` can be used to configure properties in product config files
+    /// that are not exposed in the CRD. Read the
+    /// [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)>
+    /// and consult the operator specific usage guide documentation for details on the
+    /// available config files and settings for the specific product.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configOverrides")]
     pub config_overrides: Option<BTreeMap<String, BTreeMap<String, String>>>,
-    /// `envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)> for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available.
+    /// `envOverrides` configure environment variables to be set in the Pods.
+    /// It is a map from strings to strings - environment variables and the value to set.
+    /// Read the
+    /// [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)>
+    /// for more information and consult the operator specific usage guide to find out about
+    /// the product specific environment variables that are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envOverrides")]
     pub env_overrides: Option<BTreeMap<String, String>>,
-    /// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+    /// Allows overriding JVM arguments.
+    /// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+    /// for details on the usage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
     pub jvm_argument_overrides: Option<DruidClusterRoutersRoleGroupsJvmArgumentOverrides>,
-    /// In the `podOverrides` property you can define a [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)> to override any property that can be set on a Kubernetes Pod. Read the [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)> for more information.
+    /// In the `podOverrides` property you can define a
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// to override any property that can be set on a Kubernetes Pod.
+    /// Read the
+    /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
+    /// for more information.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podOverrides")]
     pub pod_overrides: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2839,24 +3469,30 @@ pub struct DruidClusterRoutersRoleGroups {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterRoutersRoleGroupsConfig {
-    /// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+    /// These configuration settings control
+    /// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<DruidClusterRoutersRoleGroupsConfigAffinity>,
-    /// The time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Read more about graceful shutdown in the [graceful shutdown documentation](<https://docs.stackable.tech/home/nightly/druid/usage-guide/operations/graceful-shutdown).>
+    /// The time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`.
+    /// Read more about graceful shutdown in the
+    /// [graceful shutdown documentation](<https://docs.stackable.tech/home/nightly/druid/usage-guide/operations/graceful-shutdown).>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracefulShutdownTimeout")]
     pub graceful_shutdown_timeout: Option<String>,
     /// Logging configuration, learn more in the [logging concept documentation](<https://docs.stackable.tech/home/nightly/concepts/logging).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<DruidClusterRoutersRoleGroupsConfigLogging>,
-    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`. This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
+    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`.
+    /// This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestedSecretLifetime")]
     pub requested_secret_lifetime: Option<String>,
-    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+    /// usage, if this role needs any.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<DruidClusterRoutersRoleGroupsConfigResources>,
 }
 
-/// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+/// These configuration settings control
+/// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterRoutersRoleGroupsConfigAffinity {
     /// Same as the `spec.affinity.nodeAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
@@ -2890,7 +3526,7 @@ pub struct DruidClusterRoutersRoleGroupsConfigLoggingContainers {
     /// Configuration for the console appender
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub console: Option<DruidClusterRoutersRoleGroupsConfigLoggingContainersConsole>,
-    /// Custom log configuration provided in a ConfigMap
+    /// Log configuration provided in a ConfigMap
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom: Option<DruidClusterRoutersRoleGroupsConfigLoggingContainersCustom>,
     /// Configuration for the file appender
@@ -2904,7 +3540,8 @@ pub struct DruidClusterRoutersRoleGroupsConfigLoggingContainers {
 /// Configuration for the console appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterRoutersRoleGroupsConfigLoggingContainersConsole {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<DruidClusterRoutersRoleGroupsConfigLoggingContainersConsoleLevel>,
 }
@@ -2928,7 +3565,7 @@ pub enum DruidClusterRoutersRoleGroupsConfigLoggingContainersConsoleLevel {
     None,
 }
 
-/// Custom log configuration provided in a ConfigMap
+/// Log configuration provided in a ConfigMap
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterRoutersRoleGroupsConfigLoggingContainersCustom {
     /// ConfigMap containing the log configuration files
@@ -2939,7 +3576,8 @@ pub struct DruidClusterRoutersRoleGroupsConfigLoggingContainersCustom {
 /// Configuration for the file appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterRoutersRoleGroupsConfigLoggingContainersFile {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<DruidClusterRoutersRoleGroupsConfigLoggingContainersFileLevel>,
 }
@@ -2966,7 +3604,8 @@ pub enum DruidClusterRoutersRoleGroupsConfigLoggingContainersFileLevel {
 /// Configuration per logger
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterRoutersRoleGroupsConfigLoggingContainersLoggers {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<DruidClusterRoutersRoleGroupsConfigLoggingContainersLoggersLevel>,
 }
@@ -2990,31 +3629,44 @@ pub enum DruidClusterRoutersRoleGroupsConfigLoggingContainersLoggersLevel {
     None,
 }
 
-/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+/// usage, if this role needs any.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterRoutersRoleGroupsConfigResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<DruidClusterRoutersRoleGroupsConfigResourcesCpu>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<DruidClusterRoutersRoleGroupsConfigResourcesMemory>,
-    /// This role does not have any storage settings. Only the Historical role uses disk storage.
+    /// This role does not have any storage settings.
+    /// Only the Historical role uses disk storage.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage: Option<DruidClusterRoutersRoleGroupsConfigResourcesStorage>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterRoutersRoleGroupsConfigResourcesCpu {
-    /// The maximum amount of CPU cores that can be requested by Pods. Equivalent to the `limit` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The maximum amount of CPU cores that can be requested by Pods.
+    /// Equivalent to the `limit` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max: Option<String>,
-    /// The minimal amount of CPU cores that Pods need to run. Equivalent to the `request` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The minimal amount of CPU cores that Pods need to run.
+    /// Equivalent to the `request` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub min: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterRoutersRoleGroupsConfigResourcesMemory {
-    /// The maximum amount of memory that should be available to the Pod. Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),> which means these suffixes are supported: E, P, T, G, M, k. You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki. For example, the following represent roughly the same value: `128974848, 129e6, 129M,  128974848000m, 123Mi`
+    /// The maximum amount of memory that should be available to the Pod.
+    /// Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),>
+    /// which means these suffixes are supported: E, P, T, G, M, k.
+    /// You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki.
+    /// For example, the following represent roughly the same value:
+    /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<String>,
     /// Additional options that can be specified.
@@ -3027,12 +3679,15 @@ pub struct DruidClusterRoutersRoleGroupsConfigResourcesMemory {
 pub struct DruidClusterRoutersRoleGroupsConfigResourcesMemoryRuntimeLimits {
 }
 
-/// This role does not have any storage settings. Only the Historical role uses disk storage.
+/// This role does not have any storage settings.
+/// Only the Historical role uses disk storage.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterRoutersRoleGroupsConfigResourcesStorage {
 }
 
-/// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+/// Allows overriding JVM arguments.
+/// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+/// for details on the usage.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidClusterRoutersRoleGroupsJvmArgumentOverrides {
     /// JVM arguments to be added

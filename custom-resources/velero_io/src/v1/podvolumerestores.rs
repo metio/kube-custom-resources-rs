@@ -36,6 +36,9 @@ pub struct PodVolumeRestoreSpec {
     /// SnapshotID is the ID of the volume snapshot to be restored.
     #[serde(rename = "snapshotID")]
     pub snapshot_id: String,
+    /// SnapshotSize is the logical size in Bytes of the snapshot.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotSize")]
+    pub snapshot_size: Option<i64>,
     /// SourceNamespace is the original namespace for namaspace mapping.
     #[serde(rename = "sourceNamespace")]
     pub source_namespace: String,

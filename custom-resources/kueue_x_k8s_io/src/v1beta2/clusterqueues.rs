@@ -22,6 +22,7 @@ use self::prelude::*;
 pub struct ClusterQueueSpec {
     /// admissionChecks lists the AdmissionChecks required by this ClusterQueue.
     /// Cannot be used along with AdmissionCheckStrategy.
+    /// Admission checks are limited to at most 64 items.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "admissionChecks")]
     pub admission_checks: Option<Vec<String>>,
     /// admissionChecksStrategy defines a list of strategies to determine which ResourceFlavors require AdmissionChecks.
@@ -116,14 +117,21 @@ pub struct ClusterQueueAdmissionChecksStrategyAdmissionChecks {
 }
 
 /// admissionScope indicates whether ClusterQueue uses the Admission Fair Sharing
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterQueueAdmissionScope {
     /// admissionMode indicates which mode for AdmissionFairSharing should be used
     /// in the AdmissionScope. Possible values are:
     /// - UsageBasedAdmissionFairSharing
     /// - NoAdmissionFairSharing
     #[serde(rename = "admissionMode")]
-    pub admission_mode: String,
+    pub admission_mode: ClusterQueueAdmissionScopeAdmissionMode,
+}
+
+/// admissionScope indicates whether ClusterQueue uses the Admission Fair Sharing
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterQueueAdmissionScopeAdmissionMode {
+    UsageBasedAdmissionFairSharing,
+    NoAdmissionFairSharing,
 }
 
 /// fairSharing defines the properties of the ClusterQueue when
@@ -409,6 +417,7 @@ pub struct ClusterQueueStatus {
     pub admitted_workloads: Option<i32>,
     /// conditions hold the latest available observations of the ClusterQueue
     /// current state.
+    /// conditions are limited to 16 elements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// fairSharing contains the current state for this ClusterQueue
@@ -418,6 +427,7 @@ pub struct ClusterQueueStatus {
     pub fair_sharing: Option<ClusterQueueStatusFairSharing>,
     /// flavorsReservation are the reserved quotas, by flavor, currently in use by the
     /// workloads assigned to this ClusterQueue.
+    /// flavorsReservation are limited to 64 elements.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flavorsReservation")]
     pub flavors_reservation: Option<Vec<ClusterQueueStatusFlavorsReservation>>,
     /// flavorsUsage are the used quotas, by flavor, currently in use by the

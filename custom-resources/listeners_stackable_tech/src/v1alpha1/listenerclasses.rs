@@ -54,11 +54,12 @@ pub struct ListenerClassSpec {
     /// Annotations that should be added to the Service object.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAnnotations")]
     pub service_annotations: Option<BTreeMap<String, String>>,
-    /// `externalTrafficPolicy` that should be set on the created [`Service`] objects.
+    /// Service Internal Traffic Policy enables internal traffic restrictions to only route internal
+    /// traffic to endpoints within the node the traffic originated from. The "internal" traffic
+    /// here refers to traffic originated from Pods in the current cluster. This can help to reduce
+    /// costs and improve performance. See [Kubernetes docs][k8s-docs].
     /// 
-    /// The default is `Local` (in contrast to `Cluster`), as we aim to direct traffic to a node running the workload
-    /// and we should keep testing that as the primary configuration. Cluster is a fallback option for providers that
-    /// break Local mode (IONOS so far).
+    /// [k8s-docs]: <https://kubernetes.io/docs/concepts/services-networking/service-traffic-policy/>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceExternalTrafficPolicy")]
     pub service_external_traffic_policy: Option<ListenerClassServiceExternalTrafficPolicy>,
     /// The method used to access the services.

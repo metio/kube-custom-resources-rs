@@ -5924,12 +5924,12 @@ pub struct PerconaServerMySqlPmm {
     pub image: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbes")]
-    pub liveness_probes: Option<PerconaServerMySqlPmmLivenessProbes>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
+    pub liveness_probe: Option<PerconaServerMySqlPmmLivenessProbe>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mysqlParams")]
     pub mysql_params: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbes")]
-    pub readiness_probes: Option<PerconaServerMySqlPmmReadinessProbes>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
+    pub readiness_probe: Option<PerconaServerMySqlPmmReadinessProbe>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<PerconaServerMySqlPmmResources>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverHost")]
@@ -6013,15 +6013,15 @@ pub struct PerconaServerMySqlPmmContainerSecurityContextWindowsOptions {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlPmmLivenessProbes {
+pub struct PerconaServerMySqlPmmLivenessProbe {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec: Option<PerconaServerMySqlPmmLivenessProbesExec>,
+    pub exec: Option<PerconaServerMySqlPmmLivenessProbeExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub grpc: Option<PerconaServerMySqlPmmLivenessProbesGrpc>,
+    pub grpc: Option<PerconaServerMySqlPmmLivenessProbeGrpc>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get: Option<PerconaServerMySqlPmmLivenessProbesHttpGet>,
+    pub http_get: Option<PerconaServerMySqlPmmLivenessProbeHttpGet>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
@@ -6029,7 +6029,7 @@ pub struct PerconaServerMySqlPmmLivenessProbes {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<PerconaServerMySqlPmmLivenessProbesTcpSocket>,
+    pub tcp_socket: Option<PerconaServerMySqlPmmLivenessProbeTcpSocket>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
@@ -6037,24 +6037,24 @@ pub struct PerconaServerMySqlPmmLivenessProbes {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlPmmLivenessProbesExec {
+pub struct PerconaServerMySqlPmmLivenessProbeExec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlPmmLivenessProbesGrpc {
+pub struct PerconaServerMySqlPmmLivenessProbeGrpc {
     pub port: i32,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlPmmLivenessProbesHttpGet {
+pub struct PerconaServerMySqlPmmLivenessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
-    pub http_headers: Option<Vec<PerconaServerMySqlPmmLivenessProbesHttpGetHttpHeaders>>,
+    pub http_headers: Option<Vec<PerconaServerMySqlPmmLivenessProbeHttpGetHttpHeaders>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     pub port: IntOrString,
@@ -6063,28 +6063,28 @@ pub struct PerconaServerMySqlPmmLivenessProbesHttpGet {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlPmmLivenessProbesHttpGetHttpHeaders {
+pub struct PerconaServerMySqlPmmLivenessProbeHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlPmmLivenessProbesTcpSocket {
+pub struct PerconaServerMySqlPmmLivenessProbeTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     pub port: IntOrString,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlPmmReadinessProbes {
+pub struct PerconaServerMySqlPmmReadinessProbe {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec: Option<PerconaServerMySqlPmmReadinessProbesExec>,
+    pub exec: Option<PerconaServerMySqlPmmReadinessProbeExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub grpc: Option<PerconaServerMySqlPmmReadinessProbesGrpc>,
+    pub grpc: Option<PerconaServerMySqlPmmReadinessProbeGrpc>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get: Option<PerconaServerMySqlPmmReadinessProbesHttpGet>,
+    pub http_get: Option<PerconaServerMySqlPmmReadinessProbeHttpGet>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
@@ -6092,7 +6092,7 @@ pub struct PerconaServerMySqlPmmReadinessProbes {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<PerconaServerMySqlPmmReadinessProbesTcpSocket>,
+    pub tcp_socket: Option<PerconaServerMySqlPmmReadinessProbeTcpSocket>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
@@ -6100,24 +6100,24 @@ pub struct PerconaServerMySqlPmmReadinessProbes {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlPmmReadinessProbesExec {
+pub struct PerconaServerMySqlPmmReadinessProbeExec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlPmmReadinessProbesGrpc {
+pub struct PerconaServerMySqlPmmReadinessProbeGrpc {
     pub port: i32,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlPmmReadinessProbesHttpGet {
+pub struct PerconaServerMySqlPmmReadinessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
-    pub http_headers: Option<Vec<PerconaServerMySqlPmmReadinessProbesHttpGetHttpHeaders>>,
+    pub http_headers: Option<Vec<PerconaServerMySqlPmmReadinessProbeHttpGetHttpHeaders>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     pub port: IntOrString,
@@ -6126,13 +6126,13 @@ pub struct PerconaServerMySqlPmmReadinessProbesHttpGet {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlPmmReadinessProbesHttpGetHttpHeaders {
+pub struct PerconaServerMySqlPmmReadinessProbeHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlPmmReadinessProbesTcpSocket {
+pub struct PerconaServerMySqlPmmReadinessProbeTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     pub port: IntOrString,

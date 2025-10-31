@@ -114,13 +114,22 @@ pub struct ClusterClusterNetworkCniConfig {
 /// CiliumConfig contains configuration specific to the Cilium CNI.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClusterNetworkCniConfigCilium {
+    /// DEPRECATED: Use HelmValues instead. This field will be ignored when HelmValues is set.
     /// CNIExclusive controls whether Cilium should remove other CNI configuration files.
     /// When true (default), Cilium removes other CNI configs; when false, it leaves them alone.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cniExclusive")]
     pub cni_exclusive: Option<bool>,
+    /// DEPRECATED: Use HelmValues instead. This field will be ignored when HelmValues is set.
     /// EgressMasquaradeInterfaces determines which network interfaces are used for masquerading. Accepted values are a valid interface name or interface prefix.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "egressMasqueradeInterfaces")]
     pub egress_masquerade_interfaces: Option<String>,
+    /// HelmValues specifies the complete Helm values configuration for Cilium in YAML format.
+    /// When set, this parameter takes precedence over all other Cilium-specific fields in this configuration.
+    /// All other Cilium properties (CNIExclusive, EgressMasqueradeInterfaces, IPv4NativeRoutingCIDR, etc.)
+    /// will be ignored when HelmValues is specified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmValues")]
+    pub helm_values: Option<serde_json::Value>,
+    /// DEPRECATED: Use HelmValues instead. This field will be ignored when HelmValues is set.
     /// IPv4NativeRoutingCIDR specifies the CIDR to use when RoutingMode is set to direct.
     /// When specified, Cilium assumes networking for this CIDR is preconfigured and
     /// hands traffic destined for that range to the Linux network stack without
@@ -128,6 +137,7 @@ pub struct ClusterClusterNetworkCniConfigCilium {
     /// If this is not set autoDirectNodeRoutes will be set to true
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipv4NativeRoutingCIDR")]
     pub ipv4_native_routing_cidr: Option<String>,
+    /// DEPRECATED: Use HelmValues instead. This field will be ignored when HelmValues is set.
     /// IPv6NativeRoutingCIDR specifies the IPv6 CIDR to use when RoutingMode is set to direct.
     /// When specified, Cilium assumes networking for this CIDR is preconfigured and
     /// hands traffic destined for that range to the Linux network stack without
@@ -135,14 +145,17 @@ pub struct ClusterClusterNetworkCniConfigCilium {
     /// If this is not set autoDirectNodeRoutes will be set to true
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipv6NativeRoutingCIDR")]
     pub ipv6_native_routing_cidr: Option<String>,
+    /// DEPRECATED: Use HelmValues instead. This field will be ignored when HelmValues is set.
     /// PolicyEnforcementMode determines communication allowed between pods. Accepted values are default, always, never.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "policyEnforcementMode")]
     pub policy_enforcement_mode: Option<String>,
+    /// DEPRECATED: Use HelmValues instead. This field will be ignored when HelmValues is set.
     /// RoutingMode indicates the routing tunnel mode to use for Cilium. Accepted values are overlay (geneve tunnel with overlay)
     /// or direct (tunneling disabled with direct routing)
     /// Defaults to overlay.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "routingMode")]
     pub routing_mode: Option<String>,
+    /// DEPRECATED: Use HelmValues instead. This field will be ignored when HelmValues is set.
     /// SkipUpgrade indicicates that Cilium maintenance should be skipped during upgrades. This can
     /// be used when operators wish to self manage the Cilium installation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipUpgrade")]

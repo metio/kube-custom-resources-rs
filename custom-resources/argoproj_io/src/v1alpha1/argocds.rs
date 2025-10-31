@@ -81,6 +81,10 @@ pub struct ArgoCdSpec {
     /// Image is the ArgoCD container image for all ArgoCD components.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
+    /// ImagePullPolicy is the image pull policy for all ArgoCD components.
+    /// Valid values are Always, IfNotPresent, Never. If not specified, defaults to the operator's global setting.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
+    pub image_pull_policy: Option<ArgoCdImagePullPolicy>,
     /// Import is the import/restore options for ArgoCD.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub import: Option<ArgoCdImport>,
@@ -1278,6 +1282,14 @@ pub struct ArgoCdHaResourcesClaims {
     /// only the result of this request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub request: Option<String>,
+}
+
+/// ArgoCDSpec defines the desired state of ArgoCD
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ArgoCdImagePullPolicy {
+    Always,
+    IfNotPresent,
+    Never,
 }
 
 /// Import is the import/restore options for ArgoCD.

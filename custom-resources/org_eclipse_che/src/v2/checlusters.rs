@@ -1355,6 +1355,9 @@ pub struct CheClusterDevEnvironments {
     /// Container build configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerBuildConfiguration")]
     pub container_build_configuration: Option<CheClusterDevEnvironmentsContainerBuildConfiguration>,
+    /// Container run configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerRunConfiguration")]
+    pub container_run_configuration: Option<CheClusterDevEnvironmentsContainerRunConfiguration>,
     /// Default components applied to DevWorkspaces.
     /// These default components are meant to be used when a Devfile, that does not contain any components.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultComponents")]
@@ -1394,6 +1397,13 @@ pub struct CheClusterDevEnvironments {
     ///      - SETUID
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableContainerBuildCapabilities")]
     pub disable_container_build_capabilities: Option<bool>,
+    /// Disables container run capabilities.
+    /// Can be enabled on OpenShift version 4.20 or later.
+    /// When set to `false`, the value from `devEnvironments.security.containerSecurityContext`
+    /// is ignored, and instead the SecurityContext defined in
+    /// `devEnvironments.containerRunConfiguration.containerSecurityContext` is applied.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableContainerRunCapabilities")]
+    pub disable_container_run_capabilities: Option<bool>,
     /// EditorsDownloadUrls provides a list of custom download URLs for JetBrains editors
     /// in a local-to-remote flow.
     /// It is particularly useful in disconnected or air-gapped environments,
@@ -1507,6 +1517,215 @@ pub struct CheClusterDevEnvironmentsContainerBuildConfiguration {
     /// OpenShift security context constraint to build containers.
     #[serde(rename = "openShiftSecurityContextConstraint")]
     pub open_shift_security_context_constraint: String,
+}
+
+/// Container run configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CheClusterDevEnvironmentsContainerRunConfiguration {
+    /// SecurityContext applied to all workspace containers when run capabilities are enabled.
+    /// The default `procMount: "Unmasked"` is set because the pod runs in a user namespace,
+    /// which safely isolates the container's `/proc` from the host. This allows the container
+    /// to modify its own sysctl settings for configuring networking for nested containers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerSecurityContext")]
+    pub container_security_context: Option<CheClusterDevEnvironmentsContainerRunConfigurationContainerSecurityContext>,
+    /// Specifies the OpenShift SecurityContextConstraint used to run containers.
+    #[serde(rename = "openShiftSecurityContextConstraint")]
+    pub open_shift_security_context_constraint: String,
+    /// Extra annotations applied to all workspace pods, in addition to those defined
+    /// in `devEnvironments.workspacePodAnnotations`. Enables `/dev/fuse` for access to the fuse driver
+    /// and `/dev/net/tun` for safe network access.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workspacesPodAnnotations")]
+    pub workspaces_pod_annotations: Option<BTreeMap<String, String>>,
+}
+
+/// SecurityContext applied to all workspace containers when run capabilities are enabled.
+/// The default `procMount: "Unmasked"` is set because the pod runs in a user namespace,
+/// which safely isolates the container's `/proc` from the host. This allows the container
+/// to modify its own sysctl settings for configuring networking for nested containers.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CheClusterDevEnvironmentsContainerRunConfigurationContainerSecurityContext {
+    /// AllowPrivilegeEscalation controls whether a process can gain more
+    /// privileges than its parent process. This bool directly controls if
+    /// the no_new_privs flag will be set on the container process.
+    /// AllowPrivilegeEscalation is true always when the container is:
+    /// 1) run as Privileged
+    /// 2) has CAP_SYS_ADMIN
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
+    pub allow_privilege_escalation: Option<bool>,
+    /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+    /// overrides the pod's appArmorProfile.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<CheClusterDevEnvironmentsContainerRunConfigurationContainerSecurityContextAppArmorProfile>,
+    /// The capabilities to add/drop when running containers.
+    /// Defaults to the default set of capabilities granted by the container runtime.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub capabilities: Option<CheClusterDevEnvironmentsContainerRunConfigurationContainerSecurityContextCapabilities>,
+    /// Run container in privileged mode.
+    /// Processes in privileged containers are essentially equivalent to root on the host.
+    /// Defaults to false.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub privileged: Option<bool>,
+    /// procMount denotes the type of proc mount to use for the containers.
+    /// The default value is Default which uses the container runtime defaults for
+    /// readonly paths and masked paths.
+    /// This requires the ProcMountType feature flag to be enabled.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "procMount")]
+    pub proc_mount: Option<String>,
+    /// Whether this container has a read-only root filesystem.
+    /// Default is false.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
+    pub read_only_root_filesystem: Option<bool>,
+    /// The GID to run the entrypoint of the container process.
+    /// Uses runtime default if unset.
+    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
+    pub run_as_group: Option<i64>,
+    /// Indicates that the container must run as a non-root user.
+    /// If true, the Kubelet will validate the image at runtime to ensure that it
+    /// does not run as UID 0 (root) and fail to start the container if it does.
+    /// If unset or false, no such validation will be performed.
+    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
+    pub run_as_non_root: Option<bool>,
+    /// The UID to run the entrypoint of the container process.
+    /// Defaults to user specified in image metadata if unspecified.
+    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
+    pub run_as_user: Option<i64>,
+    /// The SELinux context to be applied to the container.
+    /// If unspecified, the container runtime will allocate a random SELinux context for each
+    /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<CheClusterDevEnvironmentsContainerRunConfigurationContainerSecurityContextSeLinuxOptions>,
+    /// The seccomp options to use by this container. If seccomp options are
+    /// provided at both the pod & container level, the container options
+    /// override the pod options.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<CheClusterDevEnvironmentsContainerRunConfigurationContainerSecurityContextSeccompProfile>,
+    /// The Windows specific settings applied to all containers.
+    /// If unspecified, the options from the PodSecurityContext will be used.
+    /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is linux.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<CheClusterDevEnvironmentsContainerRunConfigurationContainerSecurityContextWindowsOptions>,
+}
+
+/// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+/// overrides the pod's appArmorProfile.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CheClusterDevEnvironmentsContainerRunConfigurationContainerSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
+}
+
+/// The capabilities to add/drop when running containers.
+/// Defaults to the default set of capabilities granted by the container runtime.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CheClusterDevEnvironmentsContainerRunConfigurationContainerSecurityContextCapabilities {
+    /// Added capabilities
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub add: Option<Vec<String>>,
+    /// Removed capabilities
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub drop: Option<Vec<String>>,
+}
+
+/// The SELinux context to be applied to the container.
+/// If unspecified, the container runtime will allocate a random SELinux context for each
+/// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
+/// PodSecurityContext, the value specified in SecurityContext takes precedence.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CheClusterDevEnvironmentsContainerRunConfigurationContainerSecurityContextSeLinuxOptions {
+    /// Level is SELinux level label that applies to the container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub level: Option<String>,
+    /// Role is a SELinux role label that applies to the container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub role: Option<String>,
+    /// Type is a SELinux type label that applies to the container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+    /// User is a SELinux user label that applies to the container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user: Option<String>,
+}
+
+/// The seccomp options to use by this container. If seccomp options are
+/// provided at both the pod & container level, the container options
+/// override the pod options.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CheClusterDevEnvironmentsContainerRunConfigurationContainerSecurityContextSeccompProfile {
+    /// localhostProfile indicates a profile defined in a file on the node should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
+    /// Must be set if type is "Localhost". Must NOT be set for any other type.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of seccomp profile will be applied.
+    /// Valid options are:
+    /// 
+    /// Localhost - a profile defined in a file on the node should be used.
+    /// RuntimeDefault - the container runtime default profile should be used.
+    /// Unconfined - no profile should be applied.
+    #[serde(rename = "type")]
+    pub r#type: String,
+}
+
+/// The Windows specific settings applied to all containers.
+/// If unspecified, the options from the PodSecurityContext will be used.
+/// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+/// Note that this field cannot be set when spec.os.name is linux.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CheClusterDevEnvironmentsContainerRunConfigurationContainerSecurityContextWindowsOptions {
+    /// GMSACredentialSpec is where the GMSA admission webhook
+    /// (<https://github.com/kubernetes-sigs/windows-gmsa)> inlines the contents of the
+    /// GMSA credential spec named by the GMSACredentialSpecName field.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
+    pub gmsa_credential_spec: Option<String>,
+    /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
+    pub gmsa_credential_spec_name: Option<String>,
+    /// HostProcess determines if a container should be run as a 'Host Process' container.
+    /// All of a Pod's containers must have the same effective HostProcess value
+    /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
+    /// In addition, if HostProcess is true then HostNetwork must also be set to true.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
+    pub host_process: Option<bool>,
+    /// The UserName in Windows to run the entrypoint of the container process.
+    /// Defaults to the user specified in image metadata if unspecified.
+    /// May also be set in PodSecurityContext. If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
+    pub run_as_user_name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3501,9 +3720,10 @@ pub struct CheClusterDevEnvironmentsProjectCloneContainerResourcesRequest {
 /// Workspace security configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsSecurity {
-    /// Container SecurityContext used by all workspace-related containers.
-    /// If set, defined values are merged into the default Container SecurityContext configuration.
-    /// Requires devEnvironments.disableContainerBuildCapabilities to be set to `true` in order to take effect.
+    /// Defines the SecurityContext applied to all workspace-related containers.
+    /// When set, the specified values are merged with the default SecurityContext configuration.
+    /// This setting takes effect only if both `devEnvironments.disableContainerBuildCapabilities`
+    /// and `devEnvironments.disableContainerRunCapabilities` are set to `true`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerSecurityContext")]
     pub container_security_context: Option<CheClusterDevEnvironmentsSecurityContainerSecurityContext>,
     /// PodSecurityContext used by all workspace-related pods.
@@ -3512,9 +3732,10 @@ pub struct CheClusterDevEnvironmentsSecurity {
     pub pod_security_context: Option<CheClusterDevEnvironmentsSecurityPodSecurityContext>,
 }
 
-/// Container SecurityContext used by all workspace-related containers.
-/// If set, defined values are merged into the default Container SecurityContext configuration.
-/// Requires devEnvironments.disableContainerBuildCapabilities to be set to `true` in order to take effect.
+/// Defines the SecurityContext applied to all workspace-related containers.
+/// When set, the specified values are merged with the default SecurityContext configuration.
+/// This setting takes effect only if both `devEnvironments.disableContainerBuildCapabilities`
+/// and `devEnvironments.disableContainerRunCapabilities` are set to `true`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsSecurityContainerSecurityContext {
     /// AllowPrivilegeEscalation controls whether a process can gain more

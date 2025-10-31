@@ -30,6 +30,9 @@ pub struct VSphereMachineConfigSpec {
     pub host_os_configuration: Option<VSphereMachineConfigHostOsConfiguration>,
     #[serde(rename = "memoryMiB")]
     pub memory_mi_b: i64,
+    /// The field Networks is for enabling multiple network interfaces for workernode
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub networks: Option<Vec<String>>,
     #[serde(rename = "numCPUs")]
     pub num_cp_us: i64,
     #[serde(rename = "osFamily")]

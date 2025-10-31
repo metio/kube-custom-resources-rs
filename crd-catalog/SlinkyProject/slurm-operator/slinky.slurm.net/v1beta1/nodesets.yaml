@@ -53,9 +53,7 @@ spec:
         - jsonPath: ".metadata.creationTimestamp"
           name: "AGE"
           type: "date"
-      deprecated: true
-      deprecationWarning: "v1alpha1 is deprecated, use v1beta1."
-      name: "v1alpha1"
+      name: "v1beta1"
       schema:
         openAPIV3Schema:
           description: "NodeSet is the Schema for the nodesets API"
@@ -279,7 +277,7 @@ spec:
               type: "object"
           type: "object"
       served: true
-      storage: false
+      storage: true
       subresources:
         scale:
           labelSelectorPath: ".status.selector"

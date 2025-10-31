@@ -11,7 +11,9 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// A Trino cluster stacklet. This resource is managed by the Stackable operator for Trino. Find more information on how to use it and the resources that the operator generates in the [operator documentation](<https://docs.stackable.tech/home/nightly/trino/).>
+/// A Trino cluster stacklet. This resource is managed by the Stackable operator for Trino.
+/// Find more information on how to use it and the resources that the operator generates in the
+/// [operator documentation](<https://docs.stackable.tech/home/nightly/trino/).>
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "trino.stackable.tech", version = "v1alpha1", kind = "TrinoCluster", plural = "trinoclusters")]
 #[kube(namespaced)]
@@ -20,46 +22,71 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct TrinoClusterSpec {
-    /// Settings that affect all roles and role groups. The settings in the `clusterConfig` are cluster wide settings that do not need to be configurable at role or role group level.
+    /// Settings that affect all roles and role groups.
+    /// The settings in the `clusterConfig` are cluster wide settings that do not need to be configurable at role or role group level.
     #[serde(rename = "clusterConfig")]
     pub cluster_config: TrinoClusterClusterConfig,
-    /// [Cluster operations](<https://docs.stackable.tech/home/nightly/concepts/operations/cluster_operations)> properties, allow stopping the product instance as well as pausing reconciliation.
+    /// [Cluster operations](<https://docs.stackable.tech/home/nightly/concepts/operations/cluster_operations)>
+    /// properties, allow stopping the product instance as well as pausing reconciliation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterOperation")]
     pub cluster_operation: Option<TrinoClusterClusterOperation>,
-    /// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured on role level. There is also a second form of config, which can only be configured at role level, the `roleConfig`. You can learn more about this in the [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
+    /// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing
+    /// all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable
+    /// at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured
+    /// on role level. There is also a second form of config, which can only be configured
+    /// at role level, the `roleConfig`.
+    /// You can learn more about this in the
+    /// [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub coordinators: Option<TrinoClusterCoordinators>,
-    /// Specify which image to use, the easiest way is to only configure the `productVersion`. You can also configure a custom image registry to pull from, as well as completely custom images.
+    /// Specify which image to use, the easiest way is to only configure the `productVersion`.
+    /// You can also configure a custom image registry to pull from, as well as completely custom
+    /// images.
     /// 
-    /// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)> for details.
+    /// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)>
+    /// for details.
     pub image: TrinoClusterImage,
-    /// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured on role level. There is also a second form of config, which can only be configured at role level, the `roleConfig`. You can learn more about this in the [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
+    /// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing
+    /// all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable
+    /// at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured
+    /// on role level. There is also a second form of config, which can only be configured
+    /// at role level, the `roleConfig`.
+    /// You can learn more about this in the
+    /// [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub workers: Option<TrinoClusterWorkers>,
 }
 
-/// Settings that affect all roles and role groups. The settings in the `clusterConfig` are cluster wide settings that do not need to be configurable at role or role group level.
+/// Settings that affect all roles and role groups.
+/// The settings in the `clusterConfig` are cluster wide settings that do not need to be configurable at role or role group level.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterClusterConfig {
-    /// Authentication options for Trino. Learn more in the [Trino authentication usage guide](<https://docs.stackable.tech/home/nightly/trino/usage-guide/security#authentication).>
+    /// Authentication options for Trino.
+    /// Learn more in the [Trino authentication usage guide](<https://docs.stackable.tech/home/nightly/trino/usage-guide/security#authentication).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authentication: Option<Vec<TrinoClusterClusterConfigAuthentication>>,
-    /// Authorization options for Trino. Learn more in the [Trino authorization usage guide](<https://docs.stackable.tech/home/nightly/trino/usage-guide/security#authorization).>
+    /// Authorization options for Trino.
+    /// Learn more in the [Trino authorization usage guide](<https://docs.stackable.tech/home/nightly/trino/usage-guide/security#authorization).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<TrinoClusterClusterConfigAuthorization>,
-    /// [LabelSelector](<https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors)> selecting the Catalogs to include in the Trino instance.
+    /// [LabelSelector](<https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors)> selecting the Catalogs
+    /// to include in the Trino instance.
     #[serde(rename = "catalogLabelSelector")]
     pub catalog_label_selector: TrinoClusterClusterConfigCatalogLabelSelector,
     /// Client spooling protocol configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientProtocol")]
     pub client_protocol: Option<TrinoClusterClusterConfigClientProtocol>,
-    /// Fault tolerant execution configuration. When enabled, Trino can automatically retry queries or tasks in case of failures.
+    /// Fault tolerant execution configuration.
+    /// When enabled, Trino can automatically retry queries or tasks in case of failures.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "faultTolerantExecution")]
     pub fault_tolerant_execution: Option<TrinoClusterClusterConfigFaultTolerantExecution>,
     /// TLS configuration options for server and internal communication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<TrinoClusterClusterConfigTls>,
-    /// Name of the Vector aggregator [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery).> It must contain the key `ADDRESS` with the address of the Vector aggregator. Follow the [logging tutorial](<https://docs.stackable.tech/home/nightly/tutorials/logging-vector-aggregator)> to learn how to configure log aggregation with Vector.
+    /// Name of the Vector aggregator [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery).>
+    /// It must contain the key `ADDRESS` with the address of the Vector aggregator.
+    /// Follow the [logging tutorial](<https://docs.stackable.tech/home/nightly/tutorials/logging-vector-aggregator)>
+    /// to learn how to configure log aggregation with Vector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vectorAggregatorConfigMapName")]
     pub vector_aggregator_config_map_name: Option<String>,
 }
@@ -77,7 +104,8 @@ pub struct TrinoClusterClusterConfigAuthentication {
 /// This field contains OIDC-specific configuration. It is only required in case OIDC is used.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterClusterConfigAuthenticationOidc {
-    /// A reference to the OIDC client credentials secret. The secret contains the client id and secret.
+    /// A reference to the OIDC client credentials secret. The secret contains
+    /// the client id and secret.
     #[serde(rename = "clientCredentialsSecret")]
     pub client_credentials_secret: String,
     /// An optional list of extra scopes which get merged with the scopes defined in the AuthenticationClass
@@ -85,18 +113,26 @@ pub struct TrinoClusterClusterConfigAuthenticationOidc {
     pub extra_scopes: Option<Vec<String>>,
 }
 
-/// Authorization options for Trino. Learn more in the [Trino authorization usage guide](<https://docs.stackable.tech/home/nightly/trino/usage-guide/security#authorization).>
+/// Authorization options for Trino.
+/// Learn more in the [Trino authorization usage guide](<https://docs.stackable.tech/home/nightly/trino/usage-guide/security#authorization).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterClusterConfigAuthorization {
-    /// Configure the OPA stacklet [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery)> and the name of the Rego package containing your authorization rules. Consult the [OPA authorization documentation](<https://docs.stackable.tech/home/nightly/concepts/opa)> to learn how to deploy Rego authorization rules with OPA.
+    /// Configure the OPA stacklet [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery)>
+    /// and the name of the Rego package containing your authorization rules.
+    /// Consult the [OPA authorization documentation](<https://docs.stackable.tech/home/nightly/concepts/opa)>
+    /// to learn how to deploy Rego authorization rules with OPA.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub opa: Option<TrinoClusterClusterConfigAuthorizationOpa>,
 }
 
-/// Configure the OPA stacklet [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery)> and the name of the Rego package containing your authorization rules. Consult the [OPA authorization documentation](<https://docs.stackable.tech/home/nightly/concepts/opa)> to learn how to deploy Rego authorization rules with OPA.
+/// Configure the OPA stacklet [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery)>
+/// and the name of the Rego package containing your authorization rules.
+/// Consult the [OPA authorization documentation](<https://docs.stackable.tech/home/nightly/concepts/opa)>
+/// to learn how to deploy Rego authorization rules with OPA.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterClusterConfigAuthorizationOpa {
-    /// The [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery)> for the OPA stacklet that should be used for authorization requests.
+    /// The [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery)>
+    /// for the OPA stacklet that should be used for authorization requests.
     #[serde(rename = "configMapName")]
     pub config_map_name: String,
     /// The name of the Rego package containing the Rego rules for the product.
@@ -104,7 +140,8 @@ pub struct TrinoClusterClusterConfigAuthorizationOpa {
     pub package: Option<String>,
 }
 
-/// [LabelSelector](<https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors)> selecting the Catalogs to include in the Trino instance.
+/// [LabelSelector](<https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors)> selecting the Catalogs
+/// to include in the Trino instance.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterClusterConfigCatalogLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -153,25 +190,32 @@ pub struct TrinoClusterClusterConfigClientProtocolSpoolingFilesystemS3 {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterClusterConfigClientProtocolSpoolingFilesystemS3Connection {
-    /// S3 connection definition as a resource. Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
+    /// S3 connection definition as a resource.
+    /// Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub inline: Option<TrinoClusterClusterConfigClientProtocolSpoolingFilesystemS3ConnectionInline>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reference: Option<String>,
 }
 
-/// S3 connection definition as a resource. Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
+/// S3 connection definition as a resource.
+/// Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterClusterConfigClientProtocolSpoolingFilesystemS3ConnectionInline {
-    /// Which access style to use. Defaults to virtual hosted-style as most of the data products out there. Have a look at the [AWS documentation](<https://docs.aws.amazon.com/AmazonS3/latest/userguide/VirtualHosting.html).>
+    /// Which access style to use.
+    /// Defaults to virtual hosted-style as most of the data products out there.
+    /// Have a look at the [AWS documentation](<https://docs.aws.amazon.com/AmazonS3/latest/userguide/VirtualHosting.html).>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessStyle")]
     pub access_style: Option<TrinoClusterClusterConfigClientProtocolSpoolingFilesystemS3ConnectionInlineAccessStyle>,
-    /// If the S3 uses authentication you have to specify you S3 credentials. In the most cases a [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> providing `accessKey` and `secretKey` is sufficient.
+    /// If the S3 uses authentication you have to specify you S3 credentials.
+    /// In the most cases a [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)>
+    /// providing `accessKey` and `secretKey` is sufficient.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<TrinoClusterClusterConfigClientProtocolSpoolingFilesystemS3ConnectionInlineCredentials>,
     /// Host of the S3 server without any protocol or port. For example: `west1.my-cloud.com`.
     pub host: String,
-    /// Port the S3 server listens on. If not specified the product will determine the port to use.
+    /// Port the S3 server listens on.
+    /// If not specified the product will determine the port to use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<u16>,
     /// Bucket region used for signing headers (sigv4).
@@ -186,17 +230,21 @@ pub struct TrinoClusterClusterConfigClientProtocolSpoolingFilesystemS3Connection
     pub tls: Option<TrinoClusterClusterConfigClientProtocolSpoolingFilesystemS3ConnectionInlineTls>,
 }
 
-/// S3 connection definition as a resource. Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
+/// S3 connection definition as a resource.
+/// Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum TrinoClusterClusterConfigClientProtocolSpoolingFilesystemS3ConnectionInlineAccessStyle {
     Path,
     VirtualHosted,
 }
 
-/// If the S3 uses authentication you have to specify you S3 credentials. In the most cases a [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> providing `accessKey` and `secretKey` is sufficient.
+/// If the S3 uses authentication you have to specify you S3 credentials.
+/// In the most cases a [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)>
+/// providing `accessKey` and `secretKey` is sufficient.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterClusterConfigClientProtocolSpoolingFilesystemS3ConnectionInlineCredentials {
-    /// [Scope](<https://docs.stackable.tech/home/nightly/secret-operator/scope)> of the [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass).>
+    /// [Scope](<https://docs.stackable.tech/home/nightly/secret-operator/scope)> of the
+    /// [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scope: Option<TrinoClusterClusterConfigClientProtocolSpoolingFilesystemS3ConnectionInlineCredentialsScope>,
     /// [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> containing the LDAP bind credentials.
@@ -204,19 +252,24 @@ pub struct TrinoClusterClusterConfigClientProtocolSpoolingFilesystemS3Connection
     pub secret_class: String,
 }
 
-/// [Scope](<https://docs.stackable.tech/home/nightly/secret-operator/scope)> of the [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass).>
+/// [Scope](<https://docs.stackable.tech/home/nightly/secret-operator/scope)> of the
+/// [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterClusterConfigClientProtocolSpoolingFilesystemS3ConnectionInlineCredentialsScope {
-    /// The listener volume scope allows Node and Service scopes to be inferred from the applicable listeners. This must correspond to Volume names in the Pod that mount Listeners.
+    /// The listener volume scope allows Node and Service scopes to be inferred from the applicable listeners.
+    /// This must correspond to Volume names in the Pod that mount Listeners.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenerVolumes")]
     pub listener_volumes: Option<Vec<String>>,
-    /// The node scope is resolved to the name of the Kubernetes Node object that the Pod is running on. This will typically be the DNS name of the node.
+    /// The node scope is resolved to the name of the Kubernetes Node object that the Pod is running on.
+    /// This will typically be the DNS name of the node.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub node: Option<bool>,
-    /// The pod scope is resolved to the name of the Kubernetes Pod. This allows the secret to differentiate between StatefulSet replicas.
+    /// The pod scope is resolved to the name of the Kubernetes Pod.
+    /// This allows the secret to differentiate between StatefulSet replicas.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pod: Option<bool>,
-    /// The service scope allows Pod objects to specify custom scopes. This should typically correspond to Service objects that the Pod participates in.
+    /// The service scope allows Pod objects to specify custom scopes.
+    /// This should typically correspond to Service objects that the Pod participates in.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<String>>,
 }
@@ -266,20 +319,25 @@ pub struct TrinoClusterClusterConfigClientProtocolSpoolingFilesystemS3Connection
 /// CA cert to verify the server.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterClusterConfigClientProtocolSpoolingFilesystemS3ConnectionInlineTlsVerificationServerCaCert {
-    /// Name of the [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> which will provide the CA certificate. Note that a SecretClass does not need to have a key but can also work with just a CA certificate, so if you got provided with a CA cert but don't have access to the key you can still use this method.
+    /// Name of the [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> which will provide the CA certificate.
+    /// Note that a SecretClass does not need to have a key but can also work with just a CA certificate,
+    /// so if you got provided with a CA cert but don't have access to the key you can still use this method.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretClass")]
     pub secret_class: Option<String>,
-    /// Use TLS and the CA certificates trusted by the common web browsers to verify the server. This can be useful when you e.g. use public AWS S3 or other public available services.
+    /// Use TLS and the CA certificates trusted by the common web browsers to verify the server.
+    /// This can be useful when you e.g. use public AWS S3 or other public available services.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "webPki")]
     pub web_pki: Option<TrinoClusterClusterConfigClientProtocolSpoolingFilesystemS3ConnectionInlineTlsVerificationServerCaCertWebPki>,
 }
 
-/// Use TLS and the CA certificates trusted by the common web browsers to verify the server. This can be useful when you e.g. use public AWS S3 or other public available services.
+/// Use TLS and the CA certificates trusted by the common web browsers to verify the server.
+/// This can be useful when you e.g. use public AWS S3 or other public available services.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterClusterConfigClientProtocolSpoolingFilesystemS3ConnectionInlineTlsVerificationServerCaCertWebPki {
 }
 
-/// Fault tolerant execution configuration. When enabled, Trino can automatically retry queries or tasks in case of failures.
+/// Fault tolerant execution configuration.
+/// When enabled, Trino can automatically retry queries or tasks in case of failures.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterClusterConfigFaultTolerantExecution {
     /// Query-level fault tolerant execution. Retries entire queries on failure.
@@ -296,7 +354,8 @@ pub struct TrinoClusterClusterConfigFaultTolerantExecutionQuery {
     /// Data size of the coordinator's in-memory buffer used to store output of query stages.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "exchangeDeduplicationBufferSize")]
     pub exchange_deduplication_buffer_size: Option<String>,
-    /// Exchange manager configuration for spooling intermediate data during fault tolerant execution. Optional for Query retry policy, recommended for large result sets.
+    /// Exchange manager configuration for spooling intermediate data during fault tolerant execution.
+    /// Optional for Query retry policy, recommended for large result sets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "exchangeManager")]
     pub exchange_manager: Option<TrinoClusterClusterConfigFaultTolerantExecutionQueryExchangeManager>,
     /// Maximum number of times Trino may attempt to retry a query before declaring it failed.
@@ -313,7 +372,8 @@ pub struct TrinoClusterClusterConfigFaultTolerantExecutionQuery {
     pub retry_max_delay: Option<String>,
 }
 
-/// Exchange manager configuration for spooling intermediate data during fault tolerant execution. Optional for Query retry policy, recommended for large result sets.
+/// Exchange manager configuration for spooling intermediate data during fault tolerant execution.
+/// Optional for Query retry policy, recommended for large result sets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterClusterConfigFaultTolerantExecutionQueryExchangeManager {
     /// Whether to enable encryption of spooling data.
@@ -328,16 +388,19 @@ pub struct TrinoClusterClusterConfigFaultTolerantExecutionQueryExchangeManager {
     /// S3-compatible storage configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub s3: Option<TrinoClusterClusterConfigFaultTolerantExecutionQueryExchangeManagerS3>,
-    /// The minimum buffer pool size for an exchange sink. The larger the buffer pool size, the larger the write parallelism and memory usage.
+    /// The minimum buffer pool size for an exchange sink. The larger the buffer pool size,
+    /// the larger the write parallelism and memory usage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sinkBufferPoolMinSize")]
     pub sink_buffer_pool_min_size: Option<u32>,
-    /// The number of buffers per partition in the buffer pool. The larger the buffer pool size, the larger the write parallelism and memory usage.
+    /// The number of buffers per partition in the buffer pool. The larger the buffer pool size,
+    /// the larger the write parallelism and memory usage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sinkBuffersPerPartition")]
     pub sink_buffers_per_partition: Option<u32>,
     /// Max data size of files written by exchange sinks.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sinkMaxFileSize")]
     pub sink_max_file_size: Option<String>,
-    /// Number of concurrent readers to read from spooling storage. The larger the number of concurrent readers, the larger the read parallelism and memory usage.
+    /// Number of concurrent readers to read from spooling storage. The larger the number of
+    /// concurrent readers, the larger the read parallelism and memory usage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceConcurrentReaders")]
     pub source_concurrent_readers: Option<u32>,
 }
@@ -380,7 +443,8 @@ pub struct TrinoClusterClusterConfigFaultTolerantExecutionQueryExchangeManagerS3
     /// S3 bucket URIs for spooling data (e.g., s3://bucket1,s3://bucket2).
     #[serde(rename = "baseDirectories")]
     pub base_directories: Vec<String>,
-    /// S3 connection configuration. Learn more about S3 configuration in the [S3 concept docs](<https://docs.stackable.tech/home/nightly/concepts/s3).>
+    /// S3 connection configuration.
+    /// Learn more about S3 configuration in the [S3 concept docs](<https://docs.stackable.tech/home/nightly/concepts/s3).>
     pub connection: TrinoClusterClusterConfigFaultTolerantExecutionQueryExchangeManagerS3Connection,
     /// Maximum number of times the S3 client should retry a request.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxErrorRetries")]
@@ -390,28 +454,36 @@ pub struct TrinoClusterClusterConfigFaultTolerantExecutionQueryExchangeManagerS3
     pub upload_part_size: Option<String>,
 }
 
-/// S3 connection configuration. Learn more about S3 configuration in the [S3 concept docs](<https://docs.stackable.tech/home/nightly/concepts/s3).>
+/// S3 connection configuration.
+/// Learn more about S3 configuration in the [S3 concept docs](<https://docs.stackable.tech/home/nightly/concepts/s3).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterClusterConfigFaultTolerantExecutionQueryExchangeManagerS3Connection {
-    /// S3 connection definition as a resource. Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
+    /// S3 connection definition as a resource.
+    /// Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub inline: Option<TrinoClusterClusterConfigFaultTolerantExecutionQueryExchangeManagerS3ConnectionInline>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reference: Option<String>,
 }
 
-/// S3 connection definition as a resource. Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
+/// S3 connection definition as a resource.
+/// Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterClusterConfigFaultTolerantExecutionQueryExchangeManagerS3ConnectionInline {
-    /// Which access style to use. Defaults to virtual hosted-style as most of the data products out there. Have a look at the [AWS documentation](<https://docs.aws.amazon.com/AmazonS3/latest/userguide/VirtualHosting.html).>
+    /// Which access style to use.
+    /// Defaults to virtual hosted-style as most of the data products out there.
+    /// Have a look at the [AWS documentation](<https://docs.aws.amazon.com/AmazonS3/latest/userguide/VirtualHosting.html).>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessStyle")]
     pub access_style: Option<TrinoClusterClusterConfigFaultTolerantExecutionQueryExchangeManagerS3ConnectionInlineAccessStyle>,
-    /// If the S3 uses authentication you have to specify you S3 credentials. In the most cases a [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> providing `accessKey` and `secretKey` is sufficient.
+    /// If the S3 uses authentication you have to specify you S3 credentials.
+    /// In the most cases a [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)>
+    /// providing `accessKey` and `secretKey` is sufficient.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<TrinoClusterClusterConfigFaultTolerantExecutionQueryExchangeManagerS3ConnectionInlineCredentials>,
     /// Host of the S3 server without any protocol or port. For example: `west1.my-cloud.com`.
     pub host: String,
-    /// Port the S3 server listens on. If not specified the product will determine the port to use.
+    /// Port the S3 server listens on.
+    /// If not specified the product will determine the port to use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<u16>,
     /// Bucket region used for signing headers (sigv4).
@@ -426,17 +498,21 @@ pub struct TrinoClusterClusterConfigFaultTolerantExecutionQueryExchangeManagerS3
     pub tls: Option<TrinoClusterClusterConfigFaultTolerantExecutionQueryExchangeManagerS3ConnectionInlineTls>,
 }
 
-/// S3 connection definition as a resource. Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
+/// S3 connection definition as a resource.
+/// Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum TrinoClusterClusterConfigFaultTolerantExecutionQueryExchangeManagerS3ConnectionInlineAccessStyle {
     Path,
     VirtualHosted,
 }
 
-/// If the S3 uses authentication you have to specify you S3 credentials. In the most cases a [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> providing `accessKey` and `secretKey` is sufficient.
+/// If the S3 uses authentication you have to specify you S3 credentials.
+/// In the most cases a [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)>
+/// providing `accessKey` and `secretKey` is sufficient.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterClusterConfigFaultTolerantExecutionQueryExchangeManagerS3ConnectionInlineCredentials {
-    /// [Scope](<https://docs.stackable.tech/home/nightly/secret-operator/scope)> of the [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass).>
+    /// [Scope](<https://docs.stackable.tech/home/nightly/secret-operator/scope)> of the
+    /// [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scope: Option<TrinoClusterClusterConfigFaultTolerantExecutionQueryExchangeManagerS3ConnectionInlineCredentialsScope>,
     /// [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> containing the LDAP bind credentials.
@@ -444,19 +520,24 @@ pub struct TrinoClusterClusterConfigFaultTolerantExecutionQueryExchangeManagerS3
     pub secret_class: String,
 }
 
-/// [Scope](<https://docs.stackable.tech/home/nightly/secret-operator/scope)> of the [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass).>
+/// [Scope](<https://docs.stackable.tech/home/nightly/secret-operator/scope)> of the
+/// [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterClusterConfigFaultTolerantExecutionQueryExchangeManagerS3ConnectionInlineCredentialsScope {
-    /// The listener volume scope allows Node and Service scopes to be inferred from the applicable listeners. This must correspond to Volume names in the Pod that mount Listeners.
+    /// The listener volume scope allows Node and Service scopes to be inferred from the applicable listeners.
+    /// This must correspond to Volume names in the Pod that mount Listeners.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenerVolumes")]
     pub listener_volumes: Option<Vec<String>>,
-    /// The node scope is resolved to the name of the Kubernetes Node object that the Pod is running on. This will typically be the DNS name of the node.
+    /// The node scope is resolved to the name of the Kubernetes Node object that the Pod is running on.
+    /// This will typically be the DNS name of the node.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub node: Option<bool>,
-    /// The pod scope is resolved to the name of the Kubernetes Pod. This allows the secret to differentiate between StatefulSet replicas.
+    /// The pod scope is resolved to the name of the Kubernetes Pod.
+    /// This allows the secret to differentiate between StatefulSet replicas.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pod: Option<bool>,
-    /// The service scope allows Pod objects to specify custom scopes. This should typically correspond to Service objects that the Pod participates in.
+    /// The service scope allows Pod objects to specify custom scopes.
+    /// This should typically correspond to Service objects that the Pod participates in.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<String>>,
 }
@@ -506,15 +587,19 @@ pub struct TrinoClusterClusterConfigFaultTolerantExecutionQueryExchangeManagerS3
 /// CA cert to verify the server.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterClusterConfigFaultTolerantExecutionQueryExchangeManagerS3ConnectionInlineTlsVerificationServerCaCert {
-    /// Name of the [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> which will provide the CA certificate. Note that a SecretClass does not need to have a key but can also work with just a CA certificate, so if you got provided with a CA cert but don't have access to the key you can still use this method.
+    /// Name of the [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> which will provide the CA certificate.
+    /// Note that a SecretClass does not need to have a key but can also work with just a CA certificate,
+    /// so if you got provided with a CA cert but don't have access to the key you can still use this method.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretClass")]
     pub secret_class: Option<String>,
-    /// Use TLS and the CA certificates trusted by the common web browsers to verify the server. This can be useful when you e.g. use public AWS S3 or other public available services.
+    /// Use TLS and the CA certificates trusted by the common web browsers to verify the server.
+    /// This can be useful when you e.g. use public AWS S3 or other public available services.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "webPki")]
     pub web_pki: Option<TrinoClusterClusterConfigFaultTolerantExecutionQueryExchangeManagerS3ConnectionInlineTlsVerificationServerCaCertWebPki>,
 }
 
-/// Use TLS and the CA certificates trusted by the common web browsers to verify the server. This can be useful when you e.g. use public AWS S3 or other public available services.
+/// Use TLS and the CA certificates trusted by the common web browsers to verify the server.
+/// This can be useful when you e.g. use public AWS S3 or other public available services.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterClusterConfigFaultTolerantExecutionQueryExchangeManagerS3ConnectionInlineTlsVerificationServerCaCertWebPki {
 }
@@ -525,7 +610,8 @@ pub struct TrinoClusterClusterConfigFaultTolerantExecutionTask {
     /// Data size of the coordinator's in-memory buffer used to store output of query stages.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "exchangeDeduplicationBufferSize")]
     pub exchange_deduplication_buffer_size: Option<String>,
-    /// Exchange manager configuration for spooling intermediate data during fault tolerant execution. Required for Task retry policy.
+    /// Exchange manager configuration for spooling intermediate data during fault tolerant execution.
+    /// Required for Task retry policy.
     #[serde(rename = "exchangeManager")]
     pub exchange_manager: TrinoClusterClusterConfigFaultTolerantExecutionTaskExchangeManager,
     /// Maximum number of times Trino may attempt to retry a single task before declaring the query failed.
@@ -542,7 +628,8 @@ pub struct TrinoClusterClusterConfigFaultTolerantExecutionTask {
     pub retry_max_delay: Option<String>,
 }
 
-/// Exchange manager configuration for spooling intermediate data during fault tolerant execution. Required for Task retry policy.
+/// Exchange manager configuration for spooling intermediate data during fault tolerant execution.
+/// Required for Task retry policy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterClusterConfigFaultTolerantExecutionTaskExchangeManager {
     /// Whether to enable encryption of spooling data.
@@ -557,16 +644,19 @@ pub struct TrinoClusterClusterConfigFaultTolerantExecutionTaskExchangeManager {
     /// S3-compatible storage configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub s3: Option<TrinoClusterClusterConfigFaultTolerantExecutionTaskExchangeManagerS3>,
-    /// The minimum buffer pool size for an exchange sink. The larger the buffer pool size, the larger the write parallelism and memory usage.
+    /// The minimum buffer pool size for an exchange sink. The larger the buffer pool size,
+    /// the larger the write parallelism and memory usage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sinkBufferPoolMinSize")]
     pub sink_buffer_pool_min_size: Option<u32>,
-    /// The number of buffers per partition in the buffer pool. The larger the buffer pool size, the larger the write parallelism and memory usage.
+    /// The number of buffers per partition in the buffer pool. The larger the buffer pool size,
+    /// the larger the write parallelism and memory usage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sinkBuffersPerPartition")]
     pub sink_buffers_per_partition: Option<u32>,
     /// Max data size of files written by exchange sinks.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sinkMaxFileSize")]
     pub sink_max_file_size: Option<String>,
-    /// Number of concurrent readers to read from spooling storage. The larger the number of concurrent readers, the larger the read parallelism and memory usage.
+    /// Number of concurrent readers to read from spooling storage. The larger the number of
+    /// concurrent readers, the larger the read parallelism and memory usage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceConcurrentReaders")]
     pub source_concurrent_readers: Option<u32>,
 }
@@ -609,7 +699,8 @@ pub struct TrinoClusterClusterConfigFaultTolerantExecutionTaskExchangeManagerS3 
     /// S3 bucket URIs for spooling data (e.g., s3://bucket1,s3://bucket2).
     #[serde(rename = "baseDirectories")]
     pub base_directories: Vec<String>,
-    /// S3 connection configuration. Learn more about S3 configuration in the [S3 concept docs](<https://docs.stackable.tech/home/nightly/concepts/s3).>
+    /// S3 connection configuration.
+    /// Learn more about S3 configuration in the [S3 concept docs](<https://docs.stackable.tech/home/nightly/concepts/s3).>
     pub connection: TrinoClusterClusterConfigFaultTolerantExecutionTaskExchangeManagerS3Connection,
     /// Maximum number of times the S3 client should retry a request.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxErrorRetries")]
@@ -619,28 +710,36 @@ pub struct TrinoClusterClusterConfigFaultTolerantExecutionTaskExchangeManagerS3 
     pub upload_part_size: Option<String>,
 }
 
-/// S3 connection configuration. Learn more about S3 configuration in the [S3 concept docs](<https://docs.stackable.tech/home/nightly/concepts/s3).>
+/// S3 connection configuration.
+/// Learn more about S3 configuration in the [S3 concept docs](<https://docs.stackable.tech/home/nightly/concepts/s3).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterClusterConfigFaultTolerantExecutionTaskExchangeManagerS3Connection {
-    /// S3 connection definition as a resource. Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
+    /// S3 connection definition as a resource.
+    /// Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub inline: Option<TrinoClusterClusterConfigFaultTolerantExecutionTaskExchangeManagerS3ConnectionInline>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reference: Option<String>,
 }
 
-/// S3 connection definition as a resource. Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
+/// S3 connection definition as a resource.
+/// Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterClusterConfigFaultTolerantExecutionTaskExchangeManagerS3ConnectionInline {
-    /// Which access style to use. Defaults to virtual hosted-style as most of the data products out there. Have a look at the [AWS documentation](<https://docs.aws.amazon.com/AmazonS3/latest/userguide/VirtualHosting.html).>
+    /// Which access style to use.
+    /// Defaults to virtual hosted-style as most of the data products out there.
+    /// Have a look at the [AWS documentation](<https://docs.aws.amazon.com/AmazonS3/latest/userguide/VirtualHosting.html).>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessStyle")]
     pub access_style: Option<TrinoClusterClusterConfigFaultTolerantExecutionTaskExchangeManagerS3ConnectionInlineAccessStyle>,
-    /// If the S3 uses authentication you have to specify you S3 credentials. In the most cases a [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> providing `accessKey` and `secretKey` is sufficient.
+    /// If the S3 uses authentication you have to specify you S3 credentials.
+    /// In the most cases a [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)>
+    /// providing `accessKey` and `secretKey` is sufficient.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<TrinoClusterClusterConfigFaultTolerantExecutionTaskExchangeManagerS3ConnectionInlineCredentials>,
     /// Host of the S3 server without any protocol or port. For example: `west1.my-cloud.com`.
     pub host: String,
-    /// Port the S3 server listens on. If not specified the product will determine the port to use.
+    /// Port the S3 server listens on.
+    /// If not specified the product will determine the port to use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<u16>,
     /// Bucket region used for signing headers (sigv4).
@@ -655,17 +754,21 @@ pub struct TrinoClusterClusterConfigFaultTolerantExecutionTaskExchangeManagerS3C
     pub tls: Option<TrinoClusterClusterConfigFaultTolerantExecutionTaskExchangeManagerS3ConnectionInlineTls>,
 }
 
-/// S3 connection definition as a resource. Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
+/// S3 connection definition as a resource.
+/// Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum TrinoClusterClusterConfigFaultTolerantExecutionTaskExchangeManagerS3ConnectionInlineAccessStyle {
     Path,
     VirtualHosted,
 }
 
-/// If the S3 uses authentication you have to specify you S3 credentials. In the most cases a [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> providing `accessKey` and `secretKey` is sufficient.
+/// If the S3 uses authentication you have to specify you S3 credentials.
+/// In the most cases a [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)>
+/// providing `accessKey` and `secretKey` is sufficient.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterClusterConfigFaultTolerantExecutionTaskExchangeManagerS3ConnectionInlineCredentials {
-    /// [Scope](<https://docs.stackable.tech/home/nightly/secret-operator/scope)> of the [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass).>
+    /// [Scope](<https://docs.stackable.tech/home/nightly/secret-operator/scope)> of the
+    /// [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scope: Option<TrinoClusterClusterConfigFaultTolerantExecutionTaskExchangeManagerS3ConnectionInlineCredentialsScope>,
     /// [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> containing the LDAP bind credentials.
@@ -673,19 +776,24 @@ pub struct TrinoClusterClusterConfigFaultTolerantExecutionTaskExchangeManagerS3C
     pub secret_class: String,
 }
 
-/// [Scope](<https://docs.stackable.tech/home/nightly/secret-operator/scope)> of the [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass).>
+/// [Scope](<https://docs.stackable.tech/home/nightly/secret-operator/scope)> of the
+/// [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterClusterConfigFaultTolerantExecutionTaskExchangeManagerS3ConnectionInlineCredentialsScope {
-    /// The listener volume scope allows Node and Service scopes to be inferred from the applicable listeners. This must correspond to Volume names in the Pod that mount Listeners.
+    /// The listener volume scope allows Node and Service scopes to be inferred from the applicable listeners.
+    /// This must correspond to Volume names in the Pod that mount Listeners.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenerVolumes")]
     pub listener_volumes: Option<Vec<String>>,
-    /// The node scope is resolved to the name of the Kubernetes Node object that the Pod is running on. This will typically be the DNS name of the node.
+    /// The node scope is resolved to the name of the Kubernetes Node object that the Pod is running on.
+    /// This will typically be the DNS name of the node.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub node: Option<bool>,
-    /// The pod scope is resolved to the name of the Kubernetes Pod. This allows the secret to differentiate between StatefulSet replicas.
+    /// The pod scope is resolved to the name of the Kubernetes Pod.
+    /// This allows the secret to differentiate between StatefulSet replicas.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pod: Option<bool>,
-    /// The service scope allows Pod objects to specify custom scopes. This should typically correspond to Service objects that the Pod participates in.
+    /// The service scope allows Pod objects to specify custom scopes.
+    /// This should typically correspond to Service objects that the Pod participates in.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<String>>,
 }
@@ -735,15 +843,19 @@ pub struct TrinoClusterClusterConfigFaultTolerantExecutionTaskExchangeManagerS3C
 /// CA cert to verify the server.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterClusterConfigFaultTolerantExecutionTaskExchangeManagerS3ConnectionInlineTlsVerificationServerCaCert {
-    /// Name of the [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> which will provide the CA certificate. Note that a SecretClass does not need to have a key but can also work with just a CA certificate, so if you got provided with a CA cert but don't have access to the key you can still use this method.
+    /// Name of the [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> which will provide the CA certificate.
+    /// Note that a SecretClass does not need to have a key but can also work with just a CA certificate,
+    /// so if you got provided with a CA cert but don't have access to the key you can still use this method.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretClass")]
     pub secret_class: Option<String>,
-    /// Use TLS and the CA certificates trusted by the common web browsers to verify the server. This can be useful when you e.g. use public AWS S3 or other public available services.
+    /// Use TLS and the CA certificates trusted by the common web browsers to verify the server.
+    /// This can be useful when you e.g. use public AWS S3 or other public available services.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "webPki")]
     pub web_pki: Option<TrinoClusterClusterConfigFaultTolerantExecutionTaskExchangeManagerS3ConnectionInlineTlsVerificationServerCaCertWebPki>,
 }
 
-/// Use TLS and the CA certificates trusted by the common web browsers to verify the server. This can be useful when you e.g. use public AWS S3 or other public available services.
+/// Use TLS and the CA certificates trusted by the common web browsers to verify the server.
+/// This can be useful when you e.g. use public AWS S3 or other public available services.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterClusterConfigFaultTolerantExecutionTaskExchangeManagerS3ConnectionInlineTlsVerificationServerCaCertWebPki {
 }
@@ -751,42 +863,80 @@ pub struct TrinoClusterClusterConfigFaultTolerantExecutionTaskExchangeManagerS3C
 /// TLS configuration options for server and internal communication.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterClusterConfigTls {
-    /// Only affects internal communication. Use mutual verification between Trino nodes This setting controls: - Which cert the servers should use to authenticate themselves against other servers - Which ca.crt to use when validating the other server
+    /// Only affects internal communication. Use mutual verification between Trino nodes
+    /// This setting controls:
+    /// - Which cert the servers should use to authenticate themselves against other servers
+    /// - Which ca.crt to use when validating the other server
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "internalSecretClass")]
     pub internal_secret_class: Option<String>,
-    /// Only affects client connections. This setting controls: - If TLS encryption is used at all - Which cert the servers should use to authenticate themselves against the client
+    /// Only affects client connections.
+    /// This setting controls:
+    /// - If TLS encryption is used at all
+    /// - Which cert the servers should use to authenticate themselves against the client
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverSecretClass")]
     pub server_secret_class: Option<String>,
 }
 
-/// [Cluster operations](<https://docs.stackable.tech/home/nightly/concepts/operations/cluster_operations)> properties, allow stopping the product instance as well as pausing reconciliation.
+/// [Cluster operations](<https://docs.stackable.tech/home/nightly/concepts/operations/cluster_operations)>
+/// properties, allow stopping the product instance as well as pausing reconciliation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterClusterOperation {
-    /// Flag to stop cluster reconciliation by the operator. This means that all changes in the custom resource spec are ignored until this flag is set to false or removed. The operator will however still watch the deployed resources at the time and update the custom resource status field. If applied at the same time with `stopped`, `reconciliationPaused` will take precedence over `stopped` and stop the reconciliation immediately.
+    /// Flag to stop cluster reconciliation by the operator. This means that all changes in the
+    /// custom resource spec are ignored until this flag is set to false or removed. The operator
+    /// will however still watch the deployed resources at the time and update the custom resource
+    /// status field.
+    /// If applied at the same time with `stopped`, `reconciliationPaused` will take precedence over
+    /// `stopped` and stop the reconciliation immediately.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconciliationPaused")]
     pub reconciliation_paused: Option<bool>,
-    /// Flag to stop the cluster. This means all deployed resources (e.g. Services, StatefulSets, ConfigMaps) are kept but all deployed Pods (e.g. replicas from a StatefulSet) are scaled to 0 and therefore stopped and removed. If applied at the same time with `reconciliationPaused`, the latter will pause reconciliation and `stopped` will take no effect until `reconciliationPaused` is set to false or removed.
+    /// Flag to stop the cluster. This means all deployed resources (e.g. Services, StatefulSets,
+    /// ConfigMaps) are kept but all deployed Pods (e.g. replicas from a StatefulSet) are scaled to 0
+    /// and therefore stopped and removed.
+    /// If applied at the same time with `reconciliationPaused`, the latter will pause reconciliation
+    /// and `stopped` will take no effect until `reconciliationPaused` is set to false or removed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub stopped: Option<bool>,
 }
 
-/// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured on role level. There is also a second form of config, which can only be configured at role level, the `roleConfig`. You can learn more about this in the [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
+/// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing
+/// all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable
+/// at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured
+/// on role level. There is also a second form of config, which can only be configured
+/// at role level, the `roleConfig`.
+/// You can learn more about this in the
+/// [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterCoordinators {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cliOverrides")]
     pub cli_overrides: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<TrinoClusterCoordinatorsConfig>,
-    /// The `configOverrides` can be used to configure properties in product config files that are not exposed in the CRD. Read the [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)> and consult the operator specific usage guide documentation for details on the available config files and settings for the specific product.
+    /// The `configOverrides` can be used to configure properties in product config files
+    /// that are not exposed in the CRD. Read the
+    /// [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)>
+    /// and consult the operator specific usage guide documentation for details on the
+    /// available config files and settings for the specific product.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configOverrides")]
     pub config_overrides: Option<BTreeMap<String, BTreeMap<String, String>>>,
-    /// `envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)> for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available.
+    /// `envOverrides` configure environment variables to be set in the Pods.
+    /// It is a map from strings to strings - environment variables and the value to set.
+    /// Read the
+    /// [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)>
+    /// for more information and consult the operator specific usage guide to find out about
+    /// the product specific environment variables that are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envOverrides")]
     pub env_overrides: Option<BTreeMap<String, String>>,
-    /// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+    /// Allows overriding JVM arguments.
+    /// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+    /// for details on the usage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
     pub jvm_argument_overrides: Option<TrinoClusterCoordinatorsJvmArgumentOverrides>,
-    /// In the `podOverrides` property you can define a [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)> to override any property that can be set on a Kubernetes Pod. Read the [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)> for more information.
+    /// In the `podOverrides` property you can define a
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// to override any property that can be set on a Kubernetes Pod.
+    /// Read the
+    /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
+    /// for more information.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podOverrides")]
     pub pod_overrides: Option<BTreeMap<String, serde_json::Value>>,
     /// This is a product-agnostic RoleConfig, which is sufficient for most of the products.
@@ -798,7 +948,8 @@ pub struct TrinoClusterCoordinators {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterCoordinatorsConfig {
-    /// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+    /// These configuration settings control
+    /// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<TrinoClusterCoordinatorsConfigAffinity>,
     /// Time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Consult the operator documentation for details.
@@ -811,17 +962,21 @@ pub struct TrinoClusterCoordinatorsConfig {
     pub query_max_memory: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryMaxMemoryPerNode")]
     pub query_max_memory_per_node: Option<String>,
-    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`. This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
+    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`.
+    /// This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
     /// 
-    /// Defaults to `15d` for coordinators (as currently a restart kills all running queries) and `1d` for workers.
+    /// Defaults to `15d` for coordinators (as currently a restart kills all running queries)
+    /// and `1d` for workers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestedSecretLifetime")]
     pub requested_secret_lifetime: Option<String>,
-    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+    /// usage, if this role needs any.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<TrinoClusterCoordinatorsConfigResources>,
 }
 
-/// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+/// These configuration settings control
+/// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterCoordinatorsConfigAffinity {
     /// Same as the `spec.affinity.nodeAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
@@ -855,7 +1010,7 @@ pub struct TrinoClusterCoordinatorsConfigLoggingContainers {
     /// Configuration for the console appender
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub console: Option<TrinoClusterCoordinatorsConfigLoggingContainersConsole>,
-    /// Custom log configuration provided in a ConfigMap
+    /// Log configuration provided in a ConfigMap
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom: Option<TrinoClusterCoordinatorsConfigLoggingContainersCustom>,
     /// Configuration for the file appender
@@ -869,7 +1024,8 @@ pub struct TrinoClusterCoordinatorsConfigLoggingContainers {
 /// Configuration for the console appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterCoordinatorsConfigLoggingContainersConsole {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<TrinoClusterCoordinatorsConfigLoggingContainersConsoleLevel>,
 }
@@ -893,7 +1049,7 @@ pub enum TrinoClusterCoordinatorsConfigLoggingContainersConsoleLevel {
     None,
 }
 
-/// Custom log configuration provided in a ConfigMap
+/// Log configuration provided in a ConfigMap
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterCoordinatorsConfigLoggingContainersCustom {
     /// ConfigMap containing the log configuration files
@@ -904,7 +1060,8 @@ pub struct TrinoClusterCoordinatorsConfigLoggingContainersCustom {
 /// Configuration for the file appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterCoordinatorsConfigLoggingContainersFile {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<TrinoClusterCoordinatorsConfigLoggingContainersFileLevel>,
 }
@@ -931,7 +1088,8 @@ pub enum TrinoClusterCoordinatorsConfigLoggingContainersFileLevel {
 /// Configuration per logger
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterCoordinatorsConfigLoggingContainersLoggers {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<TrinoClusterCoordinatorsConfigLoggingContainersLoggersLevel>,
 }
@@ -955,7 +1113,8 @@ pub enum TrinoClusterCoordinatorsConfigLoggingContainersLoggersLevel {
     None,
 }
 
-/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+/// usage, if this role needs any.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterCoordinatorsConfigResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -968,17 +1127,28 @@ pub struct TrinoClusterCoordinatorsConfigResources {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterCoordinatorsConfigResourcesCpu {
-    /// The maximum amount of CPU cores that can be requested by Pods. Equivalent to the `limit` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The maximum amount of CPU cores that can be requested by Pods.
+    /// Equivalent to the `limit` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max: Option<String>,
-    /// The minimal amount of CPU cores that Pods need to run. Equivalent to the `request` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The minimal amount of CPU cores that Pods need to run.
+    /// Equivalent to the `request` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub min: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterCoordinatorsConfigResourcesMemory {
-    /// The maximum amount of memory that should be available to the Pod. Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),> which means these suffixes are supported: E, P, T, G, M, k. You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki. For example, the following represent roughly the same value: `128974848, 129e6, 129M,  128974848000m, 123Mi`
+    /// The maximum amount of memory that should be available to the Pod.
+    /// Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),>
+    /// which means these suffixes are supported: E, P, T, G, M, k.
+    /// You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki.
+    /// For example, the following represent roughly the same value:
+    /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<String>,
     /// Additional options that can be specified.
@@ -995,7 +1165,9 @@ pub struct TrinoClusterCoordinatorsConfigResourcesMemoryRuntimeLimits {
 pub struct TrinoClusterCoordinatorsConfigResourcesStorage {
 }
 
-/// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+/// Allows overriding JVM arguments.
+/// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+/// for details on the usage.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterCoordinatorsJvmArgumentOverrides {
     /// JVM arguments to be added
@@ -1017,24 +1189,32 @@ pub struct TrinoClusterCoordinatorsRoleConfig {
     pub listener_class: Option<String>,
     /// This struct is used to configure:
     /// 
-    /// 1. If PodDisruptionBudgets are created by the operator 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
+    /// 1. If PodDisruptionBudgets are created by the operator
+    /// 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
     /// 
-    /// Learn more in the [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
+    /// Learn more in the
+    /// [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podDisruptionBudget")]
     pub pod_disruption_budget: Option<TrinoClusterCoordinatorsRoleConfigPodDisruptionBudget>,
 }
 
 /// This struct is used to configure:
 /// 
-/// 1. If PodDisruptionBudgets are created by the operator 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
+/// 1. If PodDisruptionBudgets are created by the operator
+/// 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
 /// 
-/// Learn more in the [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
+/// Learn more in the
+/// [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterCoordinatorsRoleConfigPodDisruptionBudget {
-    /// Whether a PodDisruptionBudget should be written out for this role. Disabling this enables you to specify your own - custom - one. Defaults to true.
+    /// Whether a PodDisruptionBudget should be written out for this role.
+    /// Disabling this enables you to specify your own - custom - one.
+    /// Defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    /// The number of Pods that are allowed to be down because of voluntary disruptions. If you don't explicitly set this, the operator will use a sane default based upon knowledge about the individual product.
+    /// The number of Pods that are allowed to be down because of voluntary disruptions.
+    /// If you don't explicitly set this, the operator will use a sane default based
+    /// upon knowledge about the individual product.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<u16>,
 }
@@ -1045,16 +1225,32 @@ pub struct TrinoClusterCoordinatorsRoleGroups {
     pub cli_overrides: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<TrinoClusterCoordinatorsRoleGroupsConfig>,
-    /// The `configOverrides` can be used to configure properties in product config files that are not exposed in the CRD. Read the [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)> and consult the operator specific usage guide documentation for details on the available config files and settings for the specific product.
+    /// The `configOverrides` can be used to configure properties in product config files
+    /// that are not exposed in the CRD. Read the
+    /// [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)>
+    /// and consult the operator specific usage guide documentation for details on the
+    /// available config files and settings for the specific product.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configOverrides")]
     pub config_overrides: Option<BTreeMap<String, BTreeMap<String, String>>>,
-    /// `envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)> for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available.
+    /// `envOverrides` configure environment variables to be set in the Pods.
+    /// It is a map from strings to strings - environment variables and the value to set.
+    /// Read the
+    /// [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)>
+    /// for more information and consult the operator specific usage guide to find out about
+    /// the product specific environment variables that are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envOverrides")]
     pub env_overrides: Option<BTreeMap<String, String>>,
-    /// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+    /// Allows overriding JVM arguments.
+    /// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+    /// for details on the usage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
     pub jvm_argument_overrides: Option<TrinoClusterCoordinatorsRoleGroupsJvmArgumentOverrides>,
-    /// In the `podOverrides` property you can define a [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)> to override any property that can be set on a Kubernetes Pod. Read the [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)> for more information.
+    /// In the `podOverrides` property you can define a
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// to override any property that can be set on a Kubernetes Pod.
+    /// Read the
+    /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
+    /// for more information.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podOverrides")]
     pub pod_overrides: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1063,7 +1259,8 @@ pub struct TrinoClusterCoordinatorsRoleGroups {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterCoordinatorsRoleGroupsConfig {
-    /// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+    /// These configuration settings control
+    /// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<TrinoClusterCoordinatorsRoleGroupsConfigAffinity>,
     /// Time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Consult the operator documentation for details.
@@ -1076,17 +1273,21 @@ pub struct TrinoClusterCoordinatorsRoleGroupsConfig {
     pub query_max_memory: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryMaxMemoryPerNode")]
     pub query_max_memory_per_node: Option<String>,
-    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`. This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
+    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`.
+    /// This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
     /// 
-    /// Defaults to `15d` for coordinators (as currently a restart kills all running queries) and `1d` for workers.
+    /// Defaults to `15d` for coordinators (as currently a restart kills all running queries)
+    /// and `1d` for workers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestedSecretLifetime")]
     pub requested_secret_lifetime: Option<String>,
-    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+    /// usage, if this role needs any.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<TrinoClusterCoordinatorsRoleGroupsConfigResources>,
 }
 
-/// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+/// These configuration settings control
+/// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterCoordinatorsRoleGroupsConfigAffinity {
     /// Same as the `spec.affinity.nodeAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
@@ -1120,7 +1321,7 @@ pub struct TrinoClusterCoordinatorsRoleGroupsConfigLoggingContainers {
     /// Configuration for the console appender
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub console: Option<TrinoClusterCoordinatorsRoleGroupsConfigLoggingContainersConsole>,
-    /// Custom log configuration provided in a ConfigMap
+    /// Log configuration provided in a ConfigMap
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom: Option<TrinoClusterCoordinatorsRoleGroupsConfigLoggingContainersCustom>,
     /// Configuration for the file appender
@@ -1134,7 +1335,8 @@ pub struct TrinoClusterCoordinatorsRoleGroupsConfigLoggingContainers {
 /// Configuration for the console appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterCoordinatorsRoleGroupsConfigLoggingContainersConsole {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<TrinoClusterCoordinatorsRoleGroupsConfigLoggingContainersConsoleLevel>,
 }
@@ -1158,7 +1360,7 @@ pub enum TrinoClusterCoordinatorsRoleGroupsConfigLoggingContainersConsoleLevel {
     None,
 }
 
-/// Custom log configuration provided in a ConfigMap
+/// Log configuration provided in a ConfigMap
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterCoordinatorsRoleGroupsConfigLoggingContainersCustom {
     /// ConfigMap containing the log configuration files
@@ -1169,7 +1371,8 @@ pub struct TrinoClusterCoordinatorsRoleGroupsConfigLoggingContainersCustom {
 /// Configuration for the file appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterCoordinatorsRoleGroupsConfigLoggingContainersFile {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<TrinoClusterCoordinatorsRoleGroupsConfigLoggingContainersFileLevel>,
 }
@@ -1196,7 +1399,8 @@ pub enum TrinoClusterCoordinatorsRoleGroupsConfigLoggingContainersFileLevel {
 /// Configuration per logger
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterCoordinatorsRoleGroupsConfigLoggingContainersLoggers {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<TrinoClusterCoordinatorsRoleGroupsConfigLoggingContainersLoggersLevel>,
 }
@@ -1220,7 +1424,8 @@ pub enum TrinoClusterCoordinatorsRoleGroupsConfigLoggingContainersLoggersLevel {
     None,
 }
 
-/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+/// usage, if this role needs any.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterCoordinatorsRoleGroupsConfigResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1233,17 +1438,28 @@ pub struct TrinoClusterCoordinatorsRoleGroupsConfigResources {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterCoordinatorsRoleGroupsConfigResourcesCpu {
-    /// The maximum amount of CPU cores that can be requested by Pods. Equivalent to the `limit` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The maximum amount of CPU cores that can be requested by Pods.
+    /// Equivalent to the `limit` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max: Option<String>,
-    /// The minimal amount of CPU cores that Pods need to run. Equivalent to the `request` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The minimal amount of CPU cores that Pods need to run.
+    /// Equivalent to the `request` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub min: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterCoordinatorsRoleGroupsConfigResourcesMemory {
-    /// The maximum amount of memory that should be available to the Pod. Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),> which means these suffixes are supported: E, P, T, G, M, k. You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki. For example, the following represent roughly the same value: `128974848, 129e6, 129M,  128974848000m, 123Mi`
+    /// The maximum amount of memory that should be available to the Pod.
+    /// Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),>
+    /// which means these suffixes are supported: E, P, T, G, M, k.
+    /// You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki.
+    /// For example, the following represent roughly the same value:
+    /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<String>,
     /// Additional options that can be specified.
@@ -1260,7 +1476,9 @@ pub struct TrinoClusterCoordinatorsRoleGroupsConfigResourcesMemoryRuntimeLimits 
 pub struct TrinoClusterCoordinatorsRoleGroupsConfigResourcesStorage {
 }
 
-/// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+/// Allows overriding JVM arguments.
+/// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+/// for details on the usage.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterCoordinatorsRoleGroupsJvmArgumentOverrides {
     /// JVM arguments to be added
@@ -1274,12 +1492,16 @@ pub struct TrinoClusterCoordinatorsRoleGroupsJvmArgumentOverrides {
     pub remove_regex: Option<Vec<String>>,
 }
 
-/// Specify which image to use, the easiest way is to only configure the `productVersion`. You can also configure a custom image registry to pull from, as well as completely custom images.
+/// Specify which image to use, the easiest way is to only configure the `productVersion`.
+/// You can also configure a custom image registry to pull from, as well as completely custom
+/// images.
 /// 
-/// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)> for details.
+/// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)>
+/// for details.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterImage {
-    /// Overwrite the docker image. Specify the full docker image name, e.g. `oci.stackable.tech/sdp/superset:1.4.1-stackable2.1.0`
+    /// Overwrite the docker image.
+    /// Specify the full docker image name, e.g. `oci.stackable.tech/sdp/superset:1.4.1-stackable2.1.0`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom: Option<String>,
     /// Version of the product, e.g. `1.4.1`.
@@ -1294,14 +1516,19 @@ pub struct TrinoClusterImage {
     /// Name of the docker repo, e.g. `oci.stackable.tech/sdp`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repo: Option<String>,
-    /// Stackable version of the product, e.g. `23.4`, `23.4.1` or `0.0.0-dev`. If not specified, the operator will use its own version, e.g. `23.4.1`. When using a nightly operator or a pr version, it will use the nightly `0.0.0-dev` image.
+    /// Stackable version of the product, e.g. `23.4`, `23.4.1` or `0.0.0-dev`.
+    /// If not specified, the operator will use its own version, e.g. `23.4.1`.
+    /// When using a nightly operator or a pr version, it will use the nightly `0.0.0-dev` image.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stackableVersion")]
     pub stackable_version: Option<String>,
 }
 
-/// Specify which image to use, the easiest way is to only configure the `productVersion`. You can also configure a custom image registry to pull from, as well as completely custom images.
+/// Specify which image to use, the easiest way is to only configure the `productVersion`.
+/// You can also configure a custom image registry to pull from, as well as completely custom
+/// images.
 /// 
-/// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)> for details.
+/// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)>
+/// for details.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum TrinoClusterImagePullPolicy {
     IfNotPresent,
@@ -1316,23 +1543,45 @@ pub struct TrinoClusterImagePullSecrets {
     pub name: String,
 }
 
-/// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured on role level. There is also a second form of config, which can only be configured at role level, the `roleConfig`. You can learn more about this in the [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
+/// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing
+/// all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable
+/// at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured
+/// on role level. There is also a second form of config, which can only be configured
+/// at role level, the `roleConfig`.
+/// You can learn more about this in the
+/// [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterWorkers {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cliOverrides")]
     pub cli_overrides: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<TrinoClusterWorkersConfig>,
-    /// The `configOverrides` can be used to configure properties in product config files that are not exposed in the CRD. Read the [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)> and consult the operator specific usage guide documentation for details on the available config files and settings for the specific product.
+    /// The `configOverrides` can be used to configure properties in product config files
+    /// that are not exposed in the CRD. Read the
+    /// [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)>
+    /// and consult the operator specific usage guide documentation for details on the
+    /// available config files and settings for the specific product.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configOverrides")]
     pub config_overrides: Option<BTreeMap<String, BTreeMap<String, String>>>,
-    /// `envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)> for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available.
+    /// `envOverrides` configure environment variables to be set in the Pods.
+    /// It is a map from strings to strings - environment variables and the value to set.
+    /// Read the
+    /// [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)>
+    /// for more information and consult the operator specific usage guide to find out about
+    /// the product specific environment variables that are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envOverrides")]
     pub env_overrides: Option<BTreeMap<String, String>>,
-    /// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+    /// Allows overriding JVM arguments.
+    /// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+    /// for details on the usage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
     pub jvm_argument_overrides: Option<TrinoClusterWorkersJvmArgumentOverrides>,
-    /// In the `podOverrides` property you can define a [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)> to override any property that can be set on a Kubernetes Pod. Read the [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)> for more information.
+    /// In the `podOverrides` property you can define a
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// to override any property that can be set on a Kubernetes Pod.
+    /// Read the
+    /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
+    /// for more information.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podOverrides")]
     pub pod_overrides: Option<BTreeMap<String, serde_json::Value>>,
     /// This is a product-agnostic RoleConfig, which is sufficient for most of the products.
@@ -1344,7 +1593,8 @@ pub struct TrinoClusterWorkers {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterWorkersConfig {
-    /// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+    /// These configuration settings control
+    /// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<TrinoClusterWorkersConfigAffinity>,
     /// Time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Consult the operator documentation for details.
@@ -1357,17 +1607,21 @@ pub struct TrinoClusterWorkersConfig {
     pub query_max_memory: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryMaxMemoryPerNode")]
     pub query_max_memory_per_node: Option<String>,
-    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`. This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
+    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`.
+    /// This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
     /// 
-    /// Defaults to `15d` for coordinators (as currently a restart kills all running queries) and `1d` for workers.
+    /// Defaults to `15d` for coordinators (as currently a restart kills all running queries)
+    /// and `1d` for workers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestedSecretLifetime")]
     pub requested_secret_lifetime: Option<String>,
-    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+    /// usage, if this role needs any.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<TrinoClusterWorkersConfigResources>,
 }
 
-/// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+/// These configuration settings control
+/// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterWorkersConfigAffinity {
     /// Same as the `spec.affinity.nodeAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
@@ -1401,7 +1655,7 @@ pub struct TrinoClusterWorkersConfigLoggingContainers {
     /// Configuration for the console appender
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub console: Option<TrinoClusterWorkersConfigLoggingContainersConsole>,
-    /// Custom log configuration provided in a ConfigMap
+    /// Log configuration provided in a ConfigMap
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom: Option<TrinoClusterWorkersConfigLoggingContainersCustom>,
     /// Configuration for the file appender
@@ -1415,7 +1669,8 @@ pub struct TrinoClusterWorkersConfigLoggingContainers {
 /// Configuration for the console appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterWorkersConfigLoggingContainersConsole {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<TrinoClusterWorkersConfigLoggingContainersConsoleLevel>,
 }
@@ -1439,7 +1694,7 @@ pub enum TrinoClusterWorkersConfigLoggingContainersConsoleLevel {
     None,
 }
 
-/// Custom log configuration provided in a ConfigMap
+/// Log configuration provided in a ConfigMap
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterWorkersConfigLoggingContainersCustom {
     /// ConfigMap containing the log configuration files
@@ -1450,7 +1705,8 @@ pub struct TrinoClusterWorkersConfigLoggingContainersCustom {
 /// Configuration for the file appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterWorkersConfigLoggingContainersFile {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<TrinoClusterWorkersConfigLoggingContainersFileLevel>,
 }
@@ -1477,7 +1733,8 @@ pub enum TrinoClusterWorkersConfigLoggingContainersFileLevel {
 /// Configuration per logger
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterWorkersConfigLoggingContainersLoggers {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<TrinoClusterWorkersConfigLoggingContainersLoggersLevel>,
 }
@@ -1501,7 +1758,8 @@ pub enum TrinoClusterWorkersConfigLoggingContainersLoggersLevel {
     None,
 }
 
-/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+/// usage, if this role needs any.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterWorkersConfigResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1514,17 +1772,28 @@ pub struct TrinoClusterWorkersConfigResources {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterWorkersConfigResourcesCpu {
-    /// The maximum amount of CPU cores that can be requested by Pods. Equivalent to the `limit` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The maximum amount of CPU cores that can be requested by Pods.
+    /// Equivalent to the `limit` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max: Option<String>,
-    /// The minimal amount of CPU cores that Pods need to run. Equivalent to the `request` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The minimal amount of CPU cores that Pods need to run.
+    /// Equivalent to the `request` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub min: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterWorkersConfigResourcesMemory {
-    /// The maximum amount of memory that should be available to the Pod. Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),> which means these suffixes are supported: E, P, T, G, M, k. You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki. For example, the following represent roughly the same value: `128974848, 129e6, 129M,  128974848000m, 123Mi`
+    /// The maximum amount of memory that should be available to the Pod.
+    /// Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),>
+    /// which means these suffixes are supported: E, P, T, G, M, k.
+    /// You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki.
+    /// For example, the following represent roughly the same value:
+    /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<String>,
     /// Additional options that can be specified.
@@ -1541,7 +1810,9 @@ pub struct TrinoClusterWorkersConfigResourcesMemoryRuntimeLimits {
 pub struct TrinoClusterWorkersConfigResourcesStorage {
 }
 
-/// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+/// Allows overriding JVM arguments.
+/// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+/// for details on the usage.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterWorkersJvmArgumentOverrides {
     /// JVM arguments to be added
@@ -1560,24 +1831,32 @@ pub struct TrinoClusterWorkersJvmArgumentOverrides {
 pub struct TrinoClusterWorkersRoleConfig {
     /// This struct is used to configure:
     /// 
-    /// 1. If PodDisruptionBudgets are created by the operator 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
+    /// 1. If PodDisruptionBudgets are created by the operator
+    /// 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
     /// 
-    /// Learn more in the [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
+    /// Learn more in the
+    /// [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podDisruptionBudget")]
     pub pod_disruption_budget: Option<TrinoClusterWorkersRoleConfigPodDisruptionBudget>,
 }
 
 /// This struct is used to configure:
 /// 
-/// 1. If PodDisruptionBudgets are created by the operator 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
+/// 1. If PodDisruptionBudgets are created by the operator
+/// 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
 /// 
-/// Learn more in the [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
+/// Learn more in the
+/// [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterWorkersRoleConfigPodDisruptionBudget {
-    /// Whether a PodDisruptionBudget should be written out for this role. Disabling this enables you to specify your own - custom - one. Defaults to true.
+    /// Whether a PodDisruptionBudget should be written out for this role.
+    /// Disabling this enables you to specify your own - custom - one.
+    /// Defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    /// The number of Pods that are allowed to be down because of voluntary disruptions. If you don't explicitly set this, the operator will use a sane default based upon knowledge about the individual product.
+    /// The number of Pods that are allowed to be down because of voluntary disruptions.
+    /// If you don't explicitly set this, the operator will use a sane default based
+    /// upon knowledge about the individual product.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<u16>,
 }
@@ -1588,16 +1867,32 @@ pub struct TrinoClusterWorkersRoleGroups {
     pub cli_overrides: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<TrinoClusterWorkersRoleGroupsConfig>,
-    /// The `configOverrides` can be used to configure properties in product config files that are not exposed in the CRD. Read the [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)> and consult the operator specific usage guide documentation for details on the available config files and settings for the specific product.
+    /// The `configOverrides` can be used to configure properties in product config files
+    /// that are not exposed in the CRD. Read the
+    /// [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)>
+    /// and consult the operator specific usage guide documentation for details on the
+    /// available config files and settings for the specific product.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configOverrides")]
     pub config_overrides: Option<BTreeMap<String, BTreeMap<String, String>>>,
-    /// `envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)> for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available.
+    /// `envOverrides` configure environment variables to be set in the Pods.
+    /// It is a map from strings to strings - environment variables and the value to set.
+    /// Read the
+    /// [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)>
+    /// for more information and consult the operator specific usage guide to find out about
+    /// the product specific environment variables that are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envOverrides")]
     pub env_overrides: Option<BTreeMap<String, String>>,
-    /// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+    /// Allows overriding JVM arguments.
+    /// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+    /// for details on the usage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
     pub jvm_argument_overrides: Option<TrinoClusterWorkersRoleGroupsJvmArgumentOverrides>,
-    /// In the `podOverrides` property you can define a [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)> to override any property that can be set on a Kubernetes Pod. Read the [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)> for more information.
+    /// In the `podOverrides` property you can define a
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// to override any property that can be set on a Kubernetes Pod.
+    /// Read the
+    /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
+    /// for more information.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podOverrides")]
     pub pod_overrides: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1606,7 +1901,8 @@ pub struct TrinoClusterWorkersRoleGroups {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterWorkersRoleGroupsConfig {
-    /// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+    /// These configuration settings control
+    /// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<TrinoClusterWorkersRoleGroupsConfigAffinity>,
     /// Time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Consult the operator documentation for details.
@@ -1619,17 +1915,21 @@ pub struct TrinoClusterWorkersRoleGroupsConfig {
     pub query_max_memory: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryMaxMemoryPerNode")]
     pub query_max_memory_per_node: Option<String>,
-    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`. This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
+    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`.
+    /// This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
     /// 
-    /// Defaults to `15d` for coordinators (as currently a restart kills all running queries) and `1d` for workers.
+    /// Defaults to `15d` for coordinators (as currently a restart kills all running queries)
+    /// and `1d` for workers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestedSecretLifetime")]
     pub requested_secret_lifetime: Option<String>,
-    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+    /// usage, if this role needs any.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<TrinoClusterWorkersRoleGroupsConfigResources>,
 }
 
-/// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+/// These configuration settings control
+/// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterWorkersRoleGroupsConfigAffinity {
     /// Same as the `spec.affinity.nodeAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
@@ -1663,7 +1963,7 @@ pub struct TrinoClusterWorkersRoleGroupsConfigLoggingContainers {
     /// Configuration for the console appender
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub console: Option<TrinoClusterWorkersRoleGroupsConfigLoggingContainersConsole>,
-    /// Custom log configuration provided in a ConfigMap
+    /// Log configuration provided in a ConfigMap
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom: Option<TrinoClusterWorkersRoleGroupsConfigLoggingContainersCustom>,
     /// Configuration for the file appender
@@ -1677,7 +1977,8 @@ pub struct TrinoClusterWorkersRoleGroupsConfigLoggingContainers {
 /// Configuration for the console appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterWorkersRoleGroupsConfigLoggingContainersConsole {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<TrinoClusterWorkersRoleGroupsConfigLoggingContainersConsoleLevel>,
 }
@@ -1701,7 +2002,7 @@ pub enum TrinoClusterWorkersRoleGroupsConfigLoggingContainersConsoleLevel {
     None,
 }
 
-/// Custom log configuration provided in a ConfigMap
+/// Log configuration provided in a ConfigMap
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterWorkersRoleGroupsConfigLoggingContainersCustom {
     /// ConfigMap containing the log configuration files
@@ -1712,7 +2013,8 @@ pub struct TrinoClusterWorkersRoleGroupsConfigLoggingContainersCustom {
 /// Configuration for the file appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterWorkersRoleGroupsConfigLoggingContainersFile {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<TrinoClusterWorkersRoleGroupsConfigLoggingContainersFileLevel>,
 }
@@ -1739,7 +2041,8 @@ pub enum TrinoClusterWorkersRoleGroupsConfigLoggingContainersFileLevel {
 /// Configuration per logger
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterWorkersRoleGroupsConfigLoggingContainersLoggers {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<TrinoClusterWorkersRoleGroupsConfigLoggingContainersLoggersLevel>,
 }
@@ -1763,7 +2066,8 @@ pub enum TrinoClusterWorkersRoleGroupsConfigLoggingContainersLoggersLevel {
     None,
 }
 
-/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+/// usage, if this role needs any.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterWorkersRoleGroupsConfigResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1776,17 +2080,28 @@ pub struct TrinoClusterWorkersRoleGroupsConfigResources {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterWorkersRoleGroupsConfigResourcesCpu {
-    /// The maximum amount of CPU cores that can be requested by Pods. Equivalent to the `limit` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The maximum amount of CPU cores that can be requested by Pods.
+    /// Equivalent to the `limit` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max: Option<String>,
-    /// The minimal amount of CPU cores that Pods need to run. Equivalent to the `request` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The minimal amount of CPU cores that Pods need to run.
+    /// Equivalent to the `request` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub min: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterWorkersRoleGroupsConfigResourcesMemory {
-    /// The maximum amount of memory that should be available to the Pod. Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),> which means these suffixes are supported: E, P, T, G, M, k. You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki. For example, the following represent roughly the same value: `128974848, 129e6, 129M,  128974848000m, 123Mi`
+    /// The maximum amount of memory that should be available to the Pod.
+    /// Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),>
+    /// which means these suffixes are supported: E, P, T, G, M, k.
+    /// You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki.
+    /// For example, the following represent roughly the same value:
+    /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<String>,
     /// Additional options that can be specified.
@@ -1803,7 +2118,9 @@ pub struct TrinoClusterWorkersRoleGroupsConfigResourcesMemoryRuntimeLimits {
 pub struct TrinoClusterWorkersRoleGroupsConfigResourcesStorage {
 }
 
-/// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+/// Allows overriding JVM arguments.
+/// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+/// for details on the usage.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoClusterWorkersRoleGroupsJvmArgumentOverrides {
     /// JVM arguments to be added

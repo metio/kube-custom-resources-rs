@@ -110,6 +110,9 @@ pub struct SubmarinerSpec {
     /// Enable automatic Load Balancer in front of the gateways.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerEnabled")]
     pub load_balancer_enabled: Option<bool>,
+    /// Annotations to add to LoadBalancer services, allowing custom configuration for any cloud.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerServiceAnnotations")]
+    pub load_balancer_service_annotations: Option<BTreeMap<String, String>>,
     /// The namespace in which to deploy the submariner operator.
     pub namespace: String,
     /// Enable NAT between clusters.

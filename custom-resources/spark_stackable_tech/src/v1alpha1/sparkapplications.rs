@@ -10,9 +10,12 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// A Spark cluster stacklet. This resource is managed by the Stackable operator for Apache Spark. Find more information on how to use it and the resources that the operator generates in the [operator documentation](<https://docs.stackable.tech/home/nightly/spark-k8s/).>
+/// A Spark cluster stacklet. This resource is managed by the Stackable operator for Apache Spark.
+/// Find more information on how to use it and the resources that the operator generates in the
+/// [operator documentation](<https://docs.stackable.tech/home/nightly/spark-k8s/).>
 /// 
-/// The SparkApplication CRD looks a little different than the CRDs of the other products on the Stackable Data Platform.
+/// The SparkApplication CRD looks a little different than the CRDs of the other products on the
+/// Stackable Data Platform.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[kube(group = "spark.stackable.tech", version = "v1alpha1", kind = "SparkApplication", plural = "sparkapplications")]
 #[kube(namespaced)]
@@ -23,22 +26,33 @@ pub struct SparkApplicationSpec {
     /// Arguments passed directly to the job artifact.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
-    /// Job dependencies: a list of python packages that will be installed via pip, a list of packages or repositories that is passed directly to spark-submit, or a list of excluded packages (also passed directly to spark-submit).
+    /// Job dependencies: a list of python packages that will be installed via pip, a list of packages
+    /// or repositories that is passed directly to spark-submit, or a list of excluded packages
+    /// (also passed directly to spark-submit).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deps: Option<SparkApplicationDeps>,
-    /// The driver role specifies the configuration that, together with the driver pod template, is used by Spark to create driver pods.
+    /// The driver role specifies the configuration that, together with the driver pod template, is used by
+    /// Spark to create driver pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub driver: Option<SparkApplicationDriver>,
-    /// A list of environment variables that will be set in the job pod and the driver and executor pod templates.
+    /// A list of environment variables that will be set in the job pod and the driver and executor
+    /// pod templates.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<SparkApplicationEnv>>,
-    /// The executor role specifies the configuration that, together with the driver pod template, is used by Spark to create the executor pods. This is RoleGroup instead of plain CommonConfiguration because it needs to allow for the number of replicas. to be specified.
+    /// The executor role specifies the configuration that, together with the driver pod template, is used by
+    /// Spark to create the executor pods.
+    /// This is RoleGroup instead of plain CommonConfiguration because it needs to allow for the number of replicas.
+    /// to be specified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub executor: Option<SparkApplicationExecutor>,
-    /// User-supplied image containing spark-job dependencies that will be copied to the specified volume mount. See the [examples](<https://docs.stackable.tech/home/nightly/spark-k8s/usage-guide/examples).>
+    /// User-supplied image containing spark-job dependencies that will be copied to the specified volume mount.
+    /// See the [examples](<https://docs.stackable.tech/home/nightly/spark-k8s/usage-guide/examples).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    /// The job builds a spark-submit command, complete with arguments and referenced dependencies such as templates, and passes it on to Spark. The reason this property uses its own type (SubmitConfigFragment) is because logging is not supported for spark-submit processes.
+    /// The job builds a spark-submit command, complete with arguments and referenced dependencies
+    /// such as templates, and passes it on to Spark.
+    /// The reason this property uses its own type (SubmitConfigFragment) is because logging is not
+    /// supported for spark-submit processes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub job: Option<SparkApplicationJob>,
     /// The log file directory definition used by the Spark history server.
@@ -52,18 +66,25 @@ pub struct SparkApplicationSpec {
     pub main_class: Option<String>,
     /// Mode: cluster or client. Currently only cluster is supported.
     pub mode: SparkApplicationMode,
-    /// Configure an S3 connection that the SparkApplication has access to. Read more in the [Spark S3 usage guide](<https://docs.stackable.tech/home/nightly/spark-k8s/usage-guide/s3).>
+    /// Configure an S3 connection that the SparkApplication has access to.
+    /// Read more in the [Spark S3 usage guide](<https://docs.stackable.tech/home/nightly/spark-k8s/usage-guide/s3).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub s3connection: Option<SparkApplicationS3connection>,
     /// A map of key/value strings that will be passed directly to spark-submit.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sparkConf")]
     pub spark_conf: Option<BTreeMap<String, String>>,
-    /// Specify which image to use, the easiest way is to only configure the `productVersion`. You can also configure a custom image registry to pull from, as well as completely custom images.
+    /// Specify which image to use, the easiest way is to only configure the `productVersion`.
+    /// You can also configure a custom image registry to pull from, as well as completely custom
+    /// images.
     /// 
-    /// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)> for details.
+    /// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)>
+    /// for details.
     #[serde(rename = "sparkImage")]
     pub spark_image: SparkApplicationSparkImage,
-    /// Name of the Vector aggregator [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery).> It must contain the key `ADDRESS` with the address of the Vector aggregator. Follow the [logging tutorial](<https://docs.stackable.tech/home/nightly/tutorials/logging-vector-aggregator)> to learn how to configure log aggregation with Vector.
+    /// Name of the Vector aggregator [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery).>
+    /// It must contain the key `ADDRESS` with the address of the Vector aggregator.
+    /// Follow the [logging tutorial](<https://docs.stackable.tech/home/nightly/tutorials/logging-vector-aggregator)>
+    /// to learn how to configure log aggregation with Vector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vectorAggregatorConfigMapName")]
     pub vector_aggregator_config_map_name: Option<String>,
     /// A list of volumes that can be made available to the job, driver or executors via their volume mounts.
@@ -71,7 +92,9 @@ pub struct SparkApplicationSpec {
     pub volumes: Option<Vec<BTreeMap<String, serde_json::Value>>>,
 }
 
-/// Job dependencies: a list of python packages that will be installed via pip, a list of packages or repositories that is passed directly to spark-submit, or a list of excluded packages (also passed directly to spark-submit).
+/// Job dependencies: a list of python packages that will be installed via pip, a list of packages
+/// or repositories that is passed directly to spark-submit, or a list of excluded packages
+/// (also passed directly to spark-submit).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationDeps {
     /// A list of excluded packages that is passed directly to `spark-submit`.
@@ -83,44 +106,65 @@ pub struct SparkApplicationDeps {
     /// A list of repositories that is passed directly to `spark-submit`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repositories: Option<Vec<String>>,
-    /// Under the `requirements` you can specify Python dependencies that will be installed with `pip`. Example: `tabulate==0.8.9`
+    /// Under the `requirements` you can specify Python dependencies that will be installed with `pip`.
+    /// Example: `tabulate==0.8.9`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requirements: Option<Vec<String>>,
 }
 
-/// The driver role specifies the configuration that, together with the driver pod template, is used by Spark to create driver pods.
+/// The driver role specifies the configuration that, together with the driver pod template, is used by
+/// Spark to create driver pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationDriver {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cliOverrides")]
     pub cli_overrides: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<SparkApplicationDriverConfig>,
-    /// The `configOverrides` can be used to configure properties in product config files that are not exposed in the CRD. Read the [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)> and consult the operator specific usage guide documentation for details on the available config files and settings for the specific product.
+    /// The `configOverrides` can be used to configure properties in product config files
+    /// that are not exposed in the CRD. Read the
+    /// [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)>
+    /// and consult the operator specific usage guide documentation for details on the
+    /// available config files and settings for the specific product.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configOverrides")]
     pub config_overrides: Option<BTreeMap<String, BTreeMap<String, String>>>,
-    /// `envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)> for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available.
+    /// `envOverrides` configure environment variables to be set in the Pods.
+    /// It is a map from strings to strings - environment variables and the value to set.
+    /// Read the
+    /// [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)>
+    /// for more information and consult the operator specific usage guide to find out about
+    /// the product specific environment variables that are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envOverrides")]
     pub env_overrides: Option<BTreeMap<String, String>>,
-    /// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+    /// Allows overriding JVM arguments.
+    /// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+    /// for details on the usage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
     pub jvm_argument_overrides: Option<SparkApplicationDriverJvmArgumentOverrides>,
-    /// In the `podOverrides` property you can define a [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)> to override any property that can be set on a Kubernetes Pod. Read the [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)> for more information.
+    /// In the `podOverrides` property you can define a
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// to override any property that can be set on a Kubernetes Pod.
+    /// Read the
+    /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
+    /// for more information.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podOverrides")]
     pub pod_overrides: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationDriverConfig {
-    /// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+    /// These configuration settings control
+    /// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<SparkApplicationDriverConfigAffinity>,
     /// Logging configuration, learn more in the [logging concept documentation](<https://docs.stackable.tech/home/nightly/concepts/logging).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<SparkApplicationDriverConfigLogging>,
-    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`. This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
+    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`.
+    /// This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestedSecretLifetime")]
     pub requested_secret_lifetime: Option<String>,
-    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+    /// usage, if this role needs any.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<SparkApplicationDriverConfigResources>,
     /// Volume mounts for the spark-submit, driver and executor pods.
@@ -128,7 +172,8 @@ pub struct SparkApplicationDriverConfig {
     pub volume_mounts: Option<Vec<BTreeMap<String, serde_json::Value>>>,
 }
 
-/// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+/// These configuration settings control
+/// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationDriverConfigAffinity {
     /// Same as the `spec.affinity.nodeAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
@@ -162,7 +207,7 @@ pub struct SparkApplicationDriverConfigLoggingContainers {
     /// Configuration for the console appender
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub console: Option<SparkApplicationDriverConfigLoggingContainersConsole>,
-    /// Custom log configuration provided in a ConfigMap
+    /// Log configuration provided in a ConfigMap
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom: Option<SparkApplicationDriverConfigLoggingContainersCustom>,
     /// Configuration for the file appender
@@ -176,7 +221,8 @@ pub struct SparkApplicationDriverConfigLoggingContainers {
 /// Configuration for the console appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationDriverConfigLoggingContainersConsole {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<SparkApplicationDriverConfigLoggingContainersConsoleLevel>,
 }
@@ -200,7 +246,7 @@ pub enum SparkApplicationDriverConfigLoggingContainersConsoleLevel {
     None,
 }
 
-/// Custom log configuration provided in a ConfigMap
+/// Log configuration provided in a ConfigMap
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationDriverConfigLoggingContainersCustom {
     /// ConfigMap containing the log configuration files
@@ -211,7 +257,8 @@ pub struct SparkApplicationDriverConfigLoggingContainersCustom {
 /// Configuration for the file appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationDriverConfigLoggingContainersFile {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<SparkApplicationDriverConfigLoggingContainersFileLevel>,
 }
@@ -238,7 +285,8 @@ pub enum SparkApplicationDriverConfigLoggingContainersFileLevel {
 /// Configuration per logger
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationDriverConfigLoggingContainersLoggers {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<SparkApplicationDriverConfigLoggingContainersLoggersLevel>,
 }
@@ -262,7 +310,8 @@ pub enum SparkApplicationDriverConfigLoggingContainersLoggersLevel {
     None,
 }
 
-/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+/// usage, if this role needs any.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationDriverConfigResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -275,17 +324,28 @@ pub struct SparkApplicationDriverConfigResources {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationDriverConfigResourcesCpu {
-    /// The maximum amount of CPU cores that can be requested by Pods. Equivalent to the `limit` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The maximum amount of CPU cores that can be requested by Pods.
+    /// Equivalent to the `limit` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max: Option<String>,
-    /// The minimal amount of CPU cores that Pods need to run. Equivalent to the `request` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The minimal amount of CPU cores that Pods need to run.
+    /// Equivalent to the `request` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub min: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationDriverConfigResourcesMemory {
-    /// The maximum amount of memory that should be available to the Pod. Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),> which means these suffixes are supported: E, P, T, G, M, k. You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki. For example, the following represent roughly the same value: `128974848, 129e6, 129M,  128974848000m, 123Mi`
+    /// The maximum amount of memory that should be available to the Pod.
+    /// Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),>
+    /// which means these suffixes are supported: E, P, T, G, M, k.
+    /// You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki.
+    /// For example, the following represent roughly the same value:
+    /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<String>,
     /// Additional options that can be specified.
@@ -302,7 +362,9 @@ pub struct SparkApplicationDriverConfigResourcesMemoryRuntimeLimits {
 pub struct SparkApplicationDriverConfigResourcesStorage {
 }
 
-/// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+/// Allows overriding JVM arguments.
+/// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+/// for details on the usage.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationDriverJvmArgumentOverrides {
     /// JVM arguments to be added
@@ -319,7 +381,7 @@ pub struct SparkApplicationDriverJvmArgumentOverrides {
 /// EnvVar represents an environment variable present in a Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationEnv {
-    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    /// Name of the environment variable. May consist of any printable ASCII characters except '='.
     pub name: String,
     /// Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -338,6 +400,9 @@ pub struct SparkApplicationEnvValueFrom {
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<SparkApplicationEnvValueFromFieldRef>,
+    /// FileKeyRef selects a key of the env file. Requires the EnvFiles feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileKeyRef")]
+    pub file_key_ref: Option<SparkApplicationEnvValueFromFileKeyRef>,
     /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<SparkApplicationEnvValueFromResourceFieldRef>,
@@ -369,6 +434,23 @@ pub struct SparkApplicationEnvValueFromFieldRef {
     pub field_path: String,
 }
 
+/// FileKeyRef selects a key of the env file. Requires the EnvFiles feature gate to be enabled.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SparkApplicationEnvValueFromFileKeyRef {
+    /// The key within the env file. An invalid key will prevent the pod from starting. The keys defined within a source may consist of any printable ASCII characters except '='. During Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters.
+    pub key: String,
+    /// Specify whether the file or its key must be defined. If the file or key does not exist, then the env var is not published. If optional is set to true and the specified key does not exist, the environment variable will not be set in the Pod's containers.
+    /// 
+    /// If optional is set to false and the specified key does not exist, an error will be returned during Pod creation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    /// The path within the volume from which to select the file. Must be relative and may not contain the '..' path or start with '..'.
+    pub path: String,
+    /// The name of the volume mount containing the env file.
+    #[serde(rename = "volumeName")]
+    pub volume_name: String,
+}
+
 /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationEnvValueFromResourceFieldRef {
@@ -394,23 +476,42 @@ pub struct SparkApplicationEnvValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
-/// The executor role specifies the configuration that, together with the driver pod template, is used by Spark to create the executor pods. This is RoleGroup instead of plain CommonConfiguration because it needs to allow for the number of replicas. to be specified.
+/// The executor role specifies the configuration that, together with the driver pod template, is used by
+/// Spark to create the executor pods.
+/// This is RoleGroup instead of plain CommonConfiguration because it needs to allow for the number of replicas.
+/// to be specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationExecutor {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cliOverrides")]
     pub cli_overrides: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<SparkApplicationExecutorConfig>,
-    /// The `configOverrides` can be used to configure properties in product config files that are not exposed in the CRD. Read the [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)> and consult the operator specific usage guide documentation for details on the available config files and settings for the specific product.
+    /// The `configOverrides` can be used to configure properties in product config files
+    /// that are not exposed in the CRD. Read the
+    /// [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)>
+    /// and consult the operator specific usage guide documentation for details on the
+    /// available config files and settings for the specific product.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configOverrides")]
     pub config_overrides: Option<BTreeMap<String, BTreeMap<String, String>>>,
-    /// `envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)> for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available.
+    /// `envOverrides` configure environment variables to be set in the Pods.
+    /// It is a map from strings to strings - environment variables and the value to set.
+    /// Read the
+    /// [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)>
+    /// for more information and consult the operator specific usage guide to find out about
+    /// the product specific environment variables that are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envOverrides")]
     pub env_overrides: Option<BTreeMap<String, String>>,
-    /// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+    /// Allows overriding JVM arguments.
+    /// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+    /// for details on the usage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
     pub jvm_argument_overrides: Option<SparkApplicationExecutorJvmArgumentOverrides>,
-    /// In the `podOverrides` property you can define a [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)> to override any property that can be set on a Kubernetes Pod. Read the [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)> for more information.
+    /// In the `podOverrides` property you can define a
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// to override any property that can be set on a Kubernetes Pod.
+    /// Read the
+    /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
+    /// for more information.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podOverrides")]
     pub pod_overrides: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -419,16 +520,19 @@ pub struct SparkApplicationExecutor {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationExecutorConfig {
-    /// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+    /// These configuration settings control
+    /// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<SparkApplicationExecutorConfigAffinity>,
     /// Logging configuration, learn more in the [logging concept documentation](<https://docs.stackable.tech/home/nightly/concepts/logging).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<SparkApplicationExecutorConfigLogging>,
-    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`. This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
+    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`.
+    /// This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestedSecretLifetime")]
     pub requested_secret_lifetime: Option<String>,
-    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+    /// usage, if this role needs any.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<SparkApplicationExecutorConfigResources>,
     /// Volume mounts for the spark-submit, driver and executor pods.
@@ -436,7 +540,8 @@ pub struct SparkApplicationExecutorConfig {
     pub volume_mounts: Option<Vec<BTreeMap<String, serde_json::Value>>>,
 }
 
-/// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+/// These configuration settings control
+/// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationExecutorConfigAffinity {
     /// Same as the `spec.affinity.nodeAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
@@ -470,7 +575,7 @@ pub struct SparkApplicationExecutorConfigLoggingContainers {
     /// Configuration for the console appender
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub console: Option<SparkApplicationExecutorConfigLoggingContainersConsole>,
-    /// Custom log configuration provided in a ConfigMap
+    /// Log configuration provided in a ConfigMap
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom: Option<SparkApplicationExecutorConfigLoggingContainersCustom>,
     /// Configuration for the file appender
@@ -484,7 +589,8 @@ pub struct SparkApplicationExecutorConfigLoggingContainers {
 /// Configuration for the console appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationExecutorConfigLoggingContainersConsole {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<SparkApplicationExecutorConfigLoggingContainersConsoleLevel>,
 }
@@ -508,7 +614,7 @@ pub enum SparkApplicationExecutorConfigLoggingContainersConsoleLevel {
     None,
 }
 
-/// Custom log configuration provided in a ConfigMap
+/// Log configuration provided in a ConfigMap
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationExecutorConfigLoggingContainersCustom {
     /// ConfigMap containing the log configuration files
@@ -519,7 +625,8 @@ pub struct SparkApplicationExecutorConfigLoggingContainersCustom {
 /// Configuration for the file appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationExecutorConfigLoggingContainersFile {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<SparkApplicationExecutorConfigLoggingContainersFileLevel>,
 }
@@ -546,7 +653,8 @@ pub enum SparkApplicationExecutorConfigLoggingContainersFileLevel {
 /// Configuration per logger
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationExecutorConfigLoggingContainersLoggers {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<SparkApplicationExecutorConfigLoggingContainersLoggersLevel>,
 }
@@ -570,7 +678,8 @@ pub enum SparkApplicationExecutorConfigLoggingContainersLoggersLevel {
     None,
 }
 
-/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+/// usage, if this role needs any.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationExecutorConfigResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -583,17 +692,28 @@ pub struct SparkApplicationExecutorConfigResources {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationExecutorConfigResourcesCpu {
-    /// The maximum amount of CPU cores that can be requested by Pods. Equivalent to the `limit` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The maximum amount of CPU cores that can be requested by Pods.
+    /// Equivalent to the `limit` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max: Option<String>,
-    /// The minimal amount of CPU cores that Pods need to run. Equivalent to the `request` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The minimal amount of CPU cores that Pods need to run.
+    /// Equivalent to the `request` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub min: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationExecutorConfigResourcesMemory {
-    /// The maximum amount of memory that should be available to the Pod. Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),> which means these suffixes are supported: E, P, T, G, M, k. You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki. For example, the following represent roughly the same value: `128974848, 129e6, 129M,  128974848000m, 123Mi`
+    /// The maximum amount of memory that should be available to the Pod.
+    /// Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),>
+    /// which means these suffixes are supported: E, P, T, G, M, k.
+    /// You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki.
+    /// For example, the following represent roughly the same value:
+    /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<String>,
     /// Additional options that can be specified.
@@ -610,7 +730,9 @@ pub struct SparkApplicationExecutorConfigResourcesMemoryRuntimeLimits {
 pub struct SparkApplicationExecutorConfigResourcesStorage {
 }
 
-/// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+/// Allows overriding JVM arguments.
+/// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+/// for details on the usage.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationExecutorJvmArgumentOverrides {
     /// JVM arguments to be added
@@ -624,33 +746,54 @@ pub struct SparkApplicationExecutorJvmArgumentOverrides {
     pub remove_regex: Option<Vec<String>>,
 }
 
-/// The job builds a spark-submit command, complete with arguments and referenced dependencies such as templates, and passes it on to Spark. The reason this property uses its own type (SubmitConfigFragment) is because logging is not supported for spark-submit processes.
+/// The job builds a spark-submit command, complete with arguments and referenced dependencies
+/// such as templates, and passes it on to Spark.
+/// The reason this property uses its own type (SubmitConfigFragment) is because logging is not
+/// supported for spark-submit processes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationJob {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cliOverrides")]
     pub cli_overrides: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<SparkApplicationJobConfig>,
-    /// The `configOverrides` can be used to configure properties in product config files that are not exposed in the CRD. Read the [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)> and consult the operator specific usage guide documentation for details on the available config files and settings for the specific product.
+    /// The `configOverrides` can be used to configure properties in product config files
+    /// that are not exposed in the CRD. Read the
+    /// [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)>
+    /// and consult the operator specific usage guide documentation for details on the
+    /// available config files and settings for the specific product.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configOverrides")]
     pub config_overrides: Option<BTreeMap<String, BTreeMap<String, String>>>,
-    /// `envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)> for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available.
+    /// `envOverrides` configure environment variables to be set in the Pods.
+    /// It is a map from strings to strings - environment variables and the value to set.
+    /// Read the
+    /// [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)>
+    /// for more information and consult the operator specific usage guide to find out about
+    /// the product specific environment variables that are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envOverrides")]
     pub env_overrides: Option<BTreeMap<String, String>>,
-    /// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+    /// Allows overriding JVM arguments.
+    /// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+    /// for details on the usage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
     pub jvm_argument_overrides: Option<SparkApplicationJobJvmArgumentOverrides>,
-    /// In the `podOverrides` property you can define a [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)> to override any property that can be set on a Kubernetes Pod. Read the [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)> for more information.
+    /// In the `podOverrides` property you can define a
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// to override any property that can be set on a Kubernetes Pod.
+    /// Read the
+    /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
+    /// for more information.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podOverrides")]
     pub pod_overrides: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationJobConfig {
-    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`. This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
+    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`.
+    /// This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestedSecretLifetime")]
     pub requested_secret_lifetime: Option<String>,
-    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+    /// usage, if this role needs any.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<SparkApplicationJobConfigResources>,
     /// Volume mounts for the spark-submit, driver and executor pods.
@@ -658,7 +801,8 @@ pub struct SparkApplicationJobConfig {
     pub volume_mounts: Option<Vec<BTreeMap<String, serde_json::Value>>>,
 }
 
-/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+/// usage, if this role needs any.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationJobConfigResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -671,17 +815,28 @@ pub struct SparkApplicationJobConfigResources {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationJobConfigResourcesCpu {
-    /// The maximum amount of CPU cores that can be requested by Pods. Equivalent to the `limit` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The maximum amount of CPU cores that can be requested by Pods.
+    /// Equivalent to the `limit` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max: Option<String>,
-    /// The minimal amount of CPU cores that Pods need to run. Equivalent to the `request` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The minimal amount of CPU cores that Pods need to run.
+    /// Equivalent to the `request` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub min: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationJobConfigResourcesMemory {
-    /// The maximum amount of memory that should be available to the Pod. Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),> which means these suffixes are supported: E, P, T, G, M, k. You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki. For example, the following represent roughly the same value: `128974848, 129e6, 129M,  128974848000m, 123Mi`
+    /// The maximum amount of memory that should be available to the Pod.
+    /// Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),>
+    /// which means these suffixes are supported: E, P, T, G, M, k.
+    /// You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki.
+    /// For example, the following represent roughly the same value:
+    /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<String>,
     /// Additional options that can be specified.
@@ -698,7 +853,9 @@ pub struct SparkApplicationJobConfigResourcesMemoryRuntimeLimits {
 pub struct SparkApplicationJobConfigResourcesStorage {
 }
 
-/// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+/// Allows overriding JVM arguments.
+/// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+/// for details on the usage.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationJobJvmArgumentOverrides {
     /// JVM arguments to be added
@@ -732,14 +889,16 @@ pub struct SparkApplicationLogFileDirectoryS3 {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationLogFileDirectoryS3Bucket {
-    /// S3 bucket specification containing the bucket name and an inlined or referenced connection specification. Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
+    /// S3 bucket specification containing the bucket name and an inlined or referenced connection specification.
+    /// Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub inline: Option<SparkApplicationLogFileDirectoryS3BucketInline>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reference: Option<String>,
 }
 
-/// S3 bucket specification containing the bucket name and an inlined or referenced connection specification. Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
+/// S3 bucket specification containing the bucket name and an inlined or referenced connection specification.
+/// Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationLogFileDirectoryS3BucketInline {
     /// The name of the S3 bucket.
@@ -752,25 +911,32 @@ pub struct SparkApplicationLogFileDirectoryS3BucketInline {
 /// The definition of an S3 connection, either inline or as a reference.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationLogFileDirectoryS3BucketInlineConnection {
-    /// S3 connection definition as a resource. Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
+    /// S3 connection definition as a resource.
+    /// Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub inline: Option<SparkApplicationLogFileDirectoryS3BucketInlineConnectionInline>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reference: Option<String>,
 }
 
-/// S3 connection definition as a resource. Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
+/// S3 connection definition as a resource.
+/// Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationLogFileDirectoryS3BucketInlineConnectionInline {
-    /// Which access style to use. Defaults to virtual hosted-style as most of the data products out there. Have a look at the [AWS documentation](<https://docs.aws.amazon.com/AmazonS3/latest/userguide/VirtualHosting.html).>
+    /// Which access style to use.
+    /// Defaults to virtual hosted-style as most of the data products out there.
+    /// Have a look at the [AWS documentation](<https://docs.aws.amazon.com/AmazonS3/latest/userguide/VirtualHosting.html).>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessStyle")]
     pub access_style: Option<SparkApplicationLogFileDirectoryS3BucketInlineConnectionInlineAccessStyle>,
-    /// If the S3 uses authentication you have to specify you S3 credentials. In the most cases a [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> providing `accessKey` and `secretKey` is sufficient.
+    /// If the S3 uses authentication you have to specify you S3 credentials.
+    /// In the most cases a [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)>
+    /// providing `accessKey` and `secretKey` is sufficient.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<SparkApplicationLogFileDirectoryS3BucketInlineConnectionInlineCredentials>,
     /// Host of the S3 server without any protocol or port. For example: `west1.my-cloud.com`.
     pub host: String,
-    /// Port the S3 server listens on. If not specified the product will determine the port to use.
+    /// Port the S3 server listens on.
+    /// If not specified the product will determine the port to use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<u16>,
     /// Bucket region used for signing headers (sigv4).
@@ -785,17 +951,21 @@ pub struct SparkApplicationLogFileDirectoryS3BucketInlineConnectionInline {
     pub tls: Option<SparkApplicationLogFileDirectoryS3BucketInlineConnectionInlineTls>,
 }
 
-/// S3 connection definition as a resource. Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
+/// S3 connection definition as a resource.
+/// Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum SparkApplicationLogFileDirectoryS3BucketInlineConnectionInlineAccessStyle {
     Path,
     VirtualHosted,
 }
 
-/// If the S3 uses authentication you have to specify you S3 credentials. In the most cases a [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> providing `accessKey` and `secretKey` is sufficient.
+/// If the S3 uses authentication you have to specify you S3 credentials.
+/// In the most cases a [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)>
+/// providing `accessKey` and `secretKey` is sufficient.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationLogFileDirectoryS3BucketInlineConnectionInlineCredentials {
-    /// [Scope](<https://docs.stackable.tech/home/nightly/secret-operator/scope)> of the [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass).>
+    /// [Scope](<https://docs.stackable.tech/home/nightly/secret-operator/scope)> of the
+    /// [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scope: Option<SparkApplicationLogFileDirectoryS3BucketInlineConnectionInlineCredentialsScope>,
     /// [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> containing the LDAP bind credentials.
@@ -803,19 +973,24 @@ pub struct SparkApplicationLogFileDirectoryS3BucketInlineConnectionInlineCredent
     pub secret_class: String,
 }
 
-/// [Scope](<https://docs.stackable.tech/home/nightly/secret-operator/scope)> of the [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass).>
+/// [Scope](<https://docs.stackable.tech/home/nightly/secret-operator/scope)> of the
+/// [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationLogFileDirectoryS3BucketInlineConnectionInlineCredentialsScope {
-    /// The listener volume scope allows Node and Service scopes to be inferred from the applicable listeners. This must correspond to Volume names in the Pod that mount Listeners.
+    /// The listener volume scope allows Node and Service scopes to be inferred from the applicable listeners.
+    /// This must correspond to Volume names in the Pod that mount Listeners.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenerVolumes")]
     pub listener_volumes: Option<Vec<String>>,
-    /// The node scope is resolved to the name of the Kubernetes Node object that the Pod is running on. This will typically be the DNS name of the node.
+    /// The node scope is resolved to the name of the Kubernetes Node object that the Pod is running on.
+    /// This will typically be the DNS name of the node.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub node: Option<bool>,
-    /// The pod scope is resolved to the name of the Kubernetes Pod. This allows the secret to differentiate between StatefulSet replicas.
+    /// The pod scope is resolved to the name of the Kubernetes Pod.
+    /// This allows the secret to differentiate between StatefulSet replicas.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pod: Option<bool>,
-    /// The service scope allows Pod objects to specify custom scopes. This should typically correspond to Service objects that the Pod participates in.
+    /// The service scope allows Pod objects to specify custom scopes.
+    /// This should typically correspond to Service objects that the Pod participates in.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<String>>,
 }
@@ -865,22 +1040,29 @@ pub struct SparkApplicationLogFileDirectoryS3BucketInlineConnectionInlineTlsVeri
 /// CA cert to verify the server.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationLogFileDirectoryS3BucketInlineConnectionInlineTlsVerificationServerCaCert {
-    /// Name of the [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> which will provide the CA certificate. Note that a SecretClass does not need to have a key but can also work with just a CA certificate, so if you got provided with a CA cert but don't have access to the key you can still use this method.
+    /// Name of the [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> which will provide the CA certificate.
+    /// Note that a SecretClass does not need to have a key but can also work with just a CA certificate,
+    /// so if you got provided with a CA cert but don't have access to the key you can still use this method.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretClass")]
     pub secret_class: Option<String>,
-    /// Use TLS and the CA certificates trusted by the common web browsers to verify the server. This can be useful when you e.g. use public AWS S3 or other public available services.
+    /// Use TLS and the CA certificates trusted by the common web browsers to verify the server.
+    /// This can be useful when you e.g. use public AWS S3 or other public available services.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "webPki")]
     pub web_pki: Option<SparkApplicationLogFileDirectoryS3BucketInlineConnectionInlineTlsVerificationServerCaCertWebPki>,
 }
 
-/// Use TLS and the CA certificates trusted by the common web browsers to verify the server. This can be useful when you e.g. use public AWS S3 or other public available services.
+/// Use TLS and the CA certificates trusted by the common web browsers to verify the server.
+/// This can be useful when you e.g. use public AWS S3 or other public available services.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationLogFileDirectoryS3BucketInlineConnectionInlineTlsVerificationServerCaCertWebPki {
 }
 
-/// A Spark cluster stacklet. This resource is managed by the Stackable operator for Apache Spark. Find more information on how to use it and the resources that the operator generates in the [operator documentation](<https://docs.stackable.tech/home/nightly/spark-k8s/).>
+/// A Spark cluster stacklet. This resource is managed by the Stackable operator for Apache Spark.
+/// Find more information on how to use it and the resources that the operator generates in the
+/// [operator documentation](<https://docs.stackable.tech/home/nightly/spark-k8s/).>
 /// 
-/// The SparkApplication CRD looks a little different than the CRDs of the other products on the Stackable Data Platform.
+/// The SparkApplication CRD looks a little different than the CRDs of the other products on the
+/// Stackable Data Platform.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum SparkApplicationMode {
     #[serde(rename = "cluster")]
@@ -889,28 +1071,36 @@ pub enum SparkApplicationMode {
     Client,
 }
 
-/// Configure an S3 connection that the SparkApplication has access to. Read more in the [Spark S3 usage guide](<https://docs.stackable.tech/home/nightly/spark-k8s/usage-guide/s3).>
+/// Configure an S3 connection that the SparkApplication has access to.
+/// Read more in the [Spark S3 usage guide](<https://docs.stackable.tech/home/nightly/spark-k8s/usage-guide/s3).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationS3connection {
-    /// S3 connection definition as a resource. Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
+    /// S3 connection definition as a resource.
+    /// Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub inline: Option<SparkApplicationS3connectionInline>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reference: Option<String>,
 }
 
-/// S3 connection definition as a resource. Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
+/// S3 connection definition as a resource.
+/// Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationS3connectionInline {
-    /// Which access style to use. Defaults to virtual hosted-style as most of the data products out there. Have a look at the [AWS documentation](<https://docs.aws.amazon.com/AmazonS3/latest/userguide/VirtualHosting.html).>
+    /// Which access style to use.
+    /// Defaults to virtual hosted-style as most of the data products out there.
+    /// Have a look at the [AWS documentation](<https://docs.aws.amazon.com/AmazonS3/latest/userguide/VirtualHosting.html).>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessStyle")]
     pub access_style: Option<SparkApplicationS3connectionInlineAccessStyle>,
-    /// If the S3 uses authentication you have to specify you S3 credentials. In the most cases a [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> providing `accessKey` and `secretKey` is sufficient.
+    /// If the S3 uses authentication you have to specify you S3 credentials.
+    /// In the most cases a [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)>
+    /// providing `accessKey` and `secretKey` is sufficient.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<SparkApplicationS3connectionInlineCredentials>,
     /// Host of the S3 server without any protocol or port. For example: `west1.my-cloud.com`.
     pub host: String,
-    /// Port the S3 server listens on. If not specified the product will determine the port to use.
+    /// Port the S3 server listens on.
+    /// If not specified the product will determine the port to use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<u16>,
     /// Bucket region used for signing headers (sigv4).
@@ -925,17 +1115,21 @@ pub struct SparkApplicationS3connectionInline {
     pub tls: Option<SparkApplicationS3connectionInlineTls>,
 }
 
-/// S3 connection definition as a resource. Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
+/// S3 connection definition as a resource.
+/// Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum SparkApplicationS3connectionInlineAccessStyle {
     Path,
     VirtualHosted,
 }
 
-/// If the S3 uses authentication you have to specify you S3 credentials. In the most cases a [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> providing `accessKey` and `secretKey` is sufficient.
+/// If the S3 uses authentication you have to specify you S3 credentials.
+/// In the most cases a [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)>
+/// providing `accessKey` and `secretKey` is sufficient.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationS3connectionInlineCredentials {
-    /// [Scope](<https://docs.stackable.tech/home/nightly/secret-operator/scope)> of the [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass).>
+    /// [Scope](<https://docs.stackable.tech/home/nightly/secret-operator/scope)> of the
+    /// [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scope: Option<SparkApplicationS3connectionInlineCredentialsScope>,
     /// [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> containing the LDAP bind credentials.
@@ -943,19 +1137,24 @@ pub struct SparkApplicationS3connectionInlineCredentials {
     pub secret_class: String,
 }
 
-/// [Scope](<https://docs.stackable.tech/home/nightly/secret-operator/scope)> of the [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass).>
+/// [Scope](<https://docs.stackable.tech/home/nightly/secret-operator/scope)> of the
+/// [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationS3connectionInlineCredentialsScope {
-    /// The listener volume scope allows Node and Service scopes to be inferred from the applicable listeners. This must correspond to Volume names in the Pod that mount Listeners.
+    /// The listener volume scope allows Node and Service scopes to be inferred from the applicable listeners.
+    /// This must correspond to Volume names in the Pod that mount Listeners.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenerVolumes")]
     pub listener_volumes: Option<Vec<String>>,
-    /// The node scope is resolved to the name of the Kubernetes Node object that the Pod is running on. This will typically be the DNS name of the node.
+    /// The node scope is resolved to the name of the Kubernetes Node object that the Pod is running on.
+    /// This will typically be the DNS name of the node.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub node: Option<bool>,
-    /// The pod scope is resolved to the name of the Kubernetes Pod. This allows the secret to differentiate between StatefulSet replicas.
+    /// The pod scope is resolved to the name of the Kubernetes Pod.
+    /// This allows the secret to differentiate between StatefulSet replicas.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pod: Option<bool>,
-    /// The service scope allows Pod objects to specify custom scopes. This should typically correspond to Service objects that the Pod participates in.
+    /// The service scope allows Pod objects to specify custom scopes.
+    /// This should typically correspond to Service objects that the Pod participates in.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<String>>,
 }
@@ -1005,25 +1204,33 @@ pub struct SparkApplicationS3connectionInlineTlsVerificationServer {
 /// CA cert to verify the server.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationS3connectionInlineTlsVerificationServerCaCert {
-    /// Name of the [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> which will provide the CA certificate. Note that a SecretClass does not need to have a key but can also work with just a CA certificate, so if you got provided with a CA cert but don't have access to the key you can still use this method.
+    /// Name of the [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> which will provide the CA certificate.
+    /// Note that a SecretClass does not need to have a key but can also work with just a CA certificate,
+    /// so if you got provided with a CA cert but don't have access to the key you can still use this method.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretClass")]
     pub secret_class: Option<String>,
-    /// Use TLS and the CA certificates trusted by the common web browsers to verify the server. This can be useful when you e.g. use public AWS S3 or other public available services.
+    /// Use TLS and the CA certificates trusted by the common web browsers to verify the server.
+    /// This can be useful when you e.g. use public AWS S3 or other public available services.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "webPki")]
     pub web_pki: Option<SparkApplicationS3connectionInlineTlsVerificationServerCaCertWebPki>,
 }
 
-/// Use TLS and the CA certificates trusted by the common web browsers to verify the server. This can be useful when you e.g. use public AWS S3 or other public available services.
+/// Use TLS and the CA certificates trusted by the common web browsers to verify the server.
+/// This can be useful when you e.g. use public AWS S3 or other public available services.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationS3connectionInlineTlsVerificationServerCaCertWebPki {
 }
 
-/// Specify which image to use, the easiest way is to only configure the `productVersion`. You can also configure a custom image registry to pull from, as well as completely custom images.
+/// Specify which image to use, the easiest way is to only configure the `productVersion`.
+/// You can also configure a custom image registry to pull from, as well as completely custom
+/// images.
 /// 
-/// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)> for details.
+/// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)>
+/// for details.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationSparkImage {
-    /// Overwrite the docker image. Specify the full docker image name, e.g. `oci.stackable.tech/sdp/superset:1.4.1-stackable2.1.0`
+    /// Overwrite the docker image.
+    /// Specify the full docker image name, e.g. `oci.stackable.tech/sdp/superset:1.4.1-stackable2.1.0`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom: Option<String>,
     /// Version of the product, e.g. `1.4.1`.
@@ -1038,14 +1245,19 @@ pub struct SparkApplicationSparkImage {
     /// Name of the docker repo, e.g. `oci.stackable.tech/sdp`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repo: Option<String>,
-    /// Stackable version of the product, e.g. `23.4`, `23.4.1` or `0.0.0-dev`. If not specified, the operator will use its own version, e.g. `23.4.1`. When using a nightly operator or a pr version, it will use the nightly `0.0.0-dev` image.
+    /// Stackable version of the product, e.g. `23.4`, `23.4.1` or `0.0.0-dev`.
+    /// If not specified, the operator will use its own version, e.g. `23.4.1`.
+    /// When using a nightly operator or a pr version, it will use the nightly `0.0.0-dev` image.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stackableVersion")]
     pub stackable_version: Option<String>,
 }
 
-/// Specify which image to use, the easiest way is to only configure the `productVersion`. You can also configure a custom image registry to pull from, as well as completely custom images.
+/// Specify which image to use, the easiest way is to only configure the `productVersion`.
+/// You can also configure a custom image registry to pull from, as well as completely custom
+/// images.
 /// 
-/// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)> for details.
+/// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)>
+/// for details.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum SparkApplicationSparkImagePullPolicy {
     IfNotPresent,

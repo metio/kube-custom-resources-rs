@@ -13,6 +13,7 @@ use self::prelude::*;
 /// spec defines the desired state of Bucket
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[kube(group = "objectstorage.k8s.io", version = "v1alpha2", kind = "Bucket", plural = "buckets")]
+#[kube(status = "BucketStatus")]
 #[kube(schema = "disabled")]
 #[kube(derive="PartialEq")]
 pub struct BucketSpec {
@@ -31,6 +32,12 @@ pub struct BucketSpec {
     /// driverName is the name of the driver that fulfills requests for this Bucket.
     #[serde(rename = "driverName")]
     pub driver_name: String,
+    /// existingBucketID is the unique identifier for an existing backend bucket known to the driver.
+    /// Use driver documentation to determine how to set this value.
+    /// This field is used only for Bucket static provisioning.
+    /// This field will be empty when the Bucket is dynamically provisioned from a BucketClaim.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "existingBucketID")]
+    pub existing_bucket_id: Option<String>,
     /// parameters is an opaque map of driver-specific configuration items passed to the driver that
     /// fulfills requests for this Bucket.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -54,7 +61,6 @@ pub struct BucketBucketClaim {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// uid is the UID of the BucketClaim being referenced.
-    /// Once set, the UID is immutable.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
 }
@@ -69,5 +75,37 @@ pub enum BucketDeletionPolicy {
 /// status defines the observed state of Bucket
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketStatus {
+    /// bucketID is the unique identifier for the backend bucket known to the driver.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bucketID")]
+    pub bucket_id: Option<String>,
+    /// BucketInfo reported by the driver, rendered in the COSI_<PROTOCOL>_<KEY> format used for the
+    /// BucketAccess Secret. e.g., COSI_S3_ENDPOINT, COSI_AZURE_STORAGE_ACCOUNT.
+    /// This should not contain any sensitive information.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bucketInfo")]
+    pub bucket_info: Option<BTreeMap<String, String>>,
+    /// Error holds the most recent error message, with a timestamp.
+    /// This is cleared when provisioning is successful.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub error: Option<BucketStatusError>,
+    /// protocols is the set of protocols the Bucket reports to support. BucketAccesses can request
+    /// access to this BucketClaim using any of the protocols reported here.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub protocols: Option<Vec<String>>,
+    /// readyToUse indicates that the bucket is ready for consumption by workloads.
+    #[serde(rename = "readyToUse")]
+    pub ready_to_use: bool,
+}
+
+/// Error holds the most recent error message, with a timestamp.
+/// This is cleared when provisioning is successful.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BucketStatusError {
+    /// message is a string detailing the encountered error.
+    /// NOTE: message will be logged, and it should not contain sensitive information.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub message: Option<String>,
+    /// time is the timestamp when the error was encountered.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub time: Option<String>,
 }
 

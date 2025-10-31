@@ -44,6 +44,9 @@ pub struct TeleportProvisionTokenSpec {
     /// CircleCI allows the configuration of options specific to the "circleci" join method.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub circleci: Option<TeleportProvisionTokenCircleci>,
+    /// Env0 allows the configuration of options specific to the "env0" join method.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub env0: Option<TeleportProvisionTokenEnv0>,
     /// GCP allows the configuration of options specific to the "gcp" join method.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gcp: Option<TeleportProvisionTokenGcp>,
@@ -221,6 +224,40 @@ pub struct TeleportProvisionTokenCircleciAllow {
     pub context_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub project_id: Option<String>,
+}
+
+/// Env0 allows the configuration of options specific to the "env0" join method.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TeleportProvisionTokenEnv0 {
+    /// Allow is a list of Rules, jobs using this token must match at least one allow rule to use this token.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub allow: Option<Vec<TeleportProvisionTokenEnv0Allow>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TeleportProvisionTokenEnv0Allow {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deployer_email: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deployment_type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub env0_tag: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub environment_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub environment_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub organization_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub project_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub project_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub template_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub template_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub workspace_name: Option<String>,
 }
 
 /// GCP allows the configuration of options specific to the "gcp" join method.

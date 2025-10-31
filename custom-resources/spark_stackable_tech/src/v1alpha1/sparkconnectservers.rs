@@ -11,7 +11,9 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// An Apache Spark Connect server component. This resource is managed by the Stackable operator for Apache Spark. Find more information on how to use it in the [operator documentation](<https://docs.stackable.tech/home/nightly/spark-k8s/usage-guide/connect-server).>
+/// An Apache Spark Connect server component. This resource is managed by the Stackable operator
+/// for Apache Spark. Find more information on how to use it in the
+/// [operator documentation](<https://docs.stackable.tech/home/nightly/spark-k8s/usage-guide/connect-server).>
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "spark.stackable.tech", version = "v1alpha1", kind = "SparkConnectServer", plural = "sparkconnectservers")]
 #[kube(namespaced)]
@@ -23,31 +25,46 @@ pub struct SparkConnectServerSpec {
     /// User provided command line arguments appended to the server entry point.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
-    /// [Cluster operations](<https://docs.stackable.tech/home/nightly/concepts/operations/cluster_operations)> properties, allow stopping the product instance as well as pausing reconciliation.
+    /// [Cluster operations](<https://docs.stackable.tech/home/nightly/concepts/operations/cluster_operations)>
+    /// properties, allow stopping the product instance as well as pausing reconciliation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterOperation")]
     pub cluster_operation: Option<SparkConnectServerClusterOperation>,
     /// Spark Connect executor properties.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub executor: Option<SparkConnectServerExecutor>,
-    /// Specify which image to use, the easiest way is to only configure the `productVersion`. You can also configure a custom image registry to pull from, as well as completely custom images.
+    /// Specify which image to use, the easiest way is to only configure the `productVersion`.
+    /// You can also configure a custom image registry to pull from, as well as completely custom
+    /// images.
     /// 
-    /// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)> for details.
+    /// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)>
+    /// for details.
     pub image: SparkConnectServerImage,
     /// A Spark Connect server definition.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub server: Option<SparkConnectServerServer>,
-    /// Name of the Vector aggregator discovery ConfigMap. It must contain the key `ADDRESS` with the address of the Vector aggregator.
+    /// Name of the Vector aggregator discovery ConfigMap.
+    /// It must contain the key `ADDRESS` with the address of the Vector aggregator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vectorAggregatorConfigMapName")]
     pub vector_aggregator_config_map_name: Option<String>,
 }
 
-/// [Cluster operations](<https://docs.stackable.tech/home/nightly/concepts/operations/cluster_operations)> properties, allow stopping the product instance as well as pausing reconciliation.
+/// [Cluster operations](<https://docs.stackable.tech/home/nightly/concepts/operations/cluster_operations)>
+/// properties, allow stopping the product instance as well as pausing reconciliation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkConnectServerClusterOperation {
-    /// Flag to stop cluster reconciliation by the operator. This means that all changes in the custom resource spec are ignored until this flag is set to false or removed. The operator will however still watch the deployed resources at the time and update the custom resource status field. If applied at the same time with `stopped`, `reconciliationPaused` will take precedence over `stopped` and stop the reconciliation immediately.
+    /// Flag to stop cluster reconciliation by the operator. This means that all changes in the
+    /// custom resource spec are ignored until this flag is set to false or removed. The operator
+    /// will however still watch the deployed resources at the time and update the custom resource
+    /// status field.
+    /// If applied at the same time with `stopped`, `reconciliationPaused` will take precedence over
+    /// `stopped` and stop the reconciliation immediately.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconciliationPaused")]
     pub reconciliation_paused: Option<bool>,
-    /// Flag to stop the cluster. This means all deployed resources (e.g. Services, StatefulSets, ConfigMaps) are kept but all deployed Pods (e.g. replicas from a StatefulSet) are scaled to 0 and therefore stopped and removed. If applied at the same time with `reconciliationPaused`, the latter will pause reconciliation and `stopped` will take no effect until `reconciliationPaused` is set to false or removed.
+    /// Flag to stop the cluster. This means all deployed resources (e.g. Services, StatefulSets,
+    /// ConfigMaps) are kept but all deployed Pods (e.g. replicas from a StatefulSet) are scaled to 0
+    /// and therefore stopped and removed.
+    /// If applied at the same time with `reconciliationPaused`, the latter will pause reconciliation
+    /// and `stopped` will take no effect until `reconciliationPaused` is set to false or removed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub stopped: Option<bool>,
 }
@@ -59,37 +76,57 @@ pub struct SparkConnectServerExecutor {
     pub cli_overrides: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<SparkConnectServerExecutorConfig>,
-    /// The `configOverrides` can be used to configure properties in product config files that are not exposed in the CRD. Read the [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)> and consult the operator specific usage guide documentation for details on the available config files and settings for the specific product.
+    /// The `configOverrides` can be used to configure properties in product config files
+    /// that are not exposed in the CRD. Read the
+    /// [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)>
+    /// and consult the operator specific usage guide documentation for details on the
+    /// available config files and settings for the specific product.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configOverrides")]
     pub config_overrides: Option<BTreeMap<String, BTreeMap<String, String>>>,
-    /// `envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)> for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available.
+    /// `envOverrides` configure environment variables to be set in the Pods.
+    /// It is a map from strings to strings - environment variables and the value to set.
+    /// Read the
+    /// [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)>
+    /// for more information and consult the operator specific usage guide to find out about
+    /// the product specific environment variables that are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envOverrides")]
     pub env_overrides: Option<BTreeMap<String, String>>,
-    /// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+    /// Allows overriding JVM arguments.
+    /// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+    /// for details on the usage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
     pub jvm_argument_overrides: Option<SparkConnectServerExecutorJvmArgumentOverrides>,
-    /// In the `podOverrides` property you can define a [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)> to override any property that can be set on a Kubernetes Pod. Read the [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)> for more information.
+    /// In the `podOverrides` property you can define a
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// to override any property that can be set on a Kubernetes Pod.
+    /// Read the
+    /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
+    /// for more information.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podOverrides")]
     pub pod_overrides: Option<BTreeMap<String, serde_json::Value>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkConnectServerExecutorConfig {
-    /// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+    /// These configuration settings control
+    /// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<SparkConnectServerExecutorConfigAffinity>,
     /// Logging configuration, learn more in the [logging concept documentation](<https://docs.stackable.tech/home/nightly/concepts/logging).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<SparkConnectServerExecutorConfigLogging>,
-    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`. This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
+    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`.
+    /// This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestedSecretLifetime")]
     pub requested_secret_lifetime: Option<String>,
-    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+    /// usage, if this role needs any.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<SparkConnectServerExecutorConfigResources>,
 }
 
-/// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+/// These configuration settings control
+/// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkConnectServerExecutorConfigAffinity {
     /// Same as the `spec.affinity.nodeAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
@@ -123,7 +160,7 @@ pub struct SparkConnectServerExecutorConfigLoggingContainers {
     /// Configuration for the console appender
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub console: Option<SparkConnectServerExecutorConfigLoggingContainersConsole>,
-    /// Custom log configuration provided in a ConfigMap
+    /// Log configuration provided in a ConfigMap
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom: Option<SparkConnectServerExecutorConfigLoggingContainersCustom>,
     /// Configuration for the file appender
@@ -137,7 +174,8 @@ pub struct SparkConnectServerExecutorConfigLoggingContainers {
 /// Configuration for the console appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkConnectServerExecutorConfigLoggingContainersConsole {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<SparkConnectServerExecutorConfigLoggingContainersConsoleLevel>,
 }
@@ -161,7 +199,7 @@ pub enum SparkConnectServerExecutorConfigLoggingContainersConsoleLevel {
     None,
 }
 
-/// Custom log configuration provided in a ConfigMap
+/// Log configuration provided in a ConfigMap
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkConnectServerExecutorConfigLoggingContainersCustom {
     /// ConfigMap containing the log configuration files
@@ -172,7 +210,8 @@ pub struct SparkConnectServerExecutorConfigLoggingContainersCustom {
 /// Configuration for the file appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkConnectServerExecutorConfigLoggingContainersFile {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<SparkConnectServerExecutorConfigLoggingContainersFileLevel>,
 }
@@ -199,7 +238,8 @@ pub enum SparkConnectServerExecutorConfigLoggingContainersFileLevel {
 /// Configuration per logger
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkConnectServerExecutorConfigLoggingContainersLoggers {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<SparkConnectServerExecutorConfigLoggingContainersLoggersLevel>,
 }
@@ -223,7 +263,8 @@ pub enum SparkConnectServerExecutorConfigLoggingContainersLoggersLevel {
     None,
 }
 
-/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+/// usage, if this role needs any.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkConnectServerExecutorConfigResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -236,17 +277,28 @@ pub struct SparkConnectServerExecutorConfigResources {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkConnectServerExecutorConfigResourcesCpu {
-    /// The maximum amount of CPU cores that can be requested by Pods. Equivalent to the `limit` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The maximum amount of CPU cores that can be requested by Pods.
+    /// Equivalent to the `limit` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max: Option<String>,
-    /// The minimal amount of CPU cores that Pods need to run. Equivalent to the `request` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The minimal amount of CPU cores that Pods need to run.
+    /// Equivalent to the `request` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub min: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkConnectServerExecutorConfigResourcesMemory {
-    /// The maximum amount of memory that should be available to the Pod. Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),> which means these suffixes are supported: E, P, T, G, M, k. You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki. For example, the following represent roughly the same value: `128974848, 129e6, 129M,  128974848000m, 123Mi`
+    /// The maximum amount of memory that should be available to the Pod.
+    /// Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),>
+    /// which means these suffixes are supported: E, P, T, G, M, k.
+    /// You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki.
+    /// For example, the following represent roughly the same value:
+    /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<String>,
     /// Additional options that can be specified.
@@ -263,7 +315,9 @@ pub struct SparkConnectServerExecutorConfigResourcesMemoryRuntimeLimits {
 pub struct SparkConnectServerExecutorConfigResourcesStorage {
 }
 
-/// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+/// Allows overriding JVM arguments.
+/// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+/// for details on the usage.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkConnectServerExecutorJvmArgumentOverrides {
     /// JVM arguments to be added
@@ -277,12 +331,16 @@ pub struct SparkConnectServerExecutorJvmArgumentOverrides {
     pub remove_regex: Option<Vec<String>>,
 }
 
-/// Specify which image to use, the easiest way is to only configure the `productVersion`. You can also configure a custom image registry to pull from, as well as completely custom images.
+/// Specify which image to use, the easiest way is to only configure the `productVersion`.
+/// You can also configure a custom image registry to pull from, as well as completely custom
+/// images.
 /// 
-/// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)> for details.
+/// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)>
+/// for details.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkConnectServerImage {
-    /// Overwrite the docker image. Specify the full docker image name, e.g. `oci.stackable.tech/sdp/superset:1.4.1-stackable2.1.0`
+    /// Overwrite the docker image.
+    /// Specify the full docker image name, e.g. `oci.stackable.tech/sdp/superset:1.4.1-stackable2.1.0`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom: Option<String>,
     /// Version of the product, e.g. `1.4.1`.
@@ -297,14 +355,19 @@ pub struct SparkConnectServerImage {
     /// Name of the docker repo, e.g. `oci.stackable.tech/sdp`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repo: Option<String>,
-    /// Stackable version of the product, e.g. `23.4`, `23.4.1` or `0.0.0-dev`. If not specified, the operator will use its own version, e.g. `23.4.1`. When using a nightly operator or a pr version, it will use the nightly `0.0.0-dev` image.
+    /// Stackable version of the product, e.g. `23.4`, `23.4.1` or `0.0.0-dev`.
+    /// If not specified, the operator will use its own version, e.g. `23.4.1`.
+    /// When using a nightly operator or a pr version, it will use the nightly `0.0.0-dev` image.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stackableVersion")]
     pub stackable_version: Option<String>,
 }
 
-/// Specify which image to use, the easiest way is to only configure the `productVersion`. You can also configure a custom image registry to pull from, as well as completely custom images.
+/// Specify which image to use, the easiest way is to only configure the `productVersion`.
+/// You can also configure a custom image registry to pull from, as well as completely custom
+/// images.
 /// 
-/// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)> for details.
+/// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)>
+/// for details.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum SparkConnectServerImagePullPolicy {
     IfNotPresent,
@@ -326,16 +389,32 @@ pub struct SparkConnectServerServer {
     pub cli_overrides: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<SparkConnectServerServerConfig>,
-    /// The `configOverrides` can be used to configure properties in product config files that are not exposed in the CRD. Read the [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)> and consult the operator specific usage guide documentation for details on the available config files and settings for the specific product.
+    /// The `configOverrides` can be used to configure properties in product config files
+    /// that are not exposed in the CRD. Read the
+    /// [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)>
+    /// and consult the operator specific usage guide documentation for details on the
+    /// available config files and settings for the specific product.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configOverrides")]
     pub config_overrides: Option<BTreeMap<String, BTreeMap<String, String>>>,
-    /// `envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)> for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available.
+    /// `envOverrides` configure environment variables to be set in the Pods.
+    /// It is a map from strings to strings - environment variables and the value to set.
+    /// Read the
+    /// [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)>
+    /// for more information and consult the operator specific usage guide to find out about
+    /// the product specific environment variables that are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envOverrides")]
     pub env_overrides: Option<BTreeMap<String, String>>,
-    /// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+    /// Allows overriding JVM arguments.
+    /// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+    /// for details on the usage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
     pub jvm_argument_overrides: Option<SparkConnectServerServerJvmArgumentOverrides>,
-    /// In the `podOverrides` property you can define a [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)> to override any property that can be set on a Kubernetes Pod. Read the [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)> for more information.
+    /// In the `podOverrides` property you can define a
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// to override any property that can be set on a Kubernetes Pod.
+    /// Read the
+    /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
+    /// for more information.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podOverrides")]
     pub pod_overrides: Option<BTreeMap<String, serde_json::Value>>,
     /// Global role config settings for the Spark Connect Server.
@@ -348,10 +427,12 @@ pub struct SparkConnectServerServerConfig {
     /// Logging configuration, learn more in the [logging concept documentation](<https://docs.stackable.tech/home/nightly/concepts/logging).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<SparkConnectServerServerConfigLogging>,
-    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`. This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
+    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`.
+    /// This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestedSecretLifetime")]
     pub requested_secret_lifetime: Option<String>,
-    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+    /// usage, if this role needs any.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<SparkConnectServerServerConfigResources>,
 }
@@ -373,7 +454,7 @@ pub struct SparkConnectServerServerConfigLoggingContainers {
     /// Configuration for the console appender
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub console: Option<SparkConnectServerServerConfigLoggingContainersConsole>,
-    /// Custom log configuration provided in a ConfigMap
+    /// Log configuration provided in a ConfigMap
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom: Option<SparkConnectServerServerConfigLoggingContainersCustom>,
     /// Configuration for the file appender
@@ -387,7 +468,8 @@ pub struct SparkConnectServerServerConfigLoggingContainers {
 /// Configuration for the console appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkConnectServerServerConfigLoggingContainersConsole {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<SparkConnectServerServerConfigLoggingContainersConsoleLevel>,
 }
@@ -411,7 +493,7 @@ pub enum SparkConnectServerServerConfigLoggingContainersConsoleLevel {
     None,
 }
 
-/// Custom log configuration provided in a ConfigMap
+/// Log configuration provided in a ConfigMap
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkConnectServerServerConfigLoggingContainersCustom {
     /// ConfigMap containing the log configuration files
@@ -422,7 +504,8 @@ pub struct SparkConnectServerServerConfigLoggingContainersCustom {
 /// Configuration for the file appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkConnectServerServerConfigLoggingContainersFile {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<SparkConnectServerServerConfigLoggingContainersFileLevel>,
 }
@@ -449,7 +532,8 @@ pub enum SparkConnectServerServerConfigLoggingContainersFileLevel {
 /// Configuration per logger
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkConnectServerServerConfigLoggingContainersLoggers {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<SparkConnectServerServerConfigLoggingContainersLoggersLevel>,
 }
@@ -473,7 +557,8 @@ pub enum SparkConnectServerServerConfigLoggingContainersLoggersLevel {
     None,
 }
 
-/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+/// usage, if this role needs any.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkConnectServerServerConfigResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -486,17 +571,28 @@ pub struct SparkConnectServerServerConfigResources {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkConnectServerServerConfigResourcesCpu {
-    /// The maximum amount of CPU cores that can be requested by Pods. Equivalent to the `limit` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The maximum amount of CPU cores that can be requested by Pods.
+    /// Equivalent to the `limit` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max: Option<String>,
-    /// The minimal amount of CPU cores that Pods need to run. Equivalent to the `request` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The minimal amount of CPU cores that Pods need to run.
+    /// Equivalent to the `request` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub min: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkConnectServerServerConfigResourcesMemory {
-    /// The maximum amount of memory that should be available to the Pod. Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),> which means these suffixes are supported: E, P, T, G, M, k. You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki. For example, the following represent roughly the same value: `128974848, 129e6, 129M,  128974848000m, 123Mi`
+    /// The maximum amount of memory that should be available to the Pod.
+    /// Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),>
+    /// which means these suffixes are supported: E, P, T, G, M, k.
+    /// You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki.
+    /// For example, the following represent roughly the same value:
+    /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<String>,
     /// Additional options that can be specified.
@@ -513,7 +609,9 @@ pub struct SparkConnectServerServerConfigResourcesMemoryRuntimeLimits {
 pub struct SparkConnectServerServerConfigResourcesStorage {
 }
 
-/// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+/// Allows overriding JVM arguments.
+/// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+/// for details on the usage.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkConnectServerServerJvmArgumentOverrides {
     /// JVM arguments to be added
@@ -530,7 +628,8 @@ pub struct SparkConnectServerServerJvmArgumentOverrides {
 /// Global role config settings for the Spark Connect Server.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkConnectServerServerRoleConfig {
-    /// This field controls which [ListenerClass](<https://docs.stackable.tech/home/nightly/listener-operator/listenerclass.html)> is used to expose the Spark Connect services.
+    /// This field controls which [ListenerClass](<https://docs.stackable.tech/home/nightly/listener-operator/listenerclass.html)>
+    /// is used to expose the Spark Connect services.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenerClass")]
     pub listener_class: Option<String>,
 }

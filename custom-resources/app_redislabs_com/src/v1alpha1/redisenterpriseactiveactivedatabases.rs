@@ -164,6 +164,9 @@ pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsAlertSettings 
     /// Throughput is lower than specified threshold value [requests / sec.]
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bdb_low_throughput: Option<RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsAlertSettingsBdbLowThroughput>,
+    /// Proxy certificate will expire in less than specified threshold value [days]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub bdb_proxy_cert_expiring_soon: Option<RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsAlertSettingsBdbProxyCertExpiringSoon>,
     /// Dataset RAM overhead of a shard has reached the threshold value [% of its RAM limit]
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bdb_ram_dataset_overhead: Option<RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsAlertSettingsBdbRamDatasetOverhead>,
@@ -250,6 +253,15 @@ pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsAlertSettingsB
 /// Throughput is lower than specified threshold value [requests / sec.]
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsAlertSettingsBdbLowThroughput {
+    /// Alert enabled or disabled
+    pub enabled: bool,
+    /// Threshold for alert going on/off
+    pub threshold: String,
+}
+
+/// Proxy certificate will expire in less than specified threshold value [days]
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsAlertSettingsBdbProxyCertExpiringSoon {
     /// Alert enabled or disabled
     pub enabled: bool,
     /// Threshold for alert going on/off
@@ -469,15 +481,22 @@ pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsReplicaSources
 }
 
 /// Redis Enterprise Role and ACL Binding
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsRolesPermissions {
     /// Acl Name of RolePermissionType (note: use exact name of the ACL from the Redis Enterprise ACL list, case sensitive)
     pub acl: String,
     /// Role Name of RolePermissionType (note: use exact name of the role from the Redis Enterprise role list, case sensitive)
     pub role: String,
-    /// Type of Redis Enterprise Database Role Permission
+    /// Type of Redis Enterprise Database Role Permission. Currently, only "redis-enterprise" is supported, which uses roles and ACLs defined within Redis Enterprise directly.
     #[serde(rename = "type")]
-    pub r#type: String,
+    pub r#type: RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsRolesPermissionsType,
+}
+
+/// Redis Enterprise Role and ACL Binding
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsRolesPermissionsType {
+    #[serde(rename = "redis-enterprise")]
+    RedisEnterprise,
 }
 
 /// The Active-Active database global configurations, contains the global properties for each of the participating clusters/ instances databases within the Active-Active database.

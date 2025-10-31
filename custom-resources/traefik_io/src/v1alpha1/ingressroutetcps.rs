@@ -20,14 +20,14 @@ use self::prelude::*;
 pub struct IngressRouteTcpSpec {
     /// EntryPoints defines the list of entry point names to bind to.
     /// Entry points have to be configured in the static configuration.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/reference/install-configuration/entrypoints/>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/reference/install-configuration/entrypoints/>
     /// Default: all.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "entryPoints")]
     pub entry_points: Option<Vec<String>>,
     /// Routes defines the list of routes.
     pub routes: Vec<IngressRouteTcpRoutes>,
     /// TLS defines the TLS configuration on a layer 4 / TCP Route.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/tcp/routing/router/#tls>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/tcp/routing/router/#tls>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<IngressRouteTcpTls>,
 }
@@ -36,21 +36,21 @@ pub struct IngressRouteTcpSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IngressRouteTcpRoutes {
     /// Match defines the router's rule.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/tcp/routing/rules-and-priority/>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/tcp/routing/rules-and-priority/>
     #[serde(rename = "match")]
     pub r#match: String,
     /// Middlewares defines the list of references to MiddlewareTCP resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub middlewares: Option<Vec<IngressRouteTcpRoutesMiddlewares>>,
     /// Priority defines the router's priority.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/tcp/routing/rules-and-priority/#priority>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/tcp/routing/rules-and-priority/#priority>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub priority: Option<i64>,
     /// Services defines the list of TCP services.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<IngressRouteTcpRoutesServices>>,
     /// Syntax defines the router's rule syntax.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/tcp/routing/rules-and-priority/#rulesyntax>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/tcp/routing/rules-and-priority/#rulesyntax>
     /// Deprecated: Please do not use this field and rewrite the router rules to use the v3 syntax.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub syntax: Option<IngressRouteTcpRoutesSyntax>,
@@ -90,7 +90,7 @@ pub struct IngressRouteTcpRoutesServices {
     /// This can be a reference to a named port.
     pub port: IntOrString,
     /// ProxyProtocol defines the PROXY protocol configuration.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/tcp/service/#proxy-protocol>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/tcp/service/#proxy-protocol>
     /// Deprecated: ProxyProtocol will not be supported in future APIVersions, please use ServersTransport to configure ProxyProtocol instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyProtocol")]
     pub proxy_protocol: Option<IngressRouteTcpRoutesServicesProxyProtocol>,
@@ -116,7 +116,7 @@ pub struct IngressRouteTcpRoutesServices {
 }
 
 /// ProxyProtocol defines the PROXY protocol configuration.
-/// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/tcp/service/#proxy-protocol>
+/// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/tcp/service/#proxy-protocol>
 /// Deprecated: ProxyProtocol will not be supported in future APIVersions, please use ServersTransport to configure ProxyProtocol instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IngressRouteTcpRoutesServicesProxyProtocol {
@@ -135,21 +135,21 @@ pub enum IngressRouteTcpRoutesSyntax {
 }
 
 /// TLS defines the TLS configuration on a layer 4 / TCP Route.
-/// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/tcp/routing/router/#tls>
+/// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/tcp/routing/router/#tls>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IngressRouteTcpTls {
     /// CertResolver defines the name of the certificate resolver to use.
     /// Cert resolvers have to be configured in the static configuration.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/reference/install-configuration/tls/certificate-resolvers/acme/>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/reference/install-configuration/tls/certificate-resolvers/acme/>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certResolver")]
     pub cert_resolver: Option<String>,
     /// Domains defines the list of domains that will be used to issue certificates.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/tcp/tls/#domains>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/tcp/tls/#domains>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub domains: Option<Vec<IngressRouteTcpTlsDomains>>,
     /// Options defines the reference to a TLSOption, that specifies the parameters of the TLS connection.
     /// If not defined, the `default` TLSOption is used.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/tcp/tls/#tls-options>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/tcp/tls/#tls-options>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub options: Option<IngressRouteTcpTlsOptions>,
     /// Passthrough defines whether a TLS router will terminate the TLS connection.
@@ -177,7 +177,7 @@ pub struct IngressRouteTcpTlsDomains {
 
 /// Options defines the reference to a TLSOption, that specifies the parameters of the TLS connection.
 /// If not defined, the `default` TLSOption is used.
-/// More info: <https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/tcp/tls/#tls-options>
+/// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/tcp/tls/#tls-options>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IngressRouteTcpTlsOptions {
     /// Name defines the name of the referenced Traefik resource.

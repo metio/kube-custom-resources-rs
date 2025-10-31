@@ -78,6 +78,7 @@ pub struct LocalQueueStatus {
     pub admitted_workloads: Option<i32>,
     /// conditions hold the latest available observations of the LocalQueue
     /// current state.
+    /// conditions are limited to 16 items.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// fairSharing contains the information about the current status of fair sharing.

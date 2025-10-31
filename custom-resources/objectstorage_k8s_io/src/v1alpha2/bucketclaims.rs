@@ -39,9 +39,8 @@ pub struct BucketClaimSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketClaimStatus {
     /// boundBucketName is the name of the Bucket this BucketClaim is bound to.
-    /// Once set, this is immutable.
-    #[serde(rename = "boundBucketName")]
-    pub bound_bucket_name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "boundBucketName")]
+    pub bound_bucket_name: Option<String>,
     /// error holds the most recent error message, with a timestamp.
     /// This is cleared when provisioning is successful.
     #[serde(default, skip_serializing_if = "Option::is_none")]

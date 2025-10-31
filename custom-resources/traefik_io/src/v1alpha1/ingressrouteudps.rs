@@ -20,7 +20,7 @@ use self::prelude::*;
 pub struct IngressRouteUdpSpec {
     /// EntryPoints defines the list of entry point names to bind to.
     /// Entry points have to be configured in the static configuration.
-    /// More info: <https://doc.traefik.io/traefik/v3.5/reference/install-configuration/entrypoints/>
+    /// More info: <https://doc.traefik.io/traefik/v3.6/reference/install-configuration/entrypoints/>
     /// Default: all.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "entryPoints")]
     pub entry_points: Option<Vec<String>>,

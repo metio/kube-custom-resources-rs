@@ -11,7 +11,9 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// A NiFi cluster stacklet. This resource is managed by the Stackable operator for Apache NiFi. Find more information on how to use it and the resources that the operator generates in the [operator documentation](<https://docs.stackable.tech/home/nightly/nifi/).>
+/// A NiFi cluster stacklet. This resource is managed by the Stackable operator for Apache NiFi.
+/// Find more information on how to use it and the resources that the operator generates in the
+/// [operator documentation](<https://docs.stackable.tech/home/nightly/nifi/).>
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "nifi.stackable.tech", version = "v1alpha1", kind = "NifiCluster", plural = "nificlusters")]
 #[kube(namespaced)]
@@ -20,53 +22,84 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct NifiClusterSpec {
-    /// Settings that affect all roles and role groups. The settings in the `clusterConfig` are cluster wide settings that do not need to be configurable at role or role group level.
+    /// Settings that affect all roles and role groups.
+    /// The settings in the `clusterConfig` are cluster wide settings that do not need to be configurable at role or role group level.
     #[serde(rename = "clusterConfig")]
     pub cluster_config: NifiClusterClusterConfig,
-    /// [Cluster operations](<https://docs.stackable.tech/home/nightly/concepts/operations/cluster_operations)> properties, allow stopping the product instance as well as pausing reconciliation.
+    /// [Cluster operations](<https://docs.stackable.tech/home/nightly/concepts/operations/cluster_operations)>
+    /// properties, allow stopping the product instance as well as pausing reconciliation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterOperation")]
     pub cluster_operation: Option<NifiClusterClusterOperation>,
-    /// Specify which image to use, the easiest way is to only configure the `productVersion`. You can also configure a custom image registry to pull from, as well as completely custom images.
+    /// Specify which image to use, the easiest way is to only configure the `productVersion`.
+    /// You can also configure a custom image registry to pull from, as well as completely custom
+    /// images.
     /// 
-    /// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)> for details.
+    /// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)>
+    /// for details.
     pub image: NifiClusterImage,
-    /// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured on role level. There is also a second form of config, which can only be configured at role level, the `roleConfig`. You can learn more about this in the [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
+    /// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing
+    /// all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable
+    /// at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured
+    /// on role level. There is also a second form of config, which can only be configured
+    /// at role level, the `roleConfig`.
+    /// You can learn more about this in the
+    /// [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nodes: Option<NifiClusterNodes>,
 }
 
-/// Settings that affect all roles and role groups. The settings in the `clusterConfig` are cluster wide settings that do not need to be configurable at role or role group level.
+/// Settings that affect all roles and role groups.
+/// The settings in the `clusterConfig` are cluster wide settings that do not need to be configurable at role or role group level.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NifiClusterClusterConfig {
-    /// Authentication options for NiFi (required). Read more about authentication in the [security documentation](<https://docs.stackable.tech/home/nightly/nifi/usage_guide/security#authentication).>
+    /// Authentication options for NiFi (required).
+    /// Read more about authentication in the [security documentation](<https://docs.stackable.tech/home/nightly/nifi/usage_guide/security#authentication).>
     pub authentication: Vec<NifiClusterClusterConfigAuthentication>,
-    /// Authorization options. Learn more in the [NiFi authorization usage guide](<https://docs.stackable.tech/home/nightly/nifi/usage-guide/security#authorization).>
+    /// Authorization options.
+    /// Learn more in the [NiFi authorization usage guide](<https://docs.stackable.tech/home/nightly/nifi/usage-guide/security#authorization).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<NifiClusterClusterConfigAuthorization>,
-    /// This section creates a `create-reporting-task` Kubernetes Job, which enables the export of Prometheus metrics within NiFi.
+    /// This section creates a `create-reporting-task` Kubernetes Job, which enables the export of
+    /// Prometheus metrics within NiFi.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "createReportingTaskJob")]
     pub create_reporting_task_job: Option<NifiClusterClusterConfigCreateReportingTaskJob>,
-    /// The `customComponentsGitSync` setting allows configuring custom components to mount via `git-sync`. Learn more in the documentation for [Loading custom components](<https://docs.stackable.tech/home/nightly/nifi/usage_guide/custom-components.html#git_sync).>
+    /// The `customComponentsGitSync` setting allows configuring custom components to mount via `git-sync`.
+    /// Learn more in the documentation for
+    /// [Loading custom components](<https://docs.stackable.tech/home/nightly/nifi/usage_guide/custom-components.html#git_sync).>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "customComponentsGitSync")]
     pub custom_components_git_sync: Option<Vec<NifiClusterClusterConfigCustomComponentsGitSync>>,
-    /// Extra volumes similar to `.spec.volumes` on a Pod to mount into every container, this can be useful to for example make client certificates, keytabs or similar things available to processors. These volumes will be mounted into all pods at `/stackable/userdata/{volumename}`. See also the [external files usage guide](<https://docs.stackable.tech/home/nightly/nifi/usage_guide/extra-volumes).>
+    /// Extra volumes similar to `.spec.volumes` on a Pod to mount into every container, this can be useful to for
+    /// example make client certificates, keytabs or similar things available to processors. These volumes will be
+    /// mounted into all pods at `/stackable/userdata/{volumename}`.
+    /// See also the [external files usage guide](<https://docs.stackable.tech/home/nightly/nifi/usage_guide/extra-volumes).>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraVolumes")]
     pub extra_volumes: Option<Vec<BTreeMap<String, serde_json::Value>>>,
-    /// Configuration of allowed proxies e.g. load balancers or Kubernetes Ingress. Using a proxy that is not allowed by NiFi results in a failed host header check.
+    /// Configuration of allowed proxies e.g. load balancers or Kubernetes Ingress. Using a proxy that is not allowed by NiFi results
+    /// in a failed host header check.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostHeaderCheck")]
     pub host_header_check: Option<NifiClusterClusterConfigHostHeaderCheck>,
-    /// These settings configure the encryption of sensitive properties in NiFi processors. NiFi supports encrypting sensitive properties in processors as they are written to disk. You can configure the encryption algorithm and the key to use. You can also let the operator generate an encryption key for you.
+    /// These settings configure the encryption of sensitive properties in NiFi processors.
+    /// NiFi supports encrypting sensitive properties in processors as they are written to disk.
+    /// You can configure the encryption algorithm and the key to use.
+    /// You can also let the operator generate an encryption key for you.
     #[serde(rename = "sensitiveProperties")]
     pub sensitive_properties: NifiClusterClusterConfigSensitiveProperties,
     /// TLS configuration options for the server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<NifiClusterClusterConfigTls>,
-    /// Name of the Vector aggregator [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery).> It must contain the key `ADDRESS` with the address of the Vector aggregator. Follow the [logging tutorial](<https://docs.stackable.tech/home/nightly/tutorials/logging-vector-aggregator)> to learn how to configure log aggregation with Vector.
+    /// Name of the Vector aggregator [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery).>
+    /// It must contain the key `ADDRESS` with the address of the Vector aggregator.
+    /// Follow the [logging tutorial](<https://docs.stackable.tech/home/nightly/tutorials/logging-vector-aggregator)>
+    /// to learn how to configure log aggregation with Vector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vectorAggregatorConfigMapName")]
     pub vector_aggregator_config_map_name: Option<String>,
-    /// NiFi can either use ZooKeeper or Kubernetes for managing its cluster state. To use ZooKeeper, provide the name of the ZooKeeper [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery)> here. When using the [Stackable operator for Apache ZooKeeper](<https://docs.stackable.tech/home/nightly/zookeeper/)> to deploy a ZooKeeper cluster, this will simply be the name of your ZookeeperCluster resource.
+    /// NiFi can either use ZooKeeper or Kubernetes for managing its cluster state. To use ZooKeeper, provide the name of the
+    /// ZooKeeper [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery)> here.
+    /// When using the [Stackable operator for Apache ZooKeeper](<https://docs.stackable.tech/home/nightly/zookeeper/)>
+    /// to deploy a ZooKeeper cluster, this will simply be the name of your ZookeeperCluster resource.
     /// 
-    /// The Kubernetes provider will be used if this field is unset. Kubernetes is only supported for NiFi 2.x and newer, NiFi 1.x requires ZooKeeper.
+    /// The Kubernetes provider will be used if this field is unset. Kubernetes is only supported for NiFi 2.x and newer,
+    /// NiFi 1.x requires ZooKeeper.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "zookeeperConfigMapName")]
     pub zookeeper_config_map_name: Option<String>,
 }
@@ -84,7 +117,8 @@ pub struct NifiClusterClusterConfigAuthentication {
 /// This field contains OIDC-specific configuration. It is only required in case OIDC is used.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NifiClusterClusterConfigAuthenticationOidc {
-    /// A reference to the OIDC client credentials secret. The secret contains the client id and secret.
+    /// A reference to the OIDC client credentials secret. The secret contains
+    /// the client id and secret.
     #[serde(rename = "clientCredentialsSecret")]
     pub client_credentials_secret: String,
     /// An optional list of extra scopes which get merged with the scopes defined in the AuthenticationClass
@@ -92,21 +126,29 @@ pub struct NifiClusterClusterConfigAuthenticationOidc {
     pub extra_scopes: Option<Vec<String>>,
 }
 
-/// Authorization options. Learn more in the [NiFi authorization usage guide](<https://docs.stackable.tech/home/nightly/nifi/usage-guide/security#authorization).>
+/// Authorization options.
+/// Learn more in the [NiFi authorization usage guide](<https://docs.stackable.tech/home/nightly/nifi/usage-guide/security#authorization).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NifiClusterClusterConfigAuthorization {
-    /// Configure the OPA stacklet [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery)> and the name of the Rego package containing your authorization rules. Consult the [OPA authorization documentation](<https://docs.stackable.tech/home/nightly/concepts/opa)> to learn how to deploy Rego authorization rules with OPA.
+    /// Configure the OPA stacklet [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery)>
+    /// and the name of the Rego package containing your authorization rules.
+    /// Consult the [OPA authorization documentation](<https://docs.stackable.tech/home/nightly/concepts/opa)>
+    /// to learn how to deploy Rego authorization rules with OPA.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub opa: Option<NifiClusterClusterConfigAuthorizationOpa>,
 }
 
-/// Configure the OPA stacklet [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery)> and the name of the Rego package containing your authorization rules. Consult the [OPA authorization documentation](<https://docs.stackable.tech/home/nightly/concepts/opa)> to learn how to deploy Rego authorization rules with OPA.
+/// Configure the OPA stacklet [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery)>
+/// and the name of the Rego package containing your authorization rules.
+/// Consult the [OPA authorization documentation](<https://docs.stackable.tech/home/nightly/concepts/opa)>
+/// to learn how to deploy Rego authorization rules with OPA.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NifiClusterClusterConfigAuthorizationOpa {
     /// Least Recently Used (LRU) cache with per-entry time-to-live (TTL) value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cache: Option<NifiClusterClusterConfigAuthorizationOpaCache>,
-    /// The [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery)> for the OPA stacklet that should be used for authorization requests.
+    /// The [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery)>
+    /// for the OPA stacklet that should be used for authorization requests.
     #[serde(rename = "configMapName")]
     pub config_map_name: String,
     /// The name of the Rego package containing the Rego rules for the product.
@@ -120,18 +162,27 @@ pub struct NifiClusterClusterConfigAuthorizationOpaCache {
     /// Time to live per entry
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "entryTimeToLive")]
     pub entry_time_to_live: Option<String>,
-    /// Maximum number of entries in the cache; If this threshold is reached then the least recently used item is removed.
+    /// Maximum number of entries in the cache; If this threshold is reached then the least
+    /// recently used item is removed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxEntries")]
     pub max_entries: Option<u32>,
 }
 
-/// This section creates a `create-reporting-task` Kubernetes Job, which enables the export of Prometheus metrics within NiFi.
+/// This section creates a `create-reporting-task` Kubernetes Job, which enables the export of
+/// Prometheus metrics within NiFi.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NifiClusterClusterConfigCreateReportingTaskJob {
-    /// Wether the Kubernetes Job should be created, defaults to true. It can be helpful to disable the Job, e.g. when you configOverride an authentication mechanism, which the Job currently can't use to authenticate against NiFi.
+    /// Wether the Kubernetes Job should be created, defaults to true. It can be helpful to disable
+    /// the Job, e.g. when you configOverride an authentication mechanism, which the Job currently
+    /// can't use to authenticate against NiFi.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    /// Here you can define a [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)> to override any property that can be set on the Pod of the create-reporting-task Kubernetes Job. Read the [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)> for more information.
+    /// Here you can define a
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// to override any property that can be set on the Pod of the create-reporting-task Kubernetes Job.
+    /// Read the
+    /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
+    /// for more information.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podOverrides")]
     pub pod_overrides: Option<BTreeMap<String, serde_json::Value>>,
 }
@@ -145,7 +196,9 @@ pub struct NifiClusterClusterConfigCustomComponentsGitSync {
     pub branch: Option<String>,
     /// The name of the Secret used to access the repository if it is not public.
     /// 
-    /// The referenced Secret must include two fields: `user` and `password`. The `password` field can either be an actual password (not recommended) or a GitHub token, as described in the git-sync [documentation].
+    /// The referenced Secret must include two fields: `user` and `password`.
+    /// The `password` field can either be an actual password (not recommended) or a GitHub token,
+    /// as described in the git-sync [documentation].
     /// 
     /// [documentation]: <https://github.com/kubernetes/git-sync/tree/v4.2.4?tab=readme-ov-file#manual>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsSecret")]
@@ -155,14 +208,16 @@ pub struct NifiClusterClusterConfigCustomComponentsGitSync {
     pub depth: Option<u32>,
     /// Location in the Git repository containing the resource; defaults to the root folder.
     /// 
-    /// It can optionally start with `/`, however, no trailing slash is recommended. An empty string (``) or slash (`/`) corresponds to the root folder in Git.
+    /// It can optionally start with `/`, however, no trailing slash is recommended.
+    /// An empty string (``) or slash (`/`) corresponds to the root folder in Git.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitFolder")]
     pub git_folder: Option<String>,
     /// A map of optional configuration settings that are listed in the git-sync [documentation].
     /// 
     /// Also read the git-sync [example] in our documentation. These settings are not verified.
     /// 
-    /// [documentation]: <https://github.com/kubernetes/git-sync/tree/v4.2.4?tab=readme-ov-file#manual> [example]: <https://docs.stackable.tech/home/nightly/airflow/usage-guide/mounting-dags#_example>
+    /// [documentation]: <https://github.com/kubernetes/git-sync/tree/v4.2.4?tab=readme-ov-file#manual>
+    /// [example]: <https://docs.stackable.tech/home/nightly/airflow/usage-guide/mounting-dags#_example>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitSyncConf")]
     pub git_sync_conf: Option<BTreeMap<String, String>>,
     /// The git repository URL that will be cloned, for example: `<https://github.com/stackabletech/airflow-operator`.>
@@ -174,40 +229,60 @@ pub struct NifiClusterClusterConfigCustomComponentsGitSync {
     pub wait: Option<String>,
 }
 
-/// Configuration of allowed proxies e.g. load balancers or Kubernetes Ingress. Using a proxy that is not allowed by NiFi results in a failed host header check.
+/// Configuration of allowed proxies e.g. load balancers or Kubernetes Ingress. Using a proxy that is not allowed by NiFi results
+/// in a failed host header check.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NifiClusterClusterConfigHostHeaderCheck {
     /// List of proxy hosts to add to the default allow list deployed by SDP containing Kubernetes Services utilized by NiFi.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalAllowedHosts")]
     pub additional_allowed_hosts: Option<Vec<String>>,
-    /// Allow all proxy hosts by turning off host header validation. See <<https://github.com/stackabletech/docker-images/pull/694>>
+    /// Allow all proxy hosts by turning off host header validation.
+    /// See <<https://github.com/stackabletech/docker-images/pull/694>>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowAll")]
     pub allow_all: Option<bool>,
 }
 
-/// These settings configure the encryption of sensitive properties in NiFi processors. NiFi supports encrypting sensitive properties in processors as they are written to disk. You can configure the encryption algorithm and the key to use. You can also let the operator generate an encryption key for you.
+/// These settings configure the encryption of sensitive properties in NiFi processors.
+/// NiFi supports encrypting sensitive properties in processors as they are written to disk.
+/// You can configure the encryption algorithm and the key to use.
+/// You can also let the operator generate an encryption key for you.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NifiClusterClusterConfigSensitiveProperties {
-    /// This is setting the `nifi.sensitive.props.algorithm` property in NiFi. This setting configures the encryption algorithm to use to encrypt sensitive properties. Valid values are:
+    /// This is setting the `nifi.sensitive.props.algorithm` property in NiFi.
+    /// This setting configures the encryption algorithm to use to encrypt sensitive properties.
+    /// Valid values are:
     /// 
-    /// `nifiPbkdf2AesGcm256` (the default value), `nifiArgon2AesGcm256`,
+    /// `nifiPbkdf2AesGcm256` (the default value),
+    /// `nifiArgon2AesGcm256`,
     /// 
     /// The following algorithms are deprecated and will be removed in future versions:
     /// 
-    /// `nifiArgon2AesGcm128`, `nifiBcryptAesGcm128`, `nifiBcryptAesGcm256`, `nifiPbkdf2AesGcm128`, `nifiScryptAesGcm128`, `nifiScryptAesGcm256`.
+    /// `nifiArgon2AesGcm128`,
+    /// `nifiBcryptAesGcm128`,
+    /// `nifiBcryptAesGcm256`,
+    /// `nifiPbkdf2AesGcm128`,
+    /// `nifiScryptAesGcm128`,
+    /// `nifiScryptAesGcm256`.
     /// 
-    /// Learn more about the specifics of the algorithm parameters in the [NiFi documentation](<https://nifi.apache.org/docs/nifi-docs/html/administration-guide.html#property-encryption-algorithms).>
+    /// Learn more about the specifics of the algorithm parameters in the
+    /// [NiFi documentation](<https://nifi.apache.org/docs/nifi-docs/html/administration-guide.html#property-encryption-algorithms).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub algorithm: Option<NifiClusterClusterConfigSensitivePropertiesAlgorithm>,
-    /// Whether to generate the `keySecret` if it is missing. Defaults to `false`.
+    /// Whether to generate the `keySecret` if it is missing.
+    /// Defaults to `false`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoGenerate")]
     pub auto_generate: Option<bool>,
-    /// A reference to a Secret. The Secret needs to contain a key `nifiSensitivePropsKey`. If `autoGenerate` is false and this object is missing, the Operator will raise an error. The encryption key needs to be at least 12 characters long.
+    /// A reference to a Secret. The Secret needs to contain a key `nifiSensitivePropsKey`.
+    /// If `autoGenerate` is false and this object is missing, the Operator will raise an error.
+    /// The encryption key needs to be at least 12 characters long.
     #[serde(rename = "keySecret")]
     pub key_secret: String,
 }
 
-/// These settings configure the encryption of sensitive properties in NiFi processors. NiFi supports encrypting sensitive properties in processors as they are written to disk. You can configure the encryption algorithm and the key to use. You can also let the operator generate an encryption key for you.
+/// These settings configure the encryption of sensitive properties in NiFi processors.
+/// NiFi supports encrypting sensitive properties in processors as they are written to disk.
+/// You can configure the encryption algorithm and the key to use.
+/// You can also let the operator generate an encryption key for you.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum NifiClusterClusterConfigSensitivePropertiesAlgorithm {
     #[serde(rename = "nifiPbkdf2AesGcm256")]
@@ -231,28 +306,44 @@ pub enum NifiClusterClusterConfigSensitivePropertiesAlgorithm {
 /// TLS configuration options for the server.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NifiClusterClusterConfigTls {
-    /// This only affects client connections and is used to control which certificate the servers should use to authenticate themselves against the client.
+    /// This only affects client connections and is used to
+    /// control which certificate the servers should use to
+    /// authenticate themselves against the client.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverSecretClass")]
     pub server_secret_class: Option<String>,
 }
 
-/// [Cluster operations](<https://docs.stackable.tech/home/nightly/concepts/operations/cluster_operations)> properties, allow stopping the product instance as well as pausing reconciliation.
+/// [Cluster operations](<https://docs.stackable.tech/home/nightly/concepts/operations/cluster_operations)>
+/// properties, allow stopping the product instance as well as pausing reconciliation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NifiClusterClusterOperation {
-    /// Flag to stop cluster reconciliation by the operator. This means that all changes in the custom resource spec are ignored until this flag is set to false or removed. The operator will however still watch the deployed resources at the time and update the custom resource status field. If applied at the same time with `stopped`, `reconciliationPaused` will take precedence over `stopped` and stop the reconciliation immediately.
+    /// Flag to stop cluster reconciliation by the operator. This means that all changes in the
+    /// custom resource spec are ignored until this flag is set to false or removed. The operator
+    /// will however still watch the deployed resources at the time and update the custom resource
+    /// status field.
+    /// If applied at the same time with `stopped`, `reconciliationPaused` will take precedence over
+    /// `stopped` and stop the reconciliation immediately.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconciliationPaused")]
     pub reconciliation_paused: Option<bool>,
-    /// Flag to stop the cluster. This means all deployed resources (e.g. Services, StatefulSets, ConfigMaps) are kept but all deployed Pods (e.g. replicas from a StatefulSet) are scaled to 0 and therefore stopped and removed. If applied at the same time with `reconciliationPaused`, the latter will pause reconciliation and `stopped` will take no effect until `reconciliationPaused` is set to false or removed.
+    /// Flag to stop the cluster. This means all deployed resources (e.g. Services, StatefulSets,
+    /// ConfigMaps) are kept but all deployed Pods (e.g. replicas from a StatefulSet) are scaled to 0
+    /// and therefore stopped and removed.
+    /// If applied at the same time with `reconciliationPaused`, the latter will pause reconciliation
+    /// and `stopped` will take no effect until `reconciliationPaused` is set to false or removed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub stopped: Option<bool>,
 }
 
-/// Specify which image to use, the easiest way is to only configure the `productVersion`. You can also configure a custom image registry to pull from, as well as completely custom images.
+/// Specify which image to use, the easiest way is to only configure the `productVersion`.
+/// You can also configure a custom image registry to pull from, as well as completely custom
+/// images.
 /// 
-/// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)> for details.
+/// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)>
+/// for details.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NifiClusterImage {
-    /// Overwrite the docker image. Specify the full docker image name, e.g. `oci.stackable.tech/sdp/superset:1.4.1-stackable2.1.0`
+    /// Overwrite the docker image.
+    /// Specify the full docker image name, e.g. `oci.stackable.tech/sdp/superset:1.4.1-stackable2.1.0`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom: Option<String>,
     /// Version of the product, e.g. `1.4.1`.
@@ -267,14 +358,19 @@ pub struct NifiClusterImage {
     /// Name of the docker repo, e.g. `oci.stackable.tech/sdp`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repo: Option<String>,
-    /// Stackable version of the product, e.g. `23.4`, `23.4.1` or `0.0.0-dev`. If not specified, the operator will use its own version, e.g. `23.4.1`. When using a nightly operator or a pr version, it will use the nightly `0.0.0-dev` image.
+    /// Stackable version of the product, e.g. `23.4`, `23.4.1` or `0.0.0-dev`.
+    /// If not specified, the operator will use its own version, e.g. `23.4.1`.
+    /// When using a nightly operator or a pr version, it will use the nightly `0.0.0-dev` image.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stackableVersion")]
     pub stackable_version: Option<String>,
 }
 
-/// Specify which image to use, the easiest way is to only configure the `productVersion`. You can also configure a custom image registry to pull from, as well as completely custom images.
+/// Specify which image to use, the easiest way is to only configure the `productVersion`.
+/// You can also configure a custom image registry to pull from, as well as completely custom
+/// images.
 /// 
-/// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)> for details.
+/// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)>
+/// for details.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum NifiClusterImagePullPolicy {
     IfNotPresent,
@@ -289,23 +385,45 @@ pub struct NifiClusterImagePullSecrets {
     pub name: String,
 }
 
-/// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured on role level. There is also a second form of config, which can only be configured at role level, the `roleConfig`. You can learn more about this in the [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
+/// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing
+/// all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable
+/// at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured
+/// on role level. There is also a second form of config, which can only be configured
+/// at role level, the `roleConfig`.
+/// You can learn more about this in the
+/// [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NifiClusterNodes {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cliOverrides")]
     pub cli_overrides: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<NifiClusterNodesConfig>,
-    /// The `configOverrides` can be used to configure properties in product config files that are not exposed in the CRD. Read the [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)> and consult the operator specific usage guide documentation for details on the available config files and settings for the specific product.
+    /// The `configOverrides` can be used to configure properties in product config files
+    /// that are not exposed in the CRD. Read the
+    /// [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)>
+    /// and consult the operator specific usage guide documentation for details on the
+    /// available config files and settings for the specific product.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configOverrides")]
     pub config_overrides: Option<BTreeMap<String, BTreeMap<String, String>>>,
-    /// `envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)> for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available.
+    /// `envOverrides` configure environment variables to be set in the Pods.
+    /// It is a map from strings to strings - environment variables and the value to set.
+    /// Read the
+    /// [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)>
+    /// for more information and consult the operator specific usage guide to find out about
+    /// the product specific environment variables that are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envOverrides")]
     pub env_overrides: Option<BTreeMap<String, String>>,
-    /// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+    /// Allows overriding JVM arguments.
+    /// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+    /// for details on the usage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
     pub jvm_argument_overrides: Option<NifiClusterNodesJvmArgumentOverrides>,
-    /// In the `podOverrides` property you can define a [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)> to override any property that can be set on a Kubernetes Pod. Read the [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)> for more information.
+    /// In the `podOverrides` property you can define a
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// to override any property that can be set on a Kubernetes Pod.
+    /// Read the
+    /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
+    /// for more information.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podOverrides")]
     pub pod_overrides: Option<BTreeMap<String, serde_json::Value>>,
     /// This is a product-agnostic RoleConfig, which is sufficient for most of the products.
@@ -317,7 +435,8 @@ pub struct NifiClusterNodes {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NifiClusterNodesConfig {
-    /// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+    /// These configuration settings control
+    /// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<NifiClusterNodesConfigAffinity>,
     /// Time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Consult the operator documentation for details.
@@ -326,15 +445,19 @@ pub struct NifiClusterNodesConfig {
     /// Logging configuration, learn more in the [logging concept documentation](<https://docs.stackable.tech/home/nightly/concepts/logging).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<NifiClusterNodesConfigLogging>,
-    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`. Please note that this can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
+    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`.
+    /// Please note that this can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestedSecretLifetime")]
     pub requested_secret_lifetime: Option<String>,
-    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage. The default CPU request and limit are 500m and 2000m respectively. The default memory limit is 4GB.
+    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage.
+    /// The default CPU request and limit are 500m and 2000m respectively.
+    /// The default memory limit is 4GB.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<NifiClusterNodesConfigResources>,
 }
 
-/// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+/// These configuration settings control
+/// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NifiClusterNodesConfigAffinity {
     /// Same as the `spec.affinity.nodeAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
@@ -368,7 +491,7 @@ pub struct NifiClusterNodesConfigLoggingContainers {
     /// Configuration for the console appender
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub console: Option<NifiClusterNodesConfigLoggingContainersConsole>,
-    /// Custom log configuration provided in a ConfigMap
+    /// Log configuration provided in a ConfigMap
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom: Option<NifiClusterNodesConfigLoggingContainersCustom>,
     /// Configuration for the file appender
@@ -382,7 +505,8 @@ pub struct NifiClusterNodesConfigLoggingContainers {
 /// Configuration for the console appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NifiClusterNodesConfigLoggingContainersConsole {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<NifiClusterNodesConfigLoggingContainersConsoleLevel>,
 }
@@ -406,7 +530,7 @@ pub enum NifiClusterNodesConfigLoggingContainersConsoleLevel {
     None,
 }
 
-/// Custom log configuration provided in a ConfigMap
+/// Log configuration provided in a ConfigMap
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NifiClusterNodesConfigLoggingContainersCustom {
     /// ConfigMap containing the log configuration files
@@ -417,7 +541,8 @@ pub struct NifiClusterNodesConfigLoggingContainersCustom {
 /// Configuration for the file appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NifiClusterNodesConfigLoggingContainersFile {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<NifiClusterNodesConfigLoggingContainersFileLevel>,
 }
@@ -444,7 +569,8 @@ pub enum NifiClusterNodesConfigLoggingContainersFileLevel {
 /// Configuration per logger
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NifiClusterNodesConfigLoggingContainersLoggers {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<NifiClusterNodesConfigLoggingContainersLoggersLevel>,
 }
@@ -468,7 +594,9 @@ pub enum NifiClusterNodesConfigLoggingContainersLoggersLevel {
     None,
 }
 
-/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage. The default CPU request and limit are 500m and 2000m respectively. The default memory limit is 4GB.
+/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage.
+/// The default CPU request and limit are 500m and 2000m respectively.
+/// The default memory limit is 4GB.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NifiClusterNodesConfigResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -481,17 +609,28 @@ pub struct NifiClusterNodesConfigResources {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NifiClusterNodesConfigResourcesCpu {
-    /// The maximum amount of CPU cores that can be requested by Pods. Equivalent to the `limit` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The maximum amount of CPU cores that can be requested by Pods.
+    /// Equivalent to the `limit` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max: Option<String>,
-    /// The minimal amount of CPU cores that Pods need to run. Equivalent to the `request` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The minimal amount of CPU cores that Pods need to run.
+    /// Equivalent to the `request` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub min: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NifiClusterNodesConfigResourcesMemory {
-    /// The maximum amount of memory that should be available to the Pod. Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),> which means these suffixes are supported: E, P, T, G, M, k. You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki. For example, the following represent roughly the same value: `128974848, 129e6, 129M,  128974848000m, 123Mi`
+    /// The maximum amount of memory that should be available to the Pod.
+    /// Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),>
+    /// which means these suffixes are supported: E, P, T, G, M, k.
+    /// You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki.
+    /// For example, the following represent roughly the same value:
+    /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<String>,
     /// Additional options that can be specified.
@@ -506,7 +645,8 @@ pub struct NifiClusterNodesConfigResourcesMemoryRuntimeLimits {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NifiClusterNodesConfigResourcesStorage {
-    /// [The Content Repository](<https://nifi.apache.org/docs/nifi-docs/html/nifi-in-depth.html#content-repository)> is simply a place in local storage where the content of all FlowFiles exists and it is typically the largest of the Repositories.
+    /// [The Content Repository](<https://nifi.apache.org/docs/nifi-docs/html/nifi-in-depth.html#content-repository)>
+    /// is simply a place in local storage where the content of all FlowFiles exists and it is typically the largest of the Repositories.
     /// 
     /// Default size: 4GB
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentRepo")]
@@ -514,12 +654,16 @@ pub struct NifiClusterNodesConfigResourcesStorage {
     /// Default size: 1GB
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "databaseRepo")]
     pub database_repo: Option<NifiClusterNodesConfigResourcesStorageDatabaseRepo>,
-    /// [The FlowFile Repository](<https://nifi.apache.org/docs/nifi-docs/html/nifi-in-depth.html#flowfile-repository)> is where NiFi keeps track of the state and metadata of FlowFiles as they traverse the data flow. The repository ensures durability, reliability, and recoverability of data in case of system failures or interruptions.
+    /// [The FlowFile Repository](<https://nifi.apache.org/docs/nifi-docs/html/nifi-in-depth.html#flowfile-repository)>
+    /// is where NiFi keeps track of the state and metadata of FlowFiles as they traverse the data flow.
+    /// The repository ensures durability, reliability, and recoverability of data in case of system failures or interruptions.
     /// 
     /// Default size: 1GB
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flowfileRepo")]
     pub flowfile_repo: Option<NifiClusterNodesConfigResourcesStorageFlowfileRepo>,
-    /// [The Provenance Repository](<https://nifi.apache.org/docs/nifi-docs/html/nifi-in-depth.html#provenance-repository)> is where the history of each FlowFile is stored. This history is used to provide the Data Lineage (also known as the Chain of Custody) of each piece of data.
+    /// [The Provenance Repository](<https://nifi.apache.org/docs/nifi-docs/html/nifi-in-depth.html#provenance-repository)>
+    /// is where the history of each FlowFile is stored.
+    /// This history is used to provide the Data Lineage (also known as the Chain of Custody) of each piece of data.
     /// 
     /// Default size: 2GB
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "provenanceRepo")]
@@ -529,7 +673,8 @@ pub struct NifiClusterNodesConfigResourcesStorage {
     pub state_repo: Option<NifiClusterNodesConfigResourcesStorageStateRepo>,
 }
 
-/// [The Content Repository](<https://nifi.apache.org/docs/nifi-docs/html/nifi-in-depth.html#content-repository)> is simply a place in local storage where the content of all FlowFiles exists and it is typically the largest of the Repositories.
+/// [The Content Repository](<https://nifi.apache.org/docs/nifi-docs/html/nifi-in-depth.html#content-repository)>
+/// is simply a place in local storage where the content of all FlowFiles exists and it is typically the largest of the Repositories.
 /// 
 /// Default size: 4GB
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -675,7 +820,9 @@ pub struct NifiClusterNodesConfigResourcesStorageDatabaseRepoSelectorsMatchExpre
     pub values: Option<Vec<String>>,
 }
 
-/// [The FlowFile Repository](<https://nifi.apache.org/docs/nifi-docs/html/nifi-in-depth.html#flowfile-repository)> is where NiFi keeps track of the state and metadata of FlowFiles as they traverse the data flow. The repository ensures durability, reliability, and recoverability of data in case of system failures or interruptions.
+/// [The FlowFile Repository](<https://nifi.apache.org/docs/nifi-docs/html/nifi-in-depth.html#flowfile-repository)>
+/// is where NiFi keeps track of the state and metadata of FlowFiles as they traverse the data flow.
+/// The repository ensures durability, reliability, and recoverability of data in case of system failures or interruptions.
 /// 
 /// Default size: 1GB
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -749,7 +896,9 @@ pub struct NifiClusterNodesConfigResourcesStorageFlowfileRepoSelectorsMatchExpre
     pub values: Option<Vec<String>>,
 }
 
-/// [The Provenance Repository](<https://nifi.apache.org/docs/nifi-docs/html/nifi-in-depth.html#provenance-repository)> is where the history of each FlowFile is stored. This history is used to provide the Data Lineage (also known as the Chain of Custody) of each piece of data.
+/// [The Provenance Repository](<https://nifi.apache.org/docs/nifi-docs/html/nifi-in-depth.html#provenance-repository)>
+/// is where the history of each FlowFile is stored.
+/// This history is used to provide the Data Lineage (also known as the Chain of Custody) of each piece of data.
 /// 
 /// Default size: 2GB
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -895,7 +1044,9 @@ pub struct NifiClusterNodesConfigResourcesStorageStateRepoSelectorsMatchExpressi
     pub values: Option<Vec<String>>,
 }
 
-/// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+/// Allows overriding JVM arguments.
+/// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+/// for details on the usage.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NifiClusterNodesJvmArgumentOverrides {
     /// JVM arguments to be added
@@ -916,24 +1067,32 @@ pub struct NifiClusterNodesRoleConfig {
     pub listener_class: Option<String>,
     /// This struct is used to configure:
     /// 
-    /// 1. If PodDisruptionBudgets are created by the operator 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
+    /// 1. If PodDisruptionBudgets are created by the operator
+    /// 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
     /// 
-    /// Learn more in the [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
+    /// Learn more in the
+    /// [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podDisruptionBudget")]
     pub pod_disruption_budget: Option<NifiClusterNodesRoleConfigPodDisruptionBudget>,
 }
 
 /// This struct is used to configure:
 /// 
-/// 1. If PodDisruptionBudgets are created by the operator 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
+/// 1. If PodDisruptionBudgets are created by the operator
+/// 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
 /// 
-/// Learn more in the [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
+/// Learn more in the
+/// [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NifiClusterNodesRoleConfigPodDisruptionBudget {
-    /// Whether a PodDisruptionBudget should be written out for this role. Disabling this enables you to specify your own - custom - one. Defaults to true.
+    /// Whether a PodDisruptionBudget should be written out for this role.
+    /// Disabling this enables you to specify your own - custom - one.
+    /// Defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    /// The number of Pods that are allowed to be down because of voluntary disruptions. If you don't explicitly set this, the operator will use a sane default based upon knowledge about the individual product.
+    /// The number of Pods that are allowed to be down because of voluntary disruptions.
+    /// If you don't explicitly set this, the operator will use a sane default based
+    /// upon knowledge about the individual product.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<u16>,
 }
@@ -944,16 +1103,32 @@ pub struct NifiClusterNodesRoleGroups {
     pub cli_overrides: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<NifiClusterNodesRoleGroupsConfig>,
-    /// The `configOverrides` can be used to configure properties in product config files that are not exposed in the CRD. Read the [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)> and consult the operator specific usage guide documentation for details on the available config files and settings for the specific product.
+    /// The `configOverrides` can be used to configure properties in product config files
+    /// that are not exposed in the CRD. Read the
+    /// [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)>
+    /// and consult the operator specific usage guide documentation for details on the
+    /// available config files and settings for the specific product.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configOverrides")]
     pub config_overrides: Option<BTreeMap<String, BTreeMap<String, String>>>,
-    /// `envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)> for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available.
+    /// `envOverrides` configure environment variables to be set in the Pods.
+    /// It is a map from strings to strings - environment variables and the value to set.
+    /// Read the
+    /// [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)>
+    /// for more information and consult the operator specific usage guide to find out about
+    /// the product specific environment variables that are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envOverrides")]
     pub env_overrides: Option<BTreeMap<String, String>>,
-    /// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+    /// Allows overriding JVM arguments.
+    /// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+    /// for details on the usage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
     pub jvm_argument_overrides: Option<NifiClusterNodesRoleGroupsJvmArgumentOverrides>,
-    /// In the `podOverrides` property you can define a [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)> to override any property that can be set on a Kubernetes Pod. Read the [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)> for more information.
+    /// In the `podOverrides` property you can define a
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// to override any property that can be set on a Kubernetes Pod.
+    /// Read the
+    /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
+    /// for more information.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podOverrides")]
     pub pod_overrides: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -962,7 +1137,8 @@ pub struct NifiClusterNodesRoleGroups {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NifiClusterNodesRoleGroupsConfig {
-    /// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+    /// These configuration settings control
+    /// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<NifiClusterNodesRoleGroupsConfigAffinity>,
     /// Time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Consult the operator documentation for details.
@@ -971,15 +1147,19 @@ pub struct NifiClusterNodesRoleGroupsConfig {
     /// Logging configuration, learn more in the [logging concept documentation](<https://docs.stackable.tech/home/nightly/concepts/logging).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<NifiClusterNodesRoleGroupsConfigLogging>,
-    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`. Please note that this can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
+    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`.
+    /// Please note that this can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestedSecretLifetime")]
     pub requested_secret_lifetime: Option<String>,
-    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage. The default CPU request and limit are 500m and 2000m respectively. The default memory limit is 4GB.
+    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage.
+    /// The default CPU request and limit are 500m and 2000m respectively.
+    /// The default memory limit is 4GB.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<NifiClusterNodesRoleGroupsConfigResources>,
 }
 
-/// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+/// These configuration settings control
+/// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NifiClusterNodesRoleGroupsConfigAffinity {
     /// Same as the `spec.affinity.nodeAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
@@ -1013,7 +1193,7 @@ pub struct NifiClusterNodesRoleGroupsConfigLoggingContainers {
     /// Configuration for the console appender
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub console: Option<NifiClusterNodesRoleGroupsConfigLoggingContainersConsole>,
-    /// Custom log configuration provided in a ConfigMap
+    /// Log configuration provided in a ConfigMap
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom: Option<NifiClusterNodesRoleGroupsConfigLoggingContainersCustom>,
     /// Configuration for the file appender
@@ -1027,7 +1207,8 @@ pub struct NifiClusterNodesRoleGroupsConfigLoggingContainers {
 /// Configuration for the console appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NifiClusterNodesRoleGroupsConfigLoggingContainersConsole {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<NifiClusterNodesRoleGroupsConfigLoggingContainersConsoleLevel>,
 }
@@ -1051,7 +1232,7 @@ pub enum NifiClusterNodesRoleGroupsConfigLoggingContainersConsoleLevel {
     None,
 }
 
-/// Custom log configuration provided in a ConfigMap
+/// Log configuration provided in a ConfigMap
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NifiClusterNodesRoleGroupsConfigLoggingContainersCustom {
     /// ConfigMap containing the log configuration files
@@ -1062,7 +1243,8 @@ pub struct NifiClusterNodesRoleGroupsConfigLoggingContainersCustom {
 /// Configuration for the file appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NifiClusterNodesRoleGroupsConfigLoggingContainersFile {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<NifiClusterNodesRoleGroupsConfigLoggingContainersFileLevel>,
 }
@@ -1089,7 +1271,8 @@ pub enum NifiClusterNodesRoleGroupsConfigLoggingContainersFileLevel {
 /// Configuration per logger
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NifiClusterNodesRoleGroupsConfigLoggingContainersLoggers {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<NifiClusterNodesRoleGroupsConfigLoggingContainersLoggersLevel>,
 }
@@ -1113,7 +1296,9 @@ pub enum NifiClusterNodesRoleGroupsConfigLoggingContainersLoggersLevel {
     None,
 }
 
-/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage. The default CPU request and limit are 500m and 2000m respectively. The default memory limit is 4GB.
+/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage.
+/// The default CPU request and limit are 500m and 2000m respectively.
+/// The default memory limit is 4GB.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NifiClusterNodesRoleGroupsConfigResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1126,17 +1311,28 @@ pub struct NifiClusterNodesRoleGroupsConfigResources {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NifiClusterNodesRoleGroupsConfigResourcesCpu {
-    /// The maximum amount of CPU cores that can be requested by Pods. Equivalent to the `limit` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The maximum amount of CPU cores that can be requested by Pods.
+    /// Equivalent to the `limit` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max: Option<String>,
-    /// The minimal amount of CPU cores that Pods need to run. Equivalent to the `request` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The minimal amount of CPU cores that Pods need to run.
+    /// Equivalent to the `request` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub min: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NifiClusterNodesRoleGroupsConfigResourcesMemory {
-    /// The maximum amount of memory that should be available to the Pod. Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),> which means these suffixes are supported: E, P, T, G, M, k. You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki. For example, the following represent roughly the same value: `128974848, 129e6, 129M,  128974848000m, 123Mi`
+    /// The maximum amount of memory that should be available to the Pod.
+    /// Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),>
+    /// which means these suffixes are supported: E, P, T, G, M, k.
+    /// You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki.
+    /// For example, the following represent roughly the same value:
+    /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<String>,
     /// Additional options that can be specified.
@@ -1151,7 +1347,8 @@ pub struct NifiClusterNodesRoleGroupsConfigResourcesMemoryRuntimeLimits {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NifiClusterNodesRoleGroupsConfigResourcesStorage {
-    /// [The Content Repository](<https://nifi.apache.org/docs/nifi-docs/html/nifi-in-depth.html#content-repository)> is simply a place in local storage where the content of all FlowFiles exists and it is typically the largest of the Repositories.
+    /// [The Content Repository](<https://nifi.apache.org/docs/nifi-docs/html/nifi-in-depth.html#content-repository)>
+    /// is simply a place in local storage where the content of all FlowFiles exists and it is typically the largest of the Repositories.
     /// 
     /// Default size: 4GB
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentRepo")]
@@ -1159,12 +1356,16 @@ pub struct NifiClusterNodesRoleGroupsConfigResourcesStorage {
     /// Default size: 1GB
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "databaseRepo")]
     pub database_repo: Option<NifiClusterNodesRoleGroupsConfigResourcesStorageDatabaseRepo>,
-    /// [The FlowFile Repository](<https://nifi.apache.org/docs/nifi-docs/html/nifi-in-depth.html#flowfile-repository)> is where NiFi keeps track of the state and metadata of FlowFiles as they traverse the data flow. The repository ensures durability, reliability, and recoverability of data in case of system failures or interruptions.
+    /// [The FlowFile Repository](<https://nifi.apache.org/docs/nifi-docs/html/nifi-in-depth.html#flowfile-repository)>
+    /// is where NiFi keeps track of the state and metadata of FlowFiles as they traverse the data flow.
+    /// The repository ensures durability, reliability, and recoverability of data in case of system failures or interruptions.
     /// 
     /// Default size: 1GB
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flowfileRepo")]
     pub flowfile_repo: Option<NifiClusterNodesRoleGroupsConfigResourcesStorageFlowfileRepo>,
-    /// [The Provenance Repository](<https://nifi.apache.org/docs/nifi-docs/html/nifi-in-depth.html#provenance-repository)> is where the history of each FlowFile is stored. This history is used to provide the Data Lineage (also known as the Chain of Custody) of each piece of data.
+    /// [The Provenance Repository](<https://nifi.apache.org/docs/nifi-docs/html/nifi-in-depth.html#provenance-repository)>
+    /// is where the history of each FlowFile is stored.
+    /// This history is used to provide the Data Lineage (also known as the Chain of Custody) of each piece of data.
     /// 
     /// Default size: 2GB
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "provenanceRepo")]
@@ -1174,7 +1375,8 @@ pub struct NifiClusterNodesRoleGroupsConfigResourcesStorage {
     pub state_repo: Option<NifiClusterNodesRoleGroupsConfigResourcesStorageStateRepo>,
 }
 
-/// [The Content Repository](<https://nifi.apache.org/docs/nifi-docs/html/nifi-in-depth.html#content-repository)> is simply a place in local storage where the content of all FlowFiles exists and it is typically the largest of the Repositories.
+/// [The Content Repository](<https://nifi.apache.org/docs/nifi-docs/html/nifi-in-depth.html#content-repository)>
+/// is simply a place in local storage where the content of all FlowFiles exists and it is typically the largest of the Repositories.
 /// 
 /// Default size: 4GB
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1320,7 +1522,9 @@ pub struct NifiClusterNodesRoleGroupsConfigResourcesStorageDatabaseRepoSelectors
     pub values: Option<Vec<String>>,
 }
 
-/// [The FlowFile Repository](<https://nifi.apache.org/docs/nifi-docs/html/nifi-in-depth.html#flowfile-repository)> is where NiFi keeps track of the state and metadata of FlowFiles as they traverse the data flow. The repository ensures durability, reliability, and recoverability of data in case of system failures or interruptions.
+/// [The FlowFile Repository](<https://nifi.apache.org/docs/nifi-docs/html/nifi-in-depth.html#flowfile-repository)>
+/// is where NiFi keeps track of the state and metadata of FlowFiles as they traverse the data flow.
+/// The repository ensures durability, reliability, and recoverability of data in case of system failures or interruptions.
 /// 
 /// Default size: 1GB
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1394,7 +1598,9 @@ pub struct NifiClusterNodesRoleGroupsConfigResourcesStorageFlowfileRepoSelectors
     pub values: Option<Vec<String>>,
 }
 
-/// [The Provenance Repository](<https://nifi.apache.org/docs/nifi-docs/html/nifi-in-depth.html#provenance-repository)> is where the history of each FlowFile is stored. This history is used to provide the Data Lineage (also known as the Chain of Custody) of each piece of data.
+/// [The Provenance Repository](<https://nifi.apache.org/docs/nifi-docs/html/nifi-in-depth.html#provenance-repository)>
+/// is where the history of each FlowFile is stored.
+/// This history is used to provide the Data Lineage (also known as the Chain of Custody) of each piece of data.
 /// 
 /// Default size: 2GB
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1540,7 +1746,9 @@ pub struct NifiClusterNodesRoleGroupsConfigResourcesStorageStateRepoSelectorsMat
     pub values: Option<Vec<String>>,
 }
 
-/// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+/// Allows overriding JVM arguments.
+/// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+/// for details on the usage.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NifiClusterNodesRoleGroupsJvmArgumentOverrides {
     /// JVM arguments to be added
