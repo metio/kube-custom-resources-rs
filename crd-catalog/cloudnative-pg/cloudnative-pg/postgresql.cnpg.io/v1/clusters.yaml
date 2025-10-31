@@ -1050,7 +1050,7 @@ spec:
                           description: "This option sets the locale provider for databases created in the new cluster.\nAvailable from PostgreSQL 16."
                           type: "string"
                         options:
-                          description: "The list of options that must be passed to initdb when creating the cluster.\nDeprecated: This could lead to inconsistent configurations,\nplease use the explicit provided parameters instead.\nIf defined, explicit values will be ignored."
+                          description: "The list of options that must be passed to initdb when creating the cluster.\n\nDeprecated: This could lead to inconsistent configurations,\nplease use the explicit provided parameters instead.\nIf defined, explicit values will be ignored."
                           items:
                             type: "string"
                           type: "array"
@@ -2416,6 +2416,9 @@ spec:
                       default: false
                       description: "Enable or disable the `PodMonitor`\n\nDeprecated: This feature will be removed in an upcoming release. If\nyou need this functionality, you can create a PodMonitor manually."
                       type: "boolean"
+                    metricsQueriesTTL:
+                      description: "The interval during which metrics computed from queries are considered current.\nOnce it is exceeded, a new scrape will trigger a rerun\nof the queries.\nIf not set, defaults to 30 seconds, in line with Prometheus scraping defaults.\nSetting this to zero disables the caching mechanism and can cause heavy load on the PostgreSQL server."
+                      type: "string"
                     podMonitorMetricRelabelings:
                       description: "The list of metric relabelings for the `PodMonitor`. Applied to samples before ingestion.\n\nDeprecated: This feature will be removed in an upcoming release. If\nyou need this functionality, you can create a PodMonitor manually."
                       items:

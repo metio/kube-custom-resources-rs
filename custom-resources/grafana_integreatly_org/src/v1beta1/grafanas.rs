@@ -82,6 +82,10 @@ pub struct GrafanaClient {
     /// TLS Configuration used to talk with the grafana instance.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<GrafanaClientTls>,
+    /// Use Kubernetes Serviceaccount as authentication
+    /// Requires configuring [auth.jwt] in the instance
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useKubeAuth")]
+    pub use_kube_auth: Option<bool>,
 }
 
 /// TLS Configuration used to talk with the grafana instance.

@@ -314,8 +314,18 @@ pub struct PoolerPgbouncer {
     /// query. In case it is specified, also an AuthQuery
     /// (e.g. "SELECT usename, passwd FROM pg_catalog.pg_shadow WHERE usename=$1")
     /// has to be specified and no automatic CNPG Cluster integration will be triggered.
+    /// 
+    /// Deprecated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authQuerySecret")]
     pub auth_query_secret: Option<PoolerPgbouncerAuthQuerySecret>,
+    /// ClientCASecret provides PgBouncer’s client_tls_ca_file, the root
+    /// CA for validating client certificates
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCASecret")]
+    pub client_ca_secret: Option<PoolerPgbouncerClientCaSecret>,
+    /// ClientTLSSecret provides PgBouncer’s client_tls_key_file (private key)
+    /// and client_tls_cert_file (certificate) used to accept client connections
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientTLSSecret")]
+    pub client_tls_secret: Option<PoolerPgbouncerClientTlsSecret>,
     /// Additional parameters to be passed to PgBouncer - please check
     /// the CNPG documentation for a list of options you can configure
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -333,14 +343,41 @@ pub struct PoolerPgbouncer {
     /// The pool mode. Default: `session`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "poolMode")]
     pub pool_mode: Option<PoolerPgbouncerPoolMode>,
+    /// ServerCASecret provides PgBouncer’s server_tls_ca_file, the root
+    /// CA for validating PostgreSQL certificates
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverCASecret")]
+    pub server_ca_secret: Option<PoolerPgbouncerServerCaSecret>,
+    /// ServerTLSSecret, when pointing to a TLS secret, provides pgbouncer's
+    /// `server_tls_key_file` and `server_tls_cert_file`, used when
+    /// authenticating against PostgreSQL.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverTLSSecret")]
+    pub server_tls_secret: Option<PoolerPgbouncerServerTlsSecret>,
 }
 
 /// The credentials of the user that need to be used for the authentication
 /// query. In case it is specified, also an AuthQuery
 /// (e.g. "SELECT usename, passwd FROM pg_catalog.pg_shadow WHERE usename=$1")
 /// has to be specified and no automatic CNPG Cluster integration will be triggered.
+/// 
+/// Deprecated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PoolerPgbouncerAuthQuerySecret {
+    /// Name of the referent.
+    pub name: String,
+}
+
+/// ClientCASecret provides PgBouncer’s client_tls_ca_file, the root
+/// CA for validating client certificates
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PoolerPgbouncerClientCaSecret {
+    /// Name of the referent.
+    pub name: String,
+}
+
+/// ClientTLSSecret provides PgBouncer’s client_tls_key_file (private key)
+/// and client_tls_cert_file (certificate) used to accept client connections
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PoolerPgbouncerClientTlsSecret {
     /// Name of the referent.
     pub name: String,
 }
@@ -352,6 +389,23 @@ pub enum PoolerPgbouncerPoolMode {
     Session,
     #[serde(rename = "transaction")]
     Transaction,
+}
+
+/// ServerCASecret provides PgBouncer’s server_tls_ca_file, the root
+/// CA for validating PostgreSQL certificates
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PoolerPgbouncerServerCaSecret {
+    /// Name of the referent.
+    pub name: String,
+}
+
+/// ServerTLSSecret, when pointing to a TLS secret, provides pgbouncer's
+/// `server_tls_key_file` and `server_tls_cert_file`, used when
+/// authenticating against PostgreSQL.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PoolerPgbouncerServerTlsSecret {
+    /// Name of the referent.
+    pub name: String,
 }
 
 /// Template for the Service to be created
@@ -7959,6 +8013,9 @@ pub struct PoolerStatusSecrets {
     /// The client CA secret version
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCA")]
     pub client_ca: Option<PoolerStatusSecretsClientCa>,
+    /// The client TLS secret version
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientTLS")]
+    pub client_tls: Option<PoolerStatusSecretsClientTls>,
     /// The version of the secrets used by PgBouncer
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pgBouncerSecrets")]
     pub pg_bouncer_secrets: Option<PoolerStatusSecretsPgBouncerSecrets>,
@@ -7973,6 +8030,17 @@ pub struct PoolerStatusSecrets {
 /// The client CA secret version
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PoolerStatusSecretsClientCa {
+    /// The name of the secret
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// The ResourceVersion of the secret
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub version: Option<String>,
+}
+
+/// The client TLS secret version
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PoolerStatusSecretsClientTls {
     /// The name of the secret
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,

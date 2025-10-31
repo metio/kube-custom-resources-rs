@@ -5051,30 +5051,36 @@ spec:
                         description: "topologyRequest defines the topology request for the PodSet."
                         properties:
                           podIndexLabel:
-                            description: "podIndexLabel indicates the name of the label indexing the pods.\nFor example, in the context of\n- kubernetes job this is: kubernetes.io/job-completion-index\n- JobSet: kubernetes.io/job-completion-index (inherited from Job)\n- Kubeflow: training.kubeflow.org/replica-index"
+                            description: "podIndexLabel indicates the name of the label indexing the pods.\nFor example, in the context of\n- kubernetes job this is: kubernetes.io/job-completion-index\n- JobSet: kubernetes.io/job-completion-index (inherited from Job)\n- Kubeflow: training.kubeflow.org/replica-index\n\tThis is limited to 317 characters."
+                            maxLength: 317
                             type: "string"
                           podSetGroupName:
                             description: "podSetGroupName indicates the name of the group of PodSets to which this PodSet belongs to.\nPodSets with the same `PodSetGroupName` should be assigned the same ResourceFlavor"
+                            maxLength: 256
                             type: "string"
                           podSetSliceRequiredTopology:
-                            description: "podSetSliceRequiredTopology indicates the topology level required by the PodSet slice, as\nindicated by the `kueue.x-k8s.io/podset-slice-required-topology` annotation."
+                            description: "podSetSliceRequiredTopology indicates the topology level required by the PodSet slice, as\nindicated by the `kueue.x-k8s.io/podset-slice-required-topology` annotation.\n\nThis is limited to 63"
+                            maxLength: 63
                             type: "string"
                           podSetSliceSize:
                             description: "podSetSliceSize indicates the size of a subgroup of pods in a PodSet for which\nKueue finds a requested topology domain on a level defined\nin `kueue.x-k8s.io/podset-slice-required-topology` annotation."
                             format: "int32"
                             type: "integer"
                           preferred:
-                            description: "preferred indicates the topology level preferred by the PodSet, as\nindicated by the `kueue.x-k8s.io/podset-preferred-topology` PodSet\nannotation."
+                            description: "preferred indicates the topology level preferred by the PodSet, as\nindicated by the `kueue.x-k8s.io/podset-preferred-topology` PodSet\nannotation.\nThis is limited to 63 characters."
+                            maxLength: 63
                             type: "string"
                           required:
-                            description: "required indicates the topology level required by the PodSet, as\nindicated by the `kueue.x-k8s.io/podset-required-topology` PodSet\nannotation."
+                            description: "required indicates the topology level required by the PodSet, as\nindicated by the `kueue.x-k8s.io/podset-required-topology` PodSet\nannotation.\nThis is limited to 63 characters."
+                            maxLength: 63
                             type: "string"
                           subGroupCount:
                             description: "subGroupCount indicates the count of replicated Jobs (groups) within a PodSet.\nFor example, in the context of JobSet this value is read from jobset.sigs.k8s.io/replicatedjob-replicas."
                             format: "int32"
                             type: "integer"
                           subGroupIndexLabel:
-                            description: "subGroupIndexLabel indicates the name of the label indexing the instances of replicated Jobs (groups)\nwithin a PodSet. For example, in the context of JobSet this is jobset.sigs.k8s.io/job-index."
+                            description: "subGroupIndexLabel indicates the name of the label indexing the instances of replicated Jobs (groups)\nwithin a PodSet. For example, in the context of JobSet this is jobset.sigs.k8s.io/job-index.\n\tThis is limited to 317 characters."
+                            maxLength: 317
                             type: "string"
                           unconstrained:
                             description: "unconstrained indicates that Kueue has the freedom to schedule the PodSet within\nthe entire available capacity, without constraints on the compactness of the placement.\nThis is indicated by the `kueue.x-k8s.io/podset-unconstrained-topology` PodSet annotation."
@@ -5147,6 +5153,7 @@ spec:
                             type: "integer"
                           delayedTopologyRequest:
                             description: "delayedTopologyRequest indicates the topology assignment is delayed.\nTopology assignment might be delayed in case there is ProvisioningRequest\nAdmissionCheck used.\nKueue schedules the second pass of scheduling for each workload with at\nleast one PodSet which has delayedTopologyRequest=true and without\ntopologyAssignment."
+                            maxLength: 7
                             type: "string"
                           flavors:
                             additionalProperties:
@@ -5186,8 +5193,9 @@ spec:
                                     values:
                                       description: "values is an ordered list of node selector values describing a topology\ndomain. The values correspond to the consecutive topology levels, from\nthe highest to the lowest."
                                       items:
+                                        maxLength: 63
                                         type: "string"
-                                      maxItems: 8
+                                      maxItems: 16
                                       minItems: 1
                                       type: "array"
                                       x-kubernetes-list-type: "atomic"
@@ -5195,12 +5203,15 @@ spec:
                                     - "count"
                                     - "values"
                                   type: "object"
+                                maxItems: 100000
                                 type: "array"
+                                x-kubernetes-list-type: "atomic"
                               levels:
                                 description: "levels is an ordered list of keys denoting the levels of the assigned\ntopology (i.e. node label keys), from the highest to the lowest level of\nthe topology."
                                 items:
+                                  maxLength: 317
                                   type: "string"
-                                maxItems: 8
+                                maxItems: 16
                                 minItems: 1
                                 type: "array"
                                 x-kubernetes-list-type: "atomic"
@@ -5285,6 +5296,7 @@ spec:
                                 type: "object"
                               maxItems: 8
                               type: "array"
+                              x-kubernetes-list-type: "atomic"
                               x-kubernetes-validations:
                                 - message: "operator must be Exists when 'key' is empty, which means 'match all values and all keys'"
                                   rule: "self.all(x, !has(x.key) ? x.operator == 'Exists' : true)"
@@ -5323,9 +5335,10 @@ spec:
                   x-kubernetes-list-type: "map"
                 clusterName:
                   description: "clusterName is the name of the cluster where the workload is currently assigned.\n\nWith ElasticJobs, this field may also indicate the cluster where the original (old) workload\nwas assigned, providing placement context for new scaled-up workloads. This supports\naffinity or propagation policies across workload slices.\n\nThis field is reset after the Workload is evicted."
+                  maxLength: 256
                   type: "string"
                 conditions:
-                  description: "conditions hold the latest available observations of the Workload\ncurrent state.\n\nThe type of the condition could be:\n\n- Admitted: the Workload was admitted through a ClusterQueue.\n- Finished: the associated workload finished running (failed or succeeded).\n- PodsReady: at least `.spec.podSets[*].count` Pods are ready or have\nsucceeded."
+                  description: "conditions hold the latest available observations of the Workload\ncurrent state.\n\nThe type of the condition could be:\n\n- Admitted: the Workload was admitted through a ClusterQueue.\n- Finished: the associated workload finished running (failed or succeeded).\n- PodsReady: at least `.spec.podSets[*].count` Pods are ready or have\nsucceeded.\nconditions are limited to 16 items."
                   items:
                     description: "Condition contains details for one aspect of the current state of this API Resource."
                     properties:
@@ -5367,6 +5380,7 @@ spec:
                       - "status"
                       - "type"
                     type: "object"
+                  maxItems: 16
                   type: "array"
                   x-kubernetes-list-map-keys:
                     - "type"
@@ -5374,6 +5388,7 @@ spec:
                 nominatedClusterNames:
                   description: "nominatedClusterNames specifies the list of cluster names that have been nominated for scheduling.\nThis field is mutually exclusive with the `.status.clusterName` field, and is reset when\n`status.clusterName` is set.\nThis field is optional."
                   items:
+                    maxLength: 256
                     type: "string"
                   maxItems: 10
                   type: "array"
@@ -5465,6 +5480,7 @@ spec:
                           - "reason"
                           - "underlyingCause"
                         type: "object"
+                      maxItems: 256
                       type: "array"
                       x-kubernetes-list-map-keys:
                         - "reason"
@@ -5477,11 +5493,16 @@ spec:
                     properties:
                       name:
                         description: "name is the name of the unhealthy node."
+                        maxLength: 63
                         type: "string"
                     required:
                       - "name"
                     type: "object"
+                  maxItems: 8
                   type: "array"
+                  x-kubernetes-list-map-keys:
+                    - "name"
+                  x-kubernetes-list-type: "map"
               type: "object"
               x-kubernetes-validations:
                 - message: "clusterName is immutable once set"
@@ -5494,8 +5515,8 @@ spec:
               rule: "has(self.status) && has(self.status.conditions) && self.status.conditions.exists(c, c.type == 'QuotaReserved' && c.status == 'True') && has(self.status.admission) ? size(self.spec.podSets) == size(self.status.admission.podSetAssignments) : true"
             - message: "priorityClassSource is immutable while workload quota reserved"
               rule: "(has(oldSelf.status) && has(oldSelf.status.conditions) && oldSelf.status.conditions.exists(c, c.type == 'QuotaReserved' && c.status == 'True')) ? ((!has(self.spec.priorityClassSource) && !has(oldSelf.spec.priorityClassSource)) || (has(self.spec.priorityClassSource) && has(oldSelf.spec.priorityClassSource) && self.spec.priorityClassSource == oldSelf.spec.priorityClassSource) || (!has(self.spec.priorityClassSource) && has(oldSelf.spec.priorityClassSource) && oldSelf.spec.priorityClassSource.size() == 0) || (!has(oldSelf.spec.priorityClassSource) && has(self.spec.priorityClassSource) && self.spec.priorityClassSource.size() == 0)) : true"
-            - message: "priorityClassName is immutable while workload quota reserved"
-              rule: "(has(oldSelf.status) && has(oldSelf.status.conditions) && oldSelf.status.conditions.exists(c, c.type == 'QuotaReserved' && c.status == 'True') && has(oldSelf.spec.priorityClassName) && has(self.spec.priorityClassName)) ? (oldSelf.spec.priorityClassName == self.spec.priorityClassName) : true"
+            - message: "priorityClassName is immutable while workload quota reserved and priorityClassSource is not equal to kueue.x-k8s.io/workloadpriorityclass"
+              rule: "(has(oldSelf.status) && has(oldSelf.status.conditions) && oldSelf.status.conditions.exists(c, c.type == 'QuotaReserved' && c.status == 'True') && (self.spec.priorityClassSource != 'kueue.x-k8s.io/workloadpriorityclass') && has(oldSelf.spec.priorityClassName) && has(self.spec.priorityClassName)) ? (oldSelf.spec.priorityClassName == self.spec.priorityClassName) : true"
             - message: "queueName is immutable while workload quota reserved"
               rule: "(has(oldSelf.status) && has(oldSelf.status.conditions) && oldSelf.status.conditions.exists(c, c.type == 'QuotaReserved' && c.status == 'True')) && (has(self.status) && has(self.status.conditions) && self.status.conditions.exists(c, c.type == 'QuotaReserved' && c.status == 'True')) && has(oldSelf.spec.queueName) && has(self.spec.queueName) ? oldSelf.spec.queueName == self.spec.queueName : true"
             - message: "maximumExecutionTimeSeconds is immutable while workload quota reserved"

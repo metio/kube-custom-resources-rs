@@ -16,7 +16,7 @@ spec:
     - name: "v1alpha1"
       schema:
         openAPIV3Schema:
-          description: "TLSOption is the CRD implementation of a Traefik TLS Option, allowing to configure some parameters of the TLS connection.\nMore info: https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/http/tls/tls-certificates/#certificates-stores#tls-options"
+          description: "TLSOption is the CRD implementation of a Traefik TLS Option, allowing to configure some parameters of the TLS connection.\nMore info: https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/http/tls/tls-certificates/#certificates-stores#tls-options"
           properties:
             apiVersion:
               description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
@@ -30,12 +30,12 @@ spec:
               description: "TLSOptionSpec defines the desired state of a TLSOption."
               properties:
                 alpnProtocols:
-                  description: "ALPNProtocols defines the list of supported application level protocols for the TLS handshake, in order of preference.\nMore info: https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/http/tls/tls-certificates/#certificates-stores#alpn-protocols"
+                  description: "ALPNProtocols defines the list of supported application level protocols for the TLS handshake, in order of preference.\nMore info: https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/http/tls/tls-certificates/#certificates-stores#alpn-protocols"
                   items:
                     type: "string"
                   type: "array"
                 cipherSuites:
-                  description: "CipherSuites defines the list of supported cipher suites for TLS versions up to TLS 1.2.\nMore info: https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/http/tls/tls-certificates/#certificates-stores#cipher-suites"
+                  description: "CipherSuites defines the list of supported cipher suites for TLS versions up to TLS 1.2.\nMore info: https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/http/tls/tls-certificates/#certificates-stores#cipher-suites"
                   items:
                     type: "string"
                   type: "array"
@@ -58,7 +58,7 @@ spec:
                       type: "array"
                   type: "object"
                 curvePreferences:
-                  description: "CurvePreferences defines the preferred elliptic curves.\nMore info: https://doc.traefik.io/traefik/v3.5/reference/routing-configuration/http/tls/tls-certificates/#certificates-stores#curve-preferences"
+                  description: "CurvePreferences defines the preferred elliptic curves.\nMore info: https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/http/tls/tls-certificates/#certificates-stores#curve-preferences"
                   items:
                     type: "string"
                   type: "array"

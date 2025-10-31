@@ -89,6 +89,9 @@ pub struct DataUploadStatus {
     /// DataMoverResult stores data-mover-specific information as a result of the DataUpload.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataMoverResult")]
     pub data_mover_result: Option<BTreeMap<String, String>>,
+    /// IncrementalBytes holds the number of bytes new or changed since the last backup
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "incrementalBytes")]
+    pub incremental_bytes: Option<i64>,
     /// Message is a message about the DataUpload's status.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,

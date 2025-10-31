@@ -58,6 +58,7 @@ spec:
                         maxItems: 64
                         minItems: 1
                         type: "array"
+                        x-kubernetes-list-type: "atomic"
                       flavors:
                         description: "flavors is the list of flavors that provide the resources of this group.\nTypically, different flavors represent different hardware models\n(e.g., gpu models, cpu architectures) or pricing models (on-demand vs spot\ncpus).\nEach flavor MUST list all the resources listed for this group in the same\norder as the .resources field.\nThe list cannot be empty and it can contain up to 64 flavors, with a max of\n256 total flavors across all resource groups in the ClusterQueue."
                         items:

@@ -276,6 +276,8 @@ pub struct JobFlowFlowsPatchJobSpecTasksTemplateSpec {
     pub host_users: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostnameOverride")]
+    pub hostname_override: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<JobFlowFlowsPatchJobSpecTasksTemplateSpecImagePullSecrets>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
@@ -659,6 +661,8 @@ pub struct JobFlowFlowsPatchJobSpecTasksTemplateSpecContainers {
     pub resources: Option<JobFlowFlowsPatchJobSpecTasksTemplateSpecContainersResources>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicyRules")]
+    pub restart_policy_rules: Option<Vec<JobFlowFlowsPatchJobSpecTasksTemplateSpecContainersRestartPolicyRules>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<JobFlowFlowsPatchJobSpecTasksTemplateSpecContainersSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
@@ -696,6 +700,8 @@ pub struct JobFlowFlowsPatchJobSpecTasksTemplateSpecContainersEnvValueFrom {
     pub config_map_key_ref: Option<JobFlowFlowsPatchJobSpecTasksTemplateSpecContainersEnvValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<JobFlowFlowsPatchJobSpecTasksTemplateSpecContainersEnvValueFromFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileKeyRef")]
+    pub file_key_ref: Option<JobFlowFlowsPatchJobSpecTasksTemplateSpecContainersEnvValueFromFileKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<JobFlowFlowsPatchJobSpecTasksTemplateSpecContainersEnvValueFromResourceFieldRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
@@ -717,6 +723,16 @@ pub struct JobFlowFlowsPatchJobSpecTasksTemplateSpecContainersEnvValueFromFieldR
     pub api_version: Option<String>,
     #[serde(rename = "fieldPath")]
     pub field_path: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobFlowFlowsPatchJobSpecTasksTemplateSpecContainersEnvValueFromFileKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    pub path: String,
+    #[serde(rename = "volumeName")]
+    pub volume_name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1037,6 +1053,20 @@ pub struct JobFlowFlowsPatchJobSpecTasksTemplateSpecContainersResourcesClaims {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobFlowFlowsPatchJobSpecTasksTemplateSpecContainersRestartPolicyRules {
+    pub action: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exitCodes")]
+    pub exit_codes: Option<JobFlowFlowsPatchJobSpecTasksTemplateSpecContainersRestartPolicyRulesExitCodes>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobFlowFlowsPatchJobSpecTasksTemplateSpecContainersRestartPolicyRulesExitCodes {
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<i64>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobFlowFlowsPatchJobSpecTasksTemplateSpecContainersSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
@@ -1246,6 +1276,8 @@ pub struct JobFlowFlowsPatchJobSpecTasksTemplateSpecEphemeralContainers {
     pub resources: Option<JobFlowFlowsPatchJobSpecTasksTemplateSpecEphemeralContainersResources>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicyRules")]
+    pub restart_policy_rules: Option<Vec<JobFlowFlowsPatchJobSpecTasksTemplateSpecEphemeralContainersRestartPolicyRules>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<JobFlowFlowsPatchJobSpecTasksTemplateSpecEphemeralContainersSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
@@ -1285,6 +1317,8 @@ pub struct JobFlowFlowsPatchJobSpecTasksTemplateSpecEphemeralContainersEnvValueF
     pub config_map_key_ref: Option<JobFlowFlowsPatchJobSpecTasksTemplateSpecEphemeralContainersEnvValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<JobFlowFlowsPatchJobSpecTasksTemplateSpecEphemeralContainersEnvValueFromFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileKeyRef")]
+    pub file_key_ref: Option<JobFlowFlowsPatchJobSpecTasksTemplateSpecEphemeralContainersEnvValueFromFileKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<JobFlowFlowsPatchJobSpecTasksTemplateSpecEphemeralContainersEnvValueFromResourceFieldRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
@@ -1306,6 +1340,16 @@ pub struct JobFlowFlowsPatchJobSpecTasksTemplateSpecEphemeralContainersEnvValueF
     pub api_version: Option<String>,
     #[serde(rename = "fieldPath")]
     pub field_path: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobFlowFlowsPatchJobSpecTasksTemplateSpecEphemeralContainersEnvValueFromFileKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    pub path: String,
+    #[serde(rename = "volumeName")]
+    pub volume_name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1626,6 +1670,20 @@ pub struct JobFlowFlowsPatchJobSpecTasksTemplateSpecEphemeralContainersResources
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobFlowFlowsPatchJobSpecTasksTemplateSpecEphemeralContainersRestartPolicyRules {
+    pub action: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exitCodes")]
+    pub exit_codes: Option<JobFlowFlowsPatchJobSpecTasksTemplateSpecEphemeralContainersRestartPolicyRulesExitCodes>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobFlowFlowsPatchJobSpecTasksTemplateSpecEphemeralContainersRestartPolicyRulesExitCodes {
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<i64>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobFlowFlowsPatchJobSpecTasksTemplateSpecEphemeralContainersSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
@@ -1830,6 +1888,8 @@ pub struct JobFlowFlowsPatchJobSpecTasksTemplateSpecInitContainers {
     pub resources: Option<JobFlowFlowsPatchJobSpecTasksTemplateSpecInitContainersResources>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicyRules")]
+    pub restart_policy_rules: Option<Vec<JobFlowFlowsPatchJobSpecTasksTemplateSpecInitContainersRestartPolicyRules>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<JobFlowFlowsPatchJobSpecTasksTemplateSpecInitContainersSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
@@ -1867,6 +1927,8 @@ pub struct JobFlowFlowsPatchJobSpecTasksTemplateSpecInitContainersEnvValueFrom {
     pub config_map_key_ref: Option<JobFlowFlowsPatchJobSpecTasksTemplateSpecInitContainersEnvValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<JobFlowFlowsPatchJobSpecTasksTemplateSpecInitContainersEnvValueFromFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileKeyRef")]
+    pub file_key_ref: Option<JobFlowFlowsPatchJobSpecTasksTemplateSpecInitContainersEnvValueFromFileKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<JobFlowFlowsPatchJobSpecTasksTemplateSpecInitContainersEnvValueFromResourceFieldRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
@@ -1888,6 +1950,16 @@ pub struct JobFlowFlowsPatchJobSpecTasksTemplateSpecInitContainersEnvValueFromFi
     pub api_version: Option<String>,
     #[serde(rename = "fieldPath")]
     pub field_path: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobFlowFlowsPatchJobSpecTasksTemplateSpecInitContainersEnvValueFromFileKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    pub path: String,
+    #[serde(rename = "volumeName")]
+    pub volume_name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2205,6 +2277,20 @@ pub struct JobFlowFlowsPatchJobSpecTasksTemplateSpecInitContainersResourcesClaim
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub request: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobFlowFlowsPatchJobSpecTasksTemplateSpecInitContainersRestartPolicyRules {
+    pub action: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exitCodes")]
+    pub exit_codes: Option<JobFlowFlowsPatchJobSpecTasksTemplateSpecInitContainersRestartPolicyRulesExitCodes>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobFlowFlowsPatchJobSpecTasksTemplateSpecInitContainersRestartPolicyRulesExitCodes {
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<i64>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3019,6 +3105,8 @@ pub struct JobFlowFlowsPatchJobSpecTasksTemplateSpecVolumesProjectedSources {
     pub config_map: Option<JobFlowFlowsPatchJobSpecTasksTemplateSpecVolumesProjectedSourcesConfigMap>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<JobFlowFlowsPatchJobSpecTasksTemplateSpecVolumesProjectedSourcesDownwardApi>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podCertificate")]
+    pub pod_certificate: Option<JobFlowFlowsPatchJobSpecTasksTemplateSpecVolumesProjectedSourcesPodCertificate>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<JobFlowFlowsPatchJobSpecTasksTemplateSpecVolumesProjectedSourcesSecret>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
@@ -3104,6 +3192,22 @@ pub struct JobFlowFlowsPatchJobSpecTasksTemplateSpecVolumesProjectedSourcesDownw
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub divisor: Option<IntOrString>,
     pub resource: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobFlowFlowsPatchJobSpecTasksTemplateSpecVolumesProjectedSourcesPodCertificate {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateChainPath")]
+    pub certificate_chain_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialBundlePath")]
+    pub credential_bundle_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyPath")]
+    pub key_path: Option<String>,
+    #[serde(rename = "keyType")]
+    pub key_type: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxExpirationSeconds")]
+    pub max_expiration_seconds: Option<i32>,
+    #[serde(rename = "signerName")]
+    pub signer_name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

@@ -6,37 +6,152 @@
 mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
+    pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// spec defines the desired state of BucketAccess
-#[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[kube(group = "objectstorage.k8s.io", version = "v1alpha2", kind = "BucketAccess", plural = "bucketaccesses")]
 #[kube(namespaced)]
 #[kube(status = "BucketAccessStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct BucketAccessSpec {
-    /// foo is an example field of BucketAccess. Edit bucketaccess_types.go to remove/update
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub foo: Option<String>,
+    /// bucketAccessClassName selects the BucketAccessClass for provisioning the access.
+    #[serde(rename = "bucketAccessClassName")]
+    pub bucket_access_class_name: String,
+    /// bucketClaims is a list of BucketClaims the provisioned access must have permissions for,
+    /// along with per-BucketClaim access parameters and system output definitions.
+    /// At least one BucketClaim must be referenced.
+    /// Multiple references to the same BucketClaim are not permitted.
+    #[serde(rename = "bucketClaims")]
+    pub bucket_claims: Vec<BucketAccessBucketClaims>,
+    /// protocol is the object storage protocol that the provisioned access must use.
+    pub protocol: BucketAccessProtocol,
+    /// serviceAccountName is the name of the Kubernetes ServiceAccount that user application Pods
+    /// intend to use for access to referenced BucketClaims.
+    /// This has different behavior based on the BucketAccessClass's defined AuthenticationType:
+    /// - Key: This field is ignored.
+    /// - ServiceAccount: This field is required. The driver should configure the system so that Pods
+    ///   using the ServiceAccount authenticate to the object storage backend automatically.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
+    pub service_account_name: Option<String>,
+}
+
+/// BucketClaimAccess selects a BucketClaim for access, defines access parameters for the
+/// corresponding bucket, and specifies where user-consumable bucket information and access
+/// credentials for the accessed bucket will be stored.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct BucketAccessBucketClaims {
+    /// accessMode is the Read/Write access mode that the access should have for the bucket.
+    /// Possible values: ReadWrite, ReadOnly, WriteOnly.
+    #[serde(rename = "accessMode")]
+    pub access_mode: BucketAccessBucketClaimsAccessMode,
+    /// accessSecretName is the name of a Kubernetes Secret that COSI should create and populate with
+    /// bucket info and access credentials for the bucket.
+    /// The Secret is created in the same Namespace as the BucketAccess and is deleted when the
+    /// BucketAccess is deleted and deprovisioned.
+    /// The Secret name must be unique across all bucketClaimRefs for all BucketAccesses in the same
+    /// Namespace.
+    #[serde(rename = "accessSecretName")]
+    pub access_secret_name: String,
+    /// bucketClaimName is the name of a BucketClaim the access should have permissions for.
+    /// The BucketClaim must be in the same Namespace as the BucketAccess.
+    #[serde(rename = "bucketClaimName")]
+    pub bucket_claim_name: String,
+}
+
+/// BucketClaimAccess selects a BucketClaim for access, defines access parameters for the
+/// corresponding bucket, and specifies where user-consumable bucket information and access
+/// credentials for the accessed bucket will be stored.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum BucketAccessBucketClaimsAccessMode {
+    ReadWrite,
+    ReadOnly,
+    WriteOnly,
+}
+
+/// spec defines the desired state of BucketAccess
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum BucketAccessProtocol {
+    S3,
+    Azure,
+    #[serde(rename = "GCS")]
+    Gcs,
 }
 
 /// status defines the observed state of BucketAccess
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketAccessStatus {
-    /// conditions represent the current state of the BucketAccess resource.
-    /// Each condition has a unique type and reflects the status of a specific aspect of the resource.
-    /// 
-    /// Standard condition types include:
-    /// - "Available": the resource is fully functional
-    /// - "Progressing": the resource is being created or updated
-    /// - "Degraded": the resource failed to reach or maintain its desired state
-    /// 
-    /// The status of each condition is one of True, False, or Unknown.
+    /// accessedBuckets is a list of Buckets the provisioned access must have permissions for, along
+    /// with per-Bucket access options. This field is populated by the COSI Controller based on the
+    /// referenced BucketClaims in the spec.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessedBuckets")]
+    pub accessed_buckets: Option<Vec<BucketAccessStatusAccessedBuckets>>,
+    /// accountID is the unique identifier for the backend access known to the driver.
+    /// This field is populated by the COSI Sidecar once access has been successfully granted.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accountID")]
+    pub account_id: Option<String>,
+    /// authenticationType holds a copy of the BucketAccessClass authentication type from the time of
+    /// BucketAccess provisioning. This field is populated by the COSI Controller.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authenticationType")]
+    pub authentication_type: Option<BucketAccessStatusAuthenticationType>,
+    /// driverName holds a copy of the BucketAccessClass driver name from the time of BucketAccess
+    /// provisioning. This field is populated by the COSI Controller.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "driverName")]
+    pub driver_name: Option<String>,
+    /// error holds the most recent error message, with a timestamp.
+    /// This is cleared when provisioning is successful.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub conditions: Option<Vec<Condition>>,
+    pub error: Option<BucketAccessStatusError>,
+    /// parameters holds a copy of the BucketAccessClass parameters from the time of BucketAccess
+    /// provisioning. This field is populated by the COSI Controller.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub parameters: Option<BTreeMap<String, String>>,
+    /// readyToUse indicates that the BucketAccess is ready for consumption by workloads.
+    #[serde(rename = "readyToUse")]
+    pub ready_to_use: bool,
+}
+
+/// AccessedBucket identifies a Bucket and corresponding access parameters.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct BucketAccessStatusAccessedBuckets {
+    /// accessMode is the Read/Write access mode that the access should have for the bucket.
+    #[serde(rename = "accessMode")]
+    pub access_mode: BucketAccessStatusAccessedBucketsAccessMode,
+    /// bucketName is the name of a Bucket the access should have permissions for.
+    #[serde(rename = "bucketName")]
+    pub bucket_name: String,
+}
+
+/// AccessedBucket identifies a Bucket and corresponding access parameters.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum BucketAccessStatusAccessedBucketsAccessMode {
+    ReadWrite,
+    ReadOnly,
+    WriteOnly,
+}
+
+/// status defines the observed state of BucketAccess
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum BucketAccessStatusAuthenticationType {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    Key,
+    ServiceAccount,
+}
+
+/// error holds the most recent error message, with a timestamp.
+/// This is cleared when provisioning is successful.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BucketAccessStatusError {
+    /// message is a string detailing the encountered error.
+    /// NOTE: message will be logged, and it should not contain sensitive information.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub message: Option<String>,
+    /// time is the timestamp when the error was encountered.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub time: Option<String>,
 }
 

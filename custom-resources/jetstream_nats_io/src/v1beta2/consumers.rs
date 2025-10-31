@@ -100,6 +100,9 @@ pub struct ConsumerSpec {
     /// Time format must be RFC3339.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "optStartTime")]
     pub opt_start_time: Option<String>,
+    /// RFC3339 timestamp until which the consumer should be paused.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pauseUntil")]
+    pub pause_until: Option<String>,
     /// TTL for pinned client when using pinned_client priority policy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pinnedTtl")]
     pub pinned_ttl: Option<String>,

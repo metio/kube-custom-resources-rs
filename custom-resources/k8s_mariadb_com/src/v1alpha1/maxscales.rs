@@ -364,7 +364,6 @@ pub struct MaxScaleAuth {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub generate: Option<bool>,
     /// MetricsPasswordSecretKeyRef is Secret key reference to the metrics password to call the admib REST API. It is defaulted if metrics are enabled.
-    /// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the password.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricsPasswordSecretKeyRef")]
     pub metrics_password_secret_key_ref: Option<MaxScaleAuthMetricsPasswordSecretKeyRef>,
     /// MetricsUsername is an metrics username to call the REST API. It is defaulted if metrics are enabled.
@@ -432,7 +431,6 @@ pub struct MaxScaleAuthClientPasswordSecretKeyRef {
 }
 
 /// MetricsPasswordSecretKeyRef is Secret key reference to the metrics password to call the admib REST API. It is defaulted if metrics are enabled.
-/// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the password.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleAuthMetricsPasswordSecretKeyRef {
     /// Generate indicates whether the Secret should be generated if the Secret referenced is not present.

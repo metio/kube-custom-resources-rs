@@ -7380,6 +7380,7 @@ pub struct WorkloadPodSetsTopologyRequest {
     /// - kubernetes job this is: kubernetes.io/job-completion-index
     /// - JobSet: kubernetes.io/job-completion-index (inherited from Job)
     /// - Kubeflow: training.kubeflow.org/replica-index
+    /// 	This is limited to 317 characters.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podIndexLabel")]
     pub pod_index_label: Option<String>,
     /// podSetGroupName indicates the name of the group of PodSets to which this PodSet belongs to.
@@ -7388,6 +7389,8 @@ pub struct WorkloadPodSetsTopologyRequest {
     pub pod_set_group_name: Option<String>,
     /// podSetSliceRequiredTopology indicates the topology level required by the PodSet slice, as
     /// indicated by the `kueue.x-k8s.io/podset-slice-required-topology` annotation.
+    /// 
+    /// This is limited to 63
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSetSliceRequiredTopology")]
     pub pod_set_slice_required_topology: Option<String>,
     /// podSetSliceSize indicates the size of a subgroup of pods in a PodSet for which
@@ -7398,11 +7401,13 @@ pub struct WorkloadPodSetsTopologyRequest {
     /// preferred indicates the topology level preferred by the PodSet, as
     /// indicated by the `kueue.x-k8s.io/podset-preferred-topology` PodSet
     /// annotation.
+    /// This is limited to 63 characters.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub preferred: Option<String>,
     /// required indicates the topology level required by the PodSet, as
     /// indicated by the `kueue.x-k8s.io/podset-required-topology` PodSet
     /// annotation.
+    /// This is limited to 63 characters.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub required: Option<String>,
     /// subGroupCount indicates the count of replicated Jobs (groups) within a PodSet.
@@ -7411,6 +7416,7 @@ pub struct WorkloadPodSetsTopologyRequest {
     pub sub_group_count: Option<i32>,
     /// subGroupIndexLabel indicates the name of the label indexing the instances of replicated Jobs (groups)
     /// within a PodSet. For example, in the context of JobSet this is jobset.sigs.k8s.io/job-index.
+    /// 	This is limited to 317 characters.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subGroupIndexLabel")]
     pub sub_group_index_label: Option<String>,
     /// unconstrained indicates that Kueue has the freedom to schedule the PodSet within
@@ -7464,6 +7470,7 @@ pub struct WorkloadStatus {
     /// - Finished: the associated workload finished running (failed or succeeded).
     /// - PodsReady: at least `.spec.podSets[*].count` Pods are ready or have
     /// succeeded.
+    /// conditions are limited to 16 items.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// nominatedClusterNames specifies the list of cluster names that have been nominated for scheduling.

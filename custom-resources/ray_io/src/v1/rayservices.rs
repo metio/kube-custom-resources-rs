@@ -99,6 +99,8 @@ pub struct RayServiceRayClusterConfigAutoscalerOptionsEnvValueFrom {
     pub config_map_key_ref: Option<RayServiceRayClusterConfigAutoscalerOptionsEnvValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<RayServiceRayClusterConfigAutoscalerOptionsEnvValueFromFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileKeyRef")]
+    pub file_key_ref: Option<RayServiceRayClusterConfigAutoscalerOptionsEnvValueFromFileKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<RayServiceRayClusterConfigAutoscalerOptionsEnvValueFromResourceFieldRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
@@ -120,6 +122,16 @@ pub struct RayServiceRayClusterConfigAutoscalerOptionsEnvValueFromFieldRef {
     pub api_version: Option<String>,
     #[serde(rename = "fieldPath")]
     pub field_path: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayServiceRayClusterConfigAutoscalerOptionsEnvValueFromFileKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    pub path: String,
+    #[serde(rename = "volumeName")]
+    pub volume_name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -317,6 +329,8 @@ pub struct RayServiceRayClusterConfigGcsFaultToleranceOptionsRedisPasswordValueF
     pub config_map_key_ref: Option<RayServiceRayClusterConfigGcsFaultToleranceOptionsRedisPasswordValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<RayServiceRayClusterConfigGcsFaultToleranceOptionsRedisPasswordValueFromFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileKeyRef")]
+    pub file_key_ref: Option<RayServiceRayClusterConfigGcsFaultToleranceOptionsRedisPasswordValueFromFileKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<RayServiceRayClusterConfigGcsFaultToleranceOptionsRedisPasswordValueFromResourceFieldRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
@@ -338,6 +352,16 @@ pub struct RayServiceRayClusterConfigGcsFaultToleranceOptionsRedisPasswordValueF
     pub api_version: Option<String>,
     #[serde(rename = "fieldPath")]
     pub field_path: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayServiceRayClusterConfigGcsFaultToleranceOptionsRedisPasswordValueFromFileKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    pub path: String,
+    #[serde(rename = "volumeName")]
+    pub volume_name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -372,6 +396,8 @@ pub struct RayServiceRayClusterConfigGcsFaultToleranceOptionsRedisUsernameValueF
     pub config_map_key_ref: Option<RayServiceRayClusterConfigGcsFaultToleranceOptionsRedisUsernameValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<RayServiceRayClusterConfigGcsFaultToleranceOptionsRedisUsernameValueFromFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileKeyRef")]
+    pub file_key_ref: Option<RayServiceRayClusterConfigGcsFaultToleranceOptionsRedisUsernameValueFromFileKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<RayServiceRayClusterConfigGcsFaultToleranceOptionsRedisUsernameValueFromResourceFieldRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
@@ -393,6 +419,16 @@ pub struct RayServiceRayClusterConfigGcsFaultToleranceOptionsRedisUsernameValueF
     pub api_version: Option<String>,
     #[serde(rename = "fieldPath")]
     pub field_path: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayServiceRayClusterConfigGcsFaultToleranceOptionsRedisUsernameValueFromFileKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    pub path: String,
+    #[serde(rename = "volumeName")]
+    pub volume_name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -613,6 +649,8 @@ pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpec {
     pub host_users: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostnameOverride")]
+    pub hostname_override: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecImagePullSecrets>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
@@ -996,6 +1034,8 @@ pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecContainers {
     pub resources: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecContainersResources>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicyRules")]
+    pub restart_policy_rules: Option<Vec<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecContainersRestartPolicyRules>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecContainersSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
@@ -1033,6 +1073,8 @@ pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecContainersEnvValue
     pub config_map_key_ref: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecContainersEnvValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecContainersEnvValueFromFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileKeyRef")]
+    pub file_key_ref: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecContainersEnvValueFromFileKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecContainersEnvValueFromResourceFieldRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
@@ -1054,6 +1096,16 @@ pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecContainersEnvValue
     pub api_version: Option<String>,
     #[serde(rename = "fieldPath")]
     pub field_path: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecContainersEnvValueFromFileKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    pub path: String,
+    #[serde(rename = "volumeName")]
+    pub volume_name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1374,6 +1426,20 @@ pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecContainersResource
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecContainersRestartPolicyRules {
+    pub action: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exitCodes")]
+    pub exit_codes: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecContainersRestartPolicyRulesExitCodes>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecContainersRestartPolicyRulesExitCodes {
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<i64>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecContainersSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
@@ -1583,6 +1649,8 @@ pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecEphemeralContainer
     pub resources: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecEphemeralContainersResources>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicyRules")]
+    pub restart_policy_rules: Option<Vec<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecEphemeralContainersRestartPolicyRules>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecEphemeralContainersSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
@@ -1622,6 +1690,8 @@ pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecEphemeralContainer
     pub config_map_key_ref: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecEphemeralContainersEnvValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecEphemeralContainersEnvValueFromFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileKeyRef")]
+    pub file_key_ref: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecEphemeralContainersEnvValueFromFileKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecEphemeralContainersEnvValueFromResourceFieldRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
@@ -1643,6 +1713,16 @@ pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecEphemeralContainer
     pub api_version: Option<String>,
     #[serde(rename = "fieldPath")]
     pub field_path: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecEphemeralContainersEnvValueFromFileKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    pub path: String,
+    #[serde(rename = "volumeName")]
+    pub volume_name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1963,6 +2043,20 @@ pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecEphemeralContainer
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecEphemeralContainersRestartPolicyRules {
+    pub action: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exitCodes")]
+    pub exit_codes: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecEphemeralContainersRestartPolicyRulesExitCodes>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecEphemeralContainersRestartPolicyRulesExitCodes {
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<i64>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecEphemeralContainersSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
@@ -2167,6 +2261,8 @@ pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecInitContainers {
     pub resources: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecInitContainersResources>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicyRules")]
+    pub restart_policy_rules: Option<Vec<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecInitContainersRestartPolicyRules>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecInitContainersSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
@@ -2204,6 +2300,8 @@ pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecInitContainersEnvV
     pub config_map_key_ref: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecInitContainersEnvValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecInitContainersEnvValueFromFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileKeyRef")]
+    pub file_key_ref: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecInitContainersEnvValueFromFileKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecInitContainersEnvValueFromResourceFieldRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
@@ -2225,6 +2323,16 @@ pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecInitContainersEnvV
     pub api_version: Option<String>,
     #[serde(rename = "fieldPath")]
     pub field_path: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecInitContainersEnvValueFromFileKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    pub path: String,
+    #[serde(rename = "volumeName")]
+    pub volume_name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2542,6 +2650,20 @@ pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecInitContainersReso
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub request: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecInitContainersRestartPolicyRules {
+    pub action: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exitCodes")]
+    pub exit_codes: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecInitContainersRestartPolicyRulesExitCodes>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecInitContainersRestartPolicyRulesExitCodes {
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<i64>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3356,6 +3478,8 @@ pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecVolumesProjectedSo
     pub config_map: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecVolumesProjectedSourcesConfigMap>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecVolumesProjectedSourcesDownwardApi>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podCertificate")]
+    pub pod_certificate: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecVolumesProjectedSourcesPodCertificate>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecVolumesProjectedSourcesSecret>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
@@ -3441,6 +3565,22 @@ pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecVolumesProjectedSo
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub divisor: Option<IntOrString>,
     pub resource: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecVolumesProjectedSourcesPodCertificate {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateChainPath")]
+    pub certificate_chain_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialBundlePath")]
+    pub credential_bundle_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyPath")]
+    pub key_path: Option<String>,
+    #[serde(rename = "keyType")]
+    pub key_type: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxExpirationSeconds")]
+    pub max_expiration_seconds: Option<i32>,
+    #[serde(rename = "signerName")]
+    pub signer_name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3672,6 +3812,8 @@ pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpec {
     pub host_users: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostnameOverride")]
+    pub hostname_override: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecImagePullSecrets>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
@@ -4055,6 +4197,8 @@ pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecContainers {
     pub resources: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecContainersResources>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicyRules")]
+    pub restart_policy_rules: Option<Vec<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecContainersRestartPolicyRules>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecContainersSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
@@ -4092,6 +4236,8 @@ pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecContainersEnvVa
     pub config_map_key_ref: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecContainersEnvValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecContainersEnvValueFromFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileKeyRef")]
+    pub file_key_ref: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecContainersEnvValueFromFileKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecContainersEnvValueFromResourceFieldRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
@@ -4113,6 +4259,16 @@ pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecContainersEnvVa
     pub api_version: Option<String>,
     #[serde(rename = "fieldPath")]
     pub field_path: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecContainersEnvValueFromFileKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    pub path: String,
+    #[serde(rename = "volumeName")]
+    pub volume_name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4433,6 +4589,20 @@ pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecContainersResou
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecContainersRestartPolicyRules {
+    pub action: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exitCodes")]
+    pub exit_codes: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecContainersRestartPolicyRulesExitCodes>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecContainersRestartPolicyRulesExitCodes {
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<i64>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecContainersSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
@@ -4642,6 +4812,8 @@ pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecEphemeralContai
     pub resources: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecEphemeralContainersResources>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicyRules")]
+    pub restart_policy_rules: Option<Vec<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecEphemeralContainersRestartPolicyRules>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecEphemeralContainersSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
@@ -4681,6 +4853,8 @@ pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecEphemeralContai
     pub config_map_key_ref: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecEphemeralContainersEnvValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecEphemeralContainersEnvValueFromFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileKeyRef")]
+    pub file_key_ref: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecEphemeralContainersEnvValueFromFileKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecEphemeralContainersEnvValueFromResourceFieldRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
@@ -4702,6 +4876,16 @@ pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecEphemeralContai
     pub api_version: Option<String>,
     #[serde(rename = "fieldPath")]
     pub field_path: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecEphemeralContainersEnvValueFromFileKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    pub path: String,
+    #[serde(rename = "volumeName")]
+    pub volume_name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5022,6 +5206,20 @@ pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecEphemeralContai
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecEphemeralContainersRestartPolicyRules {
+    pub action: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exitCodes")]
+    pub exit_codes: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecEphemeralContainersRestartPolicyRulesExitCodes>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecEphemeralContainersRestartPolicyRulesExitCodes {
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<i64>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecEphemeralContainersSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
@@ -5226,6 +5424,8 @@ pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecInitContainers 
     pub resources: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecInitContainersResources>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicyRules")]
+    pub restart_policy_rules: Option<Vec<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecInitContainersRestartPolicyRules>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecInitContainersSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
@@ -5263,6 +5463,8 @@ pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecInitContainersE
     pub config_map_key_ref: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecInitContainersEnvValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecInitContainersEnvValueFromFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileKeyRef")]
+    pub file_key_ref: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecInitContainersEnvValueFromFileKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecInitContainersEnvValueFromResourceFieldRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
@@ -5284,6 +5486,16 @@ pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecInitContainersE
     pub api_version: Option<String>,
     #[serde(rename = "fieldPath")]
     pub field_path: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecInitContainersEnvValueFromFileKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    pub path: String,
+    #[serde(rename = "volumeName")]
+    pub volume_name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5601,6 +5813,20 @@ pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecInitContainersR
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub request: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecInitContainersRestartPolicyRules {
+    pub action: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exitCodes")]
+    pub exit_codes: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecInitContainersRestartPolicyRulesExitCodes>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecInitContainersRestartPolicyRulesExitCodes {
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<i64>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6415,6 +6641,8 @@ pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecVolumesProjecte
     pub config_map: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecVolumesProjectedSourcesConfigMap>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecVolumesProjectedSourcesDownwardApi>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podCertificate")]
+    pub pod_certificate: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecVolumesProjectedSourcesPodCertificate>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecVolumesProjectedSourcesSecret>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
@@ -6500,6 +6728,22 @@ pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecVolumesProjecte
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub divisor: Option<IntOrString>,
     pub resource: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecVolumesProjectedSourcesPodCertificate {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateChainPath")]
+    pub certificate_chain_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialBundlePath")]
+    pub credential_bundle_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyPath")]
+    pub key_path: Option<String>,
+    #[serde(rename = "keyType")]
+    pub key_type: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxExpirationSeconds")]
+    pub max_expiration_seconds: Option<i32>,
+    #[serde(rename = "signerName")]
+    pub signer_name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6781,8 +7025,22 @@ pub struct RayServiceServeServiceStatusLoadBalancerIngressPorts {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RayServiceUpgradeStrategy {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterUpgradeOptions")]
+    pub cluster_upgrade_options: Option<RayServiceUpgradeStrategyClusterUpgradeOptions>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayServiceUpgradeStrategyClusterUpgradeOptions {
+    #[serde(rename = "gatewayClassName")]
+    pub gateway_class_name: String,
+    #[serde(rename = "intervalSeconds")]
+    pub interval_seconds: i32,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSurgePercent")]
+    pub max_surge_percent: Option<i32>,
+    #[serde(rename = "stepSizePercent")]
+    pub step_size_percent: i32,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6807,10 +7065,16 @@ pub struct RayServiceStatus {
 pub struct RayServiceStatusActiveServiceStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "applicationStatuses")]
     pub application_statuses: Option<BTreeMap<String, RayServiceStatusActiveServiceStatusApplicationStatuses>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastTrafficMigratedTime")]
+    pub last_traffic_migrated_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rayClusterName")]
     pub ray_cluster_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rayClusterStatus")]
     pub ray_cluster_status: Option<RayServiceStatusActiveServiceStatusRayClusterStatus>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetCapacity")]
+    pub target_capacity: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trafficRoutedPercent")]
+    pub traffic_routed_percent: Option<i32>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6885,10 +7149,16 @@ pub struct RayServiceStatusActiveServiceStatusRayClusterStatusHead {
 pub struct RayServiceStatusPendingServiceStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "applicationStatuses")]
     pub application_statuses: Option<BTreeMap<String, RayServiceStatusPendingServiceStatusApplicationStatuses>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastTrafficMigratedTime")]
+    pub last_traffic_migrated_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rayClusterName")]
     pub ray_cluster_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rayClusterStatus")]
     pub ray_cluster_status: Option<RayServiceStatusPendingServiceStatusRayClusterStatus>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetCapacity")]
+    pub target_capacity: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trafficRoutedPercent")]
+    pub traffic_routed_percent: Option<i32>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

@@ -203,7 +203,25 @@ spec:
                       description: "The query that will be used to download the hash of the password\nof a certain user. Default: \"SELECT usename, passwd FROM public.user_search($1)\".\nIn case it is specified, also an AuthQuerySecret has to be specified and\nno automatic CNPG Cluster integration will be triggered."
                       type: "string"
                     authQuerySecret:
-                      description: "The credentials of the user that need to be used for the authentication\nquery. In case it is specified, also an AuthQuery\n(e.g. \"SELECT usename, passwd FROM pg_catalog.pg_shadow WHERE usename=$1\")\nhas to be specified and no automatic CNPG Cluster integration will be triggered."
+                      description: "The credentials of the user that need to be used for the authentication\nquery. In case it is specified, also an AuthQuery\n(e.g. \"SELECT usename, passwd FROM pg_catalog.pg_shadow WHERE usename=$1\")\nhas to be specified and no automatic CNPG Cluster integration will be triggered.\n\nDeprecated."
+                      properties:
+                        name:
+                          description: "Name of the referent."
+                          type: "string"
+                      required:
+                        - "name"
+                      type: "object"
+                    clientCASecret:
+                      description: "ClientCASecret provides PgBouncer’s client_tls_ca_file, the root\nCA for validating client certificates"
+                      properties:
+                        name:
+                          description: "Name of the referent."
+                          type: "string"
+                      required:
+                        - "name"
+                      type: "object"
+                    clientTLSSecret:
+                      description: "ClientTLSSecret provides PgBouncer’s client_tls_key_file (private key)\nand client_tls_cert_file (certificate) used to accept client connections"
                       properties:
                         name:
                           description: "Name of the referent."
@@ -232,6 +250,24 @@ spec:
                         - "session"
                         - "transaction"
                       type: "string"
+                    serverCASecret:
+                      description: "ServerCASecret provides PgBouncer’s server_tls_ca_file, the root\nCA for validating PostgreSQL certificates"
+                      properties:
+                        name:
+                          description: "Name of the referent."
+                          type: "string"
+                      required:
+                        - "name"
+                      type: "object"
+                    serverTLSSecret:
+                      description: "ServerTLSSecret, when pointing to a TLS secret, provides pgbouncer's\n`server_tls_key_file` and `server_tls_cert_file`, used when\nauthenticating against PostgreSQL."
+                      properties:
+                        name:
+                          description: "Name of the referent."
+                          type: "string"
+                      required:
+                        - "name"
+                      type: "object"
                   type: "object"
                 serviceTemplate:
                   description: "Template for the Service to be created"
@@ -5347,6 +5383,16 @@ spec:
                   properties:
                     clientCA:
                       description: "The client CA secret version"
+                      properties:
+                        name:
+                          description: "The name of the secret"
+                          type: "string"
+                        version:
+                          description: "The ResourceVersion of the secret"
+                          type: "string"
+                      type: "object"
+                    clientTLS:
+                      description: "The client TLS secret version"
                       properties:
                         name:
                           description: "The name of the secret"

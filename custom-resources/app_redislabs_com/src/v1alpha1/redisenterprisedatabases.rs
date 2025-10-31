@@ -58,7 +58,7 @@ pub struct RedisEnterpriseDatabaseSpec {
     /// Memory size for the database using formats like 100MB or 0.1GB. Minimum value is 100MB. For Auto Tiering (formerly Redis on Flash), this value represents RAM+Flash memory and must be at least 1GB.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "memorySize")]
     pub memory_size: Option<String>,
-    /// List of modules associated with the database. The list of valid modules for the specific cluster can be retrieved from the status of the REC object. Use the "name" and "versions" fields for the specific module configuration. If specifying an explicit version for a module, automatic modules versions upgrade must be disabled by setting the '.upgradeSpec.upgradeModulesToLatest' field in the REC to 'false'. Note that the option to specify module versions is deprecated, and will be removed in future releases.
+    /// List of modules associated with the database. The list of valid modules for the specific cluster can be retrieved from the status of the REC object. Use the "name" and "versions" fields for the specific module configuration. If specifying an explicit version for a module, automatic modules versions upgrade must be disabled by setting the '.upgradeSpec.upgradeModulesToLatest' field in the REC to 'false'. Note that the option to specify module versions is deprecated, and will be removed in future releases. for Redis version 8 and above, bundled modules are enabled automatically, so there is no need to specify them
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "modulesList")]
     pub modules_list: Option<Vec<RedisEnterpriseDatabaseModulesList>>,
     /// Enables OSS Cluster mode. Note: Not all client libraries support OSS cluster mode.
@@ -151,6 +151,9 @@ pub struct RedisEnterpriseDatabaseAlertSettings {
     /// Throughput is lower than specified threshold value [requests / sec.] -Note threshold is commented (allow string/int/float and support backwards compatibility) but is required
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bdb_low_throughput: Option<RedisEnterpriseDatabaseAlertSettingsBdbLowThroughput>,
+    /// Proxy certificate will expire in less than specified threshold value [days]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub bdb_proxy_cert_expiring_soon: Option<RedisEnterpriseDatabaseAlertSettingsBdbProxyCertExpiringSoon>,
     /// Dataset RAM overhead of a shard has reached the threshold value [% of its RAM limit] -Note threshold is commented (allow string/int/float and support backwards compatibility) but is required
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bdb_ram_dataset_overhead: Option<RedisEnterpriseDatabaseAlertSettingsBdbRamDatasetOverhead>,
@@ -230,6 +233,14 @@ pub struct RedisEnterpriseDatabaseAlertSettingsBdbLongRunningAction {
 /// Throughput is lower than specified threshold value [requests / sec.] -Note threshold is commented (allow string/int/float and support backwards compatibility) but is required
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RedisEnterpriseDatabaseAlertSettingsBdbLowThroughput {
+    /// Alert enabled or disabled
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+
+/// Proxy certificate will expire in less than specified threshold value [days]
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseDatabaseAlertSettingsBdbProxyCertExpiringSoon {
     /// Alert enabled or disabled
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
@@ -442,15 +453,22 @@ pub struct RedisEnterpriseDatabaseReplicaSources {
 }
 
 /// Redis Enterprise Role and ACL Binding
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RedisEnterpriseDatabaseRolesPermissions {
     /// Acl Name of RolePermissionType
     pub acl: String,
     /// Role Name of RolePermissionType
     pub role: String,
-    /// Type of Redis Enterprise Database Role Permission
+    /// Type of Redis Enterprise Database Role Permission. Currently, only "redis-enterprise" is supported, which uses roles and ACLs defined within Redis Enterprise directly.
     #[serde(rename = "type")]
-    pub r#type: String,
+    pub r#type: RedisEnterpriseDatabaseRolesPermissionsType,
+}
+
+/// Redis Enterprise Role and ACL Binding
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum RedisEnterpriseDatabaseRolesPermissionsType {
+    #[serde(rename = "redis-enterprise")]
+    RedisEnterprise,
 }
 
 /// RedisEnterpriseDatabaseSpec defines the desired state of RedisEnterpriseDatabase

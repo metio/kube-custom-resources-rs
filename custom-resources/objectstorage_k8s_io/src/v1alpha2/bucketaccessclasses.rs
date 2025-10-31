@@ -6,36 +6,48 @@
 mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
+    pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// spec defines the desired state of BucketAccessClass
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "objectstorage.k8s.io", version = "v1alpha2", kind = "BucketAccessClass", plural = "bucketaccessclasses")]
-#[kube(status = "BucketAccessClassStatus")]
 #[kube(schema = "disabled")]
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct BucketAccessClassSpec {
-    /// foo is an example field of BucketAccessClass. Edit bucketaccessclass_types.go to remove/update
+    /// authenticationType specifies which authentication mechanism is used bucket access.
+    /// Possible values:
+    ///  - Key: The driver should generate a protocol-appropriate access key that clients can use to
+    ///    authenticate to the backend object store.
+    ///  - ServiceAccount: The driver should configure the system such that Pods using the given
+    ///    ServiceAccount authenticate to the backend object store automatically.
+    #[serde(rename = "authenticationType")]
+    pub authentication_type: String,
+    /// driverName is the name of the driver that fulfills requests for this BucketAccessClass.
+    #[serde(rename = "driverName")]
+    pub driver_name: String,
+    /// featureOptions can be used to adjust various COSI access provisioning behaviors.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "featureOptions")]
+    pub feature_options: Option<BucketAccessClassFeatureOptions>,
+    /// parameters is an opaque map of driver-specific configuration items passed to the driver that
+    /// fulfills requests for this BucketAccessClass.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub foo: Option<String>,
+    pub parameters: Option<BTreeMap<String, String>>,
 }
 
-/// status defines the observed state of BucketAccessClass
+/// featureOptions can be used to adjust various COSI access provisioning behaviors.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct BucketAccessClassStatus {
-    /// conditions represent the current state of the BucketAccessClass resource.
-    /// Each condition has a unique type and reflects the status of a specific aspect of the resource.
-    /// 
-    /// Standard condition types include:
-    /// - "Available": the resource is fully functional
-    /// - "Progressing": the resource is being created or updated
-    /// - "Degraded": the resource failed to reach or maintain its desired state
-    /// 
-    /// The status of each condition is one of True, False, or Unknown.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub conditions: Option<Vec<Condition>>,
+pub struct BucketAccessClassFeatureOptions {
+    /// disallowMultiBucketAccess disables the ability for a BucketAccess to reference multiple
+    /// BucketClaims when set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disallowMultiBucketAccess")]
+    pub disallow_multi_bucket_access: Option<bool>,
+    /// disallowedBucketAccessModes is a list of disallowed Read/Write access modes. A BucketAccess
+    /// using this class will not be allowed to request access to a BucketClaim with any access mode
+    /// listed here.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disallowedBucketAccessModes")]
+    pub disallowed_bucket_access_modes: Option<Vec<String>>,
 }
 

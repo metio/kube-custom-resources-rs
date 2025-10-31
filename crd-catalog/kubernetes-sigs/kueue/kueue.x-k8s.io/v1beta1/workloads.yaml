@@ -5187,7 +5187,7 @@ spec:
                                       description: "values is an ordered list of node selector values describing a topology\ndomain. The values correspond to the consecutive topology levels, from\nthe highest to the lowest."
                                       items:
                                         type: "string"
-                                      maxItems: 8
+                                      maxItems: 16
                                       minItems: 1
                                       type: "array"
                                       x-kubernetes-list-type: "atomic"
@@ -5200,7 +5200,7 @@ spec:
                                 description: "levels is an ordered list of keys denoting the levels of the assigned\ntopology (i.e. node label keys), from the highest to the lowest level of\nthe topology."
                                 items:
                                   type: "string"
-                                maxItems: 8
+                                maxItems: 16
                                 minItems: 1
                                 type: "array"
                                 x-kubernetes-list-type: "atomic"
@@ -5494,8 +5494,8 @@ spec:
               rule: "has(self.status) && has(self.status.conditions) && self.status.conditions.exists(c, c.type == 'QuotaReserved' && c.status == 'True') && has(self.status.admission) ? size(self.spec.podSets) == size(self.status.admission.podSetAssignments) : true"
             - message: "priorityClassSource is immutable while workload quota reserved"
               rule: "(has(oldSelf.status) && has(oldSelf.status.conditions) && oldSelf.status.conditions.exists(c, c.type == 'QuotaReserved' && c.status == 'True')) ? (oldSelf.spec.priorityClassSource == self.spec.priorityClassSource) : true"
-            - message: "priorityClassName is immutable while workload quota reserved"
-              rule: "(has(oldSelf.status) && has(oldSelf.status.conditions) && oldSelf.status.conditions.exists(c, c.type == 'QuotaReserved' && c.status == 'True') && has(oldSelf.spec.priorityClassName) && has(self.spec.priorityClassName)) ? (oldSelf.spec.priorityClassName == self.spec.priorityClassName) : true"
+            - message: "priorityClassName is immutable while workload quota reserved and priorityClassSource is not equal to kueue.x-k8s.io/workloadpriorityclass"
+              rule: "(has(oldSelf.status) && has(oldSelf.status.conditions) && oldSelf.status.conditions.exists(c, c.type == 'QuotaReserved' && c.status == 'True') && (self.spec.priorityClassSource != 'kueue.x-k8s.io/workloadpriorityclass') && has(oldSelf.spec.priorityClassName) && has(self.spec.priorityClassName)) ? (oldSelf.spec.priorityClassName == self.spec.priorityClassName) : true"
             - message: "queueName is immutable while workload quota reserved"
               rule: "(has(oldSelf.status) && has(oldSelf.status.conditions) && oldSelf.status.conditions.exists(c, c.type == 'QuotaReserved' && c.status == 'True')) && (has(self.status) && has(self.status.conditions) && self.status.conditions.exists(c, c.type == 'QuotaReserved' && c.status == 'True')) && has(oldSelf.spec.queueName) && has(self.spec.queueName) ? oldSelf.spec.queueName == self.spec.queueName : true"
             - message: "maximumExecutionTimeSeconds is immutable while workload quota reserved"

@@ -63,6 +63,32 @@ pub struct ImageValidatingPolicySpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchImageReferences")]
     pub match_image_references: Option<Vec<ImageValidatingPolicyMatchImageReferences>>,
     /// ValidationAction specifies the action to be taken when the matched resource violates the policy.
+    /// If a validation evaluates to false it is always enforced according to these actions.
+    /// 
+    /// Failures defined by the ValidatingAdmissionPolicy's FailurePolicy are enforced according
+    /// to these actions only if the FailurePolicy is set to Fail, otherwise the failures are
+    /// ignored. This includes compilation errors, runtime errors and misconfigurations of the policy.
+    /// 
+    /// validationActions is declared as a set of action values. Order does
+    /// not matter. validationActions may not contain duplicates of the same action.
+    /// 
+    /// The supported actions values are:
+    /// 
+    /// "Deny" specifies that a validation failure results in a denied request.
+    /// 
+    /// "Warn" specifies that a validation failure is reported to the request client
+    /// in HTTP Warning headers, with a warning code of 299. Warnings can be sent
+    /// both for allowed or denied admission responses.
+    /// 
+    /// "Audit" specifies that a validation failure is recorded in the created reports.
+    /// 
+    /// Clients should expect to handle additional values by ignoring
+    /// any values not recognized.
+    /// 
+    /// "Deny" and "Warn" may not be used together since this combination
+    /// needlessly duplicates the validation failure both in the
+    /// API response body and the HTTP warning headers.
+    /// 
     /// Required.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationActions")]
     pub validation_actions: Option<Vec<String>>,
@@ -995,6 +1021,32 @@ pub struct ImageValidatingPolicyStatusAutogenConfigsSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchImageReferences")]
     pub match_image_references: Option<Vec<ImageValidatingPolicyStatusAutogenConfigsSpecMatchImageReferences>>,
     /// ValidationAction specifies the action to be taken when the matched resource violates the policy.
+    /// If a validation evaluates to false it is always enforced according to these actions.
+    /// 
+    /// Failures defined by the ValidatingAdmissionPolicy's FailurePolicy are enforced according
+    /// to these actions only if the FailurePolicy is set to Fail, otherwise the failures are
+    /// ignored. This includes compilation errors, runtime errors and misconfigurations of the policy.
+    /// 
+    /// validationActions is declared as a set of action values. Order does
+    /// not matter. validationActions may not contain duplicates of the same action.
+    /// 
+    /// The supported actions values are:
+    /// 
+    /// "Deny" specifies that a validation failure results in a denied request.
+    /// 
+    /// "Warn" specifies that a validation failure is reported to the request client
+    /// in HTTP Warning headers, with a warning code of 299. Warnings can be sent
+    /// both for allowed or denied admission responses.
+    /// 
+    /// "Audit" specifies that a validation failure is recorded in the created reports.
+    /// 
+    /// Clients should expect to handle additional values by ignoring
+    /// any values not recognized.
+    /// 
+    /// "Deny" and "Warn" may not be used together since this combination
+    /// needlessly duplicates the validation failure both in the
+    /// API response body and the HTTP warning headers.
+    /// 
     /// Required.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationActions")]
     pub validation_actions: Option<Vec<String>>,

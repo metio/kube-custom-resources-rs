@@ -3487,7 +3487,7 @@ spec:
                             x-kubernetes-int-or-string: true
                         type: "object"
                       persistence:
-                        description: "PersistencConfig defines options for data persistence"
+                        description: "PersistenceConfig defines options for data persistence"
                         properties:
                           emptyDir:
                             description: "Represents an empty directory for a pod.\nEmpty directory volumes support ownership management and SELinux relabeling."
@@ -3521,6 +3521,14 @@ spec:
                                 items:
                                   type: "string"
                                 type: "array"
+                              annotations:
+                                additionalProperties:
+                                  type: "string"
+                                type: "object"
+                              labels:
+                                additionalProperties:
+                                  type: "string"
+                                type: "object"
                               storageClass:
                                 type: "string"
                             type: "object"
@@ -3762,7 +3770,7 @@ spec:
                           type: "object"
                           x-kubernetes-map-type: "atomic"
                         securityConfigSecret:
-                          description: "Secret that contains the differnt yml files of the opensearch-security config (config.yml, internal_users.yml, ...)"
+                          description: "Secret that contains the different yml files of the opensearch-security config (config.yml, internal_users.yml, ...)"
                           properties:
                             name:
                               default: ""
@@ -3832,6 +3840,10 @@ spec:
                             generate:
                               description: "If set to true the operator will generate a CA and certificates for the cluster to use, if false secrets with existing certificates must be supplied"
                               type: "boolean"
+                            rotateDaysBeforeExpiry:
+                              default: -1
+                              description: "Automatically rotate certificates before they expire, set to -1 to disable"
+                              type: "integer"
                             secret:
                               description: "Optional, name of a TLS secret that contains ca.crt, tls.key and tls.crt data. If ca.crt is in a different secret provide it via the caSecret field"
                               properties:
@@ -3869,6 +3881,10 @@ spec:
                             perNode:
                               description: "Configure transport node certificate"
                               type: "boolean"
+                            rotateDaysBeforeExpiry:
+                              default: -1
+                              description: "Automatically rotate certificates before they expire, set to -1 to disable"
+                              type: "integer"
                             secret:
                               description: "Optional, name of a TLS secret that contains ca.crt, tls.key and tls.crt data. If ca.crt is in a different secret provide it via the caSecret field"
                               properties:

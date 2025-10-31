@@ -112,6 +112,9 @@ pub struct PodVolumeBackupStatus {
     /// The server's time is used for CompletionTimestamps
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "completionTimestamp")]
     pub completion_timestamp: Option<String>,
+    /// IncrementalBytes holds the number of bytes new or changed since the last backup
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "incrementalBytes")]
+    pub incremental_bytes: Option<i64>,
     /// Message is a message about the pod volume backup's status.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,

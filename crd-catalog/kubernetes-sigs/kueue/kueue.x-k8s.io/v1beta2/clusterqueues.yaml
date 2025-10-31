@@ -51,7 +51,7 @@ spec:
               description: "spec is the specification of the ClusterQueue."
               properties:
                 admissionChecks:
-                  description: "admissionChecks lists the AdmissionChecks required by this ClusterQueue.\nCannot be used along with AdmissionCheckStrategy."
+                  description: "admissionChecks lists the AdmissionChecks required by this ClusterQueue.\nCannot be used along with AdmissionCheckStrategy.\nAdmission checks are limited to at most 64 items."
                   items:
                     description: "AdmissionCheckReference is the name of an AdmissionCheck."
                     maxLength: 316
@@ -76,17 +76,26 @@ spec:
                               maxLength: 253
                               pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
                               type: "string"
+                            maxItems: 64
                             type: "array"
+                            x-kubernetes-list-type: "set"
                         required:
                           - "name"
                         type: "object"
+                      maxItems: 64
                       type: "array"
+                      x-kubernetes-list-map-keys:
+                        - "name"
+                      x-kubernetes-list-type: "map"
                   type: "object"
                 admissionScope:
                   description: "admissionScope indicates whether ClusterQueue uses the Admission Fair Sharing"
                   properties:
                     admissionMode:
                       description: "admissionMode indicates which mode for AdmissionFairSharing should be used\nin the AdmissionScope. Possible values are:\n- UsageBasedAdmissionFairSharing\n- NoAdmissionFairSharing"
+                      enum:
+                        - "UsageBasedAdmissionFairSharing"
+                        - "NoAdmissionFairSharing"
                       type: "string"
                   required:
                     - "admissionMode"
@@ -221,6 +230,7 @@ spec:
                         maxItems: 64
                         minItems: 1
                         type: "array"
+                        x-kubernetes-list-type: "atomic"
                       flavors:
                         description: "flavors is the list of flavors that provide the resources of this group.\nTypically, different flavors represent different hardware models\n(e.g., gpu models, cpu architectures) or pricing models (on-demand vs spot\ncpus).\nEach flavor MUST list all the resources listed for this group in the same\norder as the .resources field.\nThe list cannot be empty and it can contain up to 64 flavors, with a max of\n256 total flavors across all resource groups in the ClusterQueue."
                         items:
@@ -308,7 +318,7 @@ spec:
                   format: "int32"
                   type: "integer"
                 conditions:
-                  description: "conditions hold the latest available observations of the ClusterQueue\ncurrent state."
+                  description: "conditions hold the latest available observations of the ClusterQueue\ncurrent state.\nconditions are limited to 16 elements."
                   items:
                     description: "Condition contains details for one aspect of the current state of this API Resource."
                     properties:
@@ -350,6 +360,7 @@ spec:
                       - "status"
                       - "type"
                     type: "object"
+                  maxItems: 16
                   type: "array"
                   x-kubernetes-list-map-keys:
                     - "type"
@@ -385,7 +396,7 @@ spec:
                     - "weightedShare"
                   type: "object"
                 flavorsReservation:
-                  description: "flavorsReservation are the reserved quotas, by flavor, currently in use by the\nworkloads assigned to this ClusterQueue."
+                  description: "flavorsReservation are the reserved quotas, by flavor, currently in use by the\nworkloads assigned to this ClusterQueue.\nflavorsReservation are limited to 64 elements."
                   items:
                     properties:
                       name:
@@ -492,9 +503,11 @@ spec:
                         properties:
                           name:
                             description: "name indicates the name of the pending workload."
+                            maxLength: 256
                             type: "string"
                           namespace:
                             description: "namespace indicates the name of the pending workload."
+                            maxLength: 63
                             type: "string"
                         required:
                           - "name"

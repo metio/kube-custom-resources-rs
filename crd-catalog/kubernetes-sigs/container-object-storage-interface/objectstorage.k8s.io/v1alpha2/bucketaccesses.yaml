@@ -30,61 +30,163 @@ spec:
             spec:
               description: "spec defines the desired state of BucketAccess"
               properties:
-                foo:
-                  description: "foo is an example field of BucketAccess. Edit bucketaccess_types.go to remove/update"
+                bucketAccessClassName:
+                  description: "bucketAccessClassName selects the BucketAccessClass for provisioning the access."
+                  maxLength: 253
+                  minLength: 1
                   type: "string"
+                  x-kubernetes-validations:
+                    - message: "bucketAccessClassName is immutable"
+                      rule: "self == oldSelf"
+                bucketClaims:
+                  description: "bucketClaims is a list of BucketClaims the provisioned access must have permissions for,\nalong with per-BucketClaim access parameters and system output definitions.\nAt least one BucketClaim must be referenced.\nMultiple references to the same BucketClaim are not permitted."
+                  items:
+                    description: "BucketClaimAccess selects a BucketClaim for access, defines access parameters for the\ncorresponding bucket, and specifies where user-consumable bucket information and access\ncredentials for the accessed bucket will be stored."
+                    properties:
+                      accessMode:
+                        description: "accessMode is the Read/Write access mode that the access should have for the bucket.\nPossible values: ReadWrite, ReadOnly, WriteOnly."
+                        enum:
+                          - "ReadWrite"
+                          - "ReadOnly"
+                          - "WriteOnly"
+                        type: "string"
+                      accessSecretName:
+                        description: "accessSecretName is the name of a Kubernetes Secret that COSI should create and populate with\nbucket info and access credentials for the bucket.\nThe Secret is created in the same Namespace as the BucketAccess and is deleted when the\nBucketAccess is deleted and deprovisioned.\nThe Secret name must be unique across all bucketClaimRefs for all BucketAccesses in the same\nNamespace."
+                        maxLength: 253
+                        minLength: 1
+                        type: "string"
+                      bucketClaimName:
+                        description: "bucketClaimName is the name of a BucketClaim the access should have permissions for.\nThe BucketClaim must be in the same Namespace as the BucketAccess."
+                        maxLength: 253
+                        minLength: 1
+                        type: "string"
+                    required:
+                      - "accessMode"
+                      - "accessSecretName"
+                      - "bucketClaimName"
+                    type: "object"
+                  minItems: 1
+                  type: "array"
+                  x-kubernetes-list-map-keys:
+                    - "bucketClaimName"
+                  x-kubernetes-list-type: "map"
+                  x-kubernetes-validations:
+                    - message: "bucketClaims list is immutable"
+                      rule: "self == oldSelf"
+                protocol:
+                  description: "protocol is the object storage protocol that the provisioned access must use."
+                  enum:
+                    - "S3"
+                    - "Azure"
+                    - "GCS"
+                  type: "string"
+                  x-kubernetes-validations:
+                    - message: "protocol is immutable"
+                      rule: "self == oldSelf"
+                serviceAccountName:
+                  description: "serviceAccountName is the name of the Kubernetes ServiceAccount that user application Pods\nintend to use for access to referenced BucketClaims.\nThis has different behavior based on the BucketAccessClass's defined AuthenticationType:\n- Key: This field is ignored.\n- ServiceAccount: This field is required. The driver should configure the system so that Pods\n  using the ServiceAccount authenticate to the object storage backend automatically."
+                  maxLength: 253
+                  type: "string"
+                  x-kubernetes-validations:
+                    - message: "serviceAccountName is immutable"
+                      rule: "self == oldSelf"
+              required:
+                - "bucketAccessClassName"
+                - "bucketClaims"
+                - "protocol"
               type: "object"
+              x-kubernetes-validations:
+                - message: "serviceAccountName is immutable"
+                  rule: "has(oldSelf.serviceAccountName) == has(self.serviceAccountName)"
             status:
               description: "status defines the observed state of BucketAccess"
               properties:
-                conditions:
-                  description: "conditions represent the current state of the BucketAccess resource.\nEach condition has a unique type and reflects the status of a specific aspect of the resource.\n\nStandard condition types include:\n- \"Available\": the resource is fully functional\n- \"Progressing\": the resource is being created or updated\n- \"Degraded\": the resource failed to reach or maintain its desired state\n\nThe status of each condition is one of True, False, or Unknown."
+                accessedBuckets:
+                  description: "accessedBuckets is a list of Buckets the provisioned access must have permissions for, along\nwith per-Bucket access options. This field is populated by the COSI Controller based on the\nreferenced BucketClaims in the spec."
                   items:
-                    description: "Condition contains details for one aspect of the current state of this API Resource."
+                    description: "AccessedBucket identifies a Bucket and corresponding access parameters."
                     properties:
-                      lastTransitionTime:
-                        description: "lastTransitionTime is the last time the condition transitioned from one status to another.\nThis should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable."
-                        format: "date-time"
-                        type: "string"
-                      message:
-                        description: "message is a human readable message indicating details about the transition.\nThis may be an empty string."
-                        maxLength: 32768
-                        type: "string"
-                      observedGeneration:
-                        description: "observedGeneration represents the .metadata.generation that the condition was set based upon.\nFor instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date\nwith respect to the current state of the instance."
-                        format: "int64"
-                        minimum: 0.0
-                        type: "integer"
-                      reason:
-                        description: "reason contains a programmatic identifier indicating the reason for the condition's last transition.\nProducers of specific condition types may define expected values and meanings for this field,\nand whether the values are considered a guaranteed API.\nThe value should be a CamelCase string.\nThis field may not be empty."
-                        maxLength: 1024
-                        minLength: 1
-                        pattern: "^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$"
-                        type: "string"
-                      status:
-                        description: "status of the condition, one of True, False, Unknown."
+                      accessMode:
+                        description: "accessMode is the Read/Write access mode that the access should have for the bucket."
                         enum:
-                          - "True"
-                          - "False"
-                          - "Unknown"
+                          - "ReadWrite"
+                          - "ReadOnly"
+                          - "WriteOnly"
                         type: "string"
-                      type:
-                        description: "type of condition in CamelCase or in foo.example.com/CamelCase."
-                        maxLength: 316
-                        pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$"
+                      bucketName:
+                        description: "bucketName is the name of a Bucket the access should have permissions for."
+                        maxLength: 253
+                        minLength: 1
                         type: "string"
                     required:
-                      - "lastTransitionTime"
-                      - "message"
-                      - "reason"
-                      - "status"
-                      - "type"
+                      - "accessMode"
+                      - "bucketName"
                     type: "object"
                   type: "array"
                   x-kubernetes-list-map-keys:
-                    - "type"
+                    - "bucketName"
                   x-kubernetes-list-type: "map"
+                  x-kubernetes-validations:
+                    - message: "accessedBuckets is immutable once set"
+                      rule: "oldSelf.size() == 0 || self == oldSelf"
+                accountID:
+                  description: "accountID is the unique identifier for the backend access known to the driver.\nThis field is populated by the COSI Sidecar once access has been successfully granted."
+                  type: "string"
+                  x-kubernetes-validations:
+                    - message: "accountId is immutable once set"
+                      rule: "oldSelf == '' || self == oldSelf"
+                authenticationType:
+                  description: "authenticationType holds a copy of the BucketAccessClass authentication type from the time of\nBucketAccess provisioning. This field is populated by the COSI Controller."
+                  enum:
+                    - ""
+                    - "Key"
+                    - "ServiceAccount"
+                  type: "string"
+                  x-kubernetes-validations:
+                    - message: "authenticationType is immutable once set"
+                      rule: "oldSelf == '' || self == oldSelf"
+                driverName:
+                  description: "driverName holds a copy of the BucketAccessClass driver name from the time of BucketAccess\nprovisioning. This field is populated by the COSI Controller."
+                  type: "string"
+                  x-kubernetes-validations:
+                    - message: "driverName is immutable once set"
+                      rule: "oldSelf == '' || self == oldSelf"
+                error:
+                  description: "error holds the most recent error message, with a timestamp.\nThis is cleared when provisioning is successful."
+                  properties:
+                    message:
+                      description: "message is a string detailing the encountered error.\nNOTE: message will be logged, and it should not contain sensitive information."
+                      type: "string"
+                    time:
+                      description: "time is the timestamp when the error was encountered."
+                      format: "date-time"
+                      type: "string"
+                  type: "object"
+                parameters:
+                  additionalProperties:
+                    type: "string"
+                  description: "parameters holds a copy of the BucketAccessClass parameters from the time of BucketAccess\nprovisioning. This field is populated by the COSI Controller."
+                  type: "object"
+                  x-kubernetes-validations:
+                    - message: "accessedBuckets is immutable once set"
+                      rule: "oldSelf.size() == 0 || self == oldSelf"
+                readyToUse:
+                  description: "readyToUse indicates that the BucketAccess is ready for consumption by workloads."
+                  type: "boolean"
+              required:
+                - "readyToUse"
               type: "object"
+              x-kubernetes-validations:
+                - message: "accountID is immutable once set"
+                  rule: "!has(oldSelf.accountID) || has(self.accountID)"
+                - message: "accessedBuckets is immutable once set"
+                  rule: "!has(oldSelf.accessedBuckets) || has(self.accessedBuckets)"
+                - message: "driverName is immutable once set"
+                  rule: "!has(oldSelf.driverName) || has(self.driverName)"
+                - message: "authenticationType is immutable once set"
+                  rule: "!has(oldSelf.authenticationType) || has(self.authenticationType)"
+                - message: "parameters is immutable once set"
+                  rule: "!has(oldSelf.parameters) || has(self.parameters)"
           required:
             - "spec"
           type: "object"

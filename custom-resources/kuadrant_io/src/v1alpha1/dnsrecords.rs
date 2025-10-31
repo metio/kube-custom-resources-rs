@@ -88,7 +88,8 @@ pub struct DnsRecordHealthCheck {
     /// token is required by the endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalHeadersRef")]
     pub additional_headers_ref: Option<DnsRecordHealthCheckAdditionalHeadersRef>,
-    /// FailureThreshold is a limit of consecutive failures that must occur for a host to be considered unhealthy
+    /// FailureThreshold is the number of consecutive failures that must be exceeded for a host to be considered unhealthy.
+    /// When the number of consecutive failures exceeds this threshold, the health check will be marked as unhealthy.
     /// Defaults to 5
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i64>,

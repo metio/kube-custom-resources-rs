@@ -10,7 +10,9 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// A Spark cluster history server component. This resource is managed by the Stackable operator for Apache Spark. Find more information on how to use it in the [operator documentation](<https://docs.stackable.tech/home/nightly/spark-k8s/usage-guide/history-server).>
+/// A Spark cluster history server component. This resource is managed by the Stackable operator
+/// for Apache Spark. Find more information on how to use it in the
+/// [operator documentation](<https://docs.stackable.tech/home/nightly/spark-k8s/usage-guide/history-server).>
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "spark.stackable.tech", version = "v1alpha1", kind = "SparkHistoryServer", plural = "sparkhistoryservers")]
 #[kube(namespaced)]
@@ -18,9 +20,12 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct SparkHistoryServerSpec {
-    /// Specify which image to use, the easiest way is to only configure the `productVersion`. You can also configure a custom image registry to pull from, as well as completely custom images.
+    /// Specify which image to use, the easiest way is to only configure the `productVersion`.
+    /// You can also configure a custom image registry to pull from, as well as completely custom
+    /// images.
     /// 
-    /// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)> for details.
+    /// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)>
+    /// for details.
     pub image: SparkHistoryServerImage,
     /// The log file directory definition used by the Spark history server.
     #[serde(rename = "logFileDirectory")]
@@ -30,17 +35,22 @@ pub struct SparkHistoryServerSpec {
     /// A map of key/value strings that will be passed directly to Spark when deploying the history server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sparkConf")]
     pub spark_conf: Option<BTreeMap<String, String>>,
-    /// Name of the Vector aggregator discovery ConfigMap. It must contain the key `ADDRESS` with the address of the Vector aggregator.
+    /// Name of the Vector aggregator discovery ConfigMap.
+    /// It must contain the key `ADDRESS` with the address of the Vector aggregator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vectorAggregatorConfigMapName")]
     pub vector_aggregator_config_map_name: Option<String>,
 }
 
-/// Specify which image to use, the easiest way is to only configure the `productVersion`. You can also configure a custom image registry to pull from, as well as completely custom images.
+/// Specify which image to use, the easiest way is to only configure the `productVersion`.
+/// You can also configure a custom image registry to pull from, as well as completely custom
+/// images.
 /// 
-/// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)> for details.
+/// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)>
+/// for details.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkHistoryServerImage {
-    /// Overwrite the docker image. Specify the full docker image name, e.g. `oci.stackable.tech/sdp/superset:1.4.1-stackable2.1.0`
+    /// Overwrite the docker image.
+    /// Specify the full docker image name, e.g. `oci.stackable.tech/sdp/superset:1.4.1-stackable2.1.0`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom: Option<String>,
     /// Version of the product, e.g. `1.4.1`.
@@ -55,14 +65,19 @@ pub struct SparkHistoryServerImage {
     /// Name of the docker repo, e.g. `oci.stackable.tech/sdp`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repo: Option<String>,
-    /// Stackable version of the product, e.g. `23.4`, `23.4.1` or `0.0.0-dev`. If not specified, the operator will use its own version, e.g. `23.4.1`. When using a nightly operator or a pr version, it will use the nightly `0.0.0-dev` image.
+    /// Stackable version of the product, e.g. `23.4`, `23.4.1` or `0.0.0-dev`.
+    /// If not specified, the operator will use its own version, e.g. `23.4.1`.
+    /// When using a nightly operator or a pr version, it will use the nightly `0.0.0-dev` image.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stackableVersion")]
     pub stackable_version: Option<String>,
 }
 
-/// Specify which image to use, the easiest way is to only configure the `productVersion`. You can also configure a custom image registry to pull from, as well as completely custom images.
+/// Specify which image to use, the easiest way is to only configure the `productVersion`.
+/// You can also configure a custom image registry to pull from, as well as completely custom
+/// images.
 /// 
-/// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)> for details.
+/// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)>
+/// for details.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum SparkHistoryServerImagePullPolicy {
     IfNotPresent,
@@ -97,14 +112,16 @@ pub struct SparkHistoryServerLogFileDirectoryS3 {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkHistoryServerLogFileDirectoryS3Bucket {
-    /// S3 bucket specification containing the bucket name and an inlined or referenced connection specification. Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
+    /// S3 bucket specification containing the bucket name and an inlined or referenced connection specification.
+    /// Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub inline: Option<SparkHistoryServerLogFileDirectoryS3BucketInline>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reference: Option<String>,
 }
 
-/// S3 bucket specification containing the bucket name and an inlined or referenced connection specification. Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
+/// S3 bucket specification containing the bucket name and an inlined or referenced connection specification.
+/// Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkHistoryServerLogFileDirectoryS3BucketInline {
     /// The name of the S3 bucket.
@@ -117,25 +134,32 @@ pub struct SparkHistoryServerLogFileDirectoryS3BucketInline {
 /// The definition of an S3 connection, either inline or as a reference.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkHistoryServerLogFileDirectoryS3BucketInlineConnection {
-    /// S3 connection definition as a resource. Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
+    /// S3 connection definition as a resource.
+    /// Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub inline: Option<SparkHistoryServerLogFileDirectoryS3BucketInlineConnectionInline>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reference: Option<String>,
 }
 
-/// S3 connection definition as a resource. Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
+/// S3 connection definition as a resource.
+/// Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkHistoryServerLogFileDirectoryS3BucketInlineConnectionInline {
-    /// Which access style to use. Defaults to virtual hosted-style as most of the data products out there. Have a look at the [AWS documentation](<https://docs.aws.amazon.com/AmazonS3/latest/userguide/VirtualHosting.html).>
+    /// Which access style to use.
+    /// Defaults to virtual hosted-style as most of the data products out there.
+    /// Have a look at the [AWS documentation](<https://docs.aws.amazon.com/AmazonS3/latest/userguide/VirtualHosting.html).>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessStyle")]
     pub access_style: Option<SparkHistoryServerLogFileDirectoryS3BucketInlineConnectionInlineAccessStyle>,
-    /// If the S3 uses authentication you have to specify you S3 credentials. In the most cases a [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> providing `accessKey` and `secretKey` is sufficient.
+    /// If the S3 uses authentication you have to specify you S3 credentials.
+    /// In the most cases a [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)>
+    /// providing `accessKey` and `secretKey` is sufficient.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<SparkHistoryServerLogFileDirectoryS3BucketInlineConnectionInlineCredentials>,
     /// Host of the S3 server without any protocol or port. For example: `west1.my-cloud.com`.
     pub host: String,
-    /// Port the S3 server listens on. If not specified the product will determine the port to use.
+    /// Port the S3 server listens on.
+    /// If not specified the product will determine the port to use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<u16>,
     /// Bucket region used for signing headers (sigv4).
@@ -150,17 +174,21 @@ pub struct SparkHistoryServerLogFileDirectoryS3BucketInlineConnectionInline {
     pub tls: Option<SparkHistoryServerLogFileDirectoryS3BucketInlineConnectionInlineTls>,
 }
 
-/// S3 connection definition as a resource. Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
+/// S3 connection definition as a resource.
+/// Learn more on the [S3 concept documentation](<https://docs.stackable.tech/home/nightly/concepts/s3).>
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum SparkHistoryServerLogFileDirectoryS3BucketInlineConnectionInlineAccessStyle {
     Path,
     VirtualHosted,
 }
 
-/// If the S3 uses authentication you have to specify you S3 credentials. In the most cases a [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> providing `accessKey` and `secretKey` is sufficient.
+/// If the S3 uses authentication you have to specify you S3 credentials.
+/// In the most cases a [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)>
+/// providing `accessKey` and `secretKey` is sufficient.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkHistoryServerLogFileDirectoryS3BucketInlineConnectionInlineCredentials {
-    /// [Scope](<https://docs.stackable.tech/home/nightly/secret-operator/scope)> of the [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass).>
+    /// [Scope](<https://docs.stackable.tech/home/nightly/secret-operator/scope)> of the
+    /// [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scope: Option<SparkHistoryServerLogFileDirectoryS3BucketInlineConnectionInlineCredentialsScope>,
     /// [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> containing the LDAP bind credentials.
@@ -168,19 +196,24 @@ pub struct SparkHistoryServerLogFileDirectoryS3BucketInlineConnectionInlineCrede
     pub secret_class: String,
 }
 
-/// [Scope](<https://docs.stackable.tech/home/nightly/secret-operator/scope)> of the [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass).>
+/// [Scope](<https://docs.stackable.tech/home/nightly/secret-operator/scope)> of the
+/// [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkHistoryServerLogFileDirectoryS3BucketInlineConnectionInlineCredentialsScope {
-    /// The listener volume scope allows Node and Service scopes to be inferred from the applicable listeners. This must correspond to Volume names in the Pod that mount Listeners.
+    /// The listener volume scope allows Node and Service scopes to be inferred from the applicable listeners.
+    /// This must correspond to Volume names in the Pod that mount Listeners.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenerVolumes")]
     pub listener_volumes: Option<Vec<String>>,
-    /// The node scope is resolved to the name of the Kubernetes Node object that the Pod is running on. This will typically be the DNS name of the node.
+    /// The node scope is resolved to the name of the Kubernetes Node object that the Pod is running on.
+    /// This will typically be the DNS name of the node.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub node: Option<bool>,
-    /// The pod scope is resolved to the name of the Kubernetes Pod. This allows the secret to differentiate between StatefulSet replicas.
+    /// The pod scope is resolved to the name of the Kubernetes Pod.
+    /// This allows the secret to differentiate between StatefulSet replicas.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pod: Option<bool>,
-    /// The service scope allows Pod objects to specify custom scopes. This should typically correspond to Service objects that the Pod participates in.
+    /// The service scope allows Pod objects to specify custom scopes.
+    /// This should typically correspond to Service objects that the Pod participates in.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<String>>,
 }
@@ -230,15 +263,19 @@ pub struct SparkHistoryServerLogFileDirectoryS3BucketInlineConnectionInlineTlsVe
 /// CA cert to verify the server.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkHistoryServerLogFileDirectoryS3BucketInlineConnectionInlineTlsVerificationServerCaCert {
-    /// Name of the [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> which will provide the CA certificate. Note that a SecretClass does not need to have a key but can also work with just a CA certificate, so if you got provided with a CA cert but don't have access to the key you can still use this method.
+    /// Name of the [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass)> which will provide the CA certificate.
+    /// Note that a SecretClass does not need to have a key but can also work with just a CA certificate,
+    /// so if you got provided with a CA cert but don't have access to the key you can still use this method.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretClass")]
     pub secret_class: Option<String>,
-    /// Use TLS and the CA certificates trusted by the common web browsers to verify the server. This can be useful when you e.g. use public AWS S3 or other public available services.
+    /// Use TLS and the CA certificates trusted by the common web browsers to verify the server.
+    /// This can be useful when you e.g. use public AWS S3 or other public available services.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "webPki")]
     pub web_pki: Option<SparkHistoryServerLogFileDirectoryS3BucketInlineConnectionInlineTlsVerificationServerCaCertWebPki>,
 }
 
-/// Use TLS and the CA certificates trusted by the common web browsers to verify the server. This can be useful when you e.g. use public AWS S3 or other public available services.
+/// Use TLS and the CA certificates trusted by the common web browsers to verify the server.
+/// This can be useful when you e.g. use public AWS S3 or other public available services.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkHistoryServerLogFileDirectoryS3BucketInlineConnectionInlineTlsVerificationServerCaCertWebPki {
 }
@@ -250,16 +287,32 @@ pub struct SparkHistoryServerNodes {
     pub cli_overrides: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<SparkHistoryServerNodesConfig>,
-    /// The `configOverrides` can be used to configure properties in product config files that are not exposed in the CRD. Read the [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)> and consult the operator specific usage guide documentation for details on the available config files and settings for the specific product.
+    /// The `configOverrides` can be used to configure properties in product config files
+    /// that are not exposed in the CRD. Read the
+    /// [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)>
+    /// and consult the operator specific usage guide documentation for details on the
+    /// available config files and settings for the specific product.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configOverrides")]
     pub config_overrides: Option<BTreeMap<String, BTreeMap<String, String>>>,
-    /// `envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)> for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available.
+    /// `envOverrides` configure environment variables to be set in the Pods.
+    /// It is a map from strings to strings - environment variables and the value to set.
+    /// Read the
+    /// [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)>
+    /// for more information and consult the operator specific usage guide to find out about
+    /// the product specific environment variables that are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envOverrides")]
     pub env_overrides: Option<BTreeMap<String, String>>,
-    /// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+    /// Allows overriding JVM arguments.
+    /// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+    /// for details on the usage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
     pub jvm_argument_overrides: Option<SparkHistoryServerNodesJvmArgumentOverrides>,
-    /// In the `podOverrides` property you can define a [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)> to override any property that can be set on a Kubernetes Pod. Read the [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)> for more information.
+    /// In the `podOverrides` property you can define a
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// to override any property that can be set on a Kubernetes Pod.
+    /// Read the
+    /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
+    /// for more information.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podOverrides")]
     pub pod_overrides: Option<BTreeMap<String, serde_json::Value>>,
     /// This is a product-agnostic RoleConfig, which is sufficient for most of the products.
@@ -271,7 +324,8 @@ pub struct SparkHistoryServerNodes {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkHistoryServerNodesConfig {
-    /// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+    /// These configuration settings control
+    /// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<SparkHistoryServerNodesConfigAffinity>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -279,15 +333,18 @@ pub struct SparkHistoryServerNodesConfig {
     /// Logging configuration, learn more in the [logging concept documentation](<https://docs.stackable.tech/home/nightly/concepts/logging).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<SparkHistoryServerNodesConfigLogging>,
-    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`. This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
+    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`.
+    /// This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestedSecretLifetime")]
     pub requested_secret_lifetime: Option<String>,
-    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+    /// usage, if this role needs any.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<SparkHistoryServerNodesConfigResources>,
 }
 
-/// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+/// These configuration settings control
+/// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkHistoryServerNodesConfigAffinity {
     /// Same as the `spec.affinity.nodeAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
@@ -321,7 +378,7 @@ pub struct SparkHistoryServerNodesConfigLoggingContainers {
     /// Configuration for the console appender
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub console: Option<SparkHistoryServerNodesConfigLoggingContainersConsole>,
-    /// Custom log configuration provided in a ConfigMap
+    /// Log configuration provided in a ConfigMap
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom: Option<SparkHistoryServerNodesConfigLoggingContainersCustom>,
     /// Configuration for the file appender
@@ -335,7 +392,8 @@ pub struct SparkHistoryServerNodesConfigLoggingContainers {
 /// Configuration for the console appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkHistoryServerNodesConfigLoggingContainersConsole {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<SparkHistoryServerNodesConfigLoggingContainersConsoleLevel>,
 }
@@ -359,7 +417,7 @@ pub enum SparkHistoryServerNodesConfigLoggingContainersConsoleLevel {
     None,
 }
 
-/// Custom log configuration provided in a ConfigMap
+/// Log configuration provided in a ConfigMap
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkHistoryServerNodesConfigLoggingContainersCustom {
     /// ConfigMap containing the log configuration files
@@ -370,7 +428,8 @@ pub struct SparkHistoryServerNodesConfigLoggingContainersCustom {
 /// Configuration for the file appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkHistoryServerNodesConfigLoggingContainersFile {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<SparkHistoryServerNodesConfigLoggingContainersFileLevel>,
 }
@@ -397,7 +456,8 @@ pub enum SparkHistoryServerNodesConfigLoggingContainersFileLevel {
 /// Configuration per logger
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkHistoryServerNodesConfigLoggingContainersLoggers {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<SparkHistoryServerNodesConfigLoggingContainersLoggersLevel>,
 }
@@ -421,7 +481,8 @@ pub enum SparkHistoryServerNodesConfigLoggingContainersLoggersLevel {
     None,
 }
 
-/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+/// usage, if this role needs any.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkHistoryServerNodesConfigResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -434,17 +495,28 @@ pub struct SparkHistoryServerNodesConfigResources {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkHistoryServerNodesConfigResourcesCpu {
-    /// The maximum amount of CPU cores that can be requested by Pods. Equivalent to the `limit` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The maximum amount of CPU cores that can be requested by Pods.
+    /// Equivalent to the `limit` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max: Option<String>,
-    /// The minimal amount of CPU cores that Pods need to run. Equivalent to the `request` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The minimal amount of CPU cores that Pods need to run.
+    /// Equivalent to the `request` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub min: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkHistoryServerNodesConfigResourcesMemory {
-    /// The maximum amount of memory that should be available to the Pod. Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),> which means these suffixes are supported: E, P, T, G, M, k. You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki. For example, the following represent roughly the same value: `128974848, 129e6, 129M,  128974848000m, 123Mi`
+    /// The maximum amount of memory that should be available to the Pod.
+    /// Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),>
+    /// which means these suffixes are supported: E, P, T, G, M, k.
+    /// You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki.
+    /// For example, the following represent roughly the same value:
+    /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<String>,
     /// Additional options that can be specified.
@@ -461,7 +533,9 @@ pub struct SparkHistoryServerNodesConfigResourcesMemoryRuntimeLimits {
 pub struct SparkHistoryServerNodesConfigResourcesStorage {
 }
 
-/// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+/// Allows overriding JVM arguments.
+/// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+/// for details on the usage.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkHistoryServerNodesJvmArgumentOverrides {
     /// JVM arguments to be added
@@ -478,29 +552,38 @@ pub struct SparkHistoryServerNodesJvmArgumentOverrides {
 /// This is a product-agnostic RoleConfig, which is sufficient for most of the products.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkHistoryServerNodesRoleConfig {
-    /// This field controls which [ListenerClass](<https://docs.stackable.tech/home/nightly/listener-operator/listenerclass.html)> is used to expose the history server.
+    /// This field controls which [ListenerClass](<https://docs.stackable.tech/home/nightly/listener-operator/listenerclass.html)>
+    /// is used to expose the history server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenerClass")]
     pub listener_class: Option<String>,
     /// This struct is used to configure:
     /// 
-    /// 1. If PodDisruptionBudgets are created by the operator 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
+    /// 1. If PodDisruptionBudgets are created by the operator
+    /// 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
     /// 
-    /// Learn more in the [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
+    /// Learn more in the
+    /// [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podDisruptionBudget")]
     pub pod_disruption_budget: Option<SparkHistoryServerNodesRoleConfigPodDisruptionBudget>,
 }
 
 /// This struct is used to configure:
 /// 
-/// 1. If PodDisruptionBudgets are created by the operator 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
+/// 1. If PodDisruptionBudgets are created by the operator
+/// 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
 /// 
-/// Learn more in the [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
+/// Learn more in the
+/// [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkHistoryServerNodesRoleConfigPodDisruptionBudget {
-    /// Whether a PodDisruptionBudget should be written out for this role. Disabling this enables you to specify your own - custom - one. Defaults to true.
+    /// Whether a PodDisruptionBudget should be written out for this role.
+    /// Disabling this enables you to specify your own - custom - one.
+    /// Defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    /// The number of Pods that are allowed to be down because of voluntary disruptions. If you don't explicitly set this, the operator will use a sane default based upon knowledge about the individual product.
+    /// The number of Pods that are allowed to be down because of voluntary disruptions.
+    /// If you don't explicitly set this, the operator will use a sane default based
+    /// upon knowledge about the individual product.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<u16>,
 }
@@ -511,16 +594,32 @@ pub struct SparkHistoryServerNodesRoleGroups {
     pub cli_overrides: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<SparkHistoryServerNodesRoleGroupsConfig>,
-    /// The `configOverrides` can be used to configure properties in product config files that are not exposed in the CRD. Read the [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)> and consult the operator specific usage guide documentation for details on the available config files and settings for the specific product.
+    /// The `configOverrides` can be used to configure properties in product config files
+    /// that are not exposed in the CRD. Read the
+    /// [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)>
+    /// and consult the operator specific usage guide documentation for details on the
+    /// available config files and settings for the specific product.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configOverrides")]
     pub config_overrides: Option<BTreeMap<String, BTreeMap<String, String>>>,
-    /// `envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)> for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available.
+    /// `envOverrides` configure environment variables to be set in the Pods.
+    /// It is a map from strings to strings - environment variables and the value to set.
+    /// Read the
+    /// [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)>
+    /// for more information and consult the operator specific usage guide to find out about
+    /// the product specific environment variables that are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envOverrides")]
     pub env_overrides: Option<BTreeMap<String, String>>,
-    /// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+    /// Allows overriding JVM arguments.
+    /// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+    /// for details on the usage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
     pub jvm_argument_overrides: Option<SparkHistoryServerNodesRoleGroupsJvmArgumentOverrides>,
-    /// In the `podOverrides` property you can define a [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)> to override any property that can be set on a Kubernetes Pod. Read the [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)> for more information.
+    /// In the `podOverrides` property you can define a
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// to override any property that can be set on a Kubernetes Pod.
+    /// Read the
+    /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
+    /// for more information.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podOverrides")]
     pub pod_overrides: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -529,7 +628,8 @@ pub struct SparkHistoryServerNodesRoleGroups {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkHistoryServerNodesRoleGroupsConfig {
-    /// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+    /// These configuration settings control
+    /// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<SparkHistoryServerNodesRoleGroupsConfigAffinity>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -537,15 +637,18 @@ pub struct SparkHistoryServerNodesRoleGroupsConfig {
     /// Logging configuration, learn more in the [logging concept documentation](<https://docs.stackable.tech/home/nightly/concepts/logging).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<SparkHistoryServerNodesRoleGroupsConfigLogging>,
-    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`. This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
+    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`.
+    /// This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestedSecretLifetime")]
     pub requested_secret_lifetime: Option<String>,
-    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+    /// usage, if this role needs any.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<SparkHistoryServerNodesRoleGroupsConfigResources>,
 }
 
-/// These configuration settings control [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+/// These configuration settings control
+/// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkHistoryServerNodesRoleGroupsConfigAffinity {
     /// Same as the `spec.affinity.nodeAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
@@ -579,7 +682,7 @@ pub struct SparkHistoryServerNodesRoleGroupsConfigLoggingContainers {
     /// Configuration for the console appender
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub console: Option<SparkHistoryServerNodesRoleGroupsConfigLoggingContainersConsole>,
-    /// Custom log configuration provided in a ConfigMap
+    /// Log configuration provided in a ConfigMap
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom: Option<SparkHistoryServerNodesRoleGroupsConfigLoggingContainersCustom>,
     /// Configuration for the file appender
@@ -593,7 +696,8 @@ pub struct SparkHistoryServerNodesRoleGroupsConfigLoggingContainers {
 /// Configuration for the console appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkHistoryServerNodesRoleGroupsConfigLoggingContainersConsole {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<SparkHistoryServerNodesRoleGroupsConfigLoggingContainersConsoleLevel>,
 }
@@ -617,7 +721,7 @@ pub enum SparkHistoryServerNodesRoleGroupsConfigLoggingContainersConsoleLevel {
     None,
 }
 
-/// Custom log configuration provided in a ConfigMap
+/// Log configuration provided in a ConfigMap
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkHistoryServerNodesRoleGroupsConfigLoggingContainersCustom {
     /// ConfigMap containing the log configuration files
@@ -628,7 +732,8 @@ pub struct SparkHistoryServerNodesRoleGroupsConfigLoggingContainersCustom {
 /// Configuration for the file appender
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkHistoryServerNodesRoleGroupsConfigLoggingContainersFile {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<SparkHistoryServerNodesRoleGroupsConfigLoggingContainersFileLevel>,
 }
@@ -655,7 +760,8 @@ pub enum SparkHistoryServerNodesRoleGroupsConfigLoggingContainersFileLevel {
 /// Configuration per logger
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkHistoryServerNodesRoleGroupsConfigLoggingContainersLoggers {
-    /// The log level threshold. Log events with a lower log level are discarded.
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<SparkHistoryServerNodesRoleGroupsConfigLoggingContainersLoggersLevel>,
 }
@@ -679,7 +785,8 @@ pub enum SparkHistoryServerNodesRoleGroupsConfigLoggingContainersLoggersLevel {
     None,
 }
 
-/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage usage, if this role needs any.
+/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+/// usage, if this role needs any.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkHistoryServerNodesRoleGroupsConfigResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -692,17 +799,28 @@ pub struct SparkHistoryServerNodesRoleGroupsConfigResources {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkHistoryServerNodesRoleGroupsConfigResourcesCpu {
-    /// The maximum amount of CPU cores that can be requested by Pods. Equivalent to the `limit` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The maximum amount of CPU cores that can be requested by Pods.
+    /// Equivalent to the `limit` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max: Option<String>,
-    /// The minimal amount of CPU cores that Pods need to run. Equivalent to the `request` for Pod resource configuration. Cores are specified either as a decimal point number or as milli units. For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    /// The minimal amount of CPU cores that Pods need to run.
+    /// Equivalent to the `request` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub min: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkHistoryServerNodesRoleGroupsConfigResourcesMemory {
-    /// The maximum amount of memory that should be available to the Pod. Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),> which means these suffixes are supported: E, P, T, G, M, k. You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki. For example, the following represent roughly the same value: `128974848, 129e6, 129M,  128974848000m, 123Mi`
+    /// The maximum amount of memory that should be available to the Pod.
+    /// Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),>
+    /// which means these suffixes are supported: E, P, T, G, M, k.
+    /// You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki.
+    /// For example, the following represent roughly the same value:
+    /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<String>,
     /// Additional options that can be specified.
@@ -719,7 +837,9 @@ pub struct SparkHistoryServerNodesRoleGroupsConfigResourcesMemoryRuntimeLimits {
 pub struct SparkHistoryServerNodesRoleGroupsConfigResourcesStorage {
 }
 
-/// Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)> for details on the usage.
+/// Allows overriding JVM arguments.
+/// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+/// for details on the usage.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkHistoryServerNodesRoleGroupsJvmArgumentOverrides {
     /// JVM arguments to be added

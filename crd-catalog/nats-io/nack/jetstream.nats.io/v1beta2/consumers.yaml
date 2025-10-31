@@ -143,6 +143,10 @@ spec:
                 optStartTime:
                   description: "Time format must be RFC3339."
                   type: "string"
+                pauseUntil:
+                  default: ""
+                  description: "RFC3339 timestamp until which the consumer should be paused."
+                  type: "string"
                 pinnedTtl:
                   default: ""
                   description: "TTL for pinned client when using pinned_client priority policy."

@@ -30,61 +30,51 @@ spec:
             spec:
               description: "spec defines the desired state of BucketAccessClass"
               properties:
-                foo:
-                  description: "foo is an example field of BucketAccessClass. Edit bucketaccessclass_types.go to remove/update"
+                authenticationType:
+                  allOf:
+                    - enum:
+                        - ""
+                        - "Key"
+                        - "ServiceAccount"
+                    - enum:
+                        - "Key"
+                        - "ServiceAccount"
+                  description: "authenticationType specifies which authentication mechanism is used bucket access.\nPossible values:\n - Key: The driver should generate a protocol-appropriate access key that clients can use to\n   authenticate to the backend object store.\n - ServiceAccount: The driver should configure the system such that Pods using the given\n   ServiceAccount authenticate to the backend object store automatically."
                   type: "string"
-              type: "object"
-            status:
-              description: "status defines the observed state of BucketAccessClass"
-              properties:
-                conditions:
-                  description: "conditions represent the current state of the BucketAccessClass resource.\nEach condition has a unique type and reflects the status of a specific aspect of the resource.\n\nStandard condition types include:\n- \"Available\": the resource is fully functional\n- \"Progressing\": the resource is being created or updated\n- \"Degraded\": the resource failed to reach or maintain its desired state\n\nThe status of each condition is one of True, False, or Unknown."
-                  items:
-                    description: "Condition contains details for one aspect of the current state of this API Resource."
-                    properties:
-                      lastTransitionTime:
-                        description: "lastTransitionTime is the last time the condition transitioned from one status to another.\nThis should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable."
-                        format: "date-time"
-                        type: "string"
-                      message:
-                        description: "message is a human readable message indicating details about the transition.\nThis may be an empty string."
-                        maxLength: 32768
-                        type: "string"
-                      observedGeneration:
-                        description: "observedGeneration represents the .metadata.generation that the condition was set based upon.\nFor instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date\nwith respect to the current state of the instance."
-                        format: "int64"
-                        minimum: 0.0
-                        type: "integer"
-                      reason:
-                        description: "reason contains a programmatic identifier indicating the reason for the condition's last transition.\nProducers of specific condition types may define expected values and meanings for this field,\nand whether the values are considered a guaranteed API.\nThe value should be a CamelCase string.\nThis field may not be empty."
-                        maxLength: 1024
-                        minLength: 1
-                        pattern: "^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$"
-                        type: "string"
-                      status:
-                        description: "status of the condition, one of True, False, Unknown."
+                driverName:
+                  description: "driverName is the name of the driver that fulfills requests for this BucketAccessClass."
+                  minLength: 1
+                  type: "string"
+                featureOptions:
+                  description: "featureOptions can be used to adjust various COSI access provisioning behaviors."
+                  properties:
+                    disallowMultiBucketAccess:
+                      description: "disallowMultiBucketAccess disables the ability for a BucketAccess to reference multiple\nBucketClaims when set."
+                      type: "boolean"
+                    disallowedBucketAccessModes:
+                      description: "disallowedBucketAccessModes is a list of disallowed Read/Write access modes. A BucketAccess\nusing this class will not be allowed to request access to a BucketClaim with any access mode\nlisted here."
+                      items:
+                        description: "BucketAccessMode describes the Read/Write mode an access should have for a bucket."
                         enum:
-                          - "True"
-                          - "False"
-                          - "Unknown"
+                          - "ReadWrite"
+                          - "ReadOnly"
+                          - "WriteOnly"
                         type: "string"
-                      type:
-                        description: "type of condition in CamelCase or in foo.example.com/CamelCase."
-                        maxLength: 316
-                        pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$"
-                        type: "string"
-                    required:
-                      - "lastTransitionTime"
-                      - "message"
-                      - "reason"
-                      - "status"
-                      - "type"
-                    type: "object"
-                  type: "array"
-                  x-kubernetes-list-map-keys:
-                    - "type"
-                  x-kubernetes-list-type: "map"
+                      type: "array"
+                      x-kubernetes-list-type: "set"
+                  type: "object"
+                parameters:
+                  additionalProperties:
+                    type: "string"
+                  description: "parameters is an opaque map of driver-specific configuration items passed to the driver that\nfulfills requests for this BucketAccessClass."
+                  type: "object"
+              required:
+                - "authenticationType"
+                - "driverName"
               type: "object"
+              x-kubernetes-validations:
+                - message: "BucketAccessClass spec is immutable"
+                  rule: "self == oldSelf"
           required:
             - "spec"
           type: "object"

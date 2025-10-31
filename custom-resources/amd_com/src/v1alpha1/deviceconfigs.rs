@@ -637,6 +637,9 @@ pub struct DeviceConfigMetricsExporter {
     /// NodePort is the external port for pulling metrics from outside the cluster, in the range 30000-32767 (assigned automatically by default)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePort")]
     pub node_port: Option<i32>,
+    /// Set PodAnnotations for metrics exporter
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAnnotations")]
+    pub pod_annotations: Option<BTreeMap<String, String>>,
     /// Set the host path for pod-resource kubelet.socket,
     /// vanila kubernetes path is /var/lib/kubelet/pod-resources
     /// microk8s path is /var/snap/microk8s/common/var/lib/kubelet/pod-resources/
@@ -652,9 +655,15 @@ pub struct DeviceConfigMetricsExporter {
     /// optional kube-rbac-proxy config to provide rbac services
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rbacConfig")]
     pub rbac_config: Option<DeviceConfigMetricsExporterRbacConfig>,
+    /// Set resource config for metrics exporter
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resource: Option<DeviceConfigMetricsExporterResource>,
     /// Selector describes on which nodes to enable metrics exporter
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<BTreeMap<String, String>>,
+    /// Set ServiceAnnotations for metrics exporter
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAnnotations")]
+    pub service_annotations: Option<BTreeMap<String, String>>,
     /// ServiceType service type for metrics, clusterIP/NodePort, clusterIP by default
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceType")]
     pub service_type: Option<DeviceConfigMetricsExporterServiceType>,
@@ -1198,6 +1207,44 @@ pub struct DeviceConfigMetricsExporterRbacConfigStaticAuthorization {
     /// Enables static authorization using client certificate CN
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
+}
+
+/// Set resource config for metrics exporter
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DeviceConfigMetricsExporterResource {
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// This field is immutable. It can only be set for containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<DeviceConfigMetricsExporterResourceClaims>>,
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: <https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: <https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// ResourceClaim references one entry in PodSpec.ResourceClaims.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DeviceConfigMetricsExporterResourceClaims {
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
+    pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// metrics exporter

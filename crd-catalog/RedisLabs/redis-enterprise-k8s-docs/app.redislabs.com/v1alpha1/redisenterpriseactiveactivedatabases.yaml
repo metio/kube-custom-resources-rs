@@ -166,6 +166,19 @@ spec:
                             - "enabled"
                             - "threshold"
                           type: "object"
+                        bdb_proxy_cert_expiring_soon:
+                          description: "Proxy certificate will expire in less than specified threshold value [days]"
+                          properties:
+                            enabled:
+                              description: "Alert enabled or disabled"
+                              type: "boolean"
+                            threshold:
+                              description: "Threshold for alert going on/off"
+                              type: "string"
+                          required:
+                            - "enabled"
+                            - "threshold"
+                          type: "object"
                         bdb_ram_dataset_overhead:
                           description: "Dataset RAM overhead of a shard has reached the threshold value [% of its RAM limit]"
                           properties:
@@ -475,7 +488,10 @@ spec:
                             description: "Role Name of RolePermissionType (note: use exact name of the role from the Redis Enterprise role list, case sensitive)"
                             type: "string"
                           type:
-                            description: "Type of Redis Enterprise Database Role Permission"
+                            default: "redis-enterprise"
+                            description: "Type of Redis Enterprise Database Role Permission. Currently, only \"redis-enterprise\" is supported, which uses roles and ACLs defined within Redis Enterprise directly."
+                            enum:
+                              - "redis-enterprise"
                             type: "string"
                         required:
                           - "acl"

@@ -2450,7 +2450,6 @@ pub struct MariaDbMaxScaleAuth {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub generate: Option<bool>,
     /// MetricsPasswordSecretKeyRef is Secret key reference to the metrics password to call the admib REST API. It is defaulted if metrics are enabled.
-    /// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the password.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricsPasswordSecretKeyRef")]
     pub metrics_password_secret_key_ref: Option<MariaDbMaxScaleAuthMetricsPasswordSecretKeyRef>,
     /// MetricsUsername is an metrics username to call the REST API. It is defaulted if metrics are enabled.
@@ -2518,7 +2517,6 @@ pub struct MariaDbMaxScaleAuthClientPasswordSecretKeyRef {
 }
 
 /// MetricsPasswordSecretKeyRef is Secret key reference to the metrics password to call the admib REST API. It is defaulted if metrics are enabled.
-/// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the password.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbMaxScaleAuthMetricsPasswordSecretKeyRef {
     /// Generate indicates whether the Secret should be generated if the Secret referenced is not present.
@@ -4413,6 +4411,10 @@ pub struct MariaDbReplication {
     /// See: <https://mariadb.com/kb/en/semisynchronous-replication/#rpl_semi_sync_master_wait_point.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "semiSyncWaitPoint")]
     pub semi_sync_wait_point: Option<MariaDbReplicationSemiSyncWaitPoint>,
+    /// StandaloneProbes indicates whether to use the default non-HA startup and liveness probes.
+    /// It is disabled by default
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "standaloneProbes")]
+    pub standalone_probes: Option<bool>,
     /// SyncBinlog indicates after how many events the binary log is synchronized to the disk.
     /// See: <https://mariadb.com/docs/server/ha-and-performance/standard-replication/replication-and-binary-log-system-variables#sync_binlog>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncBinlog")]

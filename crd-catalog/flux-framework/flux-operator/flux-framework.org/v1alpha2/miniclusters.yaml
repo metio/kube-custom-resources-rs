@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.19.0"
   name: "miniclusters.flux-framework.org"
 spec:
   group: "flux-framework.org"
@@ -171,30 +171,89 @@ spec:
                       securityContext:
                         description: "Security Context\nhttps://kubernetes.io/docs/tasks/configure-pod-container/security-context/"
                         properties:
-                          addCapabilities:
-                            description: "Capabilities to add"
-                            items:
-                              type: "string"
-                            type: "array"
-                            x-kubernetes-list-type: "atomic"
                           allowPrivilegeEscalation:
-                            default: true
-                            description: "Allow privilege escalation (defaults to true)"
+                            description: "AllowPrivilegeEscalation controls whether a process can gain more\nprivileges than its parent process. This bool directly controls if\nthe no_new_privs flag will be set on the container process.\nAllowPrivilegeEscalation is true always when the container is:\n1) run as Privileged\n2) has CAP_SYS_ADMIN\nNote that this field cannot be set when spec.os.name is windows."
                             type: "boolean"
+                          capabilities:
+                            description: "The capabilities to add/drop when running containers.\nDefaults to the default set of capabilities granted by the container runtime.\nNote that this field cannot be set when spec.os.name is windows."
+                            properties:
+                              add:
+                                description: "Added capabilities"
+                                items:
+                                  description: "Capability represent POSIX capabilities type"
+                                  type: "string"
+                                type: "array"
+                              drop:
+                                description: "Removed capabilities"
+                                items:
+                                  description: "Capability represent POSIX capabilities type"
+                                  type: "string"
+                                type: "array"
+                            type: "object"
                           privileged:
-                            description: "Privileged container"
+                            description: "Run container in privileged mode.\nProcesses in privileged containers are essentially equivalent to root on the host.\nDefaults to false.\nNote that this field cannot be set when spec.os.name is windows."
+                            type: "boolean"
+                          procMount:
+                            description: "procMount denotes the type of proc mount to use for the containers.\nThe default is DefaultProcMount which uses the container runtime defaults for\nreadonly paths and masked paths.\nThis requires the ProcMountType feature flag to be enabled.\nNote that this field cannot be set when spec.os.name is windows."
+                            type: "string"
+                          readOnlyRootFilesystem:
+                            description: "Whether this container has a read-only root filesystem.\nDefault is false.\nNote that this field cannot be set when spec.os.name is windows."
                             type: "boolean"
                           runAsGroup:
-                            description: "Run as a specific uid"
+                            description: "The GID to run the entrypoint of the container process.\nUses runtime default if unset.\nMay also be set in PodSecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence.\nNote that this field cannot be set when spec.os.name is windows."
                             format: "int64"
                             type: "integer"
                           runAsNonRoot:
-                            description: "Run as non root (defaults to false)"
+                            description: "Indicates that the container must run as a non-root user.\nIf true, the Kubelet will validate the image at runtime to ensure that it\ndoes not run as UID 0 (root) and fail to start the container if it does.\nIf unset or false, no such validation will be performed.\nMay also be set in PodSecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence."
                             type: "boolean"
                           runAsUser:
-                            description: "Run as a specific gid"
+                            description: "The UID to run the entrypoint of the container process.\nDefaults to user specified in image metadata if unspecified.\nMay also be set in PodSecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence.\nNote that this field cannot be set when spec.os.name is windows."
                             format: "int64"
                             type: "integer"
+                          seLinuxOptions:
+                            description: "The SELinux context to be applied to the container.\nIf unspecified, the container runtime will allocate a random SELinux context for each\ncontainer.  May also be set in PodSecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence.\nNote that this field cannot be set when spec.os.name is windows."
+                            properties:
+                              level:
+                                description: "Level is SELinux level label that applies to the container."
+                                type: "string"
+                              role:
+                                description: "Role is a SELinux role label that applies to the container."
+                                type: "string"
+                              type:
+                                description: "Type is a SELinux type label that applies to the container."
+                                type: "string"
+                              user:
+                                description: "User is a SELinux user label that applies to the container."
+                                type: "string"
+                            type: "object"
+                          seccompProfile:
+                            description: "The seccomp options to use by this container. If seccomp options are\nprovided at both the pod & container level, the container options\noverride the pod options.\nNote that this field cannot be set when spec.os.name is windows."
+                            properties:
+                              localhostProfile:
+                                description: "localhostProfile indicates a profile defined in a file on the node should be used.\nThe profile must be preconfigured on the node to work.\nMust be a descending path, relative to the kubelet's configured seccomp profile location.\nMust only be set if type is \"Localhost\"."
+                                type: "string"
+                              type:
+                                description: "type indicates which kind of seccomp profile will be applied.\nValid options are:\n\nLocalhost - a profile defined in a file on the node should be used.\nRuntimeDefault - the container runtime default profile should be used.\nUnconfined - no profile should be applied."
+                                type: "string"
+                            required:
+                              - "type"
+                            type: "object"
+                          windowsOptions:
+                            description: "The Windows specific settings applied to all containers.\nIf unspecified, the options from the PodSecurityContext will be used.\nIf set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.\nNote that this field cannot be set when spec.os.name is linux."
+                            properties:
+                              gmsaCredentialSpec:
+                                description: "GMSACredentialSpec is where the GMSA admission webhook\n(https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the\nGMSA credential spec named by the GMSACredentialSpecName field."
+                                type: "string"
+                              gmsaCredentialSpecName:
+                                description: "GMSACredentialSpecName is the name of the GMSA credential spec to use."
+                                type: "string"
+                              hostProcess:
+                                description: "HostProcess determines if a container should be run as a 'Host Process' container.\nThis field is alpha-level and will only be honored by components that enable the\nWindowsHostProcessContainers feature flag. Setting this field without the feature\nflag will result in errors when validating the Pod. All of a Pod's containers must\nhave the same effective HostProcess value (it is not allowed to have a mix of HostProcess\ncontainers and non-HostProcess containers).  In addition, if HostProcess is true\nthen HostNetwork must also be set to true."
+                                type: "boolean"
+                              runAsUserName:
+                                description: "The UserName in Windows to run the entrypoint of the container process.\nDefaults to the user specified in image metadata if unspecified.\nMay also be set in PodSecurityContext. If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence."
+                                type: "string"
+                            type: "object"
                         type: "object"
                       volumes:
                         additionalProperties:
@@ -359,6 +418,93 @@ spec:
                                 x-kubernetes-int-or-string: true
                               type: "object"
                           type: "object"
+                        securityContext:
+                          description: "Security Context"
+                          properties:
+                            allowPrivilegeEscalation:
+                              description: "AllowPrivilegeEscalation controls whether a process can gain more\nprivileges than its parent process. This bool directly controls if\nthe no_new_privs flag will be set on the container process.\nAllowPrivilegeEscalation is true always when the container is:\n1) run as Privileged\n2) has CAP_SYS_ADMIN\nNote that this field cannot be set when spec.os.name is windows."
+                              type: "boolean"
+                            capabilities:
+                              description: "The capabilities to add/drop when running containers.\nDefaults to the default set of capabilities granted by the container runtime.\nNote that this field cannot be set when spec.os.name is windows."
+                              properties:
+                                add:
+                                  description: "Added capabilities"
+                                  items:
+                                    description: "Capability represent POSIX capabilities type"
+                                    type: "string"
+                                  type: "array"
+                                drop:
+                                  description: "Removed capabilities"
+                                  items:
+                                    description: "Capability represent POSIX capabilities type"
+                                    type: "string"
+                                  type: "array"
+                              type: "object"
+                            privileged:
+                              description: "Run container in privileged mode.\nProcesses in privileged containers are essentially equivalent to root on the host.\nDefaults to false.\nNote that this field cannot be set when spec.os.name is windows."
+                              type: "boolean"
+                            procMount:
+                              description: "procMount denotes the type of proc mount to use for the containers.\nThe default is DefaultProcMount which uses the container runtime defaults for\nreadonly paths and masked paths.\nThis requires the ProcMountType feature flag to be enabled.\nNote that this field cannot be set when spec.os.name is windows."
+                              type: "string"
+                            readOnlyRootFilesystem:
+                              description: "Whether this container has a read-only root filesystem.\nDefault is false.\nNote that this field cannot be set when spec.os.name is windows."
+                              type: "boolean"
+                            runAsGroup:
+                              description: "The GID to run the entrypoint of the container process.\nUses runtime default if unset.\nMay also be set in PodSecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence.\nNote that this field cannot be set when spec.os.name is windows."
+                              format: "int64"
+                              type: "integer"
+                            runAsNonRoot:
+                              description: "Indicates that the container must run as a non-root user.\nIf true, the Kubelet will validate the image at runtime to ensure that it\ndoes not run as UID 0 (root) and fail to start the container if it does.\nIf unset or false, no such validation will be performed.\nMay also be set in PodSecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence."
+                              type: "boolean"
+                            runAsUser:
+                              description: "The UID to run the entrypoint of the container process.\nDefaults to user specified in image metadata if unspecified.\nMay also be set in PodSecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence.\nNote that this field cannot be set when spec.os.name is windows."
+                              format: "int64"
+                              type: "integer"
+                            seLinuxOptions:
+                              description: "The SELinux context to be applied to the container.\nIf unspecified, the container runtime will allocate a random SELinux context for each\ncontainer.  May also be set in PodSecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence.\nNote that this field cannot be set when spec.os.name is windows."
+                              properties:
+                                level:
+                                  description: "Level is SELinux level label that applies to the container."
+                                  type: "string"
+                                role:
+                                  description: "Role is a SELinux role label that applies to the container."
+                                  type: "string"
+                                type:
+                                  description: "Type is a SELinux type label that applies to the container."
+                                  type: "string"
+                                user:
+                                  description: "User is a SELinux user label that applies to the container."
+                                  type: "string"
+                              type: "object"
+                            seccompProfile:
+                              description: "The seccomp options to use by this container. If seccomp options are\nprovided at both the pod & container level, the container options\noverride the pod options.\nNote that this field cannot be set when spec.os.name is windows."
+                              properties:
+                                localhostProfile:
+                                  description: "localhostProfile indicates a profile defined in a file on the node should be used.\nThe profile must be preconfigured on the node to work.\nMust be a descending path, relative to the kubelet's configured seccomp profile location.\nMust only be set if type is \"Localhost\"."
+                                  type: "string"
+                                type:
+                                  description: "type indicates which kind of seccomp profile will be applied.\nValid options are:\n\nLocalhost - a profile defined in a file on the node should be used.\nRuntimeDefault - the container runtime default profile should be used.\nUnconfined - no profile should be applied."
+                                  type: "string"
+                              required:
+                                - "type"
+                              type: "object"
+                            windowsOptions:
+                              description: "The Windows specific settings applied to all containers.\nIf unspecified, the options from the PodSecurityContext will be used.\nIf set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.\nNote that this field cannot be set when spec.os.name is linux."
+                              properties:
+                                gmsaCredentialSpec:
+                                  description: "GMSACredentialSpec is where the GMSA admission webhook\n(https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the\nGMSA credential spec named by the GMSACredentialSpecName field."
+                                  type: "string"
+                                gmsaCredentialSpecName:
+                                  description: "GMSACredentialSpecName is the name of the GMSA credential spec to use."
+                                  type: "string"
+                                hostProcess:
+                                  description: "HostProcess determines if a container should be run as a 'Host Process' container.\nThis field is alpha-level and will only be honored by components that enable the\nWindowsHostProcessContainers feature flag. Setting this field without the feature\nflag will result in errors when validating the Pod. All of a Pod's containers must\nhave the same effective HostProcess value (it is not allowed to have a mix of HostProcess\ncontainers and non-HostProcess containers).  In addition, if HostProcess is true\nthen HostNetwork must also be set to true."
+                                  type: "boolean"
+                                runAsUserName:
+                                  description: "The UserName in Windows to run the entrypoint of the container process.\nDefaults to the user specified in image metadata if unspecified.\nMay also be set in PodSecurityContext. If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence."
+                                  type: "string"
+                              type: "object"
+                          type: "object"
                         workingDir:
                           description: "Working directory to run command from"
                           type: "string"
@@ -487,6 +633,13 @@ spec:
                         type: "string"
                       description: "Labels for each pod"
                       type: "object"
+                    nodeAffinity:
+                      additionalProperties:
+                        items:
+                          type: "string"
+                        type: "array"
+                      description: "NodeAffinity is for a list of values assoicated with a label"
+                      type: "object"
                     nodeSelector:
                       additionalProperties:
                         type: "string"
@@ -509,6 +662,94 @@ spec:
                     schedulerName:
                       description: "Scheduler name for the pod"
                       type: "string"
+                    securityContext:
+                      description: "PodSecurity Context"
+                      properties:
+                        fsGroup:
+                          description: "A special supplemental group that applies to all containers in a pod.\nSome volume types allow the Kubelet to change the ownership of that volume\nto be owned by the pod:\n\n1. The owning GID will be the FSGroup\n2. The setgid bit is set (new files created in the volume will be owned by FSGroup)\n3. The permission bits are OR'd with rw-rw----\n\nIf unset, the Kubelet will not modify the ownership and permissions of any volume.\nNote that this field cannot be set when spec.os.name is windows."
+                          format: "int64"
+                          type: "integer"
+                        fsGroupChangePolicy:
+                          description: "fsGroupChangePolicy defines behavior of changing ownership and permission of the volume\nbefore being exposed inside Pod. This field will only apply to\nvolume types which support fsGroup based ownership(and permissions).\nIt will have no effect on ephemeral volume types such as: secret, configmaps\nand emptydir.\nValid values are \"OnRootMismatch\" and \"Always\". If not specified, \"Always\" is used.\nNote that this field cannot be set when spec.os.name is windows."
+                          type: "string"
+                        runAsGroup:
+                          description: "The GID to run the entrypoint of the container process.\nUses runtime default if unset.\nMay also be set in SecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence\nfor that container.\nNote that this field cannot be set when spec.os.name is windows."
+                          format: "int64"
+                          type: "integer"
+                        runAsNonRoot:
+                          description: "Indicates that the container must run as a non-root user.\nIf true, the Kubelet will validate the image at runtime to ensure that it\ndoes not run as UID 0 (root) and fail to start the container if it does.\nIf unset or false, no such validation will be performed.\nMay also be set in SecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence."
+                          type: "boolean"
+                        runAsUser:
+                          description: "The UID to run the entrypoint of the container process.\nDefaults to user specified in image metadata if unspecified.\nMay also be set in SecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence\nfor that container.\nNote that this field cannot be set when spec.os.name is windows."
+                          format: "int64"
+                          type: "integer"
+                        seLinuxOptions:
+                          description: "The SELinux context to be applied to all containers.\nIf unspecified, the container runtime will allocate a random SELinux context for each\ncontainer.  May also be set in SecurityContext.  If set in\nboth SecurityContext and PodSecurityContext, the value specified in SecurityContext\ntakes precedence for that container.\nNote that this field cannot be set when spec.os.name is windows."
+                          properties:
+                            level:
+                              description: "Level is SELinux level label that applies to the container."
+                              type: "string"
+                            role:
+                              description: "Role is a SELinux role label that applies to the container."
+                              type: "string"
+                            type:
+                              description: "Type is a SELinux type label that applies to the container."
+                              type: "string"
+                            user:
+                              description: "User is a SELinux user label that applies to the container."
+                              type: "string"
+                          type: "object"
+                        seccompProfile:
+                          description: "The seccomp options to use by the containers in this pod.\nNote that this field cannot be set when spec.os.name is windows."
+                          properties:
+                            localhostProfile:
+                              description: "localhostProfile indicates a profile defined in a file on the node should be used.\nThe profile must be preconfigured on the node to work.\nMust be a descending path, relative to the kubelet's configured seccomp profile location.\nMust only be set if type is \"Localhost\"."
+                              type: "string"
+                            type:
+                              description: "type indicates which kind of seccomp profile will be applied.\nValid options are:\n\nLocalhost - a profile defined in a file on the node should be used.\nRuntimeDefault - the container runtime default profile should be used.\nUnconfined - no profile should be applied."
+                              type: "string"
+                          required:
+                            - "type"
+                          type: "object"
+                        supplementalGroups:
+                          description: "A list of groups applied to the first process run in each container, in addition\nto the container's primary GID.  If unspecified, no groups will be added to\nany container.\nNote that this field cannot be set when spec.os.name is windows."
+                          items:
+                            format: "int64"
+                            type: "integer"
+                          type: "array"
+                        sysctls:
+                          description: "Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported\nsysctls (by the container runtime) might fail to launch.\nNote that this field cannot be set when spec.os.name is windows."
+                          items:
+                            description: "Sysctl defines a kernel parameter to be set"
+                            properties:
+                              name:
+                                description: "Name of a property to set"
+                                type: "string"
+                              value:
+                                description: "Value of a property to set"
+                                type: "string"
+                            required:
+                              - "name"
+                              - "value"
+                            type: "object"
+                          type: "array"
+                        windowsOptions:
+                          description: "The Windows specific settings applied to all containers.\nIf unspecified, the options within a container's SecurityContext will be used.\nIf set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.\nNote that this field cannot be set when spec.os.name is linux."
+                          properties:
+                            gmsaCredentialSpec:
+                              description: "GMSACredentialSpec is where the GMSA admission webhook\n(https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the\nGMSA credential spec named by the GMSACredentialSpecName field."
+                              type: "string"
+                            gmsaCredentialSpecName:
+                              description: "GMSACredentialSpecName is the name of the GMSA credential spec to use."
+                              type: "string"
+                            hostProcess:
+                              description: "HostProcess determines if a container should be run as a 'Host Process' container.\nThis field is alpha-level and will only be honored by components that enable the\nWindowsHostProcessContainers feature flag. Setting this field without the feature\nflag will result in errors when validating the Pod. All of a Pod's containers must\nhave the same effective HostProcess value (it is not allowed to have a mix of HostProcess\ncontainers and non-HostProcess containers).  In addition, if HostProcess is true\nthen HostNetwork must also be set to true."
+                              type: "boolean"
+                            runAsUserName:
+                              description: "The UserName in Windows to run the entrypoint of the container process.\nDefaults to the user specified in image metadata if unspecified.\nMay also be set in PodSecurityContext. If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence."
+                              type: "string"
+                          type: "object"
+                      type: "object"
                     serviceAccountName:
                       description: "Service account name for the pod"
                       type: "string"
@@ -658,30 +899,89 @@ spec:
                       securityContext:
                         description: "Security Context\nhttps://kubernetes.io/docs/tasks/configure-pod-container/security-context/"
                         properties:
-                          addCapabilities:
-                            description: "Capabilities to add"
-                            items:
-                              type: "string"
-                            type: "array"
-                            x-kubernetes-list-type: "atomic"
                           allowPrivilegeEscalation:
-                            default: true
-                            description: "Allow privilege escalation (defaults to true)"
+                            description: "AllowPrivilegeEscalation controls whether a process can gain more\nprivileges than its parent process. This bool directly controls if\nthe no_new_privs flag will be set on the container process.\nAllowPrivilegeEscalation is true always when the container is:\n1) run as Privileged\n2) has CAP_SYS_ADMIN\nNote that this field cannot be set when spec.os.name is windows."
                             type: "boolean"
+                          capabilities:
+                            description: "The capabilities to add/drop when running containers.\nDefaults to the default set of capabilities granted by the container runtime.\nNote that this field cannot be set when spec.os.name is windows."
+                            properties:
+                              add:
+                                description: "Added capabilities"
+                                items:
+                                  description: "Capability represent POSIX capabilities type"
+                                  type: "string"
+                                type: "array"
+                              drop:
+                                description: "Removed capabilities"
+                                items:
+                                  description: "Capability represent POSIX capabilities type"
+                                  type: "string"
+                                type: "array"
+                            type: "object"
                           privileged:
-                            description: "Privileged container"
+                            description: "Run container in privileged mode.\nProcesses in privileged containers are essentially equivalent to root on the host.\nDefaults to false.\nNote that this field cannot be set when spec.os.name is windows."
+                            type: "boolean"
+                          procMount:
+                            description: "procMount denotes the type of proc mount to use for the containers.\nThe default is DefaultProcMount which uses the container runtime defaults for\nreadonly paths and masked paths.\nThis requires the ProcMountType feature flag to be enabled.\nNote that this field cannot be set when spec.os.name is windows."
+                            type: "string"
+                          readOnlyRootFilesystem:
+                            description: "Whether this container has a read-only root filesystem.\nDefault is false.\nNote that this field cannot be set when spec.os.name is windows."
                             type: "boolean"
                           runAsGroup:
-                            description: "Run as a specific uid"
+                            description: "The GID to run the entrypoint of the container process.\nUses runtime default if unset.\nMay also be set in PodSecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence.\nNote that this field cannot be set when spec.os.name is windows."
                             format: "int64"
                             type: "integer"
                           runAsNonRoot:
-                            description: "Run as non root (defaults to false)"
+                            description: "Indicates that the container must run as a non-root user.\nIf true, the Kubelet will validate the image at runtime to ensure that it\ndoes not run as UID 0 (root) and fail to start the container if it does.\nIf unset or false, no such validation will be performed.\nMay also be set in PodSecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence."
                             type: "boolean"
                           runAsUser:
-                            description: "Run as a specific gid"
+                            description: "The UID to run the entrypoint of the container process.\nDefaults to user specified in image metadata if unspecified.\nMay also be set in PodSecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence.\nNote that this field cannot be set when spec.os.name is windows."
                             format: "int64"
                             type: "integer"
+                          seLinuxOptions:
+                            description: "The SELinux context to be applied to the container.\nIf unspecified, the container runtime will allocate a random SELinux context for each\ncontainer.  May also be set in PodSecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence.\nNote that this field cannot be set when spec.os.name is windows."
+                            properties:
+                              level:
+                                description: "Level is SELinux level label that applies to the container."
+                                type: "string"
+                              role:
+                                description: "Role is a SELinux role label that applies to the container."
+                                type: "string"
+                              type:
+                                description: "Type is a SELinux type label that applies to the container."
+                                type: "string"
+                              user:
+                                description: "User is a SELinux user label that applies to the container."
+                                type: "string"
+                            type: "object"
+                          seccompProfile:
+                            description: "The seccomp options to use by this container. If seccomp options are\nprovided at both the pod & container level, the container options\noverride the pod options.\nNote that this field cannot be set when spec.os.name is windows."
+                            properties:
+                              localhostProfile:
+                                description: "localhostProfile indicates a profile defined in a file on the node should be used.\nThe profile must be preconfigured on the node to work.\nMust be a descending path, relative to the kubelet's configured seccomp profile location.\nMust only be set if type is \"Localhost\"."
+                                type: "string"
+                              type:
+                                description: "type indicates which kind of seccomp profile will be applied.\nValid options are:\n\nLocalhost - a profile defined in a file on the node should be used.\nRuntimeDefault - the container runtime default profile should be used.\nUnconfined - no profile should be applied."
+                                type: "string"
+                            required:
+                              - "type"
+                            type: "object"
+                          windowsOptions:
+                            description: "The Windows specific settings applied to all containers.\nIf unspecified, the options from the PodSecurityContext will be used.\nIf set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.\nNote that this field cannot be set when spec.os.name is linux."
+                            properties:
+                              gmsaCredentialSpec:
+                                description: "GMSACredentialSpec is where the GMSA admission webhook\n(https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the\nGMSA credential spec named by the GMSACredentialSpecName field."
+                                type: "string"
+                              gmsaCredentialSpecName:
+                                description: "GMSACredentialSpecName is the name of the GMSA credential spec to use."
+                                type: "string"
+                              hostProcess:
+                                description: "HostProcess determines if a container should be run as a 'Host Process' container.\nThis field is alpha-level and will only be honored by components that enable the\nWindowsHostProcessContainers feature flag. Setting this field without the feature\nflag will result in errors when validating the Pod. All of a Pod's containers must\nhave the same effective HostProcess value (it is not allowed to have a mix of HostProcess\ncontainers and non-HostProcess containers).  In addition, if HostProcess is true\nthen HostNetwork must also be set to true."
+                                type: "boolean"
+                              runAsUserName:
+                                description: "The UserName in Windows to run the entrypoint of the container process.\nDefaults to the user specified in image metadata if unspecified.\nMay also be set in PodSecurityContext. If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence."
+                                type: "string"
+                            type: "object"
                         type: "object"
                       volumes:
                         additionalProperties:
@@ -757,7 +1057,7 @@ spec:
                 conditions:
                   description: "conditions hold the latest Flux Job and MiniCluster states"
                   items:
-                    description: "Condition contains details for one aspect of the current state of this API Resource.\n---\nThis struct is intended for direct use as an array at the field path .status.conditions.  For example,\n\n\n\ttype FooStatus struct{\n\t    // Represents the observations of a foo's current state.\n\t    // Known .status.conditions.type are: \"Available\", \"Progressing\", and \"Degraded\"\n\t    // +patchMergeKey=type\n\t    // +patchStrategy=merge\n\t    // +listType=map\n\t    // +listMapKey=type\n\t    Conditions []metav1.Condition `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"`\n\n\n\t    // other fields\n\t}"
+                    description: "Condition contains details for one aspect of the current state of this API Resource."
                     properties:
                       lastTransitionTime:
                         description: "lastTransitionTime is the last time the condition transitioned from one status to another.\nThis should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable."
@@ -786,7 +1086,7 @@ spec:
                           - "Unknown"
                         type: "string"
                       type:
-                        description: "type of condition in CamelCase or in foo.example.com/CamelCase.\n---\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions can be\nuseful (see .node.status.conditions), the ability to deconflict is important.\nThe regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)"
+                        description: "type of condition in CamelCase or in foo.example.com/CamelCase."
                         maxLength: 316
                         pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$"
                         type: "string"

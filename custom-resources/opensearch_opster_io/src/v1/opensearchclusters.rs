@@ -3867,7 +3867,7 @@ pub struct OpenSearchClusterNodePools {
     pub node_selector: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pdb: Option<OpenSearchClusterNodePoolsPdb>,
-    /// PersistencConfig defines options for data persistence
+    /// PersistenceConfig defines options for data persistence
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub persistence: Option<OpenSearchClusterNodePoolsPersistence>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
@@ -4690,7 +4690,7 @@ pub struct OpenSearchClusterNodePoolsPdb {
     pub min_available: Option<IntOrString>,
 }
 
-/// PersistencConfig defines options for data persistence
+/// PersistenceConfig defines options for data persistence
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpenSearchClusterNodePoolsPersistence {
     /// Represents an empty directory for a pod.
@@ -4744,6 +4744,10 @@ pub struct OpenSearchClusterNodePoolsPersistenceHostPath {
 pub struct OpenSearchClusterNodePoolsPersistencePvc {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClass")]
     pub storage_class: Option<String>,
 }
@@ -5033,7 +5037,7 @@ pub struct OpenSearchClusterSecurityConfig {
     /// TLS Secret that contains a client certificate (tls.key, tls.crt, ca.crt) with admin rights in the opensearch cluster. Must be set if transport certificates are provided by user and not generated
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminSecret")]
     pub admin_secret: Option<OpenSearchClusterSecurityConfigAdminSecret>,
-    /// Secret that contains the differnt yml files of the opensearch-security config (config.yml, internal_users.yml, ...)
+    /// Secret that contains the different yml files of the opensearch-security config (config.yml, internal_users.yml, ...)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityConfigSecret")]
     pub security_config_secret: Option<OpenSearchClusterSecurityConfigSecurityConfigSecret>,
     /// Specific configs for the SecurityConfig update job
@@ -5065,7 +5069,7 @@ pub struct OpenSearchClusterSecurityConfigAdminSecret {
     pub name: Option<String>,
 }
 
-/// Secret that contains the differnt yml files of the opensearch-security config (config.yml, internal_users.yml, ...)
+/// Secret that contains the different yml files of the opensearch-security config (config.yml, internal_users.yml, ...)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpenSearchClusterSecurityConfigSecurityConfigSecret {
     /// Name of the referent.
@@ -5140,6 +5144,9 @@ pub struct OpenSearchClusterSecurityTlsHttp {
     /// If set to true the operator will generate a CA and certificates for the cluster to use, if false secrets with existing certificates must be supplied
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub generate: Option<bool>,
+    /// Automatically rotate certificates before they expire, set to -1 to disable
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rotateDaysBeforeExpiry")]
+    pub rotate_days_before_expiry: Option<i64>,
     /// Optional, name of a TLS secret that contains ca.crt, tls.key and tls.crt data. If ca.crt is in a different secret provide it via the caSecret field
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<OpenSearchClusterSecurityTlsHttpSecret>,
@@ -5186,6 +5193,9 @@ pub struct OpenSearchClusterSecurityTlsTransport {
     /// Configure transport node certificate
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "perNode")]
     pub per_node: Option<bool>,
+    /// Automatically rotate certificates before they expire, set to -1 to disable
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rotateDaysBeforeExpiry")]
+    pub rotate_days_before_expiry: Option<i64>,
     /// Optional, name of a TLS secret that contains ca.crt, tls.key and tls.crt data. If ca.crt is in a different secret provide it via the caSecret field
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<OpenSearchClusterSecurityTlsTransportSecret>,

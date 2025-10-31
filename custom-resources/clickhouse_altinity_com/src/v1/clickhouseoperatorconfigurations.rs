@@ -452,7 +452,161 @@ pub struct ClickHouseOperatorConfigurationReconcile {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClickHouseOperatorConfigurationReconcileHost {
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub drop: Option<ClickHouseOperatorConfigurationReconcileHostDrop>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub wait: Option<ClickHouseOperatorConfigurationReconcileHostWait>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClickHouseOperatorConfigurationReconcileHostDrop {
+    /// Whether the operator during reconcile procedure should drop replicas when replica is deleted or recreated
+    /// 
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub replicas: Option<ClickHouseOperatorConfigurationReconcileHostDropReplicas>,
+}
+
+/// Whether the operator during reconcile procedure should drop replicas when replica is deleted or recreated
+/// 
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClickHouseOperatorConfigurationReconcileHostDropReplicas {
+    /// Whether the operator during reconcile procedure should drop active replicas when replica is deleted or recreated
+    /// 
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub active: Option<ClickHouseOperatorConfigurationReconcileHostDropReplicasActive>,
+    /// Whether the operator during reconcile procedure should drop replicas when replica is deleted
+    /// 
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "onDelete")]
+    pub on_delete: Option<ClickHouseOperatorConfigurationReconcileHostDropReplicasOnDelete>,
+    /// Whether the operator during reconcile procedure should drop replicas when replica volume is lost
+    /// 
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "onLostVolume")]
+    pub on_lost_volume: Option<ClickHouseOperatorConfigurationReconcileHostDropReplicasOnLostVolume>,
+}
+
+/// Whether the operator during reconcile procedure should drop replicas when replica is deleted or recreated
+/// 
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClickHouseOperatorConfigurationReconcileHostDropReplicasActive {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    #[serde(rename = "0")]
+    r#_0,
+    #[serde(rename = "1")]
+    r#_1,
+    False,
+    #[serde(rename = "false")]
+    FalseX,
+    True,
+    #[serde(rename = "true")]
+    TrueX,
+    No,
+    #[serde(rename = "no")]
+    NoX,
+    Yes,
+    #[serde(rename = "yes")]
+    YesX,
+    Off,
+    #[serde(rename = "off")]
+    OffX,
+    On,
+    #[serde(rename = "on")]
+    OnX,
+    Disable,
+    #[serde(rename = "disable")]
+    DisableX,
+    Enable,
+    #[serde(rename = "enable")]
+    EnableX,
+    Disabled,
+    #[serde(rename = "disabled")]
+    DisabledX,
+    Enabled,
+    #[serde(rename = "enabled")]
+    EnabledX,
+}
+
+/// Whether the operator during reconcile procedure should drop replicas when replica is deleted or recreated
+/// 
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClickHouseOperatorConfigurationReconcileHostDropReplicasOnDelete {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    #[serde(rename = "0")]
+    r#_0,
+    #[serde(rename = "1")]
+    r#_1,
+    False,
+    #[serde(rename = "false")]
+    FalseX,
+    True,
+    #[serde(rename = "true")]
+    TrueX,
+    No,
+    #[serde(rename = "no")]
+    NoX,
+    Yes,
+    #[serde(rename = "yes")]
+    YesX,
+    Off,
+    #[serde(rename = "off")]
+    OffX,
+    On,
+    #[serde(rename = "on")]
+    OnX,
+    Disable,
+    #[serde(rename = "disable")]
+    DisableX,
+    Enable,
+    #[serde(rename = "enable")]
+    EnableX,
+    Disabled,
+    #[serde(rename = "disabled")]
+    DisabledX,
+    Enabled,
+    #[serde(rename = "enabled")]
+    EnabledX,
+}
+
+/// Whether the operator during reconcile procedure should drop replicas when replica is deleted or recreated
+/// 
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClickHouseOperatorConfigurationReconcileHostDropReplicasOnLostVolume {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    #[serde(rename = "0")]
+    r#_0,
+    #[serde(rename = "1")]
+    r#_1,
+    False,
+    #[serde(rename = "false")]
+    FalseX,
+    True,
+    #[serde(rename = "true")]
+    TrueX,
+    No,
+    #[serde(rename = "no")]
+    NoX,
+    Yes,
+    #[serde(rename = "yes")]
+    YesX,
+    Off,
+    #[serde(rename = "off")]
+    OffX,
+    On,
+    #[serde(rename = "on")]
+    OnX,
+    Disable,
+    #[serde(rename = "disable")]
+    DisableX,
+    Enable,
+    #[serde(rename = "enable")]
+    EnableX,
+    Disabled,
+    #[serde(rename = "disabled")]
+    DisabledX,
+    Enabled,
+    #[serde(rename = "enabled")]
+    EnabledX,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

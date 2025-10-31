@@ -1500,6 +1500,7 @@ pub struct ClusterBootstrapInitdb {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localeProvider")]
     pub locale_provider: Option<String>,
     /// The list of options that must be passed to initdb when creating the cluster.
+    /// 
     /// Deprecated: This could lead to inconsistent configurations,
     /// please use the explicit provided parameters instead.
     /// If defined, explicit values will be ignored.
@@ -3516,6 +3517,13 @@ pub struct ClusterMonitoring {
     /// you need this functionality, you can create a PodMonitor manually.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enablePodMonitor")]
     pub enable_pod_monitor: Option<bool>,
+    /// The interval during which metrics computed from queries are considered current.
+    /// Once it is exceeded, a new scrape will trigger a rerun
+    /// of the queries.
+    /// If not set, defaults to 30 seconds, in line with Prometheus scraping defaults.
+    /// Setting this to zero disables the caching mechanism and can cause heavy load on the PostgreSQL server.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricsQueriesTTL")]
+    pub metrics_queries_ttl: Option<String>,
     /// The list of metric relabelings for the `PodMonitor`. Applied to samples before ingestion.
     /// 
     /// Deprecated: This feature will be removed in an upcoming release. If

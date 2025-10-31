@@ -14,3 +14,5 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 ### slinky.slurm.net/v1alpha1
 - `Cluster`
 - `NodeSet`
+### slinky.slurm.net/v1beta1
+- `NodeSet`

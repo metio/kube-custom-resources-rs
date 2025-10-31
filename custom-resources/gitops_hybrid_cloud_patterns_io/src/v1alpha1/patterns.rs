@@ -69,9 +69,6 @@ pub struct PatternGitSpec {
     /// (DEPRECATED) Branch, tag or commit in the upstream git repository. Does not support short-sha's. Default to HEAD
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "originRevision")]
     pub origin_revision: Option<String>,
-    /// Interval in seconds to poll for drifts between origin and target repositories. Default: 180 seconds
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pollInterval")]
-    pub poll_interval: Option<i64>,
     /// Git repo containing the pattern to deploy. Must use https/http or, for ssh, git@server:foo/bar.git
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRepo")]
     pub target_repo: Option<String>,

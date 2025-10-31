@@ -203,11 +203,44 @@ pub struct ClusterClassControlPlaneHealthCheckChecks {
     /// If you wish to disable this feature, set the value explicitly to 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeStartupTimeoutSeconds")]
     pub node_startup_timeout_seconds: Option<i32>,
+    /// unhealthyMachineConditions contains a list of the machine conditions that determine
+    /// whether a machine is considered unhealthy.  The conditions are combined in a
+    /// logical OR, i.e. if any of the conditions is met, the machine is unhealthy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyMachineConditions")]
+    pub unhealthy_machine_conditions: Option<Vec<ClusterClassControlPlaneHealthCheckChecksUnhealthyMachineConditions>>,
     /// unhealthyNodeConditions contains a list of conditions that determine
     /// whether a node is considered unhealthy. The conditions are combined in a
     /// logical OR, i.e. if any of the conditions is met, the node is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyNodeConditions")]
     pub unhealthy_node_conditions: Option<Vec<ClusterClassControlPlaneHealthCheckChecksUnhealthyNodeConditions>>,
+}
+
+/// UnhealthyMachineCondition represents a Machine condition type and value with a timeout
+/// specified as a duration.  When the named condition has been in the given
+/// status for at least the timeout value, a machine is considered unhealthy.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterClassControlPlaneHealthCheckChecksUnhealthyMachineConditions {
+    /// status of the condition, one of True, False, Unknown.
+    pub status: ClusterClassControlPlaneHealthCheckChecksUnhealthyMachineConditionsStatus,
+    /// timeoutSeconds is the duration that a machine must be in a given status for,
+    /// after which the machine is considered unhealthy.
+    /// For example, with a value of "3600", the machine must match the status
+    /// for at least 1 hour before being considered unhealthy.
+    #[serde(rename = "timeoutSeconds")]
+    pub timeout_seconds: i32,
+    /// type of Machine condition
+    #[serde(rename = "type")]
+    pub r#type: String,
+}
+
+/// UnhealthyMachineCondition represents a Machine condition type and value with a timeout
+/// specified as a duration.  When the named condition has been in the given
+/// status for at least the timeout value, a machine is considered unhealthy.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterClassControlPlaneHealthCheckChecksUnhealthyMachineConditionsStatus {
+    True,
+    False,
+    Unknown,
 }
 
 /// UnhealthyNodeCondition represents a Node condition type and value with a timeout
@@ -219,7 +252,7 @@ pub struct ClusterClassControlPlaneHealthCheckChecksUnhealthyNodeConditions {
     pub status: String,
     /// timeoutSeconds is the duration that a node must be in a given status for,
     /// after which the node is considered unhealthy.
-    /// For example, with a value of "1h", the node must match the status
+    /// For example, with a value of "3600", the node must match the status
     /// for at least 1 hour before being considered unhealthy.
     #[serde(rename = "timeoutSeconds")]
     pub timeout_seconds: i32,
@@ -1128,11 +1161,44 @@ pub struct ClusterClassWorkersMachineDeploymentsHealthCheckChecks {
     /// If you wish to disable this feature, set the value explicitly to 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeStartupTimeoutSeconds")]
     pub node_startup_timeout_seconds: Option<i32>,
+    /// unhealthyMachineConditions contains a list of the machine conditions that determine
+    /// whether a machine is considered unhealthy.  The conditions are combined in a
+    /// logical OR, i.e. if any of the conditions is met, the machine is unhealthy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyMachineConditions")]
+    pub unhealthy_machine_conditions: Option<Vec<ClusterClassWorkersMachineDeploymentsHealthCheckChecksUnhealthyMachineConditions>>,
     /// unhealthyNodeConditions contains a list of conditions that determine
     /// whether a node is considered unhealthy. The conditions are combined in a
     /// logical OR, i.e. if any of the conditions is met, the node is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyNodeConditions")]
     pub unhealthy_node_conditions: Option<Vec<ClusterClassWorkersMachineDeploymentsHealthCheckChecksUnhealthyNodeConditions>>,
+}
+
+/// UnhealthyMachineCondition represents a Machine condition type and value with a timeout
+/// specified as a duration.  When the named condition has been in the given
+/// status for at least the timeout value, a machine is considered unhealthy.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterClassWorkersMachineDeploymentsHealthCheckChecksUnhealthyMachineConditions {
+    /// status of the condition, one of True, False, Unknown.
+    pub status: ClusterClassWorkersMachineDeploymentsHealthCheckChecksUnhealthyMachineConditionsStatus,
+    /// timeoutSeconds is the duration that a machine must be in a given status for,
+    /// after which the machine is considered unhealthy.
+    /// For example, with a value of "3600", the machine must match the status
+    /// for at least 1 hour before being considered unhealthy.
+    #[serde(rename = "timeoutSeconds")]
+    pub timeout_seconds: i32,
+    /// type of Machine condition
+    #[serde(rename = "type")]
+    pub r#type: String,
+}
+
+/// UnhealthyMachineCondition represents a Machine condition type and value with a timeout
+/// specified as a duration.  When the named condition has been in the given
+/// status for at least the timeout value, a machine is considered unhealthy.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterClassWorkersMachineDeploymentsHealthCheckChecksUnhealthyMachineConditionsStatus {
+    True,
+    False,
+    Unknown,
 }
 
 /// UnhealthyNodeCondition represents a Node condition type and value with a timeout
@@ -1144,7 +1210,7 @@ pub struct ClusterClassWorkersMachineDeploymentsHealthCheckChecksUnhealthyNodeCo
     pub status: String,
     /// timeoutSeconds is the duration that a node must be in a given status for,
     /// after which the node is considered unhealthy.
-    /// For example, with a value of "1h", the node must match the status
+    /// For example, with a value of "3600", the node must match the status
     /// for at least 1 hour before being considered unhealthy.
     #[serde(rename = "timeoutSeconds")]
     pub timeout_seconds: i32,

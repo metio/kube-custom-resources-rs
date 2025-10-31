@@ -52,6 +52,7 @@ pub struct AdmissionCheckParameters {
 pub struct AdmissionCheckStatus {
     /// conditions hold the latest available observations of the AdmissionCheck
     /// current state.
+    /// This is limited to at most 16 separate conditions.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }

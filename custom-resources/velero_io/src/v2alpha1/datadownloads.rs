@@ -44,6 +44,9 @@ pub struct DataDownloadSpec {
     /// SnapshotID is the ID of the Velero backup snapshot to be restored from.
     #[serde(rename = "snapshotID")]
     pub snapshot_id: String,
+    /// SnapshotSize is the logical size in Bytes of the snapshot.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotSize")]
+    pub snapshot_size: Option<i64>,
     /// SourceNamespace is the original namespace where the volume is backed up from.
     /// It may be different from SourcePVC's namespace if namespace is remapped during restore.
     #[serde(rename = "sourceNamespace")]

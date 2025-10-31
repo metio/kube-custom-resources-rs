@@ -533,6 +533,9 @@ pub struct ClusterInputSyslog {
     /// Specify the key where the source address will be injected.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceAddressKey")]
     pub source_address_key: Option<String>,
+    /// Specify a tag to route incoming logs through different parsers to different outputs.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tag: Option<String>,
     /// Specify TLS connector options.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<ClusterInputSyslogTls>,

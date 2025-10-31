@@ -32,12 +32,14 @@ spec:
               properties:
                 bucketClassName:
                   description: "bucketClassName selects the BucketClass for provisioning the BucketClaim.\nThis field is used only for BucketClaim dynamic provisioning.\nIf unspecified, existingBucketName must be specified for binding to an existing Bucket."
+                  maxLength: 253
                   type: "string"
                   x-kubernetes-validations:
                     - message: "bucketClassName is immutable"
                       rule: "self == oldSelf"
                 existingBucketName:
                   description: "existingBucketName selects the name of an existing Bucket resource that this BucketClaim\nshould bind to.\nThis field is used only for BucketClaim static provisioning.\nIf unspecified, bucketClassName must be specified for dynamically provisioning a new bucket."
+                  maxLength: 253
                   type: "string"
                   x-kubernetes-validations:
                     - message: "existingBucketName is immutable"
@@ -46,6 +48,10 @@ spec:
                   description: "protocols lists object storage protocols that the provisioned Bucket must support.\nIf specified, COSI will verify that each item is advertised as supported by the driver."
                   items:
                     description: "ObjectProtocol represents an object protocol type."
+                    enum:
+                      - "S3"
+                      - "Azure"
+                      - "GCS"
                     type: "string"
                   type: "array"
                   x-kubernetes-validations:
@@ -53,16 +59,23 @@ spec:
                       rule: "self == oldSelf"
               type: "object"
               x-kubernetes-validations:
+                - message: "bucketClassName is immutable"
+                  rule: "has(oldSelf.bucketClassName) == has(self.bucketClassName)"
+                - message: "existingBucketName is immutable"
+                  rule: "has(oldSelf.existingBucketName) == has(self.existingBucketName)"
+                - message: "protocols list is immutable"
+                  rule: "has(oldSelf.protocols) == has(self.protocols)"
                 - message: "exactly one of the fields in [bucketClassName existingBucketName] must be set"
                   rule: "[has(self.bucketClassName),has(self.existingBucketName)].filter(x,x==true).size() == 1"
             status:
               description: "status defines the observed state of BucketClaim"
               properties:
                 boundBucketName:
-                  description: "boundBucketName is the name of the Bucket this BucketClaim is bound to.\nOnce set, this is immutable."
+                  description: "boundBucketName is the name of the Bucket this BucketClaim is bound to."
+                  maxLength: 253
                   type: "string"
                   x-kubernetes-validations:
-                    - message: "boundBucketName is immutable"
+                    - message: "boundBucketName is immutable once set"
                       rule: "oldSelf == '' || self == oldSelf"
                 error:
                   description: "error holds the most recent error message, with a timestamp.\nThis is cleared when provisioning is successful."
@@ -79,6 +92,10 @@ spec:
                   description: "protocols is the set of protocols the bound Bucket reports to support. BucketAccesses can\nrequest access to this BucketClaim using any of the protocols reported here."
                   items:
                     description: "ObjectProtocol represents an object protocol type."
+                    enum:
+                      - "S3"
+                      - "Azure"
+                      - "GCS"
                     type: "string"
                   type: "array"
                   x-kubernetes-list-type: "set"
@@ -86,9 +103,13 @@ spec:
                   description: "readyToUse indicates that the bucket is ready for consumption by workloads."
                   type: "boolean"
               required:
-                - "boundBucketName"
                 - "readyToUse"
               type: "object"
+              x-kubernetes-validations:
+                - message: "boundBucketName is immutable once set"
+                  rule: "!has(oldSelf.boundBucketName) || has(self.boundBucketName)"
+                - message: "protocols is immutable once set"
+                  rule: "!has(oldSelf.protocols) || has(self.protocols)"
           required:
             - "spec"
           type: "object"
