@@ -184,7 +184,7 @@ pub struct BundleTargetAdditionalFormats {
     /// JKS requests a JKS-formatted binary trust bundle to be written to the target.
     /// The bundle has "changeit" as the default password.
     /// For more information refer to this link <https://cert-manager.io/docs/faq/#keystore-passwords>
-    /// Deprecated: Writing JKS is subject for removal. Please migrate to PKCS12.
+    /// Format is deprecated: Writing JKS is subject for removal. Please migrate to PKCS12.
     /// PKCS#12 trust stores created by trust-manager are compatible with Java.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub jks: Option<BundleTargetAdditionalFormatsJks>,
@@ -199,7 +199,7 @@ pub struct BundleTargetAdditionalFormats {
 /// JKS requests a JKS-formatted binary trust bundle to be written to the target.
 /// The bundle has "changeit" as the default password.
 /// For more information refer to this link <https://cert-manager.io/docs/faq/#keystore-passwords>
-/// Deprecated: Writing JKS is subject for removal. Please migrate to PKCS12.
+/// Format is deprecated: Writing JKS is subject for removal. Please migrate to PKCS12.
 /// PKCS#12 trust stores created by trust-manager are compatible with Java.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BundleTargetAdditionalFormatsJks {

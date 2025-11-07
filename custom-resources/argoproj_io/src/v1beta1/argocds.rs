@@ -2271,20 +2271,215 @@ pub enum ArgoCdApplicationSetWebhookServerRouteTlsTermination {
 /// ArgoCDAgent defines configurations for the ArgoCD Agent component.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCdArgoCdAgent {
+    /// Agent defines configurations for the Agent component of Argo CD Agent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub agent: Option<ArgoCdArgoCdAgentAgent>,
     /// Principal defines configurations for the Principal component of Argo CD Agent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub principal: Option<ArgoCdArgoCdAgentPrincipal>,
 }
 
+/// Agent defines configurations for the Agent component of Argo CD Agent.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCdArgoCdAgentAgent {
+    /// Client defines the client options for the Agent component.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub client: Option<ArgoCdArgoCdAgentAgentClient>,
+    /// Creds is the credential identifier for the agent authentication
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub creds: Option<String>,
+    /// Enabled is the flag to enable the Agent component during Argo CD installation. (optional, default `false`)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// Env lets you specify environment for agent pods
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub env: Option<Vec<ArgoCdArgoCdAgentAgentEnv>>,
+    /// Image is the name of Argo CD Agent image
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<String>,
+    /// LogFormat refers to the log format used by the Agent component.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logFormat")]
+    pub log_format: Option<String>,
+    /// LogLevel refers to the log level used by the Agent component.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
+    pub log_level: Option<String>,
+    /// Redis defines the Redis options for the Agent component.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub redis: Option<ArgoCdArgoCdAgentAgentRedis>,
+    /// TLS defines the TLS options for the Agent component.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tls: Option<ArgoCdArgoCdAgentAgentTls>,
+}
+
+/// Client defines the client options for the Agent component.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCdArgoCdAgentAgentClient {
+    /// EnableCompression is the flag to enable compression while sending data between Principal and Agent using gRPC
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableCompression")]
+    pub enable_compression: Option<bool>,
+    /// EnableWebSocket is the flag to enable WebSocket for event streaming
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableWebSocket")]
+    pub enable_web_socket: Option<bool>,
+    /// KeepAliveInterval is the interval for keep-alive pings to the principal
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepAliveInterval")]
+    pub keep_alive_interval: Option<String>,
+    /// Mode is the operational mode for the agent (managed or autonomous)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<String>,
+    /// PrincipalServerAddress is the remote address of the principal server to connect to.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "principalServerAddress")]
+    pub principal_server_address: Option<String>,
+    /// PrincipalServerPort is the remote port of the principal server to connect to.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "principalServerPort")]
+    pub principal_server_port: Option<String>,
+}
+
+/// EnvVar represents an environment variable present in a Container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCdArgoCdAgentAgentEnv {
+    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    pub name: String,
+    /// Variable references $(VAR_NAME) are expanded
+    /// using the previously defined environment variables in the container and
+    /// any service environment variables. If a variable cannot be resolved,
+    /// the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+    /// Escaped references will never be expanded, regardless of whether the variable
+    /// exists or not.
+    /// Defaults to "".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    /// Source for the environment variable's value. Cannot be used if value is not empty.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<ArgoCdArgoCdAgentAgentEnvValueFrom>,
+}
+
+/// Source for the environment variable's value. Cannot be used if value is not empty.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCdArgoCdAgentAgentEnvValueFrom {
+    /// Selects a key of a ConfigMap.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ArgoCdArgoCdAgentAgentEnvValueFromConfigMapKeyRef>,
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
+    pub field_ref: Option<ArgoCdArgoCdAgentAgentEnvValueFromFieldRef>,
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ArgoCdArgoCdAgentAgentEnvValueFromResourceFieldRef>,
+    /// Selects a key of a secret in the pod's namespace
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ArgoCdArgoCdAgentAgentEnvValueFromSecretKeyRef>,
+}
+
+/// Selects a key of a ConfigMap.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCdArgoCdAgentAgentEnvValueFromConfigMapKeyRef {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCdArgoCdAgentAgentEnvValueFromFieldRef {
+    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// Path of the field to select in the specified API version.
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
+}
+
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCdArgoCdAgentAgentEnvValueFromResourceFieldRef {
+    /// Container name: required for volumes, optional for env vars
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
+    pub container_name: Option<String>,
+    /// Specifies the output format of the exposed resources, defaults to "1"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub divisor: Option<IntOrString>,
+    /// Required: resource to select
+    pub resource: String,
+}
+
+/// Selects a key of a secret in the pod's namespace
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCdArgoCdAgentAgentEnvValueFromSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Redis defines the Redis options for the Agent component.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCdArgoCdAgentAgentRedis {
+    /// ServerAddress is the address of the Redis server to be used by the PrincAgentipal component.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverAddress")]
+    pub server_address: Option<String>,
+}
+
+/// TLS defines the TLS options for the Agent component.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCdArgoCdAgentAgentTls {
+    /// Insecure is the flag to skip TLS certificate validation when connecting to the principal (insecure, for development only)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub insecure: Option<bool>,
+    /// RootCASecretName is the name of the secret containing the root CA certificate
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rootCASecretName")]
+    pub root_ca_secret_name: Option<String>,
+    /// SecretName is the name of the secret containing the agent client TLS certificate
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
+    pub secret_name: Option<String>,
+}
+
 /// Principal defines configurations for the Principal component of Argo CD Agent.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCdArgoCdAgentPrincipal {
+    /// Auth is the authentication method for the Principal component.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub auth: Option<String>,
     /// Enabled is the flag to enable the Principal component during Argo CD installation. (optional, default `false`)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
+    /// Env lets you specify environment for principal pods
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub env: Option<Vec<ArgoCdArgoCdAgentPrincipalEnv>>,
+    /// Image is the name of Argo CD Agent image
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<String>,
     /// JWT defines the JWT options for the Principal component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub jwt: Option<ArgoCdArgoCdAgentPrincipalJwt>,
+    /// LogFormat refers to the log format used by the Principal component.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logFormat")]
+    pub log_format: Option<String>,
+    /// LogLevel refers to the log level used by the Principal component.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
+    pub log_level: Option<String>,
     /// Namespace is the configuration for the Principal component namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<ArgoCdArgoCdAgentPrincipalNamespace>,
@@ -2300,6 +2495,106 @@ pub struct ArgoCdArgoCdAgentPrincipal {
     /// TLS defines the TLS options for the Principal component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<ArgoCdArgoCdAgentPrincipalTls>,
+}
+
+/// EnvVar represents an environment variable present in a Container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCdArgoCdAgentPrincipalEnv {
+    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    pub name: String,
+    /// Variable references $(VAR_NAME) are expanded
+    /// using the previously defined environment variables in the container and
+    /// any service environment variables. If a variable cannot be resolved,
+    /// the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+    /// Escaped references will never be expanded, regardless of whether the variable
+    /// exists or not.
+    /// Defaults to "".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    /// Source for the environment variable's value. Cannot be used if value is not empty.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<ArgoCdArgoCdAgentPrincipalEnvValueFrom>,
+}
+
+/// Source for the environment variable's value. Cannot be used if value is not empty.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCdArgoCdAgentPrincipalEnvValueFrom {
+    /// Selects a key of a ConfigMap.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ArgoCdArgoCdAgentPrincipalEnvValueFromConfigMapKeyRef>,
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
+    pub field_ref: Option<ArgoCdArgoCdAgentPrincipalEnvValueFromFieldRef>,
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ArgoCdArgoCdAgentPrincipalEnvValueFromResourceFieldRef>,
+    /// Selects a key of a secret in the pod's namespace
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ArgoCdArgoCdAgentPrincipalEnvValueFromSecretKeyRef>,
+}
+
+/// Selects a key of a ConfigMap.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCdArgoCdAgentPrincipalEnvValueFromConfigMapKeyRef {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCdArgoCdAgentPrincipalEnvValueFromFieldRef {
+    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// Path of the field to select in the specified API version.
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
+}
+
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCdArgoCdAgentPrincipalEnvValueFromResourceFieldRef {
+    /// Container name: required for volumes, optional for env vars
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
+    pub container_name: Option<String>,
+    /// Specifies the output format of the exposed resources, defaults to "1"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub divisor: Option<IntOrString>,
+    /// Required: resource to select
+    pub resource: String,
+}
+
+/// Selects a key of a secret in the pod's namespace
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCdArgoCdAgentPrincipalEnvValueFromSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 /// JWT defines the JWT options for the Principal component.
@@ -2355,127 +2650,40 @@ pub struct ArgoCdArgoCdAgentPrincipalResourceProxy {
 /// Server defines the server options for the Principal component.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCdArgoCdAgentPrincipalServer {
-    /// Auth is the authentication method for the Principal component.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub auth: Option<String>,
     /// EnableWebSocket is the flag to enable the WebSocket on gRPC to stream events to the Agent.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableWebSocket")]
     pub enable_web_socket: Option<bool>,
-    /// Env lets you specify environment for principal pods
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub env: Option<Vec<ArgoCdArgoCdAgentPrincipalServerEnv>>,
-    /// Image is the name of Argo CD Agent image
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub image: Option<String>,
     /// KeepAliveMinInterval is the minimum interval between keep-alive messages sent by the Agent to the Principal.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepAliveMinInterval")]
     pub keep_alive_min_interval: Option<String>,
-    /// LogFormat refers to the log format used by the Principal component.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logFormat")]
-    pub log_format: Option<String>,
-    /// LogLevel refers to the log level used by the Principal component.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
-    pub log_level: Option<String>,
+    /// Route defines the options for the Route backing the ArgoCD Agent component.
+    /// Route is disabled only when explicitly configured with Enabled: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub route: Option<ArgoCdArgoCdAgentPrincipalServerRoute>,
+    /// Service defines the options for the Service backing the ArgoCD Agent component.
+    /// If not set, type ClusterIP will be used by default.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub service: Option<ArgoCdArgoCdAgentPrincipalServerService>,
 }
 
-/// EnvVar represents an environment variable present in a Container.
+/// Route defines the options for the Route backing the ArgoCD Agent component.
+/// Route is disabled only when explicitly configured with Enabled: false
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ArgoCdArgoCdAgentPrincipalServerEnv {
-    /// Name of the environment variable. Must be a C_IDENTIFIER.
-    pub name: String,
-    /// Variable references $(VAR_NAME) are expanded
-    /// using the previously defined environment variables in the container and
-    /// any service environment variables. If a variable cannot be resolved,
-    /// the reference in the input string will be unchanged. Double $$ are reduced
-    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
-    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
-    /// Escaped references will never be expanded, regardless of whether the variable
-    /// exists or not.
-    /// Defaults to "".
+pub struct ArgoCdArgoCdAgentPrincipalServerRoute {
+    /// Enabled will toggle the creation of the OpenShift Route, ignored in case of non OpenShift cluster.
+    /// Route is disabled only when explicitly configured with false
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
-    /// Source for the environment variable's value. Cannot be used if value is not empty.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from: Option<ArgoCdArgoCdAgentPrincipalServerEnvValueFrom>,
+    pub enabled: Option<bool>,
 }
 
-/// Source for the environment variable's value. Cannot be used if value is not empty.
+/// Service defines the options for the Service backing the ArgoCD Agent component.
+/// If not set, type ClusterIP will be used by default.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ArgoCdArgoCdAgentPrincipalServerEnvValueFrom {
-    /// Selects a key of a ConfigMap.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
-    pub config_map_key_ref: Option<ArgoCdArgoCdAgentPrincipalServerEnvValueFromConfigMapKeyRef>,
-    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
-    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref: Option<ArgoCdArgoCdAgentPrincipalServerEnvValueFromFieldRef>,
-    /// Selects a resource of the container: only resources limits and requests
-    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
-    pub resource_field_ref: Option<ArgoCdArgoCdAgentPrincipalServerEnvValueFromResourceFieldRef>,
-    /// Selects a key of a secret in the pod's namespace
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
-    pub secret_key_ref: Option<ArgoCdArgoCdAgentPrincipalServerEnvValueFromSecretKeyRef>,
-}
-
-/// Selects a key of a ConfigMap.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ArgoCdArgoCdAgentPrincipalServerEnvValueFromConfigMapKeyRef {
-    /// The key to select.
-    pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
-/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ArgoCdArgoCdAgentPrincipalServerEnvValueFromFieldRef {
-    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
-    pub api_version: Option<String>,
-    /// Path of the field to select in the specified API version.
-    #[serde(rename = "fieldPath")]
-    pub field_path: String,
-}
-
-/// Selects a resource of the container: only resources limits and requests
-/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ArgoCdArgoCdAgentPrincipalServerEnvValueFromResourceFieldRef {
-    /// Container name: required for volumes, optional for env vars
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
-    pub container_name: Option<String>,
-    /// Specifies the output format of the exposed resources, defaults to "1"
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub divisor: Option<IntOrString>,
-    /// Required: resource to select
-    pub resource: String,
-}
-
-/// Selects a key of a secret in the pod's namespace
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ArgoCdArgoCdAgentPrincipalServerEnvValueFromSecretKeyRef {
-    /// The key of the secret to select from.  Must be a valid secret key.
-    pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
+pub struct ArgoCdArgoCdAgentPrincipalServerService {
+    /// Type is the ServiceType to use for the Service resource.
+    /// If not set, type ClusterIP will be used by default.
+    #[serde(rename = "type")]
+    pub r#type: String,
 }
 
 /// TLS defines the TLS options for the Principal component.
@@ -7480,6 +7688,9 @@ pub struct ArgoCdNotifications {
     /// Resources defines the Compute Resources required by the container for Argo CD Notifications.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ArgoCdNotificationsResources>,
+    /// SourceNamespaces is a list of namespaces from which the notifications controller will watch for ArgoCD Notification resources.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceNamespaces")]
+    pub source_namespaces: Option<Vec<String>>,
     /// Version is the Argo CD Notifications image tag. (optional)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,

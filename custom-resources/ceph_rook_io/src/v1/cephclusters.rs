@@ -650,6 +650,9 @@ pub struct CephClusterMgr {
     /// Count is the number of manager daemons to run
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub count: Option<i64>,
+    /// Whether host networking is enabled for the Ceph Mgr. If not set, the network settings from CephCluster.spec.networking will be applied.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetwork")]
+    pub host_network: Option<bool>,
     /// Modules is the list of ceph manager modules to enable/disable
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub modules: Option<Vec<CephClusterMgrModules>>,
@@ -2245,6 +2248,9 @@ pub struct CephClusterStorage {
     pub nodes: Option<Vec<CephClusterStorageNodes>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "onlyApplyOSDPlacement")]
     pub only_apply_osd_placement: Option<bool>,
+    /// The maximum number of OSDs to update in parallel.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "osdMaxUpdatesInParallel")]
+    pub osd_max_updates_in_parallel: Option<i32>,
     /// Whether to always schedule OSDs on a node even if the node is not currently scheduleable or ready
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scheduleAlways")]
     pub schedule_always: Option<bool>,

@@ -5087,7 +5087,6 @@ spec:
                             type: "boolean"
                         type: "object"
                     required:
-                      - "count"
                       - "template"
                     type: "object"
                     x-kubernetes-validations:
@@ -5106,6 +5105,7 @@ spec:
                 priorityClassName:
                   description: "priorityClassName is the name of the PriorityClass the Workload is associated with.\nIf specified, indicates the workload's priority.\n\"system-node-critical\" and \"system-cluster-critical\" are two special\nkeywords which indicate the highest priorities with the former being\nthe highest priority. Any other name must be defined by creating a\nPriorityClass object with that name. If not specified, the workload\npriority will be default or zero if there is no default."
                   maxLength: 253
+                  minLength: 1
                   pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
                   type: "string"
                 priorityClassSource:
@@ -5121,8 +5121,6 @@ spec:
                   maxLength: 253
                   pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
                   type: "string"
-              required:
-                - "podSets"
               type: "object"
               x-kubernetes-validations:
                 - message: "priority should not be nil when priorityClassName is set"
@@ -5153,6 +5151,9 @@ spec:
                             type: "integer"
                           delayedTopologyRequest:
                             description: "delayedTopologyRequest indicates the topology assignment is delayed.\nTopology assignment might be delayed in case there is ProvisioningRequest\nAdmissionCheck used.\nKueue schedules the second pass of scheduling for each workload with at\nleast one PodSet which has delayedTopologyRequest=true and without\ntopologyAssignment."
+                            enum:
+                              - "Pending"
+                              - "Ready"
                             maxLength: 7
                             type: "string"
                           flavors:
@@ -5219,17 +5220,12 @@ spec:
                               - "domains"
                               - "levels"
                             type: "object"
-                        required:
-                          - "name"
                         type: "object"
                       maxItems: 8
                       type: "array"
                       x-kubernetes-list-map-keys:
                         - "name"
                       x-kubernetes-list-type: "map"
-                  required:
-                    - "clusterQueue"
-                    - "podSetAssignments"
                   type: "object"
                 admissionChecks:
                   description: "admissionChecks list all the admission checks required by the workload and the current status"
@@ -5246,6 +5242,7 @@ spec:
                       name:
                         description: "name identifies the admission check."
                         maxLength: 316
+                        minLength: 1
                         type: "string"
                       podSetUpdates:
                         description: "podSetUpdates contains a list of pod set modifications suggested by AdmissionChecks."

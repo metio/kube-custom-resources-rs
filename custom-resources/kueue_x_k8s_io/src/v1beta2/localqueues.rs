@@ -84,10 +84,6 @@ pub struct LocalQueueStatus {
     /// fairSharing contains the information about the current status of fair sharing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fairSharing")]
     pub fair_sharing: Option<LocalQueueStatusFairSharing>,
-    /// flavors lists all currently available ResourceFlavors in specified ClusterQueue.
-    /// Deprecated: Flavors is deprecated and marked for removal in v1beta2.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub flavors: Option<Vec<LocalQueueStatusFlavors>>,
     /// flavorsReservation are the reserved quotas, by flavor currently in use by the
     /// workloads assigned to this LocalQueue.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flavorsReservation")]
@@ -133,60 +129,6 @@ pub struct LocalQueueStatusFairSharingAdmissionFairSharingStatus {
     /// lastUpdate is the time when share and consumed resources were updated.
     #[serde(rename = "lastUpdate")]
     pub last_update: String,
-}
-
-/// Deprecated: LocalQueueFlavorStatus is deprecated and marked for removal in v1beta2.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LocalQueueStatusFlavors {
-    /// name of the flavor.
-    pub name: String,
-    /// nodeLabels are labels that associate the ResourceFlavor with Nodes that
-    /// have the same labels.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeLabels")]
-    pub node_labels: Option<BTreeMap<String, String>>,
-    /// nodeTaints are taints that the nodes associated with this ResourceFlavor
-    /// have.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaints")]
-    pub node_taints: Option<Vec<LocalQueueStatusFlavorsNodeTaints>>,
-    /// resources used in the flavor.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<Vec<String>>,
-    /// topology is the topology that associated with this ResourceFlavor.
-    /// 
-    /// This is a beta field and requires enabling the TopologyAwareScheduling
-    /// feature gate.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub topology: Option<LocalQueueStatusFlavorsTopology>,
-}
-
-/// The node this Taint is attached to has the "effect" on
-/// any pod that does not tolerate the Taint.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LocalQueueStatusFlavorsNodeTaints {
-    /// Required. The effect of the taint on pods
-    /// that do not tolerate the taint.
-    /// Valid effects are NoSchedule, PreferNoSchedule and NoExecute.
-    pub effect: String,
-    /// Required. The taint key to be applied to a node.
-    pub key: String,
-    /// TimeAdded represents the time at which the taint was added.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeAdded")]
-    pub time_added: Option<String>,
-    /// The taint value corresponding to the taint key.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
-}
-
-/// topology is the topology that associated with this ResourceFlavor.
-/// 
-/// This is a beta field and requires enabling the TopologyAwareScheduling
-/// feature gate.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LocalQueueStatusFlavorsTopology {
-    /// levels define the levels of topology.
-    pub levels: Vec<String>,
-    /// name is the name of the topology.
-    pub name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

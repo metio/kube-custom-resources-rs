@@ -4306,6 +4306,11 @@ spec:
                 update:
                   description: "Configuration related to Keycloak deployment updates."
                   properties:
+                    labels:
+                      additionalProperties:
+                        type: "string"
+                      description: "Optionally set to add additional labels to the Job created for the update."
+                      type: "object"
                     revision:
                       description: "When use the Explicit strategy, the revision signals if a rolling update can be used or not."
                       type: "string"

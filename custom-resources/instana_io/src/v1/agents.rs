@@ -3113,6 +3113,11 @@ pub struct InstanaAgentK8sSensor {
     /// Toggles the PDB for the K8s Sensor
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podDisruptionBudget")]
     pub pod_disruption_budget: Option<InstanaAgentK8sSensorPodDisruptionBudget>,
+    /// PollRate controls the frequency at which k8sensor sends collected information to the backend.
+    /// PollRate value should be provided in seconds
+    /// Example: 1s, 5s, 10s, 30s
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pollrate: Option<String>,
     /// REST client configuration
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restClient")]
     pub rest_client: Option<InstanaAgentK8sSensorRestClient>,

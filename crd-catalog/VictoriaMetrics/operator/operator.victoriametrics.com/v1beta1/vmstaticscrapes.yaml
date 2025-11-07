@@ -44,14 +44,12 @@ spec:
                   type: "string"
                 sampleLimit:
                   description: "SampleLimit defines per-scrape limit on number of scraped samples that will be accepted."
-                  format: "int64"
                   type: "integer"
                 scrapeClass:
                   description: "ScrapeClass defined scrape class to apply"
                   type: "string"
                 seriesLimit:
                   description: "SeriesLimit defines per-scrape limit on number of unique time series\na single target can expose during all the scrapes on the time window of 24h."
-                  format: "int64"
                   type: "integer"
                 targetEndpoints:
                   description: "A list of target endpoints to scrape metrics from."
@@ -367,7 +365,6 @@ spec:
                         type: "array"
                       sampleLimit:
                         description: "SampleLimit defines per-scrape limit on number of scraped samples that will be accepted."
-                        format: "int64"
                         type: "integer"
                       scheme:
                         description: "HTTP scheme to use for scraping."
@@ -385,7 +382,6 @@ spec:
                         type: "string"
                       seriesLimit:
                         description: "SeriesLimit defines per-scrape limit on number of unique time series\na single target can expose during all the scrapes on the time window of 24h."
-                        format: "int64"
                         type: "integer"
                       targets:
                         description: "Targets static targets addresses in form of [\"192.122.55.55:9100\",\"some-name:9100\"]."

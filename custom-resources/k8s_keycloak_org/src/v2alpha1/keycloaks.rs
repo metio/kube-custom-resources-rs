@@ -4788,6 +4788,9 @@ pub struct KeycloakUnsupportedPodTemplateSpecVolumesVsphereVolume {
 /// Configuration related to Keycloak deployment updates.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KeycloakUpdate {
+    /// Optionally set to add additional labels to the Job created for the update.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
     /// When use the Explicit strategy, the revision signals if a rolling update can be used or not.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub revision: Option<String>,

@@ -22,6 +22,9 @@ pub struct KeycloakRealmImportSpec {
     /// The name of the Keycloak CR to reference, in the same namespace.
     #[serde(rename = "keycloakCRName")]
     pub keycloak_cr_name: String,
+    /// Optionally set to add additional labels to the Job created for the import.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
     /// Optionally set to replace ENV variable placeholders in the realm import.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub placeholders: Option<BTreeMap<String, KeycloakRealmImportPlaceholders>>,
@@ -2273,6 +2276,8 @@ pub struct KeycloakRealmImportRealmIdentityProviders {
     pub store_token: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "trustEmail")]
     pub trust_email: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub types: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateProfileFirstLoginMode")]
     pub update_profile_first_login_mode: Option<String>,
 }
@@ -2701,6 +2706,8 @@ pub struct KeycloakRealmImportRealmOrganizationsIdentityProviders {
     pub store_token: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "trustEmail")]
     pub trust_email: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub types: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateProfileFirstLoginMode")]
     pub update_profile_first_login_mode: Option<String>,
 }

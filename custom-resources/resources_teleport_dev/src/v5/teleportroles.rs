@@ -306,6 +306,9 @@ pub struct TeleportRoleAllowRequestReason {
     /// Mode can be either "required" or "optional". Empty string is treated as "optional". If a role has the request reason mode set to "required", then reason is required for all Access Requests requesting roles or resources allowed by this role. It applies only to users who have this role assigned.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<String>,
+    /// Prompt is a custom message prompted to the user for the requested roles or resources searchable as other roles. This is only applied to the requested roles and resources specifying the prompt.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub prompt: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -679,6 +682,9 @@ pub struct TeleportRoleDenyRequestReason {
     /// Mode can be either "required" or "optional". Empty string is treated as "optional". If a role has the request reason mode set to "required", then reason is required for all Access Requests requesting roles or resources allowed by this role. It applies only to users who have this role assigned.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<String>,
+    /// Prompt is a custom message prompted to the user for the requested roles or resources searchable as other roles. This is only applied to the requested roles and resources specifying the prompt.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub prompt: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

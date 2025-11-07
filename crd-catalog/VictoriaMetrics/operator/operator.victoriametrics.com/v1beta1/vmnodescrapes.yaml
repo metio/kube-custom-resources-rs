@@ -349,7 +349,6 @@ spec:
                   type: "array"
                 sampleLimit:
                   description: "SampleLimit defines per-scrape limit on number of scraped samples that will be accepted."
-                  format: "int64"
                   type: "integer"
                 scheme:
                   description: "HTTP scheme to use for scraping."
@@ -403,7 +402,6 @@ spec:
                   x-kubernetes-map-type: "atomic"
                 seriesLimit:
                   description: "SeriesLimit defines per-scrape limit on number of unique time series\na single target can expose during all the scrapes on the time window of 24h."
-                  format: "int64"
                   type: "integer"
                 targetLabels:
                   description: "TargetLabels transfers labels on the Kubernetes Node onto the target."

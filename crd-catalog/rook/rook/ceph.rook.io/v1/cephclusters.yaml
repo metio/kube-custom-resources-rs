@@ -582,6 +582,9 @@ spec:
                       maximum: 5.0
                       minimum: 0.0
                       type: "integer"
+                    hostNetwork:
+                      description: "Whether host networking is enabled for the Ceph Mgr. If not set, the network settings from CephCluster.spec.networking will be applied."
+                      type: "boolean"
                     modules:
                       description: "Modules is the list of ceph manager modules to enable/disable"
                       items:
@@ -2237,6 +2240,11 @@ spec:
                       type: "array"
                     onlyApplyOSDPlacement:
                       type: "boolean"
+                    osdMaxUpdatesInParallel:
+                      description: "The maximum number of OSDs to update in parallel."
+                      format: "int32"
+                      minimum: 1.0
+                      type: "integer"
                     scheduleAlways:
                       description: "Whether to always schedule OSDs on a node even if the node is not currently scheduleable or ready"
                       type: "boolean"

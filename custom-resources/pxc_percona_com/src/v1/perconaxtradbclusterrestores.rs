@@ -90,12 +90,23 @@ pub struct PerconaXtraDbClusterRestoreBackupSourceAzure {
 pub struct PerconaXtraDbClusterRestoreBackupSourceS3 {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bucket: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
+    pub ca_bundle: Option<PerconaXtraDbClusterRestoreBackupSourceS3CaBundle>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsSecret")]
     pub credentials_secret: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointUrl")]
     pub endpoint_url: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaXtraDbClusterRestoreBackupSourceS3CaBundle {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -252,12 +263,23 @@ pub struct PerconaXtraDbClusterRestorePitrBackupSourceAzure {
 pub struct PerconaXtraDbClusterRestorePitrBackupSourceS3 {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bucket: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
+    pub ca_bundle: Option<PerconaXtraDbClusterRestorePitrBackupSourceS3CaBundle>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsSecret")]
     pub credentials_secret: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointUrl")]
     pub endpoint_url: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaXtraDbClusterRestorePitrBackupSourceS3CaBundle {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

@@ -154,11 +154,6 @@ pub struct FelixConfigurationSpec {
     /// Felix will not modify the JIT hardening setting. [Default: Auto]
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bpfJITHardening")]
     pub bpf_jit_hardening: Option<String>,
-    /// BPFKubeProxyEndpointSlicesEnabled is deprecated and has no effect. BPF
-    /// kube-proxy always accepts endpoint slices. This option will be removed in
-    /// the next release.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bpfKubeProxyEndpointSlicesEnabled")]
-    pub bpf_kube_proxy_endpoint_slices_enabled: Option<bool>,
     /// BPFKubeProxyHealthzPort, in BPF mode, controls the port that Felix's embedded kube-proxy health check server binds to.
     /// The health check server is used by external load balancers to determine if this node should receive traffic.  [Default: 10256]
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bpfKubeProxyHealthzPort")]

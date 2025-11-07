@@ -389,6 +389,11 @@ spec:
                       description: "Allow is a list of Rules, nodes using this token must match one allow rule to use this token."
                       items:
                         properties:
+                          instances:
+                            items:
+                              type: "string"
+                            nullable: true
+                            type: "array"
                           parent_compartments:
                             items:
                               type: "string"

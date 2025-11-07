@@ -467,6 +467,7 @@ spec:
                     - "Provisioning"
                     - "Provisioned"
                     - "Running"
+                    - "Updating"
                     - "Deleting"
                     - "Deleted"
                     - "Failed"

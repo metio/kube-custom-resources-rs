@@ -180,6 +180,9 @@ spec:
                       maximum: 65535.0
                       minimum: 1.0
                       type: "integer"
+                    sourceInterface:
+                      description: "SourceInterface is the name of a local interface, which IP address will be used\nas the source IP address for the BGP session. The interface must not have more than one\nnon-loopback, non-multicast and non-link-local-IPv6 address per address family.\n\nIf not specified, or if the provided interface is not found or missing a usable IP address,\nthe source IP address will be auto-detected based on the egress interface."
+                      type: "string"
                   type: "object"
               type: "object"
             status:

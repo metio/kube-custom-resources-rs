@@ -168,8 +168,7 @@ pub struct ClientSettingsPolicyStatusAncestors {
     #[serde(rename = "ancestorRef")]
     pub ancestor_ref: ClientSettingsPolicyStatusAncestorsAncestorRef,
     /// Conditions describes the status of the Policy with respect to the given Ancestor.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub conditions: Option<Vec<Condition>>,
+    pub conditions: Vec<Condition>,
     /// ControllerName is a domain/path string that indicates the name of the
     /// controller that wrote this status. This corresponds with the
     /// controllerName field on GatewayClass.

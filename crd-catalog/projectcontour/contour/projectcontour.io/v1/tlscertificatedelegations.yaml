@@ -13,7 +13,6 @@ spec:
     shortNames:
       - "tlscerts"
     singular: "tlscertificatedelegation"
-  preserveUnknownFields: false
   scope: "Namespaced"
   versions:
     - name: "v1"

@@ -2684,6 +2684,9 @@ pub struct OpenSearchClusterDashboardsTls {
     /// Optional, secret that contains the ca certificate as ca.crt. If this and generate=true is set the existing CA cert from that secret is used to generate the node certs. In this case must contain ca.crt and ca.key fields
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caSecret")]
     pub ca_secret: Option<OpenSearchClusterDashboardsTlsCaSecret>,
+    /// Duration controls the validity period of generated certificates (e.g. "8760h", "720h").
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub duration: Option<String>,
     /// Enable HTTPS for Dashboards
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
@@ -2766,6 +2769,9 @@ pub struct OpenSearchClusterGeneral {
     pub command: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultRepo")]
     pub default_repo: Option<String>,
+    /// Disable SSL for the cluster
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableSSL")]
+    pub disable_ssl: Option<bool>,
     /// Drain data nodes controls whether to drain data notes on rolling restart operations
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "drainDataNodes")]
     pub drain_data_nodes: Option<bool>,
@@ -5034,7 +5040,7 @@ pub struct OpenSearchClusterSecurityConfig {
     /// Secret that contains fields username and password to be used by the operator to access the opensearch cluster for node draining. Must be set if custom securityconfig is provided.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminCredentialsSecret")]
     pub admin_credentials_secret: Option<OpenSearchClusterSecurityConfigAdminCredentialsSecret>,
-    /// TLS Secret that contains a client certificate (tls.key, tls.crt, ca.crt) with admin rights in the opensearch cluster. Must be set if transport certificates are provided by user and not generated
+    /// TLS Secret that contains a client certificate (tls.key, tls.crt, ca.crt) with admin rights in the opensearch cluster. Must be set if http certificates are provided by user and not generated
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminSecret")]
     pub admin_secret: Option<OpenSearchClusterSecurityConfigAdminSecret>,
     /// Secret that contains the different yml files of the opensearch-security config (config.yml, internal_users.yml, ...)
@@ -5057,7 +5063,7 @@ pub struct OpenSearchClusterSecurityConfigAdminCredentialsSecret {
     pub name: Option<String>,
 }
 
-/// TLS Secret that contains a client certificate (tls.key, tls.crt, ca.crt) with admin rights in the opensearch cluster. Must be set if transport certificates are provided by user and not generated
+/// TLS Secret that contains a client certificate (tls.key, tls.crt, ca.crt) with admin rights in the opensearch cluster. Must be set if http certificates are provided by user and not generated
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpenSearchClusterSecurityConfigAdminSecret {
     /// Name of the referent.
@@ -5138,9 +5144,15 @@ pub struct OpenSearchClusterSecurityTls {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpenSearchClusterSecurityTlsHttp {
+    /// DNs of certificates that should have admin access, mainly used for securityconfig updates via securityadmin.sh, only used when existing certificates are provided
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminDn")]
+    pub admin_dn: Option<Vec<String>>,
     /// Optional, secret that contains the ca certificate as ca.crt. If this and generate=true is set the existing CA cert from that secret is used to generate the node certs. In this case must contain ca.crt and ca.key fields
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caSecret")]
     pub ca_secret: Option<OpenSearchClusterSecurityTlsHttpCaSecret>,
+    /// Duration controls the validity period of generated certificates (e.g. "8760h", "720h").
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub duration: Option<String>,
     /// If set to true the operator will generate a CA and certificates for the cluster to use, if false secrets with existing certificates must be supplied
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub generate: Option<bool>,
@@ -5178,12 +5190,12 @@ pub struct OpenSearchClusterSecurityTlsHttpSecret {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpenSearchClusterSecurityTlsTransport {
-    /// DNs of certificates that should have admin access, mainly used for securityconfig updates via securityadmin.sh, only used when existing certificates are provided
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminDn")]
-    pub admin_dn: Option<Vec<String>>,
     /// Optional, secret that contains the ca certificate as ca.crt. If this and generate=true is set the existing CA cert from that secret is used to generate the node certs. In this case must contain ca.crt and ca.key fields
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caSecret")]
     pub ca_secret: Option<OpenSearchClusterSecurityTlsTransportCaSecret>,
+    /// Duration controls the validity period of generated certificates (e.g. "8760h", "720h").
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub duration: Option<String>,
     /// If set to true the operator will generate a CA and certificates for the cluster to use, if false secrets with existing certificates must be supplied
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub generate: Option<bool>,
