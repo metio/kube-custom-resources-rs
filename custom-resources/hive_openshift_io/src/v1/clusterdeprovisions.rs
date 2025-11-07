@@ -33,9 +33,26 @@ pub struct ClusterDeprovisionSpec {
     /// InfraID is the identifier generated during installation for a cluster. It is used for tagging/naming resources in cloud providers.
     #[serde(rename = "infraID")]
     pub infra_id: String,
+    /// MetadataJSONSecretRef references the secret containing the metadata.json emitted by the
+    /// installer, potentially scrubbed for sensitive data.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metadataJSONSecretRef")]
+    pub metadata_json_secret_ref: Option<ClusterDeprovisionMetadataJsonSecretRef>,
     /// Platform contains platform-specific configuration for a ClusterDeprovision
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub platform: Option<ClusterDeprovisionPlatform>,
+}
+
+/// MetadataJSONSecretRef references the secret containing the metadata.json emitted by the
+/// installer, potentially scrubbed for sensitive data.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterDeprovisionMetadataJsonSecretRef {
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// Platform contains platform-specific configuration for a ClusterDeprovision

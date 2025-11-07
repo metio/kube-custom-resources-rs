@@ -58,7 +58,13 @@ pub struct FakeClusterInstallClusterMetadata {
     /// InfraID is an identifier for this cluster generated during installation and used for tagging/naming resources in cloud providers.
     #[serde(rename = "infraID")]
     pub infra_id: String,
-    /// Platform holds platform-specific cluster metadata
+    /// MetadataJSONSecretRef references the secret containing the metadata.json emitted by the
+    /// installer, potentially scrubbed for sensitive data.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metadataJSONSecretRef")]
+    pub metadata_json_secret_ref: Option<FakeClusterInstallClusterMetadataMetadataJsonSecretRef>,
+    /// Platform holds platform-specific cluster metadata.
+    /// Deprecated. Use the Secret referenced by MetadataJSONSecretRef instead. We may stop
+    /// populating this section in the future.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub platform: Option<FakeClusterInstallClusterMetadataPlatform>,
 }
@@ -87,7 +93,22 @@ pub struct FakeClusterInstallClusterMetadataAdminPasswordSecretRef {
     pub name: Option<String>,
 }
 
-/// Platform holds platform-specific cluster metadata
+/// MetadataJSONSecretRef references the secret containing the metadata.json emitted by the
+/// installer, potentially scrubbed for sensitive data.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FakeClusterInstallClusterMetadataMetadataJsonSecretRef {
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// Platform holds platform-specific cluster metadata.
+/// Deprecated. Use the Secret referenced by MetadataJSONSecretRef instead. We may stop
+/// populating this section in the future.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FakeClusterInstallClusterMetadataPlatform {
     /// AWS holds AWS-specific cluster metadata
@@ -106,6 +127,8 @@ pub struct FakeClusterInstallClusterMetadataPlatform {
 pub struct FakeClusterInstallClusterMetadataPlatformAws {
     /// HostedZoneRole is the role to assume when performing operations
     /// on a hosted zone owned by another account.
+    /// Deprecated. Use the Secret referenced by ClusterMetadata.MetadataJSONSecretRef instead. We
+    /// may stop populating this section in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostedZoneRole")]
     pub hosted_zone_role: Option<String>,
 }
@@ -114,6 +137,8 @@ pub struct FakeClusterInstallClusterMetadataPlatformAws {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FakeClusterInstallClusterMetadataPlatformAzure {
     /// ResourceGroupName is the name of the resource group in which the cluster resources were created.
+    /// Deprecated. Use the Secret referenced by ClusterMetadata.MetadataJSONSecretRef instead. We
+    /// may stop populating this section in the future.
     #[serde(rename = "resourceGroupName")]
     pub resource_group_name: String,
 }
@@ -122,6 +147,8 @@ pub struct FakeClusterInstallClusterMetadataPlatformAzure {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FakeClusterInstallClusterMetadataPlatformGcp {
     /// NetworkProjectID is used for shared VPC setups
+    /// Deprecated. Use the Secret referenced by ClusterMetadata.MetadataJSONSecretRef instead. We
+    /// may stop populating this section in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkProjectID")]
     pub network_project_id: Option<String>,
 }

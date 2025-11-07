@@ -26,6 +26,7 @@ spec:
                 clusterConfig:
                   default:
                     listenerClass: "cluster-internal"
+                    tls: null
                     userInfo: null
                   description: "Global OPA cluster configuration that applies to all roles and role groups."
                   properties:
@@ -37,6 +38,16 @@ spec:
                         - "external-unstable"
                         - "external-stable"
                       type: "string"
+                    tls:
+                      description: "TLS encryption settings for the OPA server.\nWhen configured, OPA will use HTTPS (port 8443) instead of HTTP (port 8081).\nClients must connect using HTTPS and trust the certificates provided by the configured SecretClass."
+                      nullable: true
+                      properties:
+                        serverSecretClass:
+                          description: "Name of the SecretClass which will provide TLS certificates for the OPA server."
+                          type: "string"
+                      required:
+                        - "serverSecretClass"
+                      type: "object"
                     userInfo:
                       description: "Configures how to fetch additional metadata about users (such as group memberships)\nfrom an external directory service."
                       nullable: true

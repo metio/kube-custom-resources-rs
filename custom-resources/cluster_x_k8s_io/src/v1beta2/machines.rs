@@ -403,6 +403,7 @@ pub enum MachineStatusPhase {
     Provisioning,
     Provisioned,
     Running,
+    Updating,
     Deleting,
     Deleted,
     Failed,

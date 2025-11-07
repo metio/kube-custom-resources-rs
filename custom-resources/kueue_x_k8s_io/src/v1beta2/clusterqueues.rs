@@ -20,13 +20,7 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct ClusterQueueSpec {
-    /// admissionChecks lists the AdmissionChecks required by this ClusterQueue.
-    /// Cannot be used along with AdmissionCheckStrategy.
-    /// Admission checks are limited to at most 64 items.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "admissionChecks")]
-    pub admission_checks: Option<Vec<String>>,
     /// admissionChecksStrategy defines a list of strategies to determine which ResourceFlavors require AdmissionChecks.
-    /// This property cannot be used in conjunction with the 'admissionChecks' property.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "admissionChecksStrategy")]
     pub admission_checks_strategy: Option<ClusterQueueAdmissionChecksStrategy>,
     /// admissionScope indicates whether ClusterQueue uses the Admission Fair Sharing
@@ -97,12 +91,11 @@ pub struct ClusterQueueSpec {
 }
 
 /// admissionChecksStrategy defines a list of strategies to determine which ResourceFlavors require AdmissionChecks.
-/// This property cannot be used in conjunction with the 'admissionChecks' property.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterQueueAdmissionChecksStrategy {
     /// admissionChecks is a list of strategies for AdmissionChecks
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "admissionChecks")]
-    pub admission_checks: Option<Vec<ClusterQueueAdmissionChecksStrategyAdmissionChecks>>,
+    #[serde(rename = "admissionChecks")]
+    pub admission_checks: Vec<ClusterQueueAdmissionChecksStrategyAdmissionChecks>,
 }
 
 /// AdmissionCheckStrategyRule defines rules for a single AdmissionCheck
@@ -164,7 +157,6 @@ pub struct ClusterQueueFlavorFungibility {
     /// - `MayStopSearch` (default): stop the search for candidate flavors if workload
     ///   fits or requires borrowing to fit.
     /// - `TryNextFlavor`: try next flavor if workload requires borrowing to fit.
-    /// - `Borrow` (deprecated): old name for `MayStopSearch`; please use new name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "whenCanBorrow")]
     pub when_can_borrow: Option<ClusterQueueFlavorFungibilityWhenCanBorrow>,
     /// whenCanPreempt determines whether a workload should try the next flavor
@@ -174,7 +166,6 @@ pub struct ClusterQueueFlavorFungibility {
     ///   preemption to fit.
     /// - `TryNextFlavor` (default): try next flavor if workload requires preemption
     ///   to fit in current flavor.
-    /// - `Preempt` (deprecated): old name for `MayStopSearch`; please use new name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "whenCanPreempt")]
     pub when_can_preempt: Option<ClusterQueueFlavorFungibilityWhenCanPreempt>,
 }
@@ -185,7 +176,6 @@ pub struct ClusterQueueFlavorFungibility {
 pub enum ClusterQueueFlavorFungibilityWhenCanBorrow {
     MayStopSearch,
     TryNextFlavor,
-    Borrow,
 }
 
 /// flavorFungibility defines whether a workload should try the next flavor
@@ -194,7 +184,6 @@ pub enum ClusterQueueFlavorFungibilityWhenCanBorrow {
 pub enum ClusterQueueFlavorFungibilityWhenCanPreempt {
     MayStopSearch,
     TryNextFlavor,
-    Preempt,
 }
 
 /// namespaceSelector defines which namespaces are allowed to submit workloads to
@@ -438,14 +427,6 @@ pub struct ClusterQueueStatus {
     /// admitted to this clusterQueue.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pendingWorkloads")]
     pub pending_workloads: Option<i32>,
-    /// pendingWorkloadsStatus contains the information exposed about the current
-    /// status of the pending workloads in the cluster queue.
-    /// Deprecated: This field is no longer effective since v0.14.0, which means Kueue no longer stores and updates information.
-    /// You can migrate to VisibilityOnDemand
-    /// (<https://kueue.sigs.k8s.io/docs/tasks/manage/monitor_pending_workloads/pending_workloads_on_demand/)>
-    /// instead.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pendingWorkloadsStatus")]
-    pub pending_workloads_status: Option<ClusterQueueStatusPendingWorkloadsStatus>,
     /// reservingWorkloads is the number of workloads currently reserving quota in this
     /// clusterQueue.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reservingWorkloads")]
@@ -526,31 +507,5 @@ pub struct ClusterQueueStatusFlavorsUsageResources {
     /// from the cohort.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub total: Option<IntOrString>,
-}
-
-/// pendingWorkloadsStatus contains the information exposed about the current
-/// status of the pending workloads in the cluster queue.
-/// Deprecated: This field is no longer effective since v0.14.0, which means Kueue no longer stores and updates information.
-/// You can migrate to VisibilityOnDemand
-/// (<https://kueue.sigs.k8s.io/docs/tasks/manage/monitor_pending_workloads/pending_workloads_on_demand/)>
-/// instead.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterQueueStatusPendingWorkloadsStatus {
-    /// clusterQueuePendingWorkload contains the list of top pending workloads.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterQueuePendingWorkload")]
-    pub cluster_queue_pending_workload: Option<Vec<ClusterQueueStatusPendingWorkloadsStatusClusterQueuePendingWorkload>>,
-    /// lastChangeTime indicates the time of the last change of the structure.
-    #[serde(rename = "lastChangeTime")]
-    pub last_change_time: String,
-}
-
-/// ClusterQueuePendingWorkload contains the information identifying a pending workload
-/// in the cluster queue.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterQueueStatusPendingWorkloadsStatusClusterQueuePendingWorkload {
-    /// name indicates the name of the pending workload.
-    pub name: String,
-    /// namespace indicates the name of the pending workload.
-    pub namespace: String,
 }
 

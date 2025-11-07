@@ -295,9 +295,12 @@ pub struct PushSecretTemplateTemplateFrom {
     /// TemplateRef specifies a reference to either a ConfigMap or a Secret resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<PushSecretTemplateTemplateFromSecret>,
-    /// TemplateTarget specifies where the rendered templates should be applied.
+    /// Target specifies where to place the template result.
+    /// For Secret resources, common values are: "Data", "Annotations", "Labels".
+    /// For custom resources (when spec.target.manifest is set), this supports
+    /// nested paths like "spec.database.config" or "data".
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub target: Option<PushSecretTemplateTemplateFromTarget>,
+    pub target: Option<String>,
 }
 
 /// TemplateRef specifies a reference to either a ConfigMap or a Secret resource.
@@ -350,15 +353,6 @@ pub struct PushSecretTemplateTemplateFromSecretItems {
 pub enum PushSecretTemplateTemplateFromSecretItemsTemplateAs {
     Values,
     KeysAndValues,
-}
-
-/// TemplateFrom specifies a source for templates.
-/// Each item in the list can either reference a ConfigMap or a Secret resource.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum PushSecretTemplateTemplateFromTarget {
-    Data,
-    Annotations,
-    Labels,
 }
 
 /// PushSecretSpec configures the behavior of the PushSecret.

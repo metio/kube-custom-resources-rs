@@ -14,7 +14,6 @@ spec:
       - "extensionservice"
       - "extensionservices"
     singular: "extensionservice"
-  preserveUnknownFields: false
   scope: "Namespaced"
   versions:
     - name: "v1alpha1"

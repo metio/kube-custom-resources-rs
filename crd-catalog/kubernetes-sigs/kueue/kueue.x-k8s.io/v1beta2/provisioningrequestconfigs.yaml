@@ -82,6 +82,7 @@ spec:
                 provisioningClassName:
                   description: "provisioningClassName describes the different modes of provisioning the resources.\nCheck autoscaling.x-k8s.io ProvisioningRequestSpec.ProvisioningClassName for details."
                   maxLength: 253
+                  minLength: 1
                   pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
                   type: "string"
                 retryStrategy:

@@ -50,15 +50,8 @@ spec:
             spec:
               description: "spec is the specification of the ClusterQueue."
               properties:
-                admissionChecks:
-                  description: "admissionChecks lists the AdmissionChecks required by this ClusterQueue.\nCannot be used along with AdmissionCheckStrategy.\nAdmission checks are limited to at most 64 items."
-                  items:
-                    description: "AdmissionCheckReference is the name of an AdmissionCheck."
-                    maxLength: 316
-                    type: "string"
-                  type: "array"
                 admissionChecksStrategy:
-                  description: "admissionChecksStrategy defines a list of strategies to determine which ResourceFlavors require AdmissionChecks.\nThis property cannot be used in conjunction with the 'admissionChecks' property."
+                  description: "admissionChecksStrategy defines a list of strategies to determine which ResourceFlavors require AdmissionChecks."
                   properties:
                     admissionChecks:
                       description: "admissionChecks is a list of strategies for AdmissionChecks"
@@ -68,6 +61,7 @@ spec:
                           name:
                             description: "name is an AdmissionCheck's name."
                             maxLength: 316
+                            minLength: 1
                             type: "string"
                           onFlavors:
                             description: "onFlavors is a list of ResourceFlavors' names that this AdmissionCheck should run for.\nIf empty, the AdmissionCheck will run for all workloads submitted to the ClusterQueue."
@@ -83,10 +77,13 @@ spec:
                           - "name"
                         type: "object"
                       maxItems: 64
+                      minItems: 1
                       type: "array"
                       x-kubernetes-list-map-keys:
                         - "name"
                       x-kubernetes-list-type: "map"
+                  required:
+                    - "admissionChecks"
                   type: "object"
                 admissionScope:
                   description: "admissionScope indicates whether ClusterQueue uses the Admission Fair Sharing"
@@ -123,19 +120,17 @@ spec:
                   properties:
                     whenCanBorrow:
                       default: "MayStopSearch"
-                      description: "whenCanBorrow determines whether a workload should try the next flavor\nbefore borrowing in current flavor. The possible values are:\n\n- `MayStopSearch` (default): stop the search for candidate flavors if workload\n  fits or requires borrowing to fit.\n- `TryNextFlavor`: try next flavor if workload requires borrowing to fit.\n- `Borrow` (deprecated): old name for `MayStopSearch`; please use new name."
+                      description: "whenCanBorrow determines whether a workload should try the next flavor\nbefore borrowing in current flavor. The possible values are:\n\n- `MayStopSearch` (default): stop the search for candidate flavors if workload\n  fits or requires borrowing to fit.\n- `TryNextFlavor`: try next flavor if workload requires borrowing to fit."
                       enum:
                         - "MayStopSearch"
                         - "TryNextFlavor"
-                        - "Borrow"
                       type: "string"
                     whenCanPreempt:
                       default: "TryNextFlavor"
-                      description: "whenCanPreempt determines whether a workload should try the next flavor\nbefore borrowing in current flavor. The possible values are:\n\n- `MayStopSearch`: stop the search for candidate flavors if workload fits or requires\n  preemption to fit.\n- `TryNextFlavor` (default): try next flavor if workload requires preemption\n  to fit in current flavor.\n- `Preempt` (deprecated): old name for `MayStopSearch`; please use new name."
+                      description: "whenCanPreempt determines whether a workload should try the next flavor\nbefore borrowing in current flavor. The possible values are:\n\n- `MayStopSearch`: stop the search for candidate flavors if workload fits or requires\n  preemption to fit.\n- `TryNextFlavor` (default): try next flavor if workload requires preemption\n  to fit in current flavor."
                       enum:
                         - "MayStopSearch"
                         - "TryNextFlavor"
-                        - "Preempt"
                       type: "string"
                   type: "object"
                 namespaceSelector:
@@ -493,35 +488,6 @@ spec:
                   description: "pendingWorkloads is the number of workloads currently waiting to be\nadmitted to this clusterQueue."
                   format: "int32"
                   type: "integer"
-                pendingWorkloadsStatus:
-                  description: "pendingWorkloadsStatus contains the information exposed about the current\nstatus of the pending workloads in the cluster queue.\nDeprecated: This field is no longer effective since v0.14.0, which means Kueue no longer stores and updates information.\nYou can migrate to VisibilityOnDemand\n(https://kueue.sigs.k8s.io/docs/tasks/manage/monitor_pending_workloads/pending_workloads_on_demand/)\ninstead."
-                  properties:
-                    clusterQueuePendingWorkload:
-                      description: "clusterQueuePendingWorkload contains the list of top pending workloads."
-                      items:
-                        description: "ClusterQueuePendingWorkload contains the information identifying a pending workload\nin the cluster queue."
-                        properties:
-                          name:
-                            description: "name indicates the name of the pending workload."
-                            maxLength: 256
-                            type: "string"
-                          namespace:
-                            description: "namespace indicates the name of the pending workload."
-                            maxLength: 63
-                            type: "string"
-                        required:
-                          - "name"
-                          - "namespace"
-                        type: "object"
-                      type: "array"
-                      x-kubernetes-list-type: "atomic"
-                    lastChangeTime:
-                      description: "lastChangeTime indicates the time of the last change of the structure."
-                      format: "date-time"
-                      type: "string"
-                  required:
-                    - "lastChangeTime"
-                  type: "object"
                 reservingWorkloads:
                   description: "reservingWorkloads is the number of workloads currently reserving quota in this\nclusterQueue."
                   format: "int32"

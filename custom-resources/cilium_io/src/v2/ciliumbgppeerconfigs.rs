@@ -212,6 +212,14 @@ pub struct CiliumBgpPeerConfigTransport {
     /// If not specified, defaults to TCP port 179.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "peerPort")]
     pub peer_port: Option<i32>,
+    /// SourceInterface is the name of a local interface, which IP address will be used
+    /// as the source IP address for the BGP session. The interface must not have more than one
+    /// non-loopback, non-multicast and non-link-local-IPv6 address per address family.
+    /// 
+    /// If not specified, or if the provided interface is not found or missing a usable IP address,
+    /// the source IP address will be auto-detected based on the egress interface.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceInterface")]
+    pub source_interface: Option<String>,
 }
 
 /// Status is the running status of the CiliumBGPPeerConfig

@@ -27,6 +27,9 @@ pub struct CodebaseSpec {
     /// A name of tool which should be used as CI.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ciTool")]
     pub ci_tool: Option<String>,
+    /// CloneRepositoryCredentials contains reference to secret with credentials used to clone repository.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cloneRepositoryCredentials")]
+    pub clone_repository_credentials: Option<CodebaseCloneRepositoryCredentials>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "commitMessagePattern")]
     pub commit_message_pattern: Option<String>,
     /// Name of default branch.
@@ -73,6 +76,32 @@ pub struct CodebaseSpec {
     #[serde(rename = "type")]
     pub r#type: String,
     pub versioning: CodebaseVersioning,
+}
+
+/// CloneRepositoryCredentials contains reference to secret with credentials used to clone repository.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CodebaseCloneRepositoryCredentials {
+    /// ClearSecretAfterUse indicates whether the secret should be deleted after use.
+    /// For backward compatibility, the default value is true.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clearSecretAfterUse")]
+    pub clear_secret_after_use: Option<bool>,
+    /// SecretRef is a reference to secret that contains credentials for cloning repository.
+    /// The secret must contain "username" and "password" keys.
+    #[serde(rename = "secretRef")]
+    pub secret_ref: CodebaseCloneRepositoryCredentialsSecretRef,
+}
+
+/// SecretRef is a reference to secret that contains credentials for cloning repository.
+/// The secret must contain "username" and "password" keys.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CodebaseCloneRepositoryCredentialsSecretRef {
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

@@ -58,9 +58,21 @@ pub struct SriovNetworkNodeStateBridgesOvsBridge {
     /// IDs to inject to external_ids field in the Bridge table in OVSDB
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalIDs")]
     pub external_i_ds: Option<BTreeMap<String, String>>,
+    /// configure fail_mode field in the Bridge table in OVSDB (optional). 'secure' or 'standalone'.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failMode")]
+    pub fail_mode: Option<SriovNetworkNodeStateBridgesOvsBridgeFailMode>,
     /// additional options to inject to other_config field in the bridge table in OVSDB
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "otherConfig")]
     pub other_config: Option<BTreeMap<String, String>>,
+}
+
+/// bridge-level configuration for the bridge
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum SriovNetworkNodeStateBridgesOvsBridgeFailMode {
+    #[serde(rename = "secure")]
+    Secure,
+    #[serde(rename = "standalone")]
+    Standalone,
 }
 
 /// OVSUplinkConfigExt contains configuration for the concrete OVS uplink(PF)
@@ -196,9 +208,21 @@ pub struct SriovNetworkNodeStateStatusBridgesOvsBridge {
     /// IDs to inject to external_ids field in the Bridge table in OVSDB
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalIDs")]
     pub external_i_ds: Option<BTreeMap<String, String>>,
+    /// configure fail_mode field in the Bridge table in OVSDB (optional). 'secure' or 'standalone'.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failMode")]
+    pub fail_mode: Option<SriovNetworkNodeStateStatusBridgesOvsBridgeFailMode>,
     /// additional options to inject to other_config field in the bridge table in OVSDB
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "otherConfig")]
     pub other_config: Option<BTreeMap<String, String>>,
+}
+
+/// bridge-level configuration for the bridge
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum SriovNetworkNodeStateStatusBridgesOvsBridgeFailMode {
+    #[serde(rename = "secure")]
+    Secure,
+    #[serde(rename = "standalone")]
+    Standalone,
 }
 
 /// OVSUplinkConfigExt contains configuration for the concrete OVS uplink(PF)

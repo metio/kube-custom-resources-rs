@@ -4633,7 +4633,7 @@ spec:
                   description: "Suspend pauses reconciliation of owned resources like deployments, Services, Etc. upon changes"
                   type: "boolean"
                 version:
-                  description: "Version specifies the version of Grafana to use for this deployment. It follows the same format as the docker.io/grafana/grafana tags"
+                  description: "Version sets the tag of the default image: docker.io/grafana/grafana.\nAllows full image refs with/without sha256checksum: \"registry/repo/image:tag@sha\"\ndefault: 12.2.1"
                   type: "string"
               type: "object"
             status:

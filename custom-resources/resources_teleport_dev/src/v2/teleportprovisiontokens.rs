@@ -415,6 +415,8 @@ pub struct TeleportProvisionTokenOracle {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TeleportProvisionTokenOracleAllow {
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub instances: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parent_compartments: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regions: Option<Vec<String>>,

@@ -62,6 +62,10 @@ pub struct NodeSetSpec {
     /// Ref: <https://github.com/kubernetes/api/blob/master/core/v1/types.go#L2885>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub slurmd: Option<BTreeMap<String, serde_json::Value>>,
+    /// TaintKubeNodes controls whether or not to apply a NoExecute taint to any nodes which are running a pod from this NodeSet.
+    /// See <https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/> for more information.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "taintKubeNodes")]
+    pub taint_kube_nodes: Option<bool>,
     /// Template is the object that describes the pod that will be created if
     /// insufficient replicas are detected.
     /// More info: <https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller#pod-template>

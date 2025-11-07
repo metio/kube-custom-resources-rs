@@ -41,8 +41,8 @@ pub struct WorkloadSpec {
     /// and a count.
     /// There must be at least one element and at most 8.
     /// podSets cannot be changed.
-    #[serde(rename = "podSets")]
-    pub pod_sets: Vec<WorkloadPodSets>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSets")]
+    pub pod_sets: Option<Vec<WorkloadPodSets>>,
     /// priority determines the order of access to the resources managed by the
     /// ClusterQueue where the workload is queued.
     /// The priority value is populated from PriorityClassName.
@@ -73,7 +73,8 @@ pub struct WorkloadSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkloadPodSets {
     /// count is the number of pods for the spec.
-    pub count: i32,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub count: Option<i32>,
     /// minCount is the minimum number of pods for the spec acceptable
     /// if the workload supports partial admission.
     /// 
@@ -7510,11 +7511,11 @@ pub struct WorkloadStatus {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkloadStatusAdmission {
     /// clusterQueue is the name of the ClusterQueue that admitted this workload.
-    #[serde(rename = "clusterQueue")]
-    pub cluster_queue: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterQueue")]
+    pub cluster_queue: Option<String>,
     /// podSetAssignments hold the admission results for each of the .spec.podSets entries.
-    #[serde(rename = "podSetAssignments")]
-    pub pod_set_assignments: Vec<WorkloadStatusAdmissionPodSetAssignments>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSetAssignments")]
+    pub pod_set_assignments: Option<Vec<WorkloadStatusAdmissionPodSetAssignments>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -7532,12 +7533,13 @@ pub struct WorkloadStatusAdmissionPodSetAssignments {
     /// least one PodSet which has delayedTopologyRequest=true and without
     /// topologyAssignment.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "delayedTopologyRequest")]
-    pub delayed_topology_request: Option<String>,
+    pub delayed_topology_request: Option<WorkloadStatusAdmissionPodSetAssignmentsDelayedTopologyRequest>,
     /// flavors are the flavors assigned to the workload for each resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub flavors: Option<BTreeMap<String, String>>,
     /// name is the name of the podSet. It should match one of the names in .spec.podSets.
-    pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     /// resourceUsage keeps track of the total resources all the pods in the podset need to run.
     /// 
     /// Beside what is provided in podSet's specs, this calculation takes into account
@@ -7591,6 +7593,12 @@ pub struct WorkloadStatusAdmissionPodSetAssignments {
     ///     count: 2
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologyAssignment")]
     pub topology_assignment: Option<WorkloadStatusAdmissionPodSetAssignmentsTopologyAssignment>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum WorkloadStatusAdmissionPodSetAssignmentsDelayedTopologyRequest {
+    Pending,
+    Ready,
 }
 
 /// topologyAssignment indicates the topology assignment divided into

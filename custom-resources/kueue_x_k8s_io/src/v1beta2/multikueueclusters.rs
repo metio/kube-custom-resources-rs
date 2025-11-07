@@ -11,10 +11,11 @@ mod prelude {
 use self::prelude::*;
 
 /// spec is the specification of the MultiKueueCluster.
-#[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
+#[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "kueue.x-k8s.io", version = "v1beta2", kind = "MultiKueueCluster", plural = "multikueueclusters")]
 #[kube(status = "MultiKueueClusterStatus")]
 #[kube(schema = "disabled")]
+#[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct MultiKueueClusterSpec {
     /// kubeConfig is information on how to connect to the cluster.
@@ -23,7 +24,7 @@ pub struct MultiKueueClusterSpec {
 }
 
 /// kubeConfig is information on how to connect to the cluster.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MultiKueueClusterKubeConfig {
     /// location of the KubeConfig.
     /// 
@@ -31,8 +32,8 @@ pub struct MultiKueueClusterKubeConfig {
     /// which the kueue controller manager is running. The config should be stored in the "kubeconfig" key.
     pub location: String,
     /// locationType of the KubeConfig.
-    #[serde(rename = "locationType")]
-    pub location_type: MultiKueueClusterKubeConfigLocationType,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "locationType")]
+    pub location_type: Option<MultiKueueClusterKubeConfigLocationType>,
 }
 
 /// kubeConfig is information on how to connect to the cluster.

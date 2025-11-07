@@ -1530,7 +1530,7 @@ spec:
                       name:
                         description: "Specifies the Component's name.\nIt's part of the Service DNS name and must comply with the IANA service naming rule.\nThe name is optional when ClusterComponentSpec is used as a template (e.g., in `clusterSharding`),\nbut required otherwise."
                         maxLength: 22
-                        pattern: "^[a-z]([a-z0-9\\-]*[a-z0-9])?$"
+                        pattern: "^$|^[a-z]([a-z0-9-]*[a-z0-9])?$"
                         type: "string"
                       network:
                         description: "Defines the network configuration for the Component."
@@ -7742,7 +7742,7 @@ spec:
                           name:
                             description: "Specifies the Component's name.\nIt's part of the Service DNS name and must comply with the IANA service naming rule.\nThe name is optional when ClusterComponentSpec is used as a template (e.g., in `clusterSharding`),\nbut required otherwise."
                             maxLength: 22
-                            pattern: "^[a-z]([a-z0-9\\-]*[a-z0-9])?$"
+                            pattern: "^$|^[a-z]([a-z0-9-]*[a-z0-9])?$"
                             type: "string"
                           network:
                             description: "Defines the network configuration for the Component."

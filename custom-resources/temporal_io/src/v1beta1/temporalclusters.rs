@@ -827,10 +827,19 @@ pub struct TemporalClusterMetricsPrometheusScrapeConfigServiceMonitorOverride {
     /// It requires Prometheus >= v2.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bodySizeLimit")]
     pub body_size_limit: Option<String>,
+    /// Whether to convert all scraped classic histograms into a native histogram with custom buckets.
+    /// It requires Prometheus >= v3.0.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "convertClassicHistogramsToNHCB")]
+    pub convert_classic_histograms_to_nhcb: Option<bool>,
     /// List of endpoints part of this ServiceMonitor.
     /// Defines how to scrape metrics from Kubernetes [Endpoints](<https://kubernetes.io/docs/concepts/services-networking/service/#endpoints)> objects.
     /// In most cases, an Endpoints object is backed by a Kubernetes [Service](<https://kubernetes.io/docs/concepts/services-networking/service/)> object with the same name and labels.
     pub endpoints: Vec<TemporalClusterMetricsPrometheusScrapeConfigServiceMonitorOverrideEndpoints>,
+    /// The protocol to use if a scrape returns blank, unparseable, or otherwise invalid Content-Type.
+    /// 
+    /// It requires Prometheus >= v3.0.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fallbackScrapeProtocol")]
+    pub fallback_scrape_protocol: Option<TemporalClusterMetricsPrometheusScrapeConfigServiceMonitorOverrideFallbackScrapeProtocol>,
     /// `jobLabel` selects the label from the associated Kubernetes `Service`
     /// object which will be used as the `job` label for all metrics.
     /// 
@@ -891,6 +900,8 @@ pub struct TemporalClusterMetricsPrometheusScrapeConfigServiceMonitorOverride {
     pub scrape_class: Option<String>,
     /// Whether to scrape a classic histogram that is also exposed as a native histogram.
     /// It requires Prometheus >= v2.45.0.
+    /// 
+    /// Notice: `scrapeClassicHistograms` corresponds to the `always_scrape_classic_histograms` field in the Prometheus configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeClassicHistograms")]
     pub scrape_classic_histograms: Option<bool>,
     /// `scrapeProtocols` defines the protocols to negotiate during a scrape. It tells clients the
@@ -903,6 +914,14 @@ pub struct TemporalClusterMetricsPrometheusScrapeConfigServiceMonitorOverride {
     pub scrape_protocols: Option<Vec<String>>,
     /// Label selector to select the Kubernetes `Endpoints` objects to scrape metrics from.
     pub selector: TemporalClusterMetricsPrometheusScrapeConfigServiceMonitorOverrideSelector,
+    /// Mechanism used to select the endpoints to scrape.
+    /// By default, the selection process relies on relabel configurations to filter the discovered targets.
+    /// Alternatively, you can opt in for role selectors, which may offer better efficiency in large clusters.
+    /// Which strategy is best for your use case needs to be carefully evaluated.
+    /// 
+    /// It requires Prometheus >= v2.17.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "selectorMechanism")]
+    pub selector_mechanism: Option<TemporalClusterMetricsPrometheusScrapeConfigServiceMonitorOverrideSelectorMechanism>,
     /// `targetLabels` defines the labels which are transferred from the
     /// associated Kubernetes `Service` object onto the ingested metrics.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabels")]
@@ -988,6 +1007,13 @@ pub struct TemporalClusterMetricsPrometheusScrapeConfigServiceMonitorOverrideEnd
     /// samples before ingestion.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricRelabelings")]
     pub metric_relabelings: Option<Vec<TemporalClusterMetricsPrometheusScrapeConfigServiceMonitorOverrideEndpointsMetricRelabelings>>,
+    /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
+    /// that should be excluded from proxying. IP and domain names can
+    /// contain port numbers.
+    /// 
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
+    pub no_proxy: Option<String>,
     /// `oauth2` configures the OAuth2 settings to use when scraping the target.
     /// 
     /// It requires Prometheus >= 2.27.0.
@@ -1008,8 +1034,18 @@ pub struct TemporalClusterMetricsPrometheusScrapeConfigServiceMonitorOverrideEnd
     /// It takes precedence over `targetPort`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<String>,
-    /// `proxyURL` configures the HTTP Proxy URL (e.g.
-    /// "<http://proxyserver:2195")> to go through when scraping the target.
+    /// ProxyConnectHeader optionally specifies headers to send to
+    /// proxies during CONNECT requests.
+    /// 
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, Vec<TemporalClusterMetricsPrometheusScrapeConfigServiceMonitorOverrideEndpointsProxyConnectHeader>>>,
+    /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
+    /// 
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
+    pub proxy_from_environment: Option<bool>,
+    /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
     pub proxy_url: Option<String>,
     /// `relabelings` configures the relabeling rules to apply the target's
@@ -1034,6 +1070,7 @@ pub struct TemporalClusterMetricsPrometheusScrapeConfigServiceMonitorOverrideEnd
     /// 
     /// If empty, Prometheus uses the global scrape timeout unless it is less
     /// than the target's scrape interval value in which the latter is used.
+    /// The value cannot be greater than the scrape interval otherwise the operator will reject the resource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeTimeout")]
     pub scrape_timeout: Option<String>,
     /// Name or number of the target port of the `Pod` object behind the
@@ -1275,18 +1312,18 @@ pub struct TemporalClusterMetricsPrometheusScrapeConfigServiceMonitorOverrideEnd
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, Vec<TemporalClusterMetricsPrometheusScrapeConfigServiceMonitorOverrideEndpointsOauth2ProxyConnectHeader>>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
@@ -1403,12 +1440,12 @@ pub struct TemporalClusterMetricsPrometheusScrapeConfigServiceMonitorOverrideEnd
     pub key_secret: Option<TemporalClusterMetricsPrometheusScrapeConfigServiceMonitorOverrideEndpointsOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<TemporalClusterMetricsPrometheusScrapeConfigServiceMonitorOverrideEndpointsOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<TemporalClusterMetricsPrometheusScrapeConfigServiceMonitorOverrideEndpointsOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -1551,6 +1588,23 @@ pub enum TemporalClusterMetricsPrometheusScrapeConfigServiceMonitorOverrideEndpo
     Tls13,
 }
 
+/// SecretKeySelector selects a key of a Secret.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TemporalClusterMetricsPrometheusScrapeConfigServiceMonitorOverrideEndpointsProxyConnectHeader {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
 /// scraped samples and remote write samples.
 /// 
@@ -1679,12 +1733,12 @@ pub struct TemporalClusterMetricsPrometheusScrapeConfigServiceMonitorOverrideEnd
     pub key_secret: Option<TemporalClusterMetricsPrometheusScrapeConfigServiceMonitorOverrideEndpointsTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<TemporalClusterMetricsPrometheusScrapeConfigServiceMonitorOverrideEndpointsTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<TemporalClusterMetricsPrometheusScrapeConfigServiceMonitorOverrideEndpointsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -1825,6 +1879,21 @@ pub enum TemporalClusterMetricsPrometheusScrapeConfigServiceMonitorOverrideEndpo
     Tls13,
 }
 
+/// Override allows customization of the created ServiceMonitor.
+/// All fields can be overwritten except "endpoints", "selector" and "namespaceSelector".
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum TemporalClusterMetricsPrometheusScrapeConfigServiceMonitorOverrideFallbackScrapeProtocol {
+    PrometheusProto,
+    #[serde(rename = "OpenMetricsText0.0.1")]
+    OpenMetricsText001,
+    #[serde(rename = "OpenMetricsText1.0.0")]
+    OpenMetricsText100,
+    #[serde(rename = "PrometheusText0.0.4")]
+    PrometheusText004,
+    #[serde(rename = "PrometheusText1.0.0")]
+    PrometheusText100,
+}
+
 /// `namespaceSelector` defines in which namespace(s) Prometheus should discover the services.
 /// By default, the services are discovered in the same namespace as the `ServiceMonitor` object but it is possible to select pods across different/all namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1866,6 +1935,14 @@ pub struct TemporalClusterMetricsPrometheusScrapeConfigServiceMonitorOverrideSel
     /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
+}
+
+/// Override allows customization of the created ServiceMonitor.
+/// All fields can be overwritten except "endpoints", "selector" and "namespaceSelector".
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum TemporalClusterMetricsPrometheusScrapeConfigServiceMonitorOverrideSelectorMechanism {
+    RelabelConfig,
+    RoleSelector,
 }
 
 /// Persistence defines temporal persistence configuration.

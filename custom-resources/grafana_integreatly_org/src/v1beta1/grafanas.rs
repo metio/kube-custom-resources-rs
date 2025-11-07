@@ -63,7 +63,9 @@ pub struct GrafanaSpec {
     /// Suspend pauses reconciliation of owned resources like deployments, Services, Etc. upon changes
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub suspend: Option<bool>,
-    /// Version specifies the version of Grafana to use for this deployment. It follows the same format as the docker.io/grafana/grafana tags
+    /// Version sets the tag of the default image: docker.io/grafana/grafana.
+    /// Allows full image refs with/without sha256checksum: "registry/repo/image:tag@sha"
+    /// default: 12.2.1
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }

@@ -23,24 +23,43 @@ pub struct GrafanaContactPointSpec {
     /// Allow the Operator to match this resource with Grafanas outside the current namespace
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowCrossNamespaceImport")]
     pub allow_cross_namespace_import: Option<bool>,
+    /// Deprecated: define the receiver under .spec.receivers[]
+    /// Will be removed in a later version
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableResolveMessage")]
     pub disable_resolve_message: Option<bool>,
+    /// Whether to enable or disable editing of the contact point in Grafana UI
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub editable: Option<bool>,
     /// Selects Grafana instances for import
     #[serde(rename = "instanceSelector")]
     pub instance_selector: GrafanaContactPointInstanceSelector,
-    pub name: String,
+    /// Receivers are grouped under the same ContactPoint using the Name
+    /// Defaults to the name of the CR
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// List of receivers that Grafana will fan out notifications to
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub receivers: Option<Vec<GrafanaContactPointReceivers>>,
     /// How often the resource is synced, defaults to 10m0s if not set
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resyncPeriod")]
     pub resync_period: Option<String>,
-    pub settings: serde_json::Value,
+    /// Deprecated: define the receiver under .spec.receivers[]
+    /// Will be removed in a later version
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub settings: Option<serde_json::Value>,
     /// Suspend pauses synchronizing attempts and tells the operator to ignore changes
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub suspend: Option<bool>,
-    #[serde(rename = "type")]
-    pub r#type: String,
+    /// Deprecated: define the receiver under .spec.receivers[]
+    /// Will be removed in a later version
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+    /// Deprecated: define the receiver under .spec.receivers[]
     /// Manually specify the UID the Contact Point is created with. Can be any string consisting of alphanumeric characters, - and _ with a maximum length of 40
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
+    /// Deprecated: define the receiver under .spec.receivers[]
+    /// Will be removed in a later version
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valuesFrom")]
     pub values_from: Option<Vec<GrafanaContactPointValuesFrom>>,
 }
@@ -73,6 +92,73 @@ pub struct GrafanaContactPointInstanceSelectorMatchExpressions {
     /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
+}
+
+/// Represents an integration to external services that receive Grafana notifications
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GrafanaContactPointReceivers {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableResolveMessage")]
+    pub disable_resolve_message: Option<bool>,
+    pub settings: serde_json::Value,
+    #[serde(rename = "type")]
+    pub r#type: String,
+    /// Manually specify the UID the Contact Point is created with. Can be any string consisting of alphanumeric characters, - and _ with a maximum length of 40
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uid: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valuesFrom")]
+    pub values_from: Option<Vec<GrafanaContactPointReceiversValuesFrom>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GrafanaContactPointReceiversValuesFrom {
+    #[serde(rename = "targetPath")]
+    pub target_path: String,
+    #[serde(rename = "valueFrom")]
+    pub value_from: GrafanaContactPointReceiversValuesFromValueFrom,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GrafanaContactPointReceiversValuesFromValueFrom {
+    /// Selects a key of a ConfigMap.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<GrafanaContactPointReceiversValuesFromValueFromConfigMapKeyRef>,
+    /// Selects a key of a Secret.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<GrafanaContactPointReceiversValuesFromValueFromSecretKeyRef>,
+}
+
+/// Selects a key of a ConfigMap.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GrafanaContactPointReceiversValuesFromValueFromConfigMapKeyRef {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Selects a key of a Secret.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GrafanaContactPointReceiversValuesFromValueFromSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

@@ -3380,7 +3380,7 @@ pub struct PolicyRulesValidatePodSecurity {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<PolicyRulesValidatePodSecurityLevel>,
     /// Version defines the Pod Security Standard versions that Kubernetes supports.
-    /// Allowed values are v1.19, v1.20, v1.21, v1.22, v1.23, v1.24, v1.25, v1.26, v1.27, v1.28, v1.29, latest. Defaults to latest.
+    /// Allowed values are v1.19, v1.20, v1.21, v1.22, v1.23, v1.24, v1.25, v1.26, v1.27, v1.28, v1.29, v1.30, v1.31, v1.32, latest. Defaults to latest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<PolicyRulesValidatePodSecurityVersion>,
 }
@@ -3475,6 +3475,12 @@ pub enum PolicyRulesValidatePodSecurityVersion {
     V128,
     #[serde(rename = "v1.29")]
     V129,
+    #[serde(rename = "v1.30")]
+    V130,
+    #[serde(rename = "v1.31")]
+    V131,
+    #[serde(rename = "v1.32")]
+    V132,
     #[serde(rename = "latest")]
     Latest,
 }
@@ -7667,7 +7673,7 @@ pub struct PolicyStatusAutogenRulesValidatePodSecurity {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<PolicyStatusAutogenRulesValidatePodSecurityLevel>,
     /// Version defines the Pod Security Standard versions that Kubernetes supports.
-    /// Allowed values are v1.19, v1.20, v1.21, v1.22, v1.23, v1.24, v1.25, v1.26, v1.27, v1.28, v1.29, latest. Defaults to latest.
+    /// Allowed values are v1.19, v1.20, v1.21, v1.22, v1.23, v1.24, v1.25, v1.26, v1.27, v1.28, v1.29, v1.30, v1.31, v1.32, latest. Defaults to latest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<PolicyStatusAutogenRulesValidatePodSecurityVersion>,
 }
@@ -7762,6 +7768,12 @@ pub enum PolicyStatusAutogenRulesValidatePodSecurityVersion {
     V128,
     #[serde(rename = "v1.29")]
     V129,
+    #[serde(rename = "v1.30")]
+    V130,
+    #[serde(rename = "v1.31")]
+    V131,
+    #[serde(rename = "v1.32")]
+    V132,
     #[serde(rename = "latest")]
     Latest,
 }

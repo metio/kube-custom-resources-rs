@@ -644,6 +644,9 @@ spec:
                                       description: "When defined, bodySizeLimit specifies a job level limit on the size\nof uncompressed response body that will be accepted by Prometheus.\n\nIt requires Prometheus >= v2.28.0."
                                       pattern: "(^0|([0-9]*[.])?[0-9]+((K|M|G|T|E|P)i?)?B)$"
                                       type: "string"
+                                    convertClassicHistogramsToNHCB:
+                                      description: "Whether to convert all scraped classic histograms into a native histogram with custom buckets.\nIt requires Prometheus >= v3.0.0."
+                                      type: "boolean"
                                     endpoints:
                                       description: "List of endpoints part of this ServiceMonitor.\nDefines how to scrape metrics from Kubernetes [Endpoints](https://kubernetes.io/docs/concepts/services-networking/service/#endpoints) objects.\nIn most cases, an Endpoints object is backed by a Kubernetes [Service](https://kubernetes.io/docs/concepts/services-networking/service/) object with the same name and labels."
                                       items:
@@ -807,6 +810,9 @@ spec:
                                                   type: "string"
                                               type: "object"
                                             type: "array"
+                                          noProxy:
+                                            description: "`noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names\nthat should be excluded from proxying. IP and domain names can\ncontain port numbers.\n\nIt requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0."
+                                            type: "string"
                                           oauth2:
                                             description: "`oauth2` configures the OAuth2 settings to use when scraping the target.\n\nIt requires Prometheus >= 2.27.0.\n\nCannot be set at the same time as `authorization`, or `basicAuth`."
                                             properties:
@@ -871,7 +877,7 @@ spec:
                                                 description: "`endpointParams` configures the HTTP parameters to append to the token\nURL."
                                                 type: "object"
                                               noProxy:
-                                                description: "`noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names\nthat should be excluded from proxying. IP and domain names can\ncontain port numbers.\n\nIt requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0."
+                                                description: "`noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names\nthat should be excluded from proxying. IP and domain names can\ncontain port numbers.\n\nIt requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0."
                                                 type: "string"
                                               proxyConnectHeader:
                                                 additionalProperties:
@@ -893,15 +899,15 @@ spec:
                                                     type: "object"
                                                     x-kubernetes-map-type: "atomic"
                                                   type: "array"
-                                                description: "ProxyConnectHeader optionally specifies headers to send to\nproxies during CONNECT requests.\n\nIt requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0."
+                                                description: "ProxyConnectHeader optionally specifies headers to send to\nproxies during CONNECT requests.\n\nIt requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0."
                                                 type: "object"
                                                 x-kubernetes-map-type: "atomic"
                                               proxyFromEnvironment:
-                                                description: "Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).\n\nIt requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0."
+                                                description: "Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).\n\nIt requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0."
                                                 type: "boolean"
                                               proxyUrl:
                                                 description: "`proxyURL` defines the HTTP proxy server to use."
-                                                pattern: "^http(s)?://.+$"
+                                                pattern: "^(http|https|socks5)://.+$"
                                                 type: "string"
                                               scopes:
                                                 description: "`scopes` defines the OAuth2 scopes used for the token request."
@@ -1008,7 +1014,7 @@ spec:
                                                     type: "object"
                                                     x-kubernetes-map-type: "atomic"
                                                   maxVersion:
-                                                    description: "Maximum acceptable TLS version.\n\nIt requires Prometheus >= v2.41.0."
+                                                    description: "Maximum acceptable TLS version.\n\nIt requires Prometheus >= v2.41.0 or Thanos >= v0.31.0."
                                                     enum:
                                                       - "TLS10"
                                                       - "TLS11"
@@ -1016,7 +1022,7 @@ spec:
                                                       - "TLS13"
                                                     type: "string"
                                                   minVersion:
-                                                    description: "Minimum acceptable TLS version.\n\nIt requires Prometheus >= v2.35.0."
+                                                    description: "Minimum acceptable TLS version.\n\nIt requires Prometheus >= v2.35.0 or Thanos >= v0.28.0."
                                                     enum:
                                                       - "TLS10"
                                                       - "TLS11"
@@ -1049,8 +1055,35 @@ spec:
                                           port:
                                             description: "Name of the Service port which this endpoint refers to.\n\nIt takes precedence over `targetPort`."
                                             type: "string"
+                                          proxyConnectHeader:
+                                            additionalProperties:
+                                              items:
+                                                description: "SecretKeySelector selects a key of a Secret."
+                                                properties:
+                                                  key:
+                                                    description: "The key of the secret to select from.  Must be a valid secret key."
+                                                    type: "string"
+                                                  name:
+                                                    default: ""
+                                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                                    type: "string"
+                                                  optional:
+                                                    description: "Specify whether the Secret or its key must be defined"
+                                                    type: "boolean"
+                                                required:
+                                                  - "key"
+                                                type: "object"
+                                                x-kubernetes-map-type: "atomic"
+                                              type: "array"
+                                            description: "ProxyConnectHeader optionally specifies headers to send to\nproxies during CONNECT requests.\n\nIt requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0."
+                                            type: "object"
+                                            x-kubernetes-map-type: "atomic"
+                                          proxyFromEnvironment:
+                                            description: "Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).\n\nIt requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0."
+                                            type: "boolean"
                                           proxyUrl:
-                                            description: "`proxyURL` configures the HTTP Proxy URL (e.g.\n\"http://proxyserver:2195\") to go through when scraping the target."
+                                            description: "`proxyURL` defines the HTTP proxy server to use."
+                                            pattern: "^(http|https|socks5)://.+$"
                                             type: "string"
                                           relabelings:
                                             description: "`relabelings` configures the relabeling rules to apply the target's\nmetadata labels.\n\nThe Operator automatically adds relabelings for a few standard Kubernetes fields.\n\nThe original scrape job's name is available via the `__tmp_prometheus_job_name` label.\n\nMore info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config"
@@ -1116,7 +1149,7 @@ spec:
                                               - "https"
                                             type: "string"
                                           scrapeTimeout:
-                                            description: "Timeout after which Prometheus considers the scrape to be failed.\n\nIf empty, Prometheus uses the global scrape timeout unless it is less\nthan the target's scrape interval value in which the latter is used."
+                                            description: "Timeout after which Prometheus considers the scrape to be failed.\n\nIf empty, Prometheus uses the global scrape timeout unless it is less\nthan the target's scrape interval value in which the latter is used.\nThe value cannot be greater than the scrape interval otherwise the operator will reject the resource."
                                             pattern: "^(0|(([0-9]+)y)?(([0-9]+)w)?(([0-9]+)d)?(([0-9]+)h)?(([0-9]+)m)?(([0-9]+)s)?(([0-9]+)ms)?)$"
                                             type: "string"
                                           targetPort:
@@ -1234,7 +1267,7 @@ spec:
                                                 type: "object"
                                                 x-kubernetes-map-type: "atomic"
                                               maxVersion:
-                                                description: "Maximum acceptable TLS version.\n\nIt requires Prometheus >= v2.41.0."
+                                                description: "Maximum acceptable TLS version.\n\nIt requires Prometheus >= v2.41.0 or Thanos >= v0.31.0."
                                                 enum:
                                                   - "TLS10"
                                                   - "TLS11"
@@ -1242,7 +1275,7 @@ spec:
                                                   - "TLS13"
                                                 type: "string"
                                               minVersion:
-                                                description: "Minimum acceptable TLS version.\n\nIt requires Prometheus >= v2.35.0."
+                                                description: "Minimum acceptable TLS version.\n\nIt requires Prometheus >= v2.35.0 or Thanos >= v0.28.0."
                                                 enum:
                                                   - "TLS10"
                                                   - "TLS11"
@@ -1258,6 +1291,15 @@ spec:
                                             type: "boolean"
                                         type: "object"
                                       type: "array"
+                                    fallbackScrapeProtocol:
+                                      description: "The protocol to use if a scrape returns blank, unparseable, or otherwise invalid Content-Type.\n\nIt requires Prometheus >= v3.0.0."
+                                      enum:
+                                        - "PrometheusProto"
+                                        - "OpenMetricsText0.0.1"
+                                        - "OpenMetricsText1.0.0"
+                                        - "PrometheusText0.0.4"
+                                        - "PrometheusText1.0.0"
+                                      type: "string"
                                     jobLabel:
                                       description: "`jobLabel` selects the label from the associated Kubernetes `Service`\nobject which will be used as the `job` label for all metrics.\n\nFor example if `jobLabel` is set to `foo` and the Kubernetes `Service`\nobject is labeled with `foo: bar`, then Prometheus adds the `job=\"bar\"`\nlabel to all ingested metrics.\n\nIf the value of this field is empty or if the label doesn't exist for\nthe given Service, the `job` label of the metrics defaults to the name\nof the associated Kubernetes `Service`."
                                       type: "string"
@@ -1314,17 +1356,18 @@ spec:
                                       minLength: 1
                                       type: "string"
                                     scrapeClassicHistograms:
-                                      description: "Whether to scrape a classic histogram that is also exposed as a native histogram.\nIt requires Prometheus >= v2.45.0."
+                                      description: "Whether to scrape a classic histogram that is also exposed as a native histogram.\nIt requires Prometheus >= v2.45.0.\n\nNotice: `scrapeClassicHistograms` corresponds to the `always_scrape_classic_histograms` field in the Prometheus configuration."
                                       type: "boolean"
                                     scrapeProtocols:
                                       description: "`scrapeProtocols` defines the protocols to negotiate during a scrape. It tells clients the\nprotocols supported by Prometheus in order of preference (from most to least preferred).\n\nIf unset, Prometheus uses its default value.\n\nIt requires Prometheus >= v2.49.0."
                                       items:
-                                        description: "ScrapeProtocol represents a protocol used by Prometheus for scraping metrics.\nSupported values are:\n* `OpenMetricsText0.0.1`\n* `OpenMetricsText1.0.0`\n* `PrometheusProto`\n* `PrometheusText0.0.4`"
+                                        description: "ScrapeProtocol represents a protocol used by Prometheus for scraping metrics.\nSupported values are:\n* `OpenMetricsText0.0.1`\n* `OpenMetricsText1.0.0`\n* `PrometheusProto`\n* `PrometheusText0.0.4`\n* `PrometheusText1.0.0`"
                                         enum:
                                           - "PrometheusProto"
                                           - "OpenMetricsText0.0.1"
                                           - "OpenMetricsText1.0.0"
                                           - "PrometheusText0.0.4"
+                                          - "PrometheusText1.0.0"
                                         type: "string"
                                       type: "array"
                                       x-kubernetes-list-type: "set"
@@ -1361,6 +1404,12 @@ spec:
                                           type: "object"
                                       type: "object"
                                       x-kubernetes-map-type: "atomic"
+                                    selectorMechanism:
+                                      description: "Mechanism used to select the endpoints to scrape.\nBy default, the selection process relies on relabel configurations to filter the discovered targets.\nAlternatively, you can opt in for role selectors, which may offer better efficiency in large clusters.\nWhich strategy is best for your use case needs to be carefully evaluated.\n\nIt requires Prometheus >= v2.17.0."
+                                      enum:
+                                        - "RelabelConfig"
+                                        - "RoleSelector"
+                                      type: "string"
                                     targetLabels:
                                       description: "`targetLabels` defines the labels which are transferred from the\nassociated Kubernetes `Service` object onto the ingested metrics."
                                       items:

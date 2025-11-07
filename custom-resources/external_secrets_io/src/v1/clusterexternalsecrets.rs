@@ -556,6 +556,12 @@ pub struct ClusterExternalSecretExternalSecretSpecTarget {
     /// Immutable defines if the final secret will be immutable
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub immutable: Option<bool>,
+    /// Manifest defines a custom Kubernetes resource to create instead of a Secret.
+    /// When specified, ExternalSecret will create the resource type defined here
+    /// (e.g., ConfigMap, Custom Resource) instead of a Secret.
+    /// Warning: Using Generic target. Make sure access policies and encryption are properly configured.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub manifest: Option<ClusterExternalSecretExternalSecretSpecTargetManifest>,
     /// The name of the Secret resource to be managed.
     /// Defaults to the .metadata.name of the ExternalSecret resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -582,6 +588,19 @@ pub enum ClusterExternalSecretExternalSecretSpecTargetDeletionPolicy {
     Delete,
     Merge,
     Retain,
+}
+
+/// Manifest defines a custom Kubernetes resource to create instead of a Secret.
+/// When specified, ExternalSecret will create the resource type defined here
+/// (e.g., ConfigMap, Custom Resource) instead of a Secret.
+/// Warning: Using Generic target. Make sure access policies and encryption are properly configured.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterExternalSecretExternalSecretSpecTargetManifest {
+    /// APIVersion of the target resource (e.g., "v1" for ConfigMap, "argoproj.io/v1alpha1" for ArgoCD Application)
+    #[serde(rename = "apiVersion")]
+    pub api_version: String,
+    /// Kind of the target resource (e.g., "ConfigMap", "Application")
+    pub kind: String,
 }
 
 /// Template defines a blueprint for the created Secret resource.
@@ -643,9 +662,12 @@ pub struct ClusterExternalSecretExternalSecretSpecTargetTemplateTemplateFrom {
     /// TemplateRef specifies a reference to either a ConfigMap or a Secret resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<ClusterExternalSecretExternalSecretSpecTargetTemplateTemplateFromSecret>,
-    /// TemplateTarget specifies where the rendered templates should be applied.
+    /// Target specifies where to place the template result.
+    /// For Secret resources, common values are: "Data", "Annotations", "Labels".
+    /// For custom resources (when spec.target.manifest is set), this supports
+    /// nested paths like "spec.database.config" or "data".
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub target: Option<ClusterExternalSecretExternalSecretSpecTargetTemplateTemplateFromTarget>,
+    pub target: Option<String>,
 }
 
 /// TemplateRef specifies a reference to either a ConfigMap or a Secret resource.
@@ -698,15 +720,6 @@ pub struct ClusterExternalSecretExternalSecretSpecTargetTemplateTemplateFromSecr
 pub enum ClusterExternalSecretExternalSecretSpecTargetTemplateTemplateFromSecretItemsTemplateAs {
     Values,
     KeysAndValues,
-}
-
-/// TemplateFrom specifies a source for templates.
-/// Each item in the list can either reference a ConfigMap or a Secret resource.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ClusterExternalSecretExternalSecretSpecTargetTemplateTemplateFromTarget {
-    Data,
-    Annotations,
-    Labels,
 }
 
 /// The labels to select by to find the Namespaces to create the ExternalSecrets in.

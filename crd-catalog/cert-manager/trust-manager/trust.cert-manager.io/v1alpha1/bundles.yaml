@@ -171,7 +171,7 @@ spec:
                       description: "AdditionalFormats specifies any additional formats to write to the target"
                       properties:
                         jks:
-                          description: "JKS requests a JKS-formatted binary trust bundle to be written to the target.\nThe bundle has \"changeit\" as the default password.\nFor more information refer to this link https://cert-manager.io/docs/faq/#keystore-passwords\nDeprecated: Writing JKS is subject for removal. Please migrate to PKCS12.\nPKCS#12 trust stores created by trust-manager are compatible with Java."
+                          description: "JKS requests a JKS-formatted binary trust bundle to be written to the target.\nThe bundle has \"changeit\" as the default password.\nFor more information refer to this link https://cert-manager.io/docs/faq/#keystore-passwords\nFormat is deprecated: Writing JKS is subject for removal. Please migrate to PKCS12.\nPKCS#12 trust stores created by trust-manager are compatible with Java."
                           properties:
                             key:
                               description: "Key is the key of the entry in the object's `data` field to be used."

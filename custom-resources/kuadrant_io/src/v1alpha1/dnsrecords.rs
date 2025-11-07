@@ -154,9 +154,6 @@ pub struct DnsRecordStatus {
     /// QueuedAt is a time when DNS record was received for the reconciliation
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "queuedAt")]
     pub queued_at: Option<String>,
-    /// ZoneEndpoints are all the endpoints for the DNSRecordSpec.RootHost that are present in the provider
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "relatedEndpoints")]
-    pub related_endpoints: Option<Vec<DnsRecordStatusRelatedEndpoints>>,
     /// remoteRecordStatuses is a map of cluster IDs and their unique DNSRecordStatus as raw JSON.
     /// 
     /// 
@@ -238,40 +235,5 @@ pub struct DnsRecordStatusHealthCheckProbes {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DnsRecordStatusProviderRef {
     pub name: String,
-}
-
-/// Endpoint is a high-level way of a connection between a service and an IP
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct DnsRecordStatusRelatedEndpoints {
-    /// The hostname of the DNS record
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsName")]
-    pub dns_name: Option<String>,
-    /// Labels stores labels defined for the Endpoint
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub labels: Option<BTreeMap<String, String>>,
-    /// ProviderSpecific stores provider specific config
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerSpecific")]
-    pub provider_specific: Option<Vec<DnsRecordStatusRelatedEndpointsProviderSpecific>>,
-    /// TTL for the record
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recordTTL")]
-    pub record_ttl: Option<i64>,
-    /// RecordType type of record, e.g. CNAME, A, AAAA, SRV, TXT etc
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recordType")]
-    pub record_type: Option<String>,
-    /// Identifier to distinguish multiple records with the same name and type (e.g. Route53 records with routing policies other than 'simple')
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "setIdentifier")]
-    pub set_identifier: Option<String>,
-    /// The targets the DNS record points to
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub targets: Option<Vec<String>>,
-}
-
-/// ProviderSpecificProperty holds the name and value of a configuration which is specific to individual DNS providers
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct DnsRecordStatusRelatedEndpointsProviderSpecific {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
 }
 
