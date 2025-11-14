@@ -195,6 +195,10 @@ pub enum TargetGroupBindingTargetGroupProtocol {
     Udp,
     #[serde(rename = "TCP_UDP")]
     TcpUdp,
+    #[serde(rename = "QUIC")]
+    Quic,
+    #[serde(rename = "TCP_QUIC")]
+    TcpQuic,
 }
 
 /// TargetGroupBindingSpec defines the desired state of TargetGroupBinding

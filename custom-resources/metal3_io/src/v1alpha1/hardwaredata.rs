@@ -93,6 +93,9 @@ pub struct HardwareDataHardwareNics {
     /// dual-stack environment, two nics will be output, one with each IP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ip: Option<String>,
+    /// LLDP data for this interface
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub lldp: Option<HardwareDataHardwareNicsLldp>,
     /// The device MAC address
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mac: Option<String>,
@@ -114,6 +117,20 @@ pub struct HardwareDataHardwareNics {
     /// The VLANs available
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub vlans: Option<Vec<HardwareDataHardwareNicsVlans>>,
+}
+
+/// LLDP data for this interface
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HardwareDataHardwareNicsLldp {
+    /// The switch port ID from LLDP
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portID")]
+    pub port_id: Option<String>,
+    /// The switch chassis ID from LLDP
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "switchID")]
+    pub switch_id: Option<String>,
+    /// The switch system name from LLDP
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "switchSystemName")]
+    pub switch_system_name: Option<String>,
 }
 
 /// VLAN represents the name and ID of a VLAN.

@@ -67,6 +67,17 @@ pub struct MachineSpec {
     /// This helps to improve readability of conditions bubbling up to the Machine's owner resource / to the Cluster).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessGates")]
     pub readiness_gates: Option<Vec<MachineReadinessGates>>,
+    /// taints are the node taints that Cluster API will manage.
+    /// This list is not necessarily complete: other Kubernetes components may add or remove other taints from nodes,
+    /// e.g. the node controller might add the node.kubernetes.io/not-ready taint.
+    /// Only those taints defined in this list will be added or removed by core Cluster API controllers.
+    /// 
+    /// There can be at most 64 taints.
+    /// A pod would have to tolerate all existing taints to run on the corresponding node.
+    /// 
+    /// NOTE: This list is implemented as a "map" type, meaning that individual elements can be managed by different owners.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub taints: Option<Vec<MachineTaints>>,
     /// version defines the desired Kubernetes version.
     /// This field is meant to be optionally used by bootstrap providers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -168,6 +179,42 @@ pub struct MachineReadinessGates {
 pub enum MachineReadinessGatesPolarity {
     Positive,
     Negative,
+}
+
+/// MachineTaint defines a taint equivalent to corev1.Taint, but additionally having a propagation field.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MachineTaints {
+    /// effect is the effect for the taint. Valid values are NoSchedule, PreferNoSchedule and NoExecute.
+    pub effect: MachineTaintsEffect,
+    /// key is the taint key to be applied to a node.
+    /// Must be a valid qualified name of maximum size 63 characters
+    /// with an optional subdomain prefix of maximum size 253 characters,
+    /// separated by a `/`.
+    pub key: String,
+    /// propagation defines how this taint should be propagated to nodes.
+    /// Valid values are 'Always' and 'OnInitialization'.
+    /// Always: The taint will be continuously reconciled. If it is not set for a node, it will be added during reconciliation.
+    /// OnInitialization: The taint will be added during node initialization. If it gets removed from the node later on it will not get added again.
+    pub propagation: MachineTaintsPropagation,
+    /// value is the taint value corresponding to the taint key.
+    /// It must be a valid label value of maximum size 63 characters.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+/// MachineTaint defines a taint equivalent to corev1.Taint, but additionally having a propagation field.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum MachineTaintsEffect {
+    NoSchedule,
+    PreferNoSchedule,
+    NoExecute,
+}
+
+/// MachineTaint defines a taint equivalent to corev1.Taint, but additionally having a propagation field.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum MachineTaintsPropagation {
+    Always,
+    OnInitialization,
 }
 
 /// status is the observed state of Machine.

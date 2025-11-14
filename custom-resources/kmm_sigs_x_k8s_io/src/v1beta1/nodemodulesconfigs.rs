@@ -38,6 +38,9 @@ pub struct NodeModulesConfigModules {
     /// tolerations define which tolerations should be added for every load/unload pod running on the node
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<NodeModulesConfigModulesTolerations>>,
+    /// Version is the version of the kernel module that should be loaded
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub version: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -196,6 +199,9 @@ pub struct NodeModulesConfigStatusModules {
     /// tolerations define which tolerations should be added for every load/unload pod running on the node
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<NodeModulesConfigStatusModulesTolerations>>,
+    /// Version is the version of the kernel module that should be loaded
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub version: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

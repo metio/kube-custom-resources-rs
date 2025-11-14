@@ -82,6 +82,9 @@ pub struct ForkliftControllerSpec {
     /// Max concurrent reconciles (default: 10)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub controller_max_concurrent_reconciles: Option<IntOrString>,
+    /// Max retries when getting parent disks (default: 10)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub controller_max_parent_backing_retries: Option<IntOrString>,
     /// Max concurrent VM migrations (default: 20)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub controller_max_vm_inflight: Option<IntOrString>,

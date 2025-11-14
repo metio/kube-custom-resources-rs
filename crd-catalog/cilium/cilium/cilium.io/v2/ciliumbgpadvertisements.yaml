@@ -48,6 +48,7 @@ spec:
                           - "PodCIDR"
                           - "CiliumPodIPPool"
                           - "Service"
+                          - "Interface"
                         type: "string"
                       attributes:
                         description: "Attributes defines additional attributes to set to the advertised routes.\nIf not specified, no additional attributes are set."
@@ -96,6 +97,15 @@ spec:
                             format: "int64"
                             type: "integer"
                         type: "object"
+                      interface:
+                        description: "Interface defines configuration options for the \"Interface\" advertisementType."
+                        properties:
+                          name:
+                            description: "Name is the name of the local interface which IP addresses should be advertised via BGP.\nEach IP address applied on the interface is advertised as a /32 prefix (for IPv4) or a /128 prefix (for IPv6)."
+                            type: "string"
+                        required:
+                          - "name"
+                        type: "object"
                       selector:
                         description: "Selector is a label selector to select objects of the type specified by AdvertisementType.\nFor the PodCIDR AdvertisementType it is not applicable. For other advertisement types,\nif not specified, no objects of the type specified by AdvertisementType are selected for advertisement."
                         properties:
@@ -138,7 +148,7 @@ spec:
                         type: "object"
                         x-kubernetes-map-type: "atomic"
                       service:
-                        description: "Service defines configuration options for advertisementType service."
+                        description: "Service defines configuration options for the \"Service\" advertisementType."
                         properties:
                           addresses:
                             description: "Addresses is a list of service address types which needs to be advertised via BGP."
@@ -170,6 +180,12 @@ spec:
                     x-kubernetes-validations:
                       - message: "service field is required for the 'Service' advertisementType"
                         rule: "self.advertisementType != 'Service' || has(self.service)"
+                      - message: "service field is not allowed for non-'Service' advertisementType"
+                        rule: "self.advertisementType == 'Service' || !has(self.service)"
+                      - message: "interface field is required for the 'Interface' advertisementType"
+                        rule: "self.advertisementType != 'Interface' || has(self.interface)"
+                      - message: "interface field is not allowed for non-'Interface' advertisementType"
+                        rule: "self.advertisementType == 'Interface' || !has(self.interface)"
                       - message: "selector field is not allowed for the 'PodCIDR' advertisementType"
                         rule: "self.advertisementType != 'PodCIDR' || !has(self.selector)"
                   type: "array"

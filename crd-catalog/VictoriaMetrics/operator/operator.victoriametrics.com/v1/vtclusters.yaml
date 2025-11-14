@@ -266,13 +266,13 @@ spec:
                       type: "object"
                       x-kubernetes-preserve-unknown-fields: true
                     logFormat:
-                      description: "LogFormat for VTSelect to be configured with.\ndefault or json"
+                      description: "LogFormat for VTInsert to be configured with.\ndefault or json"
                       enum:
                         - "default"
                         - "json"
                       type: "string"
                     logLevel:
-                      description: "LogLevel for VTSelect to be configured with."
+                      description: "LogLevel for VTInsert to be configured with."
                       enum:
                         - "INFO"
                         - "WARN"
@@ -320,7 +320,7 @@ spec:
                           type: "string"
                       type: "object"
                     podMetadata:
-                      description: "PodMetadata configures Labels and Annotations which are propagated to the VTSelect pods."
+                      description: "PodMetadata configures Labels and Annotations which are propagated to the VTInsert pods."
                       properties:
                         annotations:
                           additionalProperties:
@@ -438,13 +438,13 @@ spec:
                       type: "object"
                       x-kubernetes-preserve-unknown-fields: true
                     serviceScrapeSpec:
-                      description: "ServiceScrapeSpec that will be added to vtselect VMServiceScrape spec"
+                      description: "ServiceScrapeSpec that will be added to vtinsert VMServiceScrape spec"
                       required:
                         - "endpoints"
                       type: "object"
                       x-kubernetes-preserve-unknown-fields: true
                     serviceSpec:
-                      description: "ServiceSpec that will be added to vtselect service spec"
+                      description: "ServiceSpec that will be added to vtinsert service spec"
                       properties:
                         metadata:
                           description: "EmbeddedObjectMetadata defines objectMeta for additional service."
@@ -1525,13 +1525,13 @@ spec:
                       type: "object"
                       x-kubernetes-preserve-unknown-fields: true
                     serviceScrapeSpec:
-                      description: "ServiceScrapeSpec that will be added to vtselect VMServiceScrape spec"
+                      description: "ServiceScrapeSpec that will be added to vtstorage VMServiceScrape spec"
                       required:
                         - "endpoints"
                       type: "object"
                       x-kubernetes-preserve-unknown-fields: true
                     serviceSpec:
-                      description: "ServiceSpec that will be added to vtselect service spec"
+                      description: "ServiceSpec that will be added to vtstorage service spec"
                       properties:
                         metadata:
                           description: "EmbeddedObjectMetadata defines objectMeta for additional service."

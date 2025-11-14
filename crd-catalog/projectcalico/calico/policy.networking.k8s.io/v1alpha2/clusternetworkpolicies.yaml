@@ -1,0 +1,637 @@
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  annotations:
+    api-approved.kubernetes.io: "https://github.com/kubernetes-sigs/network-policy-api/pull/300"
+    policy.networking.k8s.io/bundle-version: "v0.1.7"
+    policy.networking.k8s.io/channel: "standard"
+  name: "clusternetworkpolicies.policy.networking.k8s.io"
+spec:
+  group: "policy.networking.k8s.io"
+  names:
+    kind: "ClusterNetworkPolicy"
+    listKind: "ClusterNetworkPolicyList"
+    plural: "clusternetworkpolicies"
+    shortNames:
+      - "cnp"
+    singular: "clusternetworkpolicy"
+  scope: "Cluster"
+  versions:
+    - additionalPrinterColumns:
+        - jsonPath: ".spec.tier"
+          name: "Tier"
+          type: "string"
+        - jsonPath: ".spec.priority"
+          name: "Priority"
+          type: "string"
+        - jsonPath: ".metadata.creationTimestamp"
+          name: "Age"
+          type: "date"
+      name: "v1alpha2"
+      schema:
+        openAPIV3Schema:
+          description: "ClusterNetworkPolicy is a cluster-wide network policy resource."
+          properties:
+            apiVersion:
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              type: "string"
+            kind:
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              type: "string"
+            metadata:
+              type: "object"
+            spec:
+              description: "Spec defines the desired behavior of ClusterNetworkPolicy."
+              properties:
+                egress:
+                  description: "Egress is the list of Egress rules to be applied to the selected pods.\n\nA maximum of 25 rules is allowed in this block.\n\nThe relative precedence of egress rules within a single CNP object\n(all of which share the priority) will be determined by the order\nin which the rule is written.\nThus, a rule that appears at the top of the egress rules\nwould take the highest precedence.\nCNPs with no egress rules do not affect egress traffic."
+                  items:
+                    description: "ClusterNetworkPolicyEgressRule describes an action to take on a particular\nset of traffic originating from pods selected by a ClusterNetworkPolicy's\nSubject field.\n<network-policy-api:experimental:validation>"
+                    properties:
+                      action:
+                        description: "Action specifies the effect this rule will have on matching\ntraffic.  Currently the following actions are supported:\n\n- Accept: Accepts the selected traffic, allowing it to\n  egress. No further ClusterNetworkPolicy or NetworkPolicy\n  rules will be processed.\n\n- Deny: Drops the selected traffic. No further\n  ClusterNetworkPolicy or NetworkPolicy rules will be\n  processed.\n\n- Pass: Skips all further ClusterNetworkPolicy rules in the\n  current tier for the selected traffic, and passes\n  evaluation to the next tier."
+                        enum:
+                          - "Accept"
+                          - "Deny"
+                          - "Pass"
+                        type: "string"
+                      name:
+                        description: "Name is an identifier for this rule, that may be no more than\n100 characters in length. This field should be used by the implementation\nto help improve observability, readability and error-reporting\nfor any applied AdminNetworkPolicies."
+                        maxLength: 100
+                        type: "string"
+                      ports:
+                        description: "Ports allows for matching traffic based on port and protocols.\nThis field is a list of destination ports for the outgoing egress traffic.\nIf Ports is not set then the rule does not filter traffic via port."
+                        items:
+                          description: "ClusterNetworkPolicyPort describes how to select destination network ports.\nExactly one field must be set."
+                          maxProperties: 1
+                          minProperties: 1
+                          properties:
+                            portNumber:
+                              description: "Port selects a destination port based on protocol and port number."
+                              properties:
+                                port:
+                                  description: "Number defines a network port value."
+                                  format: "int32"
+                                  maximum: 65535.0
+                                  minimum: 1.0
+                                  type: "integer"
+                                protocol:
+                                  default: "TCP"
+                                  description: "Protocol is the network protocol (TCP, UDP, or SCTP) which traffic must\nmatch. If not specified, this field defaults to TCP."
+                                  type: "string"
+                              required:
+                                - "port"
+                                - "protocol"
+                              type: "object"
+                            portRange:
+                              description: "PortRange selects a destination port range based on protocol and\nstart and end port numbers."
+                              properties:
+                                end:
+                                  description: "End defines a network port that is the end of a port range, the End value\nmust be greater than Start."
+                                  format: "int32"
+                                  maximum: 65535.0
+                                  minimum: 1.0
+                                  type: "integer"
+                                protocol:
+                                  default: "TCP"
+                                  description: "Protocol is the network protocol (TCP, UDP, or SCTP) which traffic must\nmatch. If not specified, this field defaults to TCP."
+                                  type: "string"
+                                start:
+                                  description: "Start defines a network port that is the start of a port range, the Start\nvalue must be less than End."
+                                  format: "int32"
+                                  maximum: 65535.0
+                                  minimum: 1.0
+                                  type: "integer"
+                              required:
+                                - "end"
+                                - "start"
+                              type: "object"
+                              x-kubernetes-validations:
+                                - message: "Start port must be less than End port"
+                                  rule: "self.start < self.end"
+                          type: "object"
+                        maxItems: 25
+                        minItems: 1
+                        type: "array"
+                      to:
+                        description: "To is the List of destinations whose traffic this rule applies to.\nIf any element matches the destination of outgoing\ntraffic then the specified action is applied.\nThis field must be defined and contain at least one item."
+                        items:
+                          description: "ClusterNetworkPolicyEgressPeer defines a peer to allow traffic to.\n\nExactly one of the fields must be set for a given peer and this is enforced\nby the validation rules on the CRD. If an implementation sees no fields are\nset then it can infer that the deployed CRD is of an incompatible version\nwith an unknown field.  In that case it should fail closed.\n\nFor \"Accept\" rules, \"fail closed\" means: \"treat the rule as matching no\ntraffic\". For \"Deny\" and \"Pass\" rules, \"fail closed\" means: \"treat the rule\nas a 'Deny all' rule\"."
+                          maxProperties: 1
+                          minProperties: 1
+                          properties:
+                            namespaces:
+                              description: "Namespaces defines a way to select all pods within a set of Namespaces.\nNote that host-networked pods are not included in this type of peer."
+                              properties:
+                                matchExpressions:
+                                  description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
+                                  items:
+                                    description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
+                                    properties:
+                                      key:
+                                        description: "key is the label key that the selector applies to."
+                                        type: "string"
+                                      operator:
+                                        description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
+                                        type: "string"
+                                      values:
+                                        description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
+                                        items:
+                                          type: "string"
+                                        type: "array"
+                                        x-kubernetes-list-type: "atomic"
+                                    required:
+                                      - "key"
+                                      - "operator"
+                                    type: "object"
+                                  type: "array"
+                                  x-kubernetes-list-type: "atomic"
+                                matchLabels:
+                                  additionalProperties:
+                                    type: "string"
+                                  description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                  type: "object"
+                              type: "object"
+                              x-kubernetes-map-type: "atomic"
+                            networks:
+                              description: "Networks defines a way to select peers via CIDR blocks.\nThis is intended for representing entities that live outside the cluster,\nwhich can't be selected by pods, namespaces and nodes peers, but note\nthat cluster-internal traffic will be checked against the rule as\nwell. So if you Accept or Deny traffic to `\"0.0.0.0/0\"`, that will allow\nor deny all IPv4 pod-to-pod traffic as well. If you don't want that,\nadd a rule that Passes all pod traffic before the Networks rule.\n\nEach item in Networks should be provided in the CIDR format and should be\nIPv4 or IPv6, for example \"10.0.0.0/8\" or \"fd00::/8\".\n\nNetworks can have upto 25 CIDRs specified."
+                              items:
+                                description: "CIDR is an IP address range in CIDR notation\n(for example, \"10.0.0.0/8\" or \"fd00::/8\")."
+                                maxLength: 43
+                                type: "string"
+                                x-kubernetes-validations:
+                                  - message: "Invalid CIDR format provided"
+                                    rule: "isCIDR(self)"
+                              maxItems: 25
+                              minItems: 1
+                              type: "array"
+                              x-kubernetes-list-type: "set"
+                            pods:
+                              description: "Pods defines a way to select a set of pods in\na set of namespaces. Note that host-networked pods\nare not included in this type of peer."
+                              properties:
+                                namespaceSelector:
+                                  description: "NamespaceSelector follows standard label selector semantics; if empty,\nit selects all Namespaces."
+                                  properties:
+                                    matchExpressions:
+                                      description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
+                                      items:
+                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
+                                        properties:
+                                          key:
+                                            description: "key is the label key that the selector applies to."
+                                            type: "string"
+                                          operator:
+                                            description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
+                                            type: "string"
+                                          values:
+                                            description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
+                                            items:
+                                              type: "string"
+                                            type: "array"
+                                            x-kubernetes-list-type: "atomic"
+                                        required:
+                                          - "key"
+                                          - "operator"
+                                        type: "object"
+                                      type: "array"
+                                      x-kubernetes-list-type: "atomic"
+                                    matchLabels:
+                                      additionalProperties:
+                                        type: "string"
+                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                      type: "object"
+                                  type: "object"
+                                  x-kubernetes-map-type: "atomic"
+                                podSelector:
+                                  description: "PodSelector is used to explicitly select pods within a namespace;\nif empty, it selects all Pods."
+                                  properties:
+                                    matchExpressions:
+                                      description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
+                                      items:
+                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
+                                        properties:
+                                          key:
+                                            description: "key is the label key that the selector applies to."
+                                            type: "string"
+                                          operator:
+                                            description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
+                                            type: "string"
+                                          values:
+                                            description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
+                                            items:
+                                              type: "string"
+                                            type: "array"
+                                            x-kubernetes-list-type: "atomic"
+                                        required:
+                                          - "key"
+                                          - "operator"
+                                        type: "object"
+                                      type: "array"
+                                      x-kubernetes-list-type: "atomic"
+                                    matchLabels:
+                                      additionalProperties:
+                                        type: "string"
+                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                      type: "object"
+                                  type: "object"
+                                  x-kubernetes-map-type: "atomic"
+                              required:
+                                - "namespaceSelector"
+                                - "podSelector"
+                              type: "object"
+                          type: "object"
+                        maxItems: 25
+                        minItems: 1
+                        type: "array"
+                    required:
+                      - "action"
+                      - "to"
+                    type: "object"
+                  maxItems: 25
+                  type: "array"
+                ingress:
+                  description: "Ingress is the list of Ingress rules to be applied to the selected pods.\n\nA maximum of 25 rules is allowed in this block.\n\nThe relative precedence of ingress rules within a single CNP object\n(all of which share the priority) will be determined by the order\nin which the rule is written.\nThus, a rule that appears at the top of the ingress rules\nwould take the highest precedence.\nCNPs with no ingress rules do not affect ingress traffic."
+                  items:
+                    description: "ClusterNetworkPolicyIngressRule describes an action to take on a particular\nset of traffic destined for pods selected by a ClusterNetworkPolicy's\nSubject field."
+                    properties:
+                      action:
+                        description: "Action specifies the effect this rule will have on matching\ntraffic. Currently the following actions are supported:\n\n- Accept: Accepts the selected traffic, allowing it into\n  the destination. No further ClusterNetworkPolicy or\n  NetworkPolicy rules will be processed.\n\n  Note: while Accept ensures traffic is accepted by\n  Kubernetes network policy, it is still possible that the\n  packet is blocked in other ways: custom nftable rules,\n  high-layers e.g. service mesh.\n\n- Deny: Drops the selected traffic. No further\n  ClusterNetworkPolicy or NetworkPolicy rules will be\n  processed.\n\n- Pass: Skips all further ClusterNetworkPolicy rules in the\n  current tier for the selected traffic, and passes\n  evaluation to the next tier."
+                        enum:
+                          - "Accept"
+                          - "Deny"
+                          - "Pass"
+                        type: "string"
+                      from:
+                        description: "From is the list of sources whose traffic this rule applies to.\nIf any element matches the source of incoming\ntraffic then the specified action is applied.\nThis field must be defined and contain at least one item."
+                        items:
+                          description: "ClusterNetworkPolicyIngressPeer defines a peer to allow traffic from.\n\nExactly one of the fields must be set for a given peer and this is enforced\nby the validation rules on the CRD. If an implementation sees no fields are\nset then it can infer that the deployed CRD is of an incompatible version\nwith an unknown field.  In that case it should fail closed.\n\nFor \"Accept\" rules, \"fail closed\" means: \"treat the rule as matching no\ntraffic\". For \"Deny\" and \"Pass\" rules, \"fail closed\" means: \"treat the rule\nas a 'Deny all' rule\"."
+                          maxProperties: 1
+                          minProperties: 1
+                          properties:
+                            namespaces:
+                              description: "Namespaces defines a way to select all pods within a set of Namespaces.\nNote that host-networked pods are not included in this type of peer."
+                              properties:
+                                matchExpressions:
+                                  description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
+                                  items:
+                                    description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
+                                    properties:
+                                      key:
+                                        description: "key is the label key that the selector applies to."
+                                        type: "string"
+                                      operator:
+                                        description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
+                                        type: "string"
+                                      values:
+                                        description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
+                                        items:
+                                          type: "string"
+                                        type: "array"
+                                        x-kubernetes-list-type: "atomic"
+                                    required:
+                                      - "key"
+                                      - "operator"
+                                    type: "object"
+                                  type: "array"
+                                  x-kubernetes-list-type: "atomic"
+                                matchLabels:
+                                  additionalProperties:
+                                    type: "string"
+                                  description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                  type: "object"
+                              type: "object"
+                              x-kubernetes-map-type: "atomic"
+                            pods:
+                              description: "Pods defines a way to select a set of pods in\na set of namespaces. Note that host-networked pods\nare not included in this type of peer."
+                              properties:
+                                namespaceSelector:
+                                  description: "NamespaceSelector follows standard label selector semantics; if empty,\nit selects all Namespaces."
+                                  properties:
+                                    matchExpressions:
+                                      description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
+                                      items:
+                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
+                                        properties:
+                                          key:
+                                            description: "key is the label key that the selector applies to."
+                                            type: "string"
+                                          operator:
+                                            description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
+                                            type: "string"
+                                          values:
+                                            description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
+                                            items:
+                                              type: "string"
+                                            type: "array"
+                                            x-kubernetes-list-type: "atomic"
+                                        required:
+                                          - "key"
+                                          - "operator"
+                                        type: "object"
+                                      type: "array"
+                                      x-kubernetes-list-type: "atomic"
+                                    matchLabels:
+                                      additionalProperties:
+                                        type: "string"
+                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                      type: "object"
+                                  type: "object"
+                                  x-kubernetes-map-type: "atomic"
+                                podSelector:
+                                  description: "PodSelector is used to explicitly select pods within a namespace;\nif empty, it selects all Pods."
+                                  properties:
+                                    matchExpressions:
+                                      description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
+                                      items:
+                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
+                                        properties:
+                                          key:
+                                            description: "key is the label key that the selector applies to."
+                                            type: "string"
+                                          operator:
+                                            description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
+                                            type: "string"
+                                          values:
+                                            description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
+                                            items:
+                                              type: "string"
+                                            type: "array"
+                                            x-kubernetes-list-type: "atomic"
+                                        required:
+                                          - "key"
+                                          - "operator"
+                                        type: "object"
+                                      type: "array"
+                                      x-kubernetes-list-type: "atomic"
+                                    matchLabels:
+                                      additionalProperties:
+                                        type: "string"
+                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                      type: "object"
+                                  type: "object"
+                                  x-kubernetes-map-type: "atomic"
+                              required:
+                                - "namespaceSelector"
+                                - "podSelector"
+                              type: "object"
+                          type: "object"
+                        maxItems: 25
+                        minItems: 1
+                        type: "array"
+                      name:
+                        description: "Name is an identifier for this rule, that may be no more than\n100 characters in length. This field should be used by the implementation\nto help improve observability, readability and error-reporting\nfor any applied AdminNetworkPolicies."
+                        maxLength: 100
+                        type: "string"
+                      ports:
+                        description: "Ports allows for matching traffic based on port and protocols.\nThis field is a list of ports which should be matched on\nthe pods selected for this policy i.e the subject of the policy.\nSo it matches on the destination port for the ingress traffic.\nIf Ports is not set then the rule does not filter traffic via port."
+                        items:
+                          description: "ClusterNetworkPolicyPort describes how to select destination network ports.\nExactly one field must be set."
+                          maxProperties: 1
+                          minProperties: 1
+                          properties:
+                            portNumber:
+                              description: "Port selects a destination port based on protocol and port number."
+                              properties:
+                                port:
+                                  description: "Number defines a network port value."
+                                  format: "int32"
+                                  maximum: 65535.0
+                                  minimum: 1.0
+                                  type: "integer"
+                                protocol:
+                                  default: "TCP"
+                                  description: "Protocol is the network protocol (TCP, UDP, or SCTP) which traffic must\nmatch. If not specified, this field defaults to TCP."
+                                  type: "string"
+                              required:
+                                - "port"
+                                - "protocol"
+                              type: "object"
+                            portRange:
+                              description: "PortRange selects a destination port range based on protocol and\nstart and end port numbers."
+                              properties:
+                                end:
+                                  description: "End defines a network port that is the end of a port range, the End value\nmust be greater than Start."
+                                  format: "int32"
+                                  maximum: 65535.0
+                                  minimum: 1.0
+                                  type: "integer"
+                                protocol:
+                                  default: "TCP"
+                                  description: "Protocol is the network protocol (TCP, UDP, or SCTP) which traffic must\nmatch. If not specified, this field defaults to TCP."
+                                  type: "string"
+                                start:
+                                  description: "Start defines a network port that is the start of a port range, the Start\nvalue must be less than End."
+                                  format: "int32"
+                                  maximum: 65535.0
+                                  minimum: 1.0
+                                  type: "integer"
+                              required:
+                                - "end"
+                                - "start"
+                              type: "object"
+                              x-kubernetes-validations:
+                                - message: "Start port must be less than End port"
+                                  rule: "self.start < self.end"
+                          type: "object"
+                        maxItems: 25
+                        minItems: 1
+                        type: "array"
+                    required:
+                      - "action"
+                      - "from"
+                    type: "object"
+                  maxItems: 25
+                  type: "array"
+                priority:
+                  description: "Priority is a value from 0 to 1000 indicating the precedence of\nthe policy within its tier. Policies with lower priority values have\nhigher precedence, and are checked before policies with higher priority\nvalues in the same tier. All Admin tier rules have higher precedence than\nNetworkPolicy or Baseline tier rules.\nIf two (or more) policies in the same tier with the same priority\ncould match a connection, then the implementation can apply any of the\nmatching policies to the connection, and there is no way for the user to\nreliably determine which one it will choose. Administrators must be\ncareful about assigning the priorities for policies with rules that will\nmatch many connections, and ensure that policies have unique priority\nvalues in cases where ambiguity would be unacceptable."
+                  format: "int32"
+                  maximum: 1000.0
+                  minimum: 0.0
+                  type: "integer"
+                subject:
+                  description: "Subject defines the pods to which this ClusterNetworkPolicy applies."
+                  maxProperties: 1
+                  minProperties: 1
+                  properties:
+                    namespaces:
+                      description: "Namespaces is used to select pods via namespace selectors."
+                      properties:
+                        matchExpressions:
+                          description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
+                          items:
+                            description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
+                            properties:
+                              key:
+                                description: "key is the label key that the selector applies to."
+                                type: "string"
+                              operator:
+                                description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
+                                type: "string"
+                              values:
+                                description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
+                                items:
+                                  type: "string"
+                                type: "array"
+                                x-kubernetes-list-type: "atomic"
+                            required:
+                              - "key"
+                              - "operator"
+                            type: "object"
+                          type: "array"
+                          x-kubernetes-list-type: "atomic"
+                        matchLabels:
+                          additionalProperties:
+                            type: "string"
+                          description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                          type: "object"
+                      type: "object"
+                      x-kubernetes-map-type: "atomic"
+                    pods:
+                      description: "Pods is used to select pods via namespace AND pod selectors."
+                      properties:
+                        namespaceSelector:
+                          description: "NamespaceSelector follows standard label selector semantics; if empty,\nit selects all Namespaces."
+                          properties:
+                            matchExpressions:
+                              description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
+                              items:
+                                description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
+                                properties:
+                                  key:
+                                    description: "key is the label key that the selector applies to."
+                                    type: "string"
+                                  operator:
+                                    description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
+                                    type: "string"
+                                  values:
+                                    description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
+                                    items:
+                                      type: "string"
+                                    type: "array"
+                                    x-kubernetes-list-type: "atomic"
+                                required:
+                                  - "key"
+                                  - "operator"
+                                type: "object"
+                              type: "array"
+                              x-kubernetes-list-type: "atomic"
+                            matchLabels:
+                              additionalProperties:
+                                type: "string"
+                              description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                              type: "object"
+                          type: "object"
+                          x-kubernetes-map-type: "atomic"
+                        podSelector:
+                          description: "PodSelector is used to explicitly select pods within a namespace;\nif empty, it selects all Pods."
+                          properties:
+                            matchExpressions:
+                              description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
+                              items:
+                                description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
+                                properties:
+                                  key:
+                                    description: "key is the label key that the selector applies to."
+                                    type: "string"
+                                  operator:
+                                    description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
+                                    type: "string"
+                                  values:
+                                    description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
+                                    items:
+                                      type: "string"
+                                    type: "array"
+                                    x-kubernetes-list-type: "atomic"
+                                required:
+                                  - "key"
+                                  - "operator"
+                                type: "object"
+                              type: "array"
+                              x-kubernetes-list-type: "atomic"
+                            matchLabels:
+                              additionalProperties:
+                                type: "string"
+                              description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                              type: "object"
+                          type: "object"
+                          x-kubernetes-map-type: "atomic"
+                      required:
+                        - "namespaceSelector"
+                        - "podSelector"
+                      type: "object"
+                  type: "object"
+                tier:
+                  description: "Tier is used as the top-level grouping for network policy prioritization.\n\nPolicy tiers are evaluated in the following order:\n* Admin tier\n* NetworkPolicy tier\n* Baseline tier\n\nClusterNetworkPolicy can use 2 of these tiers: Admin and Baseline.\n\nThe Admin tier takes precedence over all other policies. Policies\ndefined in this tier are used to set cluster-wide security rules\nthat cannot be overridden in the other tiers. If Admin tier has\nmade a final decision (Accept or Deny) on a connection, then no\nfurther evaluation is done.\n\nNetworkPolicy tier is the tier for the namespaced v1.NetworkPolicy.\nThese policies are intended for the application developer to describe\nthe security policy associated with their deployments inside their\nnamespace. v1.NetworkPolicy always makes a final decision for selected\npods. Further evaluation only happens for Pods not selected by a\nv1.NetworkPolicy.\n\nBaseline tier is a cluster-wide policy that can be overridden by the\nv1.NetworkPolicy. If Baseline tier has made a final decision (Accept or\nDeny) on a connection, then no further evaluation is done.\n\nIf a given connection wasn't allowed or denied by any of the tiers,\nthe default kubernetes policy is applied, which says that\nall pods can communicate with each other."
+                  enum:
+                    - "Admin"
+                    - "Baseline"
+                  type: "string"
+              required:
+                - "priority"
+                - "subject"
+                - "tier"
+              type: "object"
+            status:
+              description: "Status is the status to be reported by the implementation."
+              properties:
+                conditions:
+                  items:
+                    description: "Condition contains details for one aspect of the current state of this API Resource."
+                    properties:
+                      lastTransitionTime:
+                        description: "lastTransitionTime is the last time the condition transitioned from one status to another.\nThis should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable."
+                        format: "date-time"
+                        type: "string"
+                      message:
+                        description: "message is a human readable message indicating details about the transition.\nThis may be an empty string."
+                        maxLength: 32768
+                        type: "string"
+                      observedGeneration:
+                        description: "observedGeneration represents the .metadata.generation that the condition was set based upon.\nFor instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date\nwith respect to the current state of the instance."
+                        format: "int64"
+                        minimum: 0.0
+                        type: "integer"
+                      reason:
+                        description: "reason contains a programmatic identifier indicating the reason for the condition's last transition.\nProducers of specific condition types may define expected values and meanings for this field,\nand whether the values are considered a guaranteed API.\nThe value should be a CamelCase string.\nThis field may not be empty."
+                        maxLength: 1024
+                        minLength: 1
+                        pattern: "^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$"
+                        type: "string"
+                      status:
+                        description: "status of the condition, one of True, False, Unknown."
+                        enum:
+                          - "True"
+                          - "False"
+                          - "Unknown"
+                        type: "string"
+                      type:
+                        description: "type of condition in CamelCase or in foo.example.com/CamelCase."
+                        maxLength: 316
+                        pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$"
+                        type: "string"
+                    required:
+                      - "lastTransitionTime"
+                      - "message"
+                      - "reason"
+                      - "status"
+                      - "type"
+                    type: "object"
+                  type: "array"
+                  x-kubernetes-list-map-keys:
+                    - "type"
+                  x-kubernetes-list-type: "map"
+              required:
+                - "conditions"
+              type: "object"
+          required:
+            - "metadata"
+            - "spec"
+          type: "object"
+      served: true
+      storage: true
+      subresources:
+        status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""

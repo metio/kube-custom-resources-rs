@@ -4468,6 +4468,12 @@ pub struct AerospikeClusterRackConfigRacks {
     /// Region name for setting rack affinity. Rack pods will be deployed to given Region
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
+    /// Revision is a version identifier for this rack's specification, used to trigger controlled migrations
+    /// when rack configuration changes require new StatefulSets. Change this field when making changes
+    /// that cannot be applied in-place, such as storage updates that require pod recreation.
+    /// The revision is appended to the rack ID for Kubernetes resource naming (e.g., <cluster-name>-<rackID>-<revision>).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub revision: Option<String>,
     /// Storage specify persistent storage to use for the pods in this rack. This value overwrites the global storage config
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage: Option<AerospikeClusterRackConfigRacksStorage>,
@@ -12492,6 +12498,12 @@ pub struct AerospikeClusterStatusRackConfigRacks {
     /// Region name for setting rack affinity. Rack pods will be deployed to given Region
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
+    /// Revision is a version identifier for this rack's specification, used to trigger controlled migrations
+    /// when rack configuration changes require new StatefulSets. Change this field when making changes
+    /// that cannot be applied in-place, such as storage updates that require pod recreation.
+    /// The revision is appended to the rack ID for Kubernetes resource naming (e.g., <cluster-name>-<rackID>-<revision>).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub revision: Option<String>,
     /// Storage specify persistent storage to use for the pods in this rack. This value overwrites the global storage config
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage: Option<AerospikeClusterStatusRackConfigRacksStorage>,
