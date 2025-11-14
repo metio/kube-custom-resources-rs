@@ -32,9 +32,11 @@ pub struct FlowCollectorSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "consolePlugin")]
     pub console_plugin: Option<FlowCollectorConsolePlugin>,
     /// `deploymentModel` defines the desired type of deployment for flow processing. Possible values are:<br>
-    /// - `Direct` (default) to make the flow processor listen directly from the agents.<br>
+    /// - `Direct` (default) to make the flow processor listen directly from the agents using the host network, backed by a DaemonSet.<br>
+    /// - `Service` to make the flow processor listen as a Kubernetes Service, backed by a scalable Deployment.<br>
     /// - `Kafka` to make flows sent to a Kafka pipeline before consumption by the processor.<br>
-    /// Kafka can provide better scalability, resiliency, and high availability (for more details, see <https://www.redhat.com/en/topics/integration/what-is-apache-kafka).>
+    /// Kafka can provide better scalability, resiliency, and high availability (for more details, see <https://www.redhat.com/en/topics/integration/what-is-apache-kafka).<br>>
+    /// `Direct` is not recommended on large clusters as it is less memory efficient.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploymentModel")]
     pub deployment_model: Option<FlowCollectorDeploymentModel>,
     /// `exporters` defines additional optional exporters for custom consumption or storage.
@@ -1404,7 +1406,8 @@ pub struct FlowCollectorConsolePlugin {
     /// such as `GOGC` and `GOMAXPROCS` environment variables. Set these values at your own risk.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub advanced: Option<FlowCollectorConsolePluginAdvanced>,
-    /// `autoscaler` spec of a horizontal pod autoscaler to set up for the plugin Deployment.
+    /// `autoscaler` [deprecated (*)] spec of a horizontal pod autoscaler to set up for the plugin Deployment.
+    /// Deprecation notice: managed autoscaler will be removed in a future version. You may configure instead an autoscaler of your choice, and set `spec.consolePlugin.unmanagedReplicas` to `true`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub autoscaler: Option<FlowCollectorConsolePluginAutoscaler>,
     /// Enables the console plugin deployment.
@@ -1429,6 +1432,9 @@ pub struct FlowCollectorConsolePlugin {
     /// For more information, see <https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<FlowCollectorConsolePluginResources>,
+    /// If `unmanagedReplicas` is `true`, the operator will not reconcile `replicas`. This is useful when using a pod autoscaler.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unmanagedReplicas")]
+    pub unmanaged_replicas: Option<bool>,
 }
 
 /// `advanced` allows setting some aspects of the internal configuration of the console plugin.
@@ -2204,7 +2210,8 @@ pub struct FlowCollectorConsolePluginAdvancedSchedulingTolerations {
     pub value: Option<String>,
 }
 
-/// `autoscaler` spec of a horizontal pod autoscaler to set up for the plugin Deployment.
+/// `autoscaler` [deprecated (*)] spec of a horizontal pod autoscaler to set up for the plugin Deployment.
+/// Deprecation notice: managed autoscaler will be removed in a future version. You may configure instead an autoscaler of your choice, and set `spec.consolePlugin.unmanagedReplicas` to `true`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorConsolePluginAutoscaler {
     /// `maxReplicas` is the upper limit for the number of pods that can be set by the autoscaler; cannot be smaller than MinReplicas.
@@ -2413,7 +2420,8 @@ pub struct FlowCollectorConsolePluginAutoscalerMetricsResourceTarget {
     pub value: Option<IntOrString>,
 }
 
-/// `autoscaler` spec of a horizontal pod autoscaler to set up for the plugin Deployment.
+/// `autoscaler` [deprecated (*)] spec of a horizontal pod autoscaler to set up for the plugin Deployment.
+/// Deprecation notice: managed autoscaler will be removed in a future version. You may configure instead an autoscaler of your choice, and set `spec.consolePlugin.unmanagedReplicas` to `true`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorConsolePluginAutoscalerStatus {
     Disabled,
@@ -2520,6 +2528,7 @@ pub struct FlowCollectorConsolePluginResourcesClaims {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorDeploymentModel {
     Direct,
+    Service,
     Kafka,
 }
 
@@ -3583,6 +3592,10 @@ pub struct FlowCollectorProcessor {
     /// `clusterName` is the name of the cluster to appear in the flows data. This is useful in a multi-cluster context. When using OpenShift, leave empty to make it automatically determined.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterName")]
     pub cluster_name: Option<String>,
+    /// `consumerReplicas` defines the number of replicas (pods) to start for `flowlogs-pipeline`, default is 3.
+    /// This setting is ignored when `spec.deploymentModel` is `Direct` or when `spec.processor.unmanagedReplicas` is `true`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consumerReplicas")]
+    pub consumer_replicas: Option<i32>,
     /// `deduper` allows you to sample or drop flows identified as duplicates, in order to save on resource usage.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deduper: Option<FlowCollectorProcessorDeduper>,
@@ -3594,8 +3607,9 @@ pub struct FlowCollectorProcessor {
     /// `imagePullPolicy` is the Kubernetes pull policy for the image defined above
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<FlowCollectorProcessorImagePullPolicy>,
-    /// `kafkaConsumerAutoscaler` is the spec of a horizontal pod autoscaler to set up for `flowlogs-pipeline-transformer`, which consumes Kafka messages.
+    /// `kafkaConsumerAutoscaler` [deprecated (*)] is the spec of a horizontal pod autoscaler to set up for `flowlogs-pipeline-transformer`, which consumes Kafka messages.
     /// This setting is ignored when Kafka is disabled.
+    /// Deprecation notice: managed autoscaler will be removed in a future version. You may configure instead an autoscaler of your choice, and set `spec.processor.unmanagedReplicas` to `true`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kafkaConsumerAutoscaler")]
     pub kafka_consumer_autoscaler: Option<FlowCollectorProcessorKafkaConsumerAutoscaler>,
     /// `kafkaConsumerBatchSize` indicates to the broker the maximum batch size, in bytes, that the consumer accepts. Ignored when not using Kafka. Default: 10MB.
@@ -3604,8 +3618,9 @@ pub struct FlowCollectorProcessor {
     /// `kafkaConsumerQueueCapacity` defines the capacity of the internal message queue used in the Kafka consumer client. Ignored when not using Kafka.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kafkaConsumerQueueCapacity")]
     pub kafka_consumer_queue_capacity: Option<i64>,
-    /// `kafkaConsumerReplicas` defines the number of replicas (pods) to start for `flowlogs-pipeline-transformer`, which consumes Kafka messages.
+    /// `kafkaConsumerReplicas` [deprecated (*)] defines the number of replicas (pods) to start for `flowlogs-pipeline-transformer`, which consumes Kafka messages.
     /// This setting is ignored when Kafka is disabled.
+    /// Deprecation notice: use `spec.processor.consumerReplicas` instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kafkaConsumerReplicas")]
     pub kafka_consumer_replicas: Option<i32>,
     /// `logLevel` of the processor runtime
@@ -3632,6 +3647,9 @@ pub struct FlowCollectorProcessor {
     /// When a subnet matches the source or destination IP of a flow, a corresponding field is added: `SrcSubnetLabel` or `DstSubnetLabel`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetLabels")]
     pub subnet_labels: Option<FlowCollectorProcessorSubnetLabels>,
+    /// If `unmanagedReplicas` is `true`, the operator will not reconcile `consumerReplicas`. This is useful when using a pod autoscaler.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unmanagedReplicas")]
+    pub unmanaged_replicas: Option<bool>,
 }
 
 /// `advanced` allows setting some aspects of the internal configuration of the flow processor.
@@ -4490,8 +4508,9 @@ pub enum FlowCollectorProcessorImagePullPolicy {
     Never,
 }
 
-/// `kafkaConsumerAutoscaler` is the spec of a horizontal pod autoscaler to set up for `flowlogs-pipeline-transformer`, which consumes Kafka messages.
+/// `kafkaConsumerAutoscaler` [deprecated (*)] is the spec of a horizontal pod autoscaler to set up for `flowlogs-pipeline-transformer`, which consumes Kafka messages.
 /// This setting is ignored when Kafka is disabled.
+/// Deprecation notice: managed autoscaler will be removed in a future version. You may configure instead an autoscaler of your choice, and set `spec.processor.unmanagedReplicas` to `true`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorProcessorKafkaConsumerAutoscaler {
     /// `maxReplicas` is the upper limit for the number of pods that can be set by the autoscaler; cannot be smaller than MinReplicas.
@@ -4700,8 +4719,9 @@ pub struct FlowCollectorProcessorKafkaConsumerAutoscalerMetricsResourceTarget {
     pub value: Option<IntOrString>,
 }
 
-/// `kafkaConsumerAutoscaler` is the spec of a horizontal pod autoscaler to set up for `flowlogs-pipeline-transformer`, which consumes Kafka messages.
+/// `kafkaConsumerAutoscaler` [deprecated (*)] is the spec of a horizontal pod autoscaler to set up for `flowlogs-pipeline-transformer`, which consumes Kafka messages.
 /// This setting is ignored when Kafka is disabled.
+/// Deprecation notice: managed autoscaler will be removed in a future version. You may configure instead an autoscaler of your choice, and set `spec.processor.unmanagedReplicas` to `true`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorProcessorKafkaConsumerAutoscalerStatus {
     Disabled,

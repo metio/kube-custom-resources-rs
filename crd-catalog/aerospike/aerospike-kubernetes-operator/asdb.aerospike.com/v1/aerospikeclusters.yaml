@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    aerospike-kubernetes-operator/version: "4.1.1"
+    aerospike-kubernetes-operator/version: "4.2.0-dev1"
     controller-gen.kubebuilder.io/version: "v0.17.2"
   name: "aerospikeclusters.asdb.aerospike.com"
 spec:
@@ -4816,6 +4816,9 @@ spec:
                             type: "string"
                           region:
                             description: "Region name for setting rack affinity. Rack pods will be deployed to given Region"
+                            type: "string"
+                          revision:
+                            description: "Revision is a version identifier for this rack's specification, used to trigger controlled migrations\nwhen rack configuration changes require new StatefulSets. Change this field when making changes\nthat cannot be applied in-place, such as storage updates that require pod recreation.\nThe revision is appended to the rack ID for Kubernetes resource naming (e.g., <cluster-name>-<rackID>-<revision>)."
                             type: "string"
                           storage:
                             description: "Storage specify persistent storage to use for the pods in this rack. This value overwrites the global storage config"
@@ -10640,6 +10643,9 @@ spec:
                             type: "string"
                           region:
                             description: "Region name for setting rack affinity. Rack pods will be deployed to given Region"
+                            type: "string"
+                          revision:
+                            description: "Revision is a version identifier for this rack's specification, used to trigger controlled migrations\nwhen rack configuration changes require new StatefulSets. Change this field when making changes\nthat cannot be applied in-place, such as storage updates that require pod recreation.\nThe revision is appended to the rack ID for Kubernetes resource naming (e.g., <cluster-name>-<rackID>-<revision>)."
                             type: "string"
                           storage:
                             description: "Storage specify persistent storage to use for the pods in this rack. This value overwrites the global storage config"

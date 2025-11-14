@@ -120,6 +120,7 @@ pub struct MeshHealthCheckToDefault {
     /// Allows to configure panic threshold for Envoy cluster. If not specified,
     /// the default is 50%. To disable panic mode, set to 0%.
     /// Either int or decimal represented as string.
+    /// 
     /// Deprecated: the setting has been moved to MeshCircuitBreaker policy,
     /// please use MeshCircuitBreaker policy instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthyPanicThreshold")]

@@ -587,7 +587,6 @@ pub struct ConfigConstraintReloadOptionsUnixSignalTrigger {
     #[serde(rename = "processName")]
     pub process_name: String,
     /// Specifies a valid Unix signal to be sent.
-    /// For a comprehensive list of all Unix signals, see: ../../pkg/configuration/configmap/handler.go:allUnixSignals
     pub signal: ConfigConstraintReloadOptionsUnixSignalTriggerSignal,
 }
 

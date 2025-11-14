@@ -14,3 +14,5 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 ### policy.networking.k8s.io/v1alpha1
 - `AdminNetworkPolicy`
 - `BaselineAdminNetworkPolicy`
+### policy.networking.k8s.io/v1alpha2
+- `ClusterNetworkPolicy`

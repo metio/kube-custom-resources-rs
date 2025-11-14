@@ -767,8 +767,6 @@ pub struct PerconaServerMySqlBackupStatusStorageS3 {
     pub prefix: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClass")]
-    pub storage_class: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

@@ -290,7 +290,7 @@ spec:
                           description: "Identifies the name of the process to which the Unix signal will be sent."
                           type: "string"
                         signal:
-                          description: "Specifies a valid Unix signal to be sent.\nFor a comprehensive list of all Unix signals, see: ../../pkg/configuration/configmap/handler.go:allUnixSignals"
+                          description: "Specifies a valid Unix signal to be sent."
                           enum:
                             - "SIGHUP"
                             - "SIGINT"

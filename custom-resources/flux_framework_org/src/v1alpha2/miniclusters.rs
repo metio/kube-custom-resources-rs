@@ -207,8 +207,14 @@ pub struct MiniClusterContainersLifeCycle {
 /// Resources include limits and requests
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MiniClusterContainersResources {
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: <https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value.
+    /// More info: <https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -621,8 +627,14 @@ pub struct MiniClusterFluxContainer {
 /// for the QoS to be Guaranteed
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MiniClusterFluxContainerResources {
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: <https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value.
+    /// More info: <https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -1180,8 +1192,14 @@ pub struct MiniClusterServicesLifeCycle {
 /// Resources include limits and requests
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MiniClusterServicesResources {
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: <https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value.
+    /// More info: <https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }

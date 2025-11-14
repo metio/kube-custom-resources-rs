@@ -63,6 +63,8 @@ spec:
                   format: "int32"
                   type: "integer"
                 nameSshKeySecret:
+                  description: "NameSshKeySecret is the name of the Kubernetes secret containing Git repository credentials.\nRequired keys:\n  - token: Git provider access token (required)\nOptional keys:\n  - id_rsa: SSH private key for Git operations over SSH\n  - secretString: Webhook secret for validating webhook requests\n  - username: Git username to override the default GitUser\nFor Gerrit provider, only id_rsa key is required and used."
+                  example: "my-git-credentials"
                   type: "string"
                 skipWebhookSSLVerification:
                   description: "SkipWebhookSSLVerification is a flag to skip webhook tls verification."

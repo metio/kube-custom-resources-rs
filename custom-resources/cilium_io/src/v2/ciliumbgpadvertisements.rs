@@ -31,12 +31,15 @@ pub struct CiliumBgpAdvertisementAdvertisements {
     /// If not specified, no additional attributes are set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attributes: Option<CiliumBgpAdvertisementAdvertisementsAttributes>,
+    /// Interface defines configuration options for the "Interface" advertisementType.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub interface: Option<CiliumBgpAdvertisementAdvertisementsInterface>,
     /// Selector is a label selector to select objects of the type specified by AdvertisementType.
     /// For the PodCIDR AdvertisementType it is not applicable. For other advertisement types,
     /// if not specified, no objects of the type specified by AdvertisementType are selected for advertisement.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<CiliumBgpAdvertisementAdvertisementsSelector>,
-    /// Service defines configuration options for advertisementType service.
+    /// Service defines configuration options for the "Service" advertisementType.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<CiliumBgpAdvertisementAdvertisementsService>,
 }
@@ -50,6 +53,7 @@ pub enum CiliumBgpAdvertisementAdvertisementsAdvertisementType {
     #[serde(rename = "CiliumPodIPPool")]
     CiliumPodIpPool,
     Service,
+    Interface,
 }
 
 /// Attributes defines additional attributes to set to the advertised routes.
@@ -80,6 +84,14 @@ pub struct CiliumBgpAdvertisementAdvertisementsAttributesCommunities {
     /// well-known string aliases to their numeric values.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "wellKnown")]
     pub well_known: Option<Vec<String>>,
+}
+
+/// Interface defines configuration options for the "Interface" advertisementType.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CiliumBgpAdvertisementAdvertisementsInterface {
+    /// Name is the name of the local interface which IP addresses should be advertised via BGP.
+    /// Each IP address applied on the interface is advertised as a /32 prefix (for IPv4) or a /128 prefix (for IPv6).
+    pub name: String,
 }
 
 /// Selector is a label selector to select objects of the type specified by AdvertisementType.
@@ -124,7 +136,7 @@ pub enum CiliumBgpAdvertisementAdvertisementsSelectorMatchExpressionsOperator {
     DoesNotExist,
 }
 
-/// Service defines configuration options for advertisementType service.
+/// Service defines configuration options for the "Service" advertisementType.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumBgpAdvertisementAdvertisementsService {
     /// Addresses is a list of service address types which needs to be advertised via BGP.

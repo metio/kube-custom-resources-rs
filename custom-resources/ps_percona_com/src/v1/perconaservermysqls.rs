@@ -349,8 +349,6 @@ pub struct PerconaServerMySqlBackupPitrBinlogServer {
     pub tolerations: Option<Vec<PerconaServerMySqlBackupPitrBinlogServerTolerations>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
     pub topology_spread_constraints: Option<Vec<PerconaServerMySqlBackupPitrBinlogServerTopologySpreadConstraints>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSpec")]
-    pub volume_spec: Option<PerconaServerMySqlBackupPitrBinlogServerVolumeSpec>,
     #[serde(rename = "writeTimeout")]
     pub write_timeout: i32,
 }
@@ -1249,8 +1247,6 @@ pub struct PerconaServerMySqlBackupPitrBinlogServerStorageS3 {
     pub prefix: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClass")]
-    pub storage_class: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1297,95 +1293,6 @@ pub struct PerconaServerMySqlBackupPitrBinlogServerTopologySpreadConstraintsLabe
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PerconaServerMySqlBackupPitrBinlogServerTopologySpreadConstraintsLabelSelectorMatchExpressions {
-    pub key: String,
-    pub operator: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlBackupPitrBinlogServerVolumeSpec {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
-    pub empty_dir: Option<PerconaServerMySqlBackupPitrBinlogServerVolumeSpecEmptyDir>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
-    pub host_path: Option<PerconaServerMySqlBackupPitrBinlogServerVolumeSpecHostPath>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
-    pub persistent_volume_claim: Option<PerconaServerMySqlBackupPitrBinlogServerVolumeSpecPersistentVolumeClaim>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlBackupPitrBinlogServerVolumeSpecEmptyDir {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub medium: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
-    pub size_limit: Option<IntOrString>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlBackupPitrBinlogServerVolumeSpecHostPath {
-    pub path: String,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
-    pub r#type: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlBackupPitrBinlogServerVolumeSpecPersistentVolumeClaim {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
-    pub access_modes: Option<Vec<String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
-    pub data_source: Option<PerconaServerMySqlBackupPitrBinlogServerVolumeSpecPersistentVolumeClaimDataSource>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
-    pub data_source_ref: Option<PerconaServerMySqlBackupPitrBinlogServerVolumeSpecPersistentVolumeClaimDataSourceRef>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<PerconaServerMySqlBackupPitrBinlogServerVolumeSpecPersistentVolumeClaimResources>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub selector: Option<PerconaServerMySqlBackupPitrBinlogServerVolumeSpecPersistentVolumeClaimSelector>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
-    pub storage_class_name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
-    pub volume_attributes_class_name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
-    pub volume_mode: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
-    pub volume_name: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlBackupPitrBinlogServerVolumeSpecPersistentVolumeClaimDataSource {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
-    pub api_group: Option<String>,
-    pub kind: String,
-    pub name: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlBackupPitrBinlogServerVolumeSpecPersistentVolumeClaimDataSourceRef {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
-    pub api_group: Option<String>,
-    pub kind: String,
-    pub name: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlBackupPitrBinlogServerVolumeSpecPersistentVolumeClaimResources {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub limits: Option<BTreeMap<String, IntOrString>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub requests: Option<BTreeMap<String, IntOrString>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlBackupPitrBinlogServerVolumeSpecPersistentVolumeClaimSelector {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<PerconaServerMySqlBackupPitrBinlogServerVolumeSpecPersistentVolumeClaimSelectorMatchExpressions>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, String>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlBackupPitrBinlogServerVolumeSpecPersistentVolumeClaimSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2053,8 +1960,6 @@ pub struct PerconaServerMySqlBackupStoragesS3 {
     pub prefix: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClass")]
-    pub storage_class: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4879,8 +4784,6 @@ pub struct PerconaServerMySqlOrchestrator {
     pub tolerations: Option<Vec<PerconaServerMySqlOrchestratorTolerations>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
     pub topology_spread_constraints: Option<Vec<PerconaServerMySqlOrchestratorTopologySpreadConstraints>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSpec")]
-    pub volume_spec: Option<PerconaServerMySqlOrchestratorVolumeSpec>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5827,95 +5730,6 @@ pub struct PerconaServerMySqlOrchestratorTopologySpreadConstraintsLabelSelectorM
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlOrchestratorVolumeSpec {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
-    pub empty_dir: Option<PerconaServerMySqlOrchestratorVolumeSpecEmptyDir>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
-    pub host_path: Option<PerconaServerMySqlOrchestratorVolumeSpecHostPath>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
-    pub persistent_volume_claim: Option<PerconaServerMySqlOrchestratorVolumeSpecPersistentVolumeClaim>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlOrchestratorVolumeSpecEmptyDir {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub medium: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
-    pub size_limit: Option<IntOrString>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlOrchestratorVolumeSpecHostPath {
-    pub path: String,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
-    pub r#type: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlOrchestratorVolumeSpecPersistentVolumeClaim {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
-    pub access_modes: Option<Vec<String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
-    pub data_source: Option<PerconaServerMySqlOrchestratorVolumeSpecPersistentVolumeClaimDataSource>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
-    pub data_source_ref: Option<PerconaServerMySqlOrchestratorVolumeSpecPersistentVolumeClaimDataSourceRef>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<PerconaServerMySqlOrchestratorVolumeSpecPersistentVolumeClaimResources>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub selector: Option<PerconaServerMySqlOrchestratorVolumeSpecPersistentVolumeClaimSelector>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
-    pub storage_class_name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
-    pub volume_attributes_class_name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
-    pub volume_mode: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
-    pub volume_name: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlOrchestratorVolumeSpecPersistentVolumeClaimDataSource {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
-    pub api_group: Option<String>,
-    pub kind: String,
-    pub name: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlOrchestratorVolumeSpecPersistentVolumeClaimDataSourceRef {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
-    pub api_group: Option<String>,
-    pub kind: String,
-    pub name: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlOrchestratorVolumeSpecPersistentVolumeClaimResources {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub limits: Option<BTreeMap<String, IntOrString>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub requests: Option<BTreeMap<String, IntOrString>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlOrchestratorVolumeSpecPersistentVolumeClaimSelector {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<PerconaServerMySqlOrchestratorVolumeSpecPersistentVolumeClaimSelectorMatchExpressions>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, String>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlOrchestratorVolumeSpecPersistentVolumeClaimSelectorMatchExpressions {
-    pub key: String,
-    pub operator: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PerconaServerMySqlPmm {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerSecurityContext")]
     pub container_security_context: Option<PerconaServerMySqlPmmContainerSecurityContext>,
@@ -6221,8 +6035,6 @@ pub struct PerconaServerMySqlProxyHaproxy {
     pub tolerations: Option<Vec<PerconaServerMySqlProxyHaproxyTolerations>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
     pub topology_spread_constraints: Option<Vec<PerconaServerMySqlProxyHaproxyTopologySpreadConstraints>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSpec")]
-    pub volume_spec: Option<PerconaServerMySqlProxyHaproxyVolumeSpec>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -7169,95 +6981,6 @@ pub struct PerconaServerMySqlProxyHaproxyTopologySpreadConstraintsLabelSelectorM
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlProxyHaproxyVolumeSpec {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
-    pub empty_dir: Option<PerconaServerMySqlProxyHaproxyVolumeSpecEmptyDir>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
-    pub host_path: Option<PerconaServerMySqlProxyHaproxyVolumeSpecHostPath>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
-    pub persistent_volume_claim: Option<PerconaServerMySqlProxyHaproxyVolumeSpecPersistentVolumeClaim>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlProxyHaproxyVolumeSpecEmptyDir {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub medium: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
-    pub size_limit: Option<IntOrString>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlProxyHaproxyVolumeSpecHostPath {
-    pub path: String,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
-    pub r#type: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlProxyHaproxyVolumeSpecPersistentVolumeClaim {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
-    pub access_modes: Option<Vec<String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
-    pub data_source: Option<PerconaServerMySqlProxyHaproxyVolumeSpecPersistentVolumeClaimDataSource>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
-    pub data_source_ref: Option<PerconaServerMySqlProxyHaproxyVolumeSpecPersistentVolumeClaimDataSourceRef>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<PerconaServerMySqlProxyHaproxyVolumeSpecPersistentVolumeClaimResources>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub selector: Option<PerconaServerMySqlProxyHaproxyVolumeSpecPersistentVolumeClaimSelector>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
-    pub storage_class_name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
-    pub volume_attributes_class_name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
-    pub volume_mode: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
-    pub volume_name: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlProxyHaproxyVolumeSpecPersistentVolumeClaimDataSource {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
-    pub api_group: Option<String>,
-    pub kind: String,
-    pub name: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlProxyHaproxyVolumeSpecPersistentVolumeClaimDataSourceRef {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
-    pub api_group: Option<String>,
-    pub kind: String,
-    pub name: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlProxyHaproxyVolumeSpecPersistentVolumeClaimResources {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub limits: Option<BTreeMap<String, IntOrString>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub requests: Option<BTreeMap<String, IntOrString>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlProxyHaproxyVolumeSpecPersistentVolumeClaimSelector {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<PerconaServerMySqlProxyHaproxyVolumeSpecPersistentVolumeClaimSelectorMatchExpressions>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, String>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlProxyHaproxyVolumeSpecPersistentVolumeClaimSelectorMatchExpressions {
-    pub key: String,
-    pub operator: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PerconaServerMySqlProxyRouter {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<PerconaServerMySqlProxyRouterAffinity>,
@@ -7317,8 +7040,6 @@ pub struct PerconaServerMySqlProxyRouter {
     pub tolerations: Option<Vec<PerconaServerMySqlProxyRouterTolerations>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
     pub topology_spread_constraints: Option<Vec<PerconaServerMySqlProxyRouterTopologySpreadConstraints>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSpec")]
-    pub volume_spec: Option<PerconaServerMySqlProxyRouterVolumeSpec>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -8273,95 +7994,6 @@ pub struct PerconaServerMySqlProxyRouterTopologySpreadConstraintsLabelSelector {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PerconaServerMySqlProxyRouterTopologySpreadConstraintsLabelSelectorMatchExpressions {
-    pub key: String,
-    pub operator: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlProxyRouterVolumeSpec {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
-    pub empty_dir: Option<PerconaServerMySqlProxyRouterVolumeSpecEmptyDir>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
-    pub host_path: Option<PerconaServerMySqlProxyRouterVolumeSpecHostPath>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
-    pub persistent_volume_claim: Option<PerconaServerMySqlProxyRouterVolumeSpecPersistentVolumeClaim>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlProxyRouterVolumeSpecEmptyDir {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub medium: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
-    pub size_limit: Option<IntOrString>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlProxyRouterVolumeSpecHostPath {
-    pub path: String,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
-    pub r#type: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlProxyRouterVolumeSpecPersistentVolumeClaim {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
-    pub access_modes: Option<Vec<String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
-    pub data_source: Option<PerconaServerMySqlProxyRouterVolumeSpecPersistentVolumeClaimDataSource>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
-    pub data_source_ref: Option<PerconaServerMySqlProxyRouterVolumeSpecPersistentVolumeClaimDataSourceRef>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<PerconaServerMySqlProxyRouterVolumeSpecPersistentVolumeClaimResources>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub selector: Option<PerconaServerMySqlProxyRouterVolumeSpecPersistentVolumeClaimSelector>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
-    pub storage_class_name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
-    pub volume_attributes_class_name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
-    pub volume_mode: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
-    pub volume_name: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlProxyRouterVolumeSpecPersistentVolumeClaimDataSource {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
-    pub api_group: Option<String>,
-    pub kind: String,
-    pub name: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlProxyRouterVolumeSpecPersistentVolumeClaimDataSourceRef {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
-    pub api_group: Option<String>,
-    pub kind: String,
-    pub name: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlProxyRouterVolumeSpecPersistentVolumeClaimResources {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub limits: Option<BTreeMap<String, IntOrString>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub requests: Option<BTreeMap<String, IntOrString>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlProxyRouterVolumeSpecPersistentVolumeClaimSelector {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<PerconaServerMySqlProxyRouterVolumeSpecPersistentVolumeClaimSelectorMatchExpressions>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, String>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMySqlProxyRouterVolumeSpecPersistentVolumeClaimSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]

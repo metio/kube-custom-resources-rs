@@ -1701,7 +1701,7 @@ spec:
                           type: "object"
                       type: "object"
                     autoscaler:
-                      description: "`autoscaler` spec of a horizontal pod autoscaler to set up for the plugin Deployment."
+                      description: "`autoscaler` [deprecated (*)] spec of a horizontal pod autoscaler to set up for the plugin Deployment.\nDeprecation notice: managed autoscaler will be removed in a future version. You may configure instead an autoscaler of your choice, and set `spec.consolePlugin.unmanagedReplicas` to `true`."
                       properties:
                         maxReplicas:
                           default: 3
@@ -2117,12 +2117,16 @@ spec:
                           description: "Requests describes the minimum amount of compute resources required.\nIf Requests is omitted for a container, it defaults to Limits if that is explicitly specified,\notherwise to an implementation-defined value. Requests cannot exceed Limits.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                           type: "object"
                       type: "object"
+                    unmanagedReplicas:
+                      description: "If `unmanagedReplicas` is `true`, the operator will not reconcile `replicas`. This is useful when using a pod autoscaler."
+                      type: "boolean"
                   type: "object"
                 deploymentModel:
                   default: "Direct"
-                  description: "`deploymentModel` defines the desired type of deployment for flow processing. Possible values are:<br>\n- `Direct` (default) to make the flow processor listen directly from the agents.<br>\n- `Kafka` to make flows sent to a Kafka pipeline before consumption by the processor.<br>\nKafka can provide better scalability, resiliency, and high availability (for more details, see https://www.redhat.com/en/topics/integration/what-is-apache-kafka)."
+                  description: "`deploymentModel` defines the desired type of deployment for flow processing. Possible values are:<br>\n- `Direct` (default) to make the flow processor listen directly from the agents using the host network, backed by a DaemonSet.<br>\n- `Service` to make the flow processor listen as a Kubernetes Service, backed by a scalable Deployment.<br>\n- `Kafka` to make flows sent to a Kafka pipeline before consumption by the processor.<br>\nKafka can provide better scalability, resiliency, and high availability (for more details, see https://www.redhat.com/en/topics/integration/what-is-apache-kafka).<br>\n`Direct` is not recommended on large clusters as it is less memory efficient."
                   enum:
                     - "Direct"
+                    - "Service"
                     - "Kafka"
                   type: "string"
                 exporters:
@@ -3587,6 +3591,11 @@ spec:
                       default: ""
                       description: "`clusterName` is the name of the cluster to appear in the flows data. This is useful in a multi-cluster context. When using OpenShift, leave empty to make it automatically determined."
                       type: "string"
+                    consumerReplicas:
+                      description: "`consumerReplicas` defines the number of replicas (pods) to start for `flowlogs-pipeline`, default is 3.\nThis setting is ignored when `spec.deploymentModel` is `Direct` or when `spec.processor.unmanagedReplicas` is `true`."
+                      format: "int32"
+                      minimum: 0.0
+                      type: "integer"
                     deduper:
                       description: "`deduper` allows you to sample or drop flows identified as duplicates, in order to save on resource usage."
                       properties:
@@ -3637,7 +3646,7 @@ spec:
                         - "Never"
                       type: "string"
                     kafkaConsumerAutoscaler:
-                      description: "`kafkaConsumerAutoscaler` is the spec of a horizontal pod autoscaler to set up for `flowlogs-pipeline-transformer`, which consumes Kafka messages.\nThis setting is ignored when Kafka is disabled."
+                      description: "`kafkaConsumerAutoscaler` [deprecated (*)] is the spec of a horizontal pod autoscaler to set up for `flowlogs-pipeline-transformer`, which consumes Kafka messages.\nThis setting is ignored when Kafka is disabled.\nDeprecation notice: managed autoscaler will be removed in a future version. You may configure instead an autoscaler of your choice, and set `spec.processor.unmanagedReplicas` to `true`."
                       properties:
                         maxReplicas:
                           default: 3
@@ -3935,7 +3944,7 @@ spec:
                       type: "integer"
                     kafkaConsumerReplicas:
                       default: 3
-                      description: "`kafkaConsumerReplicas` defines the number of replicas (pods) to start for `flowlogs-pipeline-transformer`, which consumes Kafka messages.\nThis setting is ignored when Kafka is disabled."
+                      description: "`kafkaConsumerReplicas` [deprecated (*)] defines the number of replicas (pods) to start for `flowlogs-pipeline-transformer`, which consumes Kafka messages.\nThis setting is ignored when Kafka is disabled.\nDeprecation notice: use `spec.processor.consumerReplicas` instead."
                       format: "int32"
                       minimum: 0.0
                       type: "integer"
@@ -4214,6 +4223,9 @@ spec:
                           description: "`openShiftAutoDetect` allows, when set to `true`, to detect automatically the machines, pods and services subnets based on the\nOpenShift install configuration and the Cluster Network Operator configuration. Indirectly, this is a way to accurately detect\nexternal traffic: flows that are not labeled for those subnets are external to the cluster. Enabled by default on OpenShift."
                           type: "boolean"
                       type: "object"
+                    unmanagedReplicas:
+                      description: "If `unmanagedReplicas` is `true`, the operator will not reconcile `consumerReplicas`. This is useful when using a pod autoscaler."
+                      type: "boolean"
                   type: "object"
                 prometheus:
                   description: "`prometheus` defines Prometheus settings, such as querier configuration used to fetch metrics from the Console plugin."

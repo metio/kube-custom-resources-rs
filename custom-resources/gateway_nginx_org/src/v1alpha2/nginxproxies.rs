@@ -6952,6 +6952,10 @@ pub enum NginxProxyKubernetesServiceType {
 /// Logging defines logging related settings for NGINX.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NginxProxyLogging {
+    /// AccessLog defines the access log settings, including format itself and disabling option.
+    /// For now only path /dev/stdout can be used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessLog")]
+    pub access_log: Option<NginxProxyLoggingAccessLog>,
     /// AgentLevel defines the log level of the NGINX agent process. Changing this value results in a
     /// re-roll of the NGINX deployment.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentLevel")]
@@ -6962,6 +6966,21 @@ pub struct NginxProxyLogging {
     /// crit, alert, and emerg messages to be logged. <https://nginx.org/en/docs/ngx_core_module.html#error_log>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorLevel")]
     pub error_level: Option<NginxProxyLoggingErrorLevel>,
+}
+
+/// AccessLog defines the access log settings, including format itself and disabling option.
+/// For now only path /dev/stdout can be used.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyLoggingAccessLog {
+    /// Disable turns off access logging when set to true.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub disable: Option<bool>,
+    /// Format specifies the custom log format string.
+    /// If not specified, NGINX default 'combined' format is used.
+    /// For now only path /dev/stdout can be used.
+    /// See <https://nginx.org/en/docs/http/ngx_http_log_module.html#log_format>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub format: Option<String>,
 }
 
 /// Logging defines logging related settings for NGINX.

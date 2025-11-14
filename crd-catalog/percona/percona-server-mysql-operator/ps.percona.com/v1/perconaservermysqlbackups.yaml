@@ -956,8 +956,6 @@ spec:
                           type: "string"
                         region:
                           type: "string"
-                        storageClass:
-                          type: "string"
                       required:
                         - "bucket"
                         - "credentialsSecret"

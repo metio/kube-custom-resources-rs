@@ -70,7 +70,7 @@ spec:
                 egress:
                   description: "Egress is a list of EgressRule which are enforced at egress.\nIf omitted or empty, this rule does not apply at egress."
                   items:
-                    description: "EgressRule contains all rule types which can be applied at egress, i.e.\nnetwork traffic that originates inside the endpoint and exits the endpoint\nselected by the endpointSelector.\n\n  - All members of this structure are optional. If omitted or empty, the\n    member will have no effect on the rule.\n\n  - If multiple members of the structure are specified, then all members\n    must match in order for the rule to take effect. The exception to this\n    rule is the ToRequires member; the effects of any Requires field in any\n    rule will apply to all other rules as well.\n\n  - ToEndpoints, ToCIDR, ToCIDRSet, ToEntities, ToServices and ToGroups are\n    mutually exclusive. Only one of these members may be present within an\n    individual rule."
+                    description: "EgressRule contains all rule types which can be applied at egress, i.e.\nnetwork traffic that originates inside the endpoint and exits the endpoint\nselected by the endpointSelector.\n\n  - All members of this structure are optional. If omitted or empty, the\n    member will have no effect on the rule.\n\n  - If multiple members of the structure are specified, then all members\n    must match in order for the rule to take effect.\n\n  - ToEndpoints, ToCIDR, ToCIDRSet, ToEntities, ToServices and ToGroups are\n    mutually exclusive. Only one of these members may be present within an\n    individual rule."
                     properties:
                       authentication:
                         description: "Authentication is the required authentication type for the allowed traffic, if any."
@@ -629,50 +629,6 @@ spec:
                               type: "object"
                           type: "object"
                         type: "array"
-                      toRequires:
-                        description: "ToRequires is a list of additional constraints which must be met\nin order for the selected endpoints to be able to connect to other\nendpoints. These additional constraints do no by itself grant access\nprivileges and must always be accompanied with at least one matching\nToEndpoints.\n\nExample:\nAny Endpoint with the label \"team=A\" requires any endpoint to which it\ncommunicates to also carry the label \"team=A\"."
-                        items:
-                          description: "EndpointSelector is a wrapper for k8s LabelSelector."
-                          properties:
-                            matchExpressions:
-                              description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
-                              items:
-                                description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
-                                properties:
-                                  key:
-                                    description: "key is the label key that the selector applies to."
-                                    type: "string"
-                                  operator:
-                                    description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
-                                    enum:
-                                      - "In"
-                                      - "NotIn"
-                                      - "Exists"
-                                      - "DoesNotExist"
-                                    type: "string"
-                                  values:
-                                    description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
-                                    items:
-                                      type: "string"
-                                    type: "array"
-                                    x-kubernetes-list-type: "atomic"
-                                required:
-                                  - "key"
-                                  - "operator"
-                                type: "object"
-                              type: "array"
-                              x-kubernetes-list-type: "atomic"
-                            matchLabels:
-                              additionalProperties:
-                                description: "MatchLabelsValue represents the value from the MatchLabels {key,value} pair."
-                                maxLength: 63
-                                pattern: "^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$"
-                                type: "string"
-                              description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
-                              type: "object"
-                          type: "object"
-                          x-kubernetes-map-type: "atomic"
-                        type: "array"
                       toServices:
                         description: "ToServices is a list of services to which the endpoint subject\nto the rule is allowed to initiate connections.\nCurrently Cilium only supports toServices for K8s services."
                         items:
@@ -742,7 +698,7 @@ spec:
                 egressDeny:
                   description: "EgressDeny is a list of EgressDenyRule which are enforced at egress.\nAny rule inserted here will be denied regardless of the allowed egress\nrules in the 'egress' field.\nIf omitted or empty, this rule does not apply at egress."
                   items:
-                    description: "EgressDenyRule contains all rule types which can be applied at egress, i.e.\nnetwork traffic that originates inside the endpoint and exits the endpoint\nselected by the endpointSelector.\n\n  - All members of this structure are optional. If omitted or empty, the\n    member will have no effect on the rule.\n\n  - If multiple members of the structure are specified, then all members\n    must match in order for the rule to take effect. The exception to this\n    rule is the ToRequires member; the effects of any Requires field in any\n    rule will apply to all other rules as well.\n\n  - ToEndpoints, ToCIDR, ToCIDRSet, ToEntities, ToServices and ToGroups are\n    mutually exclusive. Only one of these members may be present within an\n    individual rule."
+                    description: "EgressDenyRule contains all rule types which can be applied at egress, i.e.\nnetwork traffic that originates inside the endpoint and exits the endpoint\nselected by the endpointSelector.\n\n  - All members of this structure are optional. If omitted or empty, the\n    member will have no effect on the rule.\n\n  - If multiple members of the structure are specified, then all members\n    must match in order for the rule to take effect.\n\n  - ToEndpoints, ToCIDR, ToCIDRSet, ToEntities, ToServices and ToGroups are\n    mutually exclusive. Only one of these members may be present within an\n    individual rule."
                     properties:
                       icmps:
                         description: "ICMPs is a list of ICMP rule identified by type number\nwhich the endpoint subject to the rule is not allowed to connect to.\n\nExample:\nAny endpoint with the label \"app=httpd\" is not allowed to initiate\ntype 8 ICMP connections."
@@ -1024,50 +980,6 @@ spec:
                               type: "array"
                           type: "object"
                         type: "array"
-                      toRequires:
-                        description: "ToRequires is a list of additional constraints which must be met\nin order for the selected endpoints to be able to connect to other\nendpoints. These additional constraints do no by itself grant access\nprivileges and must always be accompanied with at least one matching\nToEndpoints.\n\nExample:\nAny Endpoint with the label \"team=A\" requires any endpoint to which it\ncommunicates to also carry the label \"team=A\"."
-                        items:
-                          description: "EndpointSelector is a wrapper for k8s LabelSelector."
-                          properties:
-                            matchExpressions:
-                              description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
-                              items:
-                                description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
-                                properties:
-                                  key:
-                                    description: "key is the label key that the selector applies to."
-                                    type: "string"
-                                  operator:
-                                    description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
-                                    enum:
-                                      - "In"
-                                      - "NotIn"
-                                      - "Exists"
-                                      - "DoesNotExist"
-                                    type: "string"
-                                  values:
-                                    description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
-                                    items:
-                                      type: "string"
-                                    type: "array"
-                                    x-kubernetes-list-type: "atomic"
-                                required:
-                                  - "key"
-                                  - "operator"
-                                type: "object"
-                              type: "array"
-                              x-kubernetes-list-type: "atomic"
-                            matchLabels:
-                              additionalProperties:
-                                description: "MatchLabelsValue represents the value from the MatchLabels {key,value} pair."
-                                maxLength: 63
-                                pattern: "^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$"
-                                type: "string"
-                              description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
-                              type: "object"
-                          type: "object"
-                          x-kubernetes-map-type: "atomic"
-                        type: "array"
                       toServices:
                         description: "ToServices is a list of services to which the endpoint subject\nto the rule is allowed to initiate connections.\nCurrently Cilium only supports toServices for K8s services."
                         items:
@@ -1188,7 +1100,7 @@ spec:
                 ingress:
                   description: "Ingress is a list of IngressRule which are enforced at ingress.\nIf omitted or empty, this rule does not apply at ingress."
                   items:
-                    description: "IngressRule contains all rule types which can be applied at ingress,\ni.e. network traffic that originates outside of the endpoint and\nis entering the endpoint selected by the endpointSelector.\n\n  - All members of this structure are optional. If omitted or empty, the\n    member will have no effect on the rule.\n\n  - If multiple members are set, all of them need to match in order for\n    the rule to take effect. The exception to this rule is FromRequires field;\n    the effects of any Requires field in any rule will apply to all other\n    rules as well.\n\n  - FromEndpoints, FromCIDR, FromCIDRSet and FromEntities are mutually\n    exclusive. Only one of these members may be present within an individual\n    rule."
+                    description: "IngressRule contains all rule types which can be applied at ingress,\ni.e. network traffic that originates outside of the endpoint and\nis entering the endpoint selected by the endpointSelector.\n\n  - All members of this structure are optional. If omitted or empty, the\n    member will have no effect on the rule.\n\n  - If multiple members are set, all of them need to match in order for\n    the rule to take effect.\n\n  - FromEndpoints, FromCIDR, FromCIDRSet and FromEntities are mutually\n    exclusive. Only one of these members may be present within an individual\n    rule."
                     properties:
                       authentication:
                         description: "Authentication is the required authentication type for the allowed traffic, if any."
@@ -1376,50 +1288,6 @@ spec:
                         type: "array"
                       fromNodes:
                         description: "FromNodes is a list of nodes identified by an\nEndpointSelector which are allowed to communicate with the endpoint\nsubject to the rule."
-                        items:
-                          description: "EndpointSelector is a wrapper for k8s LabelSelector."
-                          properties:
-                            matchExpressions:
-                              description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
-                              items:
-                                description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
-                                properties:
-                                  key:
-                                    description: "key is the label key that the selector applies to."
-                                    type: "string"
-                                  operator:
-                                    description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
-                                    enum:
-                                      - "In"
-                                      - "NotIn"
-                                      - "Exists"
-                                      - "DoesNotExist"
-                                    type: "string"
-                                  values:
-                                    description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
-                                    items:
-                                      type: "string"
-                                    type: "array"
-                                    x-kubernetes-list-type: "atomic"
-                                required:
-                                  - "key"
-                                  - "operator"
-                                type: "object"
-                              type: "array"
-                              x-kubernetes-list-type: "atomic"
-                            matchLabels:
-                              additionalProperties:
-                                description: "MatchLabelsValue represents the value from the MatchLabels {key,value} pair."
-                                maxLength: 63
-                                pattern: "^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$"
-                                type: "string"
-                              description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
-                              type: "object"
-                          type: "object"
-                          x-kubernetes-map-type: "atomic"
-                        type: "array"
-                      fromRequires:
-                        description: "FromRequires is a list of additional constraints which must be met\nin order for the selected endpoints to be reachable. These\nadditional constraints do no by itself grant access privileges and\nmust always be accompanied with at least one matching FromEndpoints.\n\nExample:\nAny Endpoint with the label \"team=A\" requires consuming endpoint\nto also carry the label \"team=A\"."
                         items:
                           description: "EndpointSelector is a wrapper for k8s LabelSelector."
                           properties:
@@ -1771,7 +1639,7 @@ spec:
                 ingressDeny:
                   description: "IngressDeny is a list of IngressDenyRule which are enforced at ingress.\nAny rule inserted here will be denied regardless of the allowed ingress\nrules in the 'ingress' field.\nIf omitted or empty, this rule does not apply at ingress."
                   items:
-                    description: "IngressDenyRule contains all rule types which can be applied at ingress,\ni.e. network traffic that originates outside of the endpoint and\nis entering the endpoint selected by the endpointSelector.\n\n  - All members of this structure are optional. If omitted or empty, the\n    member will have no effect on the rule.\n\n  - If multiple members are set, all of them need to match in order for\n    the rule to take effect. The exception to this rule is FromRequires field;\n    the effects of any Requires field in any rule will apply to all other\n    rules as well.\n\n  - FromEndpoints, FromCIDR, FromCIDRSet, FromGroups and FromEntities are mutually\n    exclusive. Only one of these members may be present within an individual\n    rule."
+                    description: "IngressDenyRule contains all rule types which can be applied at ingress,\ni.e. network traffic that originates outside of the endpoint and\nis entering the endpoint selected by the endpointSelector.\n\n  - All members of this structure are optional. If omitted or empty, the\n    member will have no effect on the rule.\n\n  - If multiple members are set, all of them need to match in order for\n    the rule to take effect.\n\n  - FromEndpoints, FromCIDR, FromCIDRSet, FromGroups and FromEntities are mutually\n    exclusive. Only one of these members may be present within an individual\n    rule."
                     properties:
                       fromCIDR:
                         description: "FromCIDR is a list of IP blocks which the endpoint subject to the\nrule is allowed to receive connections from. Only connections which\ndo *not* originate from the cluster or from the local host are subject\nto CIDR rules. In order to allow in-cluster connectivity, use the\nFromEndpoints field.  This will match on the source IP address of\nincoming connections. Adding  a prefix into FromCIDR or into\nFromCIDRSet with no ExcludeCIDRs is  equivalent.  Overlaps are\nallowed between FromCIDR and FromCIDRSet.\n\nExample:\nAny endpoint with the label \"app=my-legacy-pet\" is allowed to receive\nconnections from 10.3.9.1"
@@ -1988,50 +1856,6 @@ spec:
                           type: "object"
                           x-kubernetes-map-type: "atomic"
                         type: "array"
-                      fromRequires:
-                        description: "FromRequires is a list of additional constraints which must be met\nin order for the selected endpoints to be reachable. These\nadditional constraints do no by itself grant access privileges and\nmust always be accompanied with at least one matching FromEndpoints.\n\nExample:\nAny Endpoint with the label \"team=A\" requires consuming endpoint\nto also carry the label \"team=A\"."
-                        items:
-                          description: "EndpointSelector is a wrapper for k8s LabelSelector."
-                          properties:
-                            matchExpressions:
-                              description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
-                              items:
-                                description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
-                                properties:
-                                  key:
-                                    description: "key is the label key that the selector applies to."
-                                    type: "string"
-                                  operator:
-                                    description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
-                                    enum:
-                                      - "In"
-                                      - "NotIn"
-                                      - "Exists"
-                                      - "DoesNotExist"
-                                    type: "string"
-                                  values:
-                                    description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
-                                    items:
-                                      type: "string"
-                                    type: "array"
-                                    x-kubernetes-list-type: "atomic"
-                                required:
-                                  - "key"
-                                  - "operator"
-                                type: "object"
-                              type: "array"
-                              x-kubernetes-list-type: "atomic"
-                            matchLabels:
-                              additionalProperties:
-                                description: "MatchLabelsValue represents the value from the MatchLabels {key,value} pair."
-                                maxLength: 63
-                                pattern: "^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$"
-                                type: "string"
-                              description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
-                              type: "object"
-                          type: "object"
-                          x-kubernetes-map-type: "atomic"
-                        type: "array"
                       icmps:
                         description: "ICMPs is a list of ICMP rule identified by type number\nwhich the endpoint subject to the rule is not allowed to\nreceive connections on.\n\nExample:\nAny endpoint with the label \"app=httpd\" can not accept incoming\ntype 8 ICMP connections."
                         items:
@@ -2203,7 +2027,7 @@ spec:
                   egress:
                     description: "Egress is a list of EgressRule which are enforced at egress.\nIf omitted or empty, this rule does not apply at egress."
                     items:
-                      description: "EgressRule contains all rule types which can be applied at egress, i.e.\nnetwork traffic that originates inside the endpoint and exits the endpoint\nselected by the endpointSelector.\n\n  - All members of this structure are optional. If omitted or empty, the\n    member will have no effect on the rule.\n\n  - If multiple members of the structure are specified, then all members\n    must match in order for the rule to take effect. The exception to this\n    rule is the ToRequires member; the effects of any Requires field in any\n    rule will apply to all other rules as well.\n\n  - ToEndpoints, ToCIDR, ToCIDRSet, ToEntities, ToServices and ToGroups are\n    mutually exclusive. Only one of these members may be present within an\n    individual rule."
+                      description: "EgressRule contains all rule types which can be applied at egress, i.e.\nnetwork traffic that originates inside the endpoint and exits the endpoint\nselected by the endpointSelector.\n\n  - All members of this structure are optional. If omitted or empty, the\n    member will have no effect on the rule.\n\n  - If multiple members of the structure are specified, then all members\n    must match in order for the rule to take effect.\n\n  - ToEndpoints, ToCIDR, ToCIDRSet, ToEntities, ToServices and ToGroups are\n    mutually exclusive. Only one of these members may be present within an\n    individual rule."
                       properties:
                         authentication:
                           description: "Authentication is the required authentication type for the allowed traffic, if any."
@@ -2762,50 +2586,6 @@ spec:
                                 type: "object"
                             type: "object"
                           type: "array"
-                        toRequires:
-                          description: "ToRequires is a list of additional constraints which must be met\nin order for the selected endpoints to be able to connect to other\nendpoints. These additional constraints do no by itself grant access\nprivileges and must always be accompanied with at least one matching\nToEndpoints.\n\nExample:\nAny Endpoint with the label \"team=A\" requires any endpoint to which it\ncommunicates to also carry the label \"team=A\"."
-                          items:
-                            description: "EndpointSelector is a wrapper for k8s LabelSelector."
-                            properties:
-                              matchExpressions:
-                                description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
-                                items:
-                                  description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
-                                  properties:
-                                    key:
-                                      description: "key is the label key that the selector applies to."
-                                      type: "string"
-                                    operator:
-                                      description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
-                                      enum:
-                                        - "In"
-                                        - "NotIn"
-                                        - "Exists"
-                                        - "DoesNotExist"
-                                      type: "string"
-                                    values:
-                                      description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
-                                      items:
-                                        type: "string"
-                                      type: "array"
-                                      x-kubernetes-list-type: "atomic"
-                                  required:
-                                    - "key"
-                                    - "operator"
-                                  type: "object"
-                                type: "array"
-                                x-kubernetes-list-type: "atomic"
-                              matchLabels:
-                                additionalProperties:
-                                  description: "MatchLabelsValue represents the value from the MatchLabels {key,value} pair."
-                                  maxLength: 63
-                                  pattern: "^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$"
-                                  type: "string"
-                                description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
-                                type: "object"
-                            type: "object"
-                            x-kubernetes-map-type: "atomic"
-                          type: "array"
                         toServices:
                           description: "ToServices is a list of services to which the endpoint subject\nto the rule is allowed to initiate connections.\nCurrently Cilium only supports toServices for K8s services."
                           items:
@@ -2875,7 +2655,7 @@ spec:
                   egressDeny:
                     description: "EgressDeny is a list of EgressDenyRule which are enforced at egress.\nAny rule inserted here will be denied regardless of the allowed egress\nrules in the 'egress' field.\nIf omitted or empty, this rule does not apply at egress."
                     items:
-                      description: "EgressDenyRule contains all rule types which can be applied at egress, i.e.\nnetwork traffic that originates inside the endpoint and exits the endpoint\nselected by the endpointSelector.\n\n  - All members of this structure are optional. If omitted or empty, the\n    member will have no effect on the rule.\n\n  - If multiple members of the structure are specified, then all members\n    must match in order for the rule to take effect. The exception to this\n    rule is the ToRequires member; the effects of any Requires field in any\n    rule will apply to all other rules as well.\n\n  - ToEndpoints, ToCIDR, ToCIDRSet, ToEntities, ToServices and ToGroups are\n    mutually exclusive. Only one of these members may be present within an\n    individual rule."
+                      description: "EgressDenyRule contains all rule types which can be applied at egress, i.e.\nnetwork traffic that originates inside the endpoint and exits the endpoint\nselected by the endpointSelector.\n\n  - All members of this structure are optional. If omitted or empty, the\n    member will have no effect on the rule.\n\n  - If multiple members of the structure are specified, then all members\n    must match in order for the rule to take effect.\n\n  - ToEndpoints, ToCIDR, ToCIDRSet, ToEntities, ToServices and ToGroups are\n    mutually exclusive. Only one of these members may be present within an\n    individual rule."
                       properties:
                         icmps:
                           description: "ICMPs is a list of ICMP rule identified by type number\nwhich the endpoint subject to the rule is not allowed to connect to.\n\nExample:\nAny endpoint with the label \"app=httpd\" is not allowed to initiate\ntype 8 ICMP connections."
@@ -3157,50 +2937,6 @@ spec:
                                 type: "array"
                             type: "object"
                           type: "array"
-                        toRequires:
-                          description: "ToRequires is a list of additional constraints which must be met\nin order for the selected endpoints to be able to connect to other\nendpoints. These additional constraints do no by itself grant access\nprivileges and must always be accompanied with at least one matching\nToEndpoints.\n\nExample:\nAny Endpoint with the label \"team=A\" requires any endpoint to which it\ncommunicates to also carry the label \"team=A\"."
-                          items:
-                            description: "EndpointSelector is a wrapper for k8s LabelSelector."
-                            properties:
-                              matchExpressions:
-                                description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
-                                items:
-                                  description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
-                                  properties:
-                                    key:
-                                      description: "key is the label key that the selector applies to."
-                                      type: "string"
-                                    operator:
-                                      description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
-                                      enum:
-                                        - "In"
-                                        - "NotIn"
-                                        - "Exists"
-                                        - "DoesNotExist"
-                                      type: "string"
-                                    values:
-                                      description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
-                                      items:
-                                        type: "string"
-                                      type: "array"
-                                      x-kubernetes-list-type: "atomic"
-                                  required:
-                                    - "key"
-                                    - "operator"
-                                  type: "object"
-                                type: "array"
-                                x-kubernetes-list-type: "atomic"
-                              matchLabels:
-                                additionalProperties:
-                                  description: "MatchLabelsValue represents the value from the MatchLabels {key,value} pair."
-                                  maxLength: 63
-                                  pattern: "^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$"
-                                  type: "string"
-                                description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
-                                type: "object"
-                            type: "object"
-                            x-kubernetes-map-type: "atomic"
-                          type: "array"
                         toServices:
                           description: "ToServices is a list of services to which the endpoint subject\nto the rule is allowed to initiate connections.\nCurrently Cilium only supports toServices for K8s services."
                           items:
@@ -3321,7 +3057,7 @@ spec:
                   ingress:
                     description: "Ingress is a list of IngressRule which are enforced at ingress.\nIf omitted or empty, this rule does not apply at ingress."
                     items:
-                      description: "IngressRule contains all rule types which can be applied at ingress,\ni.e. network traffic that originates outside of the endpoint and\nis entering the endpoint selected by the endpointSelector.\n\n  - All members of this structure are optional. If omitted or empty, the\n    member will have no effect on the rule.\n\n  - If multiple members are set, all of them need to match in order for\n    the rule to take effect. The exception to this rule is FromRequires field;\n    the effects of any Requires field in any rule will apply to all other\n    rules as well.\n\n  - FromEndpoints, FromCIDR, FromCIDRSet and FromEntities are mutually\n    exclusive. Only one of these members may be present within an individual\n    rule."
+                      description: "IngressRule contains all rule types which can be applied at ingress,\ni.e. network traffic that originates outside of the endpoint and\nis entering the endpoint selected by the endpointSelector.\n\n  - All members of this structure are optional. If omitted or empty, the\n    member will have no effect on the rule.\n\n  - If multiple members are set, all of them need to match in order for\n    the rule to take effect.\n\n  - FromEndpoints, FromCIDR, FromCIDRSet and FromEntities are mutually\n    exclusive. Only one of these members may be present within an individual\n    rule."
                       properties:
                         authentication:
                           description: "Authentication is the required authentication type for the allowed traffic, if any."
@@ -3509,50 +3245,6 @@ spec:
                           type: "array"
                         fromNodes:
                           description: "FromNodes is a list of nodes identified by an\nEndpointSelector which are allowed to communicate with the endpoint\nsubject to the rule."
-                          items:
-                            description: "EndpointSelector is a wrapper for k8s LabelSelector."
-                            properties:
-                              matchExpressions:
-                                description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
-                                items:
-                                  description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
-                                  properties:
-                                    key:
-                                      description: "key is the label key that the selector applies to."
-                                      type: "string"
-                                    operator:
-                                      description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
-                                      enum:
-                                        - "In"
-                                        - "NotIn"
-                                        - "Exists"
-                                        - "DoesNotExist"
-                                      type: "string"
-                                    values:
-                                      description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
-                                      items:
-                                        type: "string"
-                                      type: "array"
-                                      x-kubernetes-list-type: "atomic"
-                                  required:
-                                    - "key"
-                                    - "operator"
-                                  type: "object"
-                                type: "array"
-                                x-kubernetes-list-type: "atomic"
-                              matchLabels:
-                                additionalProperties:
-                                  description: "MatchLabelsValue represents the value from the MatchLabels {key,value} pair."
-                                  maxLength: 63
-                                  pattern: "^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$"
-                                  type: "string"
-                                description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
-                                type: "object"
-                            type: "object"
-                            x-kubernetes-map-type: "atomic"
-                          type: "array"
-                        fromRequires:
-                          description: "FromRequires is a list of additional constraints which must be met\nin order for the selected endpoints to be reachable. These\nadditional constraints do no by itself grant access privileges and\nmust always be accompanied with at least one matching FromEndpoints.\n\nExample:\nAny Endpoint with the label \"team=A\" requires consuming endpoint\nto also carry the label \"team=A\"."
                           items:
                             description: "EndpointSelector is a wrapper for k8s LabelSelector."
                             properties:
@@ -3904,7 +3596,7 @@ spec:
                   ingressDeny:
                     description: "IngressDeny is a list of IngressDenyRule which are enforced at ingress.\nAny rule inserted here will be denied regardless of the allowed ingress\nrules in the 'ingress' field.\nIf omitted or empty, this rule does not apply at ingress."
                     items:
-                      description: "IngressDenyRule contains all rule types which can be applied at ingress,\ni.e. network traffic that originates outside of the endpoint and\nis entering the endpoint selected by the endpointSelector.\n\n  - All members of this structure are optional. If omitted or empty, the\n    member will have no effect on the rule.\n\n  - If multiple members are set, all of them need to match in order for\n    the rule to take effect. The exception to this rule is FromRequires field;\n    the effects of any Requires field in any rule will apply to all other\n    rules as well.\n\n  - FromEndpoints, FromCIDR, FromCIDRSet, FromGroups and FromEntities are mutually\n    exclusive. Only one of these members may be present within an individual\n    rule."
+                      description: "IngressDenyRule contains all rule types which can be applied at ingress,\ni.e. network traffic that originates outside of the endpoint and\nis entering the endpoint selected by the endpointSelector.\n\n  - All members of this structure are optional. If omitted or empty, the\n    member will have no effect on the rule.\n\n  - If multiple members are set, all of them need to match in order for\n    the rule to take effect.\n\n  - FromEndpoints, FromCIDR, FromCIDRSet, FromGroups and FromEntities are mutually\n    exclusive. Only one of these members may be present within an individual\n    rule."
                       properties:
                         fromCIDR:
                           description: "FromCIDR is a list of IP blocks which the endpoint subject to the\nrule is allowed to receive connections from. Only connections which\ndo *not* originate from the cluster or from the local host are subject\nto CIDR rules. In order to allow in-cluster connectivity, use the\nFromEndpoints field.  This will match on the source IP address of\nincoming connections. Adding  a prefix into FromCIDR or into\nFromCIDRSet with no ExcludeCIDRs is  equivalent.  Overlaps are\nallowed between FromCIDR and FromCIDRSet.\n\nExample:\nAny endpoint with the label \"app=my-legacy-pet\" is allowed to receive\nconnections from 10.3.9.1"
@@ -4079,50 +3771,6 @@ spec:
                           type: "array"
                         fromNodes:
                           description: "FromNodes is a list of nodes identified by an\nEndpointSelector which are allowed to communicate with the endpoint\nsubject to the rule."
-                          items:
-                            description: "EndpointSelector is a wrapper for k8s LabelSelector."
-                            properties:
-                              matchExpressions:
-                                description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
-                                items:
-                                  description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
-                                  properties:
-                                    key:
-                                      description: "key is the label key that the selector applies to."
-                                      type: "string"
-                                    operator:
-                                      description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
-                                      enum:
-                                        - "In"
-                                        - "NotIn"
-                                        - "Exists"
-                                        - "DoesNotExist"
-                                      type: "string"
-                                    values:
-                                      description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
-                                      items:
-                                        type: "string"
-                                      type: "array"
-                                      x-kubernetes-list-type: "atomic"
-                                  required:
-                                    - "key"
-                                    - "operator"
-                                  type: "object"
-                                type: "array"
-                                x-kubernetes-list-type: "atomic"
-                              matchLabels:
-                                additionalProperties:
-                                  description: "MatchLabelsValue represents the value from the MatchLabels {key,value} pair."
-                                  maxLength: 63
-                                  pattern: "^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$"
-                                  type: "string"
-                                description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
-                                type: "object"
-                            type: "object"
-                            x-kubernetes-map-type: "atomic"
-                          type: "array"
-                        fromRequires:
-                          description: "FromRequires is a list of additional constraints which must be met\nin order for the selected endpoints to be reachable. These\nadditional constraints do no by itself grant access privileges and\nmust always be accompanied with at least one matching FromEndpoints.\n\nExample:\nAny Endpoint with the label \"team=A\" requires consuming endpoint\nto also carry the label \"team=A\"."
                           items:
                             description: "EndpointSelector is a wrapper for k8s LabelSelector."
                             properties:

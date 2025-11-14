@@ -28,6 +28,14 @@ pub struct GitServerSpec {
     pub git_user: Option<String>,
     #[serde(rename = "httpsPort")]
     pub https_port: i32,
+    /// NameSshKeySecret is the name of the Kubernetes secret containing Git repository credentials.
+    /// Required keys:
+    ///   - token: Git provider access token (required)
+    /// Optional keys:
+    ///   - id_rsa: SSH private key for Git operations over SSH
+    ///   - secretString: Webhook secret for validating webhook requests
+    ///   - username: Git username to override the default GitUser
+    /// For Gerrit provider, only id_rsa key is required and used.
     #[serde(rename = "nameSshKeySecret")]
     pub name_ssh_key_secret: String,
     /// SkipWebhookSSLVerification is a flag to skip webhook tls verification.

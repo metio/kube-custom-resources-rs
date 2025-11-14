@@ -45,25 +45,14 @@ pub struct WorkloadSpec {
     pub pod_sets: Option<Vec<WorkloadPodSets>>,
     /// priority determines the order of access to the resources managed by the
     /// ClusterQueue where the workload is queued.
-    /// The priority value is populated from PriorityClassName.
+    /// The priority value is populated from the referenced PriorityClass (via priorityClassRef).
     /// The higher the value, the higher the priority.
-    /// If priorityClassName is specified, priority must not be null.
+    /// If priorityClassRef is specified, priority must not be null.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub priority: Option<i32>,
-    /// priorityClassName is the name of the PriorityClass the Workload is associated with.
-    /// If specified, indicates the workload's priority.
-    /// "system-node-critical" and "system-cluster-critical" are two special
-    /// keywords which indicate the highest priorities with the former being
-    /// the highest priority. Any other name must be defined by creating a
-    /// PriorityClass object with that name. If not specified, the workload
-    /// priority will be default or zero if there is no default.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
-    pub priority_class_name: Option<String>,
-    /// priorityClassSource determines whether the priorityClass field refers to a pod PriorityClass or kueue.x-k8s.io/workloadpriorityclass.
-    /// Workload's PriorityClass can accept the name of a pod priorityClass or a workloadPriorityClass.
-    /// When using pod PriorityClass, a priorityClassSource field has the scheduling.k8s.io/priorityclass value.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassSource")]
-    pub priority_class_source: Option<WorkloadPriorityClassSource>,
+    /// priorityClassRef references a PriorityClass object that defines the workload's priority.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassRef")]
+    pub priority_class_ref: Option<WorkloadPriorityClassRef>,
     /// queueName is the name of the LocalQueue the Workload is associated with.
     /// queueName cannot be changed while .status.admission is not null.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "queueName")]
@@ -7427,15 +7416,39 @@ pub struct WorkloadPodSetsTopologyRequest {
     pub unconstrained: Option<bool>,
 }
 
-/// spec is the specification of the Workload.
+/// priorityClassRef references a PriorityClass object that defines the workload's priority.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum WorkloadPriorityClassSource {
-    #[serde(rename = "kueue.x-k8s.io/workloadpriorityclass")]
-    KueueXK8sIoWorkloadpriorityclass,
-    #[serde(rename = "scheduling.k8s.io/priorityclass")]
-    SchedulingK8sIoPriorityclass,
-    #[serde(rename = "")]
-    KopiumEmpty,
+pub struct WorkloadPriorityClassRef {
+    /// group is the API group of the PriorityClass object.
+    /// Use "kueue.x-k8s.io" for WorkloadPriorityClass.
+    /// Use "scheduling.k8s.io" for Pod PriorityClass.
+    pub group: WorkloadPriorityClassRefGroup,
+    /// kind is the kind of the PriorityClass object.
+    pub kind: WorkloadPriorityClassRefKind,
+    /// name is the name of the PriorityClass the Workload is associated with.
+    /// If specified, indicates the workload's priority.
+    /// "system-node-critical" and "system-cluster-critical" are two special
+    /// keywords which indicate the highest priorities with the former being
+    /// the highest priority. Any other name must be defined by creating a
+    /// PriorityClass object with that name. If not specified, the workload
+    /// priority will be default or zero if there is no default.
+    pub name: String,
+}
+
+/// priorityClassRef references a PriorityClass object that defines the workload's priority.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum WorkloadPriorityClassRefGroup {
+    #[serde(rename = "kueue.x-k8s.io")]
+    KueueXK8sIo,
+    #[serde(rename = "scheduling.k8s.io")]
+    SchedulingK8sIo,
+}
+
+/// priorityClassRef references a PriorityClass object that defines the workload's priority.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum WorkloadPriorityClassRefKind {
+    WorkloadPriorityClass,
+    PriorityClass,
 }
 
 /// status is the status of the Workload.
@@ -7551,46 +7564,113 @@ pub struct WorkloadStatusAdmissionPodSetAssignments {
     /// topology domains corresponding to the lowest level of the topology.
     /// The assignment specifies the number of Pods to be scheduled per topology
     /// domain and specifies the node selectors for each topology domain, in the
-    /// following way: the node selector keys are specified by the levels field
-    /// (same for all domains), and the corresponding node selector value is
-    /// specified by the domains.values subfield. If the TopologySpec.Levels field contains
-    /// "kubernetes.io/hostname" label, topologyAssignment will contain data only for
-    /// this label, and omit higher levels in the topology
+    /// following way:
+    /// * `levels` specifies the node selector keys (same for all domains).
+    ///   - If the TopologySpec.Levels field contains "kubernetes.io/hostname" label,
+    ///     topologyAssignment will contain data only for this label,
+    ///     and omit higher levels in the topology.
+    /// * `slices` specifies the node selector values and pod counts for all domains
+    ///   (which may be partitioned into separate slices).
+    ///   - The node selector values are arranged first by topology level, only then by domain.
+    ///     (This allows "optimizing" similar values; see below).
+    /// * The format of `slices` supports the following variations
+    ///   (aimed to optimize the total bytesize for very large number of domains; see examples below):
+    ///   - When all node selector values (at a given topology level, in a given slice)
+    ///     share a common prefix and/or suffix, these may be stored
+    ///     in dedicated `commonPrefix`/`commonSuffix` fields.
+    ///     If so, the array of `roots` will only store the remaining parts of these strings.
+    ///   - When all node selector values (at a given topology level, in a given slice)
+    ///     are identical, this may be represented by `universal` value.
+    ///   - When all pod counts (in a given slice) are identical,
+    ///     this may be represented by `universal` pod count.
     /// 
-    /// Example:
+    /// Example 1:
+    /// 
+    /// The following represents an assignment in which:
+    /// * 4 Pods are to be scheduled on nodes matching the node selector:
+    ///   - cloud.provider.com/topology-block: block-1
+    ///   - cloud.provider.com/topology-rack: rack-1
+    /// * 2 Pods are to be scheduled on nodes matching the node selector:
+    ///   - cloud.provider.com/topology-block: block-1
+    ///   - cloud.provider.com/topology-rack: rack-2
     /// 
     /// topologyAssignment:
     ///   levels:
     ///   - cloud.provider.com/topology-block
     ///   - cloud.provider.com/topology-rack
-    ///   domains:
-    ///   - values: [block-1, rack-1]
-    ///     count: 4
-    ///   - values: [block-1, rack-2]
-    ///     count: 2
+    ///   slices:
+    ///   - domainCount: 2
+    ///     valuesPerLevel:
+    ///     - individual:
+    ///         roots: [block-1, block-1]
+    ///     - individual:
+    ///         roots: [rack-1, rack-2]
+    ///     podCounts:
+    ///       individual: [4, 2]
     /// 
-    /// Here:
-    /// - 4 Pods are to be scheduled on nodes matching the node selector:
-    ///   cloud.provider.com/topology-block: block-1
-    ///   cloud.provider.com/topology-rack: rack-1
-    /// - 2 Pods are to be scheduled on nodes matching the node selector:
-    ///   cloud.provider.com/topology-block: block-1
-    ///   cloud.provider.com/topology-rack: rack-2
+    /// Example 2:
     /// 
-    /// Example:
-    /// Below there is an equivalent of the above example assuming, Topology
-    /// object defines kubernetes.io/hostname as the lowest level in topology.
-    /// Hence we omit higher level of topologies, since the hostname label
-    /// is sufficient to explicitly identify a proper node.
+    /// The following is equivalent to Example 1 - but using extracted prefix and universalValue.
+    /// 
+    /// topologyAssignment:
+    ///   levels:
+    ///   - cloud.provider.com/topology-block
+    ///   - cloud.provider.com/topology-rack
+    ///   slices:
+    ///   - domainCount: 2
+    ///     valuesPerLevel:
+    ///     - universal: block-1
+    ///     - individual:
+    ///         prefix: rack-
+    /// 		   roots: [1, 2]
+    ///     podCounts:
+    ///       individual: [4, 2]
+    /// 
+    /// Example 3:
+    /// 
+    /// Now suppose that:
+    /// - the Topology object defines kubernetes.io/hostname as the lowest level
+    ///   (and hence, in the topologyAssignment, we omit all other levels
+    ///   since the hostname label suffices to explicitly identify a proper node),
+    /// - we assign 1 Pod per each node,
+    /// - the node naming scheme is `block-{blockId}-rack-{rackId}-node-{nodeId}`.
+    /// Then, using the "extraction of commons", the assignment from Examples 1-2 would look as follows:
     /// 
     /// topologyAssignment:
     ///   levels:
     ///   - kubernetes.io/hostname
-    ///   domains:
-    ///   - values: [hostname-1]
-    ///     count: 4
-    ///   - values: [hostname-2]
-    ///     count: 2
+    ///   slices:
+    ///   - domainCount: 6
+    ///     valuesPerLevel:
+    ///     - individual:
+    ///         prefix: block-1-rack-
+    /// 		   roots: [1-node-1, 1-node-2, 1-node-3, 1-node-4, 2-node-1, 2-node-2]
+    ///     podCounts:
+    ///       universal: 1
+    /// 
+    /// Example 4:
+    /// 
+    /// By using multiple slices, we can afford even longer common prefixes.
+    /// The assignment from Example 3 can be alternatively represented as follows:
+    /// 
+    /// topologyAssignment:
+    ///   levels:
+    ///   - kubernetes.io/hostname
+    ///   slices:
+    ///   - domainCount: 4
+    ///     valuesPerLevel:
+    ///     - individual:
+    ///         prefix: block-1-rack-1-node-
+    /// 		   roots: [1, 2, 3, 4]
+    ///     podCounts:
+    ///       universal: 1
+    ///   - domainCount: 2
+    ///     valuesPerLevel:
+    ///     - individual:
+    ///         prefix: block-1-rack-2-node-
+    /// 		   roots: [1, 2]
+    ///     podCounts:
+    ///       universal: 1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologyAssignment")]
     pub topology_assignment: Option<WorkloadStatusAdmissionPodSetAssignmentsTopologyAssignment>,
 }
@@ -7605,66 +7685,182 @@ pub enum WorkloadStatusAdmissionPodSetAssignmentsDelayedTopologyRequest {
 /// topology domains corresponding to the lowest level of the topology.
 /// The assignment specifies the number of Pods to be scheduled per topology
 /// domain and specifies the node selectors for each topology domain, in the
-/// following way: the node selector keys are specified by the levels field
-/// (same for all domains), and the corresponding node selector value is
-/// specified by the domains.values subfield. If the TopologySpec.Levels field contains
-/// "kubernetes.io/hostname" label, topologyAssignment will contain data only for
-/// this label, and omit higher levels in the topology
+/// following way:
+/// * `levels` specifies the node selector keys (same for all domains).
+///   - If the TopologySpec.Levels field contains "kubernetes.io/hostname" label,
+///     topologyAssignment will contain data only for this label,
+///     and omit higher levels in the topology.
+/// * `slices` specifies the node selector values and pod counts for all domains
+///   (which may be partitioned into separate slices).
+///   - The node selector values are arranged first by topology level, only then by domain.
+///     (This allows "optimizing" similar values; see below).
+/// * The format of `slices` supports the following variations
+///   (aimed to optimize the total bytesize for very large number of domains; see examples below):
+///   - When all node selector values (at a given topology level, in a given slice)
+///     share a common prefix and/or suffix, these may be stored
+///     in dedicated `commonPrefix`/`commonSuffix` fields.
+///     If so, the array of `roots` will only store the remaining parts of these strings.
+///   - When all node selector values (at a given topology level, in a given slice)
+///     are identical, this may be represented by `universal` value.
+///   - When all pod counts (in a given slice) are identical,
+///     this may be represented by `universal` pod count.
 /// 
-/// Example:
+/// Example 1:
+/// 
+/// The following represents an assignment in which:
+/// * 4 Pods are to be scheduled on nodes matching the node selector:
+///   - cloud.provider.com/topology-block: block-1
+///   - cloud.provider.com/topology-rack: rack-1
+/// * 2 Pods are to be scheduled on nodes matching the node selector:
+///   - cloud.provider.com/topology-block: block-1
+///   - cloud.provider.com/topology-rack: rack-2
 /// 
 /// topologyAssignment:
 ///   levels:
 ///   - cloud.provider.com/topology-block
 ///   - cloud.provider.com/topology-rack
-///   domains:
-///   - values: [block-1, rack-1]
-///     count: 4
-///   - values: [block-1, rack-2]
-///     count: 2
+///   slices:
+///   - domainCount: 2
+///     valuesPerLevel:
+///     - individual:
+///         roots: [block-1, block-1]
+///     - individual:
+///         roots: [rack-1, rack-2]
+///     podCounts:
+///       individual: [4, 2]
 /// 
-/// Here:
-/// - 4 Pods are to be scheduled on nodes matching the node selector:
-///   cloud.provider.com/topology-block: block-1
-///   cloud.provider.com/topology-rack: rack-1
-/// - 2 Pods are to be scheduled on nodes matching the node selector:
-///   cloud.provider.com/topology-block: block-1
-///   cloud.provider.com/topology-rack: rack-2
+/// Example 2:
 /// 
-/// Example:
-/// Below there is an equivalent of the above example assuming, Topology
-/// object defines kubernetes.io/hostname as the lowest level in topology.
-/// Hence we omit higher level of topologies, since the hostname label
-/// is sufficient to explicitly identify a proper node.
+/// The following is equivalent to Example 1 - but using extracted prefix and universalValue.
+/// 
+/// topologyAssignment:
+///   levels:
+///   - cloud.provider.com/topology-block
+///   - cloud.provider.com/topology-rack
+///   slices:
+///   - domainCount: 2
+///     valuesPerLevel:
+///     - universal: block-1
+///     - individual:
+///         prefix: rack-
+/// 		   roots: [1, 2]
+///     podCounts:
+///       individual: [4, 2]
+/// 
+/// Example 3:
+/// 
+/// Now suppose that:
+/// - the Topology object defines kubernetes.io/hostname as the lowest level
+///   (and hence, in the topologyAssignment, we omit all other levels
+///   since the hostname label suffices to explicitly identify a proper node),
+/// - we assign 1 Pod per each node,
+/// - the node naming scheme is `block-{blockId}-rack-{rackId}-node-{nodeId}`.
+/// Then, using the "extraction of commons", the assignment from Examples 1-2 would look as follows:
 /// 
 /// topologyAssignment:
 ///   levels:
 ///   - kubernetes.io/hostname
-///   domains:
-///   - values: [hostname-1]
-///     count: 4
-///   - values: [hostname-2]
-///     count: 2
+///   slices:
+///   - domainCount: 6
+///     valuesPerLevel:
+///     - individual:
+///         prefix: block-1-rack-
+/// 		   roots: [1-node-1, 1-node-2, 1-node-3, 1-node-4, 2-node-1, 2-node-2]
+///     podCounts:
+///       universal: 1
+/// 
+/// Example 4:
+/// 
+/// By using multiple slices, we can afford even longer common prefixes.
+/// The assignment from Example 3 can be alternatively represented as follows:
+/// 
+/// topologyAssignment:
+///   levels:
+///   - kubernetes.io/hostname
+///   slices:
+///   - domainCount: 4
+///     valuesPerLevel:
+///     - individual:
+///         prefix: block-1-rack-1-node-
+/// 		   roots: [1, 2, 3, 4]
+///     podCounts:
+///       universal: 1
+///   - domainCount: 2
+///     valuesPerLevel:
+///     - individual:
+///         prefix: block-1-rack-2-node-
+/// 		   roots: [1, 2]
+///     podCounts:
+///       universal: 1
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkloadStatusAdmissionPodSetAssignmentsTopologyAssignment {
-    /// domains is a list of topology assignments split by topology domains at
-    /// the lowest level of the topology.
-    pub domains: Vec<WorkloadStatusAdmissionPodSetAssignmentsTopologyAssignmentDomains>,
     /// levels is an ordered list of keys denoting the levels of the assigned
     /// topology (i.e. node label keys), from the highest to the lowest level of
     /// the topology.
     pub levels: Vec<String>,
+    /// slices represent topology assignments for subsets of pods of a workload.
+    /// The full assignment is obtained as a union of all slices.
+    pub slices: Vec<WorkloadStatusAdmissionPodSetAssignmentsTopologyAssignmentSlices>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct WorkloadStatusAdmissionPodSetAssignmentsTopologyAssignmentDomains {
-    /// count indicates the number of Pods to be scheduled in the topology
-    /// domain indicated by the values field.
-    pub count: i32,
-    /// values is an ordered list of node selector values describing a topology
-    /// domain. The values correspond to the consecutive topology levels, from
-    /// the highest to the lowest.
-    pub values: Vec<String>,
+pub struct WorkloadStatusAdmissionPodSetAssignmentsTopologyAssignmentSlices {
+    /// domainCount is the number of domains covered by this slice.
+    #[serde(rename = "domainCount")]
+    pub domain_count: i32,
+    /// podCounts specifies the number of pods allocated per each domain.
+    #[serde(rename = "podCounts")]
+    pub pod_counts: WorkloadStatusAdmissionPodSetAssignmentsTopologyAssignmentSlicesPodCounts,
+    /// valuesPerLevel has one entry for each of the Levels specified in the TopologyAssignment.
+    /// The entry corresponding to a particular level specifies the placement of pods at that level.
+    #[serde(rename = "valuesPerLevel")]
+    pub values_per_level: Vec<WorkloadStatusAdmissionPodSetAssignmentsTopologyAssignmentSlicesValuesPerLevel>,
+}
+
+/// podCounts specifies the number of pods allocated per each domain.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct WorkloadStatusAdmissionPodSetAssignmentsTopologyAssignmentSlicesPodCounts {
+    /// individual - if set - specifies the number of pods allocated in each domain in this slice.
+    /// If set, its length must be equal to the "domainCount" field of the TopologyAssignmentSlice.
+    /// Exactly one of universal, individual must be set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub individual: Option<Vec<i64>>,
+    /// universal - if set - specifies the number of pods allocated in every domain in this slice.
+    /// Exactly one of universal, individual must be set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub universal: Option<i32>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct WorkloadStatusAdmissionPodSetAssignmentsTopologyAssignmentSlicesValuesPerLevel {
+    /// individual - if set - specifies multiple topology placement values (at a particular topology level)
+    /// that apply to the pods in the current TopologyAssignmentSlice.
+    /// Exactly one of universal, individual must be set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub individual: Option<WorkloadStatusAdmissionPodSetAssignmentsTopologyAssignmentSlicesValuesPerLevelIndividual>,
+    /// universal - if set - specifies a single topology placement value (at a particular topology level)
+    /// that applies to all pods in the current TopologyAssignmentSlice.
+    /// Exactly one of universal, individual must be set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub universal: Option<String>,
+}
+
+/// individual - if set - specifies multiple topology placement values (at a particular topology level)
+/// that apply to the pods in the current TopologyAssignmentSlice.
+/// Exactly one of universal, individual must be set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct WorkloadStatusAdmissionPodSetAssignmentsTopologyAssignmentSlicesValuesPerLevelIndividual {
+    /// commonPrefix specifies a common prefix for all values in this slice assignment.
+    /// It must be either nil pointer or a non-empty string.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonPrefix")]
+    pub common_prefix: Option<String>,
+    /// commonSuffix specifies a common suffix for all values in this slice assignment.
+    /// It must be either nil pointer or a non-empty string.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonSuffix")]
+    pub common_suffix: Option<String>,
+    /// roots specifies the values in this assignment (excluding commonPrefix and commonSuffix, if non-empty).
+    /// Its length must be equal to the "domainCount" field of the TopologyAssignmentSlice.
+    pub roots: Vec<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
