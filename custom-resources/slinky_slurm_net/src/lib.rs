@@ -7,7 +7,12 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `Cluster`
 - `NodeSet`
 ## slinky.slurm.net/v1beta1
+- `Accounting`
+- `Controller`
+- `LoginSet`
 - `NodeSet`
+- `RestApi`
+- `Token`
 */
 #[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;
