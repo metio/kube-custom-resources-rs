@@ -3519,8 +3519,12 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         project_name: "SlinkyProject/slurm-operator",
         license: APACHE_V2,
         urls: &[
-            "https://github.com/SlinkyProject/slurm-operator/blob/main/config/crd/bases/slinky.slurm.net_clusters.yaml",
+            "https://github.com/SlinkyProject/slurm-operator/blob/main/config/crd/bases/slinky.slurm.net_accountings.yaml",
+            "https://github.com/SlinkyProject/slurm-operator/blob/main/config/crd/bases/slinky.slurm.net_controllers.yaml",
+            "https://github.com/SlinkyProject/slurm-operator/blob/main/config/crd/bases/slinky.slurm.net_loginsets.yaml",
             "https://github.com/SlinkyProject/slurm-operator/blob/main/config/crd/bases/slinky.slurm.net_nodesets.yaml",
+            "https://github.com/SlinkyProject/slurm-operator/blob/main/config/crd/bases/slinky.slurm.net_restapis.yaml",
+            "https://github.com/SlinkyProject/slurm-operator/blob/main/config/crd/bases/slinky.slurm.net_tokens.yaml",
         ],
         ignores: &[],
     },
