@@ -18,9 +18,21 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct MultiKueueClusterSpec {
+    /// clusterProfile is the reference to the ClusterProfile object used to connect to the cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterProfile")]
+    pub cluster_profile: Option<MultiKueueClusterClusterProfile>,
     /// kubeConfig is information on how to connect to the cluster.
-    #[serde(rename = "kubeConfig")]
-    pub kube_config: MultiKueueClusterKubeConfig,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeConfig")]
+    pub kube_config: Option<MultiKueueClusterKubeConfig>,
+}
+
+/// clusterProfile is the reference to the ClusterProfile object used to connect to the cluster.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MultiKueueClusterClusterProfile {
+    /// name of the ClusterProfile.
+    pub name: String,
+    /// namespace of the ClusterProfile.
+    pub namespace: String,
 }
 
 /// kubeConfig is information on how to connect to the cluster.

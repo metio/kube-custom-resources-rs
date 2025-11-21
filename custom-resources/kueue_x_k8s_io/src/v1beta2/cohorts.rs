@@ -6,7 +6,6 @@
 mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
-    pub use std::collections::BTreeMap;
     pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
@@ -171,9 +170,6 @@ pub struct CohortStatus {
 /// The is recorded only when Fair Sharing is enabled in the Kueue configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CohortStatusFairSharing {
-    /// admissionFairSharingStatus represents information relevant to the Admission Fair Sharing
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "admissionFairSharingStatus")]
-    pub admission_fair_sharing_status: Option<CohortStatusFairSharingAdmissionFairSharingStatus>,
     /// weightedShare represents the maximum of the ratios of usage
     /// above nominal quota to the lendable resources in the
     /// Cohort, among all the resources provided by the Node, and
@@ -183,18 +179,5 @@ pub struct CohortStatusFairSharing {
     /// 9223372036854775807, the maximum possible share value.
     #[serde(rename = "weightedShare")]
     pub weighted_share: i64,
-}
-
-/// admissionFairSharingStatus represents information relevant to the Admission Fair Sharing
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CohortStatusFairSharingAdmissionFairSharingStatus {
-    /// consumedResources represents the aggregated usage of resources over time,
-    /// with decaying function applied.
-    /// The value is populated if usage consumption functionality is enabled in Kueue config.
-    #[serde(rename = "consumedResources")]
-    pub consumed_resources: BTreeMap<String, IntOrString>,
-    /// lastUpdate is the time when share and consumed resources were updated.
-    #[serde(rename = "lastUpdate")]
-    pub last_update: String,
 }
 

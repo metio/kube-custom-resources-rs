@@ -118,6 +118,12 @@ spec:
                   default: {}
                   description: "flavorFungibility defines whether a workload should try the next flavor\nbefore borrowing or preempting in the flavor being evaluated."
                   properties:
+                    preference:
+                      description: "preference guides the choosing of the flavor for admission in case all candidate flavors\nrequire either preemption, borrowing, or both. The possible values are:\n- `BorrowingOverPreemption` (default): prefer to use borrowing rather than preemption\nwhen such a choice is possible. More technically it minimizes the borrowing distance\nin the cohort tree, and solves tie-breaks by preferring better preemption mode\n(reclaim over preemption within ClusterQueue).\n- `PreemptionOverBorrowing`: prefer to use preemption rather than borrowing\nwhen such a choice is possible.  More technically it optimizes the preemption mode\n(reclaim over preemption within ClusterQueue), and solves tie-breaks by minimizing\nthe borrowing distance in the cohort tree."
+                      enum:
+                        - "BorrowingOverPreemption"
+                        - "PreemptionOverBorrowing"
+                      type: "string"
                     whenCanBorrow:
                       default: "MayStopSearch"
                       description: "whenCanBorrow determines whether a workload should try the next flavor\nbefore borrowing in current flavor. The possible values are:\n\n- `MayStopSearch` (default): stop the search for candidate flavors if workload\n  fits or requires borrowing to fit.\n- `TryNextFlavor`: try next flavor if workload requires borrowing to fit."
@@ -133,6 +139,9 @@ spec:
                         - "TryNextFlavor"
                       type: "string"
                   type: "object"
+                  x-kubernetes-validations:
+                    - message: "preference can only be set when both whenCanBorrow and whenCanPreempt are TryNextFlavor"
+                      rule: "!has(self.preference) || (self.whenCanBorrow == 'TryNextFlavor' && self.whenCanPreempt == 'TryNextFlavor')"
                 namespaceSelector:
                   description: "namespaceSelector defines which namespaces are allowed to submit workloads to\nthis clusterQueue. Beyond this basic support for policy, a policy agent like\nGatekeeper should be used to enforce more advanced policies.\nDefaults to null which is a nothing selector (no namespaces eligible).\nIf set to an empty selector `{}`, then all namespaces are eligible."
                   properties:
@@ -363,26 +372,6 @@ spec:
                 fairSharing:
                   description: "fairSharing contains the current state for this ClusterQueue\nwhen participating in Fair Sharing.\nThis is recorded only when Fair Sharing is enabled in the Kueue configuration."
                   properties:
-                    admissionFairSharingStatus:
-                      description: "admissionFairSharingStatus represents information relevant to the Admission Fair Sharing"
-                      properties:
-                        consumedResources:
-                          additionalProperties:
-                            anyOf:
-                              - type: "integer"
-                              - type: "string"
-                            pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
-                            x-kubernetes-int-or-string: true
-                          description: "consumedResources represents the aggregated usage of resources over time,\nwith decaying function applied.\nThe value is populated if usage consumption functionality is enabled in Kueue config."
-                          type: "object"
-                        lastUpdate:
-                          description: "lastUpdate is the time when share and consumed resources were updated."
-                          format: "date-time"
-                          type: "string"
-                      required:
-                        - "consumedResources"
-                        - "lastUpdate"
-                      type: "object"
                     weightedShare:
                       description: "weightedShare represents the maximum of the ratios of usage\nabove nominal quota to the lendable resources in the\nCohort, among all the resources provided by the Node, and\ndivided by the weight.  If zero, it means that the usage of\nthe Node is below the nominal quota.  If the Node has a\nweight of zero and is borrowing, this will return\n9223372036854775807, the maximum possible share value."
                       format: "int64"

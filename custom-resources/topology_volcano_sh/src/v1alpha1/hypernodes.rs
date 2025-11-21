@@ -24,6 +24,9 @@ pub struct HyperNodeSpec {
     pub members: Option<Vec<HyperNodeMembers>>,
     /// Tier categorizes the performance level of the HyperNode.
     pub tier: i64,
+    /// TierName represents the level name of the HyperNode.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tierName")]
+    pub tier_name: Option<String>,
 }
 
 /// MemberSpec represents a specific node or a hyperNodes in the hyperNode.

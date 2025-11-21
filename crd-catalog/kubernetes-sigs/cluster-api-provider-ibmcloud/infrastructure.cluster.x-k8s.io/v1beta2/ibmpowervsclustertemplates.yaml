@@ -375,7 +375,7 @@ spec:
                               type: "string"
                           type: "object"
                         serviceInstanceID:
-                          description: "ServiceInstanceID is the id of the power cloud instance where the vsi instance will get deployed.\nDeprecated: use ServiceInstance instead"
+                          description: "Deprecated: use ServiceInstance instead\n\nServiceInstanceID is the id of the power cloud instance where the vsi instance will get deployed."
                           type: "string"
                         transitGateway:
                           description: "transitGateway contains information about IBM Cloud TransitGateway\nIBM Cloud TransitGateway helps in establishing network connectivity between IBM Cloud Power VS and VPC infrastructure\nmore information about TransitGateway can be found here https://www.ibm.com/products/transit-gateway.\nwhen TransitGateway.ID is set, its expected that there exist a TransitGateway with ID or else system will give error.\nwhen TransitGateway.Name is set, system will first check for TransitGateway with Name, if not exist system will create new TransitGateway."

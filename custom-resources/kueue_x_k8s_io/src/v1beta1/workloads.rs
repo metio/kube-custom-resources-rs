@@ -7666,6 +7666,21 @@ pub struct WorkloadStatusAdmissionChecks {
     /// podSetUpdates contains a list of pod set modifications suggested by AdmissionChecks.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSetUpdates")]
     pub pod_set_updates: Option<Vec<WorkloadStatusAdmissionChecksPodSetUpdates>>,
+    /// requeueAfterSeconds indicates how long to wait at least before
+    /// retrying to admit the workload.
+    /// The admission check controllers can set this field when State=Retry
+    /// to implement delays between retry attempts.
+    /// 
+    /// If nil when State=Retry, Kueue will retry immediately.
+    /// If set, Kueue will add the workload back to the queue after
+    ///   lastTransitionTime + RequeueAfterSeconds is over.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requeueAfterSeconds")]
+    pub requeue_after_seconds: Option<i32>,
+    /// retryCount tracks retry attempts for this admission check.
+    /// Kueue automatically increments the counter whenever the
+    /// state transitions to Retry.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryCount")]
+    pub retry_count: Option<i32>,
     /// state of the admissionCheck, one of Pending, Ready, Retry, Rejected
     pub state: WorkloadStatusAdmissionChecksState,
 }

@@ -41,6 +41,14 @@ spec:
                   type: "boolean"
                 rayClusterConfig:
                   properties:
+                    authOptions:
+                      properties:
+                        mode:
+                          enum:
+                            - "disabled"
+                            - "token"
+                          type: "string"
+                      type: "object"
                     autoscalerOptions:
                       properties:
                         env:

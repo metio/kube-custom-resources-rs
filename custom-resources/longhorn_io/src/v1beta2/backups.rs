@@ -55,8 +55,6 @@ pub enum BackupBackupMode {
     Full,
     #[serde(rename = "incremental")]
     Incremental,
-    #[serde(rename = "")]
-    KopiumEmpty,
 }
 
 /// BackupStatus defines the observed state of the Longhorn backup

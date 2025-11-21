@@ -33,6 +33,9 @@ pub struct DatabaseClusterSpec {
     pub data_source: Option<DatabaseClusterDataSource>,
     /// Engine is the database engine specification
     pub engine: DatabaseClusterEngine,
+    /// EngineFeatures represents configuration of additional features for the database engine.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "engineFeatures")]
+    pub engine_features: Option<DatabaseClusterEngineFeatures>,
     /// Monitoring is the monitoring configuration
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub monitoring: Option<DatabaseClusterMonitoring>,
@@ -280,6 +283,23 @@ pub enum DatabaseClusterEngineType {
     Psmdb,
 }
 
+/// EngineFeatures represents configuration of additional features for the database engine.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatabaseClusterEngineFeatures {
+    /// PSMDB represents additional features for the PSMDB engine.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub psmdb: Option<DatabaseClusterEngineFeaturesPsmdb>,
+}
+
+/// PSMDB represents additional features for the PSMDB engine.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatabaseClusterEngineFeaturesPsmdb {
+    /// SplitHorizonDNSConfigName is the name of a SplitHorizonDNSConfig CR.
+    /// The SplitHorizonDNSConfig must be created in the same namespace as the DatabaseCluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "splitHorizonDnsConfigName")]
+    pub split_horizon_dns_config_name: Option<String>,
+}
+
 /// Monitoring is the monitoring configuration
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseClusterMonitoring {
@@ -298,7 +318,7 @@ pub struct DatabaseClusterMonitoringResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// 
     /// This field is immutable. It can only be set for containers.
@@ -444,6 +464,9 @@ pub struct DatabaseClusterStatus {
     /// Details provides full status of the upstream cluster as a plain text.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub details: Option<String>,
+    /// EngineFeaturesStatus represents additional features statuses for the database engine.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "engineFeatures")]
+    pub engine_features: Option<DatabaseClusterStatusEngineFeatures>,
     /// Hostname is the hostname where the cluster can be reached
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
@@ -473,5 +496,46 @@ pub struct DatabaseClusterStatus {
     /// Status is the status of the cluster
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
+}
+
+/// EngineFeaturesStatus represents additional features statuses for the database engine.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatabaseClusterStatusEngineFeatures {
+    /// PSMDB represents additional features statuses for the PSMDB engine.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub psmdb: Option<DatabaseClusterStatusEngineFeaturesPsmdb>,
+}
+
+/// PSMDB represents additional features statuses for the PSMDB engine.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatabaseClusterStatusEngineFeaturesPsmdb {
+    /// SplitHorizon status of SplitHorizon feature.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "splitHorizon")]
+    pub split_horizon: Option<DatabaseClusterStatusEngineFeaturesPsmdbSplitHorizon>,
+}
+
+/// SplitHorizon status of SplitHorizon feature.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatabaseClusterStatusEngineFeaturesPsmdbSplitHorizon {
+    /// SplitHorizon status of SplitHorizon feature.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub domains: Option<Vec<DatabaseClusterStatusEngineFeaturesPsmdbSplitHorizonDomains>>,
+    /// ConnectionURL is the connection URL using SplitHorizon domains.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+}
+
+/// SplitHorizonDomain defines SplitHorizon domain status (domain -> IPs mapping).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatabaseClusterStatusEngineFeaturesPsmdbSplitHorizonDomains {
+    /// Domain is the SplitHorizon domain name.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub domain: Option<String>,
+    /// PrivateIP is the private IP address for the domain.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateIP")]
+    pub private_ip: Option<String>,
+    /// PublicIP is the public IP address for the domain.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "publicIP")]
+    pub public_ip: Option<String>,
 }
 

@@ -112,8 +112,9 @@ pub struct IbmPowerVsClusterTemplateTemplateSpec {
     /// ServiceInstance.Regex is not yet supported not yet supported and system will ignore the value.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceInstance")]
     pub service_instance: Option<IbmPowerVsClusterTemplateTemplateSpecServiceInstance>,
-    /// ServiceInstanceID is the id of the power cloud instance where the vsi instance will get deployed.
     /// Deprecated: use ServiceInstance instead
+    /// 
+    /// ServiceInstanceID is the id of the power cloud instance where the vsi instance will get deployed.
     #[serde(rename = "serviceInstanceID")]
     pub service_instance_id: String,
     /// transitGateway contains information about IBM Cloud TransitGateway

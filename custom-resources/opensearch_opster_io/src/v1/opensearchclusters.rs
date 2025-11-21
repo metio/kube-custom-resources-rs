@@ -930,6 +930,9 @@ pub struct OpenSearchClusterDashboardsAdditionalVolumes {
     pub name: String,
     /// Path in the container to mount the volume at. Required.
     pub path: String,
+    /// PersistentVolumeClaim object to use to populate the volume
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
+    pub persistent_volume_claim: Option<OpenSearchClusterDashboardsAdditionalVolumesPersistentVolumeClaim>,
     /// Projected object to use to populate the volume
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub projected: Option<OpenSearchClusterDashboardsAdditionalVolumesProjected>,
@@ -1058,6 +1061,19 @@ pub struct OpenSearchClusterDashboardsAdditionalVolumesEmptyDir {
     /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#emptydir>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
     pub size_limit: Option<IntOrString>,
+}
+
+/// PersistentVolumeClaim object to use to populate the volume
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpenSearchClusterDashboardsAdditionalVolumesPersistentVolumeClaim {
+    /// The name of a PersistentVolumeClaim in the same namespace as the pod using this volume.
+    /// More info: <https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "claimName")]
+    pub claim_name: Option<String>,
+    /// Will force the ReadOnly setting in VolumeMounts.
+    /// Default false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
 }
 
 /// Projected object to use to populate the volume
@@ -2826,6 +2842,9 @@ pub struct OpenSearchClusterGeneralAdditionalVolumes {
     pub name: String,
     /// Path in the container to mount the volume at. Required.
     pub path: String,
+    /// PersistentVolumeClaim object to use to populate the volume
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
+    pub persistent_volume_claim: Option<OpenSearchClusterGeneralAdditionalVolumesPersistentVolumeClaim>,
     /// Projected object to use to populate the volume
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub projected: Option<OpenSearchClusterGeneralAdditionalVolumesProjected>,
@@ -2954,6 +2973,19 @@ pub struct OpenSearchClusterGeneralAdditionalVolumesEmptyDir {
     /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#emptydir>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
     pub size_limit: Option<IntOrString>,
+}
+
+/// PersistentVolumeClaim object to use to populate the volume
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpenSearchClusterGeneralAdditionalVolumesPersistentVolumeClaim {
+    /// The name of a PersistentVolumeClaim in the same namespace as the pod using this volume.
+    /// More info: <https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "claimName")]
+    pub claim_name: Option<String>,
+    /// Will force the ReadOnly setting in VolumeMounts.
+    /// Default false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
 }
 
 /// Projected object to use to populate the volume

@@ -267,6 +267,9 @@ pub struct TelemetryTracingCustomTags {
     /// Environment adds the value of an environment variable to each span.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub environment: Option<TelemetryTracingCustomTagsEnvironment>,
+    /// Formatter adds the value of access logging substitution formatter.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub formatter: Option<TelemetryTracingCustomTagsFormatter>,
     /// RequestHeader adds the value of an header from the request to each span.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub header: Option<TelemetryTracingCustomTagsHeader>,
@@ -283,6 +286,13 @@ pub struct TelemetryTracingCustomTagsEnvironment {
     pub default_value: Option<String>,
     /// Name of the environment variable from which to extract the tag value.
     pub name: String,
+}
+
+/// Formatter adds the value of access logging substitution formatter.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TelemetryTracingCustomTagsFormatter {
+    /// The formatter tag value to use, same formatter as HTTP access logging (e.g.
+    pub value: String,
 }
 
 /// RequestHeader adds the value of an header from the request to each span.

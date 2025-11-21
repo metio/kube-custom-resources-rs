@@ -568,7 +568,6 @@ spec:
                   enum:
                     - "Disabled"
                     - "Enabled"
-                    - "Auto"
                   type: "string"
                 nftablesRefreshInterval:
                   description: "NftablesRefreshInterval controls the interval at which Felix periodically refreshes the nftables rules. [Default: 90s]"

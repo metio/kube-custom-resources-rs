@@ -60,5 +60,8 @@ pub struct MonitoringConfigStatus {
     /// LastObservedGeneration is the most recent generation observed for this MonitoringConfig.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastObservedGeneration")]
     pub last_observed_generation: Option<i64>,
+    /// PMMServerVersion shows PMM server version
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pmmServerVersion")]
+    pub pmm_server_version: Option<String>,
 }
 

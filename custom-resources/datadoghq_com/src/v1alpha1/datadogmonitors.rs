@@ -68,6 +68,12 @@ pub struct DatadogMonitorOptions {
     /// This is useful for AWS CloudWatch and other backfilled metrics to ensure the monitor always has data during evaluation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "evaluationDelay")]
     pub evaluation_delay: Option<i64>,
+    /// The time span after which groups with missing data are dropped from the monitor state.
+    /// The minimum value is one hour, and the maximum value is 72 hours.
+    /// Example values are: "60m", "1h", and "2d".
+    /// This option is only available for APM Trace Analytics, Audit Trail, CI, Error Tracking, Event, Logs, and RUM monitors.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupRetentionDuration")]
+    pub group_retention_duration: Option<String>,
     /// A Boolean indicating whether the log alert monitor triggers a single alert or multiple alerts when any group breaches a threshold.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupbySimpleMonitor")]
     pub groupby_simple_monitor: Option<bool>,

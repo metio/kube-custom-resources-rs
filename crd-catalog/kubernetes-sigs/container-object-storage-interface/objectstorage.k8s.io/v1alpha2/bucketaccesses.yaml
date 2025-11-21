@@ -104,14 +104,12 @@ spec:
                 accessedBuckets:
                   description: "accessedBuckets is a list of Buckets the provisioned access must have permissions for, along\nwith per-Bucket access options. This field is populated by the COSI Controller based on the\nreferenced BucketClaims in the spec."
                   items:
-                    description: "AccessedBucket identifies a Bucket and corresponding access parameters."
+                    description: "AccessedBucket identifies a Bucket and correlates it to a BucketClaimAccess from the spec."
                     properties:
-                      accessMode:
-                        description: "accessMode is the Read/Write access mode that the access should have for the bucket."
-                        enum:
-                          - "ReadWrite"
-                          - "ReadOnly"
-                          - "WriteOnly"
+                      bucketClaimName:
+                        description: "bucketClaimName must match a BucketClaimAccess's BucketClaimName from the spec."
+                        maxLength: 253
+                        minLength: 1
                         type: "string"
                       bucketName:
                         description: "bucketName is the name of a Bucket the access should have permissions for."
@@ -119,7 +117,7 @@ spec:
                         minLength: 1
                         type: "string"
                     required:
-                      - "accessMode"
+                      - "bucketClaimName"
                       - "bucketName"
                     type: "object"
                   type: "array"

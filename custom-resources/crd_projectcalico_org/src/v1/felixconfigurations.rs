@@ -1025,7 +1025,6 @@ pub enum FelixConfigurationNatOutgoingExclusions {
 pub enum FelixConfigurationNftablesMode {
     Disabled,
     Enabled,
-    Auto,
 }
 
 /// FelixConfigurationSpec contains the values of the Felix configuration.

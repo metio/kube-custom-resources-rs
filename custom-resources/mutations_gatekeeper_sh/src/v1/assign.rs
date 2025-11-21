@@ -230,8 +230,7 @@ pub struct AssignParametersAssignExternalData {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failurePolicy")]
     pub failure_policy: Option<AssignParametersAssignExternalDataFailurePolicy>,
     /// Provider is the name of the external data provider.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub provider: Option<String>,
+    pub provider: String,
 }
 
 /// ExternalData describes the external data provider to be used for mutation.
@@ -264,7 +263,6 @@ pub struct AssignParametersAssignFromMetadata {
 /// glob characters will take on the same value as was used to
 /// expand the matching glob in `location`.
 /// 
-/// 
 /// Available Tests:
 /// * MustExist    - the path must exist or do not mutate
 /// * MustNotExist - the path must not exist or do not mutate.
@@ -283,7 +281,6 @@ pub struct AssignParametersPathTests {
 /// not applied. All `subPath` entries must be a prefix of `location`. Any
 /// glob characters will take on the same value as was used to
 /// expand the matching glob in `location`.
-/// 
 /// 
 /// Available Tests:
 /// * MustExist    - the path must exist or do not mutate

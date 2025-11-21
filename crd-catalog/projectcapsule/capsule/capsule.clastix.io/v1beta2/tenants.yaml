@@ -108,10 +108,12 @@ spec:
                   description: "Specifies the trusted Image Registries assigned to the Tenant. Capsule assures that all Pods resources created in the Tenant can use only one of the allowed trusted registries. Optional."
                   properties:
                     allowed:
+                      description: "Match exact elements which are allowed as class names within this tenant"
                       items:
                         type: "string"
                       type: "array"
                     allowedRegex:
+                      description: "Match elements by regex (DEPRECATED)"
                       type: "string"
                   type: "object"
                 cordoned:
@@ -126,6 +128,14 @@ spec:
                   properties:
                     allowedClasses:
                       properties:
+                        allowed:
+                          description: "Match exact elements which are allowed as class names within this tenant"
+                          items:
+                            type: "string"
+                          type: "array"
+                        allowedRegex:
+                          description: "Match elements by regex (DEPRECATED)"
+                          type: "string"
                         default:
                           type: "string"
                         matchExpressions:
@@ -178,10 +188,12 @@ spec:
                       description: "Specifies the allowed IngressClasses assigned to the Tenant.\nCapsule assures that all Ingress resources created in the Tenant can use only one of the allowed IngressClasses.\nA default value can be specified, and all the Ingress resources created will inherit the declared class.\nOptional."
                       properties:
                         allowed:
+                          description: "Match exact elements which are allowed as class names within this tenant"
                           items:
                             type: "string"
                           type: "array"
                         allowedRegex:
+                          description: "Match elements by regex (DEPRECATED)"
                           type: "string"
                         default:
                           type: "string"
@@ -219,10 +231,12 @@ spec:
                       description: "Specifies the allowed hostnames in Ingresses for the given Tenant. Capsule assures that all Ingress resources created in the Tenant can use only one of the allowed hostnames. Optional."
                       properties:
                         allowed:
+                          description: "Match exact elements which are allowed as class names within this tenant"
                           items:
                             type: "string"
                           type: "array"
                         allowedRegex:
+                          description: "Match elements by regex (DEPRECATED)"
                           type: "string"
                       type: "object"
                     hostnameCollisionScope:
@@ -706,7 +720,7 @@ spec:
                           type: "string"
                         type: "array"
                       kind:
-                        description: "Kind of tenant owner. Possible values are \"User\", \"Group\", and \"ServiceAccount\""
+                        description: "Kind of entity. Possible values are \"User\", \"Group\", and \"ServiceAccount\""
                         enum:
                           - "User"
                           - "Group"
@@ -718,7 +732,7 @@ spec:
                         description: "Additional Labels for the synchronized rolebindings"
                         type: "object"
                       name:
-                        description: "Name of tenant owner."
+                        description: "Name of the entity."
                         type: "string"
                       proxySettings:
                         description: "Proxy settings for tenant owner."
@@ -775,10 +789,12 @@ spec:
                   description: "Specifies the allowed priorityClasses assigned to the Tenant.\nCapsule assures that all Pods resources created in the Tenant can use only one of the allowed PriorityClasses.\nA default value can be specified, and all the Pod resources created will inherit the declared class.\nOptional."
                   properties:
                     allowed:
+                      description: "Match exact elements which are allowed as class names within this tenant"
                       items:
                         type: "string"
                       type: "array"
                     allowedRegex:
+                      description: "Match elements by regex (DEPRECATED)"
                       type: "string"
                     default:
                       type: "string"
@@ -877,10 +893,12 @@ spec:
                   description: "Specifies the allowed RuntimeClasses assigned to the Tenant.\nCapsule assures that all Pods resources created in the Tenant can use only one of the allowed RuntimeClasses.\nOptional."
                   properties:
                     allowed:
+                      description: "Match exact elements which are allowed as class names within this tenant"
                       items:
                         type: "string"
                       type: "array"
                     allowedRegex:
+                      description: "Match elements by regex (DEPRECATED)"
                       type: "string"
                     default:
                       type: "string"
@@ -981,10 +999,12 @@ spec:
                   description: "Specifies the allowed StorageClasses assigned to the Tenant.\nCapsule assures that all PersistentVolumeClaim resources created in the Tenant can use only one of the allowed StorageClasses.\nA default value can be specified, and all the PersistentVolumeClaim resources created will inherit the declared class.\nOptional."
                   properties:
                     allowed:
+                      description: "Match exact elements which are allowed as class names within this tenant"
                       items:
                         type: "string"
                       type: "array"
                     allowedRegex:
+                      description: "Match elements by regex (DEPRECATED)"
                       type: "string"
                     default:
                       type: "string"
@@ -1022,6 +1042,30 @@ spec:
             status:
               description: "Returns the observed state of the Tenant."
               properties:
+                classes:
+                  description: "Available Class Types within Tenant"
+                  properties:
+                    gateway:
+                      description: "Available GatewayClasses"
+                      items:
+                        type: "string"
+                      type: "array"
+                    priority:
+                      description: "Available PriorityClasses"
+                      items:
+                        type: "string"
+                      type: "array"
+                    runtime:
+                      description: "Available StorageClasses"
+                      items:
+                        type: "string"
+                      type: "array"
+                    storage:
+                      description: "Available Storageclasses (Only collected if any matching condition is specified)"
+                      items:
+                        type: "string"
+                      type: "array"
+                  type: "object"
                 conditions:
                   description: "Tenant Condition"
                   items:

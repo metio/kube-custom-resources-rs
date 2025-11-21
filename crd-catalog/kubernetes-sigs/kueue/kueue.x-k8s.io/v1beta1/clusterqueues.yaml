@@ -112,6 +112,12 @@ spec:
                   default: {}
                   description: "flavorFungibility defines whether a workload should try the next flavor\nbefore borrowing or preempting in the flavor being evaluated."
                   properties:
+                    preference:
+                      description: "preference guides the choosing of the flavor for admission in case all candidate flavors\nrequire either preemption, borrowing, or both. The possible values are:\n- `BorrowingOverPreemption` (default): prefer to use borrowing rather than preemption\nwhen such a choice is possible. More technically it minimizes the borrowing distance\nin the cohort tree, and solves tie-breaks by preferring better preemption mode\n(reclaim over preemption within ClusterQueue).\n- `PreemptionOverBorrowing`: prefer to use preemption rather than borrowing\nwhen such a choice is possible.  More technically it optimizes the preemption mode\n(reclaim over preemption within ClusterQueue), and solves tie-breaks by minimizing\nthe borrowing distance in the cohort tree."
+                      enum:
+                        - "BorrowingOverPreemption"
+                        - "PreemptionOverBorrowing"
+                      type: "string"
                     whenCanBorrow:
                       default: "MayStopSearch"
                       description: "whenCanBorrow determines whether a workload should try the next flavor\nbefore borrowing in current flavor. The possible values are:\n\n- `MayStopSearch` (default): stop the search for candidate flavors if workload\n  fits or requires borrowing to fit.\n- `TryNextFlavor`: try next flavor if workload requires borrowing to fit.\n- `Borrow` (deprecated): old name for `MayStopSearch`; please use new name."
@@ -129,6 +135,9 @@ spec:
                         - "Preempt"
                       type: "string"
                   type: "object"
+                  x-kubernetes-validations:
+                    - message: "preference can only be set when both whenCanBorrow and whenCanPreempt are TryNextFlavor"
+                      rule: "!has(self.preference) || (self.whenCanBorrow == 'TryNextFlavor' && self.whenCanPreempt == 'TryNextFlavor')"
                 namespaceSelector:
                   description: "namespaceSelector defines which namespaces are allowed to submit workloads to\nthis clusterQueue. Beyond this basic support for policy, a policy agent like\nGatekeeper should be used to enforce more advanced policies.\nDefaults to null which is a nothing selector (no namespaces eligible).\nIf set to an empty selector `{}`, then all namespaces are eligible."
                   properties:
@@ -483,7 +492,7 @@ spec:
                   format: "int32"
                   type: "integer"
                 pendingWorkloadsStatus:
-                  description: "pendingWorkloadsStatus contains the information exposed about the current\nstatus of the pending workloads in the cluster queue.\nDeprecated: This field is no longer effective since v0.14.0, which means Kueue no longer stores and updates information.\nYou can migrate to VisibilityOnDemand\n(https://kueue.sigs.k8s.io/docs/tasks/manage/monitor_pending_workloads/pending_workloads_on_demand/)\ninstead."
+                  description: "pendingWorkloadsStatus contains the information exposed about the current\nstatus of the pending workloads in the cluster queue.\n\nDeprecated: This field is no longer effective since v0.14.0, which means Kueue no longer stores and updates information.\nYou can migrate to VisibilityOnDemand\n(https://kueue.sigs.k8s.io/docs/tasks/manage/monitor_pending_workloads/pending_workloads_on_demand/)\ninstead."
                   properties:
                     clusterQueuePendingWorkload:
                       description: "clusterQueuePendingWorkload contains the list of top pending workloads."

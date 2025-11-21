@@ -151,6 +151,18 @@ pub struct ClusterQueueFairSharing {
 /// before borrowing or preempting in the flavor being evaluated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterQueueFlavorFungibility {
+    /// preference guides the choosing of the flavor for admission in case all candidate flavors
+    /// require either preemption, borrowing, or both. The possible values are:
+    /// - `BorrowingOverPreemption` (default): prefer to use borrowing rather than preemption
+    /// when such a choice is possible. More technically it minimizes the borrowing distance
+    /// in the cohort tree, and solves tie-breaks by preferring better preemption mode
+    /// (reclaim over preemption within ClusterQueue).
+    /// - `PreemptionOverBorrowing`: prefer to use preemption rather than borrowing
+    /// when such a choice is possible.  More technically it optimizes the preemption mode
+    /// (reclaim over preemption within ClusterQueue), and solves tie-breaks by minimizing
+    /// the borrowing distance in the cohort tree.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub preference: Option<ClusterQueueFlavorFungibilityPreference>,
     /// whenCanBorrow determines whether a workload should try the next flavor
     /// before borrowing in current flavor. The possible values are:
     /// 
@@ -168,6 +180,14 @@ pub struct ClusterQueueFlavorFungibility {
     ///   to fit in current flavor.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "whenCanPreempt")]
     pub when_can_preempt: Option<ClusterQueueFlavorFungibilityWhenCanPreempt>,
+}
+
+/// flavorFungibility defines whether a workload should try the next flavor
+/// before borrowing or preempting in the flavor being evaluated.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterQueueFlavorFungibilityPreference {
+    BorrowingOverPreemption,
+    PreemptionOverBorrowing,
 }
 
 /// flavorFungibility defines whether a workload should try the next flavor
@@ -438,9 +458,6 @@ pub struct ClusterQueueStatus {
 /// This is recorded only when Fair Sharing is enabled in the Kueue configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterQueueStatusFairSharing {
-    /// admissionFairSharingStatus represents information relevant to the Admission Fair Sharing
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "admissionFairSharingStatus")]
-    pub admission_fair_sharing_status: Option<ClusterQueueStatusFairSharingAdmissionFairSharingStatus>,
     /// weightedShare represents the maximum of the ratios of usage
     /// above nominal quota to the lendable resources in the
     /// Cohort, among all the resources provided by the Node, and
@@ -450,19 +467,6 @@ pub struct ClusterQueueStatusFairSharing {
     /// 9223372036854775807, the maximum possible share value.
     #[serde(rename = "weightedShare")]
     pub weighted_share: i64,
-}
-
-/// admissionFairSharingStatus represents information relevant to the Admission Fair Sharing
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterQueueStatusFairSharingAdmissionFairSharingStatus {
-    /// consumedResources represents the aggregated usage of resources over time,
-    /// with decaying function applied.
-    /// The value is populated if usage consumption functionality is enabled in Kueue config.
-    #[serde(rename = "consumedResources")]
-    pub consumed_resources: BTreeMap<String, IntOrString>,
-    /// lastUpdate is the time when share and consumed resources were updated.
-    #[serde(rename = "lastUpdate")]
-    pub last_update: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

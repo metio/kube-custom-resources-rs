@@ -416,11 +416,35 @@ spec:
                                 required:
                                   - "host"
                                 type: "object"
+                              loadBalancer:
+                                description: "LoadBalancer points customized configuration for loadBalancer type."
+                                properties:
+                                  caBundle:
+                                    description: "CABundle is a customized caBundle of the endpoint."
+                                    format: "byte"
+                                    type: "string"
+                                  host:
+                                    description: "Host is the customized host name of the endpoint."
+                                    type: "string"
+                                type: "object"
+                              route:
+                                description: "Route points customized configuration for route type."
+                                properties:
+                                  caBundle:
+                                    description: "CABundle is a customized caBundle of the endpoint."
+                                    format: "byte"
+                                    type: "string"
+                                  host:
+                                    description: "Host is the customized host name of the endpoint."
+                                    type: "string"
+                                type: "object"
                               type:
                                 default: "hostname"
                                 description: "type specifies how the endpoint is exposed.\nYou may need to apply an object to expose the endpoint, for example: a route."
                                 enum:
                                   - "hostname"
+                                  - "loadBalancer"
+                                  - "route"
                                 type: "string"
                             required:
                               - "type"
@@ -441,11 +465,35 @@ spec:
                                 required:
                                   - "host"
                                 type: "object"
+                              loadBalancer:
+                                description: "LoadBalancer points customized configuration for loadBalancer type."
+                                properties:
+                                  caBundle:
+                                    description: "CABundle is a customized caBundle of the endpoint."
+                                    format: "byte"
+                                    type: "string"
+                                  host:
+                                    description: "Host is the customized host name of the endpoint."
+                                    type: "string"
+                                type: "object"
+                              route:
+                                description: "Route points customized configuration for route type."
+                                properties:
+                                  caBundle:
+                                    description: "CABundle is a customized caBundle of the endpoint."
+                                    format: "byte"
+                                    type: "string"
+                                  host:
+                                    description: "Host is the customized host name of the endpoint."
+                                    type: "string"
+                                type: "object"
                               type:
                                 default: "hostname"
                                 description: "type specifies how the endpoint is exposed.\nYou may need to apply an object to expose the endpoint, for example: a route."
                                 enum:
                                   - "hostname"
+                                  - "loadBalancer"
+                                  - "route"
                                 type: "string"
                             required:
                               - "type"

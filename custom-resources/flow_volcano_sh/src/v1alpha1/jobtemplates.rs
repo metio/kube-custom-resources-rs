@@ -51,6 +51,8 @@ pub struct JobTemplateSpec {
 pub struct JobTemplateNetworkTopology {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "highestTierAllowed")]
     pub highest_tier_allowed: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "highestTierName")]
+    pub highest_tier_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<JobTemplateNetworkTopologyMode>,
 }
@@ -103,6 +105,8 @@ pub struct JobTemplateTasks {
     pub min_available: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "partitionPolicy")]
+    pub partition_policy: Option<JobTemplateTasksPartitionPolicy>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub policies: Option<Vec<JobTemplateTasksPolicies>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -119,6 +123,36 @@ pub struct JobTemplateTasksDependsOn {
     pub iteration: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobTemplateTasksPartitionPolicy {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minPartitions")]
+    pub min_partitions: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkTopology")]
+    pub network_topology: Option<JobTemplateTasksPartitionPolicyNetworkTopology>,
+    #[serde(rename = "partitionSize")]
+    pub partition_size: i32,
+    #[serde(rename = "totalPartitions")]
+    pub total_partitions: i32,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobTemplateTasksPartitionPolicyNetworkTopology {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "highestTierAllowed")]
+    pub highest_tier_allowed: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "highestTierName")]
+    pub highest_tier_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<JobTemplateTasksPartitionPolicyNetworkTopologyMode>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum JobTemplateTasksPartitionPolicyNetworkTopologyMode {
+    #[serde(rename = "hard")]
+    Hard,
+    #[serde(rename = "soft")]
+    Soft,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

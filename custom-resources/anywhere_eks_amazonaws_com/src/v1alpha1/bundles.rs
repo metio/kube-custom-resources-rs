@@ -33,6 +33,8 @@ pub struct BundlesVersionsBundles {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub aws: Option<BundlesVersionsBundlesAws>,
     pub bootstrap: BundlesVersionsBundlesBootstrap,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bottlerocketBootstrapContainers")]
+    pub bottlerocket_bootstrap_containers: Option<BundlesVersionsBundlesBottlerocketBootstrapContainers>,
     #[serde(rename = "bottlerocketHostContainers")]
     pub bottlerocket_host_containers: BundlesVersionsBundlesBottlerocketHostContainers,
     #[serde(rename = "certManager")]
@@ -267,6 +269,46 @@ pub struct BundlesVersionsBundlesBootstrapMetadata {
     /// URI points to the manifest yaml file
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uri: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BundlesVersionsBundlesBottlerocketBootstrapContainers {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "multiNetworkBootstrap")]
+    pub multi_network_bootstrap: Option<BundlesVersionsBundlesBottlerocketBootstrapContainersMultiNetworkBootstrap>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BundlesVersionsBundlesBottlerocketBootstrapContainersMultiNetworkBootstrap {
+    /// Architectures of the asset
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub arch: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    /// The SHA256 digest of the image manifest
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigest")]
+    pub image_digest: Option<String>,
+    /// The asset name
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Operating system of the asset
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub os: Option<BundlesVersionsBundlesBottlerocketBootstrapContainersMultiNetworkBootstrapOs>,
+    /// Name of the OS like ubuntu, bottlerocket
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "osName")]
+    pub os_name: Option<String>,
+    /// The image repository, name, and tag
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uri: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum BundlesVersionsBundlesBottlerocketBootstrapContainersMultiNetworkBootstrapOs {
+    #[serde(rename = "linux")]
+    Linux,
+    #[serde(rename = "darwin")]
+    Darwin,
+    #[serde(rename = "windows")]
+    Windows,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

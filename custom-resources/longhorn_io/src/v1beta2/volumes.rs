@@ -102,6 +102,12 @@ pub struct VolumeSpec {
     pub snapshot_max_size: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "staleReplicaTimeout")]
     pub stale_replica_timeout: Option<i64>,
+    /// ublkNumberOfQueue controls the number of queues for ublk frontend.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ublkNumberOfQueue")]
+    pub ublk_number_of_queue: Option<i64>,
+    /// ublkQueueDepth controls the depth of each queue for ublk frontend.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ublkQueueDepth")]
+    pub ublk_queue_depth: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "unmapMarkSnapChainRemoved")]
     pub unmap_mark_snap_chain_removed: Option<VolumeUnmapMarkSnapChainRemoved>,
 }
@@ -111,6 +117,8 @@ pub struct VolumeSpec {
 pub enum VolumeAccessMode {
     #[serde(rename = "rwo")]
     Rwo,
+    #[serde(rename = "rwop")]
+    Rwop,
     #[serde(rename = "rwx")]
     Rwx,
 }

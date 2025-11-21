@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.19.0"
   labels:
     gatekeeper.sh/system: "yes"
   name: "assign.mutations.gatekeeper.sh"
@@ -197,6 +197,8 @@ spec:
                             provider:
                               description: "Provider is the name of the external data provider."
                               type: "string"
+                          required:
+                            - "provider"
                           type: "object"
                         fromMetadata:
                           description: "FromMetadata assigns a value from the specified metadata field."
@@ -211,7 +213,7 @@ spec:
                       type: "object"
                     pathTests:
                       items:
-                        description: "PathTest allows the user to customize how the mutation works if parent\npaths are missing. It traverses the list in order. All sub paths are\ntested against the provided condition, if the test fails, the mutation is\nnot applied. All `subPath` entries must be a prefix of `location`. Any\nglob characters will take on the same value as was used to\nexpand the matching glob in `location`.\n\n\nAvailable Tests:\n* MustExist    - the path must exist or do not mutate\n* MustNotExist - the path must not exist or do not mutate."
+                        description: "PathTest allows the user to customize how the mutation works if parent\npaths are missing. It traverses the list in order. All sub paths are\ntested against the provided condition, if the test fails, the mutation is\nnot applied. All `subPath` entries must be a prefix of `location`. Any\nglob characters will take on the same value as was used to\nexpand the matching glob in `location`.\n\nAvailable Tests:\n* MustExist    - the path must exist or do not mutate\n* MustNotExist - the path must not exist or do not mutate."
                         properties:
                           condition:
                             description: "Condition describes whether the path either MustExist or MustNotExist in the original object"

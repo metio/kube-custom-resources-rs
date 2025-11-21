@@ -27,7 +27,7 @@ spec:
             metadata:
               type: "object"
             spec:
-              description: "DeviceSpec represents a single device instance. It is an instantation of a device model."
+              description: "DeviceSpec represents a single device instance. It is an instantiation of a device model."
               properties:
                 data:
                   description: "Data section describe a list of time-series properties which should be processed\non edge node."

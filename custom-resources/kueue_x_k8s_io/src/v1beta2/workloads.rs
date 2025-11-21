@@ -7577,7 +7577,7 @@ pub struct WorkloadStatusAdmissionPodSetAssignments {
     ///   (aimed to optimize the total bytesize for very large number of domains; see examples below):
     ///   - When all node selector values (at a given topology level, in a given slice)
     ///     share a common prefix and/or suffix, these may be stored
-    ///     in dedicated `commonPrefix`/`commonSuffix` fields.
+    ///     in dedicated `prefix`/`suffix` fields.
     ///     If so, the array of `roots` will only store the remaining parts of these strings.
     ///   - When all node selector values (at a given topology level, in a given slice)
     ///     are identical, this may be represented by `universal` value.
@@ -7698,7 +7698,7 @@ pub enum WorkloadStatusAdmissionPodSetAssignmentsDelayedTopologyRequest {
 ///   (aimed to optimize the total bytesize for very large number of domains; see examples below):
 ///   - When all node selector values (at a given topology level, in a given slice)
 ///     share a common prefix and/or suffix, these may be stored
-///     in dedicated `commonPrefix`/`commonSuffix` fields.
+///     in dedicated `prefix`/`suffix` fields.
 ///     If so, the array of `roots` will only store the remaining parts of these strings.
 ///   - When all node selector values (at a given topology level, in a given slice)
 ///     are identical, this may be represented by `universal` value.
@@ -7850,17 +7850,17 @@ pub struct WorkloadStatusAdmissionPodSetAssignmentsTopologyAssignmentSlicesValue
 /// Exactly one of universal, individual must be set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkloadStatusAdmissionPodSetAssignmentsTopologyAssignmentSlicesValuesPerLevelIndividual {
-    /// commonPrefix specifies a common prefix for all values in this slice assignment.
+    /// prefix specifies a common prefix for all values in this slice assignment.
     /// It must be either nil pointer or a non-empty string.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonPrefix")]
-    pub common_prefix: Option<String>,
-    /// commonSuffix specifies a common suffix for all values in this slice assignment.
-    /// It must be either nil pointer or a non-empty string.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonSuffix")]
-    pub common_suffix: Option<String>,
-    /// roots specifies the values in this assignment (excluding commonPrefix and commonSuffix, if non-empty).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub prefix: Option<String>,
+    /// roots specifies the values in this assignment (excluding prefix and suffix, if non-empty).
     /// Its length must be equal to the "domainCount" field of the TopologyAssignmentSlice.
     pub roots: Vec<String>,
+    /// suffix specifies a common suffix for all values in this slice assignment.
+    /// It must be either nil pointer or a non-empty string.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub suffix: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -7877,6 +7877,21 @@ pub struct WorkloadStatusAdmissionChecks {
     /// podSetUpdates contains a list of pod set modifications suggested by AdmissionChecks.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSetUpdates")]
     pub pod_set_updates: Option<Vec<WorkloadStatusAdmissionChecksPodSetUpdates>>,
+    /// requeueAfterSeconds indicates how long to wait at least before
+    /// retrying to admit the workload.
+    /// The admission check controllers can set this field when State=Retry
+    /// to implement delays between retry attempts.
+    /// 
+    /// If nil when State=Retry, Kueue will retry immediately.
+    /// If set, Kueue will add the workload back to the queue after
+    ///   lastTransitionTime + RequeueAfterSeconds is over.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requeueAfterSeconds")]
+    pub requeue_after_seconds: Option<i32>,
+    /// retryCount tracks retry attempts for this admission check.
+    /// Kueue automatically increments the counter whenever the
+    /// state transitions to Retry.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryCount")]
+    pub retry_count: Option<i32>,
     /// state of the admissionCheck, one of Pending, Ready, Retry, Rejected
     pub state: WorkloadStatusAdmissionChecksState,
 }

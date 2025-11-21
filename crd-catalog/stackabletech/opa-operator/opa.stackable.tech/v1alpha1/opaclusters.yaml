@@ -67,6 +67,8 @@ spec:
                                 - "experimentalActiveDirectory"
                             - required:
                                 - "experimentalEntra"
+                            - required:
+                                - "experimentalOpenLdap"
                           properties:
                             experimentalActiveDirectory:
                               description: "Backend that fetches user information from Active Directory"
@@ -209,6 +211,123 @@ spec:
                               required:
                                 - "clientCredentialsSecret"
                                 - "tenantId"
+                              type: "object"
+                            experimentalOpenLdap:
+                              description: "Backend that fetches user information from OpenLDAP"
+                              properties:
+                                bindCredentials:
+                                  description: "Credentials for binding to the LDAP server.\n\nThe bind account is used to search for users and groups in the LDAP directory."
+                                  properties:
+                                    scope:
+                                      description: "[Scope](https://docs.stackable.tech/home/nightly/secret-operator/scope) of the\n[SecretClass](https://docs.stackable.tech/home/nightly/secret-operator/secretclass)."
+                                      nullable: true
+                                      properties:
+                                        listenerVolumes:
+                                          default: []
+                                          description: "The listener volume scope allows Node and Service scopes to be inferred from the applicable listeners.\nThis must correspond to Volume names in the Pod that mount Listeners."
+                                          items:
+                                            type: "string"
+                                          type: "array"
+                                        node:
+                                          default: false
+                                          description: "The node scope is resolved to the name of the Kubernetes Node object that the Pod is running on.\nThis will typically be the DNS name of the node."
+                                          type: "boolean"
+                                        pod:
+                                          default: false
+                                          description: "The pod scope is resolved to the name of the Kubernetes Pod.\nThis allows the secret to differentiate between StatefulSet replicas."
+                                          type: "boolean"
+                                        services:
+                                          default: []
+                                          description: "The service scope allows Pod objects to specify custom scopes.\nThis should typically correspond to Service objects that the Pod participates in."
+                                          items:
+                                            type: "string"
+                                          type: "array"
+                                      type: "object"
+                                    secretClass:
+                                      description: "[SecretClass](https://docs.stackable.tech/home/nightly/secret-operator/secretclass) containing the LDAP bind credentials."
+                                      type: "string"
+                                  required:
+                                    - "secretClass"
+                                  type: "object"
+                                customAttributeMappings:
+                                  additionalProperties:
+                                    type: "string"
+                                  default: {}
+                                  description: "Custom attributes, and their LDAP attribute names."
+                                  type: "object"
+                                groupMemberAttribute:
+                                  default: "member"
+                                  description: "LDAP attribute on group objects that contains member references.\n\nCommon values:\n- `member`: For `groupOfNames` objects (uses full DN)\n- `memberUid`: For `posixGroup` objects (uses username)\n\nDefaults to `member`."
+                                  type: "string"
+                                groupsSearchBase:
+                                  description: "LDAP search base for groups, e.g. `ou=groups,dc=example,dc=org`.\n\nIf not specified, uses the main `searchBase`."
+                                  nullable: true
+                                  type: "string"
+                                hostname:
+                                  description: "Hostname of the LDAP server, e.g. `my.ldap.server`."
+                                  type: "string"
+                                port:
+                                  description: "Port of the LDAP server. If TLS is used defaults to `636`, otherwise to `389`."
+                                  format: "uint16"
+                                  maximum: 65535.0
+                                  minimum: 0.0
+                                  nullable: true
+                                  type: "integer"
+                                searchBase:
+                                  default: ""
+                                  description: "LDAP search base, e.g. `ou=users,dc=example,dc=org`."
+                                  type: "string"
+                                tls:
+                                  description: "Use a TLS connection. If not specified no TLS will be used."
+                                  nullable: true
+                                  properties:
+                                    verification:
+                                      description: "The verification method used to verify the certificates of the server and/or the client."
+                                      oneOf:
+                                        - required:
+                                            - "none"
+                                        - required:
+                                            - "server"
+                                      properties:
+                                        none:
+                                          description: "Use TLS but don't verify certificates."
+                                          type: "object"
+                                        server:
+                                          description: "Use TLS and a CA certificate to verify the server."
+                                          properties:
+                                            caCert:
+                                              description: "CA cert to verify the server."
+                                              oneOf:
+                                                - required:
+                                                    - "webPki"
+                                                - required:
+                                                    - "secretClass"
+                                              properties:
+                                                secretClass:
+                                                  description: "Name of the [SecretClass](https://docs.stackable.tech/home/nightly/secret-operator/secretclass) which will provide the CA certificate.\nNote that a SecretClass does not need to have a key but can also work with just a CA certificate,\nso if you got provided with a CA cert but don't have access to the key you can still use this method."
+                                                  type: "string"
+                                                webPki:
+                                                  description: "Use TLS and the CA certificates trusted by the common web browsers to verify the server.\nThis can be useful when you e.g. use public AWS S3 or other public available services."
+                                                  type: "object"
+                                              type: "object"
+                                          required:
+                                            - "caCert"
+                                          type: "object"
+                                      type: "object"
+                                  required:
+                                    - "verification"
+                                  type: "object"
+                                userIdAttribute:
+                                  default: "entryUUID"
+                                  description: "LDAP attribute used for the user's unique identifier. Defaults to `entryUUID`."
+                                  type: "string"
+                                userNameAttribute:
+                                  default: "uid"
+                                  description: "LDAP attribute used for the username. Defaults to `uid`."
+                                  type: "string"
+                              required:
+                                - "bindCredentials"
+                                - "hostname"
                               type: "object"
                             experimentalXfscAas:
                               description: "Backend that fetches user information from the Gaia-X\nCross Federation Services Components (XFSC) Authentication & Authorization Service."

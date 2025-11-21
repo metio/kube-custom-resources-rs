@@ -12,6 +12,7 @@ use self::prelude::*;
 /// Spec defines the Provider specifications.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "externaldata.gatekeeper.sh", version = "v1beta1", kind = "Provider", plural = "providers")]
+#[kube(status = "ProviderStatus")]
 #[kube(schema = "disabled")]
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
@@ -26,5 +27,51 @@ pub struct ProviderSpec {
     /// URL is the url for the provider. URL is prefixed with <https://.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
+}
+
+/// ProviderStatus defines the observed state of Provider.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ProviderStatus {
+    /// ByPod is the status of the provider by pod
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "byPod")]
+    pub by_pod: Option<Vec<ProviderStatusByPod>>,
+}
+
+/// ProviderPodStatusStatus defines the observed state of ProviderPodStatus.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ProviderStatusByPod {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub active: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub errors: Option<Vec<ProviderStatusByPodErrors>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastCacheUpdateTime")]
+    pub last_cache_update_time: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastTransitionTime")]
+    pub last_transition_time: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
+    pub observed_generation: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operations: Option<Vec<String>>,
+    /// Storing the provider UID allows us to detect drift, such as
+    /// when a provider has been recreated after its CRD was deleted
+    /// out from under it, interrupting the watch
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerUID")]
+    pub provider_uid: Option<String>,
+}
+
+/// ProviderError represents a single error caught while managing providers.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ProviderStatusByPodErrors {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorTimestamp")]
+    pub error_timestamp: Option<String>,
+    pub message: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retryable: Option<bool>,
+    /// Type indicates a specific class of error for use by controller code.
+    /// If not present, the error should be treated as not matching any known type.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
 }
 

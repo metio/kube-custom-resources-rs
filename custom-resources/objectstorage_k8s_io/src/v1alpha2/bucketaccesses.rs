@@ -114,23 +114,15 @@ pub struct BucketAccessStatus {
     pub ready_to_use: bool,
 }
 
-/// AccessedBucket identifies a Bucket and corresponding access parameters.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+/// AccessedBucket identifies a Bucket and correlates it to a BucketClaimAccess from the spec.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketAccessStatusAccessedBuckets {
-    /// accessMode is the Read/Write access mode that the access should have for the bucket.
-    #[serde(rename = "accessMode")]
-    pub access_mode: BucketAccessStatusAccessedBucketsAccessMode,
+    /// bucketClaimName must match a BucketClaimAccess's BucketClaimName from the spec.
+    #[serde(rename = "bucketClaimName")]
+    pub bucket_claim_name: String,
     /// bucketName is the name of a Bucket the access should have permissions for.
     #[serde(rename = "bucketName")]
     pub bucket_name: String,
-}
-
-/// AccessedBucket identifies a Bucket and corresponding access parameters.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum BucketAccessStatusAccessedBucketsAccessMode {
-    ReadWrite,
-    ReadOnly,
-    WriteOnly,
 }
 
 /// status defines the observed state of BucketAccess

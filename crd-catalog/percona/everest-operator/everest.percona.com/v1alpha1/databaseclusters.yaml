@@ -271,6 +271,17 @@ spec:
                     - "storage"
                     - "type"
                   type: "object"
+                engineFeatures:
+                  description: "EngineFeatures represents configuration of additional features for the database engine."
+                  properties:
+                    psmdb:
+                      description: "PSMDB represents additional features for the PSMDB engine."
+                      properties:
+                        splitHorizonDnsConfigName:
+                          description: "SplitHorizonDNSConfigName is the name of a SplitHorizonDNSConfig CR.\nThe SplitHorizonDNSConfig must be created in the same namespace as the DatabaseCluster."
+                          type: "string"
+                      type: "object"
+                  type: "object"
                 monitoring:
                   description: "Monitoring is the monitoring configuration"
                   properties:
@@ -281,7 +292,7 @@ spec:
                       description: "Resources defines resource limitations for the monitoring."
                       properties:
                         claims:
-                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
+                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis field depends on the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                           items:
                             description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                             properties:
@@ -474,6 +485,37 @@ spec:
                 details:
                   description: "Details provides full status of the upstream cluster as a plain text."
                   type: "string"
+                engineFeatures:
+                  description: "EngineFeaturesStatus represents additional features statuses for the database engine."
+                  properties:
+                    psmdb:
+                      description: "PSMDB represents additional features statuses for the PSMDB engine."
+                      properties:
+                        splitHorizon:
+                          description: "SplitHorizon status of SplitHorizon feature."
+                          properties:
+                            domains:
+                              description: "SplitHorizon status of SplitHorizon feature."
+                              items:
+                                description: "SplitHorizonDomain defines SplitHorizon domain status (domain -> IPs mapping)."
+                                properties:
+                                  domain:
+                                    description: "Domain is the SplitHorizon domain name."
+                                    type: "string"
+                                  privateIP:
+                                    description: "PrivateIP is the private IP address for the domain."
+                                    type: "string"
+                                  publicIP:
+                                    description: "PublicIP is the public IP address for the domain."
+                                    type: "string"
+                                type: "object"
+                              type: "array"
+                            host:
+                              description: "ConnectionURL is the connection URL using SplitHorizon domains."
+                              type: "string"
+                          type: "object"
+                      type: "object"
+                  type: "object"
                 hostname:
                   description: "Hostname is the hostname where the cluster can be reached"
                   type: "string"
