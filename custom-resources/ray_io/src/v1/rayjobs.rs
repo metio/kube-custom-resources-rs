@@ -130,6 +130,8 @@ pub enum RayJobDeletionStrategyOnSuccessPolicy {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RayJobRayClusterSpec {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authOptions")]
+    pub auth_options: Option<RayJobRayClusterSpecAuthOptions>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoscalerOptions")]
     pub autoscaler_options: Option<RayJobRayClusterSpecAutoscalerOptions>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableInTreeAutoscaling")]
@@ -148,6 +150,20 @@ pub struct RayJobRayClusterSpec {
     pub suspend: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workerGroupSpecs")]
     pub worker_group_specs: Option<Vec<RayJobRayClusterSpecWorkerGroupSpecs>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayJobRayClusterSpecAuthOptions {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<RayJobRayClusterSpecAuthOptionsMode>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum RayJobRayClusterSpecAuthOptionsMode {
+    #[serde(rename = "disabled")]
+    Disabled,
+    #[serde(rename = "token")]
+    Token,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

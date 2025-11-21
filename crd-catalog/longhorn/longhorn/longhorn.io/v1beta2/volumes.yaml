@@ -69,6 +69,7 @@ spec:
                 accessMode:
                   enum:
                     - "rwo"
+                    - "rwop"
                     - "rwx"
                   type: "string"
                 backingImage:
@@ -219,6 +220,12 @@ spec:
                   format: "int64"
                   type: "string"
                 staleReplicaTimeout:
+                  type: "integer"
+                ublkNumberOfQueue:
+                  description: "ublkNumberOfQueue controls the number of queues for ublk frontend."
+                  type: "integer"
+                ublkQueueDepth:
+                  description: "ublkQueueDepth controls the depth of each queue for ublk frontend."
                   type: "integer"
                 unmapMarkSnapChainRemoved:
                   enum:

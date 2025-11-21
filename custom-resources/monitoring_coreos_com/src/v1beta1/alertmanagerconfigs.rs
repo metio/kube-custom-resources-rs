@@ -4007,6 +4007,10 @@ pub struct AlertmanagerConfigReceiversPushoverConfigs {
     /// This is the main body text of the Pushover notification.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
+    /// monospace optional HTML/monospace formatting for the message, see <https://pushover.net/api#html>
+    /// html and monospace formatting are mutually exclusive.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub monospace: Option<bool>,
     /// priority defines the notification priority level.
     /// See <https://pushover.net/api#priority> for valid values and behavior.
     #[serde(default, skip_serializing_if = "Option::is_none")]

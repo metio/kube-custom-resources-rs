@@ -150,6 +150,18 @@ pub struct ClusterQueueFairSharing {
 /// before borrowing or preempting in the flavor being evaluated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterQueueFlavorFungibility {
+    /// preference guides the choosing of the flavor for admission in case all candidate flavors
+    /// require either preemption, borrowing, or both. The possible values are:
+    /// - `BorrowingOverPreemption` (default): prefer to use borrowing rather than preemption
+    /// when such a choice is possible. More technically it minimizes the borrowing distance
+    /// in the cohort tree, and solves tie-breaks by preferring better preemption mode
+    /// (reclaim over preemption within ClusterQueue).
+    /// - `PreemptionOverBorrowing`: prefer to use preemption rather than borrowing
+    /// when such a choice is possible.  More technically it optimizes the preemption mode
+    /// (reclaim over preemption within ClusterQueue), and solves tie-breaks by minimizing
+    /// the borrowing distance in the cohort tree.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub preference: Option<ClusterQueueFlavorFungibilityPreference>,
     /// whenCanBorrow determines whether a workload should try the next flavor
     /// before borrowing in current flavor. The possible values are:
     /// 
@@ -169,6 +181,14 @@ pub struct ClusterQueueFlavorFungibility {
     /// - `Preempt` (deprecated): old name for `MayStopSearch`; please use new name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "whenCanPreempt")]
     pub when_can_preempt: Option<ClusterQueueFlavorFungibilityWhenCanPreempt>,
+}
+
+/// flavorFungibility defines whether a workload should try the next flavor
+/// before borrowing or preempting in the flavor being evaluated.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterQueueFlavorFungibilityPreference {
+    BorrowingOverPreemption,
+    PreemptionOverBorrowing,
 }
 
 /// flavorFungibility defines whether a workload should try the next flavor
@@ -430,6 +450,7 @@ pub struct ClusterQueueStatus {
     pub pending_workloads: Option<i32>,
     /// pendingWorkloadsStatus contains the information exposed about the current
     /// status of the pending workloads in the cluster queue.
+    /// 
     /// Deprecated: This field is no longer effective since v0.14.0, which means Kueue no longer stores and updates information.
     /// You can migrate to VisibilityOnDemand
     /// (<https://kueue.sigs.k8s.io/docs/tasks/manage/monitor_pending_workloads/pending_workloads_on_demand/)>
@@ -520,6 +541,7 @@ pub struct ClusterQueueStatusFlavorsUsageResources {
 
 /// pendingWorkloadsStatus contains the information exposed about the current
 /// status of the pending workloads in the cluster queue.
+/// 
 /// Deprecated: This field is no longer effective since v0.14.0, which means Kueue no longer stores and updates information.
 /// You can migrate to VisibilityOnDemand
 /// (<https://kueue.sigs.k8s.io/docs/tasks/manage/monitor_pending_workloads/pending_workloads_on_demand/)>

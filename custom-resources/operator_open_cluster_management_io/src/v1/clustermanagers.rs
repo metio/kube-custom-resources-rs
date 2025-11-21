@@ -504,6 +504,12 @@ pub struct ClusterManagerServerConfigurationEndpointsExposureGrpc {
     /// hostname points to a fixed hostname for serving agents' handshakes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<ClusterManagerServerConfigurationEndpointsExposureGrpcHostname>,
+    /// LoadBalancer points customized configuration for loadBalancer type.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancer")]
+    pub load_balancer: Option<ClusterManagerServerConfigurationEndpointsExposureGrpcLoadBalancer>,
+    /// Route points customized configuration for route type.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub route: Option<ClusterManagerServerConfigurationEndpointsExposureGrpcRoute>,
     /// type specifies how the endpoint is exposed.
     /// You may need to apply an object to expose the endpoint, for example: a route.
     #[serde(rename = "type")]
@@ -520,11 +526,37 @@ pub struct ClusterManagerServerConfigurationEndpointsExposureGrpcHostname {
     pub host: String,
 }
 
+/// LoadBalancer points customized configuration for loadBalancer type.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterManagerServerConfigurationEndpointsExposureGrpcLoadBalancer {
+    /// CABundle is a customized caBundle of the endpoint.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
+    pub ca_bundle: Option<String>,
+    /// Host is the customized host name of the endpoint.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+}
+
+/// Route points customized configuration for route type.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterManagerServerConfigurationEndpointsExposureGrpcRoute {
+    /// CABundle is a customized caBundle of the endpoint.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
+    pub ca_bundle: Option<String>,
+    /// Host is the customized host name of the endpoint.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+}
+
 /// grpc represents the configuration for grpc endpoint.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterManagerServerConfigurationEndpointsExposureGrpcType {
     #[serde(rename = "hostname")]
     Hostname,
+    #[serde(rename = "loadBalancer")]
+    LoadBalancer,
+    #[serde(rename = "route")]
+    Route,
 }
 
 /// https represents the configuration for https endpoint.
@@ -533,6 +565,12 @@ pub struct ClusterManagerServerConfigurationEndpointsExposureHttps {
     /// hostname points to a fixed hostname for serving agents' handshakes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<ClusterManagerServerConfigurationEndpointsExposureHttpsHostname>,
+    /// LoadBalancer points customized configuration for loadBalancer type.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancer")]
+    pub load_balancer: Option<ClusterManagerServerConfigurationEndpointsExposureHttpsLoadBalancer>,
+    /// Route points customized configuration for route type.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub route: Option<ClusterManagerServerConfigurationEndpointsExposureHttpsRoute>,
     /// type specifies how the endpoint is exposed.
     /// You may need to apply an object to expose the endpoint, for example: a route.
     #[serde(rename = "type")]
@@ -549,11 +587,37 @@ pub struct ClusterManagerServerConfigurationEndpointsExposureHttpsHostname {
     pub host: String,
 }
 
+/// LoadBalancer points customized configuration for loadBalancer type.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterManagerServerConfigurationEndpointsExposureHttpsLoadBalancer {
+    /// CABundle is a customized caBundle of the endpoint.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
+    pub ca_bundle: Option<String>,
+    /// Host is the customized host name of the endpoint.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+}
+
+/// Route points customized configuration for route type.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterManagerServerConfigurationEndpointsExposureHttpsRoute {
+    /// CABundle is a customized caBundle of the endpoint.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
+    pub ca_bundle: Option<String>,
+    /// Host is the customized host name of the endpoint.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+}
+
 /// https represents the configuration for https endpoint.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterManagerServerConfigurationEndpointsExposureHttpsType {
     #[serde(rename = "hostname")]
     Hostname,
+    #[serde(rename = "loadBalancer")]
+    LoadBalancer,
+    #[serde(rename = "route")]
+    Route,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]

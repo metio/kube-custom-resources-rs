@@ -75,7 +75,7 @@ spec:
                       type: "string"
                   type: "object"
                 serviceInstanceID:
-                  description: "ServiceInstanceID is the id of the power cloud instance where the image will get imported.\nDeprecated: use ServiceInstance instead"
+                  description: "Deprecated: use ServiceInstance instead\n\nServiceInstanceID is the id of the power cloud instance where the image will get imported."
                   type: "string"
                 storageType:
                   default: "tier1"

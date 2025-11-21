@@ -311,7 +311,7 @@ spec:
                                   aggression:
                                     description: "This parameter controls the speed of traffic increase over the warmup duration."
                                     format: "double"
-                                    minimum: 1.0
+                                    minimum: 0.0
                                     nullable: true
                                     type: "number"
                                   duration:
@@ -635,7 +635,7 @@ spec:
                                         aggression:
                                           description: "This parameter controls the speed of traffic increase over the warmup duration."
                                           format: "double"
-                                          minimum: 1.0
+                                          minimum: 0.0
                                           nullable: true
                                           type: "number"
                                         duration:
@@ -1096,7 +1096,7 @@ spec:
                             aggression:
                               description: "This parameter controls the speed of traffic increase over the warmup duration."
                               format: "double"
-                              minimum: 1.0
+                              minimum: 0.0
                               nullable: true
                               type: "number"
                             duration:
@@ -1420,7 +1420,7 @@ spec:
                                   aggression:
                                     description: "This parameter controls the speed of traffic increase over the warmup duration."
                                     format: "double"
-                                    minimum: 1.0
+                                    minimum: 0.0
                                     nullable: true
                                     type: "number"
                                   duration:

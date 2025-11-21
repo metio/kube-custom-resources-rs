@@ -63,6 +63,8 @@ pub struct ConstraintTemplateTargets {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub libs: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operations: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rego: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub target: Option<String>,

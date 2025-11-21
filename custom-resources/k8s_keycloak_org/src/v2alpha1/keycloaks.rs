@@ -23,6 +23,9 @@ pub struct KeycloakSpec {
     /// expressed as a keys (reference: <https://www.keycloak.org/server/all-config)> and values that can be either direct values or references to secrets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalOptions")]
     pub additional_options: Option<Vec<KeycloakAdditionalOptions>>,
+    /// Set this to to false to disable automounting the default ServiceAccount Token and Service CA. This is enabled by default.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "automountServiceAccountToken")]
+    pub automount_service_account_token: Option<bool>,
     /// In this section you can configure Keycloak's bootstrap admin - will be used only for initial cluster creation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootstrapAdmin")]
     pub bootstrap_admin: Option<KeycloakBootstrapAdmin>,

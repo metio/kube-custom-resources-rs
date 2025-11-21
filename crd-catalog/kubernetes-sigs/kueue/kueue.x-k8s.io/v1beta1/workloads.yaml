@@ -5302,6 +5302,16 @@ spec:
                         maxItems: 8
                         type: "array"
                         x-kubernetes-list-type: "atomic"
+                      requeueAfterSeconds:
+                        description: "requeueAfterSeconds indicates how long to wait at least before\nretrying to admit the workload.\nThe admission check controllers can set this field when State=Retry\nto implement delays between retry attempts.\n\nIf nil when State=Retry, Kueue will retry immediately.\nIf set, Kueue will add the workload back to the queue after\n  lastTransitionTime + RequeueAfterSeconds is over."
+                        format: "int32"
+                        minimum: 0.0
+                        type: "integer"
+                      retryCount:
+                        description: "retryCount tracks retry attempts for this admission check.\nKueue automatically increments the counter whenever the\nstate transitions to Retry."
+                        format: "int32"
+                        minimum: 0.0
+                        type: "integer"
                       state:
                         description: "state of the admissionCheck, one of Pending, Ready, Retry, Rejected"
                         enum:

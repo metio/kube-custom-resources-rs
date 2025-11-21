@@ -202,8 +202,7 @@ pub struct AssignMetadataParametersAssignExternalData {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failurePolicy")]
     pub failure_policy: Option<AssignMetadataParametersAssignExternalDataFailurePolicy>,
     /// Provider is the name of the external data provider.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub provider: Option<String>,
+    pub provider: String,
 }
 
 /// ExternalData describes the external data provider to be used for mutation.

@@ -40,6 +40,8 @@ pub struct RayServiceSpec {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RayServiceRayClusterConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authOptions")]
+    pub auth_options: Option<RayServiceRayClusterConfigAuthOptions>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoscalerOptions")]
     pub autoscaler_options: Option<RayServiceRayClusterConfigAutoscalerOptions>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableInTreeAutoscaling")]
@@ -58,6 +60,20 @@ pub struct RayServiceRayClusterConfig {
     pub suspend: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workerGroupSpecs")]
     pub worker_group_specs: Option<Vec<RayServiceRayClusterConfigWorkerGroupSpecs>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayServiceRayClusterConfigAuthOptions {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<RayServiceRayClusterConfigAuthOptionsMode>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum RayServiceRayClusterConfigAuthOptionsMode {
+    #[serde(rename = "disabled")]
+    Disabled,
+    #[serde(rename = "token")]
+    Token,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

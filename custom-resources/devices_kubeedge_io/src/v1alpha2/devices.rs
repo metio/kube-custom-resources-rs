@@ -10,7 +10,7 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// DeviceSpec represents a single device instance. It is an instantation of a device model.
+/// DeviceSpec represents a single device instance. It is an instantiation of a device model.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "devices.kubeedge.io", version = "v1alpha2", kind = "Device", plural = "devices")]
 #[kube(namespaced)]

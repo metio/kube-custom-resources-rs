@@ -20,6 +20,8 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct RayClusterSpec {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authOptions")]
+    pub auth_options: Option<RayClusterAuthOptions>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoscalerOptions")]
     pub autoscaler_options: Option<RayClusterAutoscalerOptions>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableInTreeAutoscaling")]
@@ -38,6 +40,20 @@ pub struct RayClusterSpec {
     pub suspend: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workerGroupSpecs")]
     pub worker_group_specs: Option<Vec<RayClusterWorkerGroupSpecs>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayClusterAuthOptions {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<RayClusterAuthOptionsMode>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum RayClusterAuthOptionsMode {
+    #[serde(rename = "disabled")]
+    Disabled,
+    #[serde(rename = "token")]
+    Token,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

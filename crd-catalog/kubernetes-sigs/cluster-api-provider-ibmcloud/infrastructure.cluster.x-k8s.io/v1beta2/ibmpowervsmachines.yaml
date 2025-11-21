@@ -144,7 +144,7 @@ spec:
                       type: "string"
                   type: "object"
                 serviceInstanceID:
-                  description: "ServiceInstanceID is the id of the power cloud instance where the vsi instance will get deployed.\nDeprecated: use ServiceInstance instead"
+                  description: "Deprecated: use ServiceInstance instead\n\nServiceInstanceID is the id of the power cloud instance where the vsi instance will get deployed."
                   type: "string"
                 sshKey:
                   description: "SSHKey is the name of the SSH key pair provided to the vsi for authenticating users."

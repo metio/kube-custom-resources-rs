@@ -44,6 +44,8 @@ pub struct PerconaXtraDbClusterSpec {
     pub log_collector_secret_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logcollector: Option<PerconaXtraDbClusterLogcollector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordGenerationOptions")]
+    pub password_generation_options: Option<PerconaXtraDbClusterPasswordGenerationOptions>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pause: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3636,6 +3638,15 @@ pub struct PerconaXtraDbClusterLogcollectorResourcesClaims {
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub request: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaXtraDbClusterPasswordGenerationOptions {
+    #[serde(rename = "maxLength")]
+    pub max_length: i64,
+    #[serde(rename = "minLength")]
+    pub min_length: i64,
+    pub symbols: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -8827,6 +8838,10 @@ pub struct PerconaXtraDbClusterPxcVolumeSpecPersistentVolumeClaimSelectorMatchEx
 pub struct PerconaXtraDbClusterTls {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "SANs")]
     pub sa_ns: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caValidityDuration")]
+    pub ca_validity_duration: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certValidityDuration")]
+    pub cert_validity_duration: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "issuerConf")]

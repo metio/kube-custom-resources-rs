@@ -96,8 +96,10 @@ pub struct TenantAdditionalRoleBindingsSubjects {
 /// Specifies the trusted Image Registries assigned to the Tenant. Capsule assures that all Pods resources created in the Tenant can use only one of the allowed trusted registries. Optional.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantContainerRegistries {
+    /// Match exact elements which are allowed as class names within this tenant
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub allowed: Option<Vec<String>>,
+    /// Match elements by regex (DEPRECATED)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedRegex")]
     pub allowed_regex: Option<String>,
 }
@@ -127,8 +129,10 @@ pub struct TenantIngressOptions {
 /// Specifies the allowed IngressClasses assigned to the Tenant. Capsule assures that all Ingress resources created in the Tenant can use only one of the allowed IngressClasses. Optional.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantIngressOptionsAllowedClasses {
+    /// Match exact elements which are allowed as class names within this tenant
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub allowed: Option<Vec<String>>,
+    /// Match elements by regex (DEPRECATED)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedRegex")]
     pub allowed_regex: Option<String>,
 }
@@ -136,8 +140,10 @@ pub struct TenantIngressOptionsAllowedClasses {
 /// Specifies the allowed hostnames in Ingresses for the given Tenant. Capsule assures that all Ingress resources created in the Tenant can use only one of the allowed hostnames. Optional.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantIngressOptionsAllowedHostnames {
+    /// Match exact elements which are allowed as class names within this tenant
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub allowed: Option<Vec<String>>,
+    /// Match elements by regex (DEPRECATED)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedRegex")]
     pub allowed_regex: Option<String>,
 }
@@ -631,8 +637,10 @@ pub enum TenantOwnersProxySettingsKind {
 /// Specifies the allowed priorityClasses assigned to the Tenant. Capsule assures that all Pods resources created in the Tenant can use only one of the allowed PriorityClasses. Optional.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantPriorityClasses {
+    /// Match exact elements which are allowed as class names within this tenant
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub allowed: Option<Vec<String>>,
+    /// Match elements by regex (DEPRECATED)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedRegex")]
     pub allowed_regex: Option<String>,
 }
@@ -770,8 +778,10 @@ pub struct TenantServiceOptionsForbiddenLabels {
 /// Specifies the allowed StorageClasses assigned to the Tenant. Capsule assures that all PersistentVolumeClaim resources created in the Tenant can use only one of the allowed StorageClasses. Optional.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantStorageClasses {
+    /// Match exact elements which are allowed as class names within this tenant
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub allowed: Option<Vec<String>>,
+    /// Match elements by regex (DEPRECATED)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedRegex")]
     pub allowed_regex: Option<String>,
 }

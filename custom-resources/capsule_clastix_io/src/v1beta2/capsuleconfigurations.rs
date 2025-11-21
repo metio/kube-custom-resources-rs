@@ -16,6 +16,12 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct CapsuleConfigurationSpec {
+    /// Define entities which can act as Administrators in the capsule construct
+    /// These entities are automatically owners for all existing tenants. Meaning they can add namespaces to any tenant. However they must be specific by using the capsule label
+    /// for interacting with namespaces. Because if that label is not defined, it's assumed that namespace interaction was not targeted towards a tenant and will therefor
+    /// be ignored by capsule.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub administrators: Option<Vec<CapsuleConfigurationAdministrators>>,
     /// ServiceAccounts within tenant namespaces can be promoted to owners of the given tenant
     /// this can be achieved by labeling the serviceaccount and then they are considered owners. This can only be done by other owners of the tenant.
     /// However ServiceAccounts which have been promoted to owner can not promote further serviceAccounts.
@@ -50,6 +56,21 @@ pub struct CapsuleConfigurationSpec {
     /// Names of the users considered as Capsule users.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userNames")]
     pub user_names: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CapsuleConfigurationAdministrators {
+    /// Kind of entity. Possible values are "User", "Group", and "ServiceAccount"
+    pub kind: CapsuleConfigurationAdministratorsKind,
+    /// Name of the entity.
+    pub name: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum CapsuleConfigurationAdministratorsKind {
+    User,
+    Group,
+    ServiceAccount,
 }
 
 /// Allows to set the forbidden metadata for the worker nodes that could be patched by a Tenant.

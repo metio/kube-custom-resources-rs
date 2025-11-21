@@ -401,6 +401,11 @@ pub struct DeviceConfigDriver {
     /// policy to upgrade the drivers
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "upgradePolicy")]
     pub upgrade_policy: Option<DeviceConfigDriverUpgradePolicy>,
+    /// NOTE: currently only for OpenShift cluster
+    /// set to true to use source image to build driver image on the fly
+    /// otherwise use installer debian/rpm packages from radeon repo to build driver image
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useSourceImage")]
+    pub use_source_image: Option<bool>,
     /// version of the drivers source code, can be used as part of image of dockerfile source image
     /// default value for different OS is: ubuntu: 6.1.3, coreOS: 6.2.2
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -427,15 +432,25 @@ pub enum DeviceConfigDriverDriverType {
 pub struct DeviceConfigDriverImageBuild {
     /// image registry to fetch base image for building driver image, default value is docker.io, the builder will search for corresponding OS base image from given registry
     /// e.g. if your worker node is using Ubuntu 22.04, by default the base image would be docker.io/ubuntu:22.04
+    /// Use spec.driver.imageRegistrySecret for authentication with private registries.
     /// NOTE: this field won't apply for OpenShift since OpenShift is using its own DriverToolKit image to build driver image
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseImageRegistry")]
     pub base_image_registry: Option<String>,
     /// TLS settings for fetching base image
+    /// this field will be applied to SourceImageRepo as well
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseImageRegistryTLS")]
     pub base_image_registry_tls: Option<DeviceConfigDriverImageBuildBaseImageRegistryTls>,
+    /// SourceImageRepo specifies the image repository for the driver source code (OpenShift only).
+    /// Used when spec.driver.useSourceImage is true. The operator automatically determines the image tag
+    /// based on cluster RHEL version and spec.driver.version (format: coreos-<rhel>-<driver version>).
+    /// Default: docker.io/rocm/amdgpu-driver
+    /// Use spec.driver.imageRegistrySecret for authentication with private registries.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceImageRepo")]
+    pub source_image_repo: Option<String>,
 }
 
 /// TLS settings for fetching base image
+/// this field will be applied to SourceImageRepo as well
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceConfigDriverImageBuildBaseImageRegistryTls {
     /// If true, check if the container image already exists using plain HTTP.

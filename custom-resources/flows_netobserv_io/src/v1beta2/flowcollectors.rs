@@ -32,7 +32,7 @@ pub struct FlowCollectorSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "consolePlugin")]
     pub console_plugin: Option<FlowCollectorConsolePlugin>,
     /// `deploymentModel` defines the desired type of deployment for flow processing. Possible values are:<br>
-    /// - `Direct` (default) to make the flow processor listen directly from the agents using the host network, backed by a DaemonSet.<br>
+    /// - `Direct` (default) to make the flow processor listen directly from the agents using the host network, backed by a DaemonSet. Only recommended on small clusters, below 15 nodes.<br>
     /// - `Service` to make the flow processor listen as a Kubernetes Service, backed by a scalable Deployment.<br>
     /// - `Kafka` to make flows sent to a Kafka pipeline before consumption by the processor.<br>
     /// Kafka can provide better scalability, resiliency, and high availability (for more details, see <https://www.redhat.com/en/topics/integration/what-is-apache-kafka).<br>>
@@ -3570,8 +3570,9 @@ pub struct FlowCollectorNetworkPolicy {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalNamespaces")]
     pub additional_namespaces: Option<Vec<String>>,
     /// Deploys network policies on the namespaces used by NetObserv (main and privileged).
-    /// These network policies better isolate the NetObserv components to prevent undesired connections to them.
-    /// This option is enabled by default, disable it to manually manage network policies
+    /// These network policies better isolate the NetObserv components to prevent undesired connections from and to them.
+    /// This option is enabled by default when using with OVNKubernetes, and disabled otherwise (it has not been tested with other CNIs).
+    /// When disabled, you can create manually the network policies for the NetObserv components.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
 }

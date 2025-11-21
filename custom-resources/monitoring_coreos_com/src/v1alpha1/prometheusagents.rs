@@ -5105,9 +5105,11 @@ pub enum PrometheusAgentRemoteWriteAzureAdCloud {
 /// Cannot be set at the same time as `oauth` or `sdk`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentRemoteWriteAzureAdManagedIdentity {
-    /// clientId defines defines the Azure User-assigned Managed identity.
-    #[serde(rename = "clientId")]
-    pub client_id: String,
+    /// clientId defines the Azure User-assigned Managed identity.
+    /// 
+    /// For Prometheus >= 3.5.0 and Thanos >= 0.40.0, this field is allowed to be empty to support system-assigned managed identities.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientId")]
+    pub client_id: Option<String>,
 }
 
 /// oauth defines the oauth config that is being used to authenticate.

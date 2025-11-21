@@ -1970,6 +1970,9 @@ pub struct ClusterSecretStoreProviderIbmAuthContainerAuth {
 /// IBMAuthSecretRef contains the secret reference for IBM Cloud API key authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterSecretStoreProviderIbmAuthSecretRef {
+    /// The IAM endpoint used to obain a token
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iamEndpoint")]
+    pub iam_endpoint: Option<String>,
     /// The SecretAccessKey is used for authentication
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretApiKeySecretRef")]
     pub secret_api_key_secret_ref: Option<ClusterSecretStoreProviderIbmAuthSecretRefSecretApiKeySecretRef>,
@@ -3368,6 +3371,14 @@ pub struct ClusterSecretStoreProviderScalewaySecretKeySecretRef {
 /// <https://docs.delinea.com/online-help/secret-server/start.htm>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterSecretStoreProviderSecretserver {
+    /// PEM/base64 encoded CA bundle used to validate Secret ServerURL. Only used
+    /// if the ServerURL URL is using HTTPS protocol. If not set the system root certificates
+    /// are used to validate the TLS connection.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
+    pub ca_bundle: Option<String>,
+    /// The provider for the CA bundle to use to validate Secret ServerURL certificate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caProvider")]
+    pub ca_provider: Option<ClusterSecretStoreProviderSecretserverCaProvider>,
     /// Domain is the secret server domain.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub domain: Option<String>,
@@ -3379,6 +3390,30 @@ pub struct ClusterSecretStoreProviderSecretserver {
     pub server_url: String,
     /// Username is the secret server account username.
     pub username: ClusterSecretStoreProviderSecretserverUsername,
+}
+
+/// The provider for the CA bundle to use to validate Secret ServerURL certificate.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterSecretStoreProviderSecretserverCaProvider {
+    /// The key where the CA certificate can be found in the Secret or ConfigMap.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the object located at the provider type.
+    pub name: String,
+    /// The namespace the Provider type is in.
+    /// Can only be defined when used in a ClusterSecretStore.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+    /// The type of provider to use such as "Secret", or "ConfigMap".
+    #[serde(rename = "type")]
+    pub r#type: ClusterSecretStoreProviderSecretserverCaProviderType,
+}
+
+/// The provider for the CA bundle to use to validate Secret ServerURL certificate.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterSecretStoreProviderSecretserverCaProviderType {
+    Secret,
+    ConfigMap,
 }
 
 /// Password is the secret server account password.
@@ -3549,6 +3584,10 @@ pub struct ClusterSecretStoreProviderVaultAuth {
     /// Cert authentication method
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<ClusterSecretStoreProviderVaultAuthCert>,
+    /// Gcp authenticates with Vault using Google Cloud Platform authentication method
+    /// GCP authentication method
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub gcp: Option<ClusterSecretStoreProviderVaultAuthGcp>,
     /// Iam authenticates with vault by passing a special AWS request signed with AWS IAM credentials
     /// AWS IAM authentication method
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3690,6 +3729,108 @@ pub struct ClusterSecretStoreProviderVaultAuthCertSecretRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// The namespace of the Secret resource being referred to.
+    /// Ignored if referent is not cluster-scoped, otherwise defaults to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// Gcp authenticates with Vault using Google Cloud Platform authentication method
+/// GCP authentication method
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderVaultAuthGcp {
+    /// Location optionally defines a location/region for the secret
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub location: Option<String>,
+    /// Path where the GCP auth method is enabled in Vault, e.g: "gcp"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// Project ID of the Google Cloud Platform project
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "projectID")]
+    pub project_id: Option<String>,
+    /// Vault Role. In Vault, a role describes an identity with a set of permissions, groups, or policies you want to attach to a user of the secrets engine.
+    pub role: String,
+    /// Specify credentials in a Secret object
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<ClusterSecretStoreProviderVaultAuthGcpSecretRef>,
+    /// ServiceAccountRef to a service account for impersonation
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountRef")]
+    pub service_account_ref: Option<ClusterSecretStoreProviderVaultAuthGcpServiceAccountRef>,
+    /// Specify a service account with Workload Identity
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workloadIdentity")]
+    pub workload_identity: Option<ClusterSecretStoreProviderVaultAuthGcpWorkloadIdentity>,
+}
+
+/// Specify credentials in a Secret object
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderVaultAuthGcpSecretRef {
+    /// The SecretAccessKey is used for authentication
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKeySecretRef")]
+    pub secret_access_key_secret_ref: Option<ClusterSecretStoreProviderVaultAuthGcpSecretRefSecretAccessKeySecretRef>,
+}
+
+/// The SecretAccessKey is used for authentication
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderVaultAuthGcpSecretRefSecretAccessKeySecretRef {
+    /// A key in the referenced Secret.
+    /// Some instances of this field may be defaulted, in others it may be required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the Secret resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// The namespace of the Secret resource being referred to.
+    /// Ignored if referent is not cluster-scoped, otherwise defaults to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// ServiceAccountRef to a service account for impersonation
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderVaultAuthGcpServiceAccountRef {
+    /// Audience specifies the `aud` claim for the service account token
+    /// If the service account uses a well-known annotation for e.g. IRSA or GCP Workload Identity
+    /// then this audiences will be appended to the list
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub audiences: Option<Vec<String>>,
+    /// The name of the ServiceAccount resource being referred to.
+    pub name: String,
+    /// Namespace of the resource being referred to.
+    /// Ignored if referent is not cluster-scoped, otherwise defaults to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// Specify a service account with Workload Identity
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderVaultAuthGcpWorkloadIdentity {
+    /// ClusterLocation is the location of the cluster
+    /// If not specified, it fetches information from the metadata server
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterLocation")]
+    pub cluster_location: Option<String>,
+    /// ClusterName is the name of the cluster
+    /// If not specified, it fetches information from the metadata server
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterName")]
+    pub cluster_name: Option<String>,
+    /// ClusterProjectID is the project ID of the cluster
+    /// If not specified, it fetches information from the metadata server
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterProjectID")]
+    pub cluster_project_id: Option<String>,
+    /// ServiceAccountSelector is a reference to a ServiceAccount resource.
+    #[serde(rename = "serviceAccountRef")]
+    pub service_account_ref: ClusterSecretStoreProviderVaultAuthGcpWorkloadIdentityServiceAccountRef,
+}
+
+/// ServiceAccountSelector is a reference to a ServiceAccount resource.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderVaultAuthGcpWorkloadIdentityServiceAccountRef {
+    /// Audience specifies the `aud` claim for the service account token
+    /// If the service account uses a well-known annotation for e.g. IRSA or GCP Workload Identity
+    /// then this audiences will be appended to the list
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub audiences: Option<Vec<String>>,
+    /// The name of the ServiceAccount resource being referred to.
+    pub name: String,
+    /// Namespace of the resource being referred to.
     /// Ignored if referent is not cluster-scoped, otherwise defaults to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,

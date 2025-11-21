@@ -40,8 +40,9 @@ pub struct IbmPowerVsImageSpec {
     /// when omitted system will dynamically create the service instance
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceInstance")]
     pub service_instance: Option<IbmPowerVsImageServiceInstance>,
-    /// ServiceInstanceID is the id of the power cloud instance where the image will get imported.
     /// Deprecated: use ServiceInstance instead
+    /// 
+    /// ServiceInstanceID is the id of the power cloud instance where the image will get imported.
     #[serde(rename = "serviceInstanceID")]
     pub service_instance_id: String,
     /// Type of storage, storage pool with the most available space will be selected.

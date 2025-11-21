@@ -29,6 +29,7 @@ pub struct AdmissionCheckSpec {
     /// retryDelayMinutes specifies how long to keep the workload suspended after
     /// a failed check (after it transitioned to False). When the delay period has passed, the check
     /// state goes to "Unknown". The default is 15 min.
+    /// 
     /// Deprecated: retryDelayMinutes has already been deprecated since v0.8 and will be removed in v1beta2.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryDelayMinutes")]
     pub retry_delay_minutes: Option<i64>,

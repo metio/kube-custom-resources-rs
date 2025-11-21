@@ -52,6 +52,9 @@ pub struct PodGroupSpec {
     /// the PodGroup will not be scheduled. Defaults to `default` Queue with the lowest weight.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub queue: Option<String>,
+    /// SubGroupPolicy defines policies for dividing all pods within the podGroup into multiple groups.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subGroupPolicy")]
+    pub sub_group_policy: Option<Vec<PodGroupSubGroupPolicy>>,
 }
 
 /// NetworkTopology defines the NetworkTopology config, this field works in conjunction with network topology feature and hyperNode CRD.
@@ -60,6 +63,10 @@ pub struct PodGroupNetworkTopology {
     /// HighestTierAllowed specifies the highest tier that a job allowed to cross when scheduling.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "highestTierAllowed")]
     pub highest_tier_allowed: Option<i64>,
+    /// HighestTierName specifies the highest tier name that a job allowed to cross when scheduling.
+    /// HighestTierName and HighestTierAllowed cannot be set simultaneously.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "highestTierName")]
+    pub highest_tier_name: Option<String>,
     /// Mode specifies the mode of the network topology constrain.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<PodGroupNetworkTopologyMode>,
@@ -68,6 +75,58 @@ pub struct PodGroupNetworkTopology {
 /// NetworkTopology defines the NetworkTopology config, this field works in conjunction with network topology feature and hyperNode CRD.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PodGroupNetworkTopologyMode {
+    #[serde(rename = "hard")]
+    Hard,
+    #[serde(rename = "soft")]
+    Soft,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PodGroupSubGroupPolicy {
+    /// MatchPolicy defines matching strategies for different groups, where pods with the same labelKey value are grouped together.
+    /// The LabelKey in the list is unique.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchPolicy")]
+    pub match_policy: Option<Vec<PodGroupSubGroupPolicyMatchPolicy>>,
+    /// MinSubGroups defines the minimum number of sub-affinity groups required.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minSubGroups")]
+    pub min_sub_groups: Option<i32>,
+    /// Name specifies the name of SubGroupPolicy
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// NetworkTopology defines the NetworkTopology config, this field works in conjunction with network topology feature and hyperNode CRD.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkTopology")]
+    pub network_topology: Option<PodGroupSubGroupPolicyNetworkTopology>,
+    /// SubGroupSize defines the number of pods in each sub-affinity group.
+    /// Only when a subGroup of pods, with a size of "subGroupSize", can satisfy the network topology constraint then will the subGroup be scheduled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subGroupSize")]
+    pub sub_group_size: Option<i32>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PodGroupSubGroupPolicyMatchPolicy {
+    /// LabelKey specifies the label key used to group pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelKey")]
+    pub label_key: Option<String>,
+}
+
+/// NetworkTopology defines the NetworkTopology config, this field works in conjunction with network topology feature and hyperNode CRD.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PodGroupSubGroupPolicyNetworkTopology {
+    /// HighestTierAllowed specifies the highest tier that a job allowed to cross when scheduling.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "highestTierAllowed")]
+    pub highest_tier_allowed: Option<i64>,
+    /// HighestTierName specifies the highest tier name that a job allowed to cross when scheduling.
+    /// HighestTierName and HighestTierAllowed cannot be set simultaneously.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "highestTierName")]
+    pub highest_tier_name: Option<String>,
+    /// Mode specifies the mode of the network topology constrain.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<PodGroupSubGroupPolicyNetworkTopologyMode>,
+}
+
+/// NetworkTopology defines the NetworkTopology config, this field works in conjunction with network topology feature and hyperNode CRD.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PodGroupSubGroupPolicyNetworkTopologyMode {
     #[serde(rename = "hard")]
     Hard,
     #[serde(rename = "soft")]

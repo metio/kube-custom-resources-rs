@@ -37,6 +37,9 @@ spec:
                         type: "string"
                     type: "object"
                   type: "array"
+                automountServiceAccountToken:
+                  description: "Set this to to false to disable automounting the default ServiceAccount Token and Service CA. This is enabled by default."
+                  type: "boolean"
                 bootstrapAdmin:
                   description: "In this section you can configure Keycloak's bootstrap admin - will be used only for initial cluster creation."
                   properties:

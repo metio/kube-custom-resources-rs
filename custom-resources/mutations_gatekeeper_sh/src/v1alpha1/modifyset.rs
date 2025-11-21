@@ -221,7 +221,6 @@ pub enum ModifySetParametersOperation {
 /// glob characters will take on the same value as was used to
 /// expand the matching glob in `location`.
 /// 
-/// 
 /// Available Tests:
 /// * MustExist    - the path must exist or do not mutate
 /// * MustNotExist - the path must not exist or do not mutate.
@@ -240,7 +239,6 @@ pub struct ModifySetParametersPathTests {
 /// not applied. All `subPath` entries must be a prefix of `location`. Any
 /// glob characters will take on the same value as was used to
 /// expand the matching glob in `location`.
-/// 
 /// 
 /// Available Tests:
 /// * MustExist    - the path must exist or do not mutate

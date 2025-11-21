@@ -120,6 +120,10 @@ pub struct VaultDynamicSecretProviderAuth {
     /// Cert authentication method
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<VaultDynamicSecretProviderAuthCert>,
+    /// Gcp authenticates with Vault using Google Cloud Platform authentication method
+    /// GCP authentication method
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub gcp: Option<VaultDynamicSecretProviderAuthGcp>,
     /// Iam authenticates with vault by passing a special AWS request signed with AWS IAM credentials
     /// AWS IAM authentication method
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -261,6 +265,108 @@ pub struct VaultDynamicSecretProviderAuthCertSecretRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// The namespace of the Secret resource being referred to.
+    /// Ignored if referent is not cluster-scoped, otherwise defaults to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// Gcp authenticates with Vault using Google Cloud Platform authentication method
+/// GCP authentication method
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VaultDynamicSecretProviderAuthGcp {
+    /// Location optionally defines a location/region for the secret
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub location: Option<String>,
+    /// Path where the GCP auth method is enabled in Vault, e.g: "gcp"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// Project ID of the Google Cloud Platform project
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "projectID")]
+    pub project_id: Option<String>,
+    /// Vault Role. In Vault, a role describes an identity with a set of permissions, groups, or policies you want to attach to a user of the secrets engine.
+    pub role: String,
+    /// Specify credentials in a Secret object
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<VaultDynamicSecretProviderAuthGcpSecretRef>,
+    /// ServiceAccountRef to a service account for impersonation
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountRef")]
+    pub service_account_ref: Option<VaultDynamicSecretProviderAuthGcpServiceAccountRef>,
+    /// Specify a service account with Workload Identity
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workloadIdentity")]
+    pub workload_identity: Option<VaultDynamicSecretProviderAuthGcpWorkloadIdentity>,
+}
+
+/// Specify credentials in a Secret object
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VaultDynamicSecretProviderAuthGcpSecretRef {
+    /// The SecretAccessKey is used for authentication
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKeySecretRef")]
+    pub secret_access_key_secret_ref: Option<VaultDynamicSecretProviderAuthGcpSecretRefSecretAccessKeySecretRef>,
+}
+
+/// The SecretAccessKey is used for authentication
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VaultDynamicSecretProviderAuthGcpSecretRefSecretAccessKeySecretRef {
+    /// A key in the referenced Secret.
+    /// Some instances of this field may be defaulted, in others it may be required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the Secret resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// The namespace of the Secret resource being referred to.
+    /// Ignored if referent is not cluster-scoped, otherwise defaults to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// ServiceAccountRef to a service account for impersonation
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VaultDynamicSecretProviderAuthGcpServiceAccountRef {
+    /// Audience specifies the `aud` claim for the service account token
+    /// If the service account uses a well-known annotation for e.g. IRSA or GCP Workload Identity
+    /// then this audiences will be appended to the list
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub audiences: Option<Vec<String>>,
+    /// The name of the ServiceAccount resource being referred to.
+    pub name: String,
+    /// Namespace of the resource being referred to.
+    /// Ignored if referent is not cluster-scoped, otherwise defaults to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// Specify a service account with Workload Identity
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VaultDynamicSecretProviderAuthGcpWorkloadIdentity {
+    /// ClusterLocation is the location of the cluster
+    /// If not specified, it fetches information from the metadata server
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterLocation")]
+    pub cluster_location: Option<String>,
+    /// ClusterName is the name of the cluster
+    /// If not specified, it fetches information from the metadata server
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterName")]
+    pub cluster_name: Option<String>,
+    /// ClusterProjectID is the project ID of the cluster
+    /// If not specified, it fetches information from the metadata server
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterProjectID")]
+    pub cluster_project_id: Option<String>,
+    /// ServiceAccountSelector is a reference to a ServiceAccount resource.
+    #[serde(rename = "serviceAccountRef")]
+    pub service_account_ref: VaultDynamicSecretProviderAuthGcpWorkloadIdentityServiceAccountRef,
+}
+
+/// ServiceAccountSelector is a reference to a ServiceAccount resource.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VaultDynamicSecretProviderAuthGcpWorkloadIdentityServiceAccountRef {
+    /// Audience specifies the `aud` claim for the service account token
+    /// If the service account uses a well-known annotation for e.g. IRSA or GCP Workload Identity
+    /// then this audiences will be appended to the list
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub audiences: Option<Vec<String>>,
+    /// The name of the ServiceAccount resource being referred to.
+    pub name: String,
+    /// Namespace of the resource being referred to.
     /// Ignored if referent is not cluster-scoped, otherwise defaults to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,

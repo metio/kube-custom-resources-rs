@@ -531,6 +531,8 @@ pub struct VitessShardTabletPoolsVttablet {
     pub resources: VitessShardTabletPoolsVttabletResources,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vtbackupExtraFlags")]
+    pub vtbackup_extra_flags: Option<BTreeMap<String, String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

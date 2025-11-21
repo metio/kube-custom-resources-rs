@@ -135,8 +135,10 @@ pub struct TenantAdditionalRoleBindingsSubjects {
 /// Specifies the trusted Image Registries assigned to the Tenant. Capsule assures that all Pods resources created in the Tenant can use only one of the allowed trusted registries. Optional.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantContainerRegistries {
+    /// Match exact elements which are allowed as class names within this tenant
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub allowed: Option<Vec<String>>,
+    /// Match elements by regex (DEPRECATED)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedRegex")]
     pub allowed_regex: Option<String>,
 }
@@ -150,6 +152,12 @@ pub struct TenantGatewayOptions {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantGatewayOptionsAllowedClasses {
+    /// Match exact elements which are allowed as class names within this tenant
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub allowed: Option<Vec<String>>,
+    /// Match elements by regex (DEPRECATED)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedRegex")]
+    pub allowed_regex: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub default: Option<String>,
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -213,8 +221,10 @@ pub struct TenantIngressOptions {
 /// Optional.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantIngressOptionsAllowedClasses {
+    /// Match exact elements which are allowed as class names within this tenant
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub allowed: Option<Vec<String>>,
+    /// Match elements by regex (DEPRECATED)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedRegex")]
     pub allowed_regex: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -249,8 +259,10 @@ pub struct TenantIngressOptionsAllowedClassesMatchExpressions {
 /// Specifies the allowed hostnames in Ingresses for the given Tenant. Capsule assures that all Ingress resources created in the Tenant can use only one of the allowed hostnames. Optional.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantIngressOptionsAllowedHostnames {
+    /// Match exact elements which are allowed as class names within this tenant
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub allowed: Option<Vec<String>>,
+    /// Match elements by regex (DEPRECATED)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedRegex")]
     pub allowed_regex: Option<String>,
 }
@@ -796,12 +808,12 @@ pub struct TenantOwners {
     /// Defines additional cluster-roles for the specific Owner.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterRoles")]
     pub cluster_roles: Option<Vec<String>>,
-    /// Kind of tenant owner. Possible values are "User", "Group", and "ServiceAccount"
+    /// Kind of entity. Possible values are "User", "Group", and "ServiceAccount"
     pub kind: TenantOwnersKind,
     /// Additional Labels for the synchronized rolebindings
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    /// Name of tenant owner.
+    /// Name of the entity.
     pub name: String,
     /// Proxy settings for tenant owner.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxySettings")]
@@ -854,8 +866,10 @@ pub struct TenantPodOptionsAdditionalMetadata {
 /// Optional.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantPriorityClasses {
+    /// Match exact elements which are allowed as class names within this tenant
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub allowed: Option<Vec<String>>,
+    /// Match elements by regex (DEPRECATED)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedRegex")]
     pub allowed_regex: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -955,8 +969,10 @@ pub enum TenantResourceQuotasScope {
 /// Optional.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantRuntimeClasses {
+    /// Match exact elements which are allowed as class names within this tenant
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub allowed: Option<Vec<String>>,
+    /// Match elements by regex (DEPRECATED)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedRegex")]
     pub allowed_regex: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1061,8 +1077,10 @@ pub struct TenantServiceOptionsForbiddenLabels {
 /// Optional.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantStorageClasses {
+    /// Match exact elements which are allowed as class names within this tenant
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub allowed: Option<Vec<String>>,
+    /// Match elements by regex (DEPRECATED)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedRegex")]
     pub allowed_regex: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1097,6 +1115,9 @@ pub struct TenantStorageClassesMatchExpressions {
 /// Returns the observed state of the Tenant.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TenantStatus {
+    /// Available Class Types within Tenant
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub classes: Option<TenantStatusClasses>,
     /// Tenant Condition
     pub conditions: Vec<Condition>,
     /// List of namespaces assigned to the Tenant. (Deprecated)
@@ -1109,6 +1130,23 @@ pub struct TenantStatus {
     pub spaces: Option<Vec<TenantStatusSpaces>>,
     /// The operational state of the Tenant. Possible values are "Active", "Cordoned".
     pub state: TenantStatusState,
+}
+
+/// Available Class Types within Tenant
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TenantStatusClasses {
+    /// Available GatewayClasses
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub gateway: Option<Vec<String>>,
+    /// Available PriorityClasses
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub priority: Option<Vec<String>>,
+    /// Available StorageClasses
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub runtime: Option<Vec<String>>,
+    /// Available Storageclasses (Only collected if any matching condition is specified)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub storage: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

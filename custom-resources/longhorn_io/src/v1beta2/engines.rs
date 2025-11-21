@@ -52,6 +52,12 @@ pub struct EngineSpec {
     pub snapshot_max_count: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotMaxSize")]
     pub snapshot_max_size: Option<String>,
+    /// ublkNumberOfQueue controls the number of queues for ublk frontend.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ublkNumberOfQueue")]
+    pub ublk_number_of_queue: Option<i64>,
+    /// ublkQueueDepth controls the depth of each queue for ublk frontend.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ublkQueueDepth")]
+    pub ublk_queue_depth: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "unmapMarkSnapChainRemovedEnabled")]
     pub unmap_mark_snap_chain_removed_enabled: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "upgradedReplicaAddressMap")]

@@ -1176,6 +1176,11 @@ pub struct DatadogAgentFeaturesCws {
     /// Any policies with the same name as those existing in the agent will take precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "customPolicies")]
     pub custom_policies: Option<DatadogAgentFeaturesCwsCustomPolicies>,
+    /// DirectSendFromSystemProbe configures CWS to send payloads directly from the system-probe, without using the security-agent.
+    /// This is an experimental feature. Contact support before using.
+    /// Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "directSendFromSystemProbe")]
+    pub direct_send_from_system_probe: Option<bool>,
     /// Enabled enables Cloud Workload Security.
     /// Default: false
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1503,6 +1508,11 @@ pub struct DatadogAgentFeaturesGpu {
     /// Default: false
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
+    /// PatchCgroupPermissions enables the patch of cgroup permissions for GPU monitoring, in case
+    /// the container runtime is not properly configured and the Agent containers lose access to GPU devices.
+    /// Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "patchCgroupPermissions")]
+    pub patch_cgroup_permissions: Option<bool>,
     /// PrivilegedMode enables GPU Probe module in System Probe.
     /// Default: false
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "privilegedMode")]
@@ -1536,6 +1546,13 @@ pub struct DatadogAgentFeaturesHelmCheck {
 /// KubeStateMetricsCore check configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentFeaturesKubeStateMetricsCore {
+    /// `CollectCrMetrics` defines custom resources for the kube-state-metrics core check to collect.
+    /// 
+    /// The datadog agent uses the same logic as upstream `kube-state-metrics`. So is its configuration.
+    /// The exact structure and existing fields of each item in this list can be found in:
+    /// <https://github.com/kubernetes/kube-state-metrics/blob/main/docs/metrics/extend/customresourcestate-metrics.md>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "collectCrMetrics")]
+    pub collect_cr_metrics: Option<Vec<DatadogAgentFeaturesKubeStateMetricsCoreCollectCrMetrics>>,
     /// Conf overrides the configuration for the default Kubernetes State Metrics Core check.
     /// This must point to a ConfigMap containing a valid cluster check configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1544,6 +1561,130 @@ pub struct DatadogAgentFeaturesKubeStateMetricsCore {
     /// Default: true
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
+}
+
+/// Resource configures a custom resource for metric generation.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentFeaturesKubeStateMetricsCoreCollectCrMetrics {
+    /// CommonLabels are added to all metrics.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonLabels")]
+    pub common_labels: Option<BTreeMap<String, String>>,
+    /// GroupVersionKind of the custom resource to be monitored.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupVersionKind")]
+    pub group_version_kind: Option<DatadogAgentFeaturesKubeStateMetricsCoreCollectCrMetricsGroupVersionKind>,
+    /// LabelsFromPath adds additional labels where the value is taken from a field in the resource.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelsFromPath")]
+    pub labels_from_path: Option<BTreeMap<String, Vec<String>>>,
+    /// MetricNamePrefix defines a prefix for all metrics of the resource.
+    /// If set to "", no prefix will be added.
+    /// Example: If set to "foo", MetricNamePrefix will be "foo_<metric>".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricNamePrefix")]
+    pub metric_name_prefix: Option<String>,
+    /// Metrics are the custom resource fields to be collected.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metrics: Option<Vec<DatadogAgentFeaturesKubeStateMetricsCoreCollectCrMetricsMetrics>>,
+    /// ResourcePlural sets the plural name of the resource. Defaults to the plural version of the Kind according to flect.Pluralize.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourcePlural")]
+    pub resource_plural: Option<String>,
+}
+
+/// GroupVersionKind of the custom resource to be monitored.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentFeaturesKubeStateMetricsCoreCollectCrMetricsGroupVersionKind {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub group: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub version: Option<String>,
+}
+
+/// Generator describes a unique metric name.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentFeaturesKubeStateMetricsCoreCollectCrMetricsMetrics {
+    /// CommonLabels are added to all metrics.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonLabels")]
+    pub common_labels: Option<BTreeMap<String, String>>,
+    /// Each targets a value or values from the resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub each: Option<DatadogAgentFeaturesKubeStateMetricsCoreCollectCrMetricsMetricsEach>,
+    /// Help text for the metric.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub help: Option<String>,
+    /// LabelsFromPath adds additional labels where the value is taken from a field in the resource.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelsFromPath")]
+    pub labels_from_path: Option<BTreeMap<String, Vec<String>>>,
+    /// Name of the metric. Subject to prefixing based on the configuration of the Resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// Each targets a value or values from the resource.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentFeaturesKubeStateMetricsCoreCollectCrMetricsMetricsEach {
+    /// Gauge defines a gauge metric.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub gauge: Option<DatadogAgentFeaturesKubeStateMetricsCoreCollectCrMetricsMetricsEachGauge>,
+    /// Info defines an info metric.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub info: Option<DatadogAgentFeaturesKubeStateMetricsCoreCollectCrMetricsMetricsEachInfo>,
+    /// StateSet defines a state set metric.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stateSet")]
+    pub state_set: Option<DatadogAgentFeaturesKubeStateMetricsCoreCollectCrMetricsMetricsEachStateSet>,
+    /// Type defines the type of the metric.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+}
+
+/// Gauge defines a gauge metric.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentFeaturesKubeStateMetricsCoreCollectCrMetricsMetricsEachGauge {
+    /// LabelFromKey adds a label with the given name if Path is an object. The label value will be the object key.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelFromKey")]
+    pub label_from_key: Option<String>,
+    /// LabelsFromPath adds additional labels where the value of the label is taken from a field under Path.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelsFromPath")]
+    pub labels_from_path: Option<BTreeMap<String, Vec<String>>>,
+    /// NilIsZero indicates that if a value is nil it will be treated as zero value.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nilIsZero")]
+    pub nil_is_zero: Option<bool>,
+    /// Path is the path to to generate metric(s) for.
+    pub path: Vec<String>,
+    /// ValueFrom is the path to a numeric field under Path that will be the metric value.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<Vec<String>>,
+}
+
+/// Info defines an info metric.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentFeaturesKubeStateMetricsCoreCollectCrMetricsMetricsEachInfo {
+    /// LabelFromKey adds a label with the given name if Path is an object. The label value will be the object key.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelFromKey")]
+    pub label_from_key: Option<String>,
+    /// LabelsFromPath adds additional labels where the value of the label is taken from a field under Path.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelsFromPath")]
+    pub labels_from_path: Option<BTreeMap<String, Vec<String>>>,
+    /// Path is the path to to generate metric(s) for.
+    pub path: Vec<String>,
+}
+
+/// StateSet defines a state set metric.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentFeaturesKubeStateMetricsCoreCollectCrMetricsMetricsEachStateSet {
+    /// LabelName is the key of the label which is used for each entry in List to expose the value.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelName")]
+    pub label_name: Option<String>,
+    /// LabelsFromPath adds additional labels where the value of the label is taken from a field under Path.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelsFromPath")]
+    pub labels_from_path: Option<BTreeMap<String, Vec<String>>>,
+    /// List is the list of values to expose a value for.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub list: Option<Vec<String>>,
+    /// Path is the path to to generate metric(s) for.
+    pub path: Vec<String>,
+    /// ValueFrom is the subpath to compare the list to.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<Vec<String>>,
 }
 
 /// Conf overrides the configuration for the default Kubernetes State Metrics Core check.
@@ -1618,6 +1759,10 @@ pub struct DatadogAgentFeaturesLiveProcessCollection {
 /// LogCollection configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentFeaturesLogCollection {
+    /// AutoMultiLineDetection allows the Agent to detect and aggregate common multi-line logs automatically.
+    /// See also: <https://docs.datadoghq.com/agent/logs/auto_multiline_detection/>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoMultiLineDetection")]
+    pub auto_multi_line_detection: Option<bool>,
     /// ContainerCollectAll enables Log collection from all containers.
     /// Default: false
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerCollectAll")]
@@ -2194,6 +2339,7 @@ pub struct DatadogAgentGlobal {
     /// If no other checks are running, the Process Agent container will not initialize.
     /// (Requires Agent 7.60.0+)
     /// Default: 'true'
+    /// Deprecated: Functionality now handled automatically. Use env var `DD_PROCESS_CONFIG_RUN_IN_CORE_AGENT_ENABLED` to override.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runProcessChecksInCoreAgent")]
     pub run_process_checks_in_core_agent: Option<bool>,
     /// Configure the secret backend feature <https://docs.datadoghq.com/agent/guide/secrets-management>
@@ -8292,6 +8438,11 @@ pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesCws {
     /// Any policies with the same name as those existing in the agent will take precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "customPolicies")]
     pub custom_policies: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesCwsCustomPolicies>,
+    /// DirectSendFromSystemProbe configures CWS to send payloads directly from the system-probe, without using the security-agent.
+    /// This is an experimental feature. Contact support before using.
+    /// Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "directSendFromSystemProbe")]
+    pub direct_send_from_system_probe: Option<bool>,
     /// Enabled enables Cloud Workload Security.
     /// Default: false
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8619,6 +8770,11 @@ pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesGpu {
     /// Default: false
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
+    /// PatchCgroupPermissions enables the patch of cgroup permissions for GPU monitoring, in case
+    /// the container runtime is not properly configured and the Agent containers lose access to GPU devices.
+    /// Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "patchCgroupPermissions")]
+    pub patch_cgroup_permissions: Option<bool>,
     /// PrivilegedMode enables GPU Probe module in System Probe.
     /// Default: false
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "privilegedMode")]
@@ -8652,6 +8808,13 @@ pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesHelmCheck {
 /// KubeStateMetricsCore check configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesKubeStateMetricsCore {
+    /// `CollectCrMetrics` defines custom resources for the kube-state-metrics core check to collect.
+    /// 
+    /// The datadog agent uses the same logic as upstream `kube-state-metrics`. So is its configuration.
+    /// The exact structure and existing fields of each item in this list can be found in:
+    /// <https://github.com/kubernetes/kube-state-metrics/blob/main/docs/metrics/extend/customresourcestate-metrics.md>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "collectCrMetrics")]
+    pub collect_cr_metrics: Option<Vec<DatadogAgentStatusRemoteConfigConfigurationFeaturesKubeStateMetricsCoreCollectCrMetrics>>,
     /// Conf overrides the configuration for the default Kubernetes State Metrics Core check.
     /// This must point to a ConfigMap containing a valid cluster check configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8660,6 +8823,130 @@ pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesKubeStateMetricsCo
     /// Default: true
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
+}
+
+/// Resource configures a custom resource for metric generation.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesKubeStateMetricsCoreCollectCrMetrics {
+    /// CommonLabels are added to all metrics.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonLabels")]
+    pub common_labels: Option<BTreeMap<String, String>>,
+    /// GroupVersionKind of the custom resource to be monitored.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupVersionKind")]
+    pub group_version_kind: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesKubeStateMetricsCoreCollectCrMetricsGroupVersionKind>,
+    /// LabelsFromPath adds additional labels where the value is taken from a field in the resource.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelsFromPath")]
+    pub labels_from_path: Option<BTreeMap<String, Vec<String>>>,
+    /// MetricNamePrefix defines a prefix for all metrics of the resource.
+    /// If set to "", no prefix will be added.
+    /// Example: If set to "foo", MetricNamePrefix will be "foo_<metric>".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricNamePrefix")]
+    pub metric_name_prefix: Option<String>,
+    /// Metrics are the custom resource fields to be collected.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metrics: Option<Vec<DatadogAgentStatusRemoteConfigConfigurationFeaturesKubeStateMetricsCoreCollectCrMetricsMetrics>>,
+    /// ResourcePlural sets the plural name of the resource. Defaults to the plural version of the Kind according to flect.Pluralize.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourcePlural")]
+    pub resource_plural: Option<String>,
+}
+
+/// GroupVersionKind of the custom resource to be monitored.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesKubeStateMetricsCoreCollectCrMetricsGroupVersionKind {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub group: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub version: Option<String>,
+}
+
+/// Generator describes a unique metric name.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesKubeStateMetricsCoreCollectCrMetricsMetrics {
+    /// CommonLabels are added to all metrics.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonLabels")]
+    pub common_labels: Option<BTreeMap<String, String>>,
+    /// Each targets a value or values from the resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub each: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesKubeStateMetricsCoreCollectCrMetricsMetricsEach>,
+    /// Help text for the metric.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub help: Option<String>,
+    /// LabelsFromPath adds additional labels where the value is taken from a field in the resource.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelsFromPath")]
+    pub labels_from_path: Option<BTreeMap<String, Vec<String>>>,
+    /// Name of the metric. Subject to prefixing based on the configuration of the Resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// Each targets a value or values from the resource.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesKubeStateMetricsCoreCollectCrMetricsMetricsEach {
+    /// Gauge defines a gauge metric.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub gauge: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesKubeStateMetricsCoreCollectCrMetricsMetricsEachGauge>,
+    /// Info defines an info metric.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub info: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesKubeStateMetricsCoreCollectCrMetricsMetricsEachInfo>,
+    /// StateSet defines a state set metric.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stateSet")]
+    pub state_set: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesKubeStateMetricsCoreCollectCrMetricsMetricsEachStateSet>,
+    /// Type defines the type of the metric.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+}
+
+/// Gauge defines a gauge metric.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesKubeStateMetricsCoreCollectCrMetricsMetricsEachGauge {
+    /// LabelFromKey adds a label with the given name if Path is an object. The label value will be the object key.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelFromKey")]
+    pub label_from_key: Option<String>,
+    /// LabelsFromPath adds additional labels where the value of the label is taken from a field under Path.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelsFromPath")]
+    pub labels_from_path: Option<BTreeMap<String, Vec<String>>>,
+    /// NilIsZero indicates that if a value is nil it will be treated as zero value.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nilIsZero")]
+    pub nil_is_zero: Option<bool>,
+    /// Path is the path to to generate metric(s) for.
+    pub path: Vec<String>,
+    /// ValueFrom is the path to a numeric field under Path that will be the metric value.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<Vec<String>>,
+}
+
+/// Info defines an info metric.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesKubeStateMetricsCoreCollectCrMetricsMetricsEachInfo {
+    /// LabelFromKey adds a label with the given name if Path is an object. The label value will be the object key.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelFromKey")]
+    pub label_from_key: Option<String>,
+    /// LabelsFromPath adds additional labels where the value of the label is taken from a field under Path.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelsFromPath")]
+    pub labels_from_path: Option<BTreeMap<String, Vec<String>>>,
+    /// Path is the path to to generate metric(s) for.
+    pub path: Vec<String>,
+}
+
+/// StateSet defines a state set metric.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesKubeStateMetricsCoreCollectCrMetricsMetricsEachStateSet {
+    /// LabelName is the key of the label which is used for each entry in List to expose the value.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelName")]
+    pub label_name: Option<String>,
+    /// LabelsFromPath adds additional labels where the value of the label is taken from a field under Path.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelsFromPath")]
+    pub labels_from_path: Option<BTreeMap<String, Vec<String>>>,
+    /// List is the list of values to expose a value for.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub list: Option<Vec<String>>,
+    /// Path is the path to to generate metric(s) for.
+    pub path: Vec<String>,
+    /// ValueFrom is the subpath to compare the list to.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<Vec<String>>,
 }
 
 /// Conf overrides the configuration for the default Kubernetes State Metrics Core check.
@@ -8734,6 +9021,10 @@ pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesLiveProcessCollect
 /// LogCollection configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesLogCollection {
+    /// AutoMultiLineDetection allows the Agent to detect and aggregate common multi-line logs automatically.
+    /// See also: <https://docs.datadoghq.com/agent/logs/auto_multiline_detection/>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoMultiLineDetection")]
+    pub auto_multi_line_detection: Option<bool>,
     /// ContainerCollectAll enables Log collection from all containers.
     /// Default: false
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerCollectAll")]
