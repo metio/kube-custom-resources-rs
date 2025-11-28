@@ -11,5 +11,7 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 
 ## Available Custom Resources
 
+### core.strimzi.io/v1
+- `StrimziPodSet`
 ### core.strimzi.io/v1beta2
 - `StrimziPodSet`

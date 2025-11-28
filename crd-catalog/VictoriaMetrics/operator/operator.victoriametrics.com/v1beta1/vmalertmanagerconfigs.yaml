@@ -590,6 +590,43 @@ spec:
                               type: "string"
                           type: "object"
                         type: "array"
+                      incidentio_configs:
+                        items:
+                          description: "IncidentIOConfig configures notifications via incident.io.\nhttps://prometheus.io/docs/alerting/latest/configuration/#incidentio_config\navailable from v0.66.0 operator version\nand v0.29.0 alertmanager version"
+                          properties:
+                            alert_source_token:
+                              description: "AlertSourceToken is used to authenticate with incident.io"
+                              properties:
+                                key:
+                                  description: "The key of the secret to select from.  Must be a valid secret key."
+                                  type: "string"
+                                name:
+                                  default: ""
+                                  description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                  type: "string"
+                                optional:
+                                  description: "Specify whether the Secret or its key must be defined"
+                                  type: "boolean"
+                              required:
+                                - "key"
+                              type: "object"
+                              x-kubernetes-map-type: "atomic"
+                            http_config:
+                              x-kubernetes-preserve-unknown-fields: true
+                            max_alerts:
+                              description: "MaxAlerts defines maximum number of alerts to be sent per incident.io message."
+                              type: "integer"
+                            send_resolved:
+                              description: "SendResolved controls notify about resolved alerts."
+                              type: "boolean"
+                            timeout:
+                              description: "Timeout is the maximum time allowed to invoke incident.io"
+                              type: "string"
+                            url:
+                              description: "The URL to send the incident.io alert. This would typically be provided by the\nincident.io team when setting up an alert source."
+                              type: "string"
+                          type: "object"
+                        type: "array"
                       jira_configs:
                         items:
                           description: "JiraConfig represent alertmanager's jira_config entry\nhttps://prometheus.io/docs/alerting/latest/configuration/#jira_config\navailable from v0.55.0 operator version\nand v0.28.0 alertmanager version"

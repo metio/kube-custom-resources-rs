@@ -123,6 +123,10 @@ spec:
                         timeoutSeconds:
                           type: "number"
                       type: "object"
+                    runningDeadlineSeconds:
+                      default: 300
+                      format: "int64"
+                      type: "integer"
                     schedule:
                       items:
                         properties:
@@ -1742,6 +1746,21 @@ spec:
                     gracePeriod:
                       format: "int64"
                       type: "integer"
+                    healthCheck:
+                      properties:
+                        fall:
+                          format: "int32"
+                          minimum: 1.0
+                          type: "integer"
+                        interval:
+                          format: "int32"
+                          minimum: 1000.0
+                          type: "integer"
+                        rise:
+                          format: "int32"
+                          minimum: 1.0
+                          type: "integer"
+                      type: "object"
                     hookScript:
                       type: "string"
                     image:
@@ -4433,7 +4452,7 @@ spec:
                     - "symbols"
                   type: "object"
                   x-kubernetes-validations:
-                    - rule: "self.maxLength > self.minLength"
+                    - rule: "self.maxLength >= self.minLength"
                 pause:
                   type: "boolean"
                 platform:
@@ -5752,6 +5771,38 @@ spec:
                       type: "object"
                     runtimeClassName:
                       type: "string"
+                    scheduler:
+                      properties:
+                        checkTimeoutMilliseconds:
+                          default: 2000
+                          format: "int32"
+                          type: "integer"
+                        enabled:
+                          type: "boolean"
+                        failureThreshold:
+                          default: 3
+                          format: "int32"
+                          type: "integer"
+                        maxConnections:
+                          default: 1000
+                          format: "int32"
+                          type: "integer"
+                        nodeCheckIntervalMilliseconds:
+                          default: 2000
+                          format: "int32"
+                          type: "integer"
+                        pingTimeoutMilliseconds:
+                          default: 1000
+                          format: "int32"
+                          type: "integer"
+                        successThreshold:
+                          default: 1
+                          format: "int32"
+                          type: "integer"
+                        writerIsAlsoReader:
+                          default: true
+                          type: "boolean"
+                      type: "object"
                     schedulerName:
                       type: "string"
                     serviceAccountName:
@@ -8511,6 +8562,11 @@ spec:
                       items:
                         type: "string"
                       type: "array"
+                    mysqlAllocator:
+                      enum:
+                        - "jemalloc"
+                        - "tcmalloc"
+                      type: "string"
                     nodeSelector:
                       additionalProperties:
                         type: "string"

@@ -2706,6 +2706,9 @@ pub struct OpenSearchClusterDashboardsTls {
     /// Enable HTTPS for Dashboards
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
+    /// Enable hot reloading of TLS certificates. When enabled, certificates are mounted as directories instead of using subPath, allowing Kubernetes to update certificate files when secrets are updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHotReload")]
+    pub enable_hot_reload: Option<bool>,
     /// Generate certificate, if false secret must be provided
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub generate: Option<bool>,
@@ -5185,6 +5188,9 @@ pub struct OpenSearchClusterSecurityTlsHttp {
     /// Duration controls the validity period of generated certificates (e.g. "8760h", "720h").
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub duration: Option<String>,
+    /// Enable hot reloading of TLS certificates. When enabled, certificates are mounted as directories instead of using subPath, allowing Kubernetes to update certificate files when secrets are updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHotReload")]
+    pub enable_hot_reload: Option<bool>,
     /// If set to true the operator will generate a CA and certificates for the cluster to use, if false secrets with existing certificates must be supplied
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub generate: Option<bool>,
@@ -5228,6 +5234,9 @@ pub struct OpenSearchClusterSecurityTlsTransport {
     /// Duration controls the validity period of generated certificates (e.g. "8760h", "720h").
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub duration: Option<String>,
+    /// Enable hot reloading of TLS certificates. When enabled, certificates are mounted as directories instead of using subPath, allowing Kubernetes to update certificate files when secrets are updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHotReload")]
+    pub enable_hot_reload: Option<bool>,
     /// If set to true the operator will generate a CA and certificates for the cluster to use, if false secrets with existing certificates must be supplied
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub generate: Option<bool>,

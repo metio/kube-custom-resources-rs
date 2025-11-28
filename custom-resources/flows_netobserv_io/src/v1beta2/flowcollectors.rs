@@ -3572,7 +3572,7 @@ pub struct FlowCollectorNetworkPolicy {
     /// Deploys network policies on the namespaces used by NetObserv (main and privileged).
     /// These network policies better isolate the NetObserv components to prevent undesired connections from and to them.
     /// This option is enabled by default when using with OVNKubernetes, and disabled otherwise (it has not been tested with other CNIs).
-    /// When disabled, you can create manually the network policies for the NetObserv components.
+    /// When disabled, you can manually create the network policies for the NetObserv components.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
 }

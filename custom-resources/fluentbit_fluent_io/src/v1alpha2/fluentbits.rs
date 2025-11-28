@@ -572,8 +572,8 @@ pub struct FluentBitAffinityPodAntiAffinity {
     /// most preferred is the one with the greatest sum of weights, i.e.
     /// for each node that meets all of the scheduling requirements (resource
     /// request, requiredDuringScheduling anti-affinity expressions, etc.),
-    /// compute a sum by iterating through the elements of this field and adding
-    /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
+    /// compute a sum by iterating through the elements of this field and subtracting
+    /// "weight" from the sum if the node has pods which matches the corresponding podAffinityTerm; the
     /// node(s) with the highest sum are the most preferred.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
     pub preferred_during_scheduling_ignored_during_execution: Option<Vec<FluentBitAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
@@ -1022,7 +1022,8 @@ pub struct FluentBitContainerSecurityContextWindowsOptions {
 /// EnvVar represents an environment variable present in a Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitEnvVars {
-    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    /// Name of the environment variable.
+    /// May consist of any printable ASCII characters except '='.
     pub name: String,
     /// Variable references $(VAR_NAME) are expanded
     /// using the previously defined environment variables in the container and
@@ -1050,6 +1051,10 @@ pub struct FluentBitEnvVarsValueFrom {
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<FluentBitEnvVarsValueFromFieldRef>,
+    /// FileKeyRef selects a key of the env file.
+    /// Requires the EnvFiles feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileKeyRef")]
+    pub file_key_ref: Option<FluentBitEnvVarsValueFromFileKeyRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
@@ -1086,6 +1091,31 @@ pub struct FluentBitEnvVarsValueFromFieldRef {
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
     pub field_path: String,
+}
+
+/// FileKeyRef selects a key of the env file.
+/// Requires the EnvFiles feature gate to be enabled.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FluentBitEnvVarsValueFromFileKeyRef {
+    /// The key within the env file. An invalid key will prevent the pod from starting.
+    /// The keys defined within a source may consist of any printable ASCII characters except '='.
+    /// During Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters.
+    pub key: String,
+    /// Specify whether the file or its key must be defined. If the file or key
+    /// does not exist, then the env var is not published.
+    /// If optional is set to true and the specified key does not exist,
+    /// the environment variable will not be set in the Pod's containers.
+    /// 
+    /// If optional is set to false and the specified key does not exist,
+    /// an error will be returned during Pod creation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    /// The path within the volume from which to select the file.
+    /// Must be relative and may not contain the '..' path or start with '..'.
+    pub path: String,
+    /// The name of the volume mount containing the env file.
+    #[serde(rename = "volumeName")]
+    pub volume_name: String,
 }
 
 /// Selects a resource of the container: only resources limits and requests
@@ -1171,8 +1201,8 @@ pub struct FluentBitInitContainers {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<FluentBitInitContainersEnv>>,
     /// List of sources to populate environment variables in the container.
-    /// The keys defined within a source must be a C_IDENTIFIER. All invalid keys
-    /// will be reported as an event when the container is starting. When a key exists in multiple
+    /// The keys defined within a source may consist of any printable ASCII characters except '='.
+    /// When a key exists in multiple
     /// sources, the value associated with the last source will take precedence.
     /// Values defined by an Env with a duplicate key will take precedence.
     /// Cannot be updated.
@@ -1229,10 +1259,10 @@ pub struct FluentBitInitContainers {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<FluentBitInitContainersResources>,
     /// RestartPolicy defines the restart behavior of individual containers in a pod.
-    /// This field may only be set for init containers, and the only allowed value is "Always".
-    /// For non-init containers or when this field is not specified,
+    /// This overrides the pod-level restart policy. When this field is not specified,
     /// the restart behavior is defined by the Pod's restart policy and the container type.
-    /// Setting the RestartPolicy as "Always" for the init container will have the following effect:
+    /// Additionally, setting the RestartPolicy as "Always" for the init container will
+    /// have the following effect:
     /// this init container will be continually restarted on
     /// exit until all regular containers have terminated. Once all regular
     /// containers have completed, all init containers with restartPolicy "Always"
@@ -1245,6 +1275,19 @@ pub struct FluentBitInitContainers {
     /// completed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
+    /// Represents a list of rules to be checked to determine if the
+    /// container should be restarted on exit. The rules are evaluated in
+    /// order. Once a rule matches a container exit condition, the remaining
+    /// rules are ignored. If no rule matches the container exit condition,
+    /// the Container-level restart policy determines the whether the container
+    /// is restarted or not. Constraints on the rules:
+    /// - At most 20 rules are allowed.
+    /// - Rules can have the same action.
+    /// - Identical rules are not forbidden in validations.
+    /// When rules are specified, container MUST set RestartPolicy explicitly
+    /// even it if matches the Pod's RestartPolicy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicyRules")]
+    pub restart_policy_rules: Option<Vec<FluentBitInitContainersRestartPolicyRules>>,
     /// SecurityContext defines the security options the container should be run with.
     /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
     /// More info: <https://kubernetes.io/docs/tasks/configure-pod-container/security-context/>
@@ -1313,7 +1356,8 @@ pub struct FluentBitInitContainers {
 /// EnvVar represents an environment variable present in a Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitInitContainersEnv {
-    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    /// Name of the environment variable.
+    /// May consist of any printable ASCII characters except '='.
     pub name: String,
     /// Variable references $(VAR_NAME) are expanded
     /// using the previously defined environment variables in the container and
@@ -1341,6 +1385,10 @@ pub struct FluentBitInitContainersEnvValueFrom {
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<FluentBitInitContainersEnvValueFromFieldRef>,
+    /// FileKeyRef selects a key of the env file.
+    /// Requires the EnvFiles feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileKeyRef")]
+    pub file_key_ref: Option<FluentBitInitContainersEnvValueFromFileKeyRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
@@ -1377,6 +1425,31 @@ pub struct FluentBitInitContainersEnvValueFromFieldRef {
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
     pub field_path: String,
+}
+
+/// FileKeyRef selects a key of the env file.
+/// Requires the EnvFiles feature gate to be enabled.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FluentBitInitContainersEnvValueFromFileKeyRef {
+    /// The key within the env file. An invalid key will prevent the pod from starting.
+    /// The keys defined within a source may consist of any printable ASCII characters except '='.
+    /// During Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters.
+    pub key: String,
+    /// Specify whether the file or its key must be defined. If the file or key
+    /// does not exist, then the env var is not published.
+    /// If optional is set to true and the specified key does not exist,
+    /// the environment variable will not be set in the Pod's containers.
+    /// 
+    /// If optional is set to false and the specified key does not exist,
+    /// an error will be returned during Pod creation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    /// The path within the volume from which to select the file.
+    /// Must be relative and may not contain the '..' path or start with '..'.
+    pub path: String,
+    /// The name of the volume mount containing the env file.
+    #[serde(rename = "volumeName")]
+    pub volume_name: String,
 }
 
 /// Selects a resource of the container: only resources limits and requests
@@ -1416,7 +1489,8 @@ pub struct FluentBitInitContainersEnvFrom {
     /// The ConfigMap to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<FluentBitInitContainersEnvFromConfigMapRef>,
-    /// Optional text to prepend to the name of each environment variable. Must be a C_IDENTIFIER.
+    /// Optional text to prepend to the name of each environment variable.
+    /// May consist of any printable ASCII characters except '='.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// The Secret to select from
@@ -1957,7 +2031,7 @@ pub struct FluentBitInitContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// 
     /// This field is immutable. It can only be set for containers.
@@ -1987,6 +2061,34 @@ pub struct FluentBitInitContainersResourcesClaims {
     /// only the result of this request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub request: Option<String>,
+}
+
+/// ContainerRestartRule describes how a container exit is handled.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FluentBitInitContainersRestartPolicyRules {
+    /// Specifies the action taken on a container exit if the requirements
+    /// are satisfied. The only possible value is "Restart" to restart the
+    /// container.
+    pub action: String,
+    /// Represents the exit codes to check on container exits.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exitCodes")]
+    pub exit_codes: Option<FluentBitInitContainersRestartPolicyRulesExitCodes>,
+}
+
+/// Represents the exit codes to check on container exits.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FluentBitInitContainersRestartPolicyRulesExitCodes {
+    /// Represents the relationship between the container exit code(s) and the
+    /// specified values. Possible values are:
+    /// - In: the requirement is satisfied if the container exit code is in the
+    ///   set of specified values.
+    /// - NotIn: the requirement is satisfied if the container exit code is
+    ///   not in the set of specified values.
+    pub operator: String,
+    /// Specifies the set of values to check for container exit codes.
+    /// At most 255 elements are allowed.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<i64>>,
 }
 
 /// SecurityContext defines the security options the container should be run with.
@@ -2646,7 +2748,6 @@ pub struct FluentBitPositionDb {
     pub git_repo: Option<FluentBitPositionDbGitRepo>,
     /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
     /// Deprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer supported.
-    /// More info: <https://examples.k8s.io/volumes/glusterfs/README.md>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub glusterfs: Option<FluentBitPositionDbGlusterfs>,
     /// hostPath represents a pre-existing file or directory on the host
@@ -2674,7 +2775,7 @@ pub struct FluentBitPositionDb {
     pub image: Option<FluentBitPositionDbImage>,
     /// iscsi represents an ISCSI Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
-    /// More info: <https://examples.k8s.io/volumes/iscsi/README.md>
+    /// More info: <https://kubernetes.io/docs/concepts/storage/volumes/#iscsi>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub iscsi: Option<FluentBitPositionDbIscsi>,
     /// nfs represents an NFS mount on the host that shares a pod's lifetime
@@ -2705,7 +2806,6 @@ pub struct FluentBitPositionDb {
     pub quobyte: Option<FluentBitPositionDbQuobyte>,
     /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
     /// Deprecated: RBD is deprecated and the in-tree rbd type is no longer supported.
-    /// More info: <https://examples.k8s.io/volumes/rbd/README.md>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rbd: Option<FluentBitPositionDbRbd>,
     /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
@@ -3230,15 +3330,13 @@ pub struct FluentBitPositionDbEphemeralVolumeClaimTemplateSpec {
     /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
     /// If specified, the CSI driver will create or update the volume with the attributes defined
     /// in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,
-    /// it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass
-    /// will be applied to the claim but it's not allowed to reset this field to empty string once it is set.
-    /// If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass
-    /// will be set by the persistentvolume controller if it exists.
+    /// it can be changed after the claim is created. An empty string or nil value indicates that no
+    /// VolumeAttributesClass will be applied to the claim. If the claim enters an Infeasible error state,
+    /// this field can be reset to its previous value (including nil) to cancel the modification.
     /// If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
     /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
     /// exists.
     /// More info: <https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/>
-    /// (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
@@ -3494,11 +3592,9 @@ pub struct FluentBitPositionDbGitRepo {
 
 /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
 /// Deprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer supported.
-/// More info: <https://examples.k8s.io/volumes/glusterfs/README.md>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitPositionDbGlusterfs {
     /// endpoints is the endpoint name that details Glusterfs topology.
-    /// More info: <https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod>
     pub endpoints: String,
     /// path is the Glusterfs volume path.
     /// More info: <https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod>
@@ -3563,7 +3659,7 @@ pub struct FluentBitPositionDbImage {
 
 /// iscsi represents an ISCSI Disk resource that is attached to a
 /// kubelet's host machine and then exposed to the pod.
-/// More info: <https://examples.k8s.io/volumes/iscsi/README.md>
+/// More info: <https://kubernetes.io/docs/concepts/storage/volumes/#iscsi>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitPositionDbIscsi {
     /// chapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication
@@ -3728,6 +3824,42 @@ pub struct FluentBitPositionDbProjectedSources {
     /// downwardAPI information about the downwardAPI data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<FluentBitPositionDbProjectedSourcesDownwardApi>,
+    /// Projects an auto-rotating credential bundle (private key and certificate
+    /// chain) that the pod can use either as a TLS client or server.
+    /// 
+    /// Kubelet generates a private key and uses it to send a
+    /// PodCertificateRequest to the named signer.  Once the signer approves the
+    /// request and issues a certificate chain, Kubelet writes the key and
+    /// certificate chain to the pod filesystem.  The pod does not start until
+    /// certificates have been issued for each podCertificate projected volume
+    /// source in its spec.
+    /// 
+    /// Kubelet will begin trying to rotate the certificate at the time indicated
+    /// by the signer using the PodCertificateRequest.Status.BeginRefreshAt
+    /// timestamp.
+    /// 
+    /// Kubelet can write a single file, indicated by the credentialBundlePath
+    /// field, or separate files, indicated by the keyPath and
+    /// certificateChainPath fields.
+    /// 
+    /// The credential bundle is a single file in PEM format.  The first PEM
+    /// entry is the private key (in PKCS#8 format), and the remaining PEM
+    /// entries are the certificate chain issued by the signer (typically,
+    /// signers will return their certificate chain in leaf-to-root order).
+    /// 
+    /// Prefer using the credential bundle format, since your application code
+    /// can read it atomically.  If you use keyPath and certificateChainPath,
+    /// your application must make two separate file reads. If these coincide
+    /// with a certificate rotation, it is possible that the private key and leaf
+    /// certificate you read may not correspond to each other.  Your application
+    /// will need to check for this condition, and re-read until they are
+    /// consistent.
+    /// 
+    /// The named signer controls chooses the format of the certificate it
+    /// issues; consult the signer implementation's documentation to learn how to
+    /// use the certificates it issues.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podCertificate")]
+    pub pod_certificate: Option<FluentBitPositionDbProjectedSourcesPodCertificate>,
     /// secret information about the secret data to project
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<FluentBitPositionDbProjectedSourcesSecret>,
@@ -3909,6 +4041,101 @@ pub struct FluentBitPositionDbProjectedSourcesDownwardApiItemsResourceFieldRef {
     pub resource: String,
 }
 
+/// Projects an auto-rotating credential bundle (private key and certificate
+/// chain) that the pod can use either as a TLS client or server.
+/// 
+/// Kubelet generates a private key and uses it to send a
+/// PodCertificateRequest to the named signer.  Once the signer approves the
+/// request and issues a certificate chain, Kubelet writes the key and
+/// certificate chain to the pod filesystem.  The pod does not start until
+/// certificates have been issued for each podCertificate projected volume
+/// source in its spec.
+/// 
+/// Kubelet will begin trying to rotate the certificate at the time indicated
+/// by the signer using the PodCertificateRequest.Status.BeginRefreshAt
+/// timestamp.
+/// 
+/// Kubelet can write a single file, indicated by the credentialBundlePath
+/// field, or separate files, indicated by the keyPath and
+/// certificateChainPath fields.
+/// 
+/// The credential bundle is a single file in PEM format.  The first PEM
+/// entry is the private key (in PKCS#8 format), and the remaining PEM
+/// entries are the certificate chain issued by the signer (typically,
+/// signers will return their certificate chain in leaf-to-root order).
+/// 
+/// Prefer using the credential bundle format, since your application code
+/// can read it atomically.  If you use keyPath and certificateChainPath,
+/// your application must make two separate file reads. If these coincide
+/// with a certificate rotation, it is possible that the private key and leaf
+/// certificate you read may not correspond to each other.  Your application
+/// will need to check for this condition, and re-read until they are
+/// consistent.
+/// 
+/// The named signer controls chooses the format of the certificate it
+/// issues; consult the signer implementation's documentation to learn how to
+/// use the certificates it issues.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FluentBitPositionDbProjectedSourcesPodCertificate {
+    /// Write the certificate chain at this path in the projected volume.
+    /// 
+    /// Most applications should use credentialBundlePath.  When using keyPath
+    /// and certificateChainPath, your application needs to check that the key
+    /// and leaf certificate are consistent, because it is possible to read the
+    /// files mid-rotation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateChainPath")]
+    pub certificate_chain_path: Option<String>,
+    /// Write the credential bundle at this path in the projected volume.
+    /// 
+    /// The credential bundle is a single file that contains multiple PEM blocks.
+    /// The first PEM block is a PRIVATE KEY block, containing a PKCS#8 private
+    /// key.
+    /// 
+    /// The remaining blocks are CERTIFICATE blocks, containing the issued
+    /// certificate chain from the signer (leaf and any intermediates).
+    /// 
+    /// Using credentialBundlePath lets your Pod's application code make a single
+    /// atomic read that retrieves a consistent key and certificate chain.  If you
+    /// project them to separate files, your application code will need to
+    /// additionally check that the leaf certificate was issued to the key.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialBundlePath")]
+    pub credential_bundle_path: Option<String>,
+    /// Write the key at this path in the projected volume.
+    /// 
+    /// Most applications should use credentialBundlePath.  When using keyPath
+    /// and certificateChainPath, your application needs to check that the key
+    /// and leaf certificate are consistent, because it is possible to read the
+    /// files mid-rotation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyPath")]
+    pub key_path: Option<String>,
+    /// The type of keypair Kubelet will generate for the pod.
+    /// 
+    /// Valid values are "RSA3072", "RSA4096", "ECDSAP256", "ECDSAP384",
+    /// "ECDSAP521", and "ED25519".
+    #[serde(rename = "keyType")]
+    pub key_type: String,
+    /// maxExpirationSeconds is the maximum lifetime permitted for the
+    /// certificate.
+    /// 
+    /// Kubelet copies this value verbatim into the PodCertificateRequests it
+    /// generates for this projection.
+    /// 
+    /// If omitted, kube-apiserver will set it to 86400(24 hours). kube-apiserver
+    /// will reject values shorter than 3600 (1 hour).  The maximum allowable
+    /// value is 7862400 (91 days).
+    /// 
+    /// The signer implementation is then free to issue a certificate with any
+    /// lifetime *shorter* than MaxExpirationSeconds, but no shorter than 3600
+    /// seconds (1 hour).  This constraint is enforced by kube-apiserver.
+    /// `kubernetes.io` signers will never issue certificates with a lifetime
+    /// longer than 24 hours.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxExpirationSeconds")]
+    pub max_expiration_seconds: Option<i32>,
+    /// Kubelet's generated CSRs will be addressed to this signer.
+    #[serde(rename = "signerName")]
+    pub signer_name: String,
+}
+
 /// secret information about the secret data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitPositionDbProjectedSourcesSecret {
@@ -4005,7 +4232,6 @@ pub struct FluentBitPositionDbQuobyte {
 
 /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
 /// Deprecated: RBD is deprecated and the in-tree rbd type is no longer supported.
-/// More info: <https://examples.k8s.io/volumes/rbd/README.md>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitPositionDbRbd {
     /// fsType is the filesystem type of the volume that you want to mount.
@@ -4382,7 +4608,7 @@ pub struct FluentBitResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// 
     /// This field is immutable. It can only be set for containers.
@@ -4772,7 +4998,6 @@ pub struct FluentBitVolumes {
     pub git_repo: Option<FluentBitVolumesGitRepo>,
     /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
     /// Deprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer supported.
-    /// More info: <https://examples.k8s.io/volumes/glusterfs/README.md>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub glusterfs: Option<FluentBitVolumesGlusterfs>,
     /// hostPath represents a pre-existing file or directory on the host
@@ -4800,7 +5025,7 @@ pub struct FluentBitVolumes {
     pub image: Option<FluentBitVolumesImage>,
     /// iscsi represents an ISCSI Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
-    /// More info: <https://examples.k8s.io/volumes/iscsi/README.md>
+    /// More info: <https://kubernetes.io/docs/concepts/storage/volumes/#iscsi>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub iscsi: Option<FluentBitVolumesIscsi>,
     /// name of the volume.
@@ -4835,7 +5060,6 @@ pub struct FluentBitVolumes {
     pub quobyte: Option<FluentBitVolumesQuobyte>,
     /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
     /// Deprecated: RBD is deprecated and the in-tree rbd type is no longer supported.
-    /// More info: <https://examples.k8s.io/volumes/rbd/README.md>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rbd: Option<FluentBitVolumesRbd>,
     /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
@@ -5360,15 +5584,13 @@ pub struct FluentBitVolumesEphemeralVolumeClaimTemplateSpec {
     /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
     /// If specified, the CSI driver will create or update the volume with the attributes defined
     /// in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,
-    /// it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass
-    /// will be applied to the claim but it's not allowed to reset this field to empty string once it is set.
-    /// If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass
-    /// will be set by the persistentvolume controller if it exists.
+    /// it can be changed after the claim is created. An empty string or nil value indicates that no
+    /// VolumeAttributesClass will be applied to the claim. If the claim enters an Infeasible error state,
+    /// this field can be reset to its previous value (including nil) to cancel the modification.
     /// If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
     /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
     /// exists.
     /// More info: <https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/>
-    /// (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
@@ -5624,11 +5846,9 @@ pub struct FluentBitVolumesGitRepo {
 
 /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
 /// Deprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer supported.
-/// More info: <https://examples.k8s.io/volumes/glusterfs/README.md>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitVolumesGlusterfs {
     /// endpoints is the endpoint name that details Glusterfs topology.
-    /// More info: <https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod>
     pub endpoints: String,
     /// path is the Glusterfs volume path.
     /// More info: <https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod>
@@ -5693,7 +5913,7 @@ pub struct FluentBitVolumesImage {
 
 /// iscsi represents an ISCSI Disk resource that is attached to a
 /// kubelet's host machine and then exposed to the pod.
-/// More info: <https://examples.k8s.io/volumes/iscsi/README.md>
+/// More info: <https://kubernetes.io/docs/concepts/storage/volumes/#iscsi>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitVolumesIscsi {
     /// chapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication
@@ -5858,6 +6078,42 @@ pub struct FluentBitVolumesProjectedSources {
     /// downwardAPI information about the downwardAPI data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<FluentBitVolumesProjectedSourcesDownwardApi>,
+    /// Projects an auto-rotating credential bundle (private key and certificate
+    /// chain) that the pod can use either as a TLS client or server.
+    /// 
+    /// Kubelet generates a private key and uses it to send a
+    /// PodCertificateRequest to the named signer.  Once the signer approves the
+    /// request and issues a certificate chain, Kubelet writes the key and
+    /// certificate chain to the pod filesystem.  The pod does not start until
+    /// certificates have been issued for each podCertificate projected volume
+    /// source in its spec.
+    /// 
+    /// Kubelet will begin trying to rotate the certificate at the time indicated
+    /// by the signer using the PodCertificateRequest.Status.BeginRefreshAt
+    /// timestamp.
+    /// 
+    /// Kubelet can write a single file, indicated by the credentialBundlePath
+    /// field, or separate files, indicated by the keyPath and
+    /// certificateChainPath fields.
+    /// 
+    /// The credential bundle is a single file in PEM format.  The first PEM
+    /// entry is the private key (in PKCS#8 format), and the remaining PEM
+    /// entries are the certificate chain issued by the signer (typically,
+    /// signers will return their certificate chain in leaf-to-root order).
+    /// 
+    /// Prefer using the credential bundle format, since your application code
+    /// can read it atomically.  If you use keyPath and certificateChainPath,
+    /// your application must make two separate file reads. If these coincide
+    /// with a certificate rotation, it is possible that the private key and leaf
+    /// certificate you read may not correspond to each other.  Your application
+    /// will need to check for this condition, and re-read until they are
+    /// consistent.
+    /// 
+    /// The named signer controls chooses the format of the certificate it
+    /// issues; consult the signer implementation's documentation to learn how to
+    /// use the certificates it issues.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podCertificate")]
+    pub pod_certificate: Option<FluentBitVolumesProjectedSourcesPodCertificate>,
     /// secret information about the secret data to project
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<FluentBitVolumesProjectedSourcesSecret>,
@@ -6039,6 +6295,101 @@ pub struct FluentBitVolumesProjectedSourcesDownwardApiItemsResourceFieldRef {
     pub resource: String,
 }
 
+/// Projects an auto-rotating credential bundle (private key and certificate
+/// chain) that the pod can use either as a TLS client or server.
+/// 
+/// Kubelet generates a private key and uses it to send a
+/// PodCertificateRequest to the named signer.  Once the signer approves the
+/// request and issues a certificate chain, Kubelet writes the key and
+/// certificate chain to the pod filesystem.  The pod does not start until
+/// certificates have been issued for each podCertificate projected volume
+/// source in its spec.
+/// 
+/// Kubelet will begin trying to rotate the certificate at the time indicated
+/// by the signer using the PodCertificateRequest.Status.BeginRefreshAt
+/// timestamp.
+/// 
+/// Kubelet can write a single file, indicated by the credentialBundlePath
+/// field, or separate files, indicated by the keyPath and
+/// certificateChainPath fields.
+/// 
+/// The credential bundle is a single file in PEM format.  The first PEM
+/// entry is the private key (in PKCS#8 format), and the remaining PEM
+/// entries are the certificate chain issued by the signer (typically,
+/// signers will return their certificate chain in leaf-to-root order).
+/// 
+/// Prefer using the credential bundle format, since your application code
+/// can read it atomically.  If you use keyPath and certificateChainPath,
+/// your application must make two separate file reads. If these coincide
+/// with a certificate rotation, it is possible that the private key and leaf
+/// certificate you read may not correspond to each other.  Your application
+/// will need to check for this condition, and re-read until they are
+/// consistent.
+/// 
+/// The named signer controls chooses the format of the certificate it
+/// issues; consult the signer implementation's documentation to learn how to
+/// use the certificates it issues.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FluentBitVolumesProjectedSourcesPodCertificate {
+    /// Write the certificate chain at this path in the projected volume.
+    /// 
+    /// Most applications should use credentialBundlePath.  When using keyPath
+    /// and certificateChainPath, your application needs to check that the key
+    /// and leaf certificate are consistent, because it is possible to read the
+    /// files mid-rotation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateChainPath")]
+    pub certificate_chain_path: Option<String>,
+    /// Write the credential bundle at this path in the projected volume.
+    /// 
+    /// The credential bundle is a single file that contains multiple PEM blocks.
+    /// The first PEM block is a PRIVATE KEY block, containing a PKCS#8 private
+    /// key.
+    /// 
+    /// The remaining blocks are CERTIFICATE blocks, containing the issued
+    /// certificate chain from the signer (leaf and any intermediates).
+    /// 
+    /// Using credentialBundlePath lets your Pod's application code make a single
+    /// atomic read that retrieves a consistent key and certificate chain.  If you
+    /// project them to separate files, your application code will need to
+    /// additionally check that the leaf certificate was issued to the key.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialBundlePath")]
+    pub credential_bundle_path: Option<String>,
+    /// Write the key at this path in the projected volume.
+    /// 
+    /// Most applications should use credentialBundlePath.  When using keyPath
+    /// and certificateChainPath, your application needs to check that the key
+    /// and leaf certificate are consistent, because it is possible to read the
+    /// files mid-rotation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyPath")]
+    pub key_path: Option<String>,
+    /// The type of keypair Kubelet will generate for the pod.
+    /// 
+    /// Valid values are "RSA3072", "RSA4096", "ECDSAP256", "ECDSAP384",
+    /// "ECDSAP521", and "ED25519".
+    #[serde(rename = "keyType")]
+    pub key_type: String,
+    /// maxExpirationSeconds is the maximum lifetime permitted for the
+    /// certificate.
+    /// 
+    /// Kubelet copies this value verbatim into the PodCertificateRequests it
+    /// generates for this projection.
+    /// 
+    /// If omitted, kube-apiserver will set it to 86400(24 hours). kube-apiserver
+    /// will reject values shorter than 3600 (1 hour).  The maximum allowable
+    /// value is 7862400 (91 days).
+    /// 
+    /// The signer implementation is then free to issue a certificate with any
+    /// lifetime *shorter* than MaxExpirationSeconds, but no shorter than 3600
+    /// seconds (1 hour).  This constraint is enforced by kube-apiserver.
+    /// `kubernetes.io` signers will never issue certificates with a lifetime
+    /// longer than 24 hours.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxExpirationSeconds")]
+    pub max_expiration_seconds: Option<i32>,
+    /// Kubelet's generated CSRs will be addressed to this signer.
+    #[serde(rename = "signerName")]
+    pub signer_name: String,
+}
+
 /// secret information about the secret data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitVolumesProjectedSourcesSecret {
@@ -6135,7 +6486,6 @@ pub struct FluentBitVolumesQuobyte {
 
 /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
 /// Deprecated: RBD is deprecated and the in-tree rbd type is no longer supported.
-/// More info: <https://examples.k8s.io/volumes/rbd/README.md>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitVolumesRbd {
     /// fsType is the filesystem type of the volume that you want to mount.

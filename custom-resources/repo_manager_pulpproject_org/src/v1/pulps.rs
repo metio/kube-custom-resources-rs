@@ -466,6 +466,9 @@ pub struct PulpApi {
     /// Default: 2
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gunicorn_workers: Option<i64>,
+    /// HPA defines the Horizontal Pod Autoscaler configuration for the pulp-api deployment
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub hpa: Option<PulpApiHpa>,
     /// InitContainer defines configuration of the init-containers that run in pulpcore pods
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub init_container: Option<PulpApiInitContainer>,
@@ -1322,6 +1325,29 @@ pub struct PulpApiEnvVarsValueFromSecretKeyRef {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// HPA defines the Horizontal Pod Autoscaler configuration for the pulp-api deployment
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PulpApiHpa {
+    /// Enabled determines whether HPA should be created for this component
+    /// Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// MaxReplicas is the upper limit for the number of replicas to which the autoscaler can scale up.
+    /// It cannot be less than MinReplicas.
+    pub max_replicas: i32,
+    /// MinReplicas is the lower limit for the number of replicas to which the autoscaler can scale down.
+    /// Default: 1
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub min_replicas: Option<i32>,
+    /// TargetCPUUtilizationPercentage is the target average CPU utilization (represented as a percentage of requested CPU) over all the pods.
+    /// If not specified, a default value of 50 is used.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub target_cpu_utilization_percentage: Option<i32>,
+    /// TargetMemoryUtilizationPercentage is the target average memory utilization (represented as a percentage of requested memory) over all the pods.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub target_memory_utilization_percentage: Option<i32>,
 }
 
 /// InitContainer defines configuration of the init-containers that run in pulpcore pods
@@ -3203,6 +3229,9 @@ pub struct PulpContent {
     /// Default: 2
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gunicorn_workers: Option<i64>,
+    /// HPA defines the Horizontal Pod Autoscaler configuration for the pulp-content deployment
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub hpa: Option<PulpContentHpa>,
     /// InitContainer defines configuration of the init-containers that run in pulpcore pods
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub init_container: Option<PulpContentInitContainer>,
@@ -4059,6 +4088,29 @@ pub struct PulpContentEnvVarsValueFromSecretKeyRef {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// HPA defines the Horizontal Pod Autoscaler configuration for the pulp-content deployment
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PulpContentHpa {
+    /// Enabled determines whether HPA should be created for this component
+    /// Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// MaxReplicas is the upper limit for the number of replicas to which the autoscaler can scale up.
+    /// It cannot be less than MinReplicas.
+    pub max_replicas: i32,
+    /// MinReplicas is the lower limit for the number of replicas to which the autoscaler can scale down.
+    /// Default: 1
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub min_replicas: Option<i32>,
+    /// TargetCPUUtilizationPercentage is the target average CPU utilization (represented as a percentage of requested CPU) over all the pods.
+    /// If not specified, a default value of 50 is used.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub target_cpu_utilization_percentage: Option<i32>,
+    /// TargetMemoryUtilizationPercentage is the target average memory utilization (represented as a percentage of requested memory) over all the pods.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub target_memory_utilization_percentage: Option<i32>,
 }
 
 /// InitContainer defines configuration of the init-containers that run in pulpcore pods
@@ -6402,6 +6454,9 @@ pub struct PulpWeb {
     /// Environment variables to add to pulpcore-web container
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env_vars: Option<Vec<PulpWebEnvVars>>,
+    /// HPA defines the Horizontal Pod Autoscaler configuration for the pulp-web deployment
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub hpa: Option<PulpWebHpa>,
     /// Periodic probe of container liveness.
     /// Container will be restarted if the probe fails.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
@@ -6563,6 +6618,29 @@ pub struct PulpWebEnvVarsValueFromSecretKeyRef {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// HPA defines the Horizontal Pod Autoscaler configuration for the pulp-web deployment
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PulpWebHpa {
+    /// Enabled determines whether HPA should be created for this component
+    /// Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// MaxReplicas is the upper limit for the number of replicas to which the autoscaler can scale up.
+    /// It cannot be less than MinReplicas.
+    pub max_replicas: i32,
+    /// MinReplicas is the lower limit for the number of replicas to which the autoscaler can scale down.
+    /// Default: 1
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub min_replicas: Option<i32>,
+    /// TargetCPUUtilizationPercentage is the target average CPU utilization (represented as a percentage of requested CPU) over all the pods.
+    /// If not specified, a default value of 50 is used.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub target_cpu_utilization_percentage: Option<i32>,
+    /// TargetMemoryUtilizationPercentage is the target average memory utilization (represented as a percentage of requested memory) over all the pods.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub target_memory_utilization_percentage: Option<i32>,
 }
 
 /// Periodic probe of container liveness.
@@ -6993,6 +7071,9 @@ pub struct PulpWorker {
     /// Environment variables to add to pulpcore-worker container
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env_vars: Option<Vec<PulpWorkerEnvVars>>,
+    /// HPA defines the Horizontal Pod Autoscaler configuration for the pulp-worker deployment
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub hpa: Option<PulpWorkerHpa>,
     /// InitContainer defines configuration of the init-containers that run in pulpcore pods
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub init_container: Option<PulpWorkerInitContainer>,
@@ -7849,6 +7930,29 @@ pub struct PulpWorkerEnvVarsValueFromSecretKeyRef {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// HPA defines the Horizontal Pod Autoscaler configuration for the pulp-worker deployment
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PulpWorkerHpa {
+    /// Enabled determines whether HPA should be created for this component
+    /// Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// MaxReplicas is the upper limit for the number of replicas to which the autoscaler can scale up.
+    /// It cannot be less than MinReplicas.
+    pub max_replicas: i32,
+    /// MinReplicas is the lower limit for the number of replicas to which the autoscaler can scale down.
+    /// Default: 1
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub min_replicas: Option<i32>,
+    /// TargetCPUUtilizationPercentage is the target average CPU utilization (represented as a percentage of requested CPU) over all the pods.
+    /// If not specified, a default value of 50 is used.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub target_cpu_utilization_percentage: Option<i32>,
+    /// TargetMemoryUtilizationPercentage is the target average memory utilization (represented as a percentage of requested memory) over all the pods.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub target_memory_utilization_percentage: Option<i32>,
 }
 
 /// InitContainer defines configuration of the init-containers that run in pulpcore pods

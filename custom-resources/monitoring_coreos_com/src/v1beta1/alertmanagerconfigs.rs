@@ -3998,6 +3998,7 @@ pub struct AlertmanagerConfigReceiversPushoverConfigs {
     pub expire: Option<String>,
     /// html defines whether notification message is HTML or plain text.
     /// When true, the message can include HTML formatting tags.
+    /// html and monospace formatting are mutually exclusive.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub html: Option<bool>,
     /// httpConfig defines the HTTP client configuration for Pushover API requests.

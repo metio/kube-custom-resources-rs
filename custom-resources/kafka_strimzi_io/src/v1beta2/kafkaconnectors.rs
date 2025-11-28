@@ -44,6 +44,9 @@ pub struct KafkaConnectorSpec {
     /// The maximum number of tasks for the Kafka Connector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tasksMax")]
     pub tasks_max: Option<i64>,
+    /// Desired version or version range to respect when starting the Kafka Connector. This is only supported when using Kafka Connect version 4.1.0 and higher.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub version: Option<String>,
 }
 
 /// Configuration for altering offsets.

@@ -135,6 +135,10 @@ spec:
                       type: "string"
                     cmCertificateSecretName:
                       type: "string"
+                    cpInternodeEncryptionCertificateSecretName:
+                      type: "string"
+                    dpInternodeEncryptionCertificateSecretName:
+                      type: "string"
                     ldapClientCertificateSecretName:
                       type: "string"
                     metricsExporterCertificateSecretName:

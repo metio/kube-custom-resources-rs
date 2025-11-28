@@ -38,7 +38,8 @@ spec:
           jsonPath: ".status.conditions[?(@.type==\"Ready\")].status"
           name: "Ready"
           type: "string"
-      deprecated: false
+      deprecated: true
+      deprecationWarning: "Version v1beta2 of the KafkaConnector API is deprecated. Please use the v1 version instead."
       name: "v1beta2"
       schema:
         openAPIV3Schema:
@@ -109,6 +110,9 @@ spec:
                   description: "The maximum number of tasks for the Kafka Connector."
                   minimum: 1.0
                   type: "integer"
+                version:
+                  description: "Desired version or version range to respect when starting the Kafka Connector. This is only supported when using Kafka Connect version 4.1.0 and higher."
+                  type: "string"
               type: "object"
             status:
               description: "The status of the Kafka Connector."

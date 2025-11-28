@@ -56,6 +56,15 @@ pub struct ValkeySpec {
     /// Number of shards. Each node is a primary
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nodes: Option<i32>,
+    /// PlatformManagedSecurityContext delegates security context management to the platform.
+    /// When true, the operator omits the following fields from pod and container security contexts,
+    /// allowing the platform (e.g., OpenShift) to manage them via SCCs or Pod Security Standards:
+    /// - RunAsUser, RunAsGroup, FSGroup (user/group IDs)
+    /// - FSGroupChangePolicy, SupplementalGroups
+    /// - SELinuxOptions
+    /// When false (default), these fields are set to explicit values (e.g., 1001 for user/group IDs).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "platformManagedSecurityContext")]
+    pub platform_managed_security_context: Option<bool>,
     /// Enable prometheus
     pub prometheus: bool,
     /// Extra prometheus labels for operator targeting

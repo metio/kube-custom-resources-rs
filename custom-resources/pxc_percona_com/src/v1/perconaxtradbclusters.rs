@@ -94,6 +94,8 @@ pub struct PerconaXtraDbClusterBackup {
     pub image_pull_secrets: Option<Vec<PerconaXtraDbClusterBackupImagePullSecrets>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pitr: Option<PerconaXtraDbClusterBackupPitr>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runningDeadlineSeconds")]
+    pub running_deadline_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub schedule: Option<Vec<PerconaXtraDbClusterBackupSchedule>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
@@ -966,6 +968,8 @@ pub struct PerconaXtraDbClusterHaproxy {
     pub external_traffic_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracePeriod")]
     pub grace_period: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheck")]
+    pub health_check: Option<PerconaXtraDbClusterHaproxyHealthCheck>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hookScript")]
     pub hook_script: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1478,6 +1482,16 @@ pub struct PerconaXtraDbClusterHaproxyExposeReplicas {
     pub traffic_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaXtraDbClusterHaproxyHealthCheck {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub fall: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub interval: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub rise: Option<i32>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3960,6 +3974,8 @@ pub struct PerconaXtraDbClusterProxysql {
     pub resources: Option<PerconaXtraDbClusterProxysqlResources>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeClassName")]
     pub runtime_class_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheduler: Option<PerconaXtraDbClusterProxysqlScheduler>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
     pub scheduler_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
@@ -4741,6 +4757,26 @@ pub struct PerconaXtraDbClusterProxysqlResourcesClaims {
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub request: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaXtraDbClusterProxysqlScheduler {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "checkTimeoutMilliseconds")]
+    pub check_timeout_milliseconds: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConnections")]
+    pub max_connections: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeCheckIntervalMilliseconds")]
+    pub node_check_interval_milliseconds: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pingTimeoutMilliseconds")]
+    pub ping_timeout_milliseconds: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
+    pub success_threshold: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "writerIsAlsoReader")]
+    pub writer_is_also_reader: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6386,6 +6422,8 @@ pub struct PerconaXtraDbClusterPxc {
     pub liveness_probes: Option<PerconaXtraDbClusterPxcLivenessProbes>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
     pub load_balancer_source_ranges: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mysqlAllocator")]
+    pub mysql_allocator: Option<PerconaXtraDbClusterPxcMysqlAllocator>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podDisruptionBudget")]
@@ -7029,6 +7067,14 @@ pub struct PerconaXtraDbClusterPxcLivenessProbesTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     pub port: IntOrString,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PerconaXtraDbClusterPxcMysqlAllocator {
+    #[serde(rename = "jemalloc")]
+    Jemalloc,
+    #[serde(rename = "tcmalloc")]
+    Tcmalloc,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

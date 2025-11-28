@@ -32,9 +32,11 @@ pub struct IbmPowerVsClusterSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IbmPowerVsClusterControlPlaneEndpoint {
     /// host is the hostname on which the API server is serving.
-    pub host: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
     /// port is the port on which the API server is serving.
-    pub port: i32,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i32>,
 }
 
 /// Network is the reference to the Network to use for this cluster.

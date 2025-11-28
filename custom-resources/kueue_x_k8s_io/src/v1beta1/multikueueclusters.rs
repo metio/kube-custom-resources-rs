@@ -17,9 +17,25 @@ use self::prelude::*;
 #[kube(schema = "disabled")]
 #[kube(derive="PartialEq")]
 pub struct MultiKueueClusterSpec {
+    /// clusterProfileRef is the reference to the ClusterProfile object used to connect to the cluster.
+    /// 
+    /// This is only used to prevent data loss when converting between v1beta2 and v1beta1.
+    /// It has no effect in v1beta1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterProfileRef")]
+    pub cluster_profile_ref: Option<MultiKueueClusterClusterProfileRef>,
     /// kubeConfig is information on how to connect to the cluster.
     #[serde(rename = "kubeConfig")]
     pub kube_config: MultiKueueClusterKubeConfig,
+}
+
+/// clusterProfileRef is the reference to the ClusterProfile object used to connect to the cluster.
+/// 
+/// This is only used to prevent data loss when converting between v1beta2 and v1beta1.
+/// It has no effect in v1beta1.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MultiKueueClusterClusterProfileRef {
+    /// name of the ClusterProfile.
+    pub name: String,
 }
 
 /// kubeConfig is information on how to connect to the cluster.

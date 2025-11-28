@@ -212,6 +212,10 @@ pub struct RedisEnterpriseClusterCertificates {
     pub api_certificate_secret_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cmCertificateSecretName")]
     pub cm_certificate_secret_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpInternodeEncryptionCertificateSecretName")]
+    pub cp_internode_encryption_certificate_secret_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dpInternodeEncryptionCertificateSecretName")]
+    pub dp_internode_encryption_certificate_secret_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ldapClientCertificateSecretName")]
     pub ldap_client_certificate_secret_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricsExporterCertificateSecretName")]

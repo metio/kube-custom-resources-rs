@@ -3,8 +3,12 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 
 # Available Custom Resources
 
+## core.strimzi.io/v1
+- `StrimziPodSet`
 ## core.strimzi.io/v1beta2
 - `StrimziPodSet`
 */
+#[cfg(feature = "v1")]
+pub mod v1;
 #[cfg(feature = "v1beta2")]
 pub mod v1beta2;

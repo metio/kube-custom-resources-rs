@@ -286,6 +286,12 @@ pub struct RedisEnterpriseClusterCertificates {
     /// Secret name to use for cluster's CM (Cluster Manager) certificate. If left blank, a cluster-provided certificate will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cmCertificateSecretName")]
     pub cm_certificate_secret_name: Option<String>,
+    /// Secret name to use for cluster's Control Plane Internode Encryption (CPINE) certificate. If left blank, a cluster-provided certificate will be used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpInternodeEncryptionCertificateSecretName")]
+    pub cp_internode_encryption_certificate_secret_name: Option<String>,
+    /// Secret name to use for cluster's Data Plane Internode Encryption (DPINE) certificate. If left blank, a cluster-provided certificate will be used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dpInternodeEncryptionCertificateSecretName")]
+    pub dp_internode_encryption_certificate_secret_name: Option<String>,
     /// Secret name to use for cluster's LDAP client certificate. If left blank, LDAP client certificate authentication will be disabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ldapClientCertificateSecretName")]
     pub ldap_client_certificate_secret_name: Option<String>,

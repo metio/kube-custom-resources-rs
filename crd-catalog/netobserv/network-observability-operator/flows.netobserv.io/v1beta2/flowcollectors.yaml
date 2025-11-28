@@ -2915,7 +2915,7 @@ spec:
                         type: "string"
                       type: "array"
                     enable:
-                      description: "Deploys network policies on the namespaces used by NetObserv (main and privileged).\nThese network policies better isolate the NetObserv components to prevent undesired connections from and to them.\nThis option is enabled by default when using with OVNKubernetes, and disabled otherwise (it has not been tested with other CNIs).\nWhen disabled, you can create manually the network policies for the NetObserv components."
+                      description: "Deploys network policies on the namespaces used by NetObserv (main and privileged).\nThese network policies better isolate the NetObserv components to prevent undesired connections from and to them.\nThis option is enabled by default when using with OVNKubernetes, and disabled otherwise (it has not been tested with other CNIs).\nWhen disabled, you can manually create the network policies for the NetObserv components."
                       type: "boolean"
                   type: "object"
                 processor:
@@ -4211,6 +4211,7 @@ spec:
                                 type: "array"
                               name:
                                 description: "Label name, used to flag matching flows."
+                                pattern: "^[a-zA-Z_:-][a-zA-Z0-9_:-]*$"
                                 type: "string"
                             required:
                               - "cidrs"
