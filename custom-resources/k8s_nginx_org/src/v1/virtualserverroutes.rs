@@ -710,6 +710,11 @@ pub struct VirtualServerRouteUpstreams {
     /// Sets the size of the buffers used for reading a response from the upstream server when the proxy_buffering is enabled. The default is set in the proxy-busy-buffers-size ConfigMap key.'
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "busy-buffers-size")]
     pub busy_buffers_size: Option<String>,
+    /// ClientBodyBufferSize sets the size of the buffer used for reading the client request body. Must be specified as a number followed by:
+    /// 'k' for kilobytes or 'm' for megabytes.
+    /// Examples: "10m" or "512k".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "client-body-buffer-size")]
+    pub client_body_buffer_size: Option<String>,
     /// Sets the maximum allowed size of the client request body. The default is set in the client-max-body-size ConfigMap key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "client-max-body-size")]
     pub client_max_body_size: Option<String>,

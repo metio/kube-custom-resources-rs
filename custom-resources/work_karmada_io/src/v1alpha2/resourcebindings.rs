@@ -76,7 +76,7 @@ pub struct ResourceBindingSpec {
     /// default false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "propagateDeps")]
     pub propagate_deps: Option<bool>,
-    /// ReplicaRequirements represents the requirements required by each replica.
+    /// ReplicaRequirements represents the resource and scheduling requirements for each replica.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaRequirements")]
     pub replica_requirements: Option<ResourceBindingReplicaRequirements>,
     /// Replicas represents the replica number of the referencing resource.
@@ -126,14 +126,14 @@ pub struct ResourceBindingComponents {
     /// It is required when the resource contains multiple components to ensure proper identification,
     /// and must also be unique within the same resource.
     pub name: String,
-    /// ReplicaRequirements represents the requirements required by each replica for this component.
+    /// ReplicaRequirements represents the resource and scheduling requirements for each replica.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaRequirements")]
     pub replica_requirements: Option<ResourceBindingComponentsReplicaRequirements>,
     /// Replicas represents the replica number of the resource's component.
     pub replicas: i32,
 }
 
-/// ReplicaRequirements represents the requirements required by each replica for this component.
+/// ReplicaRequirements represents the resource and scheduling requirements for each replica.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceBindingComponentsReplicaRequirements {
     /// NodeClaim represents the node claim HardNodeAffinity, NodeSelector and Tolerations required by each replica.
@@ -1000,7 +1000,7 @@ pub enum ResourceBindingPlacementSpreadConstraintsSpreadByField {
     Provider,
 }
 
-/// ReplicaRequirements represents the requirements required by each replica.
+/// ReplicaRequirements represents the resource and scheduling requirements for each replica.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceBindingReplicaRequirements {
     /// Namespace represents the resources namespaces

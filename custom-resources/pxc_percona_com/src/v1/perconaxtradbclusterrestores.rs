@@ -53,6 +53,8 @@ pub struct PerconaXtraDbClusterRestoreBackupSource {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "latestRestorableTime")]
     pub latest_restorable_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pvc: Option<PerconaXtraDbClusterRestoreBackupSourcePvc>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub s3: Option<PerconaXtraDbClusterRestoreBackupSourceS3>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslInternalSecretName")]
     pub ssl_internal_secret_name: Option<String>,
@@ -84,6 +86,70 @@ pub struct PerconaXtraDbClusterRestoreBackupSourceAzure {
     pub endpoint_url: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClass")]
     pub storage_class: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaXtraDbClusterRestoreBackupSourcePvc {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
+    pub access_modes: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
+    pub data_source: Option<PerconaXtraDbClusterRestoreBackupSourcePvcDataSource>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
+    pub data_source_ref: Option<PerconaXtraDbClusterRestoreBackupSourcePvcDataSourceRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<PerconaXtraDbClusterRestoreBackupSourcePvcResources>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selector: Option<PerconaXtraDbClusterRestoreBackupSourcePvcSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
+    pub storage_class_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
+    pub volume_attributes_class_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
+    pub volume_mode: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
+    pub volume_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaXtraDbClusterRestoreBackupSourcePvcDataSource {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
+    pub api_group: Option<String>,
+    pub kind: String,
+    pub name: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaXtraDbClusterRestoreBackupSourcePvcDataSourceRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
+    pub api_group: Option<String>,
+    pub kind: String,
+    pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaXtraDbClusterRestoreBackupSourcePvcResources {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaXtraDbClusterRestoreBackupSourcePvcSelector {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<PerconaXtraDbClusterRestoreBackupSourcePvcSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaXtraDbClusterRestoreBackupSourcePvcSelectorMatchExpressions {
+    pub key: String,
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -226,6 +292,8 @@ pub struct PerconaXtraDbClusterRestorePitrBackupSource {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "latestRestorableTime")]
     pub latest_restorable_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pvc: Option<PerconaXtraDbClusterRestorePitrBackupSourcePvc>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub s3: Option<PerconaXtraDbClusterRestorePitrBackupSourceS3>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslInternalSecretName")]
     pub ssl_internal_secret_name: Option<String>,
@@ -257,6 +325,70 @@ pub struct PerconaXtraDbClusterRestorePitrBackupSourceAzure {
     pub endpoint_url: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClass")]
     pub storage_class: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaXtraDbClusterRestorePitrBackupSourcePvc {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
+    pub access_modes: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
+    pub data_source: Option<PerconaXtraDbClusterRestorePitrBackupSourcePvcDataSource>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
+    pub data_source_ref: Option<PerconaXtraDbClusterRestorePitrBackupSourcePvcDataSourceRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<PerconaXtraDbClusterRestorePitrBackupSourcePvcResources>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selector: Option<PerconaXtraDbClusterRestorePitrBackupSourcePvcSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
+    pub storage_class_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
+    pub volume_attributes_class_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
+    pub volume_mode: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
+    pub volume_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaXtraDbClusterRestorePitrBackupSourcePvcDataSource {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
+    pub api_group: Option<String>,
+    pub kind: String,
+    pub name: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaXtraDbClusterRestorePitrBackupSourcePvcDataSourceRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
+    pub api_group: Option<String>,
+    pub kind: String,
+    pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaXtraDbClusterRestorePitrBackupSourcePvcResources {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaXtraDbClusterRestorePitrBackupSourcePvcSelector {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<PerconaXtraDbClusterRestorePitrBackupSourcePvcSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaXtraDbClusterRestorePitrBackupSourcePvcSelectorMatchExpressions {
+    pub key: String,
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

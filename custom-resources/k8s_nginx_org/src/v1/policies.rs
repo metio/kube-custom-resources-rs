@@ -273,9 +273,18 @@ pub struct PolicyOidc {
     /// List of OpenID Connect scopes. The scope openid always needs to be present and others can be added concatenating them with a + sign, for example openid+profile+email, openid+email+userDefinedScope. The default is openid.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scope: Option<String>,
+    /// Enables verification of the IDP server SSL certificate. Default is false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslVerify")]
+    pub ssl_verify: Option<bool>,
+    /// Sets the verification depth in the IDP server certificates chain. The default is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslVerifyDepth")]
+    pub ssl_verify_depth: Option<i64>,
     /// URL for the token endpoint provided by your OpenID Connect provider.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenEndpoint")]
     pub token_endpoint: Option<String>,
+    /// The name of the Kubernetes secret that stores the CA certificate for IDP server verification. It must be in the same namespace as the Policy resource. The secret must be of the type nginx.org/ca, and the certificate must be stored in the secret under the key ca.crt.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trustedCertSecret")]
+    pub trusted_cert_secret: Option<String>,
     /// Specifies the maximum timeout in milliseconds for synchronizing ID/access tokens and shared values between Ingress Controller pods. The default is 200.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "zoneSyncLeeway")]
     pub zone_sync_leeway: Option<i64>,

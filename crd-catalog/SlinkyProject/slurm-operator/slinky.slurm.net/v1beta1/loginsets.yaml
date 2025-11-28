@@ -76,11 +76,13 @@ spec:
                           additionalProperties:
                             type: "string"
                           description: "Annotations is an unstructured key value map stored with a resource that may be\nset by external tools to store and retrieve arbitrary metadata. They are not\nqueryable and should be preserved when modifying objects.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations"
+                          nullable: true
                           type: "object"
                         labels:
                           additionalProperties:
                             type: "string"
                           description: "Map of string keys and values that can be used to organize and categorize\n(scope and select) objects. May match selectors of replication controllers\nand services.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels"
+                          nullable: true
                           type: "object"
                       type: "object"
                     nodePort:
@@ -121,11 +123,13 @@ spec:
                           additionalProperties:
                             type: "string"
                           description: "Annotations is an unstructured key value map stored with a resource that may be\nset by external tools to store and retrieve arbitrary metadata. They are not\nqueryable and should be preserved when modifying objects.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations"
+                          nullable: true
                           type: "object"
                         labels:
                           additionalProperties:
                             type: "string"
                           description: "Map of string keys and values that can be used to organize and categorize\n(scope and select) objects. May match selectors of replication controllers\nand services.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels"
+                          nullable: true
                           type: "object"
                       type: "object"
                     spec:

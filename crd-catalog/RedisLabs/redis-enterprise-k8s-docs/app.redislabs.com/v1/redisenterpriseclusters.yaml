@@ -157,6 +157,12 @@ spec:
                     cmCertificateSecretName:
                       description: "Secret name to use for cluster's CM (Cluster Manager) certificate. If left blank, a cluster-provided certificate will be used."
                       type: "string"
+                    cpInternodeEncryptionCertificateSecretName:
+                      description: "Secret name to use for cluster's Control Plane Internode Encryption (CPINE) certificate. If left blank, a cluster-provided certificate will be used."
+                      type: "string"
+                    dpInternodeEncryptionCertificateSecretName:
+                      description: "Secret name to use for cluster's Data Plane Internode Encryption (DPINE) certificate. If left blank, a cluster-provided certificate will be used."
+                      type: "string"
                     ldapClientCertificateSecretName:
                       description: "Secret name to use for cluster's LDAP client certificate. If left blank, LDAP client certificate authentication will be disabled."
                       type: "string"

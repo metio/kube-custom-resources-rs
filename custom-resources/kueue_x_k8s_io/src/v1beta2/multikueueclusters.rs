@@ -18,26 +18,32 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct MultiKueueClusterSpec {
-    /// clusterProfile is the reference to the ClusterProfile object used to connect to the cluster.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterProfile")]
-    pub cluster_profile: Option<MultiKueueClusterClusterProfile>,
-    /// kubeConfig is information on how to connect to the cluster.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeConfig")]
-    pub kube_config: Option<MultiKueueClusterKubeConfig>,
+    /// clusterSource is the source to connect to the cluster.
+    #[serde(rename = "clusterSource")]
+    pub cluster_source: MultiKueueClusterClusterSource,
 }
 
-/// clusterProfile is the reference to the ClusterProfile object used to connect to the cluster.
+/// clusterSource is the source to connect to the cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MultiKueueClusterClusterProfile {
+pub struct MultiKueueClusterClusterSource {
+    /// clusterProfileRef is the reference to the ClusterProfile object used to connect to the cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterProfileRef")]
+    pub cluster_profile_ref: Option<MultiKueueClusterClusterSourceClusterProfileRef>,
+    /// kubeConfig is information on how to connect to the cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeConfig")]
+    pub kube_config: Option<MultiKueueClusterClusterSourceKubeConfig>,
+}
+
+/// clusterProfileRef is the reference to the ClusterProfile object used to connect to the cluster.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MultiKueueClusterClusterSourceClusterProfileRef {
     /// name of the ClusterProfile.
     pub name: String,
-    /// namespace of the ClusterProfile.
-    pub namespace: String,
 }
 
 /// kubeConfig is information on how to connect to the cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MultiKueueClusterKubeConfig {
+pub struct MultiKueueClusterClusterSourceKubeConfig {
     /// location of the KubeConfig.
     /// 
     /// If LocationType is Secret then Location is the name of the secret inside the namespace in
@@ -45,12 +51,12 @@ pub struct MultiKueueClusterKubeConfig {
     pub location: String,
     /// locationType of the KubeConfig.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "locationType")]
-    pub location_type: Option<MultiKueueClusterKubeConfigLocationType>,
+    pub location_type: Option<MultiKueueClusterClusterSourceKubeConfigLocationType>,
 }
 
 /// kubeConfig is information on how to connect to the cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum MultiKueueClusterKubeConfigLocationType {
+pub enum MultiKueueClusterClusterSourceKubeConfigLocationType {
     Secret,
     Path,
 }

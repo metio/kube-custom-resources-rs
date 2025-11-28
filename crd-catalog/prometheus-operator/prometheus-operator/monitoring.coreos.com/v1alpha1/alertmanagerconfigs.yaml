@@ -3104,7 +3104,7 @@ spec:
                               pattern: "^(([0-9]+)y)?(([0-9]+)w)?(([0-9]+)d)?(([0-9]+)h)?(([0-9]+)m)?(([0-9]+)s)?(([0-9]+)ms)?$"
                               type: "string"
                             html:
-                              description: "html defines whether notification message is HTML or plain text.\nWhen true, the message can include HTML formatting tags."
+                              description: "html defines whether notification message is HTML or plain text.\nWhen true, the message can include HTML formatting tags.\nhtml and monospace formatting are mutually exclusive."
                               type: "boolean"
                             httpConfig:
                               description: "httpConfig defines the HTTP client configuration for Pushover API requests."

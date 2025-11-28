@@ -66,7 +66,7 @@ pub struct KafkaBridgeSpec {
     /// Pod readiness checking.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<KafkaBridgeReadinessProbe>,
-    /// The number of pods in the `Deployment`.  Defaults to `1`.
+    /// The number of pods in the `Deployment`. Required in the `v1` version of the Strimzi API. Defaults to `1` in the `v1beta2` version of the Strimzi API.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i64>,
     /// CPU and memory resources to reserve.
@@ -175,7 +175,7 @@ pub struct KafkaBridgeAuthentication {
     /// Authorization server token endpoint URI.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenEndpointUri")]
     pub token_endpoint_uri: Option<String>,
-    /// Specifies the authentication type. Supported types are `tls`, `scram-sha-256`, `scram-sha-512`, `plain`, 'oauth', and `custom`. `tls` uses TLS client authentication and is supported only over TLS connections. `scram-sha-256` and `scram-sha-512` use SASL SCRAM-SHA-256 and SASL SCRAM-SHA-512 authentication, respectively. `plain` uses SASL PLAIN authentication. `oauth` uses SASL OAUTHBEARER authentication. `custom` allows you to configure a custom authentication mechanism.
+    /// Specifies the authentication type. Supported types are `tls`, `scram-sha-256`, `scram-sha-512`, `plain`, 'oauth', and `custom`. `tls` uses TLS client authentication and is supported only over TLS connections. `scram-sha-256` and `scram-sha-512` use SASL SCRAM-SHA-256 and SASL SCRAM-SHA-512 authentication, respectively. `plain` uses SASL PLAIN authentication. `oauth` uses SASL OAUTHBEARER authentication. `custom` allows you to configure a custom authentication mechanism. As of Strimzi 0.49.0, `oauth` type is deprecated and will be removed in the `v1` API version. Please use `custom` type instead.
     #[serde(rename = "type")]
     pub r#type: KafkaBridgeAuthenticationType,
     /// Username used for the authentication.
@@ -1566,18 +1566,18 @@ pub struct KafkaBridgeTemplatePodVolumesCsiNodePublishSecretRef {
 /// `EmptyDir` to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaBridgeTemplatePodVolumesEmptyDir {
+    /// Medium represents the type of storage medium should back this volume. Valid values are unset or `Memory`. When not set, it will use the node's default medium.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub medium: Option<String>,
+    pub medium: Option<KafkaBridgeTemplatePodVolumesEmptyDirMedium>,
+    /// The total amount of local storage required for this EmptyDir volume (for example 1Gi).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
-    pub size_limit: Option<KafkaBridgeTemplatePodVolumesEmptyDirSizeLimit>,
+    pub size_limit: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KafkaBridgeTemplatePodVolumesEmptyDirSizeLimit {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub amount: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub format: Option<String>,
+/// `EmptyDir` to use to populate the volume.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaBridgeTemplatePodVolumesEmptyDirMedium {
+    Memory,
 }
 
 /// `ImageVolumeSource` object to use to populate the volume.

@@ -28,8 +28,8 @@ pub struct KafkaMirrorMaker2Spec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub clusters: Option<Vec<KafkaMirrorMaker2Clusters>>,
     /// The cluster alias used for Kafka Connect. The value must match the alias of the *target* Kafka cluster as specified in the `spec.clusters` configuration. The target Kafka cluster is used by the underlying Kafka Connect framework for its internal topics.
-    #[serde(rename = "connectCluster")]
-    pub connect_cluster: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectCluster")]
+    pub connect_cluster: Option<String>,
     /// Pass data from Secrets or ConfigMaps to the Kafka Connect pods and use them to configure connectors.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalConfiguration")]
     pub external_configuration: Option<KafkaMirrorMaker2ExternalConfiguration>,
@@ -60,12 +60,15 @@ pub struct KafkaMirrorMaker2Spec {
     /// Pod readiness checking.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<KafkaMirrorMaker2ReadinessProbe>,
-    /// The number of pods in the Kafka Connect group. Defaults to `3`.
+    /// The number of pods in the Kafka Connect group. Required in the `v1` version of the Strimzi API. Defaults to `3` in the `v1beta2` version of the Strimzi API.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i64>,
     /// The maximum limits for CPU and memory resources and the requested initial resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<KafkaMirrorMaker2Resources>,
+    /// The target Apache Kafka cluster. The target Kafka cluster is used by the underlying Kafka Connect framework for its internal topics.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub target: Option<KafkaMirrorMaker2Target>,
     /// Template for Kafka Connect and Kafka MirrorMaker 2 resources. The template allows users to specify how the `Pods`, `Service`, and other services are generated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub template: Option<KafkaMirrorMaker2Template>,
@@ -179,7 +182,7 @@ pub struct KafkaMirrorMaker2ClustersAuthentication {
     /// Authorization server token endpoint URI.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenEndpointUri")]
     pub token_endpoint_uri: Option<String>,
-    /// Specifies the authentication type. Supported types are `tls`, `scram-sha-256`, `scram-sha-512`, `plain`, 'oauth', and `custom`. `tls` uses TLS client authentication and is supported only over TLS connections. `scram-sha-256` and `scram-sha-512` use SASL SCRAM-SHA-256 and SASL SCRAM-SHA-512 authentication, respectively. `plain` uses SASL PLAIN authentication. `oauth` uses SASL OAUTHBEARER authentication. `custom` allows you to configure a custom authentication mechanism.
+    /// Specifies the authentication type. Supported types are `tls`, `scram-sha-256`, `scram-sha-512`, `plain`, 'oauth', and `custom`. `tls` uses TLS client authentication and is supported only over TLS connections. `scram-sha-256` and `scram-sha-512` use SASL SCRAM-SHA-256 and SASL SCRAM-SHA-512 authentication, respectively. `plain` uses SASL PLAIN authentication. `oauth` uses SASL OAUTHBEARER authentication. `custom` allows you to configure a custom authentication mechanism. As of Strimzi 0.49.0, `oauth` type is deprecated and will be removed in the `v1` API version. Please use `custom` type instead.
     #[serde(rename = "type")]
     pub r#type: KafkaMirrorMaker2ClustersAuthenticationType,
     /// Username used for the authentication.
@@ -593,15 +596,18 @@ pub struct KafkaMirrorMaker2Mirrors {
     /// The specification of the Kafka MirrorMaker 2 heartbeat connector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "heartbeatConnector")]
     pub heartbeat_connector: Option<KafkaMirrorMaker2MirrorsHeartbeatConnector>,
+    /// The source Apache Kafka cluster. The source Kafka cluster is used by the Kafka MirrorMaker 2 connectors.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub source: Option<KafkaMirrorMaker2MirrorsSource>,
     /// The alias of the source cluster used by the Kafka MirrorMaker 2 connectors. The alias must match a cluster in the list at `spec.clusters`.
-    #[serde(rename = "sourceCluster")]
-    pub source_cluster: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceCluster")]
+    pub source_cluster: Option<String>,
     /// The specification of the Kafka MirrorMaker 2 source connector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceConnector")]
     pub source_connector: Option<KafkaMirrorMaker2MirrorsSourceConnector>,
     /// The alias of the target cluster used by the Kafka MirrorMaker 2 connectors. The alias must match a cluster in the list at `spec.clusters`.
-    #[serde(rename = "targetCluster")]
-    pub target_cluster: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetCluster")]
+    pub target_cluster: Option<String>,
     /// A regular expression matching the topics to exclude from mirroring. Comma-separated lists are also supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topicsBlacklistPattern")]
     pub topics_blacklist_pattern: Option<String>,
@@ -637,6 +643,9 @@ pub struct KafkaMirrorMaker2MirrorsCheckpointConnector {
     /// The maximum number of tasks for the Kafka Connector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tasksMax")]
     pub tasks_max: Option<i64>,
+    /// Desired version or version range to respect when starting the Kafka Connector. This is only supported when using Kafka Connect version 4.1.0 and higher.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub version: Option<String>,
 }
 
 /// Configuration for altering offsets.
@@ -715,6 +724,9 @@ pub struct KafkaMirrorMaker2MirrorsHeartbeatConnector {
     /// The maximum number of tasks for the Kafka Connector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tasksMax")]
     pub tasks_max: Option<i64>,
+    /// Desired version or version range to respect when starting the Kafka Connector. This is only supported when using Kafka Connect version 4.1.0 and higher.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub version: Option<String>,
 }
 
 /// Configuration for altering offsets.
@@ -769,6 +781,230 @@ pub enum KafkaMirrorMaker2MirrorsHeartbeatConnectorState {
     Running,
 }
 
+/// The source Apache Kafka cluster. The source Kafka cluster is used by the Kafka MirrorMaker 2 connectors.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaMirrorMaker2MirrorsSource {
+    /// Alias used to reference the Kafka cluster.
+    pub alias: String,
+    /// Authentication configuration for connecting to the cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub authentication: Option<KafkaMirrorMaker2MirrorsSourceAuthentication>,
+    /// A comma-separated list of `host:port` pairs for establishing the connection to the Kafka cluster.
+    #[serde(rename = "bootstrapServers")]
+    pub bootstrap_servers: String,
+    /// The MirrorMaker 2 cluster config. Properties with the following prefixes cannot be set: ssl., sasl., security., listeners, plugin.path, rest., bootstrap.servers, consumer.interceptor.classes, producer.interceptor.classes (with the exception of: ssl.endpoint.identification.algorithm, ssl.cipher.suites, ssl.protocol, ssl.enabled.protocols).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub config: Option<BTreeMap<String, serde_json::Value>>,
+    /// TLS configuration for connecting MirrorMaker 2 connectors to a cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tls: Option<KafkaMirrorMaker2MirrorsSourceTls>,
+}
+
+/// Authentication configuration for connecting to the cluster.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct KafkaMirrorMaker2MirrorsSourceAuthentication {
+    /// Link to Kubernetes Secret containing the access token which was obtained from the authorization server.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessToken")]
+    pub access_token: Option<KafkaMirrorMaker2MirrorsSourceAuthenticationAccessToken>,
+    /// Configure whether access token should be treated as JWT. This should be set to `false` if the authorization server returns opaque tokens. Defaults to `true`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessTokenIsJwt")]
+    pub access_token_is_jwt: Option<bool>,
+    /// Path to the token file containing an access token to be used for authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessTokenLocation")]
+    pub access_token_location: Option<String>,
+    /// OAuth audience to use when authenticating against the authorization server. Some authorization servers require the audience to be explicitly set. The possible values depend on how the authorization server is configured. By default, `audience` is not specified when performing the token endpoint request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub audience: Option<String>,
+    /// Reference to the `Secret` which holds the certificate and private key pair.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateAndKey")]
+    pub certificate_and_key: Option<KafkaMirrorMaker2MirrorsSourceAuthenticationCertificateAndKey>,
+    /// Link to Kubernetes secret containing the client assertion which was manually configured for the client.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientAssertion")]
+    pub client_assertion: Option<KafkaMirrorMaker2MirrorsSourceAuthenticationClientAssertion>,
+    /// Path to the file containing the client assertion to be used for authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientAssertionLocation")]
+    pub client_assertion_location: Option<String>,
+    /// The client assertion type. If not set, and either `clientAssertion` or `clientAssertionLocation` is configured, this value defaults to `urn:ietf:params:oauth:client-assertion-type:jwt-bearer`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientAssertionType")]
+    pub client_assertion_type: Option<String>,
+    /// OAuth Client ID which the Kafka client can use to authenticate against the OAuth server and use the token endpoint URI.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientId")]
+    pub client_id: Option<String>,
+    /// Link to Kubernetes Secret containing the OAuth client secret which the Kafka client can use to authenticate against the OAuth server and use the token endpoint URI.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientSecret")]
+    pub client_secret: Option<KafkaMirrorMaker2MirrorsSourceAuthenticationClientSecret>,
+    /// Configuration for the custom authentication mechanism. Only properties with the `sasl.` and `ssl.keystore.` prefixes are allowed. Specify other options in the regular configuration section of the custom resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub config: Option<BTreeMap<String, serde_json::Value>>,
+    /// The connect timeout in seconds when connecting to authorization server. If not set, the effective connect timeout is 60 seconds.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeoutSeconds")]
+    pub connect_timeout_seconds: Option<i64>,
+    /// Enable or disable TLS hostname verification. Default value is `false`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableTlsHostnameVerification")]
+    pub disable_tls_hostname_verification: Option<bool>,
+    /// Enable or disable OAuth metrics. Default value is `false`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableMetrics")]
+    pub enable_metrics: Option<bool>,
+    /// A custom OAuth grant type to use when authenticating against the authorization server with `clientId` and one of `clientSecret` or `clientAssertion`. The value defaults to `client_credentials` in these cases. This is optional configuration, only used with custom authorization server implementations.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "grantType")]
+    pub grant_type: Option<String>,
+    /// The maximum number of retries to attempt if an initial HTTP request fails. If not set, the default is to not attempt any retries.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpRetries")]
+    pub http_retries: Option<i64>,
+    /// The pause to take before retrying a failed HTTP request. If not set, the default is to not pause at all but to immediately repeat a request.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpRetryPauseMs")]
+    pub http_retry_pause_ms: Option<i64>,
+    /// Whether the Accept header should be set in requests to the authorization servers. The default value is `true`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeAcceptHeader")]
+    pub include_accept_header: Option<bool>,
+    /// Set or limit time-to-live of the access tokens to the specified number of seconds. This should be set if the authorization server returns opaque tokens.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxTokenExpirySeconds")]
+    pub max_token_expiry_seconds: Option<i64>,
+    /// Reference to the `Secret` which holds the password.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordSecret")]
+    pub password_secret: Option<KafkaMirrorMaker2MirrorsSourceAuthenticationPasswordSecret>,
+    /// The read timeout in seconds when connecting to authorization server. If not set, the effective read timeout is 60 seconds.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readTimeoutSeconds")]
+    pub read_timeout_seconds: Option<i64>,
+    /// Link to Kubernetes Secret containing the refresh token which can be used to obtain access token from the authorization server.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshToken")]
+    pub refresh_token: Option<KafkaMirrorMaker2MirrorsSourceAuthenticationRefreshToken>,
+    /// Enable or disable SASL on this authentication mechanism.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sasl: Option<bool>,
+    /// SASL extensions parameters.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "saslExtensions")]
+    pub sasl_extensions: Option<BTreeMap<String, String>>,
+    /// OAuth scope to use when authenticating against the authorization server. Some authorization servers require this to be set. The possible values depend on how authorization server is configured. By default `scope` is not specified when doing the token endpoint request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scope: Option<String>,
+    /// Trusted certificates for TLS connection to the OAuth server.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsTrustedCertificates")]
+    pub tls_trusted_certificates: Option<Vec<KafkaMirrorMaker2MirrorsSourceAuthenticationTlsTrustedCertificates>>,
+    /// Authorization server token endpoint URI.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenEndpointUri")]
+    pub token_endpoint_uri: Option<String>,
+    /// Specifies the authentication type. Supported types are `tls`, `scram-sha-256`, `scram-sha-512`, `plain`, 'oauth', and `custom`. `tls` uses TLS client authentication and is supported only over TLS connections. `scram-sha-256` and `scram-sha-512` use SASL SCRAM-SHA-256 and SASL SCRAM-SHA-512 authentication, respectively. `plain` uses SASL PLAIN authentication. `oauth` uses SASL OAUTHBEARER authentication. `custom` allows you to configure a custom authentication mechanism. As of Strimzi 0.49.0, `oauth` type is deprecated and will be removed in the `v1` API version. Please use `custom` type instead.
+    #[serde(rename = "type")]
+    pub r#type: KafkaMirrorMaker2MirrorsSourceAuthenticationType,
+    /// Username used for the authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub username: Option<String>,
+}
+
+/// Link to Kubernetes Secret containing the access token which was obtained from the authorization server.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaMirrorMaker2MirrorsSourceAuthenticationAccessToken {
+    /// The key under which the secret value is stored in the Kubernetes Secret.
+    pub key: String,
+    /// The name of the Kubernetes Secret containing the secret value.
+    #[serde(rename = "secretName")]
+    pub secret_name: String,
+}
+
+/// Reference to the `Secret` which holds the certificate and private key pair.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaMirrorMaker2MirrorsSourceAuthenticationCertificateAndKey {
+    /// The name of the file certificate in the Secret.
+    pub certificate: String,
+    /// The name of the private key in the Secret.
+    pub key: String,
+    /// The name of the Secret containing the certificate.
+    #[serde(rename = "secretName")]
+    pub secret_name: String,
+}
+
+/// Link to Kubernetes secret containing the client assertion which was manually configured for the client.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaMirrorMaker2MirrorsSourceAuthenticationClientAssertion {
+    /// The key under which the secret value is stored in the Kubernetes Secret.
+    pub key: String,
+    /// The name of the Kubernetes Secret containing the secret value.
+    #[serde(rename = "secretName")]
+    pub secret_name: String,
+}
+
+/// Link to Kubernetes Secret containing the OAuth client secret which the Kafka client can use to authenticate against the OAuth server and use the token endpoint URI.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaMirrorMaker2MirrorsSourceAuthenticationClientSecret {
+    /// The key under which the secret value is stored in the Kubernetes Secret.
+    pub key: String,
+    /// The name of the Kubernetes Secret containing the secret value.
+    #[serde(rename = "secretName")]
+    pub secret_name: String,
+}
+
+/// Reference to the `Secret` which holds the password.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaMirrorMaker2MirrorsSourceAuthenticationPasswordSecret {
+    /// The name of the key in the Secret under which the password is stored.
+    pub password: String,
+    /// The name of the Secret containing the password.
+    #[serde(rename = "secretName")]
+    pub secret_name: String,
+}
+
+/// Link to Kubernetes Secret containing the refresh token which can be used to obtain access token from the authorization server.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaMirrorMaker2MirrorsSourceAuthenticationRefreshToken {
+    /// The key under which the secret value is stored in the Kubernetes Secret.
+    pub key: String,
+    /// The name of the Kubernetes Secret containing the secret value.
+    #[serde(rename = "secretName")]
+    pub secret_name: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaMirrorMaker2MirrorsSourceAuthenticationTlsTrustedCertificates {
+    /// The name of the file certificate in the secret.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub certificate: Option<String>,
+    /// Pattern for the certificate files in the secret. Use the link:<https://en.wikipedia.org/wiki/Glob_(programming)[_glob> syntax_] for the pattern. All files in the secret that match the pattern are used.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pattern: Option<String>,
+    /// The name of the Secret containing the certificate.
+    #[serde(rename = "secretName")]
+    pub secret_name: String,
+}
+
+/// Authentication configuration for connecting to the cluster.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaMirrorMaker2MirrorsSourceAuthenticationType {
+    #[serde(rename = "tls")]
+    Tls,
+    #[serde(rename = "scram-sha-256")]
+    ScramSha256,
+    #[serde(rename = "scram-sha-512")]
+    ScramSha512,
+    #[serde(rename = "plain")]
+    Plain,
+    #[serde(rename = "oauth")]
+    Oauth,
+    #[serde(rename = "custom")]
+    Custom,
+}
+
+/// TLS configuration for connecting MirrorMaker 2 connectors to a cluster.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaMirrorMaker2MirrorsSourceTls {
+    /// Trusted certificates for TLS connection.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trustedCertificates")]
+    pub trusted_certificates: Option<Vec<KafkaMirrorMaker2MirrorsSourceTlsTrustedCertificates>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaMirrorMaker2MirrorsSourceTlsTrustedCertificates {
+    /// The name of the file certificate in the secret.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub certificate: Option<String>,
+    /// Pattern for the certificate files in the secret. Use the link:<https://en.wikipedia.org/wiki/Glob_(programming)[_glob> syntax_] for the pattern. All files in the secret that match the pattern are used.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pattern: Option<String>,
+    /// The name of the Secret containing the certificate.
+    #[serde(rename = "secretName")]
+    pub secret_name: String,
+}
+
 /// The specification of the Kafka MirrorMaker 2 source connector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaMirrorMaker2MirrorsSourceConnector {
@@ -793,6 +1029,9 @@ pub struct KafkaMirrorMaker2MirrorsSourceConnector {
     /// The maximum number of tasks for the Kafka Connector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tasksMax")]
     pub tasks_max: Option<i64>,
+    /// Desired version or version range to respect when starting the Kafka Connector. This is only supported when using Kafka Connect version 4.1.0 and higher.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub version: Option<String>,
 }
 
 /// Configuration for altering offsets.
@@ -892,6 +1131,242 @@ pub struct KafkaMirrorMaker2ResourcesClaims {
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub request: Option<String>,
+}
+
+/// The target Apache Kafka cluster. The target Kafka cluster is used by the underlying Kafka Connect framework for its internal topics.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaMirrorMaker2Target {
+    /// Alias used to reference the Kafka cluster.
+    pub alias: String,
+    /// Authentication configuration for connecting to the cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub authentication: Option<KafkaMirrorMaker2TargetAuthentication>,
+    /// A comma-separated list of `host:port` pairs for establishing the connection to the Kafka cluster.
+    #[serde(rename = "bootstrapServers")]
+    pub bootstrap_servers: String,
+    /// The MirrorMaker 2 cluster config. Properties with the following prefixes cannot be set: ssl., sasl., security., listeners, plugin.path, rest., bootstrap.servers, consumer.interceptor.classes, producer.interceptor.classes (with the exception of: ssl.endpoint.identification.algorithm, ssl.cipher.suites, ssl.protocol, ssl.enabled.protocols).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub config: Option<BTreeMap<String, serde_json::Value>>,
+    /// The name of the Kafka topic where connector configurations are stored. Required.
+    #[serde(rename = "configStorageTopic")]
+    pub config_storage_topic: String,
+    /// A unique ID that identifies the Connect cluster group. Required.
+    #[serde(rename = "groupId")]
+    pub group_id: String,
+    /// The name of the Kafka topic where source connector offsets are stored. Required.
+    #[serde(rename = "offsetStorageTopic")]
+    pub offset_storage_topic: String,
+    /// The name of the Kafka topic where connector and task statuses are stored. Required.
+    #[serde(rename = "statusStorageTopic")]
+    pub status_storage_topic: String,
+    /// TLS configuration for connecting MirrorMaker 2 connectors to a cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tls: Option<KafkaMirrorMaker2TargetTls>,
+}
+
+/// Authentication configuration for connecting to the cluster.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct KafkaMirrorMaker2TargetAuthentication {
+    /// Link to Kubernetes Secret containing the access token which was obtained from the authorization server.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessToken")]
+    pub access_token: Option<KafkaMirrorMaker2TargetAuthenticationAccessToken>,
+    /// Configure whether access token should be treated as JWT. This should be set to `false` if the authorization server returns opaque tokens. Defaults to `true`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessTokenIsJwt")]
+    pub access_token_is_jwt: Option<bool>,
+    /// Path to the token file containing an access token to be used for authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessTokenLocation")]
+    pub access_token_location: Option<String>,
+    /// OAuth audience to use when authenticating against the authorization server. Some authorization servers require the audience to be explicitly set. The possible values depend on how the authorization server is configured. By default, `audience` is not specified when performing the token endpoint request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub audience: Option<String>,
+    /// Reference to the `Secret` which holds the certificate and private key pair.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateAndKey")]
+    pub certificate_and_key: Option<KafkaMirrorMaker2TargetAuthenticationCertificateAndKey>,
+    /// Link to Kubernetes secret containing the client assertion which was manually configured for the client.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientAssertion")]
+    pub client_assertion: Option<KafkaMirrorMaker2TargetAuthenticationClientAssertion>,
+    /// Path to the file containing the client assertion to be used for authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientAssertionLocation")]
+    pub client_assertion_location: Option<String>,
+    /// The client assertion type. If not set, and either `clientAssertion` or `clientAssertionLocation` is configured, this value defaults to `urn:ietf:params:oauth:client-assertion-type:jwt-bearer`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientAssertionType")]
+    pub client_assertion_type: Option<String>,
+    /// OAuth Client ID which the Kafka client can use to authenticate against the OAuth server and use the token endpoint URI.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientId")]
+    pub client_id: Option<String>,
+    /// Link to Kubernetes Secret containing the OAuth client secret which the Kafka client can use to authenticate against the OAuth server and use the token endpoint URI.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientSecret")]
+    pub client_secret: Option<KafkaMirrorMaker2TargetAuthenticationClientSecret>,
+    /// Configuration for the custom authentication mechanism. Only properties with the `sasl.` and `ssl.keystore.` prefixes are allowed. Specify other options in the regular configuration section of the custom resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub config: Option<BTreeMap<String, serde_json::Value>>,
+    /// The connect timeout in seconds when connecting to authorization server. If not set, the effective connect timeout is 60 seconds.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeoutSeconds")]
+    pub connect_timeout_seconds: Option<i64>,
+    /// Enable or disable TLS hostname verification. Default value is `false`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableTlsHostnameVerification")]
+    pub disable_tls_hostname_verification: Option<bool>,
+    /// Enable or disable OAuth metrics. Default value is `false`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableMetrics")]
+    pub enable_metrics: Option<bool>,
+    /// A custom OAuth grant type to use when authenticating against the authorization server with `clientId` and one of `clientSecret` or `clientAssertion`. The value defaults to `client_credentials` in these cases. This is optional configuration, only used with custom authorization server implementations.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "grantType")]
+    pub grant_type: Option<String>,
+    /// The maximum number of retries to attempt if an initial HTTP request fails. If not set, the default is to not attempt any retries.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpRetries")]
+    pub http_retries: Option<i64>,
+    /// The pause to take before retrying a failed HTTP request. If not set, the default is to not pause at all but to immediately repeat a request.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpRetryPauseMs")]
+    pub http_retry_pause_ms: Option<i64>,
+    /// Whether the Accept header should be set in requests to the authorization servers. The default value is `true`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeAcceptHeader")]
+    pub include_accept_header: Option<bool>,
+    /// Set or limit time-to-live of the access tokens to the specified number of seconds. This should be set if the authorization server returns opaque tokens.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxTokenExpirySeconds")]
+    pub max_token_expiry_seconds: Option<i64>,
+    /// Reference to the `Secret` which holds the password.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordSecret")]
+    pub password_secret: Option<KafkaMirrorMaker2TargetAuthenticationPasswordSecret>,
+    /// The read timeout in seconds when connecting to authorization server. If not set, the effective read timeout is 60 seconds.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readTimeoutSeconds")]
+    pub read_timeout_seconds: Option<i64>,
+    /// Link to Kubernetes Secret containing the refresh token which can be used to obtain access token from the authorization server.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshToken")]
+    pub refresh_token: Option<KafkaMirrorMaker2TargetAuthenticationRefreshToken>,
+    /// Enable or disable SASL on this authentication mechanism.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sasl: Option<bool>,
+    /// SASL extensions parameters.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "saslExtensions")]
+    pub sasl_extensions: Option<BTreeMap<String, String>>,
+    /// OAuth scope to use when authenticating against the authorization server. Some authorization servers require this to be set. The possible values depend on how authorization server is configured. By default `scope` is not specified when doing the token endpoint request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scope: Option<String>,
+    /// Trusted certificates for TLS connection to the OAuth server.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsTrustedCertificates")]
+    pub tls_trusted_certificates: Option<Vec<KafkaMirrorMaker2TargetAuthenticationTlsTrustedCertificates>>,
+    /// Authorization server token endpoint URI.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenEndpointUri")]
+    pub token_endpoint_uri: Option<String>,
+    /// Specifies the authentication type. Supported types are `tls`, `scram-sha-256`, `scram-sha-512`, `plain`, 'oauth', and `custom`. `tls` uses TLS client authentication and is supported only over TLS connections. `scram-sha-256` and `scram-sha-512` use SASL SCRAM-SHA-256 and SASL SCRAM-SHA-512 authentication, respectively. `plain` uses SASL PLAIN authentication. `oauth` uses SASL OAUTHBEARER authentication. `custom` allows you to configure a custom authentication mechanism. As of Strimzi 0.49.0, `oauth` type is deprecated and will be removed in the `v1` API version. Please use `custom` type instead.
+    #[serde(rename = "type")]
+    pub r#type: KafkaMirrorMaker2TargetAuthenticationType,
+    /// Username used for the authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub username: Option<String>,
+}
+
+/// Link to Kubernetes Secret containing the access token which was obtained from the authorization server.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaMirrorMaker2TargetAuthenticationAccessToken {
+    /// The key under which the secret value is stored in the Kubernetes Secret.
+    pub key: String,
+    /// The name of the Kubernetes Secret containing the secret value.
+    #[serde(rename = "secretName")]
+    pub secret_name: String,
+}
+
+/// Reference to the `Secret` which holds the certificate and private key pair.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaMirrorMaker2TargetAuthenticationCertificateAndKey {
+    /// The name of the file certificate in the Secret.
+    pub certificate: String,
+    /// The name of the private key in the Secret.
+    pub key: String,
+    /// The name of the Secret containing the certificate.
+    #[serde(rename = "secretName")]
+    pub secret_name: String,
+}
+
+/// Link to Kubernetes secret containing the client assertion which was manually configured for the client.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaMirrorMaker2TargetAuthenticationClientAssertion {
+    /// The key under which the secret value is stored in the Kubernetes Secret.
+    pub key: String,
+    /// The name of the Kubernetes Secret containing the secret value.
+    #[serde(rename = "secretName")]
+    pub secret_name: String,
+}
+
+/// Link to Kubernetes Secret containing the OAuth client secret which the Kafka client can use to authenticate against the OAuth server and use the token endpoint URI.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaMirrorMaker2TargetAuthenticationClientSecret {
+    /// The key under which the secret value is stored in the Kubernetes Secret.
+    pub key: String,
+    /// The name of the Kubernetes Secret containing the secret value.
+    #[serde(rename = "secretName")]
+    pub secret_name: String,
+}
+
+/// Reference to the `Secret` which holds the password.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaMirrorMaker2TargetAuthenticationPasswordSecret {
+    /// The name of the key in the Secret under which the password is stored.
+    pub password: String,
+    /// The name of the Secret containing the password.
+    #[serde(rename = "secretName")]
+    pub secret_name: String,
+}
+
+/// Link to Kubernetes Secret containing the refresh token which can be used to obtain access token from the authorization server.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaMirrorMaker2TargetAuthenticationRefreshToken {
+    /// The key under which the secret value is stored in the Kubernetes Secret.
+    pub key: String,
+    /// The name of the Kubernetes Secret containing the secret value.
+    #[serde(rename = "secretName")]
+    pub secret_name: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaMirrorMaker2TargetAuthenticationTlsTrustedCertificates {
+    /// The name of the file certificate in the secret.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub certificate: Option<String>,
+    /// Pattern for the certificate files in the secret. Use the link:<https://en.wikipedia.org/wiki/Glob_(programming)[_glob> syntax_] for the pattern. All files in the secret that match the pattern are used.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pattern: Option<String>,
+    /// The name of the Secret containing the certificate.
+    #[serde(rename = "secretName")]
+    pub secret_name: String,
+}
+
+/// Authentication configuration for connecting to the cluster.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaMirrorMaker2TargetAuthenticationType {
+    #[serde(rename = "tls")]
+    Tls,
+    #[serde(rename = "scram-sha-256")]
+    ScramSha256,
+    #[serde(rename = "scram-sha-512")]
+    ScramSha512,
+    #[serde(rename = "plain")]
+    Plain,
+    #[serde(rename = "oauth")]
+    Oauth,
+    #[serde(rename = "custom")]
+    Custom,
+}
+
+/// TLS configuration for connecting MirrorMaker 2 connectors to a cluster.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaMirrorMaker2TargetTls {
+    /// Trusted certificates for TLS connection.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trustedCertificates")]
+    pub trusted_certificates: Option<Vec<KafkaMirrorMaker2TargetTlsTrustedCertificates>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaMirrorMaker2TargetTlsTrustedCertificates {
+    /// The name of the file certificate in the secret.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub certificate: Option<String>,
+    /// Pattern for the certificate files in the secret. Use the link:<https://en.wikipedia.org/wiki/Glob_(programming)[_glob> syntax_] for the pattern. All files in the secret that match the pattern are used.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pattern: Option<String>,
+    /// The name of the Secret containing the certificate.
+    #[serde(rename = "secretName")]
+    pub secret_name: String,
 }
 
 /// Template for Kafka Connect and Kafka MirrorMaker 2 resources. The template allows users to specify how the `Pods`, `Service`, and other services are generated.
@@ -1789,18 +2264,18 @@ pub struct KafkaMirrorMaker2TemplateBuildPodVolumesCsiNodePublishSecretRef {
 /// `EmptyDir` to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaMirrorMaker2TemplateBuildPodVolumesEmptyDir {
+    /// Medium represents the type of storage medium should back this volume. Valid values are unset or `Memory`. When not set, it will use the node's default medium.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub medium: Option<String>,
+    pub medium: Option<KafkaMirrorMaker2TemplateBuildPodVolumesEmptyDirMedium>,
+    /// The total amount of local storage required for this EmptyDir volume (for example 1Gi).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
-    pub size_limit: Option<KafkaMirrorMaker2TemplateBuildPodVolumesEmptyDirSizeLimit>,
+    pub size_limit: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KafkaMirrorMaker2TemplateBuildPodVolumesEmptyDirSizeLimit {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub amount: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub format: Option<String>,
+/// `EmptyDir` to use to populate the volume.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaMirrorMaker2TemplateBuildPodVolumesEmptyDirMedium {
+    Memory,
 }
 
 /// `ImageVolumeSource` object to use to populate the volume.
@@ -2908,18 +3383,18 @@ pub struct KafkaMirrorMaker2TemplatePodVolumesCsiNodePublishSecretRef {
 /// `EmptyDir` to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaMirrorMaker2TemplatePodVolumesEmptyDir {
+    /// Medium represents the type of storage medium should back this volume. Valid values are unset or `Memory`. When not set, it will use the node's default medium.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub medium: Option<String>,
+    pub medium: Option<KafkaMirrorMaker2TemplatePodVolumesEmptyDirMedium>,
+    /// The total amount of local storage required for this EmptyDir volume (for example 1Gi).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
-    pub size_limit: Option<KafkaMirrorMaker2TemplatePodVolumesEmptyDirSizeLimit>,
+    pub size_limit: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KafkaMirrorMaker2TemplatePodVolumesEmptyDirSizeLimit {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub amount: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub format: Option<String>,
+/// `EmptyDir` to use to populate the volume.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaMirrorMaker2TemplatePodVolumesEmptyDirMedium {
+    Memory,
 }
 
 /// `ImageVolumeSource` object to use to populate the volume.

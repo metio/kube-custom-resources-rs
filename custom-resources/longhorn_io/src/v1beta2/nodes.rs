@@ -105,6 +105,10 @@ pub struct NodeStatusDiskStatus {
     pub disk_uuid: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "filesystemType")]
     pub filesystem_type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthData")]
+    pub health_data: Option<BTreeMap<String, NodeStatusDiskStatusHealthData>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthDataLastCollectedAt")]
+    pub health_data_last_collected_at: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceManagerName")]
     pub instance_manager_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scheduledBackingImage")]
@@ -117,6 +121,70 @@ pub struct NodeStatusDiskStatus {
     pub storage_maximum: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageScheduled")]
     pub storage_scheduled: Option<i64>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NodeStatusDiskStatusHealthData {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub attributes: Option<Vec<NodeStatusDiskStatusHealthDataAttributes>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub capacity: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskName")]
+    pub disk_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskType")]
+    pub disk_type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "firmwareVersion")]
+    pub firmware_version: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthStatus")]
+    pub health_status: Option<NodeStatusDiskStatusHealthDataHealthStatus>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelName")]
+    pub model_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serialNumber")]
+    pub serial_number: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub source: Option<NodeStatusDiskStatusHealthDataSource>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub temperature: Option<i64>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NodeStatusDiskStatusHealthDataAttributes {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rawString")]
+    pub raw_string: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rawValue")]
+    pub raw_value: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub threshold: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "whenFailed")]
+    pub when_failed: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub worst: Option<i64>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum NodeStatusDiskStatusHealthDataHealthStatus {
+    #[serde(rename = "FAILED")]
+    Failed,
+    #[serde(rename = "PASSED")]
+    Passed,
+    #[serde(rename = "UNKNOWN")]
+    Unknown,
+    #[serde(rename = "WARNING")]
+    Warning,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum NodeStatusDiskStatusHealthDataSource {
+    #[serde(rename = "SMART")]
+    Smart,
+    #[serde(rename = "SPDK")]
+    Spdk,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

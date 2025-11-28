@@ -36,9 +36,15 @@ pub struct KafkaConnectSpec {
     /// The Kafka Connect configuration. Properties with the following prefixes cannot be set: ssl., sasl., security., listeners, plugin.path, rest., bootstrap.servers, consumer.interceptor.classes, producer.interceptor.classes, prometheus.metrics.reporter. (with the exception of: ssl.endpoint.identification.algorithm, ssl.cipher.suites, ssl.protocol, ssl.enabled.protocols).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<BTreeMap<String, serde_json::Value>>,
+    /// The name of the Kafka topic where connector configurations are stored.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configStorageTopic")]
+    pub config_storage_topic: Option<String>,
     /// Pass data from Secrets or ConfigMaps to the Kafka Connect pods and use them to configure connectors.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalConfiguration")]
     pub external_configuration: Option<KafkaConnectExternalConfiguration>,
+    /// A unique ID that identifies the Connect cluster group.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupId")]
+    pub group_id: Option<String>,
     /// The container image used for Kafka Connect pods. If no image name is explicitly specified, it is determined based on the `spec.version` configuration. The image names are specifically mapped to corresponding versions in the Cluster Operator configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
@@ -57,6 +63,9 @@ pub struct KafkaConnectSpec {
     /// Metrics configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricsConfig")]
     pub metrics_config: Option<KafkaConnectMetricsConfig>,
+    /// The name of the Kafka topic where source connector offsets are stored.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "offsetStorageTopic")]
+    pub offset_storage_topic: Option<String>,
     /// List of connector plugins to mount into the `KafkaConnect` pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub plugins: Option<Vec<KafkaConnectPlugins>>,
@@ -66,12 +75,15 @@ pub struct KafkaConnectSpec {
     /// Pod readiness checking.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<KafkaConnectReadinessProbe>,
-    /// The number of pods in the Kafka Connect group. Defaults to `3`.
+    /// The number of pods in the Kafka Connect group. Required in the `v1` version of the Strimzi API. Defaults to `3` in the `v1beta2` version of the Strimzi API.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i64>,
     /// The maximum limits for CPU and memory resources and the requested initial resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<KafkaConnectResources>,
+    /// The name of the Kafka topic where connector and task status are stored.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusStorageTopic")]
+    pub status_storage_topic: Option<String>,
     /// Template for Kafka Connect and Kafka MirrorMaker 2 resources. The template allows users to specify how the `Pods`, `Service`, and other services are generated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub template: Option<KafkaConnectTemplate>,
@@ -170,7 +182,7 @@ pub struct KafkaConnectAuthentication {
     /// Authorization server token endpoint URI.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenEndpointUri")]
     pub token_endpoint_uri: Option<String>,
-    /// Specifies the authentication type. Supported types are `tls`, `scram-sha-256`, `scram-sha-512`, `plain`, 'oauth', and `custom`. `tls` uses TLS client authentication and is supported only over TLS connections. `scram-sha-256` and `scram-sha-512` use SASL SCRAM-SHA-256 and SASL SCRAM-SHA-512 authentication, respectively. `plain` uses SASL PLAIN authentication. `oauth` uses SASL OAUTHBEARER authentication. `custom` allows you to configure a custom authentication mechanism.
+    /// Specifies the authentication type. Supported types are `tls`, `scram-sha-256`, `scram-sha-512`, `plain`, 'oauth', and `custom`. `tls` uses TLS client authentication and is supported only over TLS connections. `scram-sha-256` and `scram-sha-512` use SASL SCRAM-SHA-256 and SASL SCRAM-SHA-512 authentication, respectively. `plain` uses SASL PLAIN authentication. `oauth` uses SASL OAUTHBEARER authentication. `custom` allows you to configure a custom authentication mechanism. As of Strimzi 0.49.0, `oauth` type is deprecated and will be removed in the `v1` API version. Please use `custom` type instead.
     #[serde(rename = "type")]
     pub r#type: KafkaConnectAuthenticationType,
     /// Username used for the authentication.
@@ -285,9 +297,15 @@ pub struct KafkaConnectBuild {
 /// Configures where should the newly built image be stored. Required.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KafkaConnectBuildOutput {
+    /// Configures additional options to pass to the `build` command of either Kaniko or Buildah (depending on the feature gate setting) when building a new Kafka Connect image. Allowed Kaniko options: --customPlatform, --custom-platform, --insecure, --insecure-pull, --insecure-registry, --log-format, --log-timestamp, --registry-mirror, --reproducible, --single-snapshot, --skip-tls-verify, --skip-tls-verify-pull, --skip-tls-verify-registry, --verbosity, --snapshotMode, --use-new-run, --registry-certificate, --registry-client-cert, --ignore-path. Allowed Buildah `build` options: --authfile, --cert-dir, --creds, --decryption-key, --retry, --retry-delay, --tls-verify. Those options are used only on Kubernetes, where Kaniko and Buildah are available. They are ignored on OpenShift. For more information, see the link:<https://github.com/GoogleContainerTools/kaniko[Kaniko> GitHub repository^] or the link:<https://github.com/containers/buildah/blob/main/docs/buildah-build.1.md[Buildah> build document^]. Changing this field does not trigger a rebuild of the Kafka Connect image.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalBuildOptions")]
+    pub additional_build_options: Option<Vec<String>>,
     /// Configures additional options which will be passed to the Kaniko executor when building the new Connect image. Allowed options are: --customPlatform, --custom-platform, --insecure, --insecure-pull, --insecure-registry, --log-format, --log-timestamp, --registry-mirror, --reproducible, --single-snapshot, --skip-tls-verify, --skip-tls-verify-pull, --skip-tls-verify-registry, --verbosity, --snapshotMode, --use-new-run, --registry-certificate, --registry-client-cert, --ignore-path. These options will be used only on Kubernetes where the Kaniko executor is used. They will be ignored on OpenShift. The options are described in the link:<https://github.com/GoogleContainerTools/kaniko[Kaniko> GitHub repository^]. Changing this field does not trigger new build of the Kafka Connect image.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalKanikoOptions")]
     pub additional_kaniko_options: Option<Vec<String>>,
+    /// Configures additional options to pass to the Buildah `push` command when pushing a new Connect image. Allowed options: --authfile, --cert-dir, --creds, --quiet, --retry, --retry-delay, --tls-verify. Those options are used only on Kubernetes, where Buildah is available. They are ignored on OpenShift. For more information, see the link:<https://github.com/containers/buildah/blob/main/docs/buildah-push.1.md[Buildah> push document^]. Changing this field does not trigger a rebuild of the Kafka Connect image.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalPushOptions")]
+    pub additional_push_options: Option<Vec<String>>,
     /// The name of the image which will be built. Required.
     pub image: String,
     /// Container Registry Secret with the credentials for pushing the newly built image.
@@ -1631,18 +1649,18 @@ pub struct KafkaConnectTemplateBuildPodVolumesCsiNodePublishSecretRef {
 /// `EmptyDir` to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaConnectTemplateBuildPodVolumesEmptyDir {
+    /// Medium represents the type of storage medium should back this volume. Valid values are unset or `Memory`. When not set, it will use the node's default medium.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub medium: Option<String>,
+    pub medium: Option<KafkaConnectTemplateBuildPodVolumesEmptyDirMedium>,
+    /// The total amount of local storage required for this EmptyDir volume (for example 1Gi).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
-    pub size_limit: Option<KafkaConnectTemplateBuildPodVolumesEmptyDirSizeLimit>,
+    pub size_limit: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KafkaConnectTemplateBuildPodVolumesEmptyDirSizeLimit {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub amount: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub format: Option<String>,
+/// `EmptyDir` to use to populate the volume.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaConnectTemplateBuildPodVolumesEmptyDirMedium {
+    Memory,
 }
 
 /// `ImageVolumeSource` object to use to populate the volume.
@@ -2750,18 +2768,18 @@ pub struct KafkaConnectTemplatePodVolumesCsiNodePublishSecretRef {
 /// `EmptyDir` to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaConnectTemplatePodVolumesEmptyDir {
+    /// Medium represents the type of storage medium should back this volume. Valid values are unset or `Memory`. When not set, it will use the node's default medium.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub medium: Option<String>,
+    pub medium: Option<KafkaConnectTemplatePodVolumesEmptyDirMedium>,
+    /// The total amount of local storage required for this EmptyDir volume (for example 1Gi).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
-    pub size_limit: Option<KafkaConnectTemplatePodVolumesEmptyDirSizeLimit>,
+    pub size_limit: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KafkaConnectTemplatePodVolumesEmptyDirSizeLimit {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub amount: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub format: Option<String>,
+/// `EmptyDir` to use to populate the volume.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaConnectTemplatePodVolumesEmptyDirMedium {
+    Memory,
 }
 
 /// `ImageVolumeSource` object to use to populate the volume.

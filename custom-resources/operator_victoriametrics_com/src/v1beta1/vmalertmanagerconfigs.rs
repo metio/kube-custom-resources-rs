@@ -64,6 +64,8 @@ pub struct VmAlertmanagerConfigReceivers {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub email_configs: Option<Vec<VmAlertmanagerConfigReceiversEmailConfigs>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub incidentio_configs: Option<Vec<VmAlertmanagerConfigReceiversIncidentioConfigs>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub jira_configs: Option<Vec<VmAlertmanagerConfigReceiversJiraConfigs>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub msteams_configs: Option<Vec<VmAlertmanagerConfigReceiversMsteamsConfigs>>,
@@ -727,6 +729,49 @@ pub struct VmAlertmanagerConfigReceiversEmailConfigsTlsConfigCertSecret {
 /// Secret containing the client key file for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversEmailConfigsTlsConfigKeySecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// IncidentIOConfig configures notifications via incident.io.
+/// <https://prometheus.io/docs/alerting/latest/configuration/#incidentio_config>
+/// available from v0.66.0 operator version
+/// and v0.29.0 alertmanager version
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VmAlertmanagerConfigReceiversIncidentioConfigs {
+    /// AlertSourceToken is used to authenticate with incident.io
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub alert_source_token: Option<VmAlertmanagerConfigReceiversIncidentioConfigsAlertSourceToken>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub http_config: Option<serde_json::Value>,
+    /// MaxAlerts defines maximum number of alerts to be sent per incident.io message.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub max_alerts: Option<i64>,
+    /// SendResolved controls notify about resolved alerts.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub send_resolved: Option<bool>,
+    /// Timeout is the maximum time allowed to invoke incident.io
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timeout: Option<String>,
+    /// The URL to send the incident.io alert. This would typically be provided by the
+    /// incident.io team when setting up an alert source.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
+}
+
+/// AlertSourceToken is used to authenticate with incident.io
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VmAlertmanagerConfigReceiversIncidentioConfigsAlertSourceToken {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.

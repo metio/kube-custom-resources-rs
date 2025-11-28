@@ -38,7 +38,8 @@ spec:
           jsonPath: ".status.conditions[?(@.type==\"Ready\")].status"
           name: "Ready"
           type: "string"
-      deprecated: false
+      deprecated: true
+      deprecationWarning: "Version v1beta2 of the KafkaTopic API is deprecated. Please use the v1 version instead."
       name: "v1beta2"
       schema:
         openAPIV3Schema:

@@ -140,11 +140,13 @@ spec:
                           additionalProperties:
                             type: "string"
                           description: "Annotations is an unstructured key value map stored with a resource that may be\nset by external tools to store and retrieve arbitrary metadata. They are not\nqueryable and should be preserved when modifying objects.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations"
+                          nullable: true
                           type: "object"
                         labels:
                           additionalProperties:
                             type: "string"
                           description: "Map of string keys and values that can be used to organize and categorize\n(scope and select) objects. May match selectors of replication controllers\nand services.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels"
+                          nullable: true
                           type: "object"
                       type: "object"
                     spec:
@@ -171,6 +173,7 @@ spec:
                   type: "object"
                 volumeClaimTemplates:
                   description: "volumeClaimTemplates is a list of claims that pods are allowed to reference.\nThe NodeSet controller is responsible for mapping network identities to\nclaims in a way that maintains the identity of a pod. Every claim in\nthis list must have at least one matching (by name) volumeMount in one\ncontainer in the template. A claim in this list takes precedence over\nany volumes in the template, with the same name."
+                  nullable: true
                   x-kubernetes-preserve-unknown-fields: true
               required:
                 - "controllerRef"

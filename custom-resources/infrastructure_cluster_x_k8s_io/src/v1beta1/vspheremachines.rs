@@ -7,6 +7,7 @@ mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
@@ -128,6 +129,10 @@ pub struct VSphereMachineSpec {
     /// object ID in which the virtual machine is created/located.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourcePool")]
     pub resource_pool: Option<String>,
+    /// resources is the definition of the VM's cpu and memory
+    /// reservations, limits and shares.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<VSphereMachineResources>,
     /// Server is the IP address or FQDN of the vSphere server on which
     /// the virtual machine is created/located.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -476,6 +481,58 @@ pub enum VSphereMachinePowerOffMode {
     Soft,
     #[serde(rename = "trySoft")]
     TrySoft,
+}
+
+/// resources is the definition of the VM's cpu and memory
+/// reservations, limits and shares.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VSphereMachineResources {
+    /// limits is the definition of the VM's cpu (in hertz, rounded up to the nearest MHz)
+    /// and memory (in bytes, rounded up to the nearest MiB) limits
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<VSphereMachineResourcesLimits>,
+    /// requests is the definition of the VM's cpu (in hertz, rounded up to the nearest MHz)
+    /// and memory (in bytes, rounded up to the nearest MiB) reservations
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<VSphereMachineResourcesRequests>,
+    /// shares is the definition of the VM's cpu and memory shares
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub shares: Option<VSphereMachineResourcesShares>,
+}
+
+/// limits is the definition of the VM's cpu (in hertz, rounded up to the nearest MHz)
+/// and memory (in bytes, rounded up to the nearest MiB) limits
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VSphereMachineResourcesLimits {
+    /// cpu is the definition of the cpu quantity for the given VM hardware policy
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cpu: Option<IntOrString>,
+    /// memory is the definition of the memory quantity for the given VM hardware policy
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub memory: Option<IntOrString>,
+}
+
+/// requests is the definition of the VM's cpu (in hertz, rounded up to the nearest MHz)
+/// and memory (in bytes, rounded up to the nearest MiB) reservations
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VSphereMachineResourcesRequests {
+    /// cpu is the definition of the cpu quantity for the given VM hardware policy
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cpu: Option<IntOrString>,
+    /// memory is the definition of the memory quantity for the given VM hardware policy
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub memory: Option<IntOrString>,
+}
+
+/// shares is the definition of the VM's cpu and memory shares
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VSphereMachineResourcesShares {
+    /// cpu is the number of spu shares to assign to the VM
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cpu: Option<i32>,
+    /// memory is the number of memory shares to assign to the VM
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub memory: Option<i32>,
 }
 
 /// VSphereMachineStatus defines the observed state of VSphereMachine.

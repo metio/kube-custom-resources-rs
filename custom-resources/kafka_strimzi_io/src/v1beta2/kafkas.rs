@@ -12,7 +12,6 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// The specification of the Kafka cluster.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "kafka.strimzi.io", version = "v1beta2", kind = "Kafka", plural = "kafkas")]
 #[kube(namespaced)]
@@ -21,55 +20,39 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct KafkaSpec {
-    /// Configuration of the clients certificate authority.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientsCa")]
     pub clients_ca: Option<KafkaClientsCa>,
-    /// Configuration of the cluster certificate authority.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterCa")]
     pub cluster_ca: Option<KafkaClusterCa>,
-    /// Configuration for Cruise Control deployment. Deploys a Cruise Control instance when specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cruiseControl")]
     pub cruise_control: Option<KafkaCruiseControl>,
-    /// Configuration of the Entity Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "entityOperator")]
     pub entity_operator: Option<KafkaEntityOperator>,
-    /// As of Strimzi 0.35.0, JMXTrans is not supported anymore and this option is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmxTrans")]
     pub jmx_trans: Option<KafkaJmxTrans>,
-    /// Configuration of the Kafka cluster.
     pub kafka: KafkaKafka,
-    /// Configuration of the Kafka Exporter. Kafka Exporter can provide additional metrics, for example lag of consumer group at topic/partition.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kafkaExporter")]
     pub kafka_exporter: Option<KafkaKafkaExporter>,
-    /// A list of time windows for maintenance tasks (that is, certificates renewal). Each time window is defined by a cron expression.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maintenanceTimeWindows")]
     pub maintenance_time_windows: Option<Vec<String>>,
-    /// As of Strimzi 0.46.0, ZooKeeper-based Apache Kafka clusters are not supported anymore and this option is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub zookeeper: Option<KafkaZookeeper>,
 }
 
-/// Configuration of the clients certificate authority.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaClientsCa {
-    /// How should CA certificate expiration be handled when `generateCertificateAuthority=true`. The default is for a new CA certificate to be generated reusing the existing private key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateExpirationPolicy")]
     pub certificate_expiration_policy: Option<KafkaClientsCaCertificateExpirationPolicy>,
-    /// If true then Certificate Authority certificates will be generated automatically. Otherwise the user will need to provide a Secret with the CA certificate. Default is true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "generateCertificateAuthority")]
     pub generate_certificate_authority: Option<bool>,
-    /// If `true`, the Cluster and Client CA Secrets are configured with the `ownerReference` set to the `Kafka` resource. If the `Kafka` resource is deleted when `true`, the CA Secrets are also deleted. If `false`, the `ownerReference` is disabled. If the `Kafka` resource is deleted when `false`, the CA Secrets are retained and available for reuse. Default is `true`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "generateSecretOwnerReference")]
     pub generate_secret_owner_reference: Option<bool>,
-    /// The number of days in the certificate renewal period. This is the number of days before the a certificate expires during which renewal actions may be performed. When `generateCertificateAuthority` is true, this will cause the generation of a new certificate. When `generateCertificateAuthority` is true, this will cause extra logging at WARN level about the pending certificate expiry. Default is 30.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "renewalDays")]
     pub renewal_days: Option<i64>,
-    /// The number of days generated certificates should be valid for. The default is 365.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "validityDays")]
     pub validity_days: Option<i64>,
 }
 
-/// Configuration of the clients certificate authority.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaClientsCaCertificateExpirationPolicy {
     #[serde(rename = "renew-certificate")]
@@ -78,27 +61,20 @@ pub enum KafkaClientsCaCertificateExpirationPolicy {
     ReplaceKey,
 }
 
-/// Configuration of the cluster certificate authority.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaClusterCa {
-    /// How should CA certificate expiration be handled when `generateCertificateAuthority=true`. The default is for a new CA certificate to be generated reusing the existing private key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateExpirationPolicy")]
     pub certificate_expiration_policy: Option<KafkaClusterCaCertificateExpirationPolicy>,
-    /// If true then Certificate Authority certificates will be generated automatically. Otherwise the user will need to provide a Secret with the CA certificate. Default is true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "generateCertificateAuthority")]
     pub generate_certificate_authority: Option<bool>,
-    /// If `true`, the Cluster and Client CA Secrets are configured with the `ownerReference` set to the `Kafka` resource. If the `Kafka` resource is deleted when `true`, the CA Secrets are also deleted. If `false`, the `ownerReference` is disabled. If the `Kafka` resource is deleted when `false`, the CA Secrets are retained and available for reuse. Default is `true`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "generateSecretOwnerReference")]
     pub generate_secret_owner_reference: Option<bool>,
-    /// The number of days in the certificate renewal period. This is the number of days before the a certificate expires during which renewal actions may be performed. When `generateCertificateAuthority` is true, this will cause the generation of a new certificate. When `generateCertificateAuthority` is true, this will cause extra logging at WARN level about the pending certificate expiry. Default is 30.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "renewalDays")]
     pub renewal_days: Option<i64>,
-    /// The number of days generated certificates should be valid for. The default is 365.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "validityDays")]
     pub validity_days: Option<i64>,
 }
 
-/// Configuration of the cluster certificate authority.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaClusterCaCertificateExpirationPolicy {
     #[serde(rename = "renew-certificate")]
@@ -107,77 +83,56 @@ pub enum KafkaClusterCaCertificateExpirationPolicy {
     ReplaceKey,
 }
 
-/// Configuration for Cruise Control deployment. Deploys a Cruise Control instance when specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControl {
-    /// Configuration of the Cruise Control REST API users.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiUsers")]
     pub api_users: Option<KafkaCruiseControlApiUsers>,
-    /// Auto-rebalancing on scaling related configuration listing the modes, when brokers are added or removed, with the corresponding rebalance template configurations.If this field is set, at least one mode has to be defined.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoRebalance")]
     pub auto_rebalance: Option<Vec<KafkaCruiseControlAutoRebalance>>,
-    /// The Cruise Control `brokerCapacity` configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "brokerCapacity")]
     pub broker_capacity: Option<KafkaCruiseControlBrokerCapacity>,
-    /// The Cruise Control configuration. For a full list of configuration options refer to <https://github.com/linkedin/cruise-control/wiki/Configurations.> Note that properties with the following prefixes cannot be set: bootstrap.servers, client.id, zookeeper., network., security., failed.brokers.zk.path,webserver.http., webserver.api.urlprefix, webserver.session.path, webserver.accesslog., two.step., request.reason.required,metric.reporter.sampler.bootstrap.servers, capacity.config.file, self.healing., ssl., kafka.broker.failure.detection.enable, topic.config.provider.class (with the exception of: ssl.cipher.suites, ssl.protocol, ssl.enabled.protocols, webserver.http.cors.enabled, webserver.http.cors.origin, webserver.http.cors.exposeheaders, webserver.security.enable, webserver.ssl.enable).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<BTreeMap<String, serde_json::Value>>,
-    /// The container image used for Cruise Control pods. If no image name is explicitly specified, the image name corresponds to the name specified in the Cluster Operator configuration. If an image name is not defined in the Cluster Operator configuration, a default value is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    /// JVM Options for the Cruise Control container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmOptions")]
     pub jvm_options: Option<KafkaCruiseControlJvmOptions>,
-    /// Pod liveness checking for the Cruise Control container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<KafkaCruiseControlLivenessProbe>,
-    /// Logging configuration (Log4j 2) for Cruise Control.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<KafkaCruiseControlLogging>,
-    /// Metrics configuration. Only `jmxPrometheusExporter` can be configured, as this component does not support `strimziMetricsReporter`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricsConfig")]
     pub metrics_config: Option<KafkaCruiseControlMetricsConfig>,
-    /// Pod readiness checking for the Cruise Control container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<KafkaCruiseControlReadinessProbe>,
-    /// CPU and memory resources to reserve for the Cruise Control container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<KafkaCruiseControlResources>,
-    /// Template to specify how Cruise Control resources, `Deployments` and `Pods`, are generated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub template: Option<KafkaCruiseControlTemplate>,
-    /// TLS sidecar configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsSidecar")]
     pub tls_sidecar: Option<KafkaCruiseControlTlsSidecar>,
 }
 
-/// Configuration of the Cruise Control REST API users.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KafkaCruiseControlApiUsers {
-    /// Type of the Cruise Control API users configuration. Supported format is: `hashLoginService`.
     #[serde(rename = "type")]
     pub r#type: KafkaCruiseControlApiUsersType,
-    /// Secret from which the custom Cruise Control API authentication credentials are read.
     #[serde(rename = "valueFrom")]
     pub value_from: KafkaCruiseControlApiUsersValueFrom,
 }
 
-/// Configuration of the Cruise Control REST API users.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaCruiseControlApiUsersType {
     #[serde(rename = "hashLoginService")]
     HashLoginService,
 }
 
-/// Secret from which the custom Cruise Control API authentication credentials are read.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlApiUsersValueFrom {
-    /// Selects a key of a Secret in the resource's namespace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<KafkaCruiseControlApiUsersValueFromSecretKeyRef>,
 }
 
-/// Selects a key of a Secret in the resource's namespace.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlApiUsersValueFromSecretKeyRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -190,10 +145,7 @@ pub struct KafkaCruiseControlApiUsersValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KafkaCruiseControlAutoRebalance {
-    /// Specifies the mode for automatically rebalancing when brokers are added or removed. Supported modes are `add-brokers` and `remove-brokers`. 
-    /// 
     pub mode: KafkaCruiseControlAutoRebalanceMode,
-    /// Reference to the KafkaRebalance custom resource to be used as the configuration template for the auto-rebalancing on scaling when running for the corresponding mode.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub template: Option<KafkaCruiseControlAutoRebalanceTemplate>,
 }
@@ -206,116 +158,85 @@ pub enum KafkaCruiseControlAutoRebalanceMode {
     RemoveBrokers,
 }
 
-/// Reference to the KafkaRebalance custom resource to be used as the configuration template for the auto-rebalancing on scaling when running for the corresponding mode.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlAutoRebalanceTemplate {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// The Cruise Control `brokerCapacity` configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlBrokerCapacity {
-    /// Broker capacity for CPU resource in cores or millicores. For example, 1, 1.500, 1500m. For more information on valid CPU resource units see <https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#meaning-of-cpu.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<String>,
-    /// Broker capacity for CPU resource utilization as a percentage (0 - 100).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuUtilization")]
     pub cpu_utilization: Option<i64>,
-    /// Broker capacity for disk in bytes. Use a number value with either standard Kubernetes byte units (K, M, G, or T), their bibyte (power of two) equivalents (Ki, Mi, Gi, or Ti), or a byte value with or without E notation. For example, 100000M, 100000Mi, 104857600000, or 1e+11.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disk: Option<String>,
-    /// Broker capacity for inbound network throughput in bytes per second. Use an integer value with standard Kubernetes byte units (K, M, G) or their bibyte (power of two) equivalents (Ki, Mi, Gi) per second. For example, 10000KiB/s.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "inboundNetwork")]
     pub inbound_network: Option<String>,
-    /// Broker capacity for outbound network throughput in bytes per second. Use an integer value with standard Kubernetes byte units (K, M, G) or their bibyte (power of two) equivalents (Ki, Mi, Gi) per second. For example, 10000KiB/s.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "outboundNetwork")]
     pub outbound_network: Option<String>,
-    /// Overrides for individual brokers. The `overrides` property lets you specify a different capacity configuration for different brokers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub overrides: Option<Vec<KafkaCruiseControlBrokerCapacityOverrides>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlBrokerCapacityOverrides {
-    /// List of Kafka brokers (broker identifiers).
     pub brokers: Vec<i64>,
-    /// Broker capacity for CPU resource in cores or millicores. For example, 1, 1.500, 1500m. For more information on valid CPU resource units see <https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#meaning-of-cpu.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cpu: Option<String>,
-    /// Broker capacity for inbound network throughput in bytes per second. Use an integer value with standard Kubernetes byte units (K, M, G) or their bibyte (power of two) equivalents (Ki, Mi, Gi) per second. For example, 10000KiB/s.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "inboundNetwork")]
     pub inbound_network: Option<String>,
-    /// Broker capacity for outbound network throughput in bytes per second. Use an integer value with standard Kubernetes byte units (K, M, G) or their bibyte (power of two) equivalents (Ki, Mi, Gi) per second. For example, 10000KiB/s.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "outboundNetwork")]
     pub outbound_network: Option<String>,
 }
 
-/// JVM Options for the Cruise Control container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlJvmOptions {
-    /// A map of -XX options to the JVM.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "-XX")]
     pub xx: Option<BTreeMap<String, String>>,
-    /// -Xms option to to the JVM.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "-Xms")]
     pub xms: Option<String>,
-    /// -Xmx option to to the JVM.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "-Xmx")]
     pub xmx: Option<String>,
-    /// Specifies whether the Garbage Collection logging is enabled. The default is false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcLoggingEnabled")]
     pub gc_logging_enabled: Option<bool>,
-    /// A map of additional system properties which will be passed using the `-D` option to the JVM.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "javaSystemProperties")]
     pub java_system_properties: Option<Vec<KafkaCruiseControlJvmOptionsJavaSystemProperties>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlJvmOptionsJavaSystemProperties {
-    /// The system property name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The system property value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
 
-/// Pod liveness checking for the Cruise Control container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlLivenessProbe {
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i64>,
-    /// The initial delay before first the health is first checked. Default to 15 seconds. Minimum value is 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i64>,
-    /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i64>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i64>,
-    /// The timeout for each attempted health check. Default to 5 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i64>,
 }
 
-/// Logging configuration (Log4j 2) for Cruise Control.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KafkaCruiseControlLogging {
-    /// A Map from logger name to logger level.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub loggers: Option<BTreeMap<String, String>>,
-    /// Logging type, must be either 'inline' or 'external'.
     #[serde(rename = "type")]
     pub r#type: KafkaCruiseControlLoggingType,
-    /// `ConfigMap` entry where the logging configuration is stored. 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
     pub value_from: Option<KafkaCruiseControlLoggingValueFrom>,
 }
 
-/// Logging configuration (Log4j 2) for Cruise Control.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaCruiseControlLoggingType {
     #[serde(rename = "inline")]
@@ -324,15 +245,12 @@ pub enum KafkaCruiseControlLoggingType {
     External,
 }
 
-/// `ConfigMap` entry where the logging configuration is stored. 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlLoggingValueFrom {
-    /// Reference to the key in the ConfigMap containing the configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<KafkaCruiseControlLoggingValueFromConfigMapKeyRef>,
 }
 
-/// Reference to the key in the ConfigMap containing the configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlLoggingValueFromConfigMapKeyRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -343,21 +261,16 @@ pub struct KafkaCruiseControlLoggingValueFromConfigMapKeyRef {
     pub optional: Option<bool>,
 }
 
-/// Metrics configuration. Only `jmxPrometheusExporter` can be configured, as this component does not support `strimziMetricsReporter`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KafkaCruiseControlMetricsConfig {
-    /// Metrics type. The supported types are `jmxPrometheusExporter` and `strimziMetricsReporter`. Type `jmxPrometheusExporter` uses the Prometheus JMX Exporter to expose Kafka JMX metrics in Prometheus format through an HTTP endpoint. Type `strimziMetricsReporter` uses the Strimzi Metrics Reporter to directly expose Kafka metrics in Prometheus format through an HTTP endpoint.
     #[serde(rename = "type")]
     pub r#type: KafkaCruiseControlMetricsConfigType,
-    /// ConfigMap entry where the Prometheus JMX Exporter configuration is stored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
     pub value_from: Option<KafkaCruiseControlMetricsConfigValueFrom>,
-    /// Configuration values for the Strimzi Metrics Reporter.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<KafkaCruiseControlMetricsConfigValues>,
 }
 
-/// Metrics configuration. Only `jmxPrometheusExporter` can be configured, as this component does not support `strimziMetricsReporter`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaCruiseControlMetricsConfigType {
     #[serde(rename = "jmxPrometheusExporter")]
@@ -366,15 +279,12 @@ pub enum KafkaCruiseControlMetricsConfigType {
     StrimziMetricsReporter,
 }
 
-/// ConfigMap entry where the Prometheus JMX Exporter configuration is stored.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlMetricsConfigValueFrom {
-    /// Reference to the key in the ConfigMap containing the configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<KafkaCruiseControlMetricsConfigValueFromConfigMapKeyRef>,
 }
 
-/// Reference to the key in the ConfigMap containing the configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlMetricsConfigValueFromConfigMapKeyRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -385,35 +295,26 @@ pub struct KafkaCruiseControlMetricsConfigValueFromConfigMapKeyRef {
     pub optional: Option<bool>,
 }
 
-/// Configuration values for the Strimzi Metrics Reporter.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlMetricsConfigValues {
-    /// A list of regex patterns to filter the metrics to collect. Should contain at least one element.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowList")]
     pub allow_list: Option<Vec<String>>,
 }
 
-/// Pod readiness checking for the Cruise Control container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlReadinessProbe {
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i64>,
-    /// The initial delay before first the health is first checked. Default to 15 seconds. Minimum value is 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i64>,
-    /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i64>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i64>,
-    /// The timeout for each attempted health check. Default to 5 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i64>,
 }
 
-/// CPU and memory resources to reserve for the Cruise Control container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -432,47 +333,34 @@ pub struct KafkaCruiseControlResourcesClaims {
     pub request: Option<String>,
 }
 
-/// Template to specify how Cruise Control resources, `Deployments` and `Pods`, are generated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlTemplate {
-    /// Template for Cruise Control API `Service`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiService")]
     pub api_service: Option<KafkaCruiseControlTemplateApiService>,
-    /// Template for the Cruise Control container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cruiseControlContainer")]
     pub cruise_control_container: Option<KafkaCruiseControlTemplateCruiseControlContainer>,
-    /// Template for Cruise Control `Deployment`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deployment: Option<KafkaCruiseControlTemplateDeployment>,
-    /// Template for Cruise Control `Pods`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pod: Option<KafkaCruiseControlTemplatePod>,
-    /// Template for Cruise Control `PodDisruptionBudget`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podDisruptionBudget")]
     pub pod_disruption_budget: Option<KafkaCruiseControlTemplatePodDisruptionBudget>,
-    /// Template for the Cruise Control service account.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<KafkaCruiseControlTemplateServiceAccount>,
-    /// Template for the Cruise Control TLS sidecar container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsSidecarContainer")]
     pub tls_sidecar_container: Option<KafkaCruiseControlTemplateTlsSidecarContainer>,
 }
 
-/// Template for Cruise Control API `Service`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlTemplateApiService {
-    /// Specifies the IP Families used by the service. Available options are `IPv4` and `IPv6`. If unspecified, Kubernetes will choose the default value based on the `ipFamilyPolicy` setting.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilies")]
     pub ip_families: Option<Vec<String>>,
-    /// Specifies the IP Family Policy used by the service. Available options are `SingleStack`, `PreferDualStack` and `RequireDualStack`. `SingleStack` is for a single IP family. `PreferDualStack` is for two IP families on dual-stack configured clusters or a single IP family on single-stack clusters. `RequireDualStack` fails unless there are two IP families on dual-stack configured clusters. If unspecified, Kubernetes will choose the default value based on the service type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilyPolicy")]
     pub ip_family_policy: Option<KafkaCruiseControlTemplateApiServiceIpFamilyPolicy>,
-    /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaCruiseControlTemplateApiServiceMetadata>,
 }
 
-/// Template for Cruise Control API `Service`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaCruiseControlTemplateApiServiceIpFamilyPolicy {
     SingleStack,
@@ -480,56 +368,42 @@ pub enum KafkaCruiseControlTemplateApiServiceIpFamilyPolicy {
     RequireDualStack,
 }
 
-/// Metadata applied to the resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlTemplateApiServiceMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Template for the Cruise Control container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlTemplateCruiseControlContainer {
-    /// Environment variables which should be applied to the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<KafkaCruiseControlTemplateCruiseControlContainerEnv>>,
-    /// Security context for the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<KafkaCruiseControlTemplateCruiseControlContainerSecurityContext>,
-    /// Additional volume mounts which should be applied to the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<KafkaCruiseControlTemplateCruiseControlContainerVolumeMounts>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlTemplateCruiseControlContainerEnv {
-    /// The environment variable key.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The environment variable value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
-    /// Reference to the secret or config map property to which the environment variable is set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
     pub value_from: Option<KafkaCruiseControlTemplateCruiseControlContainerEnvValueFrom>,
 }
 
-/// Reference to the secret or config map property to which the environment variable is set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlTemplateCruiseControlContainerEnvValueFrom {
-    /// Reference to a key in a config map.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<KafkaCruiseControlTemplateCruiseControlContainerEnvValueFromConfigMapKeyRef>,
-    /// Reference to a key in a secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<KafkaCruiseControlTemplateCruiseControlContainerEnvValueFromSecretKeyRef>,
 }
 
-/// Reference to a key in a config map.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlTemplateCruiseControlContainerEnvValueFromConfigMapKeyRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -540,7 +414,6 @@ pub struct KafkaCruiseControlTemplateCruiseControlContainerEnvValueFromConfigMap
     pub optional: Option<bool>,
 }
 
-/// Reference to a key in a secret.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlTemplateCruiseControlContainerEnvValueFromSecretKeyRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -551,7 +424,6 @@ pub struct KafkaCruiseControlTemplateCruiseControlContainerEnvValueFromSecretKey
     pub optional: Option<bool>,
 }
 
-/// Security context for the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlTemplateCruiseControlContainerSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
@@ -646,86 +518,62 @@ pub struct KafkaCruiseControlTemplateCruiseControlContainerVolumeMounts {
     pub sub_path_expr: Option<String>,
 }
 
-/// Template for Cruise Control `Deployment`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlTemplateDeployment {
-    /// Pod replacement strategy for deployment configuration changes. Valid values are `RollingUpdate` and `Recreate`. Defaults to `RollingUpdate`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploymentStrategy")]
     pub deployment_strategy: Option<KafkaCruiseControlTemplateDeploymentDeploymentStrategy>,
-    /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaCruiseControlTemplateDeploymentMetadata>,
 }
 
-/// Template for Cruise Control `Deployment`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaCruiseControlTemplateDeploymentDeploymentStrategy {
     RollingUpdate,
     Recreate,
 }
 
-/// Metadata applied to the resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlTemplateDeploymentMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Template for Cruise Control `Pods`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlTemplatePod {
-    /// The pod's affinity rules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<KafkaCruiseControlTemplatePodAffinity>,
-    /// The pod's DNSConfig. If specified, it will be merged to the generated DNS configuration based on the DNSPolicy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsConfig")]
     pub dns_config: Option<KafkaCruiseControlTemplatePodDnsConfig>,
-    /// The pod's DNSPolicy. Defaults to `ClusterFirst`. Valid values are `ClusterFirstWithHostNet`, `ClusterFirst`, `Default` or `None`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsPolicy")]
     pub dns_policy: Option<KafkaCruiseControlTemplatePodDnsPolicy>,
-    /// Indicates whether information about services should be injected into Pod's environment variables.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableServiceLinks")]
     pub enable_service_links: Option<bool>,
-    /// The pod's HostAliases. HostAliases is an optional list of hosts and IPs that will be injected into the Pod's hosts file if specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
     pub host_aliases: Option<Vec<KafkaCruiseControlTemplatePodHostAliases>>,
-    /// List of references to secrets in the same namespace to use for pulling any of the images used by this Pod. When the `STRIMZI_IMAGE_PULL_SECRETS` environment variable in Cluster Operator and the `imagePullSecrets` option are specified, only the `imagePullSecrets` variable is used and the `STRIMZI_IMAGE_PULL_SECRETS` variable is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<KafkaCruiseControlTemplatePodImagePullSecrets>>,
-    /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaCruiseControlTemplatePodMetadata>,
-    /// The name of the priority class used to assign priority to the pods. 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
-    /// The name of the scheduler used to dispatch this `Pod`. If not specified, the default scheduler will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
     pub scheduler_name: Option<String>,
-    /// Configures pod-level security attributes and common container settings.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<KafkaCruiseControlTemplatePodSecurityContext>,
-    /// The grace period is the duration in seconds after the processes running in the pod are sent a termination signal, and the time when the processes are forcibly halted with a kill signal. Set this value to longer than the expected cleanup time for your process. Value must be a non-negative integer. A zero value indicates delete immediately. You might need to increase the grace period for very large Kafka clusters, so that the Kafka brokers have enough time to transfer their work to another broker before they are terminated. Defaults to 30 seconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    /// Defines the total amount of pod memory allocated for the temporary `EmptyDir` volume `/tmp`. Specify the allocation in memory units, for example, `100Mi` for 100 mebibytes. Default value is `5Mi`. The `/tmp` volume is backed by pod memory, not disk storage, so avoid setting a high value as it consumes pod memory resources.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tmpDirSizeLimit")]
     pub tmp_dir_size_limit: Option<String>,
-    /// The pod's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<KafkaCruiseControlTemplatePodTolerations>>,
-    /// The pod's topology spread constraints.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
     pub topology_spread_constraints: Option<Vec<KafkaCruiseControlTemplatePodTopologySpreadConstraints>>,
-    /// Additional volumes that can be mounted to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<KafkaCruiseControlTemplatePodVolumes>>,
 }
 
-/// The pod's affinity rules.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlTemplatePodAffinity {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
@@ -1054,7 +902,6 @@ pub struct KafkaCruiseControlTemplatePodAffinityPodAntiAffinityRequiredDuringSch
     pub values: Option<Vec<String>>,
 }
 
-/// The pod's DNSConfig. If specified, it will be merged to the generated DNS configuration based on the DNSPolicy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlTemplatePodDnsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1073,7 +920,6 @@ pub struct KafkaCruiseControlTemplatePodDnsConfigOptions {
     pub value: Option<String>,
 }
 
-/// Template for Cruise Control `Pods`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaCruiseControlTemplatePodDnsPolicy {
     ClusterFirst,
@@ -1096,18 +942,14 @@ pub struct KafkaCruiseControlTemplatePodImagePullSecrets {
     pub name: Option<String>,
 }
 
-/// Metadata applied to the resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlTemplatePodMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Configures pod-level security attributes and common container settings.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlTemplatePodSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
@@ -1240,30 +1082,22 @@ pub struct KafkaCruiseControlTemplatePodTopologySpreadConstraintsLabelSelectorMa
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlTemplatePodVolumes {
-    /// `ConfigMap` to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<KafkaCruiseControlTemplatePodVolumesConfigMap>,
-    /// `CSIVolumeSource` object to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<KafkaCruiseControlTemplatePodVolumesCsi>,
-    /// `EmptyDir` to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<KafkaCruiseControlTemplatePodVolumesEmptyDir>,
-    /// `ImageVolumeSource` object to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<KafkaCruiseControlTemplatePodVolumesImage>,
-    /// Name to use for the volume. Required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// `PersistentVolumeClaim` object to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<KafkaCruiseControlTemplatePodVolumesPersistentVolumeClaim>,
-    /// `Secret` to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<KafkaCruiseControlTemplatePodVolumesSecret>,
 }
 
-/// `ConfigMap` to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlTemplatePodVolumesConfigMap {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
@@ -1286,7 +1120,6 @@ pub struct KafkaCruiseControlTemplatePodVolumesConfigMapItems {
     pub path: Option<String>,
 }
 
-/// `CSIVolumeSource` object to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlTemplatePodVolumesCsi {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1307,24 +1140,19 @@ pub struct KafkaCruiseControlTemplatePodVolumesCsiNodePublishSecretRef {
     pub name: Option<String>,
 }
 
-/// `EmptyDir` to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlTemplatePodVolumesEmptyDir {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub medium: Option<String>,
+    pub medium: Option<KafkaCruiseControlTemplatePodVolumesEmptyDirMedium>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
-    pub size_limit: Option<KafkaCruiseControlTemplatePodVolumesEmptyDirSizeLimit>,
+    pub size_limit: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KafkaCruiseControlTemplatePodVolumesEmptyDirSizeLimit {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub amount: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub format: Option<String>,
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaCruiseControlTemplatePodVolumesEmptyDirMedium {
+    Memory,
 }
 
-/// `ImageVolumeSource` object to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlTemplatePodVolumesImage {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
@@ -1333,7 +1161,6 @@ pub struct KafkaCruiseControlTemplatePodVolumesImage {
     pub reference: Option<String>,
 }
 
-/// `PersistentVolumeClaim` object to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlTemplatePodVolumesPersistentVolumeClaim {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "claimName")]
@@ -1342,7 +1169,6 @@ pub struct KafkaCruiseControlTemplatePodVolumesPersistentVolumeClaim {
     pub read_only: Option<bool>,
 }
 
-/// `Secret` to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlTemplatePodVolumesSecret {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
@@ -1365,86 +1191,64 @@ pub struct KafkaCruiseControlTemplatePodVolumesSecretItems {
     pub path: Option<String>,
 }
 
-/// Template for Cruise Control `PodDisruptionBudget`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlTemplatePodDisruptionBudget {
-    /// Maximum number of unavailable pods to allow automatic Pod eviction. A Pod eviction is allowed when the `maxUnavailable` number of pods or fewer are unavailable after the eviction. Setting this value to 0 prevents all voluntary evictions, so the pods must be evicted manually. Defaults to 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<i64>,
-    /// Metadata to apply to the `PodDisruptionBudgetTemplate` resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaCruiseControlTemplatePodDisruptionBudgetMetadata>,
 }
 
-/// Metadata to apply to the `PodDisruptionBudgetTemplate` resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlTemplatePodDisruptionBudgetMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Template for the Cruise Control service account.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlTemplateServiceAccount {
-    /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaCruiseControlTemplateServiceAccountMetadata>,
 }
 
-/// Metadata applied to the resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlTemplateServiceAccountMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Template for the Cruise Control TLS sidecar container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlTemplateTlsSidecarContainer {
-    /// Environment variables which should be applied to the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<KafkaCruiseControlTemplateTlsSidecarContainerEnv>>,
-    /// Security context for the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<KafkaCruiseControlTemplateTlsSidecarContainerSecurityContext>,
-    /// Additional volume mounts which should be applied to the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<KafkaCruiseControlTemplateTlsSidecarContainerVolumeMounts>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlTemplateTlsSidecarContainerEnv {
-    /// The environment variable key.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The environment variable value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
-    /// Reference to the secret or config map property to which the environment variable is set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
     pub value_from: Option<KafkaCruiseControlTemplateTlsSidecarContainerEnvValueFrom>,
 }
 
-/// Reference to the secret or config map property to which the environment variable is set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlTemplateTlsSidecarContainerEnvValueFrom {
-    /// Reference to a key in a config map.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<KafkaCruiseControlTemplateTlsSidecarContainerEnvValueFromConfigMapKeyRef>,
-    /// Reference to a key in a secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<KafkaCruiseControlTemplateTlsSidecarContainerEnvValueFromSecretKeyRef>,
 }
 
-/// Reference to a key in a config map.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlTemplateTlsSidecarContainerEnvValueFromConfigMapKeyRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1455,7 +1259,6 @@ pub struct KafkaCruiseControlTemplateTlsSidecarContainerEnvValueFromConfigMapKey
     pub optional: Option<bool>,
 }
 
-/// Reference to a key in a secret.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlTemplateTlsSidecarContainerEnvValueFromSecretKeyRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1466,7 +1269,6 @@ pub struct KafkaCruiseControlTemplateTlsSidecarContainerEnvValueFromSecretKeyRef
     pub optional: Option<bool>,
 }
 
-/// Security context for the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlTemplateTlsSidecarContainerSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
@@ -1561,47 +1363,34 @@ pub struct KafkaCruiseControlTemplateTlsSidecarContainerVolumeMounts {
     pub sub_path_expr: Option<String>,
 }
 
-/// TLS sidecar configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlTlsSidecar {
-    /// The docker image for the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    /// Pod liveness checking.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<KafkaCruiseControlTlsSidecarLivenessProbe>,
-    /// The log level for the TLS sidecar. Default value is `notice`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<KafkaCruiseControlTlsSidecarLogLevel>,
-    /// Pod readiness checking.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<KafkaCruiseControlTlsSidecarReadinessProbe>,
-    /// CPU and memory resources to reserve.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<KafkaCruiseControlTlsSidecarResources>,
 }
 
-/// Pod liveness checking.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlTlsSidecarLivenessProbe {
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i64>,
-    /// The initial delay before first the health is first checked. Default to 15 seconds. Minimum value is 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i64>,
-    /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i64>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i64>,
-    /// The timeout for each attempted health check. Default to 5 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i64>,
 }
 
-/// TLS sidecar configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaCruiseControlTlsSidecarLogLevel {
     #[serde(rename = "emerg")]
@@ -1622,27 +1411,20 @@ pub enum KafkaCruiseControlTlsSidecarLogLevel {
     Debug,
 }
 
-/// Pod readiness checking.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlTlsSidecarReadinessProbe {
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i64>,
-    /// The initial delay before first the health is first checked. Default to 15 seconds. Minimum value is 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i64>,
-    /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i64>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i64>,
-    /// The timeout for each attempted health check. Default to 5 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i64>,
 }
 
-/// CPU and memory resources to reserve.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlTlsSidecarResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1661,157 +1443,112 @@ pub struct KafkaCruiseControlTlsSidecarResourcesClaims {
     pub request: Option<String>,
 }
 
-/// Configuration of the Entity Operator.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperator {
-    /// Template for Entity Operator resources. The template allows users to specify how a `Deployment` and `Pod` is generated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub template: Option<KafkaEntityOperatorTemplate>,
-    /// TLS sidecar configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsSidecar")]
     pub tls_sidecar: Option<KafkaEntityOperatorTlsSidecar>,
-    /// Configuration of the Topic Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topicOperator")]
     pub topic_operator: Option<KafkaEntityOperatorTopicOperator>,
-    /// Configuration of the User Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userOperator")]
     pub user_operator: Option<KafkaEntityOperatorUserOperator>,
 }
 
-/// Template for Entity Operator resources. The template allows users to specify how a `Deployment` and `Pod` is generated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplate {
-    /// Template for Entity Operator `Deployment`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deployment: Option<KafkaEntityOperatorTemplateDeployment>,
-    /// Template for the Entity Operator Role.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "entityOperatorRole")]
     pub entity_operator_role: Option<KafkaEntityOperatorTemplateEntityOperatorRole>,
-    /// Template for Entity Operator `Pods`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pod: Option<KafkaEntityOperatorTemplatePod>,
-    /// Template for the Entity Operator Pod Disruption Budget.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podDisruptionBudget")]
     pub pod_disruption_budget: Option<KafkaEntityOperatorTemplatePodDisruptionBudget>,
-    /// Template for the Entity Operator service account.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<KafkaEntityOperatorTemplateServiceAccount>,
-    /// Template for the Entity Operator TLS sidecar container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsSidecarContainer")]
     pub tls_sidecar_container: Option<KafkaEntityOperatorTemplateTlsSidecarContainer>,
-    /// Template for the Entity Topic Operator container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topicOperatorContainer")]
     pub topic_operator_container: Option<KafkaEntityOperatorTemplateTopicOperatorContainer>,
-    /// Template for the Entity Topic Operator RoleBinding.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topicOperatorRoleBinding")]
     pub topic_operator_role_binding: Option<KafkaEntityOperatorTemplateTopicOperatorRoleBinding>,
-    /// Template for the Entity User Operator container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userOperatorContainer")]
     pub user_operator_container: Option<KafkaEntityOperatorTemplateUserOperatorContainer>,
-    /// Template for the Entity Topic Operator RoleBinding.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userOperatorRoleBinding")]
     pub user_operator_role_binding: Option<KafkaEntityOperatorTemplateUserOperatorRoleBinding>,
 }
 
-/// Template for Entity Operator `Deployment`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplateDeployment {
-    /// Pod replacement strategy for deployment configuration changes. Valid values are `RollingUpdate` and `Recreate`. Defaults to `RollingUpdate`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploymentStrategy")]
     pub deployment_strategy: Option<KafkaEntityOperatorTemplateDeploymentDeploymentStrategy>,
-    /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaEntityOperatorTemplateDeploymentMetadata>,
 }
 
-/// Template for Entity Operator `Deployment`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaEntityOperatorTemplateDeploymentDeploymentStrategy {
     RollingUpdate,
     Recreate,
 }
 
-/// Metadata applied to the resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplateDeploymentMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Template for the Entity Operator Role.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplateEntityOperatorRole {
-    /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaEntityOperatorTemplateEntityOperatorRoleMetadata>,
 }
 
-/// Metadata applied to the resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplateEntityOperatorRoleMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Template for Entity Operator `Pods`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplatePod {
-    /// The pod's affinity rules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<KafkaEntityOperatorTemplatePodAffinity>,
-    /// The pod's DNSConfig. If specified, it will be merged to the generated DNS configuration based on the DNSPolicy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsConfig")]
     pub dns_config: Option<KafkaEntityOperatorTemplatePodDnsConfig>,
-    /// The pod's DNSPolicy. Defaults to `ClusterFirst`. Valid values are `ClusterFirstWithHostNet`, `ClusterFirst`, `Default` or `None`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsPolicy")]
     pub dns_policy: Option<KafkaEntityOperatorTemplatePodDnsPolicy>,
-    /// Indicates whether information about services should be injected into Pod's environment variables.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableServiceLinks")]
     pub enable_service_links: Option<bool>,
-    /// The pod's HostAliases. HostAliases is an optional list of hosts and IPs that will be injected into the Pod's hosts file if specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
     pub host_aliases: Option<Vec<KafkaEntityOperatorTemplatePodHostAliases>>,
-    /// List of references to secrets in the same namespace to use for pulling any of the images used by this Pod. When the `STRIMZI_IMAGE_PULL_SECRETS` environment variable in Cluster Operator and the `imagePullSecrets` option are specified, only the `imagePullSecrets` variable is used and the `STRIMZI_IMAGE_PULL_SECRETS` variable is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<KafkaEntityOperatorTemplatePodImagePullSecrets>>,
-    /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaEntityOperatorTemplatePodMetadata>,
-    /// The name of the priority class used to assign priority to the pods. 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
-    /// The name of the scheduler used to dispatch this `Pod`. If not specified, the default scheduler will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
     pub scheduler_name: Option<String>,
-    /// Configures pod-level security attributes and common container settings.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<KafkaEntityOperatorTemplatePodSecurityContext>,
-    /// The grace period is the duration in seconds after the processes running in the pod are sent a termination signal, and the time when the processes are forcibly halted with a kill signal. Set this value to longer than the expected cleanup time for your process. Value must be a non-negative integer. A zero value indicates delete immediately. You might need to increase the grace period for very large Kafka clusters, so that the Kafka brokers have enough time to transfer their work to another broker before they are terminated. Defaults to 30 seconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    /// Defines the total amount of pod memory allocated for the temporary `EmptyDir` volume `/tmp`. Specify the allocation in memory units, for example, `100Mi` for 100 mebibytes. Default value is `5Mi`. The `/tmp` volume is backed by pod memory, not disk storage, so avoid setting a high value as it consumes pod memory resources.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tmpDirSizeLimit")]
     pub tmp_dir_size_limit: Option<String>,
-    /// The pod's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<KafkaEntityOperatorTemplatePodTolerations>>,
-    /// The pod's topology spread constraints.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
     pub topology_spread_constraints: Option<Vec<KafkaEntityOperatorTemplatePodTopologySpreadConstraints>>,
-    /// Additional volumes that can be mounted to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<KafkaEntityOperatorTemplatePodVolumes>>,
 }
 
-/// The pod's affinity rules.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplatePodAffinity {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
@@ -2140,7 +1877,6 @@ pub struct KafkaEntityOperatorTemplatePodAffinityPodAntiAffinityRequiredDuringSc
     pub values: Option<Vec<String>>,
 }
 
-/// The pod's DNSConfig. If specified, it will be merged to the generated DNS configuration based on the DNSPolicy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplatePodDnsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2159,7 +1895,6 @@ pub struct KafkaEntityOperatorTemplatePodDnsConfigOptions {
     pub value: Option<String>,
 }
 
-/// Template for Entity Operator `Pods`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaEntityOperatorTemplatePodDnsPolicy {
     ClusterFirst,
@@ -2182,18 +1917,14 @@ pub struct KafkaEntityOperatorTemplatePodImagePullSecrets {
     pub name: Option<String>,
 }
 
-/// Metadata applied to the resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplatePodMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Configures pod-level security attributes and common container settings.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplatePodSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
@@ -2326,30 +2057,22 @@ pub struct KafkaEntityOperatorTemplatePodTopologySpreadConstraintsLabelSelectorM
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplatePodVolumes {
-    /// `ConfigMap` to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<KafkaEntityOperatorTemplatePodVolumesConfigMap>,
-    /// `CSIVolumeSource` object to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<KafkaEntityOperatorTemplatePodVolumesCsi>,
-    /// `EmptyDir` to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<KafkaEntityOperatorTemplatePodVolumesEmptyDir>,
-    /// `ImageVolumeSource` object to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<KafkaEntityOperatorTemplatePodVolumesImage>,
-    /// Name to use for the volume. Required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// `PersistentVolumeClaim` object to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<KafkaEntityOperatorTemplatePodVolumesPersistentVolumeClaim>,
-    /// `Secret` to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<KafkaEntityOperatorTemplatePodVolumesSecret>,
 }
 
-/// `ConfigMap` to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplatePodVolumesConfigMap {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
@@ -2372,7 +2095,6 @@ pub struct KafkaEntityOperatorTemplatePodVolumesConfigMapItems {
     pub path: Option<String>,
 }
 
-/// `CSIVolumeSource` object to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplatePodVolumesCsi {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2393,24 +2115,19 @@ pub struct KafkaEntityOperatorTemplatePodVolumesCsiNodePublishSecretRef {
     pub name: Option<String>,
 }
 
-/// `EmptyDir` to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplatePodVolumesEmptyDir {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub medium: Option<String>,
+    pub medium: Option<KafkaEntityOperatorTemplatePodVolumesEmptyDirMedium>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
-    pub size_limit: Option<KafkaEntityOperatorTemplatePodVolumesEmptyDirSizeLimit>,
+    pub size_limit: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KafkaEntityOperatorTemplatePodVolumesEmptyDirSizeLimit {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub amount: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub format: Option<String>,
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaEntityOperatorTemplatePodVolumesEmptyDirMedium {
+    Memory,
 }
 
-/// `ImageVolumeSource` object to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplatePodVolumesImage {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
@@ -2419,7 +2136,6 @@ pub struct KafkaEntityOperatorTemplatePodVolumesImage {
     pub reference: Option<String>,
 }
 
-/// `PersistentVolumeClaim` object to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplatePodVolumesPersistentVolumeClaim {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "claimName")]
@@ -2428,7 +2144,6 @@ pub struct KafkaEntityOperatorTemplatePodVolumesPersistentVolumeClaim {
     pub read_only: Option<bool>,
 }
 
-/// `Secret` to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplatePodVolumesSecret {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
@@ -2451,86 +2166,64 @@ pub struct KafkaEntityOperatorTemplatePodVolumesSecretItems {
     pub path: Option<String>,
 }
 
-/// Template for the Entity Operator Pod Disruption Budget.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplatePodDisruptionBudget {
-    /// Maximum number of unavailable pods to allow automatic Pod eviction. A Pod eviction is allowed when the `maxUnavailable` number of pods or fewer are unavailable after the eviction. Setting this value to 0 prevents all voluntary evictions, so the pods must be evicted manually. Defaults to 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<i64>,
-    /// Metadata to apply to the `PodDisruptionBudgetTemplate` resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaEntityOperatorTemplatePodDisruptionBudgetMetadata>,
 }
 
-/// Metadata to apply to the `PodDisruptionBudgetTemplate` resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplatePodDisruptionBudgetMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Template for the Entity Operator service account.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplateServiceAccount {
-    /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaEntityOperatorTemplateServiceAccountMetadata>,
 }
 
-/// Metadata applied to the resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplateServiceAccountMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Template for the Entity Operator TLS sidecar container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplateTlsSidecarContainer {
-    /// Environment variables which should be applied to the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<KafkaEntityOperatorTemplateTlsSidecarContainerEnv>>,
-    /// Security context for the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<KafkaEntityOperatorTemplateTlsSidecarContainerSecurityContext>,
-    /// Additional volume mounts which should be applied to the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<KafkaEntityOperatorTemplateTlsSidecarContainerVolumeMounts>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplateTlsSidecarContainerEnv {
-    /// The environment variable key.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The environment variable value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
-    /// Reference to the secret or config map property to which the environment variable is set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
     pub value_from: Option<KafkaEntityOperatorTemplateTlsSidecarContainerEnvValueFrom>,
 }
 
-/// Reference to the secret or config map property to which the environment variable is set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplateTlsSidecarContainerEnvValueFrom {
-    /// Reference to a key in a config map.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<KafkaEntityOperatorTemplateTlsSidecarContainerEnvValueFromConfigMapKeyRef>,
-    /// Reference to a key in a secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<KafkaEntityOperatorTemplateTlsSidecarContainerEnvValueFromSecretKeyRef>,
 }
 
-/// Reference to a key in a config map.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplateTlsSidecarContainerEnvValueFromConfigMapKeyRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2541,7 +2234,6 @@ pub struct KafkaEntityOperatorTemplateTlsSidecarContainerEnvValueFromConfigMapKe
     pub optional: Option<bool>,
 }
 
-/// Reference to a key in a secret.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplateTlsSidecarContainerEnvValueFromSecretKeyRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2552,7 +2244,6 @@ pub struct KafkaEntityOperatorTemplateTlsSidecarContainerEnvValueFromSecretKeyRe
     pub optional: Option<bool>,
 }
 
-/// Security context for the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplateTlsSidecarContainerSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
@@ -2647,45 +2338,34 @@ pub struct KafkaEntityOperatorTemplateTlsSidecarContainerVolumeMounts {
     pub sub_path_expr: Option<String>,
 }
 
-/// Template for the Entity Topic Operator container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplateTopicOperatorContainer {
-    /// Environment variables which should be applied to the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<KafkaEntityOperatorTemplateTopicOperatorContainerEnv>>,
-    /// Security context for the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<KafkaEntityOperatorTemplateTopicOperatorContainerSecurityContext>,
-    /// Additional volume mounts which should be applied to the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<KafkaEntityOperatorTemplateTopicOperatorContainerVolumeMounts>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplateTopicOperatorContainerEnv {
-    /// The environment variable key.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The environment variable value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
-    /// Reference to the secret or config map property to which the environment variable is set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
     pub value_from: Option<KafkaEntityOperatorTemplateTopicOperatorContainerEnvValueFrom>,
 }
 
-/// Reference to the secret or config map property to which the environment variable is set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplateTopicOperatorContainerEnvValueFrom {
-    /// Reference to a key in a config map.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<KafkaEntityOperatorTemplateTopicOperatorContainerEnvValueFromConfigMapKeyRef>,
-    /// Reference to a key in a secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<KafkaEntityOperatorTemplateTopicOperatorContainerEnvValueFromSecretKeyRef>,
 }
 
-/// Reference to a key in a config map.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplateTopicOperatorContainerEnvValueFromConfigMapKeyRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2696,7 +2376,6 @@ pub struct KafkaEntityOperatorTemplateTopicOperatorContainerEnvValueFromConfigMa
     pub optional: Option<bool>,
 }
 
-/// Reference to a key in a secret.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplateTopicOperatorContainerEnvValueFromSecretKeyRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2707,7 +2386,6 @@ pub struct KafkaEntityOperatorTemplateTopicOperatorContainerEnvValueFromSecretKe
     pub optional: Option<bool>,
 }
 
-/// Security context for the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplateTopicOperatorContainerSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
@@ -2802,64 +2480,48 @@ pub struct KafkaEntityOperatorTemplateTopicOperatorContainerVolumeMounts {
     pub sub_path_expr: Option<String>,
 }
 
-/// Template for the Entity Topic Operator RoleBinding.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplateTopicOperatorRoleBinding {
-    /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaEntityOperatorTemplateTopicOperatorRoleBindingMetadata>,
 }
 
-/// Metadata applied to the resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplateTopicOperatorRoleBindingMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Template for the Entity User Operator container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplateUserOperatorContainer {
-    /// Environment variables which should be applied to the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<KafkaEntityOperatorTemplateUserOperatorContainerEnv>>,
-    /// Security context for the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<KafkaEntityOperatorTemplateUserOperatorContainerSecurityContext>,
-    /// Additional volume mounts which should be applied to the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<KafkaEntityOperatorTemplateUserOperatorContainerVolumeMounts>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplateUserOperatorContainerEnv {
-    /// The environment variable key.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The environment variable value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
-    /// Reference to the secret or config map property to which the environment variable is set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
     pub value_from: Option<KafkaEntityOperatorTemplateUserOperatorContainerEnvValueFrom>,
 }
 
-/// Reference to the secret or config map property to which the environment variable is set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplateUserOperatorContainerEnvValueFrom {
-    /// Reference to a key in a config map.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<KafkaEntityOperatorTemplateUserOperatorContainerEnvValueFromConfigMapKeyRef>,
-    /// Reference to a key in a secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<KafkaEntityOperatorTemplateUserOperatorContainerEnvValueFromSecretKeyRef>,
 }
 
-/// Reference to a key in a config map.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplateUserOperatorContainerEnvValueFromConfigMapKeyRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2870,7 +2532,6 @@ pub struct KafkaEntityOperatorTemplateUserOperatorContainerEnvValueFromConfigMap
     pub optional: Option<bool>,
 }
 
-/// Reference to a key in a secret.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplateUserOperatorContainerEnvValueFromSecretKeyRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2881,7 +2542,6 @@ pub struct KafkaEntityOperatorTemplateUserOperatorContainerEnvValueFromSecretKey
     pub optional: Option<bool>,
 }
 
-/// Security context for the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplateUserOperatorContainerSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
@@ -2976,66 +2636,48 @@ pub struct KafkaEntityOperatorTemplateUserOperatorContainerVolumeMounts {
     pub sub_path_expr: Option<String>,
 }
 
-/// Template for the Entity Topic Operator RoleBinding.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplateUserOperatorRoleBinding {
-    /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaEntityOperatorTemplateUserOperatorRoleBindingMetadata>,
 }
 
-/// Metadata applied to the resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplateUserOperatorRoleBindingMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// TLS sidecar configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTlsSidecar {
-    /// The docker image for the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    /// Pod liveness checking.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<KafkaEntityOperatorTlsSidecarLivenessProbe>,
-    /// The log level for the TLS sidecar. Default value is `notice`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<KafkaEntityOperatorTlsSidecarLogLevel>,
-    /// Pod readiness checking.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<KafkaEntityOperatorTlsSidecarReadinessProbe>,
-    /// CPU and memory resources to reserve.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<KafkaEntityOperatorTlsSidecarResources>,
 }
 
-/// Pod liveness checking.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTlsSidecarLivenessProbe {
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i64>,
-    /// The initial delay before first the health is first checked. Default to 15 seconds. Minimum value is 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i64>,
-    /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i64>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i64>,
-    /// The timeout for each attempted health check. Default to 5 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i64>,
 }
 
-/// TLS sidecar configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaEntityOperatorTlsSidecarLogLevel {
     #[serde(rename = "emerg")]
@@ -3056,27 +2698,20 @@ pub enum KafkaEntityOperatorTlsSidecarLogLevel {
     Debug,
 }
 
-/// Pod readiness checking.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTlsSidecarReadinessProbe {
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i64>,
-    /// The initial delay before first the health is first checked. Default to 15 seconds. Minimum value is 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i64>,
-    /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i64>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i64>,
-    /// The timeout for each attempted health check. Default to 5 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i64>,
 }
 
-/// CPU and memory resources to reserve.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTlsSidecarResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3095,112 +2730,80 @@ pub struct KafkaEntityOperatorTlsSidecarResourcesClaims {
     pub request: Option<String>,
 }
 
-/// Configuration of the Topic Operator.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTopicOperator {
-    /// The image to use for the Topic Operator.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    /// JVM Options for pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmOptions")]
     pub jvm_options: Option<KafkaEntityOperatorTopicOperatorJvmOptions>,
-    /// Pod liveness checking.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<KafkaEntityOperatorTopicOperatorLivenessProbe>,
-    /// Logging configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<KafkaEntityOperatorTopicOperatorLogging>,
-    /// Pod readiness checking.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<KafkaEntityOperatorTopicOperatorReadinessProbe>,
-    /// Interval between periodic reconciliations in milliseconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconciliationIntervalMs")]
     pub reconciliation_interval_ms: Option<i64>,
-    /// Interval between periodic reconciliations in seconds. Ignored if reconciliationIntervalMs is set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconciliationIntervalSeconds")]
     pub reconciliation_interval_seconds: Option<i64>,
-    /// CPU and memory resources to reserve.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<KafkaEntityOperatorTopicOperatorResources>,
-    /// Pod startup checking.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
     pub startup_probe: Option<KafkaEntityOperatorTopicOperatorStartupProbe>,
-    /// The number of attempts at getting topic metadata.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topicMetadataMaxAttempts")]
     pub topic_metadata_max_attempts: Option<i64>,
-    /// The namespace the Topic Operator should watch.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "watchedNamespace")]
     pub watched_namespace: Option<String>,
-    /// Timeout for the ZooKeeper session.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "zookeeperSessionTimeoutSeconds")]
     pub zookeeper_session_timeout_seconds: Option<i64>,
 }
 
-/// JVM Options for pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTopicOperatorJvmOptions {
-    /// A map of -XX options to the JVM.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "-XX")]
     pub xx: Option<BTreeMap<String, String>>,
-    /// -Xms option to to the JVM.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "-Xms")]
     pub xms: Option<String>,
-    /// -Xmx option to to the JVM.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "-Xmx")]
     pub xmx: Option<String>,
-    /// Specifies whether the Garbage Collection logging is enabled. The default is false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcLoggingEnabled")]
     pub gc_logging_enabled: Option<bool>,
-    /// A map of additional system properties which will be passed using the `-D` option to the JVM.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "javaSystemProperties")]
     pub java_system_properties: Option<Vec<KafkaEntityOperatorTopicOperatorJvmOptionsJavaSystemProperties>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTopicOperatorJvmOptionsJavaSystemProperties {
-    /// The system property name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The system property value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
 
-/// Pod liveness checking.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTopicOperatorLivenessProbe {
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i64>,
-    /// The initial delay before first the health is first checked. Default to 15 seconds. Minimum value is 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i64>,
-    /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i64>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i64>,
-    /// The timeout for each attempted health check. Default to 5 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i64>,
 }
 
-/// Logging configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KafkaEntityOperatorTopicOperatorLogging {
-    /// A Map from logger name to logger level.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub loggers: Option<BTreeMap<String, String>>,
-    /// Logging type, must be either 'inline' or 'external'.
     #[serde(rename = "type")]
     pub r#type: KafkaEntityOperatorTopicOperatorLoggingType,
-    /// `ConfigMap` entry where the logging configuration is stored. 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
     pub value_from: Option<KafkaEntityOperatorTopicOperatorLoggingValueFrom>,
 }
 
-/// Logging configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaEntityOperatorTopicOperatorLoggingType {
     #[serde(rename = "inline")]
@@ -3209,15 +2812,12 @@ pub enum KafkaEntityOperatorTopicOperatorLoggingType {
     External,
 }
 
-/// `ConfigMap` entry where the logging configuration is stored. 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTopicOperatorLoggingValueFrom {
-    /// Reference to the key in the ConfigMap containing the configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<KafkaEntityOperatorTopicOperatorLoggingValueFromConfigMapKeyRef>,
 }
 
-/// Reference to the key in the ConfigMap containing the configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTopicOperatorLoggingValueFromConfigMapKeyRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3228,27 +2828,20 @@ pub struct KafkaEntityOperatorTopicOperatorLoggingValueFromConfigMapKeyRef {
     pub optional: Option<bool>,
 }
 
-/// Pod readiness checking.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTopicOperatorReadinessProbe {
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i64>,
-    /// The initial delay before first the health is first checked. Default to 15 seconds. Minimum value is 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i64>,
-    /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i64>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i64>,
-    /// The timeout for each attempted health check. Default to 5 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i64>,
 }
 
-/// CPU and memory resources to reserve.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTopicOperatorResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3267,129 +2860,92 @@ pub struct KafkaEntityOperatorTopicOperatorResourcesClaims {
     pub request: Option<String>,
 }
 
-/// Pod startup checking.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTopicOperatorStartupProbe {
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i64>,
-    /// The initial delay before first the health is first checked. Default to 15 seconds. Minimum value is 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i64>,
-    /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i64>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i64>,
-    /// The timeout for each attempted health check. Default to 5 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i64>,
 }
 
-/// Configuration of the User Operator.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorUserOperator {
-    /// The image to use for the User Operator.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    /// JVM Options for pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmOptions")]
     pub jvm_options: Option<KafkaEntityOperatorUserOperatorJvmOptions>,
-    /// Pod liveness checking.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<KafkaEntityOperatorUserOperatorLivenessProbe>,
-    /// Logging configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<KafkaEntityOperatorUserOperatorLogging>,
-    /// Pod readiness checking.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<KafkaEntityOperatorUserOperatorReadinessProbe>,
-    /// Interval between periodic reconciliations in milliseconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconciliationIntervalMs")]
     pub reconciliation_interval_ms: Option<i64>,
-    /// Interval between periodic reconciliations in seconds. Ignored if reconciliationIntervalMs is set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconciliationIntervalSeconds")]
     pub reconciliation_interval_seconds: Option<i64>,
-    /// CPU and memory resources to reserve.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<KafkaEntityOperatorUserOperatorResources>,
-    /// The prefix that will be added to the KafkaUser name to be used as the Secret name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretPrefix")]
     pub secret_prefix: Option<String>,
-    /// The namespace the User Operator should watch.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "watchedNamespace")]
     pub watched_namespace: Option<String>,
-    /// Timeout for the ZooKeeper session.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "zookeeperSessionTimeoutSeconds")]
     pub zookeeper_session_timeout_seconds: Option<i64>,
 }
 
-/// JVM Options for pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorUserOperatorJvmOptions {
-    /// A map of -XX options to the JVM.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "-XX")]
     pub xx: Option<BTreeMap<String, String>>,
-    /// -Xms option to to the JVM.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "-Xms")]
     pub xms: Option<String>,
-    /// -Xmx option to to the JVM.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "-Xmx")]
     pub xmx: Option<String>,
-    /// Specifies whether the Garbage Collection logging is enabled. The default is false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcLoggingEnabled")]
     pub gc_logging_enabled: Option<bool>,
-    /// A map of additional system properties which will be passed using the `-D` option to the JVM.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "javaSystemProperties")]
     pub java_system_properties: Option<Vec<KafkaEntityOperatorUserOperatorJvmOptionsJavaSystemProperties>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorUserOperatorJvmOptionsJavaSystemProperties {
-    /// The system property name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The system property value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
 
-/// Pod liveness checking.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorUserOperatorLivenessProbe {
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i64>,
-    /// The initial delay before first the health is first checked. Default to 15 seconds. Minimum value is 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i64>,
-    /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i64>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i64>,
-    /// The timeout for each attempted health check. Default to 5 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i64>,
 }
 
-/// Logging configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KafkaEntityOperatorUserOperatorLogging {
-    /// A Map from logger name to logger level.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub loggers: Option<BTreeMap<String, String>>,
-    /// Logging type, must be either 'inline' or 'external'.
     #[serde(rename = "type")]
     pub r#type: KafkaEntityOperatorUserOperatorLoggingType,
-    /// `ConfigMap` entry where the logging configuration is stored. 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
     pub value_from: Option<KafkaEntityOperatorUserOperatorLoggingValueFrom>,
 }
 
-/// Logging configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaEntityOperatorUserOperatorLoggingType {
     #[serde(rename = "inline")]
@@ -3398,15 +2954,12 @@ pub enum KafkaEntityOperatorUserOperatorLoggingType {
     External,
 }
 
-/// `ConfigMap` entry where the logging configuration is stored. 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorUserOperatorLoggingValueFrom {
-    /// Reference to the key in the ConfigMap containing the configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<KafkaEntityOperatorUserOperatorLoggingValueFromConfigMapKeyRef>,
 }
 
-/// Reference to the key in the ConfigMap containing the configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorUserOperatorLoggingValueFromConfigMapKeyRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3417,27 +2970,20 @@ pub struct KafkaEntityOperatorUserOperatorLoggingValueFromConfigMapKeyRef {
     pub optional: Option<bool>,
 }
 
-/// Pod readiness checking.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorUserOperatorReadinessProbe {
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i64>,
-    /// The initial delay before first the health is first checked. Default to 15 seconds. Minimum value is 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i64>,
-    /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i64>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i64>,
-    /// The timeout for each attempted health check. Default to 5 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i64>,
 }
 
-/// CPU and memory resources to reserve.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorUserOperatorResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3456,62 +3002,45 @@ pub struct KafkaEntityOperatorUserOperatorResourcesClaims {
     pub request: Option<String>,
 }
 
-/// As of Strimzi 0.35.0, JMXTrans is not supported anymore and this option is ignored.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaJmxTrans {
-    /// The image to use for the JmxTrans.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    /// Queries to send to the Kafka brokers to define what data should be read from each broker. For more information on these properties see, xref:type-JmxTransQueryTemplate-reference[`JmxTransQueryTemplate` schema reference].
     #[serde(rename = "kafkaQueries")]
     pub kafka_queries: Vec<KafkaJmxTransKafkaQueries>,
-    /// Sets the logging level of the JmxTrans deployment.For more information see, <https://github.com/jmxtrans/jmxtrans-agent/wiki/Troubleshooting[JmxTrans> Logging Level].
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<String>,
-    /// Defines the output hosts that will be referenced later on. For more information on these properties see, xref:type-JmxTransOutputDefinitionTemplate-reference[`JmxTransOutputDefinitionTemplate` schema reference].
     #[serde(rename = "outputDefinitions")]
     pub output_definitions: Vec<KafkaJmxTransOutputDefinitions>,
-    /// CPU and memory resources to reserve.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<KafkaJmxTransResources>,
-    /// Template for JmxTrans resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub template: Option<KafkaJmxTransTemplate>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaJmxTransKafkaQueries {
-    /// Determine which attributes of the targeted MBean should be included.
     pub attributes: Vec<String>,
-    /// List of the names of output definitions specified in the spec.kafka.jmxTrans.outputDefinitions that have defined where JMX metrics are pushed to, and in which data format.
     pub outputs: Vec<String>,
-    /// If using wildcards instead of a specific MBean then the data is gathered from multiple MBeans. Otherwise if specifying an MBean then data is gathered from that specified MBean.
     #[serde(rename = "targetMBean")]
     pub target_m_bean: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaJmxTransOutputDefinitions {
-    /// How many seconds the JmxTrans waits before pushing a new set of data out.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flushDelayInSeconds")]
     pub flush_delay_in_seconds: Option<i64>,
-    /// The DNS/hostname of the remote host that the data is pushed to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Template for setting the name of the output definition. This is used to identify where to send the results of queries should be sent.
     pub name: String,
-    /// Template for setting the format of the data that will be pushed.For more information see <https://github.com/jmxtrans/jmxtrans/wiki/OutputWriters[JmxTrans> OutputWriters].
     #[serde(rename = "outputType")]
     pub output_type: String,
-    /// The port of the remote host that the data is pushed to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
-    /// Template for filtering data to be included in response to a wildcard query. For more information see <https://github.com/jmxtrans/jmxtrans/wiki/Queries[JmxTrans> queries].
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "typeNames")]
     pub type_names: Option<Vec<String>>,
 }
 
-/// CPU and memory resources to reserve.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaJmxTransResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3530,62 +3059,46 @@ pub struct KafkaJmxTransResourcesClaims {
     pub request: Option<String>,
 }
 
-/// Template for JmxTrans resources.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaJmxTransTemplate {
-    /// Template for JmxTrans container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<KafkaJmxTransTemplateContainer>,
-    /// Template for JmxTrans `Deployment`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deployment: Option<KafkaJmxTransTemplateDeployment>,
-    /// Template for JmxTrans `Pods`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pod: Option<KafkaJmxTransTemplatePod>,
-    /// Template for the JmxTrans service account.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<KafkaJmxTransTemplateServiceAccount>,
 }
 
-/// Template for JmxTrans container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaJmxTransTemplateContainer {
-    /// Environment variables which should be applied to the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<KafkaJmxTransTemplateContainerEnv>>,
-    /// Security context for the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<KafkaJmxTransTemplateContainerSecurityContext>,
-    /// Additional volume mounts which should be applied to the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<KafkaJmxTransTemplateContainerVolumeMounts>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaJmxTransTemplateContainerEnv {
-    /// The environment variable key.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The environment variable value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
-    /// Reference to the secret or config map property to which the environment variable is set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
     pub value_from: Option<KafkaJmxTransTemplateContainerEnvValueFrom>,
 }
 
-/// Reference to the secret or config map property to which the environment variable is set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaJmxTransTemplateContainerEnvValueFrom {
-    /// Reference to a key in a config map.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<KafkaJmxTransTemplateContainerEnvValueFromConfigMapKeyRef>,
-    /// Reference to a key in a secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<KafkaJmxTransTemplateContainerEnvValueFromSecretKeyRef>,
 }
 
-/// Reference to a key in a config map.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaJmxTransTemplateContainerEnvValueFromConfigMapKeyRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3596,7 +3109,6 @@ pub struct KafkaJmxTransTemplateContainerEnvValueFromConfigMapKeyRef {
     pub optional: Option<bool>,
 }
 
-/// Reference to a key in a secret.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaJmxTransTemplateContainerEnvValueFromSecretKeyRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3607,7 +3119,6 @@ pub struct KafkaJmxTransTemplateContainerEnvValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
-/// Security context for the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaJmxTransTemplateContainerSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
@@ -3702,86 +3213,62 @@ pub struct KafkaJmxTransTemplateContainerVolumeMounts {
     pub sub_path_expr: Option<String>,
 }
 
-/// Template for JmxTrans `Deployment`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaJmxTransTemplateDeployment {
-    /// Pod replacement strategy for deployment configuration changes. Valid values are `RollingUpdate` and `Recreate`. Defaults to `RollingUpdate`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploymentStrategy")]
     pub deployment_strategy: Option<KafkaJmxTransTemplateDeploymentDeploymentStrategy>,
-    /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaJmxTransTemplateDeploymentMetadata>,
 }
 
-/// Template for JmxTrans `Deployment`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaJmxTransTemplateDeploymentDeploymentStrategy {
     RollingUpdate,
     Recreate,
 }
 
-/// Metadata applied to the resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaJmxTransTemplateDeploymentMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Template for JmxTrans `Pods`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaJmxTransTemplatePod {
-    /// The pod's affinity rules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<KafkaJmxTransTemplatePodAffinity>,
-    /// The pod's DNSConfig. If specified, it will be merged to the generated DNS configuration based on the DNSPolicy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsConfig")]
     pub dns_config: Option<KafkaJmxTransTemplatePodDnsConfig>,
-    /// The pod's DNSPolicy. Defaults to `ClusterFirst`. Valid values are `ClusterFirstWithHostNet`, `ClusterFirst`, `Default` or `None`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsPolicy")]
     pub dns_policy: Option<KafkaJmxTransTemplatePodDnsPolicy>,
-    /// Indicates whether information about services should be injected into Pod's environment variables.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableServiceLinks")]
     pub enable_service_links: Option<bool>,
-    /// The pod's HostAliases. HostAliases is an optional list of hosts and IPs that will be injected into the Pod's hosts file if specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
     pub host_aliases: Option<Vec<KafkaJmxTransTemplatePodHostAliases>>,
-    /// List of references to secrets in the same namespace to use for pulling any of the images used by this Pod. When the `STRIMZI_IMAGE_PULL_SECRETS` environment variable in Cluster Operator and the `imagePullSecrets` option are specified, only the `imagePullSecrets` variable is used and the `STRIMZI_IMAGE_PULL_SECRETS` variable is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<KafkaJmxTransTemplatePodImagePullSecrets>>,
-    /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaJmxTransTemplatePodMetadata>,
-    /// The name of the priority class used to assign priority to the pods. 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
-    /// The name of the scheduler used to dispatch this `Pod`. If not specified, the default scheduler will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
     pub scheduler_name: Option<String>,
-    /// Configures pod-level security attributes and common container settings.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<KafkaJmxTransTemplatePodSecurityContext>,
-    /// The grace period is the duration in seconds after the processes running in the pod are sent a termination signal, and the time when the processes are forcibly halted with a kill signal. Set this value to longer than the expected cleanup time for your process. Value must be a non-negative integer. A zero value indicates delete immediately. You might need to increase the grace period for very large Kafka clusters, so that the Kafka brokers have enough time to transfer their work to another broker before they are terminated. Defaults to 30 seconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    /// Defines the total amount of pod memory allocated for the temporary `EmptyDir` volume `/tmp`. Specify the allocation in memory units, for example, `100Mi` for 100 mebibytes. Default value is `5Mi`. The `/tmp` volume is backed by pod memory, not disk storage, so avoid setting a high value as it consumes pod memory resources.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tmpDirSizeLimit")]
     pub tmp_dir_size_limit: Option<String>,
-    /// The pod's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<KafkaJmxTransTemplatePodTolerations>>,
-    /// The pod's topology spread constraints.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
     pub topology_spread_constraints: Option<Vec<KafkaJmxTransTemplatePodTopologySpreadConstraints>>,
-    /// Additional volumes that can be mounted to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<KafkaJmxTransTemplatePodVolumes>>,
 }
 
-/// The pod's affinity rules.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaJmxTransTemplatePodAffinity {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
@@ -4110,7 +3597,6 @@ pub struct KafkaJmxTransTemplatePodAffinityPodAntiAffinityRequiredDuringScheduli
     pub values: Option<Vec<String>>,
 }
 
-/// The pod's DNSConfig. If specified, it will be merged to the generated DNS configuration based on the DNSPolicy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaJmxTransTemplatePodDnsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4129,7 +3615,6 @@ pub struct KafkaJmxTransTemplatePodDnsConfigOptions {
     pub value: Option<String>,
 }
 
-/// Template for JmxTrans `Pods`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaJmxTransTemplatePodDnsPolicy {
     ClusterFirst,
@@ -4152,18 +3637,14 @@ pub struct KafkaJmxTransTemplatePodImagePullSecrets {
     pub name: Option<String>,
 }
 
-/// Metadata applied to the resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaJmxTransTemplatePodMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Configures pod-level security attributes and common container settings.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaJmxTransTemplatePodSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
@@ -4296,30 +3777,22 @@ pub struct KafkaJmxTransTemplatePodTopologySpreadConstraintsLabelSelectorMatchEx
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaJmxTransTemplatePodVolumes {
-    /// `ConfigMap` to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<KafkaJmxTransTemplatePodVolumesConfigMap>,
-    /// `CSIVolumeSource` object to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<KafkaJmxTransTemplatePodVolumesCsi>,
-    /// `EmptyDir` to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<KafkaJmxTransTemplatePodVolumesEmptyDir>,
-    /// `ImageVolumeSource` object to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<KafkaJmxTransTemplatePodVolumesImage>,
-    /// Name to use for the volume. Required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// `PersistentVolumeClaim` object to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<KafkaJmxTransTemplatePodVolumesPersistentVolumeClaim>,
-    /// `Secret` to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<KafkaJmxTransTemplatePodVolumesSecret>,
 }
 
-/// `ConfigMap` to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaJmxTransTemplatePodVolumesConfigMap {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
@@ -4342,7 +3815,6 @@ pub struct KafkaJmxTransTemplatePodVolumesConfigMapItems {
     pub path: Option<String>,
 }
 
-/// `CSIVolumeSource` object to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaJmxTransTemplatePodVolumesCsi {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4363,24 +3835,19 @@ pub struct KafkaJmxTransTemplatePodVolumesCsiNodePublishSecretRef {
     pub name: Option<String>,
 }
 
-/// `EmptyDir` to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaJmxTransTemplatePodVolumesEmptyDir {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub medium: Option<String>,
+    pub medium: Option<KafkaJmxTransTemplatePodVolumesEmptyDirMedium>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
-    pub size_limit: Option<KafkaJmxTransTemplatePodVolumesEmptyDirSizeLimit>,
+    pub size_limit: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KafkaJmxTransTemplatePodVolumesEmptyDirSizeLimit {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub amount: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub format: Option<String>,
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaJmxTransTemplatePodVolumesEmptyDirMedium {
+    Memory,
 }
 
-/// `ImageVolumeSource` object to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaJmxTransTemplatePodVolumesImage {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
@@ -4389,7 +3856,6 @@ pub struct KafkaJmxTransTemplatePodVolumesImage {
     pub reference: Option<String>,
 }
 
-/// `PersistentVolumeClaim` object to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaJmxTransTemplatePodVolumesPersistentVolumeClaim {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "claimName")]
@@ -4398,7 +3864,6 @@ pub struct KafkaJmxTransTemplatePodVolumesPersistentVolumeClaim {
     pub read_only: Option<bool>,
 }
 
-/// `Secret` to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaJmxTransTemplatePodVolumesSecret {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
@@ -4421,180 +3886,125 @@ pub struct KafkaJmxTransTemplatePodVolumesSecretItems {
     pub path: Option<String>,
 }
 
-/// Template for the JmxTrans service account.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaJmxTransTemplateServiceAccount {
-    /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaJmxTransTemplateServiceAccountMetadata>,
 }
 
-/// Metadata applied to the resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaJmxTransTemplateServiceAccountMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Configuration of the Kafka cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafka {
-    /// Authorization configuration for Kafka brokers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<KafkaKafkaAuthorization>,
-    /// The image of the init container used for initializing the `broker.rack`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "brokerRackInitImage")]
     pub broker_rack_init_image: Option<String>,
-    /// Kafka broker config properties with the following prefixes cannot be set: listeners, advertised., broker., listener., host.name, port, inter.broker.listener.name, sasl., ssl., security., password., log.dir, zookeeper.connect, zookeeper.set.acl, zookeeper.ssl, zookeeper.clientCnxnSocket, authorizer., super.user, cruise.control.metrics.topic, cruise.control.metrics.reporter.bootstrap.servers, node.id, process.roles, controller., metadata.log.dir, zookeeper.metadata.migration.enable, client.quota.callback.static.kafka.admin., client.quota.callback.static.produce, client.quota.callback.static.fetch, client.quota.callback.static.storage.per.volume.limit.min.available., client.quota.callback.static.excluded.principal.name.list, prometheus.metrics.reporter. (with the exception of: zookeeper.connection.timeout.ms, sasl.server.max.receive.size, ssl.cipher.suites, ssl.protocol, ssl.enabled.protocols, ssl.secure.random.implementation, cruise.control.metrics.topic.num.partitions, cruise.control.metrics.topic.replication.factor, cruise.control.metrics.topic.retention.ms, cruise.control.metrics.topic.auto.create.retries, cruise.control.metrics.topic.auto.create.timeout.ms, cruise.control.metrics.topic.min.insync.replicas, broker.session.timeout.ms, broker.heartbeat.interval.ms, controller.socket.timeout.ms, controller.quorum.election.backoff.max.ms, controller.quorum.election.timeout.ms, controller.quorum.fetch.timeout.ms).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<BTreeMap<String, serde_json::Value>>,
-    /// The container image used for Kafka pods. If the property is not set, the default Kafka image version is determined based on the `version` configuration. The image names are specifically mapped to corresponding versions in the Cluster Operator configuration. Changing the Kafka image version does not automatically update the image versions for other components, such as Kafka Exporter. 
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    /// JMX Options for Kafka brokers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmxOptions")]
     pub jmx_options: Option<KafkaKafkaJmxOptions>,
-    /// JVM Options for pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmOptions")]
     pub jvm_options: Option<KafkaKafkaJvmOptions>,
-    /// Configures listeners to provide access to Kafka brokers.
     pub listeners: Vec<KafkaKafkaListeners>,
-    /// Pod liveness checking.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<KafkaKafkaLivenessProbe>,
-    /// Logging configuration for Kafka.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<KafkaKafkaLogging>,
-    /// The KRaft metadata version used by the Kafka cluster. This property is ignored when running in ZooKeeper mode. If the property is not set, it defaults to the metadata version that corresponds to the `version` property.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metadataVersion")]
     pub metadata_version: Option<String>,
-    /// Metrics configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricsConfig")]
     pub metrics_config: Option<KafkaKafkaMetricsConfig>,
-    /// Quotas plugin configuration for Kafka brokers allows setting quotas for disk usage, produce/fetch rates, and more. Supported plugin types include `kafka` (default) and `strimzi`. If not specified, the default `kafka` quotas plugin is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub quotas: Option<KafkaKafkaQuotas>,
-    /// Configuration of the `broker.rack` broker config.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rack: Option<KafkaKafkaRack>,
-    /// Pod readiness checking.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<KafkaKafkaReadinessProbe>,
-    /// Replicas are now configured in `KafkaNodePool` resources and this option is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i64>,
-    /// CPU and memory resources to reserve.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<KafkaKafkaResources>,
-    /// Storage is now configured in the `KafkaNodePool` resources and this option is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage: Option<KafkaKafkaStorage>,
-    /// Template for Kafka cluster resources. The template allows users to specify how the Kubernetes resources are generated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub template: Option<KafkaKafkaTemplate>,
-    /// Configure the tiered storage feature for Kafka brokers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tieredStorage")]
     pub tiered_storage: Option<KafkaKafkaTieredStorage>,
-    /// The Kafka broker version. Defaults to the latest version. Consult the user documentation to understand the process required to upgrade or downgrade the version.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
 
-/// Authorization configuration for Kafka brokers.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KafkaKafkaAuthorization {
-    /// Defines whether a Kafka client should be allowed or denied by default when the authorizer fails to query the Open Policy Agent, for example, when it is temporarily unavailable). Defaults to `false` - all actions will be denied.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowOnError")]
     pub allow_on_error: Option<bool>,
-    /// Authorization implementation class, which must be available in classpath.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authorizerClass")]
     pub authorizer_class: Option<String>,
-    /// OAuth Client ID which the Kafka client can use to authenticate against the OAuth server and use the token endpoint URI.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientId")]
     pub client_id: Option<String>,
-    /// The connect timeout in seconds when connecting to authorization server. If not set, the effective connect timeout is 60 seconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeoutSeconds")]
     pub connect_timeout_seconds: Option<i64>,
-    /// Whether authorization decision should be delegated to the 'Simple' authorizer if DENIED by Keycloak Authorization Services policies. Default value is `false`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "delegateToKafkaAcls")]
     pub delegate_to_kafka_acls: Option<bool>,
-    /// Enable or disable TLS hostname verification. Default value is `false`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableTlsHostnameVerification")]
     pub disable_tls_hostname_verification: Option<bool>,
-    /// Enable or disable OAuth metrics. The default value is `false`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableMetrics")]
     pub enable_metrics: Option<bool>,
-    /// The expiration of the records kept in the local cache to avoid querying the Open Policy Agent for every request. Defines how often the cached authorization decisions are reloaded from the Open Policy Agent server. In milliseconds. Defaults to `3600000`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "expireAfterMs")]
     pub expire_after_ms: Option<i64>,
-    /// Controls whether the latest grants are fetched for a new session. When enabled, grants are retrieved from Keycloak and cached for the user. The default value is `false`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "grantsAlwaysLatest")]
     pub grants_always_latest: Option<bool>,
-    /// The time, in seconds, between consecutive runs of a job that cleans stale grants from the cache. The default value is 300.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "grantsGcPeriodSeconds")]
     pub grants_gc_period_seconds: Option<i64>,
-    /// The time, in seconds, after which an idle grant can be evicted from the cache. The default value is 300.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "grantsMaxIdleTimeSeconds")]
     pub grants_max_idle_time_seconds: Option<i64>,
-    /// The time between two consecutive grants refresh runs in seconds. The default value is 60.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "grantsRefreshPeriodSeconds")]
     pub grants_refresh_period_seconds: Option<i64>,
-    /// The number of threads to use to refresh grants for active sessions. The more threads, the more parallelism, so the sooner the job completes. However, using more threads places a heavier load on the authorization server. The default value is 5.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "grantsRefreshPoolSize")]
     pub grants_refresh_pool_size: Option<i64>,
-    /// The maximum number of retries to attempt if an initial HTTP request fails. If not set, the default is to not attempt any retries.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpRetries")]
     pub http_retries: Option<i64>,
-    /// Whether the Accept header should be set in requests to the authorization servers. The default value is `true`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeAcceptHeader")]
     pub include_accept_header: Option<bool>,
-    /// Initial capacity of the local cache used by the authorizer to avoid querying the Open Policy Agent for every request Defaults to `5000`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialCacheCapacity")]
     pub initial_cache_capacity: Option<i64>,
-    /// Maximum capacity of the local cache used by the authorizer to avoid querying the Open Policy Agent for every request. Defaults to `50000`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumCacheSize")]
     pub maximum_cache_size: Option<i64>,
-    /// The read timeout in seconds when connecting to authorization server. If not set, the effective read timeout is 60 seconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readTimeoutSeconds")]
     pub read_timeout_seconds: Option<i64>,
-    /// List of super users, which are user principals with unlimited access rights.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "superUsers")]
     pub super_users: Option<Vec<String>>,
-    /// Indicates whether the custom authorizer supports the APIs for managing ACLs using the Kafka Admin API. Defaults to `false`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supportsAdminApi")]
     pub supports_admin_api: Option<bool>,
-    /// Trusted certificates for TLS connection to the OAuth server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsTrustedCertificates")]
     pub tls_trusted_certificates: Option<Vec<KafkaKafkaAuthorizationTlsTrustedCertificates>>,
-    /// Authorization server token endpoint URI.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenEndpointUri")]
     pub token_endpoint_uri: Option<String>,
-    /// Authorization type. Currently, the supported types are `simple`, `keycloak`, `opa` and `custom`. `simple` authorization type uses Kafka's built-in authorizer for authorization. `keycloak` authorization type uses Keycloak Authorization Services for authorization. `opa` authorization type uses Open Policy Agent based authorization. `custom` authorization type uses user-provided implementation for authorization. As of Strimzi 0.46.0, `opa` type is deprecated and will be removed in the future. Please use `custom` type instead.
     #[serde(rename = "type")]
     pub r#type: KafkaKafkaAuthorizationType,
-    /// The URL used to connect to the Open Policy Agent server. The URL has to include the policy which will be queried by the authorizer. This option is required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaAuthorizationTlsTrustedCertificates {
-    /// The name of the file certificate in the secret.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub certificate: Option<String>,
-    /// Pattern for the certificate files in the secret. Use the link:<https://en.wikipedia.org/wiki/Glob_(programming)[_glob> syntax_] for the pattern. All files in the secret that match the pattern are used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pattern: Option<String>,
-    /// The name of the Secret containing the certificate.
     #[serde(rename = "secretName")]
     pub secret_name: String,
 }
 
-/// Authorization configuration for Kafka brokers.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaKafkaAuthorizationType {
     #[serde(rename = "simple")]
@@ -4607,259 +4017,177 @@ pub enum KafkaKafkaAuthorizationType {
     Custom,
 }
 
-/// JMX Options for Kafka brokers.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaJmxOptions {
-    /// Authentication configuration for connecting to the JMX port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authentication: Option<KafkaKafkaJmxOptionsAuthentication>,
 }
 
-/// Authentication configuration for connecting to the JMX port.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KafkaKafkaJmxOptionsAuthentication {
-    /// Authentication type. Currently the only supported types are `password`.`password` type creates a username and protected port with no TLS.
     #[serde(rename = "type")]
     pub r#type: KafkaKafkaJmxOptionsAuthenticationType,
 }
 
-/// Authentication configuration for connecting to the JMX port.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaKafkaJmxOptionsAuthenticationType {
     #[serde(rename = "password")]
     Password,
 }
 
-/// JVM Options for pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaJvmOptions {
-    /// A map of -XX options to the JVM.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "-XX")]
     pub xx: Option<BTreeMap<String, String>>,
-    /// -Xms option to to the JVM.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "-Xms")]
     pub xms: Option<String>,
-    /// -Xmx option to to the JVM.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "-Xmx")]
     pub xmx: Option<String>,
-    /// Specifies whether the Garbage Collection logging is enabled. The default is false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcLoggingEnabled")]
     pub gc_logging_enabled: Option<bool>,
-    /// A map of additional system properties which will be passed using the `-D` option to the JVM.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "javaSystemProperties")]
     pub java_system_properties: Option<Vec<KafkaKafkaJvmOptionsJavaSystemProperties>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaJvmOptionsJavaSystemProperties {
-    /// The system property name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The system property value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KafkaKafkaListeners {
-    /// Authentication configuration for this listener.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authentication: Option<KafkaKafkaListenersAuthentication>,
-    /// Additional listener configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<KafkaKafkaListenersConfiguration>,
-    /// Name of the listener. The name will be used to identify the listener and the related Kubernetes objects. The name has to be unique within given a Kafka cluster. The name can consist of lowercase characters and numbers and be up to 11 characters long.
     pub name: String,
-    /// List of peers which should be able to connect to this listener. Peers in this list are combined using a logical OR operation. If this field is empty or missing, all connections will be allowed for this listener. If this field is present and contains at least one item, the listener only allows the traffic which matches at least one item in this list.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkPolicyPeers")]
     pub network_policy_peers: Option<Vec<KafkaKafkaListenersNetworkPolicyPeers>>,
-    /// Port number used by the listener inside Kafka. The port number has to be unique within a given Kafka cluster. Allowed port numbers are 9092 and higher with the exception of ports 9404 and 9999, which are already used for Prometheus and JMX. Depending on the listener type, the port number might not be the same as the port number that connects Kafka clients.
     pub port: i64,
-    /// Enables TLS encryption on the listener. This is a required property. For `route` and `ingress` type listeners, TLS encryption must be always enabled.
     pub tls: bool,
-    /// Type of the listener. The supported types are as follows: 
-    /// 
-    /// * `internal` type exposes Kafka internally only within the Kubernetes cluster.
-    /// * `route` type uses OpenShift Routes to expose Kafka.
-    /// * `loadbalancer` type uses LoadBalancer type services to expose Kafka.
-    /// * `nodeport` type uses NodePort type services to expose Kafka.
-    /// * `ingress` type uses Kubernetes Nginx Ingress to expose Kafka with TLS passthrough.
-    /// * `cluster-ip` type uses a per-broker `ClusterIP` service.
-    /// 
     #[serde(rename = "type")]
     pub r#type: KafkaKafkaListenersType,
 }
 
-/// Authentication configuration for this listener.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KafkaKafkaListenersAuthentication {
-    /// Configure whether the access token is treated as JWT. This must be set to `false` if the authorization server returns opaque tokens. Defaults to `true`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessTokenIsJwt")]
     pub access_token_is_jwt: Option<bool>,
-    /// Configure whether the access token type check is performed or not. This should be set to `false` if the authorization server does not include 'typ' claim in JWT token. Defaults to `true`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "checkAccessTokenType")]
     pub check_access_token_type: Option<bool>,
-    /// Enable or disable audience checking. Audience checks identify the recipients of tokens. If audience checking is enabled, the OAuth Client ID also has to be configured using the `clientId` property. The Kafka broker will reject tokens that do not have its `clientId` in their `aud` (audience) claim.Default value is `false`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "checkAudience")]
     pub check_audience: Option<bool>,
-    /// Enable or disable issuer checking. By default issuer is checked using the value configured by `validIssuerUri`. Default value is `true`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "checkIssuer")]
     pub check_issuer: Option<bool>,
-    /// The audience to use when making requests to the authorization server's token endpoint. Used for inter-broker authentication and for configuring OAuth 2.0 over PLAIN using the `clientId` and `secret` method.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientAudience")]
     pub client_audience: Option<String>,
-    /// The grant type to use when making requests to the authorization server's token endpoint. Used for `OAuth over PLAIN` when `username` and `password` passed via SASL_PLAIN client authentication are passed on to the authorization server as `clientId` and `secret`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientGrantType")]
     pub client_grant_type: Option<String>,
-    /// OAuth Client ID which the Kafka broker can use to authenticate against the authorization server and use the introspect endpoint URI.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientId")]
     pub client_id: Option<String>,
-    /// The scope to use when making requests to the authorization server's token endpoint. Used for inter-broker authentication and for configuring OAuth 2.0 over PLAIN using the `clientId` and `secret` method.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientScope")]
     pub client_scope: Option<String>,
-    /// Link to Kubernetes Secret containing the OAuth client secret which the Kafka broker can use to authenticate against the authorization server and use the introspect endpoint URI.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientSecret")]
     pub client_secret: Option<KafkaKafkaListenersAuthenticationClientSecret>,
-    /// The connect timeout in seconds when connecting to authorization server. If not set, the effective connect timeout is 60 seconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeoutSeconds")]
     pub connect_timeout_seconds: Option<i64>,
-    /// JsonPath filter query to be applied to the JWT token or to the response of the introspection endpoint for additional token validation. Not set by default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "customClaimCheck")]
     pub custom_claim_check: Option<String>,
-    /// Enable or disable TLS hostname verification. Default value is `false`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableTlsHostnameVerification")]
     pub disable_tls_hostname_verification: Option<bool>,
-    /// Enable or disable ECDSA support by installing BouncyCastle crypto provider. ECDSA support is always enabled. The BouncyCastle libraries are no longer packaged with Strimzi. Value is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableECDSA")]
     pub enable_ecdsa: Option<bool>,
-    /// Enable or disable OAuth metrics. Default value is `false`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableMetrics")]
     pub enable_metrics: Option<bool>,
-    /// Enable or disable OAuth authentication over SASL_OAUTHBEARER. Default value is `true`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableOauthBearer")]
     pub enable_oauth_bearer: Option<bool>,
-    /// Enable or disable OAuth authentication over SASL_PLAIN. There is no re-authentication support when this mechanism is used. Default value is `false`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enablePlain")]
     pub enable_plain: Option<bool>,
-    /// Enable or disable termination of Kafka broker processes due to potentially recoverable runtime errors during startup. Default value is `true`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failFast")]
     pub fail_fast: Option<bool>,
-    /// The fallback username claim to be used for the user ID if the claim specified by `userNameClaim` is not present. This is useful when `client_credentials` authentication only results in the client ID being provided in another claim. It only takes effect if `userNameClaim` is set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fallbackUserNameClaim")]
     pub fallback_user_name_claim: Option<String>,
-    /// The prefix to use with the value of `fallbackUserNameClaim` to construct the user id. This only takes effect if `fallbackUserNameClaim` is true, and the value is present for the claim. Mapping usernames and client ids into the same user id space is useful in preventing name collisions.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fallbackUserNamePrefix")]
     pub fallback_user_name_prefix: Option<String>,
-    /// JsonPath query used to extract groups for the user during authentication. Extracted groups can be used by a custom authorizer. By default no groups are extracted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupsClaim")]
     pub groups_claim: Option<String>,
-    /// A delimiter used to parse groups when they are extracted as a single String value rather than a JSON array. Default value is ',' (comma).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupsClaimDelimiter")]
     pub groups_claim_delimiter: Option<String>,
-    /// The maximum number of retries to attempt if an initial HTTP request fails. If not set, the default is to not attempt any retries.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpRetries")]
     pub http_retries: Option<i64>,
-    /// The pause to take before retrying a failed HTTP request. If not set, the default is to not pause at all but to immediately repeat a request.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpRetryPauseMs")]
     pub http_retry_pause_ms: Option<i64>,
-    /// Whether the Accept header should be set in requests to the authorization servers. The default value is `true`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeAcceptHeader")]
     pub include_accept_header: Option<bool>,
-    /// URI of the token introspection endpoint which can be used to validate opaque non-JWT tokens.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "introspectionEndpointUri")]
     pub introspection_endpoint_uri: Option<String>,
-    /// URI of the JWKS certificate endpoint, which can be used for local JWT validation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jwksEndpointUri")]
     pub jwks_endpoint_uri: Option<String>,
-    /// Configures how often are the JWKS certificates considered valid. The expiry interval has to be at least 60 seconds longer then the refresh interval specified in `jwksRefreshSeconds`. Defaults to 360 seconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jwksExpirySeconds")]
     pub jwks_expiry_seconds: Option<i64>,
-    /// Flag to ignore the 'use' attribute of `key` declarations in a JWKS endpoint response. Default value is `false`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jwksIgnoreKeyUse")]
     pub jwks_ignore_key_use: Option<bool>,
-    /// The minimum pause between two consecutive refreshes. When an unknown signing key is encountered the refresh is scheduled immediately, but will always wait for this minimum pause. Defaults to 1 second.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jwksMinRefreshPauseSeconds")]
     pub jwks_min_refresh_pause_seconds: Option<i64>,
-    /// Configures how often are the JWKS certificates refreshed. The refresh interval has to be at least 60 seconds shorter then the expiry interval specified in `jwksExpirySeconds`. Defaults to 300 seconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jwksRefreshSeconds")]
     pub jwks_refresh_seconds: Option<i64>,
-    /// Configuration to be used for a specific listener. All values are prefixed with `listener.name.<listener_name>`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenerConfig")]
     pub listener_config: Option<BTreeMap<String, serde_json::Value>>,
-    /// Maximum number of seconds the authenticated session remains valid without re-authentication. This enables Apache Kafka re-authentication feature, and causes sessions to expire when the access token expires. If the access token expires before max time or if max time is reached, the client has to re-authenticate, otherwise the server will drop the connection. Not set by default - the authenticated session does not expire when the access token expires. This option only applies to SASL_OAUTHBEARER authentication mechanism (when `enableOauthBearer` is `true`).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSecondsWithoutReauthentication")]
     pub max_seconds_without_reauthentication: Option<i64>,
-    /// The read timeout in seconds when connecting to authorization server. If not set, the effective read timeout is 60 seconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readTimeoutSeconds")]
     pub read_timeout_seconds: Option<i64>,
-    /// Enable or disable SASL on this listener.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sasl: Option<bool>,
-    /// Secrets to be mounted to `/opt/kafka/custom-authn-secrets/custom-listener-<listener_name>-<port>/<secret_name>`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secrets: Option<Vec<KafkaKafkaListenersAuthenticationSecrets>>,
-    /// Path to the file on the local filesystem that contains a bearer token to be used instead of client ID and secret when authenticating to authorization server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverBearerTokenLocation")]
     pub server_bearer_token_location: Option<String>,
-    /// Trusted certificates for TLS connection to the OAuth server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsTrustedCertificates")]
     pub tls_trusted_certificates: Option<Vec<KafkaKafkaListenersAuthenticationTlsTrustedCertificates>>,
-    /// URI of the Token Endpoint to use with SASL_PLAIN mechanism when the client authenticates with `clientId` and a `secret`. If set, the client can authenticate over SASL_PLAIN by either setting `username` to `clientId`, and setting `password` to client `secret`, or by setting `username` to account username, and `password` to access token prefixed with `$accessToken:`. If this option is not set, the `password` is always interpreted as an access token (without a prefix), and `username` as the account username (a so called 'no-client-credentials' mode).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenEndpointUri")]
     pub token_endpoint_uri: Option<String>,
-    /// Authentication type. `oauth` type uses SASL OAUTHBEARER Authentication. `scram-sha-512` type uses SASL SCRAM-SHA-512 Authentication. `tls` type uses TLS Client Authentication. `tls` type is supported only on TLS listeners.`custom` type allows for any authentication type to be used.
     #[serde(rename = "type")]
     pub r#type: KafkaKafkaListenersAuthenticationType,
-    /// URI of the User Info Endpoint to use as a fallback to obtaining the user id when the Introspection Endpoint does not return information that can be used for the user id. 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userInfoEndpointUri")]
     pub user_info_endpoint_uri: Option<String>,
-    /// Name of the claim from the JWT authentication token, Introspection Endpoint response or User Info Endpoint response which will be used to extract the user id. Defaults to `sub`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userNameClaim")]
     pub user_name_claim: Option<String>,
-    /// The prefix to use with the value of `userNameClaim` to construct the user ID. This only takes effect if `userNameClaim` is specified and the value is present for the claim. When used in combination with `fallbackUserNameClaims`, it ensures consistent mapping of usernames and client IDs into the same user ID space and prevents name collisions.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userNamePrefix")]
     pub user_name_prefix: Option<String>,
-    /// URI of the token issuer used for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "validIssuerUri")]
     pub valid_issuer_uri: Option<String>,
-    /// Valid value for the `token_type` attribute returned by the Introspection Endpoint. No default value, and not checked by default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "validTokenType")]
     pub valid_token_type: Option<String>,
 }
 
-/// Link to Kubernetes Secret containing the OAuth client secret which the Kafka broker can use to authenticate against the authorization server and use the introspect endpoint URI.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaListenersAuthenticationClientSecret {
-    /// The key under which the secret value is stored in the Kubernetes Secret.
     pub key: String,
-    /// The name of the Kubernetes Secret containing the secret value.
     #[serde(rename = "secretName")]
     pub secret_name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaListenersAuthenticationSecrets {
-    /// The key under which the secret value is stored in the Kubernetes Secret.
     pub key: String,
-    /// The name of the Kubernetes Secret containing the secret value.
     #[serde(rename = "secretName")]
     pub secret_name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaListenersAuthenticationTlsTrustedCertificates {
-    /// The name of the file certificate in the secret.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub certificate: Option<String>,
-    /// Pattern for the certificate files in the secret. Use the link:<https://en.wikipedia.org/wiki/Glob_(programming)[_glob> syntax_] for the pattern. All files in the secret that match the pattern are used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pattern: Option<String>,
-    /// The name of the Secret containing the certificate.
     #[serde(rename = "secretName")]
     pub secret_name: String,
 }
 
-/// Authentication configuration for this listener.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaKafkaListenersAuthenticationType {
     #[serde(rename = "tls")]
@@ -4872,172 +4200,99 @@ pub enum KafkaKafkaListenersAuthenticationType {
     Custom,
 }
 
-/// Additional listener configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaListenersConfiguration {
-    /// Configures the template for generating the advertised hostnames of the individual brokers. Valid placeholders that you can use in the template are `{nodeId}` and `{nodePodName}`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "advertisedHostTemplate")]
     pub advertised_host_template: Option<String>,
-    /// Configures whether to allocate NodePort automatically for the `Service` with type `LoadBalancer`.
-    /// This is a one to one with the `spec.allocateLoadBalancerNodePorts` configuration in the `Service` type
-    /// For `loadbalancer` listeners only.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocateLoadBalancerNodePorts")]
     pub allocate_load_balancer_node_ports: Option<bool>,
-    /// Bootstrap configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bootstrap: Option<KafkaKafkaListenersConfigurationBootstrap>,
-    /// Reference to the `Secret` which holds the certificate and private key pair which will be used for this listener. The certificate can optionally contain the whole chain. This field can be used only with listeners with enabled TLS encryption.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "brokerCertChainAndKey")]
     pub broker_cert_chain_and_key: Option<KafkaKafkaListenersConfigurationBrokerCertChainAndKey>,
-    /// Per-broker configurations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub brokers: Option<Vec<KafkaKafkaListenersConfigurationBrokers>>,
-    /// Configures a specific class for `Ingress` and `LoadBalancer` that defines which controller is used. If not specified, the default controller is used.
-    /// 
-    /// * For an `ingress` listener, the operator uses this property to set the `ingressClassName` property in the `Ingress` resources.
-    /// * For a `loadbalancer` listener, the operator uses this property to set the `loadBalancerClass` property  in the `Service` resources.
-    /// 
-    /// For `ingress` and `loadbalancer` listeners only.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub class: Option<String>,
-    /// Whether to create the bootstrap service or not. The bootstrap service is created by default (if not specified differently). This field can be used with the `loadbalancer` listener.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "createBootstrapService")]
     pub create_bootstrap_service: Option<bool>,
-    /// Specifies whether the service routes external traffic to cluster-wide or node-local endpoints:
-    /// 
-    /// * `Cluster` may cause a second hop to another node and obscures the client source IP.
-    /// * `Local` avoids a second hop for `LoadBalancer` and `Nodeport` type services and preserves the client source IP (when supported by the infrastructure).
-    /// 
-    /// If unspecified, Kubernetes uses `Cluster` as the default. For `loadbalancer` or `nodeport` listeners only.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTrafficPolicy")]
     pub external_traffic_policy: Option<KafkaKafkaListenersConfigurationExternalTrafficPolicy>,
-    /// A list of finalizers configured for the `LoadBalancer` type services created for this listener. If supported by the platform, the finalizer `service.kubernetes.io/load-balancer-cleanup` to make sure that the external load balancer is deleted together with the service.For more information, see <https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#garbage-collecting-load-balancers.> For `loadbalancer` listeners only.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub finalizers: Option<Vec<String>>,
-    /// Configures the template for generating the hostnames of the individual brokers. Valid placeholders that you can use in the template are `{nodeId}` and `{nodePodName}`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostTemplate")]
     pub host_template: Option<String>,
-    /// Specifies the IP Families used by the service. Available options are `IPv4` and `IPv6`. If unspecified, Kubernetes will choose the default value based on the `ipFamilyPolicy` setting.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilies")]
     pub ip_families: Option<Vec<String>>,
-    /// Specifies the IP Family Policy used by the service. Available options are `SingleStack`, `PreferDualStack` and `RequireDualStack`:
-    /// 
-    /// * `SingleStack` is for a single IP family.
-    /// * `PreferDualStack` is for two IP families on dual-stack configured clusters or a single IP family on single-stack clusters.
-    /// * `RequireDualStack` fails unless there are two IP families on dual-stack configured clusters.
-    /// 
-    /// If unspecified, Kubernetes will choose the default value based on the service type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilyPolicy")]
     pub ip_family_policy: Option<KafkaKafkaListenersConfigurationIpFamilyPolicy>,
-    /// A list of CIDR ranges (for example `10.0.0.0/8` or `130.211.204.1/32`) from which clients can connect to loadbalancer listeners. If supported by the platform, traffic through the loadbalancer is restricted to the specified CIDR ranges. This field is applicable only for loadbalancer type services and is ignored if the cloud provider does not support the feature. For `loadbalancer` listeners only.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
     pub load_balancer_source_ranges: Option<Vec<String>>,
-    /// The maximum connection creation rate we allow in this listener at any time. New connections will be throttled if the limit is reached.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConnectionCreationRate")]
     pub max_connection_creation_rate: Option<i64>,
-    /// The maximum number of connections we allow for this listener in the broker at any time. New connections are blocked if the limit is reached.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConnections")]
     pub max_connections: Option<i64>,
-    /// Defines which address type should be used as the node address. Available types are: `ExternalDNS`, `ExternalIP`, `InternalDNS`, `InternalIP` and `Hostname`. By default, the addresses are used in the following order (the first one found is used):
-    /// 
-    /// * `ExternalDNS`
-    /// * `ExternalIP`
-    /// * `InternalDNS`
-    /// * `InternalIP`
-    /// * `Hostname`
-    /// 
-    /// This property is used to select the preferred address type, which is checked first. If no address is found for this address type, the other types are checked in the default order.For `nodeport` listeners only.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredNodePortAddressType")]
     pub preferred_node_port_address_type: Option<KafkaKafkaListenersConfigurationPreferredNodePortAddressType>,
-    /// Configures whether the service endpoints are considered "ready" even if the Pods themselves are not. Defaults to `false`. This field can not be used with `internal` listeners.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "publishNotReadyAddresses")]
     pub publish_not_ready_addresses: Option<bool>,
-    /// Configures whether the Kubernetes service DNS domain should be included in the generated addresses.
-    /// 
-    /// * If set to `false`, the generated addresses do not contain the service DNS domain suffix. For example, `my-cluster-kafka-0.my-cluster-kafka-brokers.myproject.svc`.
-    /// * If set to `true`, the generated addresses contain the service DNS domain suffix. For example, `my-cluster-kafka-0.my-cluster-kafka-brokers.myproject.svc.cluster.local`.
-    /// 
-    /// The default is `.cluster.local`, but this is customizable using the environment variable `KUBERNETES_SERVICE_DNS_DOMAIN`. For `internal` and `cluster-ip` listeners only.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useServiceDnsDomain")]
     pub use_service_dns_domain: Option<bool>,
 }
 
-/// Bootstrap configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaListenersConfigurationBootstrap {
-    /// Additional alternative names for the bootstrap service. The alternative names will be added to the list of subject alternative names of the TLS certificates.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "alternativeNames")]
     pub alternative_names: Option<Vec<String>>,
-    /// Annotations added to `Ingress`, `Route`, or `Service` resources. You can use this property to configure DNS providers such as External DNS. For `loadbalancer`, `nodeport`, `route`, or `ingress` listeners only.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// External IPs associated to the nodeport service. These IPs are used by clients external to the Kubernetes cluster to access the Kafka brokers. This property is helpful when `nodeport` without `externalIP` is not sufficient. For example on bare-metal Kubernetes clusters that do not support Loadbalancer service types. For `nodeport` listeners only.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalIPs")]
     pub external_i_ps: Option<Vec<String>>,
-    /// Specifies the hostname used for the bootstrap resource. For `route` (optional) or `ingress` (required) listeners only. Ensure the hostname resolves to the Ingress endpoints; no validation is performed by Strimzi.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Labels added to `Ingress`, `Route`, or `Service` resources. For `loadbalancer`, `nodeport`, `route`, or `ingress` listeners only.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    /// The loadbalancer is requested with the IP address specified in this property. This feature depends on whether the underlying cloud provider supports specifying the `loadBalancerIP` when a load balancer is created. This property is ignored if the cloud provider does not support the feature. For `loadbalancer` listeners only.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
     pub load_balancer_ip: Option<String>,
-    /// Node port for the bootstrap service. For `nodeport` listeners only.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePort")]
     pub node_port: Option<i64>,
 }
 
-/// Reference to the `Secret` which holds the certificate and private key pair which will be used for this listener. The certificate can optionally contain the whole chain. This field can be used only with listeners with enabled TLS encryption.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaListenersConfigurationBrokerCertChainAndKey {
-    /// The name of the file certificate in the Secret.
     pub certificate: String,
-    /// The name of the private key in the Secret.
     pub key: String,
-    /// The name of the Secret containing the certificate.
     #[serde(rename = "secretName")]
     pub secret_name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaListenersConfigurationBrokers {
-    /// The host name used in the brokers' `advertised.listeners`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "advertisedHost")]
     pub advertised_host: Option<String>,
-    /// The port number used in the brokers' `advertised.listeners`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "advertisedPort")]
     pub advertised_port: Option<i64>,
-    /// Annotations that will be added to the `Ingress` or `Service` resource. You can use this field to configure DNS providers such as External DNS. This field can be used only with `loadbalancer`, `nodeport`, or `ingress` type listeners.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// ID of the kafka broker (broker identifier). Broker IDs start from 0 and correspond to the number of broker replicas.
     pub broker: i64,
-    /// External IPs associated to the nodeport service. These IPs are used by clients external to the Kubernetes cluster to access the Kafka brokers. This field is helpful when `nodeport` without `externalIP` is not sufficient. For example on bare-metal Kubernetes clusters that do not support Loadbalancer service types. This field can only be used with `nodeport` type listener.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalIPs")]
     pub external_i_ps: Option<Vec<String>>,
-    /// The broker host. This field will be used in the Ingress resource or in the Route resource to specify the desired hostname. This field can be used only with `route` (optional) or `ingress` (required) type listeners.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Labels that will be added to the `Ingress`, `Route`, or `Service` resource. This field can be used only with `loadbalancer`, `nodeport`, `route`, or `ingress` type listeners.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    /// The loadbalancer is requested with the IP address specified in this field. This feature depends on whether the underlying cloud provider supports specifying the `loadBalancerIP` when a load balancer is created. This field is ignored if the cloud provider does not support the feature.This field can be used only with `loadbalancer` type listener.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
     pub load_balancer_ip: Option<String>,
-    /// Node port for the per-broker service. This field can be used only with `nodeport` type listener.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePort")]
     pub node_port: Option<i64>,
 }
 
-/// Additional listener configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaKafkaListenersConfigurationExternalTrafficPolicy {
     Local,
     Cluster,
 }
 
-/// Additional listener configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaKafkaListenersConfigurationIpFamilyPolicy {
     SingleStack,
@@ -5045,7 +4300,6 @@ pub enum KafkaKafkaListenersConfigurationIpFamilyPolicy {
     RequireDualStack,
 }
 
-/// Additional listener configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaKafkaListenersConfigurationPreferredNodePortAddressType {
     #[serde(rename = "ExternalIP")]
@@ -5129,41 +4383,30 @@ pub enum KafkaKafkaListenersType {
     ClusterIp,
 }
 
-/// Pod liveness checking.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaLivenessProbe {
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i64>,
-    /// The initial delay before first the health is first checked. Default to 15 seconds. Minimum value is 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i64>,
-    /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i64>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i64>,
-    /// The timeout for each attempted health check. Default to 5 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i64>,
 }
 
-/// Logging configuration for Kafka.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KafkaKafkaLogging {
-    /// A Map from logger name to logger level.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub loggers: Option<BTreeMap<String, String>>,
-    /// Logging type, must be either 'inline' or 'external'.
     #[serde(rename = "type")]
     pub r#type: KafkaKafkaLoggingType,
-    /// `ConfigMap` entry where the logging configuration is stored. 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
     pub value_from: Option<KafkaKafkaLoggingValueFrom>,
 }
 
-/// Logging configuration for Kafka.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaKafkaLoggingType {
     #[serde(rename = "inline")]
@@ -5172,15 +4415,12 @@ pub enum KafkaKafkaLoggingType {
     External,
 }
 
-/// `ConfigMap` entry where the logging configuration is stored. 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaLoggingValueFrom {
-    /// Reference to the key in the ConfigMap containing the configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<KafkaKafkaLoggingValueFromConfigMapKeyRef>,
 }
 
-/// Reference to the key in the ConfigMap containing the configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaLoggingValueFromConfigMapKeyRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5191,21 +4431,16 @@ pub struct KafkaKafkaLoggingValueFromConfigMapKeyRef {
     pub optional: Option<bool>,
 }
 
-/// Metrics configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KafkaKafkaMetricsConfig {
-    /// Metrics type. The supported types are `jmxPrometheusExporter` and `strimziMetricsReporter`. Type `jmxPrometheusExporter` uses the Prometheus JMX Exporter to expose Kafka JMX metrics in Prometheus format through an HTTP endpoint. Type `strimziMetricsReporter` uses the Strimzi Metrics Reporter to directly expose Kafka metrics in Prometheus format through an HTTP endpoint.
     #[serde(rename = "type")]
     pub r#type: KafkaKafkaMetricsConfigType,
-    /// ConfigMap entry where the Prometheus JMX Exporter configuration is stored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
     pub value_from: Option<KafkaKafkaMetricsConfigValueFrom>,
-    /// Configuration values for the Strimzi Metrics Reporter.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<KafkaKafkaMetricsConfigValues>,
 }
 
-/// Metrics configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaKafkaMetricsConfigType {
     #[serde(rename = "jmxPrometheusExporter")]
@@ -5214,15 +4449,12 @@ pub enum KafkaKafkaMetricsConfigType {
     StrimziMetricsReporter,
 }
 
-/// ConfigMap entry where the Prometheus JMX Exporter configuration is stored.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaMetricsConfigValueFrom {
-    /// Reference to the key in the ConfigMap containing the configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<KafkaKafkaMetricsConfigValueFromConfigMapKeyRef>,
 }
 
-/// Reference to the key in the ConfigMap containing the configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaMetricsConfigValueFromConfigMapKeyRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5233,44 +4465,32 @@ pub struct KafkaKafkaMetricsConfigValueFromConfigMapKeyRef {
     pub optional: Option<bool>,
 }
 
-/// Configuration values for the Strimzi Metrics Reporter.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaMetricsConfigValues {
-    /// A list of regex patterns to filter the metrics to collect. Should contain at least one element.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowList")]
     pub allow_list: Option<Vec<String>>,
 }
 
-/// Quotas plugin configuration for Kafka brokers allows setting quotas for disk usage, produce/fetch rates, and more. Supported plugin types include `kafka` (default) and `strimzi`. If not specified, the default `kafka` quotas plugin is used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KafkaKafkaQuotas {
-    /// A per-broker byte-rate quota for clients consuming from a broker, independent of their number. If clients consume at maximum speed, the quota is shared equally between all non-excluded consumers. Otherwise, the quota is divided based on each client's consumption rate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "consumerByteRate")]
     pub consumer_byte_rate: Option<i64>,
-    /// The default client quota on the rate at which mutations are accepted per second for create topic requests, create partition requests, and delete topic requests, defined for each broker. The mutations rate is measured by the number of partitions created or deleted. Applied on a per-broker basis.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controllerMutationRate")]
     pub controller_mutation_rate: Option<f64>,
-    /// List of principals that are excluded from the quota. The principals have to be prefixed with `User:`, for example `User:my-user;User:CN=my-other-user`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludedPrincipals")]
     pub excluded_principals: Option<Vec<String>>,
-    /// Stop message production if the available size (in bytes) of the storage is lower than or equal to this specified value. This condition is mutually exclusive with `minAvailableRatioPerVolume`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minAvailableBytesPerVolume")]
     pub min_available_bytes_per_volume: Option<i64>,
-    /// Stop message production if the percentage of available storage space falls below or equals the specified ratio (set as a decimal representing a percentage). This condition is mutually exclusive with `minAvailableBytesPerVolume`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minAvailableRatioPerVolume")]
     pub min_available_ratio_per_volume: Option<f64>,
-    /// A per-broker byte-rate quota for clients producing to a broker, independent of their number. If clients produce at maximum speed, the quota is shared equally between all non-excluded producers. Otherwise, the quota is divided based on each client's production rate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "producerByteRate")]
     pub producer_byte_rate: Option<i64>,
-    /// The default client quota limits the maximum CPU utilization of each client as a percentage of the network and I/O threads of each broker. Applied on a per-broker basis.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestPercentage")]
     pub request_percentage: Option<i64>,
-    /// Quotas plugin type. Currently, the supported types are `kafka` and `strimzi`. `kafka` quotas type uses Kafka's built-in quotas plugin. `strimzi` quotas type uses Strimzi quotas plugin.
     #[serde(rename = "type")]
     pub r#type: KafkaKafkaQuotasType,
 }
 
-/// Quotas plugin configuration for Kafka brokers allows setting quotas for disk usage, produce/fetch rates, and more. Supported plugin types include `kafka` (default) and `strimzi`. If not specified, the default `kafka` quotas plugin is used.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaKafkaQuotasType {
     #[serde(rename = "kafka")]
@@ -5279,35 +4499,26 @@ pub enum KafkaKafkaQuotasType {
     Strimzi,
 }
 
-/// Configuration of the `broker.rack` broker config.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaRack {
-    /// A key that matches labels assigned to the Kubernetes cluster nodes. The value of the label is used to set a broker's `broker.rack` config, and the `client.rack` config for Kafka Connect or MirrorMaker 2.
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
 
-/// Pod readiness checking.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaReadinessProbe {
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i64>,
-    /// The initial delay before first the health is first checked. Default to 15 seconds. Minimum value is 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i64>,
-    /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i64>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i64>,
-    /// The timeout for each attempted health check. Default to 5 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i64>,
 }
 
-/// CPU and memory resources to reserve.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5326,42 +4537,32 @@ pub struct KafkaKafkaResourcesClaims {
     pub request: Option<String>,
 }
 
-/// Storage is now configured in the `KafkaNodePool` resources and this option is ignored.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KafkaKafkaStorage {
-    /// The storage class to use for dynamic volume allocation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub class: Option<String>,
-    /// Specifies if the persistent volume claim has to be deleted when the cluster is un-deployed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deleteClaim")]
     pub delete_claim: Option<bool>,
-    /// Storage identification number. It is mandatory only for storage volumes defined in a storage of type 'jbod'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<i64>,
-    /// Specifies whether this volume should be used for storing KRaft metadata. This property is optional. When set, the only currently supported value is `shared`. At most one volume can have this property set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kraftMetadata")]
     pub kraft_metadata: Option<KafkaKafkaStorageKraftMetadata>,
-    /// As of Strimzi 0.46.0, the storage overrides for individual brokers are not supported anymore and this option is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub overrides: Option<Vec<KafkaKafkaStorageOverrides>>,
-    /// Specifies a specific persistent volume to use. It contains key:value pairs representing labels for selecting such a volume.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<BTreeMap<String, String>>,
-    /// When `type=persistent-claim`, defines the size of the persistent volume claim, such as 100Gi. Mandatory when `type=persistent-claim`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub size: Option<String>,
-    /// When type=ephemeral, defines the total amount of local storage required for this EmptyDir volume (for example 1Gi).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
     pub size_limit: Option<String>,
-    /// Storage type, must be either 'ephemeral', 'persistent-claim', or 'jbod'.
     #[serde(rename = "type")]
     pub r#type: KafkaKafkaStorageType,
-    /// List of volumes as Storage objects representing the JBOD disks array.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClass")]
+    pub volume_attributes_class: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<KafkaKafkaStorageVolumes>>,
 }
 
-/// Storage is now configured in the `KafkaNodePool` resources and this option is ignored.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaKafkaStorageKraftMetadata {
     #[serde(rename = "shared")]
@@ -5370,15 +4571,12 @@ pub enum KafkaKafkaStorageKraftMetadata {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaStorageOverrides {
-    /// Id of the kafka broker (broker identifier).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub broker: Option<i64>,
-    /// The storage class to use for dynamic volume allocation for this broker.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub class: Option<String>,
 }
 
-/// Storage is now configured in the `KafkaNodePool` resources and this option is ignored.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaKafkaStorageType {
     #[serde(rename = "ephemeral")]
@@ -5391,33 +4589,26 @@ pub enum KafkaKafkaStorageType {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KafkaKafkaStorageVolumes {
-    /// The storage class to use for dynamic volume allocation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub class: Option<String>,
-    /// Specifies if the persistent volume claim has to be deleted when the cluster is un-deployed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deleteClaim")]
     pub delete_claim: Option<bool>,
-    /// Storage identification number. Mandatory for storage volumes defined with a `jbod` storage type configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<i64>,
-    /// Specifies whether this volume should be used for storing KRaft metadata. This property is optional. When set, the only currently supported value is `shared`. At most one volume can have this property set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kraftMetadata")]
     pub kraft_metadata: Option<KafkaKafkaStorageVolumesKraftMetadata>,
-    /// As of Strimzi 0.46.0, the storage overrides for individual brokers are not supported anymore and this option is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub overrides: Option<Vec<KafkaKafkaStorageVolumesOverrides>>,
-    /// Specifies a specific persistent volume to use. It contains key:value pairs representing labels for selecting such a volume.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<BTreeMap<String, String>>,
-    /// When `type=persistent-claim`, defines the size of the persistent volume claim, such as 100Gi. Mandatory when `type=persistent-claim`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub size: Option<String>,
-    /// When type=ephemeral, defines the total amount of local storage required for this EmptyDir volume (for example 1Gi).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
     pub size_limit: Option<String>,
-    /// Storage type, must be either 'ephemeral' or 'persistent-claim'.
     #[serde(rename = "type")]
     pub r#type: KafkaKafkaStorageVolumesType,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClass")]
+    pub volume_attributes_class: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -5428,10 +4619,8 @@ pub enum KafkaKafkaStorageVolumesKraftMetadata {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaStorageVolumesOverrides {
-    /// Id of the kafka broker (broker identifier).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub broker: Option<i64>,
-    /// The storage class to use for dynamic volume allocation for this broker.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub class: Option<String>,
 }
@@ -5444,83 +4633,58 @@ pub enum KafkaKafkaStorageVolumesType {
     PersistentClaim,
 }
 
-/// Template for Kafka cluster resources. The template allows users to specify how the Kubernetes resources are generated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplate {
-    /// Template for Kafka bootstrap `Service`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootstrapService")]
     pub bootstrap_service: Option<KafkaKafkaTemplateBootstrapService>,
-    /// Template for Kafka broker `Service`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "brokersService")]
     pub brokers_service: Option<KafkaKafkaTemplateBrokersService>,
-    /// Template for Secret with Kafka Cluster certificate public key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterCaCert")]
     pub cluster_ca_cert: Option<KafkaKafkaTemplateClusterCaCert>,
-    /// Template for the Kafka ClusterRoleBinding.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterRoleBinding")]
     pub cluster_role_binding: Option<KafkaKafkaTemplateClusterRoleBinding>,
-    /// Template for Kafka external bootstrap `Ingress`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalBootstrapIngress")]
     pub external_bootstrap_ingress: Option<KafkaKafkaTemplateExternalBootstrapIngress>,
-    /// Template for Kafka external bootstrap `Route`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalBootstrapRoute")]
     pub external_bootstrap_route: Option<KafkaKafkaTemplateExternalBootstrapRoute>,
-    /// Template for Kafka external bootstrap `Service`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalBootstrapService")]
     pub external_bootstrap_service: Option<KafkaKafkaTemplateExternalBootstrapService>,
-    /// Template for the Kafka init container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainer")]
     pub init_container: Option<KafkaKafkaTemplateInitContainer>,
-    /// Template for Secret of the Kafka Cluster JMX authentication.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmxSecret")]
     pub jmx_secret: Option<KafkaKafkaTemplateJmxSecret>,
-    /// Template for the Kafka broker container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kafkaContainer")]
     pub kafka_container: Option<KafkaKafkaTemplateKafkaContainer>,
-    /// Template for Kafka per-pod `Ingress` used for access from outside of Kubernetes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "perPodIngress")]
     pub per_pod_ingress: Option<KafkaKafkaTemplatePerPodIngress>,
-    /// Template for Kafka per-pod `Routes` used for access from outside of OpenShift.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "perPodRoute")]
     pub per_pod_route: Option<KafkaKafkaTemplatePerPodRoute>,
-    /// Template for Kafka per-pod `Services` used for access from outside of Kubernetes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "perPodService")]
     pub per_pod_service: Option<KafkaKafkaTemplatePerPodService>,
-    /// Template for all Kafka `PersistentVolumeClaims`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<KafkaKafkaTemplatePersistentVolumeClaim>,
-    /// Template for Kafka `Pods`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pod: Option<KafkaKafkaTemplatePod>,
-    /// Template for Kafka `PodDisruptionBudget`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podDisruptionBudget")]
     pub pod_disruption_budget: Option<KafkaKafkaTemplatePodDisruptionBudget>,
-    /// Template for Kafka `StrimziPodSet` resource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSet")]
     pub pod_set: Option<KafkaKafkaTemplatePodSet>,
-    /// Template for the Kafka service account.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<KafkaKafkaTemplateServiceAccount>,
-    /// Template for Kafka `StatefulSet`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub statefulset: Option<KafkaKafkaTemplateStatefulset>,
 }
 
-/// Template for Kafka bootstrap `Service`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplateBootstrapService {
-    /// Specifies the IP Families used by the service. Available options are `IPv4` and `IPv6`. If unspecified, Kubernetes will choose the default value based on the `ipFamilyPolicy` setting.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilies")]
     pub ip_families: Option<Vec<String>>,
-    /// Specifies the IP Family Policy used by the service. Available options are `SingleStack`, `PreferDualStack` and `RequireDualStack`. `SingleStack` is for a single IP family. `PreferDualStack` is for two IP families on dual-stack configured clusters or a single IP family on single-stack clusters. `RequireDualStack` fails unless there are two IP families on dual-stack configured clusters. If unspecified, Kubernetes will choose the default value based on the service type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilyPolicy")]
     pub ip_family_policy: Option<KafkaKafkaTemplateBootstrapServiceIpFamilyPolicy>,
-    /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaKafkaTemplateBootstrapServiceMetadata>,
 }
 
-/// Template for Kafka bootstrap `Service`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaKafkaTemplateBootstrapServiceIpFamilyPolicy {
     SingleStack,
@@ -5528,32 +4692,24 @@ pub enum KafkaKafkaTemplateBootstrapServiceIpFamilyPolicy {
     RequireDualStack,
 }
 
-/// Metadata applied to the resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplateBootstrapServiceMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Template for Kafka broker `Service`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplateBrokersService {
-    /// Specifies the IP Families used by the service. Available options are `IPv4` and `IPv6`. If unspecified, Kubernetes will choose the default value based on the `ipFamilyPolicy` setting.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilies")]
     pub ip_families: Option<Vec<String>>,
-    /// Specifies the IP Family Policy used by the service. Available options are `SingleStack`, `PreferDualStack` and `RequireDualStack`. `SingleStack` is for a single IP family. `PreferDualStack` is for two IP families on dual-stack configured clusters or a single IP family on single-stack clusters. `RequireDualStack` fails unless there are two IP families on dual-stack configured clusters. If unspecified, Kubernetes will choose the default value based on the service type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilyPolicy")]
     pub ip_family_policy: Option<KafkaKafkaTemplateBrokersServiceIpFamilyPolicy>,
-    /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaKafkaTemplateBrokersServiceMetadata>,
 }
 
-/// Template for Kafka broker `Service`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaKafkaTemplateBrokersServiceIpFamilyPolicy {
     SingleStack,
@@ -5561,151 +4717,112 @@ pub enum KafkaKafkaTemplateBrokersServiceIpFamilyPolicy {
     RequireDualStack,
 }
 
-/// Metadata applied to the resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplateBrokersServiceMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Template for Secret with Kafka Cluster certificate public key.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplateClusterCaCert {
-    /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaKafkaTemplateClusterCaCertMetadata>,
 }
 
-/// Metadata applied to the resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplateClusterCaCertMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Template for the Kafka ClusterRoleBinding.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplateClusterRoleBinding {
-    /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaKafkaTemplateClusterRoleBindingMetadata>,
 }
 
-/// Metadata applied to the resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplateClusterRoleBindingMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Template for Kafka external bootstrap `Ingress`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplateExternalBootstrapIngress {
-    /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaKafkaTemplateExternalBootstrapIngressMetadata>,
 }
 
-/// Metadata applied to the resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplateExternalBootstrapIngressMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Template for Kafka external bootstrap `Route`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplateExternalBootstrapRoute {
-    /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaKafkaTemplateExternalBootstrapRouteMetadata>,
 }
 
-/// Metadata applied to the resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplateExternalBootstrapRouteMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Template for Kafka external bootstrap `Service`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplateExternalBootstrapService {
-    /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaKafkaTemplateExternalBootstrapServiceMetadata>,
 }
 
-/// Metadata applied to the resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplateExternalBootstrapServiceMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Template for the Kafka init container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplateInitContainer {
-    /// Environment variables which should be applied to the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<KafkaKafkaTemplateInitContainerEnv>>,
-    /// Security context for the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<KafkaKafkaTemplateInitContainerSecurityContext>,
-    /// Additional volume mounts which should be applied to the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<KafkaKafkaTemplateInitContainerVolumeMounts>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplateInitContainerEnv {
-    /// The environment variable key.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The environment variable value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
-    /// Reference to the secret or config map property to which the environment variable is set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
     pub value_from: Option<KafkaKafkaTemplateInitContainerEnvValueFrom>,
 }
 
-/// Reference to the secret or config map property to which the environment variable is set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplateInitContainerEnvValueFrom {
-    /// Reference to a key in a config map.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<KafkaKafkaTemplateInitContainerEnvValueFromConfigMapKeyRef>,
-    /// Reference to a key in a secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<KafkaKafkaTemplateInitContainerEnvValueFromSecretKeyRef>,
 }
 
-/// Reference to a key in a config map.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplateInitContainerEnvValueFromConfigMapKeyRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5716,7 +4833,6 @@ pub struct KafkaKafkaTemplateInitContainerEnvValueFromConfigMapKeyRef {
     pub optional: Option<bool>,
 }
 
-/// Reference to a key in a secret.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplateInitContainerEnvValueFromSecretKeyRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5727,7 +4843,6 @@ pub struct KafkaKafkaTemplateInitContainerEnvValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
-/// Security context for the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplateInitContainerSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
@@ -5822,64 +4937,48 @@ pub struct KafkaKafkaTemplateInitContainerVolumeMounts {
     pub sub_path_expr: Option<String>,
 }
 
-/// Template for Secret of the Kafka Cluster JMX authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplateJmxSecret {
-    /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaKafkaTemplateJmxSecretMetadata>,
 }
 
-/// Metadata applied to the resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplateJmxSecretMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Template for the Kafka broker container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplateKafkaContainer {
-    /// Environment variables which should be applied to the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<KafkaKafkaTemplateKafkaContainerEnv>>,
-    /// Security context for the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<KafkaKafkaTemplateKafkaContainerSecurityContext>,
-    /// Additional volume mounts which should be applied to the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<KafkaKafkaTemplateKafkaContainerVolumeMounts>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplateKafkaContainerEnv {
-    /// The environment variable key.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The environment variable value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
-    /// Reference to the secret or config map property to which the environment variable is set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
     pub value_from: Option<KafkaKafkaTemplateKafkaContainerEnvValueFrom>,
 }
 
-/// Reference to the secret or config map property to which the environment variable is set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplateKafkaContainerEnvValueFrom {
-    /// Reference to a key in a config map.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<KafkaKafkaTemplateKafkaContainerEnvValueFromConfigMapKeyRef>,
-    /// Reference to a key in a secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<KafkaKafkaTemplateKafkaContainerEnvValueFromSecretKeyRef>,
 }
 
-/// Reference to a key in a config map.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplateKafkaContainerEnvValueFromConfigMapKeyRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5890,7 +4989,6 @@ pub struct KafkaKafkaTemplateKafkaContainerEnvValueFromConfigMapKeyRef {
     pub optional: Option<bool>,
 }
 
-/// Reference to a key in a secret.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplateKafkaContainerEnvValueFromSecretKeyRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5901,7 +4999,6 @@ pub struct KafkaKafkaTemplateKafkaContainerEnvValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
-/// Security context for the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplateKafkaContainerSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
@@ -5996,133 +5093,96 @@ pub struct KafkaKafkaTemplateKafkaContainerVolumeMounts {
     pub sub_path_expr: Option<String>,
 }
 
-/// Template for Kafka per-pod `Ingress` used for access from outside of Kubernetes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplatePerPodIngress {
-    /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaKafkaTemplatePerPodIngressMetadata>,
 }
 
-/// Metadata applied to the resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplatePerPodIngressMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Template for Kafka per-pod `Routes` used for access from outside of OpenShift.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplatePerPodRoute {
-    /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaKafkaTemplatePerPodRouteMetadata>,
 }
 
-/// Metadata applied to the resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplatePerPodRouteMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Template for Kafka per-pod `Services` used for access from outside of Kubernetes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplatePerPodService {
-    /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaKafkaTemplatePerPodServiceMetadata>,
 }
 
-/// Metadata applied to the resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplatePerPodServiceMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Template for all Kafka `PersistentVolumeClaims`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplatePersistentVolumeClaim {
-    /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaKafkaTemplatePersistentVolumeClaimMetadata>,
 }
 
-/// Metadata applied to the resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplatePersistentVolumeClaimMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Template for Kafka `Pods`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplatePod {
-    /// The pod's affinity rules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<KafkaKafkaTemplatePodAffinity>,
-    /// The pod's DNSConfig. If specified, it will be merged to the generated DNS configuration based on the DNSPolicy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsConfig")]
     pub dns_config: Option<KafkaKafkaTemplatePodDnsConfig>,
-    /// The pod's DNSPolicy. Defaults to `ClusterFirst`. Valid values are `ClusterFirstWithHostNet`, `ClusterFirst`, `Default` or `None`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsPolicy")]
     pub dns_policy: Option<KafkaKafkaTemplatePodDnsPolicy>,
-    /// Indicates whether information about services should be injected into Pod's environment variables.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableServiceLinks")]
     pub enable_service_links: Option<bool>,
-    /// The pod's HostAliases. HostAliases is an optional list of hosts and IPs that will be injected into the Pod's hosts file if specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
     pub host_aliases: Option<Vec<KafkaKafkaTemplatePodHostAliases>>,
-    /// List of references to secrets in the same namespace to use for pulling any of the images used by this Pod. When the `STRIMZI_IMAGE_PULL_SECRETS` environment variable in Cluster Operator and the `imagePullSecrets` option are specified, only the `imagePullSecrets` variable is used and the `STRIMZI_IMAGE_PULL_SECRETS` variable is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<KafkaKafkaTemplatePodImagePullSecrets>>,
-    /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaKafkaTemplatePodMetadata>,
-    /// The name of the priority class used to assign priority to the pods. 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
-    /// The name of the scheduler used to dispatch this `Pod`. If not specified, the default scheduler will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
     pub scheduler_name: Option<String>,
-    /// Configures pod-level security attributes and common container settings.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<KafkaKafkaTemplatePodSecurityContext>,
-    /// The grace period is the duration in seconds after the processes running in the pod are sent a termination signal, and the time when the processes are forcibly halted with a kill signal. Set this value to longer than the expected cleanup time for your process. Value must be a non-negative integer. A zero value indicates delete immediately. You might need to increase the grace period for very large Kafka clusters, so that the Kafka brokers have enough time to transfer their work to another broker before they are terminated. Defaults to 30 seconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    /// Defines the total amount of pod memory allocated for the temporary `EmptyDir` volume `/tmp`. Specify the allocation in memory units, for example, `100Mi` for 100 mebibytes. Default value is `5Mi`. The `/tmp` volume is backed by pod memory, not disk storage, so avoid setting a high value as it consumes pod memory resources.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tmpDirSizeLimit")]
     pub tmp_dir_size_limit: Option<String>,
-    /// The pod's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<KafkaKafkaTemplatePodTolerations>>,
-    /// The pod's topology spread constraints.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
     pub topology_spread_constraints: Option<Vec<KafkaKafkaTemplatePodTopologySpreadConstraints>>,
-    /// Additional volumes that can be mounted to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<KafkaKafkaTemplatePodVolumes>>,
 }
 
-/// The pod's affinity rules.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplatePodAffinity {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
@@ -6451,7 +5511,6 @@ pub struct KafkaKafkaTemplatePodAffinityPodAntiAffinityRequiredDuringSchedulingI
     pub values: Option<Vec<String>>,
 }
 
-/// The pod's DNSConfig. If specified, it will be merged to the generated DNS configuration based on the DNSPolicy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplatePodDnsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6470,7 +5529,6 @@ pub struct KafkaKafkaTemplatePodDnsConfigOptions {
     pub value: Option<String>,
 }
 
-/// Template for Kafka `Pods`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaKafkaTemplatePodDnsPolicy {
     ClusterFirst,
@@ -6493,18 +5551,14 @@ pub struct KafkaKafkaTemplatePodImagePullSecrets {
     pub name: Option<String>,
 }
 
-/// Metadata applied to the resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplatePodMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Configures pod-level security attributes and common container settings.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplatePodSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
@@ -6637,30 +5691,22 @@ pub struct KafkaKafkaTemplatePodTopologySpreadConstraintsLabelSelectorMatchExpre
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplatePodVolumes {
-    /// `ConfigMap` to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<KafkaKafkaTemplatePodVolumesConfigMap>,
-    /// `CSIVolumeSource` object to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<KafkaKafkaTemplatePodVolumesCsi>,
-    /// `EmptyDir` to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<KafkaKafkaTemplatePodVolumesEmptyDir>,
-    /// `ImageVolumeSource` object to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<KafkaKafkaTemplatePodVolumesImage>,
-    /// Name to use for the volume. Required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// `PersistentVolumeClaim` object to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<KafkaKafkaTemplatePodVolumesPersistentVolumeClaim>,
-    /// `Secret` to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<KafkaKafkaTemplatePodVolumesSecret>,
 }
 
-/// `ConfigMap` to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplatePodVolumesConfigMap {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
@@ -6683,7 +5729,6 @@ pub struct KafkaKafkaTemplatePodVolumesConfigMapItems {
     pub path: Option<String>,
 }
 
-/// `CSIVolumeSource` object to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplatePodVolumesCsi {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6704,24 +5749,19 @@ pub struct KafkaKafkaTemplatePodVolumesCsiNodePublishSecretRef {
     pub name: Option<String>,
 }
 
-/// `EmptyDir` to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplatePodVolumesEmptyDir {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub medium: Option<String>,
+    pub medium: Option<KafkaKafkaTemplatePodVolumesEmptyDirMedium>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
-    pub size_limit: Option<KafkaKafkaTemplatePodVolumesEmptyDirSizeLimit>,
+    pub size_limit: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KafkaKafkaTemplatePodVolumesEmptyDirSizeLimit {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub amount: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub format: Option<String>,
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaKafkaTemplatePodVolumesEmptyDirMedium {
+    Memory,
 }
 
-/// `ImageVolumeSource` object to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplatePodVolumesImage {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
@@ -6730,7 +5770,6 @@ pub struct KafkaKafkaTemplatePodVolumesImage {
     pub reference: Option<String>,
 }
 
-/// `PersistentVolumeClaim` object to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplatePodVolumesPersistentVolumeClaim {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "claimName")]
@@ -6739,7 +5778,6 @@ pub struct KafkaKafkaTemplatePodVolumesPersistentVolumeClaim {
     pub read_only: Option<bool>,
 }
 
-/// `Secret` to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplatePodVolumesSecret {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
@@ -6762,209 +5800,152 @@ pub struct KafkaKafkaTemplatePodVolumesSecretItems {
     pub path: Option<String>,
 }
 
-/// Template for Kafka `PodDisruptionBudget`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplatePodDisruptionBudget {
-    /// Maximum number of unavailable pods to allow automatic Pod eviction. A Pod eviction is allowed when the `maxUnavailable` number of pods or fewer are unavailable after the eviction. Setting this value to 0 prevents all voluntary evictions, so the pods must be evicted manually. Defaults to 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<i64>,
-    /// Metadata to apply to the `PodDisruptionBudgetTemplate` resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaKafkaTemplatePodDisruptionBudgetMetadata>,
 }
 
-/// Metadata to apply to the `PodDisruptionBudgetTemplate` resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplatePodDisruptionBudgetMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Template for Kafka `StrimziPodSet` resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplatePodSet {
-    /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaKafkaTemplatePodSetMetadata>,
 }
 
-/// Metadata applied to the resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplatePodSetMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Template for the Kafka service account.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplateServiceAccount {
-    /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaKafkaTemplateServiceAccountMetadata>,
 }
 
-/// Metadata applied to the resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplateServiceAccountMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Template for Kafka `StatefulSet`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplateStatefulset {
-    /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaKafkaTemplateStatefulsetMetadata>,
-    /// PodManagementPolicy which will be used for this StatefulSet. Valid values are `Parallel` and `OrderedReady`. Defaults to `Parallel`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podManagementPolicy")]
     pub pod_management_policy: Option<KafkaKafkaTemplateStatefulsetPodManagementPolicy>,
 }
 
-/// Metadata applied to the resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplateStatefulsetMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Template for Kafka `StatefulSet`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaKafkaTemplateStatefulsetPodManagementPolicy {
     OrderedReady,
     Parallel,
 }
 
-/// Configure the tiered storage feature for Kafka brokers.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KafkaKafkaTieredStorage {
-    /// Configuration for the Remote Storage Manager.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteStorageManager")]
     pub remote_storage_manager: Option<KafkaKafkaTieredStorageRemoteStorageManager>,
-    /// Storage type, only 'custom' is supported at the moment.
     #[serde(rename = "type")]
     pub r#type: KafkaKafkaTieredStorageType,
 }
 
-/// Configuration for the Remote Storage Manager.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTieredStorageRemoteStorageManager {
-    /// The class name for the `RemoteStorageManager` implementation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "className")]
     pub class_name: Option<String>,
-    /// The class path for the `RemoteStorageManager` implementation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "classPath")]
     pub class_path: Option<String>,
-    /// The additional configuration map for the `RemoteStorageManager` implementation. Keys will be automatically prefixed with `rsm.config.`, and added to Kafka broker configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<BTreeMap<String, String>>,
 }
 
-/// Configure the tiered storage feature for Kafka brokers.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaKafkaTieredStorageType {
     #[serde(rename = "custom")]
     Custom,
 }
 
-/// Configuration of the Kafka Exporter. Kafka Exporter can provide additional metrics, for example lag of consumer group at topic/partition.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaExporter {
-    /// Enable Sarama logging, a Go client library used by the Kafka Exporter.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableSaramaLogging")]
     pub enable_sarama_logging: Option<bool>,
-    /// Regular expression to specify which consumer groups to exclude.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupExcludeRegex")]
     pub group_exclude_regex: Option<String>,
-    /// Regular expression to specify which consumer groups to collect. Default value is `.*`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupRegex")]
     pub group_regex: Option<String>,
-    /// The container image used for the Kafka Exporter pods. If no image name is explicitly specified, the image name corresponds to the version specified in the Cluster Operator configuration. If an image name is not defined in the Cluster Operator configuration, a default value is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    /// Pod liveness check.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<KafkaKafkaExporterLivenessProbe>,
-    /// Only log messages with the given severity or above. Valid levels: [`info`, `debug`, `trace`]. Default log level is `info`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<String>,
-    /// Pod readiness check.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<KafkaKafkaExporterReadinessProbe>,
-    /// CPU and memory resources to reserve.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<KafkaKafkaExporterResources>,
-    /// Whether show the offset/lag for all consumer group, otherwise, only show connected consumer groups.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "showAllOffsets")]
     pub show_all_offsets: Option<bool>,
-    /// Customization of deployment templates and pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub template: Option<KafkaKafkaExporterTemplate>,
-    /// Regular expression to specify which topics to exclude.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topicExcludeRegex")]
     pub topic_exclude_regex: Option<String>,
-    /// Regular expression to specify which topics to collect. Default value is `.*`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topicRegex")]
     pub topic_regex: Option<String>,
 }
 
-/// Pod liveness check.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaExporterLivenessProbe {
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i64>,
-    /// The initial delay before first the health is first checked. Default to 15 seconds. Minimum value is 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i64>,
-    /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i64>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i64>,
-    /// The timeout for each attempted health check. Default to 5 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i64>,
 }
 
-/// Pod readiness check.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaExporterReadinessProbe {
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i64>,
-    /// The initial delay before first the health is first checked. Default to 15 seconds. Minimum value is 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i64>,
-    /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i64>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i64>,
-    /// The timeout for each attempted health check. Default to 5 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i64>,
 }
 
-/// CPU and memory resources to reserve.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaExporterResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6983,68 +5964,50 @@ pub struct KafkaKafkaExporterResourcesClaims {
     pub request: Option<String>,
 }
 
-/// Customization of deployment templates and pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaExporterTemplate {
-    /// Template for the Kafka Exporter container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<KafkaKafkaExporterTemplateContainer>,
-    /// Template for Kafka Exporter `Deployment`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deployment: Option<KafkaKafkaExporterTemplateDeployment>,
-    /// Template for Kafka Exporter `Pods`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pod: Option<KafkaKafkaExporterTemplatePod>,
-    /// Template for the Pod Disruption Budget for Kafka Exporter pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podDisruptionBudget")]
     pub pod_disruption_budget: Option<KafkaKafkaExporterTemplatePodDisruptionBudget>,
-    /// Template for Kafka Exporter `Service`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<KafkaKafkaExporterTemplateService>,
-    /// Template for the Kafka Exporter service account.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<KafkaKafkaExporterTemplateServiceAccount>,
 }
 
-/// Template for the Kafka Exporter container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaExporterTemplateContainer {
-    /// Environment variables which should be applied to the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<KafkaKafkaExporterTemplateContainerEnv>>,
-    /// Security context for the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<KafkaKafkaExporterTemplateContainerSecurityContext>,
-    /// Additional volume mounts which should be applied to the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<KafkaKafkaExporterTemplateContainerVolumeMounts>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaExporterTemplateContainerEnv {
-    /// The environment variable key.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The environment variable value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
-    /// Reference to the secret or config map property to which the environment variable is set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
     pub value_from: Option<KafkaKafkaExporterTemplateContainerEnvValueFrom>,
 }
 
-/// Reference to the secret or config map property to which the environment variable is set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaExporterTemplateContainerEnvValueFrom {
-    /// Reference to a key in a config map.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<KafkaKafkaExporterTemplateContainerEnvValueFromConfigMapKeyRef>,
-    /// Reference to a key in a secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<KafkaKafkaExporterTemplateContainerEnvValueFromSecretKeyRef>,
 }
 
-/// Reference to a key in a config map.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaExporterTemplateContainerEnvValueFromConfigMapKeyRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7055,7 +6018,6 @@ pub struct KafkaKafkaExporterTemplateContainerEnvValueFromConfigMapKeyRef {
     pub optional: Option<bool>,
 }
 
-/// Reference to a key in a secret.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaExporterTemplateContainerEnvValueFromSecretKeyRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7066,7 +6028,6 @@ pub struct KafkaKafkaExporterTemplateContainerEnvValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
-/// Security context for the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaExporterTemplateContainerSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
@@ -7161,86 +6122,62 @@ pub struct KafkaKafkaExporterTemplateContainerVolumeMounts {
     pub sub_path_expr: Option<String>,
 }
 
-/// Template for Kafka Exporter `Deployment`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaExporterTemplateDeployment {
-    /// Pod replacement strategy for deployment configuration changes. Valid values are `RollingUpdate` and `Recreate`. Defaults to `RollingUpdate`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploymentStrategy")]
     pub deployment_strategy: Option<KafkaKafkaExporterTemplateDeploymentDeploymentStrategy>,
-    /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaKafkaExporterTemplateDeploymentMetadata>,
 }
 
-/// Template for Kafka Exporter `Deployment`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaKafkaExporterTemplateDeploymentDeploymentStrategy {
     RollingUpdate,
     Recreate,
 }
 
-/// Metadata applied to the resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaExporterTemplateDeploymentMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Template for Kafka Exporter `Pods`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaExporterTemplatePod {
-    /// The pod's affinity rules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<KafkaKafkaExporterTemplatePodAffinity>,
-    /// The pod's DNSConfig. If specified, it will be merged to the generated DNS configuration based on the DNSPolicy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsConfig")]
     pub dns_config: Option<KafkaKafkaExporterTemplatePodDnsConfig>,
-    /// The pod's DNSPolicy. Defaults to `ClusterFirst`. Valid values are `ClusterFirstWithHostNet`, `ClusterFirst`, `Default` or `None`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsPolicy")]
     pub dns_policy: Option<KafkaKafkaExporterTemplatePodDnsPolicy>,
-    /// Indicates whether information about services should be injected into Pod's environment variables.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableServiceLinks")]
     pub enable_service_links: Option<bool>,
-    /// The pod's HostAliases. HostAliases is an optional list of hosts and IPs that will be injected into the Pod's hosts file if specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
     pub host_aliases: Option<Vec<KafkaKafkaExporterTemplatePodHostAliases>>,
-    /// List of references to secrets in the same namespace to use for pulling any of the images used by this Pod. When the `STRIMZI_IMAGE_PULL_SECRETS` environment variable in Cluster Operator and the `imagePullSecrets` option are specified, only the `imagePullSecrets` variable is used and the `STRIMZI_IMAGE_PULL_SECRETS` variable is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<KafkaKafkaExporterTemplatePodImagePullSecrets>>,
-    /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaKafkaExporterTemplatePodMetadata>,
-    /// The name of the priority class used to assign priority to the pods. 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
-    /// The name of the scheduler used to dispatch this `Pod`. If not specified, the default scheduler will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
     pub scheduler_name: Option<String>,
-    /// Configures pod-level security attributes and common container settings.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<KafkaKafkaExporterTemplatePodSecurityContext>,
-    /// The grace period is the duration in seconds after the processes running in the pod are sent a termination signal, and the time when the processes are forcibly halted with a kill signal. Set this value to longer than the expected cleanup time for your process. Value must be a non-negative integer. A zero value indicates delete immediately. You might need to increase the grace period for very large Kafka clusters, so that the Kafka brokers have enough time to transfer their work to another broker before they are terminated. Defaults to 30 seconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    /// Defines the total amount of pod memory allocated for the temporary `EmptyDir` volume `/tmp`. Specify the allocation in memory units, for example, `100Mi` for 100 mebibytes. Default value is `5Mi`. The `/tmp` volume is backed by pod memory, not disk storage, so avoid setting a high value as it consumes pod memory resources.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tmpDirSizeLimit")]
     pub tmp_dir_size_limit: Option<String>,
-    /// The pod's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<KafkaKafkaExporterTemplatePodTolerations>>,
-    /// The pod's topology spread constraints.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
     pub topology_spread_constraints: Option<Vec<KafkaKafkaExporterTemplatePodTopologySpreadConstraints>>,
-    /// Additional volumes that can be mounted to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<KafkaKafkaExporterTemplatePodVolumes>>,
 }
 
-/// The pod's affinity rules.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaExporterTemplatePodAffinity {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
@@ -7569,7 +6506,6 @@ pub struct KafkaKafkaExporterTemplatePodAffinityPodAntiAffinityRequiredDuringSch
     pub values: Option<Vec<String>>,
 }
 
-/// The pod's DNSConfig. If specified, it will be merged to the generated DNS configuration based on the DNSPolicy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaExporterTemplatePodDnsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7588,7 +6524,6 @@ pub struct KafkaKafkaExporterTemplatePodDnsConfigOptions {
     pub value: Option<String>,
 }
 
-/// Template for Kafka Exporter `Pods`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaKafkaExporterTemplatePodDnsPolicy {
     ClusterFirst,
@@ -7611,18 +6546,14 @@ pub struct KafkaKafkaExporterTemplatePodImagePullSecrets {
     pub name: Option<String>,
 }
 
-/// Metadata applied to the resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaExporterTemplatePodMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Configures pod-level security attributes and common container settings.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaExporterTemplatePodSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
@@ -7755,30 +6686,22 @@ pub struct KafkaKafkaExporterTemplatePodTopologySpreadConstraintsLabelSelectorMa
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaExporterTemplatePodVolumes {
-    /// `ConfigMap` to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<KafkaKafkaExporterTemplatePodVolumesConfigMap>,
-    /// `CSIVolumeSource` object to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<KafkaKafkaExporterTemplatePodVolumesCsi>,
-    /// `EmptyDir` to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<KafkaKafkaExporterTemplatePodVolumesEmptyDir>,
-    /// `ImageVolumeSource` object to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<KafkaKafkaExporterTemplatePodVolumesImage>,
-    /// Name to use for the volume. Required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// `PersistentVolumeClaim` object to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<KafkaKafkaExporterTemplatePodVolumesPersistentVolumeClaim>,
-    /// `Secret` to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<KafkaKafkaExporterTemplatePodVolumesSecret>,
 }
 
-/// `ConfigMap` to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaExporterTemplatePodVolumesConfigMap {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
@@ -7801,7 +6724,6 @@ pub struct KafkaKafkaExporterTemplatePodVolumesConfigMapItems {
     pub path: Option<String>,
 }
 
-/// `CSIVolumeSource` object to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaExporterTemplatePodVolumesCsi {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7822,24 +6744,19 @@ pub struct KafkaKafkaExporterTemplatePodVolumesCsiNodePublishSecretRef {
     pub name: Option<String>,
 }
 
-/// `EmptyDir` to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaExporterTemplatePodVolumesEmptyDir {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub medium: Option<String>,
+    pub medium: Option<KafkaKafkaExporterTemplatePodVolumesEmptyDirMedium>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
-    pub size_limit: Option<KafkaKafkaExporterTemplatePodVolumesEmptyDirSizeLimit>,
+    pub size_limit: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KafkaKafkaExporterTemplatePodVolumesEmptyDirSizeLimit {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub amount: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub format: Option<String>,
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaKafkaExporterTemplatePodVolumesEmptyDirMedium {
+    Memory,
 }
 
-/// `ImageVolumeSource` object to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaExporterTemplatePodVolumesImage {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
@@ -7848,7 +6765,6 @@ pub struct KafkaKafkaExporterTemplatePodVolumesImage {
     pub reference: Option<String>,
 }
 
-/// `PersistentVolumeClaim` object to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaExporterTemplatePodVolumesPersistentVolumeClaim {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "claimName")]
@@ -7857,7 +6773,6 @@ pub struct KafkaKafkaExporterTemplatePodVolumesPersistentVolumeClaim {
     pub read_only: Option<bool>,
 }
 
-/// `Secret` to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaExporterTemplatePodVolumesSecret {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
@@ -7880,193 +6795,140 @@ pub struct KafkaKafkaExporterTemplatePodVolumesSecretItems {
     pub path: Option<String>,
 }
 
-/// Template for the Pod Disruption Budget for Kafka Exporter pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaExporterTemplatePodDisruptionBudget {
-    /// Maximum number of unavailable pods to allow automatic Pod eviction. A Pod eviction is allowed when the `maxUnavailable` number of pods or fewer are unavailable after the eviction. Setting this value to 0 prevents all voluntary evictions, so the pods must be evicted manually. Defaults to 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<i64>,
-    /// Metadata to apply to the `PodDisruptionBudgetTemplate` resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaKafkaExporterTemplatePodDisruptionBudgetMetadata>,
 }
 
-/// Metadata to apply to the `PodDisruptionBudgetTemplate` resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaExporterTemplatePodDisruptionBudgetMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Template for Kafka Exporter `Service`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaExporterTemplateService {
-    /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaKafkaExporterTemplateServiceMetadata>,
 }
 
-/// Metadata applied to the resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaExporterTemplateServiceMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Template for the Kafka Exporter service account.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaExporterTemplateServiceAccount {
-    /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaKafkaExporterTemplateServiceAccountMetadata>,
 }
 
-/// Metadata applied to the resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaExporterTemplateServiceAccountMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// As of Strimzi 0.46.0, ZooKeeper-based Apache Kafka clusters are not supported anymore and this option is ignored.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KafkaZookeeper {
-    /// The ZooKeeper broker config. Properties with the following prefixes cannot be set: server., dataDir, dataLogDir, clientPort, authProvider, quorum.auth, requireClientAuthScheme, snapshot.trust.empty, standaloneEnabled, reconfigEnabled, 4lw.commands.whitelist, secureClientPort, ssl., serverCnxnFactory, sslQuorum (with the exception of: ssl.protocol, ssl.quorum.protocol, ssl.enabledProtocols, ssl.quorum.enabledProtocols, ssl.ciphersuites, ssl.quorum.ciphersuites, ssl.hostnameVerification, ssl.quorum.hostnameVerification).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<BTreeMap<String, serde_json::Value>>,
-    /// The container image used for ZooKeeper pods. If no image name is explicitly specified, it is determined based on the Kafka version set in `spec.kafka.version`. The image names are specifically mapped to corresponding versions in the Cluster Operator configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    /// JMX Options for Zookeeper nodes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmxOptions")]
     pub jmx_options: Option<KafkaZookeeperJmxOptions>,
-    /// JVM Options for pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmOptions")]
     pub jvm_options: Option<KafkaZookeeperJvmOptions>,
-    /// Pod liveness checking.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<KafkaZookeeperLivenessProbe>,
-    /// Logging configuration for ZooKeeper.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<KafkaZookeeperLogging>,
-    /// Metrics configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricsConfig")]
     pub metrics_config: Option<KafkaZookeeperMetricsConfig>,
-    /// Pod readiness checking.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<KafkaZookeeperReadinessProbe>,
-    /// The number of pods in the cluster.
     pub replicas: i64,
-    /// CPU and memory resources to reserve.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<KafkaZookeeperResources>,
-    /// Storage configuration (disk). Cannot be updated.
     pub storage: KafkaZookeeperStorage,
-    /// Template for ZooKeeper cluster resources. The template allows users to specify how the Kubernetes resources are generated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub template: Option<KafkaZookeeperTemplate>,
 }
 
-/// JMX Options for Zookeeper nodes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperJmxOptions {
-    /// Authentication configuration for connecting to the JMX port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authentication: Option<KafkaZookeeperJmxOptionsAuthentication>,
 }
 
-/// Authentication configuration for connecting to the JMX port.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KafkaZookeeperJmxOptionsAuthentication {
-    /// Authentication type. Currently the only supported types are `password`.`password` type creates a username and protected port with no TLS.
     #[serde(rename = "type")]
     pub r#type: KafkaZookeeperJmxOptionsAuthenticationType,
 }
 
-/// Authentication configuration for connecting to the JMX port.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaZookeeperJmxOptionsAuthenticationType {
     #[serde(rename = "password")]
     Password,
 }
 
-/// JVM Options for pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperJvmOptions {
-    /// A map of -XX options to the JVM.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "-XX")]
     pub xx: Option<BTreeMap<String, String>>,
-    /// -Xms option to to the JVM.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "-Xms")]
     pub xms: Option<String>,
-    /// -Xmx option to to the JVM.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "-Xmx")]
     pub xmx: Option<String>,
-    /// Specifies whether the Garbage Collection logging is enabled. The default is false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcLoggingEnabled")]
     pub gc_logging_enabled: Option<bool>,
-    /// A map of additional system properties which will be passed using the `-D` option to the JVM.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "javaSystemProperties")]
     pub java_system_properties: Option<Vec<KafkaZookeeperJvmOptionsJavaSystemProperties>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperJvmOptionsJavaSystemProperties {
-    /// The system property name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The system property value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
 
-/// Pod liveness checking.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperLivenessProbe {
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i64>,
-    /// The initial delay before first the health is first checked. Default to 15 seconds. Minimum value is 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i64>,
-    /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i64>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i64>,
-    /// The timeout for each attempted health check. Default to 5 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i64>,
 }
 
-/// Logging configuration for ZooKeeper.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KafkaZookeeperLogging {
-    /// A Map from logger name to logger level.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub loggers: Option<BTreeMap<String, String>>,
-    /// Logging type, must be either 'inline' or 'external'.
     #[serde(rename = "type")]
     pub r#type: KafkaZookeeperLoggingType,
-    /// `ConfigMap` entry where the logging configuration is stored. 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
     pub value_from: Option<KafkaZookeeperLoggingValueFrom>,
 }
 
-/// Logging configuration for ZooKeeper.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaZookeeperLoggingType {
     #[serde(rename = "inline")]
@@ -8075,15 +6937,12 @@ pub enum KafkaZookeeperLoggingType {
     External,
 }
 
-/// `ConfigMap` entry where the logging configuration is stored. 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperLoggingValueFrom {
-    /// Reference to the key in the ConfigMap containing the configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<KafkaZookeeperLoggingValueFromConfigMapKeyRef>,
 }
 
-/// Reference to the key in the ConfigMap containing the configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperLoggingValueFromConfigMapKeyRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8094,21 +6953,16 @@ pub struct KafkaZookeeperLoggingValueFromConfigMapKeyRef {
     pub optional: Option<bool>,
 }
 
-/// Metrics configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KafkaZookeeperMetricsConfig {
-    /// Metrics type. The supported types are `jmxPrometheusExporter` and `strimziMetricsReporter`. Type `jmxPrometheusExporter` uses the Prometheus JMX Exporter to expose Kafka JMX metrics in Prometheus format through an HTTP endpoint. Type `strimziMetricsReporter` uses the Strimzi Metrics Reporter to directly expose Kafka metrics in Prometheus format through an HTTP endpoint.
     #[serde(rename = "type")]
     pub r#type: KafkaZookeeperMetricsConfigType,
-    /// ConfigMap entry where the Prometheus JMX Exporter configuration is stored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
     pub value_from: Option<KafkaZookeeperMetricsConfigValueFrom>,
-    /// Configuration values for the Strimzi Metrics Reporter.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<KafkaZookeeperMetricsConfigValues>,
 }
 
-/// Metrics configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaZookeeperMetricsConfigType {
     #[serde(rename = "jmxPrometheusExporter")]
@@ -8117,15 +6971,12 @@ pub enum KafkaZookeeperMetricsConfigType {
     StrimziMetricsReporter,
 }
 
-/// ConfigMap entry where the Prometheus JMX Exporter configuration is stored.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperMetricsConfigValueFrom {
-    /// Reference to the key in the ConfigMap containing the configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<KafkaZookeeperMetricsConfigValueFromConfigMapKeyRef>,
 }
 
-/// Reference to the key in the ConfigMap containing the configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperMetricsConfigValueFromConfigMapKeyRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8136,35 +6987,26 @@ pub struct KafkaZookeeperMetricsConfigValueFromConfigMapKeyRef {
     pub optional: Option<bool>,
 }
 
-/// Configuration values for the Strimzi Metrics Reporter.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperMetricsConfigValues {
-    /// A list of regex patterns to filter the metrics to collect. Should contain at least one element.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowList")]
     pub allow_list: Option<Vec<String>>,
 }
 
-/// Pod readiness checking.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperReadinessProbe {
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i64>,
-    /// The initial delay before first the health is first checked. Default to 15 seconds. Minimum value is 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i64>,
-    /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i64>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i64>,
-    /// The timeout for each attempted health check. Default to 5 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i64>,
 }
 
-/// CPU and memory resources to reserve.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8183,39 +7025,30 @@ pub struct KafkaZookeeperResourcesClaims {
     pub request: Option<String>,
 }
 
-/// Storage configuration (disk). Cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KafkaZookeeperStorage {
-    /// The storage class to use for dynamic volume allocation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub class: Option<String>,
-    /// Specifies if the persistent volume claim has to be deleted when the cluster is un-deployed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deleteClaim")]
     pub delete_claim: Option<bool>,
-    /// Storage identification number. Mandatory for storage volumes defined with a `jbod` storage type configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<i64>,
-    /// Specifies whether this volume should be used for storing KRaft metadata. This property is optional. When set, the only currently supported value is `shared`. At most one volume can have this property set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kraftMetadata")]
     pub kraft_metadata: Option<KafkaZookeeperStorageKraftMetadata>,
-    /// As of Strimzi 0.46.0, the storage overrides for individual brokers are not supported anymore and this option is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub overrides: Option<Vec<KafkaZookeeperStorageOverrides>>,
-    /// Specifies a specific persistent volume to use. It contains key:value pairs representing labels for selecting such a volume.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<BTreeMap<String, String>>,
-    /// When `type=persistent-claim`, defines the size of the persistent volume claim, such as 100Gi. Mandatory when `type=persistent-claim`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub size: Option<String>,
-    /// When type=ephemeral, defines the total amount of local storage required for this EmptyDir volume (for example 1Gi).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
     pub size_limit: Option<String>,
-    /// Storage type, must be either 'ephemeral' or 'persistent-claim'.
     #[serde(rename = "type")]
     pub r#type: KafkaZookeeperStorageType,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClass")]
+    pub volume_attributes_class: Option<String>,
 }
 
-/// Storage configuration (disk). Cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaZookeeperStorageKraftMetadata {
     #[serde(rename = "shared")]
@@ -8224,15 +7057,12 @@ pub enum KafkaZookeeperStorageKraftMetadata {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperStorageOverrides {
-    /// Id of the kafka broker (broker identifier).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub broker: Option<i64>,
-    /// The storage class to use for dynamic volume allocation for this broker.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub class: Option<String>,
 }
 
-/// Storage configuration (disk). Cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaZookeeperStorageType {
     #[serde(rename = "ephemeral")]
@@ -8241,56 +7071,40 @@ pub enum KafkaZookeeperStorageType {
     PersistentClaim,
 }
 
-/// Template for ZooKeeper cluster resources. The template allows users to specify how the Kubernetes resources are generated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperTemplate {
-    /// Template for ZooKeeper client `Service`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientService")]
     pub client_service: Option<KafkaZookeeperTemplateClientService>,
-    /// Template for Secret of the Zookeeper Cluster JMX authentication.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmxSecret")]
     pub jmx_secret: Option<KafkaZookeeperTemplateJmxSecret>,
-    /// Template for ZooKeeper nodes `Service`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodesService")]
     pub nodes_service: Option<KafkaZookeeperTemplateNodesService>,
-    /// Template for all ZooKeeper `PersistentVolumeClaims`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<KafkaZookeeperTemplatePersistentVolumeClaim>,
-    /// Template for ZooKeeper `Pods`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pod: Option<KafkaZookeeperTemplatePod>,
-    /// Template for ZooKeeper `PodDisruptionBudget`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podDisruptionBudget")]
     pub pod_disruption_budget: Option<KafkaZookeeperTemplatePodDisruptionBudget>,
-    /// Template for ZooKeeper `StrimziPodSet` resource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSet")]
     pub pod_set: Option<KafkaZookeeperTemplatePodSet>,
-    /// Template for the ZooKeeper service account.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<KafkaZookeeperTemplateServiceAccount>,
-    /// Template for ZooKeeper `StatefulSet`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub statefulset: Option<KafkaZookeeperTemplateStatefulset>,
-    /// Template for the ZooKeeper container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "zookeeperContainer")]
     pub zookeeper_container: Option<KafkaZookeeperTemplateZookeeperContainer>,
 }
 
-/// Template for ZooKeeper client `Service`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperTemplateClientService {
-    /// Specifies the IP Families used by the service. Available options are `IPv4` and `IPv6`. If unspecified, Kubernetes will choose the default value based on the `ipFamilyPolicy` setting.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilies")]
     pub ip_families: Option<Vec<String>>,
-    /// Specifies the IP Family Policy used by the service. Available options are `SingleStack`, `PreferDualStack` and `RequireDualStack`. `SingleStack` is for a single IP family. `PreferDualStack` is for two IP families on dual-stack configured clusters or a single IP family on single-stack clusters. `RequireDualStack` fails unless there are two IP families on dual-stack configured clusters. If unspecified, Kubernetes will choose the default value based on the service type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilyPolicy")]
     pub ip_family_policy: Option<KafkaZookeeperTemplateClientServiceIpFamilyPolicy>,
-    /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaZookeeperTemplateClientServiceMetadata>,
 }
 
-/// Template for ZooKeeper client `Service`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaZookeeperTemplateClientServiceIpFamilyPolicy {
     SingleStack,
@@ -8298,51 +7112,38 @@ pub enum KafkaZookeeperTemplateClientServiceIpFamilyPolicy {
     RequireDualStack,
 }
 
-/// Metadata applied to the resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperTemplateClientServiceMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Template for Secret of the Zookeeper Cluster JMX authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperTemplateJmxSecret {
-    /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaZookeeperTemplateJmxSecretMetadata>,
 }
 
-/// Metadata applied to the resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperTemplateJmxSecretMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Template for ZooKeeper nodes `Service`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperTemplateNodesService {
-    /// Specifies the IP Families used by the service. Available options are `IPv4` and `IPv6`. If unspecified, Kubernetes will choose the default value based on the `ipFamilyPolicy` setting.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilies")]
     pub ip_families: Option<Vec<String>>,
-    /// Specifies the IP Family Policy used by the service. Available options are `SingleStack`, `PreferDualStack` and `RequireDualStack`. `SingleStack` is for a single IP family. `PreferDualStack` is for two IP families on dual-stack configured clusters or a single IP family on single-stack clusters. `RequireDualStack` fails unless there are two IP families on dual-stack configured clusters. If unspecified, Kubernetes will choose the default value based on the service type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilyPolicy")]
     pub ip_family_policy: Option<KafkaZookeeperTemplateNodesServiceIpFamilyPolicy>,
-    /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaZookeeperTemplateNodesServiceMetadata>,
 }
 
-/// Template for ZooKeeper nodes `Service`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaZookeeperTemplateNodesServiceIpFamilyPolicy {
     SingleStack,
@@ -8350,87 +7151,62 @@ pub enum KafkaZookeeperTemplateNodesServiceIpFamilyPolicy {
     RequireDualStack,
 }
 
-/// Metadata applied to the resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperTemplateNodesServiceMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Template for all ZooKeeper `PersistentVolumeClaims`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperTemplatePersistentVolumeClaim {
-    /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaZookeeperTemplatePersistentVolumeClaimMetadata>,
 }
 
-/// Metadata applied to the resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperTemplatePersistentVolumeClaimMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Template for ZooKeeper `Pods`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperTemplatePod {
-    /// The pod's affinity rules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<KafkaZookeeperTemplatePodAffinity>,
-    /// The pod's DNSConfig. If specified, it will be merged to the generated DNS configuration based on the DNSPolicy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsConfig")]
     pub dns_config: Option<KafkaZookeeperTemplatePodDnsConfig>,
-    /// The pod's DNSPolicy. Defaults to `ClusterFirst`. Valid values are `ClusterFirstWithHostNet`, `ClusterFirst`, `Default` or `None`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsPolicy")]
     pub dns_policy: Option<KafkaZookeeperTemplatePodDnsPolicy>,
-    /// Indicates whether information about services should be injected into Pod's environment variables.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableServiceLinks")]
     pub enable_service_links: Option<bool>,
-    /// The pod's HostAliases. HostAliases is an optional list of hosts and IPs that will be injected into the Pod's hosts file if specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
     pub host_aliases: Option<Vec<KafkaZookeeperTemplatePodHostAliases>>,
-    /// List of references to secrets in the same namespace to use for pulling any of the images used by this Pod. When the `STRIMZI_IMAGE_PULL_SECRETS` environment variable in Cluster Operator and the `imagePullSecrets` option are specified, only the `imagePullSecrets` variable is used and the `STRIMZI_IMAGE_PULL_SECRETS` variable is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<KafkaZookeeperTemplatePodImagePullSecrets>>,
-    /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaZookeeperTemplatePodMetadata>,
-    /// The name of the priority class used to assign priority to the pods. 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
-    /// The name of the scheduler used to dispatch this `Pod`. If not specified, the default scheduler will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
     pub scheduler_name: Option<String>,
-    /// Configures pod-level security attributes and common container settings.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<KafkaZookeeperTemplatePodSecurityContext>,
-    /// The grace period is the duration in seconds after the processes running in the pod are sent a termination signal, and the time when the processes are forcibly halted with a kill signal. Set this value to longer than the expected cleanup time for your process. Value must be a non-negative integer. A zero value indicates delete immediately. You might need to increase the grace period for very large Kafka clusters, so that the Kafka brokers have enough time to transfer their work to another broker before they are terminated. Defaults to 30 seconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    /// Defines the total amount of pod memory allocated for the temporary `EmptyDir` volume `/tmp`. Specify the allocation in memory units, for example, `100Mi` for 100 mebibytes. Default value is `5Mi`. The `/tmp` volume is backed by pod memory, not disk storage, so avoid setting a high value as it consumes pod memory resources.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tmpDirSizeLimit")]
     pub tmp_dir_size_limit: Option<String>,
-    /// The pod's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<KafkaZookeeperTemplatePodTolerations>>,
-    /// The pod's topology spread constraints.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
     pub topology_spread_constraints: Option<Vec<KafkaZookeeperTemplatePodTopologySpreadConstraints>>,
-    /// Additional volumes that can be mounted to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<KafkaZookeeperTemplatePodVolumes>>,
 }
 
-/// The pod's affinity rules.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperTemplatePodAffinity {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
@@ -8759,7 +7535,6 @@ pub struct KafkaZookeeperTemplatePodAffinityPodAntiAffinityRequiredDuringSchedul
     pub values: Option<Vec<String>>,
 }
 
-/// The pod's DNSConfig. If specified, it will be merged to the generated DNS configuration based on the DNSPolicy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperTemplatePodDnsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8778,7 +7553,6 @@ pub struct KafkaZookeeperTemplatePodDnsConfigOptions {
     pub value: Option<String>,
 }
 
-/// Template for ZooKeeper `Pods`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaZookeeperTemplatePodDnsPolicy {
     ClusterFirst,
@@ -8801,18 +7575,14 @@ pub struct KafkaZookeeperTemplatePodImagePullSecrets {
     pub name: Option<String>,
 }
 
-/// Metadata applied to the resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperTemplatePodMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Configures pod-level security attributes and common container settings.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperTemplatePodSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
@@ -8945,30 +7715,22 @@ pub struct KafkaZookeeperTemplatePodTopologySpreadConstraintsLabelSelectorMatchE
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperTemplatePodVolumes {
-    /// `ConfigMap` to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<KafkaZookeeperTemplatePodVolumesConfigMap>,
-    /// `CSIVolumeSource` object to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<KafkaZookeeperTemplatePodVolumesCsi>,
-    /// `EmptyDir` to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<KafkaZookeeperTemplatePodVolumesEmptyDir>,
-    /// `ImageVolumeSource` object to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<KafkaZookeeperTemplatePodVolumesImage>,
-    /// Name to use for the volume. Required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// `PersistentVolumeClaim` object to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<KafkaZookeeperTemplatePodVolumesPersistentVolumeClaim>,
-    /// `Secret` to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<KafkaZookeeperTemplatePodVolumesSecret>,
 }
 
-/// `ConfigMap` to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperTemplatePodVolumesConfigMap {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
@@ -8991,7 +7753,6 @@ pub struct KafkaZookeeperTemplatePodVolumesConfigMapItems {
     pub path: Option<String>,
 }
 
-/// `CSIVolumeSource` object to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperTemplatePodVolumesCsi {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9012,24 +7773,19 @@ pub struct KafkaZookeeperTemplatePodVolumesCsiNodePublishSecretRef {
     pub name: Option<String>,
 }
 
-/// `EmptyDir` to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperTemplatePodVolumesEmptyDir {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub medium: Option<String>,
+    pub medium: Option<KafkaZookeeperTemplatePodVolumesEmptyDirMedium>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
-    pub size_limit: Option<KafkaZookeeperTemplatePodVolumesEmptyDirSizeLimit>,
+    pub size_limit: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KafkaZookeeperTemplatePodVolumesEmptyDirSizeLimit {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub amount: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub format: Option<String>,
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaZookeeperTemplatePodVolumesEmptyDirMedium {
+    Memory,
 }
 
-/// `ImageVolumeSource` object to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperTemplatePodVolumesImage {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
@@ -9038,7 +7794,6 @@ pub struct KafkaZookeeperTemplatePodVolumesImage {
     pub reference: Option<String>,
 }
 
-/// `PersistentVolumeClaim` object to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperTemplatePodVolumesPersistentVolumeClaim {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "claimName")]
@@ -9047,7 +7802,6 @@ pub struct KafkaZookeeperTemplatePodVolumesPersistentVolumeClaim {
     pub read_only: Option<bool>,
 }
 
-/// `Secret` to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperTemplatePodVolumesSecret {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
@@ -9070,134 +7824,100 @@ pub struct KafkaZookeeperTemplatePodVolumesSecretItems {
     pub path: Option<String>,
 }
 
-/// Template for ZooKeeper `PodDisruptionBudget`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperTemplatePodDisruptionBudget {
-    /// Maximum number of unavailable pods to allow automatic Pod eviction. A Pod eviction is allowed when the `maxUnavailable` number of pods or fewer are unavailable after the eviction. Setting this value to 0 prevents all voluntary evictions, so the pods must be evicted manually. Defaults to 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<i64>,
-    /// Metadata to apply to the `PodDisruptionBudgetTemplate` resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaZookeeperTemplatePodDisruptionBudgetMetadata>,
 }
 
-/// Metadata to apply to the `PodDisruptionBudgetTemplate` resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperTemplatePodDisruptionBudgetMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Template for ZooKeeper `StrimziPodSet` resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperTemplatePodSet {
-    /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaZookeeperTemplatePodSetMetadata>,
 }
 
-/// Metadata applied to the resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperTemplatePodSetMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Template for the ZooKeeper service account.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperTemplateServiceAccount {
-    /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaZookeeperTemplateServiceAccountMetadata>,
 }
 
-/// Metadata applied to the resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperTemplateServiceAccountMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Template for ZooKeeper `StatefulSet`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperTemplateStatefulset {
-    /// Metadata applied to the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KafkaZookeeperTemplateStatefulsetMetadata>,
-    /// PodManagementPolicy which will be used for this StatefulSet. Valid values are `Parallel` and `OrderedReady`. Defaults to `Parallel`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podManagementPolicy")]
     pub pod_management_policy: Option<KafkaZookeeperTemplateStatefulsetPodManagementPolicy>,
 }
 
-/// Metadata applied to the resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperTemplateStatefulsetMetadata {
-    /// Annotations added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels added to the Kubernetes resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Template for ZooKeeper `StatefulSet`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaZookeeperTemplateStatefulsetPodManagementPolicy {
     OrderedReady,
     Parallel,
 }
 
-/// Template for the ZooKeeper container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperTemplateZookeeperContainer {
-    /// Environment variables which should be applied to the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<KafkaZookeeperTemplateZookeeperContainerEnv>>,
-    /// Security context for the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<KafkaZookeeperTemplateZookeeperContainerSecurityContext>,
-    /// Additional volume mounts which should be applied to the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<KafkaZookeeperTemplateZookeeperContainerVolumeMounts>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperTemplateZookeeperContainerEnv {
-    /// The environment variable key.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The environment variable value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
-    /// Reference to the secret or config map property to which the environment variable is set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
     pub value_from: Option<KafkaZookeeperTemplateZookeeperContainerEnvValueFrom>,
 }
 
-/// Reference to the secret or config map property to which the environment variable is set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperTemplateZookeeperContainerEnvValueFrom {
-    /// Reference to a key in a config map.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<KafkaZookeeperTemplateZookeeperContainerEnvValueFromConfigMapKeyRef>,
-    /// Reference to a key in a secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<KafkaZookeeperTemplateZookeeperContainerEnvValueFromSecretKeyRef>,
 }
 
-/// Reference to a key in a config map.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperTemplateZookeeperContainerEnvValueFromConfigMapKeyRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9208,7 +7928,6 @@ pub struct KafkaZookeeperTemplateZookeeperContainerEnvValueFromConfigMapKeyRef {
     pub optional: Option<bool>,
 }
 
-/// Reference to a key in a secret.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperTemplateZookeeperContainerEnvValueFromSecretKeyRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9219,7 +7938,6 @@ pub struct KafkaZookeeperTemplateZookeeperContainerEnvValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
-/// Security context for the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperTemplateZookeeperContainerSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
@@ -9314,77 +8032,46 @@ pub struct KafkaZookeeperTemplateZookeeperContainerVolumeMounts {
     pub sub_path_expr: Option<String>,
 }
 
-/// The status of the Kafka cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaStatus {
-    /// The status of an auto-rebalancing triggered by a cluster scaling request.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoRebalance")]
     pub auto_rebalance: Option<KafkaStatusAutoRebalance>,
-    /// Kafka cluster Id.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterId")]
     pub cluster_id: Option<String>,
-    /// List of status conditions.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// Defines where cluster metadata are stored. Since Kafka KRaft has been fully adopted, the only applicable value is `KRaft`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kafkaMetadataState")]
     pub kafka_metadata_state: Option<KafkaStatusKafkaMetadataState>,
-    /// The KRaft metadata.version currently used by the Kafka cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kafkaMetadataVersion")]
     pub kafka_metadata_version: Option<String>,
-    /// List of the KafkaNodePools used by this Kafka cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kafkaNodePools")]
     pub kafka_node_pools: Option<Vec<KafkaStatusKafkaNodePools>>,
-    /// The version of Kafka currently deployed in the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kafkaVersion")]
     pub kafka_version: Option<String>,
-    /// Addresses of the internal and external listeners.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub listeners: Option<Vec<KafkaStatusListeners>>,
-    /// The generation of the CRD that was last reconciled by the operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
-    /// The version of the Strimzi Cluster Operator which performed the last successful reconciliation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatorLastSuccessfulVersion")]
     pub operator_last_successful_version: Option<String>,
-    /// Registered node IDs used by this Kafka cluster. This field is used for internal purposes only and will be removed in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "registeredNodeIds")]
     pub registered_node_ids: Option<Vec<i64>>,
 }
 
-/// The status of an auto-rebalancing triggered by a cluster scaling request.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaStatusAutoRebalance {
-    /// The timestamp of the latest auto-rebalancing state update.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastTransitionTime")]
     pub last_transition_time: Option<String>,
-    /// List of modes where an auto-rebalancing operation is either running or queued. 
-    /// Each mode entry (`add-brokers` or `remove-brokers`) includes one of the following: 
-    /// 
-    /// * Broker IDs for a current auto-rebalance. 
-    /// * Broker IDs for a queued auto-rebalance (if a previous rebalance is still in progress).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub modes: Option<Vec<KafkaStatusAutoRebalanceModes>>,
-    /// The current state of an auto-rebalancing operation. Possible values are: 
-    /// 
-    /// * `Idle` as the initial state when an auto-rebalancing is requested or as final state when it completes or fails.
-    /// * `RebalanceOnScaleDown` if an auto-rebalance related to a scale-down operation is running.
-    /// * `RebalanceOnScaleUp` if an auto-rebalance related to a scale-up operation is running.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<KafkaStatusAutoRebalanceState>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaStatusAutoRebalanceModes {
-    /// List of broker IDs involved in an auto-rebalancing operation related to the current mode. 
-    /// The list contains one of the following: 
-    /// 
-    /// * Broker IDs for a current auto-rebalance. 
-    /// * Broker IDs for a queued auto-rebalance (if a previous auto-rebalance is still in progress). 
-    /// 
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub brokers: Option<Vec<i64>>,
-    /// Mode for which there is an auto-rebalancing operation in progress or queued, when brokers are added or removed. The possible modes are `add-brokers` and `remove-brokers`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<KafkaStatusAutoRebalanceModesMode>,
 }
@@ -9397,7 +8084,6 @@ pub enum KafkaStatusAutoRebalanceModesMode {
     RemoveBrokers,
 }
 
-/// The status of an auto-rebalancing triggered by a cluster scaling request.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaStatusAutoRebalanceState {
     Idle,
@@ -9405,7 +8091,6 @@ pub enum KafkaStatusAutoRebalanceState {
     RebalanceOnScaleUp,
 }
 
-/// The status of the Kafka cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaStatusKafkaMetadataState {
     ZooKeeper,
@@ -9418,36 +8103,28 @@ pub enum KafkaStatusKafkaMetadataState {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaStatusKafkaNodePools {
-    /// The name of the KafkaNodePool used by this Kafka resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaStatusListeners {
-    /// A list of the addresses for this listener.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub addresses: Option<Vec<KafkaStatusListenersAddresses>>,
-    /// A comma-separated list of `host:port` pairs for connecting to the Kafka cluster using this listener.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootstrapServers")]
     pub bootstrap_servers: Option<String>,
-    /// A list of TLS certificates which can be used to verify the identity of the server when connecting to the given listener. Set only for `tls` and `external` listeners.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub certificates: Option<Vec<String>>,
-    /// The name of the listener.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The name of the listener.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaStatusListenersAddresses {
-    /// The DNS name or IP address of the Kafka bootstrap service.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// The port of the Kafka bootstrap service.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
 }
