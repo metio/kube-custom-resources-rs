@@ -11,13 +11,27 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 
 ## Available Custom Resources
 
+### operator.victoriametrics.com/v1
+- `VLAgent`
+- `VLCluster`
+- `VLSingle`
+- `VMAnomaly`
+- `VTCluster`
+- `VTSingle`
 ### operator.victoriametrics.com/v1beta1
+- `VLogs`
+- `VMAgent`
 - `VMAlertmanagerConfig`
+- `VMAlertmanager`
+- `VMAlert`
+- `VMAuth`
+- `VMCluster`
 - `VMNodeScrape`
 - `VMPodScrape`
 - `VMProbe`
 - `VMRule`
 - `VMScrapeConfig`
 - `VMServiceScrape`
+- `VMSingle`
 - `VMStaticScrape`
 - `VMUser`

@@ -13,6 +13,9 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `ClusterFlow`
 - `ClusterOutput`
 - `Flow`
+- `FluentbitAgent`
+- `Logging`
+- `NodeAgent`
 - `Output`
 - `SyslogNGClusterFlow`
 - `SyslogNGClusterOutput`
