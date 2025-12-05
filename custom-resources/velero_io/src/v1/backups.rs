@@ -418,6 +418,10 @@ pub struct BackupStatus {
     /// during a backup for any reason, it may be inaccurate/stale.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub progress: Option<BackupStatusProgress>,
+    /// QueuePosition is the position of the backup in the queue.
+    /// Only relevant when Phase is "Queued"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queuePosition")]
+    pub queue_position: Option<i64>,
     /// StartTimestamp records the time a backup was started.
     /// Separate from CreationTimestamp, since that value changes
     /// on restores.
@@ -464,6 +468,8 @@ pub struct BackupStatusHookStatus {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum BackupStatusPhase {
     New,
+    Queued,
+    ReadyToStart,
     FailedValidation,
     InProgress,
     WaitingForPluginOperations,

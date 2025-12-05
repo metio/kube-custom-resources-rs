@@ -173,7 +173,7 @@ spec:
                   description: "Image holds the details of the image to be provisioned. Populating\nthe image will cause the host to start provisioning."
                   properties:
                     checksum:
-                      description: "Checksum is the checksum for the image. Required for all formats\nexcept for \"live-iso\"."
+                      description: "Checksum is the checksum for the image. Required for all formats\nexcept for \"live-iso\" and OCI images (oci://)."
                       type: "string"
                     checksumType:
                       description: "ChecksumType is the checksum algorithm for the image, e.g md5, sha256 or sha512.\nThe special value \"auto\" can be used to detect the algorithm from the checksum.\nIf missing, MD5 is used. If in doubt, use \"auto\"."
@@ -737,7 +737,7 @@ spec:
                       description: "Image holds the details of the last image successfully\nprovisioned to the host."
                       properties:
                         checksum:
-                          description: "Checksum is the checksum for the image. Required for all formats\nexcept for \"live-iso\"."
+                          description: "Checksum is the checksum for the image. Required for all formats\nexcept for \"live-iso\" and OCI images (oci://)."
                           type: "string"
                         checksumType:
                           description: "ChecksumType is the checksum algorithm for the image, e.g md5, sha256 or sha512.\nThe special value \"auto\" can be used to detect the algorithm from the checksum.\nIf missing, MD5 is used. If in doubt, use \"auto\"."

@@ -113,4 +113,4 @@ spec:
               type: "object"
           type: "object"
       served: true
-      storage: false
+      storage: true

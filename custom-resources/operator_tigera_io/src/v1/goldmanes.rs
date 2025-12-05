@@ -373,7 +373,6 @@ pub struct GoldmaneGoldmaneDeploymentSpecTemplateSpecAffinityPodAffinityPreferre
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -384,7 +383,6 @@ pub struct GoldmaneGoldmaneDeploymentSpecTemplateSpecAffinityPodAffinityPreferre
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -494,7 +492,6 @@ pub struct GoldmaneGoldmaneDeploymentSpecTemplateSpecAffinityPodAffinityRequired
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -505,7 +502,6 @@ pub struct GoldmaneGoldmaneDeploymentSpecTemplateSpecAffinityPodAffinityRequired
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -646,7 +642,6 @@ pub struct GoldmaneGoldmaneDeploymentSpecTemplateSpecAffinityPodAntiAffinityPref
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -657,7 +652,6 @@ pub struct GoldmaneGoldmaneDeploymentSpecTemplateSpecAffinityPodAntiAffinityPref
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -767,7 +761,6 @@ pub struct GoldmaneGoldmaneDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequ
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -778,7 +771,6 @@ pub struct GoldmaneGoldmaneDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequ
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1011,7 +1003,6 @@ pub struct GoldmaneGoldmaneDeploymentSpecTemplateSpecTopologySpreadConstraints {
     /// - Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.
     /// - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
     /// If this value is nil, the behavior is equivalent to the Honor policy.
-    /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
     pub node_affinity_policy: Option<String>,
     /// NodeTaintsPolicy indicates how we will treat node taints when calculating
@@ -1020,7 +1011,6 @@ pub struct GoldmaneGoldmaneDeploymentSpecTemplateSpecTopologySpreadConstraints {
     /// has a toleration, are included.
     /// - Ignore: node taints are ignored. All nodes are included.
     /// If this value is nil, the behavior is equivalent to the Ignore policy.
-    /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
     pub node_taints_policy: Option<String>,
     /// TopologyKey is the key of node labels. Nodes that have a label with this key

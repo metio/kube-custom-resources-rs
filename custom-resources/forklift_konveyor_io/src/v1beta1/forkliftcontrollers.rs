@@ -73,6 +73,12 @@ pub struct ForkliftControllerSpec {
     /// Filesystem overhead percentage (default: 10)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub controller_filesystem_overhead: Option<IntOrString>,
+    /// Host lease duration in seconds (default: 10)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub controller_host_lease_duration_seconds: Option<IntOrString>,
+    /// Namespace for host lease objects (default: openshift-mtv)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub controller_host_lease_namespace: Option<String>,
     /// Controller pod image
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub controller_image_fqin: Option<String>,
@@ -112,6 +118,9 @@ pub struct ForkliftControllerSpec {
     /// TLS connection timeout seconds (default: 5)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub controller_tls_connection_timeout_sec: Option<IntOrString>,
+    /// Optional NAD name for controller pod transfer network (format: 'namespace/network-name')
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub controller_transfer_network: Option<String>,
     /// VDDK job timeout in seconds (default: 300)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub controller_vddk_job_active_deadline_sec: Option<IntOrString>,
@@ -220,6 +229,18 @@ pub struct ForkliftControllerSpec {
     /// ConfigMap name for oVirt OS mappings (default: forklift-ovirt-osmap)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ovirt_osmap_configmap_name: Option<String>,
+    /// Volume Populator CPU limit (default: 1000m)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub populator_container_limits_cpu: Option<String>,
+    /// Volume Populator memory limit (default: 1Gi)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub populator_container_limits_memory: Option<String>,
+    /// Volume Populator CPU request (default: 100m)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub populator_container_requests_cpu: Option<String>,
+    /// Volume Populator memory request (default: 512Mi)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub populator_container_requests_memory: Option<String>,
     /// Volume populator controller image
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub populator_controller_image_fqin: Option<String>,

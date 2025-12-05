@@ -21,27 +21,44 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct ProbeSpec {
-    /// authorization section for this endpoint
+    /// authorization configures the Authorization header credentials used by
+    /// the client.
+    /// 
+    /// Cannot be set at the same time as `basicAuth`, `bearerTokenSecret` or `oauth2`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<ProbeAuthorization>,
-    /// basicAuth allow an endpoint to authenticate over basic authentication.
-    /// More info: <https://prometheus.io/docs/operating/configuration/#endpoint>
+    /// basicAuth defines the Basic Authentication credentials used by the
+    /// client.
+    /// 
+    /// Cannot be set at the same time as `authorization`, `bearerTokenSecret` or `oauth2`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<ProbeBasicAuth>,
-    /// bearerTokenSecret defines the secret to mount to read bearer token for scraping targets. The secret
-    /// needs to be in the same namespace as the probe and accessible by
-    /// the Prometheus Operator.
+    /// bearerTokenSecret defines a key of a Secret containing the bearer token
+    /// used by the client for authentication. The secret needs to be in the
+    /// same namespace as the custom resource and readable by the Prometheus
+    /// Operator.
+    /// 
+    /// Cannot be set at the same time as `authorization`, `basicAuth` or `oauth2`.
+    /// 
+    /// Deprecated: use `authorization` instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
     pub bearer_token_secret: Option<ProbeBearerTokenSecret>,
     /// convertClassicHistogramsToNHCB defines whether to convert all scraped classic histograms into a native histogram with custom buckets.
     /// It requires Prometheus >= v3.0.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "convertClassicHistogramsToNHCB")]
     pub convert_classic_histograms_to_nhcb: Option<bool>,
+    /// enableHttp2 can be used to disable HTTP2.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHttp2")]
+    pub enable_http2: Option<bool>,
     /// fallbackScrapeProtocol defines the protocol to use if a scrape returns blank, unparseable, or otherwise invalid Content-Type.
     /// 
     /// It requires Prometheus >= v3.0.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fallbackScrapeProtocol")]
     pub fallback_scrape_protocol: Option<ProbeFallbackScrapeProtocol>,
+    /// followRedirects defines whether the client should follow HTTP 3xx
+    /// redirects.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
+    pub follow_redirects: Option<bool>,
     /// interval at which targets are probed using the configured prober.
     /// If not specified Prometheus' global scrape interval is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -85,7 +102,11 @@ pub struct ProbeSpec {
     /// It requires Prometheus >= v2.50.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nativeHistogramMinBucketFactor")]
     pub native_histogram_min_bucket_factor: Option<IntOrString>,
-    /// oauth2 for the URL. Only valid in Prometheus versions 2.27.0 and newer.
+    /// oauth2 defines the OAuth2 settings used by the client.
+    /// 
+    /// It requires Prometheus >= 2.27.0.
+    /// 
+    /// Cannot be set at the same time as `authorization`, `basicAuth` or `bearerTokenSecret`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oauth2: Option<ProbeOauth2>,
     /// params defines the list of HTTP query parameters for the scrape.
@@ -128,12 +149,15 @@ pub struct ProbeSpec {
     /// targets defines a set of static or dynamically discovered targets to probe.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub targets: Option<ProbeTargets>,
-    /// tlsConfig defines the TLS configuration to use when scraping the endpoint.
+    /// tlsConfig defines the TLS configuration used by the client.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
     pub tls_config: Option<ProbeTlsConfig>,
 }
 
-/// authorization section for this endpoint
+/// authorization configures the Authorization header credentials used by
+/// the client.
+/// 
+/// Cannot be set at the same time as `basicAuth`, `bearerTokenSecret` or `oauth2`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProbeAuthorization {
     /// credentials defines a key of a Secret in the namespace that contains the credentials for authentication.
@@ -165,8 +189,10 @@ pub struct ProbeAuthorizationCredentials {
     pub optional: Option<bool>,
 }
 
-/// basicAuth allow an endpoint to authenticate over basic authentication.
-/// More info: <https://prometheus.io/docs/operating/configuration/#endpoint>
+/// basicAuth defines the Basic Authentication credentials used by the
+/// client.
+/// 
+/// Cannot be set at the same time as `authorization`, `bearerTokenSecret` or `oauth2`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProbeBasicAuth {
     /// password defines a key of a Secret containing the password for
@@ -215,9 +241,14 @@ pub struct ProbeBasicAuthUsername {
     pub optional: Option<bool>,
 }
 
-/// bearerTokenSecret defines the secret to mount to read bearer token for scraping targets. The secret
-/// needs to be in the same namespace as the probe and accessible by
-/// the Prometheus Operator.
+/// bearerTokenSecret defines a key of a Secret containing the bearer token
+/// used by the client for authentication. The secret needs to be in the
+/// same namespace as the custom resource and readable by the Prometheus
+/// Operator.
+/// 
+/// Cannot be set at the same time as `authorization`, `basicAuth` or `oauth2`.
+/// 
+/// Deprecated: use `authorization` instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProbeBearerTokenSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
@@ -340,7 +371,11 @@ pub enum ProbeMetricRelabelingsAction {
     DropEqual,
 }
 
-/// oauth2 for the URL. Only valid in Prometheus versions 2.27.0 and newer.
+/// oauth2 defines the OAuth2 settings used by the client.
+/// 
+/// It requires Prometheus >= 2.27.0.
+/// 
+/// Cannot be set at the same time as `authorization`, `basicAuth` or `bearerTokenSecret`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProbeOauth2 {
     /// clientId defines a key of a Secret or ConfigMap containing the
@@ -999,7 +1034,7 @@ pub enum ProbeTargetsStaticConfigRelabelingConfigsAction {
     DropEqual,
 }
 
-/// tlsConfig defines the TLS configuration to use when scraping the endpoint.
+/// tlsConfig defines the TLS configuration used by the client.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProbeTlsConfig {
     /// ca defines the Certificate authority used when verifying server certificates.
@@ -1136,7 +1171,7 @@ pub struct ProbeTlsConfigKeySecret {
     pub optional: Option<bool>,
 }
 
-/// tlsConfig defines the TLS configuration to use when scraping the endpoint.
+/// tlsConfig defines the TLS configuration used by the client.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ProbeTlsConfigMaxVersion {
     #[serde(rename = "TLS10")]
@@ -1149,7 +1184,7 @@ pub enum ProbeTlsConfigMaxVersion {
     Tls13,
 }
 
-/// tlsConfig defines the TLS configuration to use when scraping the endpoint.
+/// tlsConfig defines the TLS configuration used by the client.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ProbeTlsConfigMinVersion {
     #[serde(rename = "TLS10")]

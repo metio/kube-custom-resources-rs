@@ -2315,9 +2315,6 @@ spec:
             status:
               description: "VMClusterStatus defines the observed state of VMCluster"
               properties:
-                clusterStatus:
-                  description: "LegacyStatus is deprecated and will be removed at v0.52.0 version"
-                  type: "string"
                 conditions:
                   description: "Known .status.conditions.type are: \"Available\", \"Progressing\", and \"Degraded\""
                   items:

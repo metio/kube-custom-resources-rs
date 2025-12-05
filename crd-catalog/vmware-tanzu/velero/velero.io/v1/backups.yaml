@@ -423,6 +423,8 @@ spec:
                   description: "Phase is the current state of the Backup."
                   enum:
                     - "New"
+                    - "Queued"
+                    - "ReadyToStart"
                     - "FailedValidation"
                     - "InProgress"
                     - "WaitingForPluginOperations"
@@ -445,6 +447,9 @@ spec:
                       description: "TotalItems is the total number of items to be backed up. This number may change\nthroughout the execution of the backup due to plugins that return additional related\nitems to back up, the velero.io/exclude-from-backup label, and various other\nfilters that happen as items are processed."
                       type: "integer"
                   type: "object"
+                queuePosition:
+                  description: "QueuePosition is the position of the backup in the queue.\nOnly relevant when Phase is \"Queued\""
+                  type: "integer"
                 startTimestamp:
                   description: "StartTimestamp records the time a backup was started.\nSeparate from CreationTimestamp, since that value changes\non restores.\nThe server's time is used for StartTimestamps"
                   format: "date-time"

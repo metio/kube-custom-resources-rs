@@ -60,6 +60,9 @@ pub struct QuayRegistryComponentsOverrides {
     /// Resources describes the resource limits and requests for a component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<QuayRegistryComponentsOverridesResources>,
+    /// StorageClassName is the name of the StorageClass to use for the PVC.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
+    pub storage_class_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSize")]
     pub volume_size: Option<IntOrString>,
 }

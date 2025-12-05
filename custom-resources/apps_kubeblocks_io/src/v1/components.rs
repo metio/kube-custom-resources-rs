@@ -2261,7 +2261,7 @@ pub struct ComponentInstancesVolumeClaimTemplatesSpecSelectorMatchExpressions {
 /// Defines the network configuration for the Component.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentNetwork {
-    /// Specifies the DNS parameters of a pod.
+    /// Specifies the DNS parameters of the pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsConfig")]
     pub dns_config: Option<ComponentNetworkDnsConfig>,
     /// Set DNS policy for the pod.
@@ -2275,9 +2275,27 @@ pub struct ComponentNetwork {
     /// Host networking requested for this pod. Use the host's network namespace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetwork")]
     pub host_network: Option<bool>,
+    /// HostPorts specifies the mapping of container ports to host ports.
+    /// The behavior varies based on the HostNetwork setting:
+    /// 
+    /// 
+    /// 1. When HostNetwork is enabled:
+    ///    - If this field is empty: All ports are automatically allocated by the host-port manager.
+    ///    - If this field is specified:
+    ///      a) Mappings for all ports defined in `cmpd.spec.hostNetwork` are MANDATORY.
+    ///      b) Mappings for kbagent ports ("http", "streaming") are OPTIONAL.
+    ///         You can explicitly map them here, or leave them omitted to be allocated by the host-port manager.
+    /// 
+    /// 
+    /// 2. When HostNetwork is disabled:
+    ///    It allows optional mapping for container ports to host ports.
+    ///    - Mappings are restricted to ports defined in `cmpd.spec.runtime.containers.ports`.
+    ///    - Any specified container ports not present in the runtime definition will be ignored.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPorts")]
+    pub host_ports: Option<Vec<ComponentNetworkHostPorts>>,
 }
 
-/// Specifies the DNS parameters of a pod.
+/// Specifies the DNS parameters of the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentNetworkDnsConfig {
     /// A list of DNS name server IP addresses.
@@ -2318,6 +2336,14 @@ pub struct ComponentNetworkHostAliases {
     /// IP address of the host file entry.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ip: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentNetworkHostPorts {
+    /// The name of the container port.
+    pub name: String,
+    /// The port number of the host port.
+    pub port: i32,
 }
 
 /// persistentVolumeClaimRetentionPolicy describes the lifecycle of persistent

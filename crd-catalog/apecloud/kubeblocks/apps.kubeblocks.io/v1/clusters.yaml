@@ -1536,7 +1536,7 @@ spec:
                         description: "Defines the network configuration for the Component."
                         properties:
                           dnsConfig:
-                            description: "Specifies the DNS parameters of a pod."
+                            description: "Specifies the DNS parameters of the pod."
                             properties:
                               nameservers:
                                 description: "A list of DNS name server IP addresses.\nThis will be appended to the base nameservers generated from DNSPolicy.\nDuplicated nameservers will be removed."
@@ -1583,6 +1583,24 @@ spec:
                             default: false
                             description: "Host networking requested for this pod. Use the host's network namespace."
                             type: "boolean"
+                          hostPorts:
+                            description: "HostPorts specifies the mapping of container ports to host ports.\nThe behavior varies based on the HostNetwork setting:\n\n\n1. When HostNetwork is enabled:\n   - If this field is empty: All ports are automatically allocated by the host-port manager.\n   - If this field is specified:\n     a) Mappings for all ports defined in `cmpd.spec.hostNetwork` are MANDATORY.\n     b) Mappings for kbagent ports (\"http\", \"streaming\") are OPTIONAL.\n        You can explicitly map them here, or leave them omitted to be allocated by the host-port manager.\n\n\n2. When HostNetwork is disabled:\n   It allows optional mapping for container ports to host ports.\n   - Mappings are restricted to ports defined in `cmpd.spec.runtime.containers.ports`.\n   - Any specified container ports not present in the runtime definition will be ignored."
+                            items:
+                              properties:
+                                name:
+                                  description: "The name of the container port."
+                                  type: "string"
+                                port:
+                                  description: "The port number of the host port."
+                                  format: "int32"
+                                  maximum: 65535.0
+                                  minimum: 1.0
+                                  type: "integer"
+                              required:
+                                - "name"
+                                - "port"
+                              type: "object"
+                            type: "array"
                         type: "object"
                       offlineInstances:
                         description: "Specifies the names of instances to be transitioned to offline status.\n\n\nMarking an instance as offline results in the following:\n\n\n1. The associated Pod is stopped, and its PersistentVolumeClaim (PVC) is retained for potential\n   future reuse or data recovery, but it is no longer actively used.\n2. The ordinal number assigned to this instance is preserved, ensuring it remains unique\n   and avoiding conflicts with new instances.\n\n\nSetting instances to offline allows for a controlled scale-in process, preserving their data and maintaining\nordinal consistency within the Cluster."
@@ -7748,7 +7766,7 @@ spec:
                             description: "Defines the network configuration for the Component."
                             properties:
                               dnsConfig:
-                                description: "Specifies the DNS parameters of a pod."
+                                description: "Specifies the DNS parameters of the pod."
                                 properties:
                                   nameservers:
                                     description: "A list of DNS name server IP addresses.\nThis will be appended to the base nameservers generated from DNSPolicy.\nDuplicated nameservers will be removed."
@@ -7795,6 +7813,24 @@ spec:
                                 default: false
                                 description: "Host networking requested for this pod. Use the host's network namespace."
                                 type: "boolean"
+                              hostPorts:
+                                description: "HostPorts specifies the mapping of container ports to host ports.\nThe behavior varies based on the HostNetwork setting:\n\n\n1. When HostNetwork is enabled:\n   - If this field is empty: All ports are automatically allocated by the host-port manager.\n   - If this field is specified:\n     a) Mappings for all ports defined in `cmpd.spec.hostNetwork` are MANDATORY.\n     b) Mappings for kbagent ports (\"http\", \"streaming\") are OPTIONAL.\n        You can explicitly map them here, or leave them omitted to be allocated by the host-port manager.\n\n\n2. When HostNetwork is disabled:\n   It allows optional mapping for container ports to host ports.\n   - Mappings are restricted to ports defined in `cmpd.spec.runtime.containers.ports`.\n   - Any specified container ports not present in the runtime definition will be ignored."
+                                items:
+                                  properties:
+                                    name:
+                                      description: "The name of the container port."
+                                      type: "string"
+                                    port:
+                                      description: "The port number of the host port."
+                                      format: "int32"
+                                      maximum: 65535.0
+                                      minimum: 1.0
+                                      type: "integer"
+                                  required:
+                                    - "name"
+                                    - "port"
+                                  type: "object"
+                                type: "array"
                             type: "object"
                           offlineInstances:
                             description: "Specifies the names of instances to be transitioned to offline status.\n\n\nMarking an instance as offline results in the following:\n\n\n1. The associated Pod is stopped, and its PersistentVolumeClaim (PVC) is retained for potential\n   future reuse or data recovery, but it is no longer actively used.\n2. The ordinal number assigned to this instance is preserved, ensuring it remains unique\n   and avoiding conflicts with new instances.\n\n\nSetting instances to offline allows for a controlled scale-in process, preserving their data and maintaining\nordinal consistency within the Cluster."
@@ -9830,6 +9866,7 @@ spec:
                         type: "object"
                     required:
                       - "name"
+                      - "shards"
                     type: "object"
                   maxItems: 128
                   minItems: 1

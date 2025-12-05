@@ -39,6 +39,10 @@ pub struct PasswordSpec {
     /// Set NoUpper to disable uppercase characters
     #[serde(rename = "noUpper")]
     pub no_upper: bool,
+    /// SecretKeys defines the keys that will be populated with generated passwords.
+    /// Defaults to "password" when not set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeys")]
+    pub secret_keys: Option<Vec<String>>,
     /// SymbolCharacters specifies the special characters that should be used
     /// in the generated password.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "symbolCharacters")]

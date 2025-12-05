@@ -674,6 +674,19 @@ pub struct GatewayStatus {
     ///   * a specified address was unusable (e.g. already in use)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub addresses: Option<Vec<GatewayStatusAddresses>>,
+    /// AttachedListeners represents the total number of ListenerSets that have been
+    /// successfully attached to this Gateway.
+    /// 
+    /// A ListenerSet is successfully attached to a Gateway
+    /// when all the following conditions are met :
+    /// - The ListenerSet is selected by the Gateway's AllowedListeners field
+    /// - The ListenerSet has a valid ParentRef selecting the Gateway
+    /// - The ListenerSet's status has the condition "Accepted: true"
+    /// 
+    /// Uses for this field include troubleshooting AttachedListeners attachment and
+    /// measuring blast radius/impact of changes to a Gateway.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "attachedListeners")]
+    pub attached_listeners: Option<i32>,
     /// Conditions describe the current conditions of the Gateway.
     /// 
     /// Implementations should prefer to express Gateway conditions

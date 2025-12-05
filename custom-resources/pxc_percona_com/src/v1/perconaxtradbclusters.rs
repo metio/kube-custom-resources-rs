@@ -106,6 +106,8 @@ pub struct PerconaXtraDbClusterBackup {
     pub storages: Option<BTreeMap<String, PerconaXtraDbClusterBackupStorages>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "suspendedDeadlineSeconds")]
     pub suspended_deadline_seconds: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ttlSecondsAfterFinished")]
+    pub ttl_seconds_after_finished: Option<i32>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -966,6 +968,8 @@ pub struct PerconaXtraDbClusterHaproxy {
     pub expose_replicas: Option<PerconaXtraDbClusterHaproxyExposeReplicas>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTrafficPolicy")]
     pub external_traffic_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraPVCs")]
+    pub extra_pv_cs: Option<Vec<PerconaXtraDbClusterHaproxyExtraPvCs>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracePeriod")]
     pub grace_period: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheck")]
@@ -1482,6 +1486,19 @@ pub struct PerconaXtraDbClusterHaproxyExposeReplicas {
     pub traffic_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaXtraDbClusterHaproxyExtraPvCs {
+    #[serde(rename = "claimName")]
+    pub claim_name: String,
+    #[serde(rename = "mountPath")]
+    pub mount_path: String,
+    pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
+    pub sub_path: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3930,6 +3947,8 @@ pub struct PerconaXtraDbClusterProxysql {
     pub expose: Option<PerconaXtraDbClusterProxysqlExpose>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTrafficPolicy")]
     pub external_traffic_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraPVCs")]
+    pub extra_pv_cs: Option<Vec<PerconaXtraDbClusterProxysqlExtraPvCs>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracePeriod")]
     pub grace_period: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hookScript")]
@@ -4416,6 +4435,19 @@ pub struct PerconaXtraDbClusterProxysqlExpose {
     pub traffic_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaXtraDbClusterProxysqlExtraPvCs {
+    #[serde(rename = "claimName")]
+    pub claim_name: String,
+    #[serde(rename = "mountPath")]
+    pub mount_path: String,
+    pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
+    pub sub_path: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6402,6 +6434,8 @@ pub struct PerconaXtraDbClusterPxc {
     pub expose: Option<PerconaXtraDbClusterPxcExpose>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTrafficPolicy")]
     pub external_traffic_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraPVCs")]
+    pub extra_pv_cs: Option<Vec<PerconaXtraDbClusterPxcExtraPvCs>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracePeriod")]
     pub grace_period: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hookScript")]
@@ -6890,6 +6924,19 @@ pub struct PerconaXtraDbClusterPxcExpose {
     pub traffic_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaXtraDbClusterPxcExtraPvCs {
+    #[serde(rename = "claimName")]
+    pub claim_name: String,
+    #[serde(rename = "mountPath")]
+    pub mount_path: String,
+    pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
+    pub sub_path: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
