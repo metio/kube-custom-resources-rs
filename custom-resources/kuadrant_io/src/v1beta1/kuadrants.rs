@@ -19,13 +19,34 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct KuadrantSpec {
+    /// Components configures optional Kuadrant components
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub components: Option<KuadrantComponents>,
     /// MTLS is an optional entry which when enabled is set to true, kuadrant-operator
     /// will add the configuration required to enable mTLS between an Istio provided
     /// gateway and the Kuadrant components.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mtls: Option<KuadrantMtls>,
+    /// Observability configures telemetry and monitoring settings for Kuadrant components.
+    /// When enabled, it configures logging, tracing, and other observability features for both
+    /// the control plane and data plane components.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub observability: Option<KuadrantObservability>,
+}
+
+/// Components configures optional Kuadrant components
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KuadrantComponents {
+    /// DeveloperPortal enables the developer portal integration including APIProduct and APIKeyRequest CRDs
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "developerPortal")]
+    pub developer_portal: Option<KuadrantComponentsDeveloperPortal>,
+}
+
+/// DeveloperPortal enables the developer portal integration including APIProduct and APIKeyRequest CRDs
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KuadrantComponentsDeveloperPortal {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
 }
 
 /// MTLS is an optional entry which when enabled is set to true, kuadrant-operator
@@ -41,10 +62,66 @@ pub struct KuadrantMtls {
     pub limitador: Option<bool>,
 }
 
+/// Observability configures telemetry and monitoring settings for Kuadrant components.
+/// When enabled, it configures logging, tracing, and other observability features for both
+/// the control plane and data plane components.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KuadrantObservability {
+    /// DataPlane configures observability settings for the data plane components.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataPlane")]
+    pub data_plane: Option<KuadrantObservabilityDataPlane>,
+    /// Enable controls whether observability features are active.
+    /// When false, no additional logging or tracing configuration is applied.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
+    /// Tracing configures distributed tracing for request flows through the system.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tracing: Option<KuadrantObservabilityTracing>,
+}
+
+/// DataPlane configures observability settings for the data plane components.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KuadrantObservabilityDataPlane {
+    /// DefaultLevels specifies the default logging levels and their activation predicates.
+    /// Each entry defines a log level (debug, info, warn, error) and an optional CEL expression
+    /// that determines when that level should be active for a given request.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultLevels")]
+    pub default_levels: Option<Vec<KuadrantObservabilityDataPlaneDefaultLevels>>,
+    /// HTTPHeaderIdentifier specifies the HTTP header name used to identify and correlate
+    /// requests in logs and traces (e.g., "x-request-id", "x-correlation-id").
+    /// If set, this header value will be included in log output for request correlation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaderIdentifier")]
+    pub http_header_identifier: Option<String>,
+}
+
+/// LogLevel defines a logging level with its activation predicate
+/// Only one field should be set per LogLevel entry
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KuadrantObservabilityDataPlaneDefaultLevels {
+    /// Debug level - highest verbosity
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub debug: Option<String>,
+    /// Error level - lowest verbosity
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub error: Option<String>,
+    /// Info level
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub info: Option<String>,
+    /// Warn level
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub warn: Option<String>,
+}
+
+/// Tracing configures distributed tracing for request flows through the system.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KuadrantObservabilityTracing {
+    /// DefaultEndpoint is the default URL of the tracing collector backend where spans should be sent.
+    /// Can be overridden per-gateway in future versions.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultEndpoint")]
+    pub default_endpoint: Option<String>,
+    /// Insecure controls whether to skip TLS certificate verification.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub insecure: Option<bool>,
 }
 
 /// KuadrantStatus defines the observed state of Kuadrant

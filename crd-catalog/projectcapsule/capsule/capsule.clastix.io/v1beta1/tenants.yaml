@@ -105,7 +105,7 @@ spec:
                         type: "string"
                       type: "array"
                     allowedRegex:
-                      description: "Match elements by regex (DEPRECATED)"
+                      description: "Deprecated: will be removed in a future release\n\nMatch elements by regex."
                       type: "string"
                   type: "object"
                 imagePullPolicies:
@@ -129,7 +129,7 @@ spec:
                             type: "string"
                           type: "array"
                         allowedRegex:
-                          description: "Match elements by regex (DEPRECATED)"
+                          description: "Deprecated: will be removed in a future release\n\nMatch elements by regex."
                           type: "string"
                       type: "object"
                     allowedHostnames:
@@ -141,7 +141,7 @@ spec:
                             type: "string"
                           type: "array"
                         allowedRegex:
-                          description: "Match elements by regex (DEPRECATED)"
+                          description: "Deprecated: will be removed in a future release\n\nMatch elements by regex."
                           type: "string"
                       type: "object"
                     hostnameCollisionScope:
@@ -588,7 +588,7 @@ spec:
                         type: "string"
                       type: "array"
                     allowedRegex:
-                      description: "Match elements by regex (DEPRECATED)"
+                      description: "Deprecated: will be removed in a future release\n\nMatch elements by regex."
                       type: "string"
                   type: "object"
                 resourceQuotas:
@@ -724,7 +724,7 @@ spec:
                         type: "string"
                       type: "array"
                     allowedRegex:
-                      description: "Match elements by regex (DEPRECATED)"
+                      description: "Deprecated: will be removed in a future release\n\nMatch elements by regex."
                       type: "string"
                   type: "object"
               required:

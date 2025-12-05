@@ -193,6 +193,8 @@ pub enum FluxInstanceDistributionVariant {
     EnterpriseAlpine,
     #[serde(rename = "enterprise-distroless")]
     EnterpriseDistroless,
+    #[serde(rename = "enterprise-distroless-fips")]
+    EnterpriseDistrolessFips,
 }
 
 /// Kustomize holds a set of patches that can be applied to the

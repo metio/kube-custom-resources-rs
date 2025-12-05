@@ -64,6 +64,10 @@ pub struct VmUserSpec {
     /// See [here](<https://docs.victoriametrics.com/victoriametrics/vmauth/#load-balancing)> for more details (default "least_loaded")
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub load_balancing_policy: Option<VmUserLoadBalancingPolicy>,
+    /// ManagedMetadata defines metadata that will be added to the all objects
+    /// created by operator for the given CustomResource
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managedMetadata")]
+    pub managed_metadata: Option<VmUserManagedMetadata>,
     /// MaxConcurrentRequests defines max concurrent requests per user
     /// 300 is default value for vmauth
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -125,6 +129,23 @@ pub enum VmUserLoadBalancingPolicy {
     FirstAvailable,
 }
 
+/// ManagedMetadata defines metadata that will be added to the all objects
+/// created by operator for the given CustomResource
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VmUserManagedMetadata {
+    /// Annotations is an unstructured key value map stored with a resource that may be
+    /// set by external tools to store and retrieve arbitrary metadata. They are not
+    /// queryable and should be preserved when modifying objects.
+    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Labels Map of string keys and values that can be used to organize and categorize
+    /// (scope and select) objects.
+    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/labels>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+}
+
 /// PasswordRef allows fetching password from user-create secret by its name and key.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmUserPasswordRef {
@@ -176,6 +197,9 @@ pub struct VmUserTargetRefs {
     /// Paths - matched path to route.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub paths: Option<Vec<String>>,
+    /// QueryArgs appends list of query arguments to generated URL
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub query_args: Option<Vec<VmUserTargetRefsQueryArgs>>,
     /// ResponseHeaders represent additional http headers, that vmauth adds for request response
     /// in form of ["header_key: header_value"]
     /// multiple values for header key:
@@ -272,6 +296,15 @@ pub enum VmUserTargetRefsLoadBalancingPolicy {
     LeastLoaded,
     #[serde(rename = "first_available")]
     FirstAvailable,
+}
+
+/// QueryArg defines item for query arguments
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VmUserTargetRefsQueryArgs {
+    /// Name of query argument
+    pub name: String,
+    /// Values of query argument
+    pub values: Vec<String>,
 }
 
 /// Static - user defined url for traffic forward,

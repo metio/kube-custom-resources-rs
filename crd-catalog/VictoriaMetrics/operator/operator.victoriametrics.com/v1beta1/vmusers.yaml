@@ -85,6 +85,20 @@ spec:
                     - "least_loaded"
                     - "first_available"
                   type: "string"
+                managedMetadata:
+                  description: "ManagedMetadata defines metadata that will be added to the all objects\ncreated by operator for the given CustomResource"
+                  properties:
+                    annotations:
+                      additionalProperties:
+                        type: "string"
+                      description: "Annotations is an unstructured key value map stored with a resource that may be\nset by external tools to store and retrieve arbitrary metadata. They are not\nqueryable and should be preserved when modifying objects.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations"
+                      type: "object"
+                    labels:
+                      additionalProperties:
+                        type: "string"
+                      description: "Labels Map of string keys and values that can be used to organize and categorize\n(scope and select) objects.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels"
+                      type: "object"
+                  type: "object"
                 max_concurrent_requests:
                   description: "MaxConcurrentRequests defines max concurrent requests per user\n300 is default value for vmauth"
                   type: "integer"
@@ -192,6 +206,24 @@ spec:
                         description: "Paths - matched path to route."
                         items:
                           type: "string"
+                        type: "array"
+                      query_args:
+                        description: "QueryArgs appends list of query arguments to generated URL"
+                        items:
+                          description: "QueryArg defines item for query arguments"
+                          properties:
+                            name:
+                              description: "Name of query argument"
+                              type: "string"
+                            values:
+                              description: "Values of query argument"
+                              items:
+                                type: "string"
+                              type: "array"
+                          required:
+                            - "name"
+                            - "values"
+                          type: "object"
                         type: "array"
                       response_headers:
                         description: "ResponseHeaders represent additional http headers, that vmauth adds for request response\nin form of [\"header_key: header_value\"]\nmultiple values for header key:\n[\"header_key: value1,value2\"]\nit's available since 1.93.0 version of vmauth"

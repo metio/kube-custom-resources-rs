@@ -99,7 +99,9 @@ pub struct TenantContainerRegistries {
     /// Match exact elements which are allowed as class names within this tenant
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub allowed: Option<Vec<String>>,
-    /// Match elements by regex (DEPRECATED)
+    /// Deprecated: will be removed in a future release
+    /// 
+    /// Match elements by regex.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedRegex")]
     pub allowed_regex: Option<String>,
 }
@@ -132,7 +134,9 @@ pub struct TenantIngressOptionsAllowedClasses {
     /// Match exact elements which are allowed as class names within this tenant
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub allowed: Option<Vec<String>>,
-    /// Match elements by regex (DEPRECATED)
+    /// Deprecated: will be removed in a future release
+    /// 
+    /// Match elements by regex.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedRegex")]
     pub allowed_regex: Option<String>,
 }
@@ -143,7 +147,9 @@ pub struct TenantIngressOptionsAllowedHostnames {
     /// Match exact elements which are allowed as class names within this tenant
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub allowed: Option<Vec<String>>,
-    /// Match elements by regex (DEPRECATED)
+    /// Deprecated: will be removed in a future release
+    /// 
+    /// Match elements by regex.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedRegex")]
     pub allowed_regex: Option<String>,
 }
@@ -640,7 +646,9 @@ pub struct TenantPriorityClasses {
     /// Match exact elements which are allowed as class names within this tenant
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub allowed: Option<Vec<String>>,
-    /// Match elements by regex (DEPRECATED)
+    /// Deprecated: will be removed in a future release
+    /// 
+    /// Match elements by regex.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedRegex")]
     pub allowed_regex: Option<String>,
 }
@@ -781,7 +789,9 @@ pub struct TenantStorageClasses {
     /// Match exact elements which are allowed as class names within this tenant
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub allowed: Option<Vec<String>>,
-    /// Match elements by regex (DEPRECATED)
+    /// Deprecated: will be removed in a future release
+    /// 
+    /// Match elements by regex.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedRegex")]
     pub allowed_regex: Option<String>,
 }

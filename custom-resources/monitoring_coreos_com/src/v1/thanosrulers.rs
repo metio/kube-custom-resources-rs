@@ -216,6 +216,17 @@ pub struct ThanosRulerSpec {
     /// will be performed on the underlying objects.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub paused: Option<bool>,
+    /// podManagementPolicy defines the policy for creating/deleting pods when
+    /// scaling up and down.
+    /// 
+    /// Unlike the default StatefulSet behavior, the default policy is
+    /// `Parallel` to avoid manual intervention in case a pod gets stuck during
+    /// a rollout.
+    /// 
+    /// Note that updating this value implies the recreation of the StatefulSet
+    /// which incurs a service outage.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podManagementPolicy")]
+    pub pod_management_policy: Option<ThanosRulerPodManagementPolicy>,
     /// podMetadata defines labels and annotations which are propagated to the ThanosRuler pods.
     /// 
     /// The following items are reserved and cannot be overridden:
@@ -4063,6 +4074,14 @@ pub struct ThanosRulerObjectStorageConfig {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// spec defines the specification of the desired behavior of the ThanosRuler cluster. More info:
+/// <https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#spec-and-status>
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ThanosRulerPodManagementPolicy {
+    OrderedReady,
+    Parallel,
 }
 
 /// podMetadata defines labels and annotations which are propagated to the ThanosRuler pods.

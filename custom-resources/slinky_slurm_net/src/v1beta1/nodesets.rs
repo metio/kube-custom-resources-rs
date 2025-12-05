@@ -62,6 +62,9 @@ pub struct NodeSetSpec {
     /// Ref: <https://github.com/kubernetes/api/blob/master/core/v1/types.go#L2885>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub slurmd: Option<BTreeMap<String, serde_json::Value>>,
+    /// SSH configuration for worker pods.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ssh: Option<NodeSetSsh>,
     /// TaintKubeNodes controls whether or not to apply a NoExecute taint to any nodes which are running a pod from this NodeSet.
     /// See <https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/> for more information.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "taintKubeNodes")]
@@ -128,6 +131,37 @@ pub struct NodeSetPersistentVolumeClaimRetentionPolicy {
     /// deleted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "whenScaled")]
     pub when_scaled: Option<String>,
+}
+
+/// SSH configuration for worker pods.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NodeSetSsh {
+    /// Enabled controls whether SSH access is enabled for this NodeSet.
+    pub enabled: bool,
+    /// ExtraSshdConfig is added to the end of `sshd_config`.
+    /// Ref: <https://man7.org/linux/man-pages/man5/sshd_config.5.html>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraSshdConfig")]
+    pub extra_sshd_config: Option<String>,
+    /// SssdConfRef is a reference to a secret containing the `sssd.conf`.
+    #[serde(rename = "sssdConfRef")]
+    pub sssd_conf_ref: NodeSetSshSssdConfRef,
+}
+
+/// SssdConfRef is a reference to a secret containing the `sssd.conf`.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NodeSetSshSssdConfRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 /// Template is the object that describes the pod that will be created if

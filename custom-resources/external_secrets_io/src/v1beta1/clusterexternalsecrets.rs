@@ -65,8 +65,8 @@ pub struct ClusterExternalSecretExternalSecretSpec {
     /// RefreshInterval is the amount of time before the values are read again from the SecretStore provider,
     /// specified as Golang Duration strings.
     /// Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h"
-    /// Example values: "1h", "2h30m", "10s"
-    /// May be set to zero to fetch and create it once. Defaults to 1h.
+    /// Example values: "1h0m0s", "2h30m0s", "10m0s"
+    /// May be set to "0s" to fetch and create it once. Defaults to 1h0m0s.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
     pub refresh_interval: Option<String>,
     /// RefreshPolicy determines how the ExternalSecret should be refreshed:

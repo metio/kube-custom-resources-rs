@@ -446,6 +446,11 @@ pub struct RestoreS3 {
     /// SessionTokenSecretKeyRef is a reference to a Secret key containing the S3 session token.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionTokenSecretKeyRef")]
     pub session_token_secret_key_ref: Option<RestoreS3SessionTokenSecretKeyRef>,
+    /// SSEC is a reference to a Secret containing the SSE-C (Server-Side Encryption with Customer-Provided Keys) key.
+    /// The secret must contain a 32-byte key (256 bits) in the specified key.
+    /// This enables server-side encryption where you provide and manage the encryption key.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ssec: Option<RestoreS3Ssec>,
     /// TLS provides the configuration required to establish TLS connections with S3.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<RestoreS3Tls>,
@@ -470,6 +475,26 @@ pub struct RestoreS3SecretAccessKeySecretKeyRef {
 /// SessionTokenSecretKeyRef is a reference to a Secret key containing the S3 session token.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RestoreS3SessionTokenSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// SSEC is a reference to a Secret containing the SSE-C (Server-Side Encryption with Customer-Provided Keys) key.
+/// The secret must contain a 32-byte key (256 bits) in the specified key.
+/// This enables server-side encryption where you provide and manage the encryption key.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RestoreS3Ssec {
+    /// CustomerKeySecretKeyRef is a reference to a Secret key containing the SSE-C customer-provided encryption key.
+    /// The key must be a 32-byte (256-bit) key encoded in base64.
+    #[serde(rename = "customerKeySecretKeyRef")]
+    pub customer_key_secret_key_ref: RestoreS3SsecCustomerKeySecretKeyRef,
+}
+
+/// CustomerKeySecretKeyRef is a reference to a Secret key containing the SSE-C customer-provided encryption key.
+/// The key must be a 32-byte (256-bit) key encoded in base64.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RestoreS3SsecCustomerKeySecretKeyRef {
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,

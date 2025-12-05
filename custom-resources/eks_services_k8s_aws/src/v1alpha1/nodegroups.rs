@@ -429,8 +429,8 @@ pub struct NodegroupStatusResources {
     pub remote_access_security_group: Option<String>,
 }
 
-/// An Auto Scaling group that is associated with an Amazon EKS managed node
-/// group.
+/// An Amazon EC2 Auto Scaling group that is associated with an Amazon EKS managed
+/// node group.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodegroupStatusResourcesAutoScalingGroups {
     #[serde(default, skip_serializing_if = "Option::is_none")]

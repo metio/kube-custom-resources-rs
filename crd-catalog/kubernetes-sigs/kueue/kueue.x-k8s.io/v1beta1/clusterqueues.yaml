@@ -34,6 +34,8 @@ spec:
           name: "Admitted Workloads"
           priority: 1
           type: "integer"
+      deprecated: true
+      deprecationWarning: "This version is deprecated. Use v1beta2 instead."
       name: "v1beta1"
       schema:
         openAPIV3Schema:
@@ -525,6 +527,6 @@ spec:
               type: "object"
           type: "object"
       served: true
-      storage: true
+      storage: false
       subresources:
         status: {}

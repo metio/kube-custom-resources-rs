@@ -39,6 +39,9 @@ pub struct KeyValueSpec {
     /// The JetStream domain to use for the KV store.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsDomain")]
     pub js_domain: Option<String>,
+    /// LimitMarkerTTL is how long the bucket keeps markers when keys are removed by the TTL setting, 0 meaning markers are not supported
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitMarkerTtl")]
+    pub limit_marker_ttl: Option<i64>,
     /// The maximum size of the KV Store in bytes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxBytes")]
     pub max_bytes: Option<i64>,

@@ -116,22 +116,49 @@ pub struct PolicyCache {
     /// Invalid methods: PUT, DELETE, PATCH, etc.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedMethods")]
     pub allowed_methods: Option<Vec<String>>,
+    /// CacheBackgroundUpdate allows starting a background subrequest to update an expired cache item (proxy_cache_background_update).
+    /// A stale cached response is returned to the client while the cache is being updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheBackgroundUpdate")]
+    pub cache_background_update: Option<bool>,
+    /// CacheKey defines a key for caching (proxy_cache_key).
+    /// By default, close to "$scheme$proxy_host$uri$is_args$args".
+    /// Must not contain command execution patterns: $(, `, ;, &&, ||
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheKey")]
+    pub cache_key: Option<String>,
+    /// CacheMinUses sets the number of requests after which the response will be cached (proxy_cache_min_uses).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheMinUses")]
+    pub cache_min_uses: Option<i64>,
     /// CachePurgeAllow defines IP addresses or CIDR blocks allowed to purge cache.
     /// This feature is only available in NGINX Plus.
     /// Examples: ["192.168.1.100", "10.0.0.0/8", "::1"].
     /// Invalid in NGINX OSS (will be ignored).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachePurgeAllow")]
     pub cache_purge_allow: Option<Vec<String>>,
+    /// CacheRevalidate enables revalidation of expired cache items using conditional requests (proxy_cache_revalidate).
+    /// Uses "If-Modified-Since" and "If-None-Match" header fields.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheRevalidate")]
+    pub cache_revalidate: Option<bool>,
+    /// CacheUseStale determines in which cases a stale cached response can be used (proxy_cache_use_stale).
+    /// Valid parameters: error, timeout, invalid_header, updating, http_500, http_502, http_503, http_504, http_403, http_404, http_429, off.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheUseStale")]
+    pub cache_use_stale: Option<Vec<String>>,
     /// CacheZoneName defines the name of the cache zone. Must start with a lowercase letter,
     /// followed by alphanumeric characters or underscores, and end with an alphanumeric character.
     /// Single lowercase letters are also allowed. Examples: "cache", "my_cache", "cache1".
     #[serde(rename = "cacheZoneName")]
     pub cache_zone_name: String,
     /// CacheZoneSize defines the size of the cache zone. Must be a number followed by a size unit:
-    /// 'k' for kilobytes, 'm' for megabytes, or 'g' for gigabytes.
+    /// 'k' or 'K' for kilobytes, 'm' or 'M' for megabytes, or 'g' or 'G' for gigabytes.
     /// Examples: "10m", "1g", "512k".
     #[serde(rename = "cacheZoneSize")]
     pub cache_zone_size: String,
+    /// Conditions defines when responses should not be cached or taken from cache.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<PolicyCacheConditions>,
+    /// Inactive sets the time after which cached data that are not accessed get removed from the cache (inactive parameter).
+    /// By default, inactive is set to 10 minutes.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub inactive: Option<String>,
     /// Levels defines the cache directory hierarchy levels for storing cached files.
     /// Must be in format "X:Y" or "X:Y:Z" where X, Y, Z are either 1 or 2.
     /// This controls the number of subdirectory levels and their name lengths.
@@ -139,6 +166,20 @@ pub struct PolicyCache {
     /// Invalid: "3:1", "1:3", "1:2:3".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub levels: Option<String>,
+    /// Lock configures cache locking to prevent multiple identical requests from populating the same cache element simultaneously.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub lock: Option<PolicyCacheLock>,
+    /// Manager configures the cache manager process parameters (manager_files, manager_sleep, manager_threshold).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub manager: Option<PolicyCacheManager>,
+    /// MaxSize sets the maximum cache size (max_size parameter).
+    /// When the size is exceeded, the cache manager removes the least recently used data.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSize")]
+    pub max_size: Option<String>,
+    /// MinFree sets the minimum amount of free space required on the file system with cache (min_free parameter).
+    /// When there is not enough free space, the cache manager removes the least recently used data.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minFree")]
+    pub min_free: Option<String>,
     /// OverrideUpstreamCache controls whether to override upstream cache headers
     /// (using proxy_ignore_headers directive). When true, NGINX will ignore
     /// cache-related headers from upstream servers like Cache-Control, Expires, etc.
@@ -151,6 +192,58 @@ pub struct PolicyCache {
     /// Examples: "30s", "5m", "1h", "2d".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub time: Option<String>,
+    /// UseTempPath controls whether temporary files and the cache are put on different file systems (use_temp_path parameter).
+    /// If set to false, temporary files will be put directly in the cache directory (use_temp_path=off).
+    /// Default: false (use_temp_path=off, which puts temp files directly in cache directory for better performance).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useTempPath")]
+    pub use_temp_path: Option<bool>,
+}
+
+/// Conditions defines when responses should not be cached or taken from cache.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyCacheConditions {
+    /// Bypass defines conditions under which the response will not be taken from a cache (proxy_cache_bypass).
+    /// If at least one value of the string parameters is not empty and is not equal to "0" then the response will not be taken from the cache.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub bypass: Option<Vec<String>>,
+    /// NoCache defines conditions under which the response will not be saved to a cache (proxy_no_cache).
+    /// If at least one value of the string parameters is not empty and is not equal to "0" then the response will not be saved.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "noCache")]
+    pub no_cache: Option<Vec<String>>,
+}
+
+/// Lock configures cache locking to prevent multiple identical requests from populating the same cache element simultaneously.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyCacheLock {
+    /// Age sets the maximum time a cache lock can be held (proxy_cache_lock_age).
+    /// If the last request passed to the proxied server for populating a new cache element has not completed for the specified time, one more request may be passed.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub age: Option<String>,
+    /// Enable sets whether cache locking is enabled (proxy_cache_lock).
+    /// When enabled, only one request at a time will be allowed to populate a new cache element according to the proxy_cache_key.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enable: Option<bool>,
+    /// Timeout sets a timeout for proxy_cache_lock.
+    /// When the time expires, the request will be passed to the proxied server, however, the response will not be cached.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timeout: Option<String>,
+}
+
+/// Manager configures the cache manager process parameters (manager_files, manager_sleep, manager_threshold).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyCacheManager {
+    /// Files sets the maximum number of files that will be deleted in one iteration by the cache manager.
+    /// During one iteration no more than manager_files items are deleted (by default, 100).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub files: Option<i64>,
+    /// Sleep sets the pause between cache manager iterations.
+    /// Between iterations, a pause configured by manager_sleep (by default, 50 milliseconds) is made.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<String>,
+    /// Threshold sets the maximum duration of one cache manager iteration.
+    /// The duration of one iteration is limited by manager_threshold (by default, 200 milliseconds).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub threshold: Option<String>,
 }
 
 /// The EgressMTLS policy configures upstreams authentication and certificate verification.

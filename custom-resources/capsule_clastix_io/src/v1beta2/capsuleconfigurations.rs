@@ -50,12 +50,20 @@ pub struct CapsuleConfigurationSpec {
     /// Disallow creation of namespaces, whose name matches this regexp
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectedNamespaceRegex")]
     pub protected_namespace_regex: Option<String>,
+    /// Deprecated: use users property instead (<https://projectcapsule.dev/docs/operating/setup/configuration/#users)>
+    /// 
     /// Names of the groups considered as Capsule users.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userGroups")]
     pub user_groups: Option<Vec<String>>,
+    /// Deprecated: use users property instead (<https://projectcapsule.dev/docs/operating/setup/configuration/#users)>
+    /// 
     /// Names of the users considered as Capsule users.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userNames")]
     pub user_names: Option<Vec<String>>,
+    /// Define entities which are considered part of the Capsule construct
+    /// Users not mentioned here will be ignored by Capsule
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub users: Option<Vec<CapsuleConfigurationUsers>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -117,5 +125,20 @@ pub struct CapsuleConfigurationOverrides {
     /// Name of the ValidatingWebhookConfiguration which contains the dynamic admission controller paths and resources.
     #[serde(rename = "validatingWebhookConfigurationName")]
     pub validating_webhook_configuration_name: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CapsuleConfigurationUsers {
+    /// Kind of entity. Possible values are "User", "Group", and "ServiceAccount"
+    pub kind: CapsuleConfigurationUsersKind,
+    /// Name of the entity.
+    pub name: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum CapsuleConfigurationUsersKind {
+    User,
+    Group,
+    ServiceAccount,
 }
 

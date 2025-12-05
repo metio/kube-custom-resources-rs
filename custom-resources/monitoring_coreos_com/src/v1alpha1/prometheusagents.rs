@@ -443,6 +443,17 @@ pub struct PrometheusAgentSpec {
     /// It requires enabling the StatefulSetAutoDeletePVC feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaimRetentionPolicy")]
     pub persistent_volume_claim_retention_policy: Option<PrometheusAgentPersistentVolumeClaimRetentionPolicy>,
+    /// podManagementPolicy defines the policy for creating/deleting pods when
+    /// scaling up and down.
+    /// 
+    /// Unlike the default StatefulSet behavior, the default policy is
+    /// `Parallel` to avoid manual intervention in case a pod gets stuck during
+    /// a rollout.
+    /// 
+    /// Note that updating this value implies the recreation of the StatefulSet
+    /// which incurs a service outage.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podManagementPolicy")]
+    pub pod_management_policy: Option<PrometheusAgentPodManagementPolicy>,
     /// podMetadata defines labels and annotations which are propagated to the Prometheus pods.
     /// 
     /// The following items are reserved and cannot be overridden:
@@ -4678,6 +4689,14 @@ pub struct PrometheusAgentPersistentVolumeClaimRetentionPolicy {
     /// the replica count to be deleted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "whenScaled")]
     pub when_scaled: Option<String>,
+}
+
+/// spec defines the specification of the desired behavior of the Prometheus agent. More info:
+/// <https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#spec-and-status>
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PrometheusAgentPodManagementPolicy {
+    OrderedReady,
+    Parallel,
 }
 
 /// podMetadata defines labels and annotations which are propagated to the Prometheus pods.
