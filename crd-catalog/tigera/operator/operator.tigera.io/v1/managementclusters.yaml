@@ -36,14 +36,18 @@ spec:
                   description: "TLS provides options for configuring how Managed Clusters can establish an mTLS connection with the Management Cluster."
                   properties:
                     secretName:
-                      description: "SecretName indicates the name of the secret in the tigera-operator namespace that contains the private key and certificate that the management cluster uses when it listens for incoming connections.\nWhen set to tigera-management-cluster-connection voltron will use the same cert bundle which Guardian client certs are signed with.\nWhen set to manager-tls, voltron will use the same cert bundle which Manager UI is served with.\nThis cert bundle must be a publicly signed cert created by the user.\nNote that Tigera Operator will generate a self-signed manager-tls cert if one does not exist,\nand use of that cert will result in Guardian being unable to verify Voltron's identity.\nIf changed on a running cluster with connected managed clusters, all managed clusters will disconnect as they will no longer be able to verify Voltron's identity.\nTo reconnect existing managed clusters, change the tls.ca of the  managed clusters' ManagementClusterConnection resource.\nOne of: tigera-management-cluster-connection, manager-tls\nDefault: tigera-management-cluster-connection"
+                      description: "SecretName indicates the name of the secret in the tigera-operator namespace that contains the private key and certificate that the management cluster uses when it listens for incoming connections.\nWhen set to calico-management-cluster-connection voltron will use the same cert bundle which Guardian client certs are signed with.\nWhen set to manager-tls, voltron will use the same cert bundle which Manager UI is served with.\nThis cert bundle must be a publicly signed cert created by the user.\nNote that Tigera Operator will generate a self-signed manager-tls cert if one does not exist,\nand use of that cert will result in Guardian being unable to verify Voltron's identity.\nIf changed on a running cluster with connected managed clusters, all managed clusters will disconnect as they will no longer be able to verify Voltron's identity.\nTo reconnect existing managed clusters, change the tls.ca of the  managed clusters' ManagementClusterConnection resource.\nOne of: calico-management-cluster-connection, manager-tls, tigera-management-cluster-connection (deprecated)\nDefault: calico-management-cluster-connection"
                       enum:
-                        - "tigera-management-cluster-connection"
+                        - "calico-management-cluster-connection"
                         - "manager-tls"
+                        - "tigera-management-cluster-connection"
                       type: "string"
                   type: "object"
               type: "object"
           type: "object"
+          x-kubernetes-validations:
+            - message: "resource name must be 'tigera-secure'"
+              rule: "self.metadata.name == 'tigera-secure'"
       served: true
       storage: true
       subresources:

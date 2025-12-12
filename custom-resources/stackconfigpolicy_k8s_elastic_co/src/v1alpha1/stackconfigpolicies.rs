@@ -30,6 +30,10 @@ pub struct StackConfigPolicySpec {
     /// Deprecated: SecureSettings only applies to Elasticsearch and is deprecated. It must be set per application instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secureSettings")]
     pub secure_settings: Option<Vec<StackConfigPolicySecureSettings>>,
+    /// Weight determines the priority of this policy when multiple policies target the same resource.
+    /// Lower weight values take precedence. Defaults to 0.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub weight: Option<i32>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

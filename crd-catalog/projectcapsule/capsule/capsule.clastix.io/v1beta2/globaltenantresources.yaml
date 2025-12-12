@@ -218,6 +218,8 @@ spec:
                 - "processedItems"
                 - "selectedTenants"
               type: "object"
+          required:
+            - "spec"
           type: "object"
       served: true
       storage: true

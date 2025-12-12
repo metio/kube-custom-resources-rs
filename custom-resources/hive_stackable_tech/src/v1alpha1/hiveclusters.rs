@@ -51,9 +51,13 @@ pub struct HiveClusterSpec {
 /// The settings in the `clusterConfig` are cluster wide settings that do not need to be configurable at role or role group level.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct HiveClusterClusterConfig {
-    /// Settings related to user [authentication](<https://docs.stackable.tech/home/nightly/usage-guide/security).>
+    /// Settings related to user [authentication](<https://docs.stackable.tech/home/nightly/hive/usage-guide/security).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authentication: Option<HiveClusterClusterConfigAuthentication>,
+    /// Authorization options for Hive.
+    /// Learn more in the [Hive authorization usage guide](<https://docs.stackable.tech/home/nightly/hive/usage-guide/security#authorization).>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub authorization: Option<HiveClusterClusterConfigAuthorization>,
     /// Database connection specification for the metadata database.
     pub database: HiveClusterClusterConfigDatabase,
     /// HDFS connection specification.
@@ -71,7 +75,7 @@ pub struct HiveClusterClusterConfig {
     pub vector_aggregator_config_map_name: Option<String>,
 }
 
-/// Settings related to user [authentication](<https://docs.stackable.tech/home/nightly/usage-guide/security).>
+/// Settings related to user [authentication](<https://docs.stackable.tech/home/nightly/hive/usage-guide/security).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HiveClusterClusterConfigAuthentication {
     /// Kerberos configuration.
@@ -84,6 +88,33 @@ pub struct HiveClusterClusterConfigAuthenticationKerberos {
     /// Name of the SecretClass providing the keytab for the HBase services.
     #[serde(rename = "secretClass")]
     pub secret_class: String,
+}
+
+/// Authorization options for Hive.
+/// Learn more in the [Hive authorization usage guide](<https://docs.stackable.tech/home/nightly/hive/usage-guide/security#authorization).>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HiveClusterClusterConfigAuthorization {
+    /// Configure the OPA stacklet [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery)>
+    /// and the name of the Rego package containing your authorization rules.
+    /// Consult the [OPA authorization documentation](<https://docs.stackable.tech/home/nightly/concepts/opa)>
+    /// to learn how to deploy Rego authorization rules with OPA.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub opa: Option<HiveClusterClusterConfigAuthorizationOpa>,
+}
+
+/// Configure the OPA stacklet [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery)>
+/// and the name of the Rego package containing your authorization rules.
+/// Consult the [OPA authorization documentation](<https://docs.stackable.tech/home/nightly/concepts/opa)>
+/// to learn how to deploy Rego authorization rules with OPA.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HiveClusterClusterConfigAuthorizationOpa {
+    /// The [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery)>
+    /// for the OPA stacklet that should be used for authorization requests.
+    #[serde(rename = "configMapName")]
+    pub config_map_name: String,
+    /// The name of the Rego package containing the Rego rules for the product.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub package: Option<String>,
 }
 
 /// Database connection specification for the metadata database.

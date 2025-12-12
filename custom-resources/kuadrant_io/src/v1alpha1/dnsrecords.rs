@@ -140,6 +140,9 @@ pub struct DnsRecordStatus {
     /// endpoints are the last endpoints that were successfully published to the provider zone
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoints: Option<Vec<DnsRecordStatusEndpoints>>,
+    /// Group displays the group which the dns-operator belongs to, if set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub group: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheck")]
     pub health_check: Option<DnsRecordStatusHealthCheck>,
     /// observedGeneration is the most recently observed generation of the DNSRecord.

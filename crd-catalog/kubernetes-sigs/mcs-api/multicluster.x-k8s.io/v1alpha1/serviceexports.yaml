@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   labels:
-    multicluster.x-k8s.io/crd-schema-revision: "0"
+    multicluster.x-k8s.io/crd-schema-revision: "1"
     multicluster.x-k8s.io/release-version: "v0.3.0"
   name: "serviceexports.multicluster.x-k8s.io"
 spec:

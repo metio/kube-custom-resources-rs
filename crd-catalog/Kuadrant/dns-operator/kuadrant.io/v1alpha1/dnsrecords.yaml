@@ -279,6 +279,9 @@ spec:
                         type: "array"
                     type: "object"
                   type: "array"
+                group:
+                  description: "Group displays the group which the dns-operator belongs to, if set."
+                  type: "string"
                 healthCheck:
                   properties:
                     conditions:

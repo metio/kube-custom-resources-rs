@@ -308,7 +308,7 @@ spec:
                   format: "date-time"
                   type: "string"
                 conditions:
-                  description: "conditions represents the observations of a Machine's current state.\nKnown condition types are Available, Ready, UpToDate, BootstrapConfigReady, InfrastructureReady, NodeReady,\nNodeHealthy, Deleting, Paused.\nIf a MachineHealthCheck is targeting this machine, also HealthCheckSucceeded, OwnerRemediated conditions are added.\nAdditionally control plane Machines controlled by KubeadmControlPlane will have following additional conditions:\nAPIServerPodHealthy, ControllerManagerPodHealthy, SchedulerPodHealthy, EtcdPodHealthy, EtcdMemberHealthy."
+                  description: "conditions represents the observations of a Machine's current state.\nKnown condition types are Available, Ready, UpToDate, BootstrapConfigReady, InfrastructureReady, NodeReady,\nNodeHealthy, Updating, Deleting, Paused.\nIf a MachineHealthCheck is targeting this machine, also HealthCheckSucceeded, OwnerRemediated conditions are added.\nAdditionally control plane Machines controlled by KubeadmControlPlane will have following additional conditions:\nAPIServerPodHealthy, ControllerManagerPodHealthy, SchedulerPodHealthy, EtcdPodHealthy, EtcdMemberHealthy."
                   items:
                     description: "Condition contains details for one aspect of the current state of this API Resource."
                     properties:

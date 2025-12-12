@@ -97,6 +97,9 @@ pub struct SecretStoreProvider {
     /// AzureKV configures this store to sync secrets using Azure Key Vault provider
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub azurekv: Option<SecretStoreProviderAzurekv>,
+    /// Barbican configures this store to sync secrets using the OpenStack Barbican provider
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub barbican: Option<SecretStoreProviderBarbican>,
     /// Beyondtrust configures this store to sync secrets using Password Safe provider.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub beyondtrust: Option<SecretStoreProviderBeyondtrust>,
@@ -653,8 +656,11 @@ pub struct SecretStoreProviderAzurekv {
     /// - "ManagedIdentity": Using Managed Identity assigned to the pod (see aad-pod-identity)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authType")]
     pub auth_type: Option<SecretStoreProviderAzurekvAuthType>,
-    /// CustomCloudConfig defines custom Azure Stack Hub or Azure Stack Edge endpoints.
+    /// CustomCloudConfig defines custom Azure endpoints for non-standard clouds.
     /// Required when EnvironmentType is AzureStackCloud.
+    /// Optional for other environment types - useful for Azure China when using Workload Identity
+    /// with AKS, where the OIDC issuer (login.partner.microsoftonline.cn) differs from the
+    /// standard China Cloud endpoint (login.chinacloudapi.cn).
     /// IMPORTANT: This feature REQUIRES UseAzureSDK to be set to true. Custom cloud
     /// configuration is not supported with the legacy go-autorest SDK.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "customCloudConfig")]
@@ -774,8 +780,11 @@ pub enum SecretStoreProviderAzurekvAuthType {
     WorkloadIdentity,
 }
 
-/// CustomCloudConfig defines custom Azure Stack Hub or Azure Stack Edge endpoints.
+/// CustomCloudConfig defines custom Azure endpoints for non-standard clouds.
 /// Required when EnvironmentType is AzureStackCloud.
+/// Optional for other environment types - useful for Azure China when using Workload Identity
+/// with AKS, where the OIDC issuer (login.partner.microsoftonline.cn) differs from the
+/// standard China Cloud endpoint (login.chinacloudapi.cn).
 /// IMPORTANT: This feature REQUIRES UseAzureSDK to be set to true. Custom cloud
 /// configuration is not supported with the legacy go-autorest SDK.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -818,6 +827,84 @@ pub struct SecretStoreProviderAzurekvServiceAccountRef {
     /// The name of the ServiceAccount resource being referred to.
     pub name: String,
     /// Namespace of the resource being referred to.
+    /// Ignored if referent is not cluster-scoped, otherwise defaults to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// Barbican configures this store to sync secrets using the OpenStack Barbican provider
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderBarbican {
+    /// BarbicanAuth contains the authentication information for Barbican.
+    pub auth: SecretStoreProviderBarbicanAuth,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authURL")]
+    pub auth_url: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "domainName")]
+    pub domain_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub region: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tenantName")]
+    pub tenant_name: Option<String>,
+}
+
+/// BarbicanAuth contains the authentication information for Barbican.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderBarbicanAuth {
+    /// BarbicanProviderPasswordRef defines a reference to a secret containing password for the Barbican provider.
+    pub password: SecretStoreProviderBarbicanAuthPassword,
+    /// BarbicanProviderUsernameRef defines a reference to a secret containing username for the Barbican provider.
+    pub username: SecretStoreProviderBarbicanAuthUsername,
+}
+
+/// BarbicanProviderPasswordRef defines a reference to a secret containing password for the Barbican provider.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderBarbicanAuthPassword {
+    /// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
+    /// In some instances, `key` is a required field.
+    #[serde(rename = "secretRef")]
+    pub secret_ref: SecretStoreProviderBarbicanAuthPasswordSecretRef,
+}
+
+/// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
+/// In some instances, `key` is a required field.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderBarbicanAuthPasswordSecretRef {
+    /// A key in the referenced Secret.
+    /// Some instances of this field may be defaulted, in others it may be required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the Secret resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// The namespace of the Secret resource being referred to.
+    /// Ignored if referent is not cluster-scoped, otherwise defaults to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// BarbicanProviderUsernameRef defines a reference to a secret containing username for the Barbican provider.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderBarbicanAuthUsername {
+    /// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
+    /// In some instances, `key` is a required field.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<SecretStoreProviderBarbicanAuthUsernameSecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+/// SecretKeySelector is a reference to a specific 'key' within a Secret resource.
+/// In some instances, `key` is a required field.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderBarbicanAuthUsernameSecretRef {
+    /// A key in the referenced Secret.
+    /// Some instances of this field may be defaulted, in others it may be required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the Secret resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// The namespace of the Secret resource being referred to.
     /// Ignored if referent is not cluster-scoped, otherwise defaults to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
@@ -1495,12 +1582,45 @@ pub struct SecretStoreProviderDoppler {
 /// Auth configures how the Operator authenticates with the Doppler API
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderDopplerAuth {
-    /// DopplerAuthSecretRef contains the secret reference for accessing the Doppler API.
-    #[serde(rename = "secretRef")]
-    pub secret_ref: SecretStoreProviderDopplerAuthSecretRef,
+    /// OIDCConfig authenticates using Kubernetes ServiceAccount tokens via OIDC.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "oidcConfig")]
+    pub oidc_config: Option<SecretStoreProviderDopplerAuthOidcConfig>,
+    /// SecretRef authenticates using a Doppler service token stored in a Kubernetes Secret.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<SecretStoreProviderDopplerAuthSecretRef>,
 }
 
-/// DopplerAuthSecretRef contains the secret reference for accessing the Doppler API.
+/// OIDCConfig authenticates using Kubernetes ServiceAccount tokens via OIDC.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderDopplerAuthOidcConfig {
+    /// ExpirationSeconds sets the ServiceAccount token validity duration.
+    /// Defaults to 10 minutes.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
+    pub expiration_seconds: Option<i64>,
+    /// Identity is the Doppler Service Account Identity ID configured for OIDC authentication.
+    pub identity: String,
+    /// ServiceAccountRef specifies the Kubernetes ServiceAccount to use for authentication.
+    #[serde(rename = "serviceAccountRef")]
+    pub service_account_ref: SecretStoreProviderDopplerAuthOidcConfigServiceAccountRef,
+}
+
+/// ServiceAccountRef specifies the Kubernetes ServiceAccount to use for authentication.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderDopplerAuthOidcConfigServiceAccountRef {
+    /// Audience specifies the `aud` claim for the service account token
+    /// If the service account uses a well-known annotation for e.g. IRSA or GCP Workload Identity
+    /// then this audiences will be appended to the list
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub audiences: Option<Vec<String>>,
+    /// The name of the ServiceAccount resource being referred to.
+    pub name: String,
+    /// Namespace of the resource being referred to.
+    /// Ignored if referent is not cluster-scoped, otherwise defaults to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// SecretRef authenticates using a Doppler service token stored in a Kubernetes Secret.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderDopplerAuthSecretRef {
     /// The DopplerToken is used for authentication.

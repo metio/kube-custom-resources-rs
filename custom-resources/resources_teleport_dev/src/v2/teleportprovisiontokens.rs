@@ -93,6 +93,9 @@ pub struct TeleportProvisionTokenAllow {
     /// AWSARN is used for the IAM join method, the AWS identity of joining nodes must match this ARN. Supports wildcards "*" and "?".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub aws_arn: Option<String>,
+    /// AWSOrganizationID is used for the IAM join method, the AWS identity of joining nodes must belong to this organization.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub aws_organization_id: Option<String>,
     /// AWSRegions is used for the EC2 join method and is a list of AWS regions a node is allowed to join from.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub aws_regions: Option<Vec<String>>,

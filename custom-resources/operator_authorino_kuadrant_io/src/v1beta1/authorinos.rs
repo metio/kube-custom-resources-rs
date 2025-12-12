@@ -106,7 +106,6 @@ pub struct AuthorinoListenerTls {
 pub struct AuthorinoListenerTlsCertSecretRef {
     /// Name of the referent.
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -142,7 +141,6 @@ pub struct AuthorinoOidcServerTls {
 pub struct AuthorinoOidcServerTlsCertSecretRef {
     /// Name of the referent.
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }

@@ -205,7 +205,7 @@ pub struct KafkaConnectAuthenticationAccessToken {
 pub struct KafkaConnectAuthenticationCertificateAndKey {
     /// The name of the file certificate in the Secret.
     pub certificate: String,
-    /// The name of the private key in the Secret.
+    /// The name of the private key in the secret. The private key must be in unencrypted PKCS #8 format. For more information, see RFC 5208: <https://datatracker.ietf.org/doc/html/rfc5208.>
     pub key: String,
     /// The name of the Secret containing the certificate.
     #[serde(rename = "secretName")]

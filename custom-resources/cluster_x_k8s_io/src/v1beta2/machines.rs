@@ -230,7 +230,7 @@ pub struct MachineStatus {
     pub certificates_expiry_date: Option<String>,
     /// conditions represents the observations of a Machine's current state.
     /// Known condition types are Available, Ready, UpToDate, BootstrapConfigReady, InfrastructureReady, NodeReady,
-    /// NodeHealthy, Deleting, Paused.
+    /// NodeHealthy, Updating, Deleting, Paused.
     /// If a MachineHealthCheck is targeting this machine, also HealthCheckSucceeded, OwnerRemediated conditions are added.
     /// Additionally control plane Machines controlled by KubeadmControlPlane will have following additional conditions:
     /// APIServerPodHealthy, ControllerManagerPodHealthy, SchedulerPodHealthy, EtcdPodHealthy, EtcdMemberHealthy.

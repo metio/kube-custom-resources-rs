@@ -1342,7 +1342,7 @@ spec:
                   description: "UseStrictSecurity enables strict security mode for component\nit restricts disk writes access\nuses non-root user out of the box\ndrops not needed security permissions"
                   type: "boolean"
                 useVMConfigReloader:
-                  description: "UseVMConfigReloader replaces prometheus-like config-reloader\nwith vm one. It uses secrets watch instead of file watch\nwhich greatly increases speed of config updates"
+                  description: "UseVMConfigReloader replaces prometheus-like config-reloader\nwith vm one. It uses secrets watch instead of file watch\nwhich greatly increases speed of config updates\nRemoved since v0.67.0: this property is ignored and no longer needed"
                   type: "boolean"
                 volumeMounts:
                   description: "VolumeMounts allows configuration of additional VolumeMounts on the output Deployment/StatefulSet definition.\nVolumeMounts specified will be appended to other VolumeMounts in the Application container"

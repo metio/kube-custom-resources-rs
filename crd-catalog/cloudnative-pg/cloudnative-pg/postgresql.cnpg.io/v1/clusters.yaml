@@ -2891,7 +2891,7 @@ spec:
                   type: "object"
                 primaryUpdateMethod:
                   default: "restart"
-                  description: "Method to follow to upgrade the primary server during a rolling\nupdate procedure, after all replicas have been successfully updated:\nit can be with a switchover (`switchover`) or in-place (`restart` - default)"
+                  description: "Method to follow to upgrade the primary server during a rolling\nupdate procedure, after all replicas have been successfully updated:\nit can be with a switchover (`switchover`) or in-place (`restart` - default).\nNote: when using `switchover`, the operator will reject updates that change both\nthe image name and PostgreSQL configuration parameters simultaneously to avoid\nconfiguration mismatches during the switchover process."
                   enum:
                     - "switchover"
                     - "restart"

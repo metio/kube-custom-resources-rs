@@ -743,6 +743,9 @@ pub struct ConfigurationErrorCatchWaitFor {
     /// Condition specifies the condition to wait for.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub condition: Option<ConfigurationErrorCatchWaitForCondition>,
+    /// Creation specifies parameters for waiting on a resource's creation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub creation: Option<ConfigurationErrorCatchWaitForCreation>,
     /// Deletion specifies parameters for waiting on a resource's deletion.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deletion: Option<ConfigurationErrorCatchWaitForDeletion>,
@@ -759,6 +762,11 @@ pub struct ConfigurationErrorCatchWaitForCondition {
     /// Value defines the specific condition status to wait for, e.g., "True", "False".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
+}
+
+/// Creation specifies parameters for waiting on a resource's creation.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ConfigurationErrorCatchWaitForCreation {
 }
 
 /// Deletion specifies parameters for waiting on a resource's deletion.

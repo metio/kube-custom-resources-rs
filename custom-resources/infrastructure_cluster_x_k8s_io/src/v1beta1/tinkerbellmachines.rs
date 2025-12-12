@@ -66,10 +66,13 @@ pub struct TinkerbellMachineSpec {
 /// BootOptions are options that control the booting of Hardware.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TinkerbellMachineBootOptions {
-    /// BootMode is the type of booting that will be done.
-    /// Must be one of "none", "netboot", "iso", or "isoboot".
+    /// BootMode is the type of booting that will be done. One of "netboot", "isoboot", or "customboot".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootMode")]
     pub boot_mode: Option<TinkerbellMachineBootOptionsBootMode>,
+    /// CustombootConfig is the configuration for the "customboot" boot mode.
+    /// This allows users to define custom BMC Actions.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "custombootConfig")]
+    pub customboot_config: Option<TinkerbellMachineBootOptionsCustombootConfig>,
     /// ISOURL is the URL of the ISO that will be one-time booted.
     /// A HardwareRef that contains a spec.BmcRef must be provided.
     /// 
@@ -82,6 +85,8 @@ pub struct TinkerbellMachineBootOptions {
     /// MAC address is then used to retrieve hardware specific information such as
     /// IPAM info, custom kernel cmd line args and populate the worker ID for the tink worker/agent.
     /// For ex. the above format would be replaced to <http://$IP:$Port/iso/<macAddress>/hook.iso>
+    /// 
+    /// BootMode must be set to "isoboot".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isoURL")]
     pub iso_url: Option<String>,
 }
@@ -89,14 +94,175 @@ pub struct TinkerbellMachineBootOptions {
 /// BootOptions are options that control the booting of Hardware.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum TinkerbellMachineBootOptionsBootMode {
-    #[serde(rename = "none")]
-    None,
     #[serde(rename = "netboot")]
     Netboot,
-    #[serde(rename = "iso")]
-    Iso,
     #[serde(rename = "isoboot")]
     Isoboot,
+    #[serde(rename = "iso")]
+    Iso,
+    #[serde(rename = "customboot")]
+    Customboot,
+}
+
+/// CustombootConfig is the configuration for the "customboot" boot mode.
+/// This allows users to define custom BMC Actions.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TinkerbellMachineBootOptionsCustombootConfig {
+    /// PostActions are the BMC Actions that will be run after all Workflow Actions have completed.
+    /// In most cases these Actions should get a Machine into a state where it can be powered off or rebooted and remove any mounted virtual media.
+    /// These Actions will be run only if the main Workflow Actions complete successfully.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "postActions")]
+    pub post_actions: Option<Vec<TinkerbellMachineBootOptionsCustombootConfigPostActions>>,
+    /// PreparingActions are the BMC Actions that will be run before any Workflow Actions.
+    /// In most cases these Actions should get a Machine into a state where a Tink Agent is running.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preparingActions")]
+    pub preparing_actions: Option<Vec<TinkerbellMachineBootOptionsCustombootConfigPreparingActions>>,
+}
+
+/// Action represents the action to be performed.
+/// A single task can only perform one type of action.
+/// For example either PowerAction or OneTimeBootDeviceAction.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TinkerbellMachineBootOptionsCustombootConfigPostActions {
+    /// BootDevice is the device to set as the first boot device on the Machine.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootDevice")]
+    pub boot_device: Option<TinkerbellMachineBootOptionsCustombootConfigPostActionsBootDevice>,
+    /// OneTimeBootDeviceAction represents a baseboard management one time set boot device operation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "oneTimeBootDeviceAction")]
+    pub one_time_boot_device_action: Option<TinkerbellMachineBootOptionsCustombootConfigPostActionsOneTimeBootDeviceAction>,
+    /// PowerAction represents a baseboard management power operation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "powerAction")]
+    pub power_action: Option<TinkerbellMachineBootOptionsCustombootConfigPostActionsPowerAction>,
+    /// VirtualMediaAction represents a baseboard management virtual media insert/eject.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualMediaAction")]
+    pub virtual_media_action: Option<TinkerbellMachineBootOptionsCustombootConfigPostActionsVirtualMediaAction>,
+}
+
+/// BootDevice is the device to set as the first boot device on the Machine.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TinkerbellMachineBootOptionsCustombootConfigPostActionsBootDevice {
+    /// Device is the name of the device to set as the first boot device.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub device: Option<String>,
+    /// EFIBoot indicates whether the boot device should be set to efiboot mode.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "efiBoot")]
+    pub efi_boot: Option<bool>,
+    /// Persistent indicates whether the boot device should be set persistently as the first boot device.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub persistent: Option<bool>,
+}
+
+/// OneTimeBootDeviceAction represents a baseboard management one time set boot device operation.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TinkerbellMachineBootOptionsCustombootConfigPostActionsOneTimeBootDeviceAction {
+    /// Devices represents the boot devices, in order for setting one time boot.
+    /// Currently only the first device in the slice is used to set one time boot.
+    pub device: Vec<String>,
+    /// EFIBoot instructs the machine to use EFI boot.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "efiBoot")]
+    pub efi_boot: Option<bool>,
+}
+
+/// Action represents the action to be performed.
+/// A single task can only perform one type of action.
+/// For example either PowerAction or OneTimeBootDeviceAction.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum TinkerbellMachineBootOptionsCustombootConfigPostActionsPowerAction {
+    #[serde(rename = "on")]
+    On,
+    #[serde(rename = "off")]
+    Off,
+    #[serde(rename = "soft")]
+    Soft,
+    #[serde(rename = "status")]
+    Status,
+    #[serde(rename = "cycle")]
+    Cycle,
+    #[serde(rename = "reset")]
+    Reset,
+}
+
+/// VirtualMediaAction represents a baseboard management virtual media insert/eject.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TinkerbellMachineBootOptionsCustombootConfigPostActionsVirtualMediaAction {
+    /// Kind represents the kind of virtual media.
+    pub kind: String,
+    /// mediaURL represents the URL of the image to be inserted into the virtual media, or empty to eject media.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mediaURL")]
+    pub media_url: Option<String>,
+}
+
+/// Action represents the action to be performed.
+/// A single task can only perform one type of action.
+/// For example either PowerAction or OneTimeBootDeviceAction.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TinkerbellMachineBootOptionsCustombootConfigPreparingActions {
+    /// BootDevice is the device to set as the first boot device on the Machine.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootDevice")]
+    pub boot_device: Option<TinkerbellMachineBootOptionsCustombootConfigPreparingActionsBootDevice>,
+    /// OneTimeBootDeviceAction represents a baseboard management one time set boot device operation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "oneTimeBootDeviceAction")]
+    pub one_time_boot_device_action: Option<TinkerbellMachineBootOptionsCustombootConfigPreparingActionsOneTimeBootDeviceAction>,
+    /// PowerAction represents a baseboard management power operation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "powerAction")]
+    pub power_action: Option<TinkerbellMachineBootOptionsCustombootConfigPreparingActionsPowerAction>,
+    /// VirtualMediaAction represents a baseboard management virtual media insert/eject.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualMediaAction")]
+    pub virtual_media_action: Option<TinkerbellMachineBootOptionsCustombootConfigPreparingActionsVirtualMediaAction>,
+}
+
+/// BootDevice is the device to set as the first boot device on the Machine.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TinkerbellMachineBootOptionsCustombootConfigPreparingActionsBootDevice {
+    /// Device is the name of the device to set as the first boot device.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub device: Option<String>,
+    /// EFIBoot indicates whether the boot device should be set to efiboot mode.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "efiBoot")]
+    pub efi_boot: Option<bool>,
+    /// Persistent indicates whether the boot device should be set persistently as the first boot device.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub persistent: Option<bool>,
+}
+
+/// OneTimeBootDeviceAction represents a baseboard management one time set boot device operation.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TinkerbellMachineBootOptionsCustombootConfigPreparingActionsOneTimeBootDeviceAction {
+    /// Devices represents the boot devices, in order for setting one time boot.
+    /// Currently only the first device in the slice is used to set one time boot.
+    pub device: Vec<String>,
+    /// EFIBoot instructs the machine to use EFI boot.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "efiBoot")]
+    pub efi_boot: Option<bool>,
+}
+
+/// Action represents the action to be performed.
+/// A single task can only perform one type of action.
+/// For example either PowerAction or OneTimeBootDeviceAction.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum TinkerbellMachineBootOptionsCustombootConfigPreparingActionsPowerAction {
+    #[serde(rename = "on")]
+    On,
+    #[serde(rename = "off")]
+    Off,
+    #[serde(rename = "soft")]
+    Soft,
+    #[serde(rename = "status")]
+    Status,
+    #[serde(rename = "cycle")]
+    Cycle,
+    #[serde(rename = "reset")]
+    Reset,
+}
+
+/// VirtualMediaAction represents a baseboard management virtual media insert/eject.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TinkerbellMachineBootOptionsCustombootConfigPreparingActionsVirtualMediaAction {
+    /// Kind represents the kind of virtual media.
+    pub kind: String,
+    /// mediaURL represents the URL of the image to be inserted into the virtual media, or empty to eject media.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mediaURL")]
+    pub media_url: Option<String>,
 }
 
 /// HardwareAffinity allows filtering for hardware.

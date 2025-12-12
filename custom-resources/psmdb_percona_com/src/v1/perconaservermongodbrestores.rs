@@ -54,6 +54,8 @@ pub struct PerconaServerMongoDbRestoreBackupSource {
     pub last_write_at: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "latestRestorableTime")]
     pub latest_restorable_time: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub minio: Option<PerconaServerMongoDbRestoreBackupSourceMinio>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pbmName")]
     pub pbm_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pbmPod")]
@@ -114,6 +116,38 @@ pub struct PerconaServerMongoDbRestoreBackupSourceGcsRetryer {
     pub backoff_max: i64,
     #[serde(rename = "backoffMultiplier")]
     pub backoff_multiplier: f64,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMongoDbRestoreBackupSourceMinio {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub bucket: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsSecret")]
+    pub credentials_secret: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "debugTrace")]
+    pub debug_trace: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointUrl")]
+    pub endpoint_url: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forcePathStyle")]
+    pub force_path_style: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipTLSVerify")]
+    pub insecure_skip_tls_verify: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "partSize")]
+    pub part_size: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub prefix: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub region: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retryer: Option<PerconaServerMongoDbRestoreBackupSourceMinioRetryer>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secure: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMongoDbRestoreBackupSourceMinioRetryer {
+    #[serde(rename = "numMaxRetries")]
+    pub num_max_retries: i64,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

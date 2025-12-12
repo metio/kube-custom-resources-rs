@@ -69,6 +69,7 @@ spec:
                     - "new"
                     - "byStartSequence"
                     - "byStartTime"
+                    - "lastPerSubject"
                   type: "string"
                 deliverSubject:
                   description: "The subject to deliver observed messages, when not set, a pull-based Consumer is created."

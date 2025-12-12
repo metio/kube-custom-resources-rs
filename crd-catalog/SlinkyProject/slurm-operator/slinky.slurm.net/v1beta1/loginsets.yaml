@@ -55,6 +55,10 @@ spec:
                 extraSshdConfig:
                   description: "ExtraSshdConfig is added to the end of `sshd_config`.\nRef: https://man7.org/linux/man-pages/man5/sshd_config.5.html"
                   type: "string"
+                initconf:
+                  description: "The initconf container configuration.\nSee corev1.Container spec.\nRef: https://github.com/kubernetes/api/blob/master/core/v1/types.go#L2885"
+                  type: "object"
+                  x-kubernetes-preserve-unknown-fields: true
                 login:
                   description: "The login container configuration.\nSee corev1.Container spec.\nRef: https://github.com/kubernetes/api/blob/master/core/v1/types.go#L2885"
                   type: "object"

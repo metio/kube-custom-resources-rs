@@ -109,6 +109,10 @@ pub struct PodMonitorSpec {
     /// Notice: `scrapeClassicHistograms` corresponds to the `always_scrape_classic_histograms` field in the Prometheus configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeClassicHistograms")]
     pub scrape_classic_histograms: Option<bool>,
+    /// scrapeNativeHistograms defines whether to enable scraping of native histograms.
+    /// It requires Prometheus >= v3.8.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeNativeHistograms")]
+    pub scrape_native_histograms: Option<bool>,
     /// scrapeProtocols defines the protocols to negotiate during a scrape. It tells clients the
     /// protocols supported by Prometheus in order of preference (from most to least preferred).
     /// 

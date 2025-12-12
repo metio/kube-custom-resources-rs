@@ -292,13 +292,13 @@ spec:
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
                                   matchLabelKeys:
-                                    description: "MatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both matchLabelKeys and labelSelector.\nAlso, matchLabelKeys cannot be set when labelSelector isn't set.\nThis is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default)."
+                                    description: "MatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both matchLabelKeys and labelSelector.\nAlso, matchLabelKeys cannot be set when labelSelector isn't set."
                                     items:
                                       type: "string"
                                     type: "array"
                                     x-kubernetes-list-type: "atomic"
                                   mismatchLabelKeys:
-                                    description: "MismatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both mismatchLabelKeys and labelSelector.\nAlso, mismatchLabelKeys cannot be set when labelSelector isn't set.\nThis is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default)."
+                                    description: "MismatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both mismatchLabelKeys and labelSelector.\nAlso, mismatchLabelKeys cannot be set when labelSelector isn't set."
                                     items:
                                       type: "string"
                                     type: "array"
@@ -397,13 +397,13 @@ spec:
                                 type: "object"
                                 x-kubernetes-map-type: "atomic"
                               matchLabelKeys:
-                                description: "MatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both matchLabelKeys and labelSelector.\nAlso, matchLabelKeys cannot be set when labelSelector isn't set.\nThis is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default)."
+                                description: "MatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both matchLabelKeys and labelSelector.\nAlso, matchLabelKeys cannot be set when labelSelector isn't set."
                                 items:
                                   type: "string"
                                 type: "array"
                                 x-kubernetes-list-type: "atomic"
                               mismatchLabelKeys:
-                                description: "MismatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both mismatchLabelKeys and labelSelector.\nAlso, mismatchLabelKeys cannot be set when labelSelector isn't set.\nThis is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default)."
+                                description: "MismatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both mismatchLabelKeys and labelSelector.\nAlso, mismatchLabelKeys cannot be set when labelSelector isn't set."
                                 items:
                                   type: "string"
                                 type: "array"
@@ -501,13 +501,13 @@ spec:
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
                                   matchLabelKeys:
-                                    description: "MatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both matchLabelKeys and labelSelector.\nAlso, matchLabelKeys cannot be set when labelSelector isn't set.\nThis is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default)."
+                                    description: "MatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both matchLabelKeys and labelSelector.\nAlso, matchLabelKeys cannot be set when labelSelector isn't set."
                                     items:
                                       type: "string"
                                     type: "array"
                                     x-kubernetes-list-type: "atomic"
                                   mismatchLabelKeys:
-                                    description: "MismatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both mismatchLabelKeys and labelSelector.\nAlso, mismatchLabelKeys cannot be set when labelSelector isn't set.\nThis is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default)."
+                                    description: "MismatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both mismatchLabelKeys and labelSelector.\nAlso, mismatchLabelKeys cannot be set when labelSelector isn't set."
                                     items:
                                       type: "string"
                                     type: "array"
@@ -606,13 +606,13 @@ spec:
                                 type: "object"
                                 x-kubernetes-map-type: "atomic"
                               matchLabelKeys:
-                                description: "MatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both matchLabelKeys and labelSelector.\nAlso, matchLabelKeys cannot be set when labelSelector isn't set.\nThis is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default)."
+                                description: "MatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both matchLabelKeys and labelSelector.\nAlso, matchLabelKeys cannot be set when labelSelector isn't set."
                                 items:
                                   type: "string"
                                 type: "array"
                                 x-kubernetes-list-type: "atomic"
                               mismatchLabelKeys:
-                                description: "MismatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both mismatchLabelKeys and labelSelector.\nAlso, mismatchLabelKeys cannot be set when labelSelector isn't set.\nThis is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default)."
+                                description: "MismatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both mismatchLabelKeys and labelSelector.\nAlso, mismatchLabelKeys cannot be set when labelSelector isn't set."
                                 items:
                                   type: "string"
                                 type: "array"
@@ -685,7 +685,7 @@ spec:
                           description: "scaleDown is scaling policy for scaling Down.\nIf not set, the default value is to allow to scale down to minReplicas pods, with a\n300 second stabilization window (i.e., the highest recommendation for\nthe last 300sec is used)."
                           properties:
                             policies:
-                              description: "policies is a list of potential scaling polices which can be used during scaling.\nAt least one policy must be specified, otherwise the HPAScalingRules will be discarded as invalid"
+                              description: "policies is a list of potential scaling polices which can be used during scaling.\nIf not set, use the default values:\n- For scale up: allow doubling the number of pods, or an absolute change of 4 pods in a 15s window.\n- For scale down: allow all pods to be removed in a 15s window."
                               items:
                                 description: "HPAScalingPolicy is a single policy which must hold true for a specified past interval."
                                 properties:
@@ -714,12 +714,19 @@ spec:
                               description: "stabilizationWindowSeconds is the number of seconds for which past recommendations should be\nconsidered while scaling up or scaling down.\nStabilizationWindowSeconds must be greater than or equal to zero and less than or equal to 3600 (one hour).\nIf not set, use the default values:\n- For scale up: 0 (i.e. no stabilization is done).\n- For scale down: 300 (i.e. the stabilization window is 300 seconds long)."
                               format: "int32"
                               type: "integer"
+                            tolerance:
+                              anyOf:
+                                - type: "integer"
+                                - type: "string"
+                              description: "tolerance is the tolerance on the ratio between the current and desired\nmetric value under which no updates are made to the desired number of\nreplicas (e.g. 0.01 for 1%). Must be greater than or equal to zero. If not\nset, the default cluster-wide tolerance is applied (by default 10%).\n\nFor example, if autoscaling is configured with a memory consumption target of 100Mi,\nand scale-down and scale-up tolerances of 5% and 1% respectively, scaling will be\ntriggered when the actual consumption falls below 95Mi or exceeds 101Mi.\n\nThis is an alpha field and requires enabling the HPAConfigurableTolerance\nfeature gate."
+                              pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                              x-kubernetes-int-or-string: true
                           type: "object"
                         scaleUp:
                           description: "scaleUp is scaling policy for scaling Up.\nIf not set, the default value is the higher of:\n  * increase no more than 4 pods per 60 seconds\n  * double the number of pods per 60 seconds\nNo stabilization is used."
                           properties:
                             policies:
-                              description: "policies is a list of potential scaling polices which can be used during scaling.\nAt least one policy must be specified, otherwise the HPAScalingRules will be discarded as invalid"
+                              description: "policies is a list of potential scaling polices which can be used during scaling.\nIf not set, use the default values:\n- For scale up: allow doubling the number of pods, or an absolute change of 4 pods in a 15s window.\n- For scale down: allow all pods to be removed in a 15s window."
                               items:
                                 description: "HPAScalingPolicy is a single policy which must hold true for a specified past interval."
                                 properties:
@@ -748,6 +755,13 @@ spec:
                               description: "stabilizationWindowSeconds is the number of seconds for which past recommendations should be\nconsidered while scaling up or scaling down.\nStabilizationWindowSeconds must be greater than or equal to zero and less than or equal to 3600 (one hour).\nIf not set, use the default values:\n- For scale up: 0 (i.e. no stabilization is done).\n- For scale down: 300 (i.e. the stabilization window is 300 seconds long)."
                               format: "int32"
                               type: "integer"
+                            tolerance:
+                              anyOf:
+                                - type: "integer"
+                                - type: "string"
+                              description: "tolerance is the tolerance on the ratio between the current and desired\nmetric value under which no updates are made to the desired number of\nreplicas (e.g. 0.01 for 1%). Must be greater than or equal to zero. If not\nset, the default cluster-wide tolerance is applied (by default 10%).\n\nFor example, if autoscaling is configured with a memory consumption target of 100Mi,\nand scale-down and scale-up tolerances of 5% and 1% respectively, scaling will be\ntriggered when the actual consumption falls below 95Mi or exceeds 101Mi.\n\nThis is an alpha field and requires enabling the HPAConfigurableTolerance\nfeature gate."
+                              pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                              x-kubernetes-int-or-string: true
                           type: "object"
                       type: "object"
                     maxReplicas:
@@ -761,7 +775,7 @@ spec:
                         description: "MetricSpec specifies how to scale based on a single metric\n(only `type` and one other matching field should be set at once)."
                         properties:
                           containerResource:
-                            description: "containerResource refers to a resource metric (such as those specified in\nrequests and limits) known to Kubernetes describing a single container in\neach pod of the current scale target (e.g. CPU or memory). Such metrics are\nbuilt in to Kubernetes, and have special scaling options on top of those\navailable to normal per-pod metrics using the \"pods\" source.\nThis is an alpha feature and can be enabled by the HPAContainerMetrics feature flag."
+                            description: "containerResource refers to a resource metric (such as those specified in\nrequests and limits) known to Kubernetes describing a single container in\neach pod of the current scale target (e.g. CPU or memory). Such metrics are\nbuilt in to Kubernetes, and have special scaling options on top of those\navailable to normal per-pod metrics using the \"pods\" source."
                             properties:
                               container:
                                 description: "container is the name of the container in the pods of the scaling target"
@@ -1084,7 +1098,7 @@ spec:
                               - "target"
                             type: "object"
                           type:
-                            description: "type is the type of metric source.  It should be one of \"ContainerResource\", \"External\",\n\"Object\", \"Pods\" or \"Resource\", each mapping to a matching field in the object.\nNote: \"ContainerResource\" type is available on when the feature-gate\nHPAContainerMetrics is enabled"
+                            description: "type is the type of metric source.  It should be one of \"ContainerResource\", \"External\",\n\"Object\", \"Pods\" or \"Resource\", each mapping to a matching field in the object."
                             type: "string"
                         required:
                           - "type"
@@ -1159,9 +1173,10 @@ spec:
                             description: "PodDNSConfigOption defines DNS resolver options of a pod."
                             properties:
                               name:
-                                description: "Required."
+                                description: "Name is this DNS resolver option's name.\nRequired."
                                 type: "string"
                               value:
+                                description: "Value is this DNS resolver option's value."
                                 type: "string"
                             type: "object"
                           type: "array"
@@ -1269,7 +1284,7 @@ spec:
                 envFrom:
                   description: "List of sources to populate environment variables in the application container."
                   items:
-                    description: "EnvFromSource represents the source of a set of ConfigMaps"
+                    description: "EnvFromSource represents the source of a set of ConfigMaps or Secrets"
                     properties:
                       configMapRef:
                         description: "The ConfigMap to select from"
@@ -1284,7 +1299,7 @@ spec:
                         type: "object"
                         x-kubernetes-map-type: "atomic"
                       prefix:
-                        description: "An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER."
+                        description: "Optional text to prepend to the name of each environment variable. Must be a C_IDENTIFIER."
                         type: "string"
                       secretRef:
                         description: "The Secret to select from"
@@ -1413,7 +1428,7 @@ spec:
                       envFrom:
                         description: "List of sources to populate environment variables in the container.\nThe keys defined within a source must be a C_IDENTIFIER. All invalid keys\nwill be reported as an event when the container is starting. When a key exists in multiple\nsources, the value associated with the last source will take precedence.\nValues defined by an Env with a duplicate key will take precedence.\nCannot be updated."
                         items:
-                          description: "EnvFromSource represents the source of a set of ConfigMaps"
+                          description: "EnvFromSource represents the source of a set of ConfigMaps or Secrets"
                           properties:
                             configMapRef:
                               description: "The ConfigMap to select from"
@@ -1428,7 +1443,7 @@ spec:
                               type: "object"
                               x-kubernetes-map-type: "atomic"
                             prefix:
-                              description: "An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER."
+                              description: "Optional text to prepend to the name of each environment variable. Must be a C_IDENTIFIER."
                               type: "string"
                             secretRef:
                               description: "The Secret to select from"
@@ -1458,7 +1473,7 @@ spec:
                             description: "PostStart is called immediately after a container is created. If the handler fails,\nthe container is terminated and restarted according to its restart policy.\nOther management of the container blocks until the hook completes.\nMore info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks"
                             properties:
                               exec:
-                                description: "Exec specifies the action to take."
+                                description: "Exec specifies a command to execute in the container."
                                 properties:
                                   command:
                                     description: "Command is the command line to execute inside the container, the working directory for the\ncommand  is root ('/') in the container's filesystem. The command is simply exec'd, it is\nnot run inside a shell, so traditional shell instructions ('|', etc) won't work. To use\na shell, you need to explicitly call out to that shell.\nExit status of 0 is treated as live/healthy and non-zero is unhealthy."
@@ -1468,7 +1483,7 @@ spec:
                                     x-kubernetes-list-type: "atomic"
                                 type: "object"
                               httpGet:
-                                description: "HTTPGet specifies the http request to perform."
+                                description: "HTTPGet specifies an HTTP GET request to perform."
                                 properties:
                                   host:
                                     description: "Host name to connect to, defaults to the pod IP. You probably want to set\n\"Host\" in httpHeaders instead."
@@ -1506,7 +1521,7 @@ spec:
                                   - "port"
                                 type: "object"
                               sleep:
-                                description: "Sleep represents the duration that the container should sleep before being terminated."
+                                description: "Sleep represents a duration that the container should sleep."
                                 properties:
                                   seconds:
                                     description: "Seconds is the number of seconds to sleep."
@@ -1516,7 +1531,7 @@ spec:
                                   - "seconds"
                                 type: "object"
                               tcpSocket:
-                                description: "Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept\nfor the backward compatibility. There are no validation of this field and\nlifecycle hooks will fail in runtime when tcp handler is specified."
+                                description: "Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept\nfor backward compatibility. There is no validation of this field and\nlifecycle hooks will fail at runtime when it is specified."
                                 properties:
                                   host:
                                     description: "Optional: Host name to connect to, defaults to the pod IP."
@@ -1535,7 +1550,7 @@ spec:
                             description: "PreStop is called immediately before a container is terminated due to an\nAPI request or management event such as liveness/startup probe failure,\npreemption, resource contention, etc. The handler is not called if the\ncontainer crashes or exits. The Pod's termination grace period countdown begins before the\nPreStop hook is executed. Regardless of the outcome of the handler, the\ncontainer will eventually terminate within the Pod's termination grace\nperiod (unless delayed by finalizers). Other management of the container blocks until the hook completes\nor until the termination grace period is reached.\nMore info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks"
                             properties:
                               exec:
-                                description: "Exec specifies the action to take."
+                                description: "Exec specifies a command to execute in the container."
                                 properties:
                                   command:
                                     description: "Command is the command line to execute inside the container, the working directory for the\ncommand  is root ('/') in the container's filesystem. The command is simply exec'd, it is\nnot run inside a shell, so traditional shell instructions ('|', etc) won't work. To use\na shell, you need to explicitly call out to that shell.\nExit status of 0 is treated as live/healthy and non-zero is unhealthy."
@@ -1545,7 +1560,7 @@ spec:
                                     x-kubernetes-list-type: "atomic"
                                 type: "object"
                               httpGet:
-                                description: "HTTPGet specifies the http request to perform."
+                                description: "HTTPGet specifies an HTTP GET request to perform."
                                 properties:
                                   host:
                                     description: "Host name to connect to, defaults to the pod IP. You probably want to set\n\"Host\" in httpHeaders instead."
@@ -1583,7 +1598,7 @@ spec:
                                   - "port"
                                 type: "object"
                               sleep:
-                                description: "Sleep represents the duration that the container should sleep before being terminated."
+                                description: "Sleep represents a duration that the container should sleep."
                                 properties:
                                   seconds:
                                     description: "Seconds is the number of seconds to sleep."
@@ -1593,7 +1608,7 @@ spec:
                                   - "seconds"
                                 type: "object"
                               tcpSocket:
-                                description: "Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept\nfor the backward compatibility. There are no validation of this field and\nlifecycle hooks will fail in runtime when tcp handler is specified."
+                                description: "Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept\nfor backward compatibility. There is no validation of this field and\nlifecycle hooks will fail at runtime when it is specified."
                                 properties:
                                   host:
                                     description: "Optional: Host name to connect to, defaults to the pod IP."
@@ -1608,12 +1623,15 @@ spec:
                                   - "port"
                                 type: "object"
                             type: "object"
+                          stopSignal:
+                            description: "StopSignal defines which signal will be sent to a container when it is being stopped.\nIf not specified, the default is defined by the container runtime in use.\nStopSignal can only be set for Pods with a non-empty .spec.os.name"
+                            type: "string"
                         type: "object"
                       livenessProbe:
                         description: "Periodic probe of container liveness.\nContainer will be restarted if the probe fails.\nCannot be updated.\nMore info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes"
                         properties:
                           exec:
-                            description: "Exec specifies the action to take."
+                            description: "Exec specifies a command to execute in the container."
                             properties:
                               command:
                                 description: "Command is the command line to execute inside the container, the working directory for the\ncommand  is root ('/') in the container's filesystem. The command is simply exec'd, it is\nnot run inside a shell, so traditional shell instructions ('|', etc) won't work. To use\na shell, you need to explicitly call out to that shell.\nExit status of 0 is treated as live/healthy and non-zero is unhealthy."
@@ -1627,7 +1645,7 @@ spec:
                             format: "int32"
                             type: "integer"
                           grpc:
-                            description: "GRPC specifies an action involving a GRPC port."
+                            description: "GRPC specifies a GRPC HealthCheckRequest."
                             properties:
                               port:
                                 description: "Port number of the gRPC service. Number must be in the range 1 to 65535."
@@ -1641,7 +1659,7 @@ spec:
                               - "port"
                             type: "object"
                           httpGet:
-                            description: "HTTPGet specifies the http request to perform."
+                            description: "HTTPGet specifies an HTTP GET request to perform."
                             properties:
                               host:
                                 description: "Host name to connect to, defaults to the pod IP. You probably want to set\n\"Host\" in httpHeaders instead."
@@ -1691,7 +1709,7 @@ spec:
                             format: "int32"
                             type: "integer"
                           tcpSocket:
-                            description: "TCPSocket specifies an action involving a TCP port."
+                            description: "TCPSocket specifies a connection to a TCP port."
                             properties:
                               host:
                                 description: "Optional: Host name to connect to, defaults to the pod IP."
@@ -1752,7 +1770,7 @@ spec:
                         description: "Periodic probe of container service readiness.\nContainer will be removed from service endpoints if the probe fails.\nCannot be updated.\nMore info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes"
                         properties:
                           exec:
-                            description: "Exec specifies the action to take."
+                            description: "Exec specifies a command to execute in the container."
                             properties:
                               command:
                                 description: "Command is the command line to execute inside the container, the working directory for the\ncommand  is root ('/') in the container's filesystem. The command is simply exec'd, it is\nnot run inside a shell, so traditional shell instructions ('|', etc) won't work. To use\na shell, you need to explicitly call out to that shell.\nExit status of 0 is treated as live/healthy and non-zero is unhealthy."
@@ -1766,7 +1784,7 @@ spec:
                             format: "int32"
                             type: "integer"
                           grpc:
-                            description: "GRPC specifies an action involving a GRPC port."
+                            description: "GRPC specifies a GRPC HealthCheckRequest."
                             properties:
                               port:
                                 description: "Port number of the gRPC service. Number must be in the range 1 to 65535."
@@ -1780,7 +1798,7 @@ spec:
                               - "port"
                             type: "object"
                           httpGet:
-                            description: "HTTPGet specifies the http request to perform."
+                            description: "HTTPGet specifies an HTTP GET request to perform."
                             properties:
                               host:
                                 description: "Host name to connect to, defaults to the pod IP. You probably want to set\n\"Host\" in httpHeaders instead."
@@ -1830,7 +1848,7 @@ spec:
                             format: "int32"
                             type: "integer"
                           tcpSocket:
-                            description: "TCPSocket specifies an action involving a TCP port."
+                            description: "TCPSocket specifies a connection to a TCP port."
                             properties:
                               host:
                                 description: "Optional: Host name to connect to, defaults to the pod IP."
@@ -2018,7 +2036,7 @@ spec:
                         description: "StartupProbe indicates that the Pod has successfully initialized.\nIf specified, no other probes are executed until this completes successfully.\nIf this probe fails, the Pod will be restarted, just as if the livenessProbe failed.\nThis can be used to provide different probe parameters at the beginning of a Pod's lifecycle,\nwhen it might take a long time to load data or warm a cache, than during steady-state operation.\nThis cannot be updated.\nMore info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes"
                         properties:
                           exec:
-                            description: "Exec specifies the action to take."
+                            description: "Exec specifies a command to execute in the container."
                             properties:
                               command:
                                 description: "Command is the command line to execute inside the container, the working directory for the\ncommand  is root ('/') in the container's filesystem. The command is simply exec'd, it is\nnot run inside a shell, so traditional shell instructions ('|', etc) won't work. To use\na shell, you need to explicitly call out to that shell.\nExit status of 0 is treated as live/healthy and non-zero is unhealthy."
@@ -2032,7 +2050,7 @@ spec:
                             format: "int32"
                             type: "integer"
                           grpc:
-                            description: "GRPC specifies an action involving a GRPC port."
+                            description: "GRPC specifies a GRPC HealthCheckRequest."
                             properties:
                               port:
                                 description: "Port number of the gRPC service. Number must be in the range 1 to 65535."
@@ -2046,7 +2064,7 @@ spec:
                               - "port"
                             type: "object"
                           httpGet:
-                            description: "HTTPGet specifies the http request to perform."
+                            description: "HTTPGet specifies an HTTP GET request to perform."
                             properties:
                               host:
                                 description: "Host name to connect to, defaults to the pod IP. You probably want to set\n\"Host\" in httpHeaders instead."
@@ -2096,7 +2114,7 @@ spec:
                             format: "int32"
                             type: "integer"
                           tcpSocket:
-                            description: "TCPSocket specifies an action involving a TCP port."
+                            description: "TCPSocket specifies a connection to a TCP port."
                             properties:
                               host:
                                 description: "Optional: Host name to connect to, defaults to the pod IP."
@@ -2848,7 +2866,7 @@ spec:
                       description: "Periodic probe of container liveness. Container will be restarted if the probe fails."
                       properties:
                         exec:
-                          description: "Exec specifies the action to take."
+                          description: "Exec specifies a command to execute in the container."
                           properties:
                             command:
                               description: "Command is the command line to execute inside the container, the working directory for the\ncommand  is root ('/') in the container's filesystem. The command is simply exec'd, it is\nnot run inside a shell, so traditional shell instructions ('|', etc) won't work. To use\na shell, you need to explicitly call out to that shell.\nExit status of 0 is treated as live/healthy and non-zero is unhealthy."
@@ -2862,7 +2880,7 @@ spec:
                           format: "int32"
                           type: "integer"
                         grpc:
-                          description: "GRPC specifies an action involving a GRPC port."
+                          description: "GRPC specifies a GRPC HealthCheckRequest."
                           properties:
                             port:
                               description: "Port number of the gRPC service. Number must be in the range 1 to 65535."
@@ -2876,7 +2894,7 @@ spec:
                             - "port"
                           type: "object"
                         httpGet:
-                          description: "HTTPGet specifies the http request to perform."
+                          description: "HTTPGet specifies an HTTP GET request to perform."
                           properties:
                             host:
                               description: "Host name to connect to, defaults to the pod IP. You probably want to set\n\"Host\" in httpHeaders instead."
@@ -2926,7 +2944,7 @@ spec:
                           format: "int32"
                           type: "integer"
                         tcpSocket:
-                          description: "TCPSocket specifies an action involving a TCP port."
+                          description: "TCPSocket specifies a connection to a TCP port."
                           properties:
                             host:
                               description: "Optional: Host name to connect to, defaults to the pod IP."
@@ -2953,7 +2971,7 @@ spec:
                       description: "Periodic probe of container service readiness. Container will be removed from service endpoints if the probe fails."
                       properties:
                         exec:
-                          description: "Exec specifies the action to take."
+                          description: "Exec specifies a command to execute in the container."
                           properties:
                             command:
                               description: "Command is the command line to execute inside the container, the working directory for the\ncommand  is root ('/') in the container's filesystem. The command is simply exec'd, it is\nnot run inside a shell, so traditional shell instructions ('|', etc) won't work. To use\na shell, you need to explicitly call out to that shell.\nExit status of 0 is treated as live/healthy and non-zero is unhealthy."
@@ -2967,7 +2985,7 @@ spec:
                           format: "int32"
                           type: "integer"
                         grpc:
-                          description: "GRPC specifies an action involving a GRPC port."
+                          description: "GRPC specifies a GRPC HealthCheckRequest."
                           properties:
                             port:
                               description: "Port number of the gRPC service. Number must be in the range 1 to 65535."
@@ -2981,7 +2999,7 @@ spec:
                             - "port"
                           type: "object"
                         httpGet:
-                          description: "HTTPGet specifies the http request to perform."
+                          description: "HTTPGet specifies an HTTP GET request to perform."
                           properties:
                             host:
                               description: "Host name to connect to, defaults to the pod IP. You probably want to set\n\"Host\" in httpHeaders instead."
@@ -3031,7 +3049,7 @@ spec:
                           format: "int32"
                           type: "integer"
                         tcpSocket:
-                          description: "TCPSocket specifies an action involving a TCP port."
+                          description: "TCPSocket specifies a connection to a TCP port."
                           properties:
                             host:
                               description: "Optional: Host name to connect to, defaults to the pod IP."
@@ -3058,7 +3076,7 @@ spec:
                       description: "Probe to determine successful initialization. If specified, other probes are not executed until this completes successfully."
                       properties:
                         exec:
-                          description: "Exec specifies the action to take."
+                          description: "Exec specifies a command to execute in the container."
                           properties:
                             command:
                               description: "Command is the command line to execute inside the container, the working directory for the\ncommand  is root ('/') in the container's filesystem. The command is simply exec'd, it is\nnot run inside a shell, so traditional shell instructions ('|', etc) won't work. To use\na shell, you need to explicitly call out to that shell.\nExit status of 0 is treated as live/healthy and non-zero is unhealthy."
@@ -3072,7 +3090,7 @@ spec:
                           format: "int32"
                           type: "integer"
                         grpc:
-                          description: "GRPC specifies an action involving a GRPC port."
+                          description: "GRPC specifies a GRPC HealthCheckRequest."
                           properties:
                             port:
                               description: "Port number of the gRPC service. Number must be in the range 1 to 65535."
@@ -3086,7 +3104,7 @@ spec:
                             - "port"
                           type: "object"
                         httpGet:
-                          description: "HTTPGet specifies the http request to perform."
+                          description: "HTTPGet specifies an HTTP GET request to perform."
                           properties:
                             host:
                               description: "Host name to connect to, defaults to the pod IP. You probably want to set\n\"Host\" in httpHeaders instead."
@@ -3136,7 +3154,7 @@ spec:
                           format: "int32"
                           type: "integer"
                         tcpSocket:
-                          description: "TCPSocket specifies an action involving a TCP port."
+                          description: "TCPSocket specifies a connection to a TCP port."
                           properties:
                             host:
                               description: "Optional: Host name to connect to, defaults to the pod IP."
@@ -3563,7 +3581,7 @@ spec:
                       envFrom:
                         description: "List of sources to populate environment variables in the container.\nThe keys defined within a source must be a C_IDENTIFIER. All invalid keys\nwill be reported as an event when the container is starting. When a key exists in multiple\nsources, the value associated with the last source will take precedence.\nValues defined by an Env with a duplicate key will take precedence.\nCannot be updated."
                         items:
-                          description: "EnvFromSource represents the source of a set of ConfigMaps"
+                          description: "EnvFromSource represents the source of a set of ConfigMaps or Secrets"
                           properties:
                             configMapRef:
                               description: "The ConfigMap to select from"
@@ -3578,7 +3596,7 @@ spec:
                               type: "object"
                               x-kubernetes-map-type: "atomic"
                             prefix:
-                              description: "An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER."
+                              description: "Optional text to prepend to the name of each environment variable. Must be a C_IDENTIFIER."
                               type: "string"
                             secretRef:
                               description: "The Secret to select from"
@@ -3608,7 +3626,7 @@ spec:
                             description: "PostStart is called immediately after a container is created. If the handler fails,\nthe container is terminated and restarted according to its restart policy.\nOther management of the container blocks until the hook completes.\nMore info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks"
                             properties:
                               exec:
-                                description: "Exec specifies the action to take."
+                                description: "Exec specifies a command to execute in the container."
                                 properties:
                                   command:
                                     description: "Command is the command line to execute inside the container, the working directory for the\ncommand  is root ('/') in the container's filesystem. The command is simply exec'd, it is\nnot run inside a shell, so traditional shell instructions ('|', etc) won't work. To use\na shell, you need to explicitly call out to that shell.\nExit status of 0 is treated as live/healthy and non-zero is unhealthy."
@@ -3618,7 +3636,7 @@ spec:
                                     x-kubernetes-list-type: "atomic"
                                 type: "object"
                               httpGet:
-                                description: "HTTPGet specifies the http request to perform."
+                                description: "HTTPGet specifies an HTTP GET request to perform."
                                 properties:
                                   host:
                                     description: "Host name to connect to, defaults to the pod IP. You probably want to set\n\"Host\" in httpHeaders instead."
@@ -3656,7 +3674,7 @@ spec:
                                   - "port"
                                 type: "object"
                               sleep:
-                                description: "Sleep represents the duration that the container should sleep before being terminated."
+                                description: "Sleep represents a duration that the container should sleep."
                                 properties:
                                   seconds:
                                     description: "Seconds is the number of seconds to sleep."
@@ -3666,7 +3684,7 @@ spec:
                                   - "seconds"
                                 type: "object"
                               tcpSocket:
-                                description: "Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept\nfor the backward compatibility. There are no validation of this field and\nlifecycle hooks will fail in runtime when tcp handler is specified."
+                                description: "Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept\nfor backward compatibility. There is no validation of this field and\nlifecycle hooks will fail at runtime when it is specified."
                                 properties:
                                   host:
                                     description: "Optional: Host name to connect to, defaults to the pod IP."
@@ -3685,7 +3703,7 @@ spec:
                             description: "PreStop is called immediately before a container is terminated due to an\nAPI request or management event such as liveness/startup probe failure,\npreemption, resource contention, etc. The handler is not called if the\ncontainer crashes or exits. The Pod's termination grace period countdown begins before the\nPreStop hook is executed. Regardless of the outcome of the handler, the\ncontainer will eventually terminate within the Pod's termination grace\nperiod (unless delayed by finalizers). Other management of the container blocks until the hook completes\nor until the termination grace period is reached.\nMore info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks"
                             properties:
                               exec:
-                                description: "Exec specifies the action to take."
+                                description: "Exec specifies a command to execute in the container."
                                 properties:
                                   command:
                                     description: "Command is the command line to execute inside the container, the working directory for the\ncommand  is root ('/') in the container's filesystem. The command is simply exec'd, it is\nnot run inside a shell, so traditional shell instructions ('|', etc) won't work. To use\na shell, you need to explicitly call out to that shell.\nExit status of 0 is treated as live/healthy and non-zero is unhealthy."
@@ -3695,7 +3713,7 @@ spec:
                                     x-kubernetes-list-type: "atomic"
                                 type: "object"
                               httpGet:
-                                description: "HTTPGet specifies the http request to perform."
+                                description: "HTTPGet specifies an HTTP GET request to perform."
                                 properties:
                                   host:
                                     description: "Host name to connect to, defaults to the pod IP. You probably want to set\n\"Host\" in httpHeaders instead."
@@ -3733,7 +3751,7 @@ spec:
                                   - "port"
                                 type: "object"
                               sleep:
-                                description: "Sleep represents the duration that the container should sleep before being terminated."
+                                description: "Sleep represents a duration that the container should sleep."
                                 properties:
                                   seconds:
                                     description: "Seconds is the number of seconds to sleep."
@@ -3743,7 +3761,7 @@ spec:
                                   - "seconds"
                                 type: "object"
                               tcpSocket:
-                                description: "Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept\nfor the backward compatibility. There are no validation of this field and\nlifecycle hooks will fail in runtime when tcp handler is specified."
+                                description: "Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept\nfor backward compatibility. There is no validation of this field and\nlifecycle hooks will fail at runtime when it is specified."
                                 properties:
                                   host:
                                     description: "Optional: Host name to connect to, defaults to the pod IP."
@@ -3758,12 +3776,15 @@ spec:
                                   - "port"
                                 type: "object"
                             type: "object"
+                          stopSignal:
+                            description: "StopSignal defines which signal will be sent to a container when it is being stopped.\nIf not specified, the default is defined by the container runtime in use.\nStopSignal can only be set for Pods with a non-empty .spec.os.name"
+                            type: "string"
                         type: "object"
                       livenessProbe:
                         description: "Periodic probe of container liveness.\nContainer will be restarted if the probe fails.\nCannot be updated.\nMore info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes"
                         properties:
                           exec:
-                            description: "Exec specifies the action to take."
+                            description: "Exec specifies a command to execute in the container."
                             properties:
                               command:
                                 description: "Command is the command line to execute inside the container, the working directory for the\ncommand  is root ('/') in the container's filesystem. The command is simply exec'd, it is\nnot run inside a shell, so traditional shell instructions ('|', etc) won't work. To use\na shell, you need to explicitly call out to that shell.\nExit status of 0 is treated as live/healthy and non-zero is unhealthy."
@@ -3777,7 +3798,7 @@ spec:
                             format: "int32"
                             type: "integer"
                           grpc:
-                            description: "GRPC specifies an action involving a GRPC port."
+                            description: "GRPC specifies a GRPC HealthCheckRequest."
                             properties:
                               port:
                                 description: "Port number of the gRPC service. Number must be in the range 1 to 65535."
@@ -3791,7 +3812,7 @@ spec:
                               - "port"
                             type: "object"
                           httpGet:
-                            description: "HTTPGet specifies the http request to perform."
+                            description: "HTTPGet specifies an HTTP GET request to perform."
                             properties:
                               host:
                                 description: "Host name to connect to, defaults to the pod IP. You probably want to set\n\"Host\" in httpHeaders instead."
@@ -3841,7 +3862,7 @@ spec:
                             format: "int32"
                             type: "integer"
                           tcpSocket:
-                            description: "TCPSocket specifies an action involving a TCP port."
+                            description: "TCPSocket specifies a connection to a TCP port."
                             properties:
                               host:
                                 description: "Optional: Host name to connect to, defaults to the pod IP."
@@ -3902,7 +3923,7 @@ spec:
                         description: "Periodic probe of container service readiness.\nContainer will be removed from service endpoints if the probe fails.\nCannot be updated.\nMore info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes"
                         properties:
                           exec:
-                            description: "Exec specifies the action to take."
+                            description: "Exec specifies a command to execute in the container."
                             properties:
                               command:
                                 description: "Command is the command line to execute inside the container, the working directory for the\ncommand  is root ('/') in the container's filesystem. The command is simply exec'd, it is\nnot run inside a shell, so traditional shell instructions ('|', etc) won't work. To use\na shell, you need to explicitly call out to that shell.\nExit status of 0 is treated as live/healthy and non-zero is unhealthy."
@@ -3916,7 +3937,7 @@ spec:
                             format: "int32"
                             type: "integer"
                           grpc:
-                            description: "GRPC specifies an action involving a GRPC port."
+                            description: "GRPC specifies a GRPC HealthCheckRequest."
                             properties:
                               port:
                                 description: "Port number of the gRPC service. Number must be in the range 1 to 65535."
@@ -3930,7 +3951,7 @@ spec:
                               - "port"
                             type: "object"
                           httpGet:
-                            description: "HTTPGet specifies the http request to perform."
+                            description: "HTTPGet specifies an HTTP GET request to perform."
                             properties:
                               host:
                                 description: "Host name to connect to, defaults to the pod IP. You probably want to set\n\"Host\" in httpHeaders instead."
@@ -3980,7 +4001,7 @@ spec:
                             format: "int32"
                             type: "integer"
                           tcpSocket:
-                            description: "TCPSocket specifies an action involving a TCP port."
+                            description: "TCPSocket specifies a connection to a TCP port."
                             properties:
                               host:
                                 description: "Optional: Host name to connect to, defaults to the pod IP."
@@ -4168,7 +4189,7 @@ spec:
                         description: "StartupProbe indicates that the Pod has successfully initialized.\nIf specified, no other probes are executed until this completes successfully.\nIf this probe fails, the Pod will be restarted, just as if the livenessProbe failed.\nThis can be used to provide different probe parameters at the beginning of a Pod's lifecycle,\nwhen it might take a long time to load data or warm a cache, than during steady-state operation.\nThis cannot be updated.\nMore info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes"
                         properties:
                           exec:
-                            description: "Exec specifies the action to take."
+                            description: "Exec specifies a command to execute in the container."
                             properties:
                               command:
                                 description: "Command is the command line to execute inside the container, the working directory for the\ncommand  is root ('/') in the container's filesystem. The command is simply exec'd, it is\nnot run inside a shell, so traditional shell instructions ('|', etc) won't work. To use\na shell, you need to explicitly call out to that shell.\nExit status of 0 is treated as live/healthy and non-zero is unhealthy."
@@ -4182,7 +4203,7 @@ spec:
                             format: "int32"
                             type: "integer"
                           grpc:
-                            description: "GRPC specifies an action involving a GRPC port."
+                            description: "GRPC specifies a GRPC HealthCheckRequest."
                             properties:
                               port:
                                 description: "Port number of the gRPC service. Number must be in the range 1 to 65535."
@@ -4196,7 +4217,7 @@ spec:
                               - "port"
                             type: "object"
                           httpGet:
-                            description: "HTTPGet specifies the http request to perform."
+                            description: "HTTPGet specifies an HTTP GET request to perform."
                             properties:
                               host:
                                 description: "Host name to connect to, defaults to the pod IP. You probably want to set\n\"Host\" in httpHeaders instead."
@@ -4246,7 +4267,7 @@ spec:
                             format: "int32"
                             type: "integer"
                           tcpSocket:
-                            description: "TCPSocket specifies an action involving a TCP port."
+                            description: "TCPSocket specifies a connection to a TCP port."
                             properties:
                               host:
                                 description: "Optional: Host name to connect to, defaults to the pod IP."
@@ -4565,9 +4586,10 @@ spec:
                                         description: "reason is a unique, this should be a short, machine understandable string that gives the reason\nfor condition's last transition. If it reports \"Resizing\" that means the underlying\npersistent volume is being resized."
                                         type: "string"
                                       status:
+                                        description: "Status is the status of the condition.\nCan be True, False, Unknown.\nMore info: https://kubernetes.io/docs/reference/kubernetes-api/config-and-storage-resources/persistent-volume-claim-v1/#:~:text=state%20of%20pvc-,conditions.status,-(string)%2C%20required"
                                         type: "string"
                                       type:
-                                        description: "PersistentVolumeClaimConditionType defines the condition of PV claim.\nValid values are:\n  - \"Resizing\", \"FileSystemResizePending\"\n\nIf RecoverVolumeExpansionFailure feature gate is enabled, then following additional values can be expected:\n  - \"ControllerResizeError\", \"NodeResizeError\"\n\nIf VolumeAttributesClass feature gate is enabled, then following additional values can be expected:\n  - \"ModifyVolumeError\", \"ModifyingVolume\""
+                                        description: "Type is the type of the condition.\nMore info: https://kubernetes.io/docs/reference/kubernetes-api/config-and-storage-resources/persistent-volume-claim-v1/#:~:text=set%20to%20%27ResizeStarted%27.-,PersistentVolumeClaimCondition,-contains%20details%20about"
                                         type: "string"
                                     required:
                                       - "status"
@@ -4699,10 +4721,10 @@ spec:
                             format: "int32"
                             type: "integer"
                           nodeAffinityPolicy:
-                            description: "NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector\nwhen calculating pod topology spread skew. Options are:\n- Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.\n- Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.\n\nIf this value is nil, the behavior is equivalent to the Honor policy.\nThis is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag."
+                            description: "NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector\nwhen calculating pod topology spread skew. Options are:\n- Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.\n- Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.\n\nIf this value is nil, the behavior is equivalent to the Honor policy."
                             type: "string"
                           nodeTaintsPolicy:
-                            description: "NodeTaintsPolicy indicates how we will treat node taints when calculating\npod topology spread skew. Options are:\n- Honor: nodes without taints, along with tainted nodes for which the incoming pod\nhas a toleration, are included.\n- Ignore: node taints are ignored. All nodes are included.\n\nIf this value is nil, the behavior is equivalent to the Ignore policy.\nThis is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag."
+                            description: "NodeTaintsPolicy indicates how we will treat node taints when calculating\npod topology spread skew. Options are:\n- Honor: nodes without taints, along with tainted nodes for which the incoming pod\nhas a toleration, are included.\n- Ignore: node taints are ignored. All nodes are included.\n\nIf this value is nil, the behavior is equivalent to the Ignore policy."
                             type: "string"
                           topologyKey:
                             description: "TopologyKey is the key of node labels. Nodes that have a label with this key\nand identical values are considered to be in the same topology.\nWe consider each <key, value> as a \"bucket\", and try to put balanced number\nof pods into each bucket.\nWe define a domain as a particular instance of a topology.\nAlso, we define an eligible domain as a domain whose nodes meet the requirements of\nnodeAffinityPolicy and nodeTaintsPolicy.\ne.g. If TopologyKey is \"kubernetes.io/hostname\", each Node is a domain of that topology.\nAnd, if TopologyKey is \"topology.kubernetes.io/zone\", each zone is a domain of that topology.\nIt's a required field."
@@ -4758,7 +4780,7 @@ spec:
                     description: "Volume represents a named volume in a pod that may be accessed by any container in the pod."
                     properties:
                       awsElasticBlockStore:
-                        description: "awsElasticBlockStore represents an AWS Disk resource that is attached to a\nkubelet's host machine and then exposed to the pod.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore"
+                        description: "awsElasticBlockStore represents an AWS Disk resource that is attached to a\nkubelet's host machine and then exposed to the pod.\nDeprecated: AWSElasticBlockStore is deprecated. All operations for the in-tree\nawsElasticBlockStore type are redirected to the ebs.csi.aws.com CSI driver.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore"
                         properties:
                           fsType:
                             description: "fsType is the filesystem type of the volume that you want to mount.\nTip: Ensure that the filesystem type is supported by the host operating system.\nExamples: \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore"
@@ -4777,7 +4799,7 @@ spec:
                           - "volumeID"
                         type: "object"
                       azureDisk:
-                        description: "azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod."
+                        description: "azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.\nDeprecated: AzureDisk is deprecated. All operations for the in-tree azureDisk type\nare redirected to the disk.csi.azure.com CSI driver."
                         properties:
                           cachingMode:
                             description: "cachingMode is the Host Caching mode: None, Read Only, Read Write."
@@ -4804,7 +4826,7 @@ spec:
                           - "diskURI"
                         type: "object"
                       azureFile:
-                        description: "azureFile represents an Azure File Service mount on the host and bind mount to the pod."
+                        description: "azureFile represents an Azure File Service mount on the host and bind mount to the pod.\nDeprecated: AzureFile is deprecated. All operations for the in-tree azureFile type\nare redirected to the file.csi.azure.com CSI driver."
                         properties:
                           readOnly:
                             description: "readOnly defaults to false (read/write). ReadOnly here will force\nthe ReadOnly setting in VolumeMounts."
@@ -4820,7 +4842,7 @@ spec:
                           - "shareName"
                         type: "object"
                       cephfs:
-                        description: "cephFS represents a Ceph FS mount on the host that shares a pod's lifetime"
+                        description: "cephFS represents a Ceph FS mount on the host that shares a pod's lifetime.\nDeprecated: CephFS is deprecated and the in-tree cephfs type is no longer supported."
                         properties:
                           monitors:
                             description: "monitors is Required: Monitors is a collection of Ceph monitors\nMore info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it"
@@ -4853,7 +4875,7 @@ spec:
                           - "monitors"
                         type: "object"
                       cinder:
-                        description: "cinder represents a cinder volume attached and mounted on kubelets host machine.\nMore info: https://examples.k8s.io/mysql-cinder-pd/README.md"
+                        description: "cinder represents a cinder volume attached and mounted on kubelets host machine.\nDeprecated: Cinder is deprecated. All operations for the in-tree cinder type\nare redirected to the cinder.csi.openstack.org CSI driver.\nMore info: https://examples.k8s.io/mysql-cinder-pd/README.md"
                         properties:
                           fsType:
                             description: "fsType is the filesystem type to mount.\nMust be a filesystem type supported by the host operating system.\nExamples: \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified.\nMore info: https://examples.k8s.io/mysql-cinder-pd/README.md"
@@ -4914,7 +4936,7 @@ spec:
                         type: "object"
                         x-kubernetes-map-type: "atomic"
                       csi:
-                        description: "csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature)."
+                        description: "csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers."
                         properties:
                           driver:
                             description: "driver is the name of the CSI driver that handles this volume.\nConsult with your admin for the correct name as registered in the cluster."
@@ -5184,7 +5206,7 @@ spec:
                             x-kubernetes-list-type: "atomic"
                         type: "object"
                       flexVolume:
-                        description: "flexVolume represents a generic volume resource that is\nprovisioned/attached using an exec based plugin."
+                        description: "flexVolume represents a generic volume resource that is\nprovisioned/attached using an exec based plugin.\nDeprecated: FlexVolume is deprecated. Consider using a CSIDriver instead."
                         properties:
                           driver:
                             description: "driver is the name of the driver to use for this volume."
@@ -5213,7 +5235,7 @@ spec:
                           - "driver"
                         type: "object"
                       flocker:
-                        description: "flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running"
+                        description: "flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running.\nDeprecated: Flocker is deprecated and the in-tree flocker type is no longer supported."
                         properties:
                           datasetName:
                             description: "datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker\nshould be considered as deprecated"
@@ -5223,7 +5245,7 @@ spec:
                             type: "string"
                         type: "object"
                       gcePersistentDisk:
-                        description: "gcePersistentDisk represents a GCE Disk resource that is attached to a\nkubelet's host machine and then exposed to the pod.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk"
+                        description: "gcePersistentDisk represents a GCE Disk resource that is attached to a\nkubelet's host machine and then exposed to the pod.\nDeprecated: GCEPersistentDisk is deprecated. All operations for the in-tree\ngcePersistentDisk type are redirected to the pd.csi.storage.gke.io CSI driver.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk"
                         properties:
                           fsType:
                             description: "fsType is filesystem type of the volume that you want to mount.\nTip: Ensure that the filesystem type is supported by the host operating system.\nExamples: \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk"
@@ -5242,7 +5264,7 @@ spec:
                           - "pdName"
                         type: "object"
                       gitRepo:
-                        description: "gitRepo represents a git repository at a particular revision.\nDEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an\nEmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir\ninto the Pod's container."
+                        description: "gitRepo represents a git repository at a particular revision.\nDeprecated: GitRepo is deprecated. To provision a container with a git repo, mount an\nEmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir\ninto the Pod's container."
                         properties:
                           directory:
                             description: "directory is the target directory name.\nMust not contain or start with '..'.  If '.' is supplied, the volume directory will be the\ngit repository.  Otherwise, if specified, the volume will contain the git repository in\nthe subdirectory with the given name."
@@ -5257,7 +5279,7 @@ spec:
                           - "repository"
                         type: "object"
                       glusterfs:
-                        description: "glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.\nMore info: https://examples.k8s.io/volumes/glusterfs/README.md"
+                        description: "glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.\nDeprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer supported.\nMore info: https://examples.k8s.io/volumes/glusterfs/README.md"
                         properties:
                           endpoints:
                             description: "endpoints is the endpoint name that details Glusterfs topology.\nMore info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod"
@@ -5285,7 +5307,7 @@ spec:
                           - "path"
                         type: "object"
                       image:
-                        description: "image represents an OCI object (a container image or artifact) pulled and mounted on the kubelet's host machine.\nThe volume is resolved at pod startup depending on which PullPolicy value is provided:\n\n- Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.\n- Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.\n- IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.\n\nThe volume gets re-resolved if the pod gets deleted and recreated, which means that new remote content will become available on pod recreation.\nA failure to resolve or pull the image during pod startup will block containers from starting and may add significant latency. Failures will be retried using normal volume backoff and will be reported on the pod reason and message.\nThe types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.\nThe OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.\nThe volume will be mounted read-only (ro) and non-executable files (noexec).\nSub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath).\nThe field spec.securityContext.fsGroupChangePolicy has no effect on this volume type."
+                        description: "image represents an OCI object (a container image or artifact) pulled and mounted on the kubelet's host machine.\nThe volume is resolved at pod startup depending on which PullPolicy value is provided:\n\n- Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.\n- Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.\n- IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.\n\nThe volume gets re-resolved if the pod gets deleted and recreated, which means that new remote content will become available on pod recreation.\nA failure to resolve or pull the image during pod startup will block containers from starting and may add significant latency. Failures will be retried using normal volume backoff and will be reported on the pod reason and message.\nThe types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.\nThe OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.\nThe volume will be mounted read-only (ro) and non-executable files (noexec).\nSub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.\nThe field spec.securityContext.fsGroupChangePolicy has no effect on this volume type."
                         properties:
                           pullPolicy:
                             description: "Policy for pulling OCI objects. Possible values are:\nAlways: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.\nNever: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.\nIfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.\nDefaults to Always if :latest tag is specified, or IfNotPresent otherwise."
@@ -5378,7 +5400,7 @@ spec:
                           - "claimName"
                         type: "object"
                       photonPersistentDisk:
-                        description: "photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine"
+                        description: "photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine.\nDeprecated: PhotonPersistentDisk is deprecated and the in-tree photonPersistentDisk type is no longer supported."
                         properties:
                           fsType:
                             description: "fsType is the filesystem type to mount.\nMust be a filesystem type supported by the host operating system.\nEx. \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified."
@@ -5390,7 +5412,7 @@ spec:
                           - "pdID"
                         type: "object"
                       portworxVolume:
-                        description: "portworxVolume represents a portworx volume attached and mounted on kubelets host machine"
+                        description: "portworxVolume represents a portworx volume attached and mounted on kubelets host machine.\nDeprecated: PortworxVolume is deprecated. All operations for the in-tree portworxVolume type\nare redirected to the pxd.portworx.com CSI driver when the CSIMigrationPortworx feature-gate\nis on."
                         properties:
                           fsType:
                             description: "fSType represents the filesystem type to mount\nMust be a filesystem type supported by the host operating system.\nEx. \"ext4\", \"xfs\". Implicitly inferred to be \"ext4\" if unspecified."
@@ -5608,7 +5630,7 @@ spec:
                             x-kubernetes-list-type: "atomic"
                         type: "object"
                       quobyte:
-                        description: "quobyte represents a Quobyte mount on the host that shares a pod's lifetime"
+                        description: "quobyte represents a Quobyte mount on the host that shares a pod's lifetime.\nDeprecated: Quobyte is deprecated and the in-tree quobyte type is no longer supported."
                         properties:
                           group:
                             description: "group to map volume access to\nDefault is no group"
@@ -5633,7 +5655,7 @@ spec:
                           - "volume"
                         type: "object"
                       rbd:
-                        description: "rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.\nMore info: https://examples.k8s.io/volumes/rbd/README.md"
+                        description: "rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.\nDeprecated: RBD is deprecated and the in-tree rbd type is no longer supported.\nMore info: https://examples.k8s.io/volumes/rbd/README.md"
                         properties:
                           fsType:
                             description: "fsType is the filesystem type of the volume that you want to mount.\nTip: Ensure that the filesystem type is supported by the host operating system.\nExamples: \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#rbd"
@@ -5676,7 +5698,7 @@ spec:
                           - "monitors"
                         type: "object"
                       scaleIO:
-                        description: "scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes."
+                        description: "scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.\nDeprecated: ScaleIO is deprecated and the in-tree scaleIO type is no longer supported."
                         properties:
                           fsType:
                             default: "xfs"
@@ -5757,7 +5779,7 @@ spec:
                             type: "string"
                         type: "object"
                       storageos:
-                        description: "storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes."
+                        description: "storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.\nDeprecated: StorageOS is deprecated and the in-tree storageos type is no longer supported."
                         properties:
                           fsType:
                             description: "fsType is the filesystem type to mount.\nMust be a filesystem type supported by the host operating system.\nEx. \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified."
@@ -5782,7 +5804,7 @@ spec:
                             type: "string"
                         type: "object"
                       vsphereVolume:
-                        description: "vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine"
+                        description: "vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine.\nDeprecated: VsphereVolume is deprecated. All operations for the in-tree vsphereVolume type\nare redirected to the csi.vsphere.vmware.com CSI driver."
                         properties:
                           fsType:
                             description: "fsType is filesystem type to mount.\nMust be a filesystem type supported by the host operating system.\nEx. \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified."

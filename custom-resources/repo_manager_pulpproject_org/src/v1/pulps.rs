@@ -482,6 +482,9 @@ pub struct PulpApi {
     /// PodDisruptionBudget is an object to define the max disruption that can be caused to a collection of pods
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pdb: Option<PulpApiPdb>,
+    /// Labels to add to api pods
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pod_labels: Option<BTreeMap<String, String>>,
     /// Periodic probe of container service readiness.
     /// Container will be removed from service endpoints if the probe fails.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
@@ -2133,6 +2136,9 @@ pub struct PulpCache {
     /// NodeSelector for the Pulp pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub node_selector: Option<BTreeMap<String, String>>,
+    /// Labels to add to cache pods
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pod_labels: Option<BTreeMap<String, String>>,
     /// PersistenVolumeClaim name that will be used by Redis pods
     /// If defined, the PVC must be provisioned by the user and the operator will only
     /// configure the deployment to use it
@@ -3245,6 +3251,9 @@ pub struct PulpContent {
     /// PodDisruptionBudget is an object to define the max disruption that can be caused to a collection of pods
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pdb: Option<PulpContentPdb>,
+    /// Labels to add to content pods
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pod_labels: Option<BTreeMap<String, String>>,
     /// Periodic probe of container service readiness.
     /// Container will be removed from service endpoints if the probe fails.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
@@ -4889,6 +4898,9 @@ pub struct PulpDatabase {
     /// NodeSelector for the database pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub node_selector: Option<BTreeMap<String, String>>,
+    /// Labels to add to database pods
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pod_labels: Option<BTreeMap<String, String>>,
     /// Registry path to the PostgreSQL container to use.
     /// Default: "/var/lib/postgresql/data/pgdata"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6467,6 +6479,9 @@ pub struct PulpWeb {
     /// PodDisruptionBudget is an object to define the max disruption that can be caused to a collection of pods
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pdb: Option<PulpWebPdb>,
+    /// Labels to add to web pods
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pod_labels: Option<BTreeMap<String, String>>,
     /// Periodic probe of container service readiness.
     /// Container will be removed from service endpoints if the probe fails.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
@@ -7087,6 +7102,9 @@ pub struct PulpWorker {
     /// PodDisruptionBudget is an object to define the max disruption that can be caused to a collection of pods
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pdb: Option<PulpWorkerPdb>,
+    /// Labels to add to worker pods
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pod_labels: Option<BTreeMap<String, String>>,
     /// Periodic probe of container service readiness.
     /// Container will be removed from service endpoints if the probe fails.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]

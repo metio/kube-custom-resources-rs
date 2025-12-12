@@ -104,7 +104,7 @@ pub struct VmUserSpec {
     /// TokenRef allows fetching token from user-created secrets by its name and key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenRef")]
     pub token_ref: Option<VmUserTokenRef>,
-    /// UserName basic auth user name for accessing protected endpoint,
+    /// Username basic auth user name for accessing protected endpoint,
     /// will be replaced with metadata.name of VMUser if omitted.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,

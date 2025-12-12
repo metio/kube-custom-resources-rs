@@ -166,6 +166,8 @@ pub enum ConsumerDeliverPolicy {
     ByStartSequence,
     #[serde(rename = "byStartTime")]
     ByStartTime,
+    #[serde(rename = "lastPerSubject")]
+    LastPerSubject,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]

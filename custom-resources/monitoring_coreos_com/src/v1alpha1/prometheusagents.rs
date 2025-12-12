@@ -620,6 +620,10 @@ pub struct PrometheusAgentSpec {
     /// Default: "30s"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeInterval")]
     pub scrape_interval: Option<String>,
+    /// scrapeNativeHistograms defines whether to enable scraping of native histograms.
+    /// It requires Prometheus >= v3.8.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeNativeHistograms")]
+    pub scrape_native_histograms: Option<bool>,
     /// scrapeProtocols defines the protocols to negotiate during a scrape. It tells clients the
     /// protocols supported by Prometheus in order of preference (from most to least preferred).
     /// 

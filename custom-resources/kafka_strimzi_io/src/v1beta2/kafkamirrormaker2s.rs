@@ -205,7 +205,7 @@ pub struct KafkaMirrorMaker2ClustersAuthenticationAccessToken {
 pub struct KafkaMirrorMaker2ClustersAuthenticationCertificateAndKey {
     /// The name of the file certificate in the Secret.
     pub certificate: String,
-    /// The name of the private key in the Secret.
+    /// The name of the private key in the secret. The private key must be in unencrypted PKCS #8 format. For more information, see RFC 5208: <https://datatracker.ietf.org/doc/html/rfc5208.>
     pub key: String,
     /// The name of the Secret containing the certificate.
     #[serde(rename = "secretName")]
@@ -907,7 +907,7 @@ pub struct KafkaMirrorMaker2MirrorsSourceAuthenticationAccessToken {
 pub struct KafkaMirrorMaker2MirrorsSourceAuthenticationCertificateAndKey {
     /// The name of the file certificate in the Secret.
     pub certificate: String,
-    /// The name of the private key in the Secret.
+    /// The name of the private key in the secret. The private key must be in unencrypted PKCS #8 format. For more information, see RFC 5208: <https://datatracker.ietf.org/doc/html/rfc5208.>
     pub key: String,
     /// The name of the Secret containing the certificate.
     #[serde(rename = "secretName")]
@@ -1271,7 +1271,7 @@ pub struct KafkaMirrorMaker2TargetAuthenticationAccessToken {
 pub struct KafkaMirrorMaker2TargetAuthenticationCertificateAndKey {
     /// The name of the file certificate in the Secret.
     pub certificate: String,
-    /// The name of the private key in the Secret.
+    /// The name of the private key in the secret. The private key must be in unencrypted PKCS #8 format. For more information, see RFC 5208: <https://datatracker.ietf.org/doc/html/rfc5208.>
     pub key: String,
     /// The name of the Secret containing the certificate.
     #[serde(rename = "secretName")]

@@ -615,6 +615,12 @@ spec:
                       additionalProperties:
                         type: "string"
                       type: "object"
+                    diskSize:
+                      anyOf:
+                        - type: "integer"
+                        - type: "string"
+                      pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                      x-kubernetes-int-or-string: true
                     hostAliases:
                       items:
                         description: "HostAlias holds the mapping between IP and hostnames that will be injected as an entry in the\npod's hosts file."
@@ -3564,7 +3570,11 @@ spec:
                       component:
                         type: "string"
                       diskSize:
-                        type: "string"
+                        anyOf:
+                          - type: "integer"
+                          - type: "string"
+                        pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                        x-kubernetes-int-or-string: true
                       env:
                         items:
                           description: "EnvVar represents an environment variable present in a Container."
@@ -3961,7 +3971,7 @@ spec:
                           type: "object"
                           x-kubernetes-map-type: "atomic"
                         securityConfigSecret:
-                          description: "Secret that contains the different yml files of the opensearch-security config (config.yml, internal_users.yml, ...)"
+                          description: "Optional secret that contains the different yml files of the opensearch-security config (config.yml, internal_users.yml, ...).\nWhen omitted the operator seeds the cluster with its bundled defaults."
                           properties:
                             name:
                               default: ""
@@ -4044,7 +4054,7 @@ spec:
                               description: "Enable hot reloading of TLS certificates. When enabled, certificates are mounted as directories instead of using subPath, allowing Kubernetes to update certificate files when secrets are updated."
                               type: "boolean"
                             enabled:
-                              description: "enabled controls if TLS should be enabled for the HTTP layer.\n\nIf false: TLS is explicitly disabled for HTTP.\n\nIf not set (default): TLS is enabled if HTTP configuration is provided, or if security.tls is set.\nIf spec.general.disableSSL is true, this overrides to false.\n\nIf true: TLS is explicitly enabled. HTTP configuration must be provided."
+                              description: "enabled controls if TLS should be enabled for the HTTP layer.\n\nIf false: TLS is explicitly disabled for HTTP.\n\nIf not set (default): TLS is enabled if HTTP configuration is provided, or if security.tls is set.\n\nIf true: TLS is explicitly enabled. HTTP configuration must be provided."
                               type: "boolean"
                             generate:
                               description: "If set to true the operator will generate a CA and certificates for the cluster to use, if false secrets with existing certificates must be supplied"
@@ -4122,6 +4132,8 @@ spec:
             status:
               description: "ClusterStatus defines the observed state of Es"
               properties:
+                adminsecretcreated:
+                  type: "boolean"
                 availableNodes:
                   description: "AvailableNodes is the number of available instances."
                   format: "int32"
@@ -4141,6 +4153,8 @@ spec:
                         type: "string"
                     type: "object"
                   type: "array"
+                contextsecretcreated:
+                  type: "boolean"
                 health:
                   description: "OpenSearchHealth is the health of the cluster as returned by the health API."
                   type: "string"

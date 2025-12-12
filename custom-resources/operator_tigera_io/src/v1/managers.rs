@@ -68,7 +68,7 @@ pub struct ManagerManagerDeploymentSpecTemplateSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ManagerManagerDeploymentSpecTemplateSpecContainers {
     /// Name is an enum which identifies the Manager Deployment container by name.
-    /// Supported values are: tigera-voltron, tigera-manager, tigera-ui-apis, and tigera-es-proxy (deprecated).
+    /// Supported values are: calico-voltron, calico-manager, calico-ui-apis, tigera-voltron (deprecated), tigera-manager (deprecated), tigera-ui-apis (deprecated), tigera-es-proxy (deprecated)
     pub name: ManagerManagerDeploymentSpecTemplateSpecContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
     /// If specified, this overrides the named Manager Deployment container's resources.
@@ -80,12 +80,16 @@ pub struct ManagerManagerDeploymentSpecTemplateSpecContainers {
 /// ManagerDeploymentContainer is a Manager Deployment container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ManagerManagerDeploymentSpecTemplateSpecContainersName {
+    #[serde(rename = "calico-voltron")]
+    CalicoVoltron,
+    #[serde(rename = "calico-manager")]
+    CalicoManager,
+    #[serde(rename = "calico-ui-apis")]
+    CalicoUiApis,
     #[serde(rename = "tigera-voltron")]
     TigeraVoltron,
     #[serde(rename = "tigera-manager")]
     TigeraManager,
-    #[serde(rename = "tigera-es-proxy")]
-    TigeraEsProxy,
     #[serde(rename = "tigera-ui-apis")]
     TigeraUiApis,
 }
@@ -132,7 +136,7 @@ pub struct ManagerManagerDeploymentSpecTemplateSpecContainersResourcesClaims {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ManagerManagerDeploymentSpecTemplateSpecInitContainers {
     /// Name is an enum which identifies the Manager Deployment init container by name.
-    /// Supported values are: manager-tls-key-cert-provisioner, internal-manager-tls-key-cert-provisioner, tigera-voltron-linseed-tls-key-cert-provisioner
+    /// Supported values are: manager-tls-key-cert-provisioner, internal-manager-tls-key-cert-provisioner, calico-voltron-linseed-tls-key-cert-provisioner, tigera-voltron-linseed-tls-key-cert-provisioner (deprecated)
     pub name: ManagerManagerDeploymentSpecTemplateSpecInitContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
     /// If specified, this overrides the named Manager Deployment init container's resources.
@@ -149,6 +153,8 @@ pub enum ManagerManagerDeploymentSpecTemplateSpecInitContainersName {
     ManagerTlsKeyCertProvisioner,
     #[serde(rename = "internal-manager-tls-key-cert-provisioner")]
     InternalManagerTlsKeyCertProvisioner,
+    #[serde(rename = "calico-voltron-linseed-tls-key-cert-provisioner")]
+    CalicoVoltronLinseedTlsKeyCertProvisioner,
     #[serde(rename = "tigera-voltron-linseed-tls-key-cert-provisioner")]
     TigeraVoltronLinseedTlsKeyCertProvisioner,
 }
