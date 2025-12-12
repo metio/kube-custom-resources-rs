@@ -28,7 +28,7 @@ spec:
                   description: "Hive metastore settings that affect all roles and role groups.\nThe settings in the `clusterConfig` are cluster wide settings that do not need to be configurable at role or role group level."
                   properties:
                     authentication:
-                      description: "Settings related to user [authentication](https://docs.stackable.tech/home/nightly/usage-guide/security)."
+                      description: "Settings related to user [authentication](https://docs.stackable.tech/home/nightly/hive/usage-guide/security)."
                       nullable: true
                       properties:
                         kerberos:
@@ -42,6 +42,25 @@ spec:
                           type: "object"
                       required:
                         - "kerberos"
+                      type: "object"
+                    authorization:
+                      description: "Authorization options for Hive.\nLearn more in the [Hive authorization usage guide](https://docs.stackable.tech/home/nightly/hive/usage-guide/security#authorization)."
+                      nullable: true
+                      properties:
+                        opa:
+                          description: "Configure the OPA stacklet [discovery ConfigMap](https://docs.stackable.tech/home/nightly/concepts/service_discovery)\nand the name of the Rego package containing your authorization rules.\nConsult the [OPA authorization documentation](https://docs.stackable.tech/home/nightly/concepts/opa)\nto learn how to deploy Rego authorization rules with OPA."
+                          nullable: true
+                          properties:
+                            configMapName:
+                              description: "The [discovery ConfigMap](https://docs.stackable.tech/home/nightly/concepts/service_discovery)\nfor the OPA stacklet that should be used for authorization requests."
+                              type: "string"
+                            package:
+                              description: "The name of the Rego package containing the Rego rules for the product."
+                              nullable: true
+                              type: "string"
+                          required:
+                            - "configMapName"
+                          type: "object"
                       type: "object"
                     database:
                       description: "Database connection specification for the metadata database."

@@ -27,6 +27,11 @@ pub struct LoginSetSpec {
     /// Ref: <https://man7.org/linux/man-pages/man5/sshd_config.5.html>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraSshdConfig")]
     pub extra_sshd_config: Option<String>,
+    /// The initconf container configuration.
+    /// See corev1.Container spec.
+    /// Ref: <https://github.com/kubernetes/api/blob/master/core/v1/types.go#L2885>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub initconf: Option<BTreeMap<String, serde_json::Value>>,
     /// The login container configuration.
     /// See corev1.Container spec.
     /// Ref: <https://github.com/kubernetes/api/blob/master/core/v1/types.go#L2885>

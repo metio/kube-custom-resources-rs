@@ -53,6 +53,9 @@ pub struct TeleportSamlConnectorSpec {
     /// ForceAuthn specified whether re-authentication should be forced on login. UNSPECIFIED is treated as NO.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub force_authn: Option<IntOrString>,
+    /// IncludeSubject is a flag that indicates whether the Subject element is included in the SAML authentication request. Defaults to false. Note: Some IdPs will reject requests that contain a Subject.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub include_subject: Option<bool>,
     /// Issuer is the identity provider issuer.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub issuer: Option<String>,

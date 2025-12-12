@@ -54,6 +54,10 @@ pub struct VmPodScrapeSpec {
 /// AttachMetadata configures metadata attaching from service discovery
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmPodScrapeAttachMetadata {
+    /// Namespace instructs vmagent to add namespace specific metadata from service discovery
+    /// Valid for roles: pod, service, endpoints, endpointslice, ingress.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<bool>,
     /// Node instructs vmagent to add node specific metadata from service discovery
     /// Valid for roles: pod, endpoints, endpointslice.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -168,6 +172,10 @@ pub struct VmPodScrapePodMetricsEndpoints {
 /// AttachMetadata configures metadata attaching from service discovery
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmPodScrapePodMetricsEndpointsAttachMetadata {
+    /// Namespace instructs vmagent to add namespace specific metadata from service discovery
+    /// Valid for roles: pod, service, endpoints, endpointslice, ingress.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<bool>,
     /// Node instructs vmagent to add node specific metadata from service discovery
     /// Valid for roles: pod, endpoints, endpointslice.
     #[serde(default, skip_serializing_if = "Option::is_none")]

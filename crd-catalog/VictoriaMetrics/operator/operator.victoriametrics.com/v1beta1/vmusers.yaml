@@ -433,7 +433,7 @@ spec:
                   type: "object"
                   x-kubernetes-map-type: "atomic"
                 username:
-                  description: "UserName basic auth user name for accessing protected endpoint,\nwill be replaced with metadata.name of VMUser if omitted."
+                  description: "Username basic auth user name for accessing protected endpoint,\nwill be replaced with metadata.name of VMUser if omitted."
                   type: "string"
               required:
                 - "targetRefs"

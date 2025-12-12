@@ -667,6 +667,9 @@ spec:
                                 required:
                                   - "name"
                                 type: "object"
+                              creation:
+                                description: "Creation specifies parameters for waiting on a resource's creation."
+                                type: "object"
                               deletion:
                                 description: "Deletion specifies parameters for waiting on a resource's deletion."
                                 type: "object"
@@ -1458,6 +1461,9 @@ spec:
                                       required:
                                         - "name"
                                       type: "object"
+                                    creation:
+                                      description: "Creation specifies parameters for waiting on a resource's creation."
+                                      type: "object"
                                     deletion:
                                       description: "Deletion specifies parameters for waiting on a resource's deletion."
                                       type: "object"
@@ -2114,6 +2120,9 @@ spec:
                                           type: "string"
                                       required:
                                         - "name"
+                                      type: "object"
+                                    creation:
+                                      description: "Creation specifies parameters for waiting on a resource's creation."
                                       type: "object"
                                     deletion:
                                       description: "Deletion specifies parameters for waiting on a resource's deletion."
@@ -2806,6 +2815,9 @@ spec:
                                       required:
                                         - "name"
                                       type: "object"
+                                    creation:
+                                      description: "Creation specifies parameters for waiting on a resource's creation."
+                                      type: "object"
                                     deletion:
                                       description: "Deletion specifies parameters for waiting on a resource's deletion."
                                       type: "object"
@@ -3013,7 +3025,6 @@ spec:
                                 resource:
                                   description: "Resource provides a resource to be applied."
                                   type: "object"
-                                  x-kubernetes-embedded-resource: true
                                   x-kubernetes-preserve-unknown-fields: true
                                 template:
                                   description: "Template determines whether resources should be considered for templating."
@@ -3309,7 +3320,6 @@ spec:
                                 resource:
                                   description: "Resource provides a resource to be applied."
                                   type: "object"
-                                  x-kubernetes-embedded-resource: true
                                   x-kubernetes-preserve-unknown-fields: true
                                 template:
                                   description: "Template determines whether resources should be considered for templating."
@@ -3727,7 +3737,6 @@ spec:
                                 resource:
                                   description: "Resource provides a resource to be applied."
                                   type: "object"
-                                  x-kubernetes-embedded-resource: true
                                   x-kubernetes-preserve-unknown-fields: true
                                 template:
                                   description: "Template determines whether resources should be considered for templating."
@@ -4079,7 +4088,6 @@ spec:
                                 resource:
                                   description: "Resource provides a resource to be applied."
                                   type: "object"
-                                  x-kubernetes-embedded-resource: true
                                   x-kubernetes-preserve-unknown-fields: true
                                 template:
                                   description: "Template determines whether resources should be considered for templating."
@@ -4130,6 +4138,9 @@ spec:
                                           type: "string"
                                       required:
                                         - "name"
+                                      type: "object"
+                                    creation:
+                                      description: "Creation specifies parameters for waiting on a resource's creation."
                                       type: "object"
                                     deletion:
                                       description: "Deletion specifies parameters for waiting on a resource's deletion."

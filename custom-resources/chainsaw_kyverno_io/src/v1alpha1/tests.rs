@@ -730,6 +730,9 @@ pub struct TestCatchWaitFor {
     /// Condition specifies the condition to wait for.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub condition: Option<TestCatchWaitForCondition>,
+    /// Creation specifies parameters for waiting on a resource's creation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub creation: Option<TestCatchWaitForCreation>,
     /// Deletion specifies parameters for waiting on a resource's deletion.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deletion: Option<TestCatchWaitForDeletion>,
@@ -746,6 +749,11 @@ pub struct TestCatchWaitForCondition {
     /// Value defines the specific condition status to wait for, e.g., "True", "False".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
+}
+
+/// Creation specifies parameters for waiting on a resource's creation.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestCatchWaitForCreation {
 }
 
 /// Deletion specifies parameters for waiting on a resource's deletion.
@@ -1530,6 +1538,9 @@ pub struct TestStepsCatchWaitFor {
     /// Condition specifies the condition to wait for.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub condition: Option<TestStepsCatchWaitForCondition>,
+    /// Creation specifies parameters for waiting on a resource's creation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub creation: Option<TestStepsCatchWaitForCreation>,
     /// Deletion specifies parameters for waiting on a resource's deletion.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deletion: Option<TestStepsCatchWaitForDeletion>,
@@ -1546,6 +1557,11 @@ pub struct TestStepsCatchWaitForCondition {
     /// Value defines the specific condition status to wait for, e.g., "True", "False".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
+}
+
+/// Creation specifies parameters for waiting on a resource's creation.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestStepsCatchWaitForCreation {
 }
 
 /// Deletion specifies parameters for waiting on a resource's deletion.
@@ -2191,6 +2207,9 @@ pub struct TestStepsCleanupWaitFor {
     /// Condition specifies the condition to wait for.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub condition: Option<TestStepsCleanupWaitForCondition>,
+    /// Creation specifies parameters for waiting on a resource's creation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub creation: Option<TestStepsCleanupWaitForCreation>,
     /// Deletion specifies parameters for waiting on a resource's deletion.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deletion: Option<TestStepsCleanupWaitForDeletion>,
@@ -2207,6 +2226,11 @@ pub struct TestStepsCleanupWaitForCondition {
     /// Value defines the specific condition status to wait for, e.g., "True", "False".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
+}
+
+/// Creation specifies parameters for waiting on a resource's creation.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestStepsCleanupWaitForCreation {
 }
 
 /// Deletion specifies parameters for waiting on a resource's deletion.
@@ -2880,6 +2904,9 @@ pub struct TestStepsFinallyWaitFor {
     /// Condition specifies the condition to wait for.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub condition: Option<TestStepsFinallyWaitForCondition>,
+    /// Creation specifies parameters for waiting on a resource's creation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub creation: Option<TestStepsFinallyWaitForCreation>,
     /// Deletion specifies parameters for waiting on a resource's deletion.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deletion: Option<TestStepsFinallyWaitForDeletion>,
@@ -2896,6 +2923,11 @@ pub struct TestStepsFinallyWaitForCondition {
     /// Value defines the specific condition status to wait for, e.g., "True", "False".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
+}
+
+/// Creation specifies parameters for waiting on a resource's creation.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestStepsFinallyWaitForCreation {
 }
 
 /// Deletion specifies parameters for waiting on a resource's deletion.
@@ -4201,6 +4233,9 @@ pub struct TestStepsTryWaitFor {
     /// Condition specifies the condition to wait for.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub condition: Option<TestStepsTryWaitForCondition>,
+    /// Creation specifies parameters for waiting on a resource's creation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub creation: Option<TestStepsTryWaitForCreation>,
     /// Deletion specifies parameters for waiting on a resource's deletion.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deletion: Option<TestStepsTryWaitForDeletion>,
@@ -4217,6 +4252,11 @@ pub struct TestStepsTryWaitForCondition {
     /// Value defines the specific condition status to wait for, e.g., "True", "False".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
+}
+
+/// Creation specifies parameters for waiting on a resource's creation.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TestStepsTryWaitForCreation {
 }
 
 /// Deletion specifies parameters for waiting on a resource's deletion.

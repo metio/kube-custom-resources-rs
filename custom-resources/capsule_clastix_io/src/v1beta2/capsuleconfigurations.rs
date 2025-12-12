@@ -86,11 +86,11 @@ pub enum CapsuleConfigurationAdministratorsKind {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CapsuleConfigurationNodeMetadata {
     /// Define the annotations that a Tenant Owner cannot set for their nodes.
-    #[serde(rename = "forbiddenAnnotations")]
-    pub forbidden_annotations: CapsuleConfigurationNodeMetadataForbiddenAnnotations,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forbiddenAnnotations")]
+    pub forbidden_annotations: Option<CapsuleConfigurationNodeMetadataForbiddenAnnotations>,
     /// Define the labels that a Tenant Owner cannot set for their nodes.
-    #[serde(rename = "forbiddenLabels")]
-    pub forbidden_labels: CapsuleConfigurationNodeMetadataForbiddenLabels,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forbiddenLabels")]
+    pub forbidden_labels: Option<CapsuleConfigurationNodeMetadataForbiddenLabels>,
 }
 
 /// Define the annotations that a Tenant Owner cannot set for their nodes.

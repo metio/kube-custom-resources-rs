@@ -87,6 +87,11 @@ pub struct NodeSetSpec {
     /// any volumes in the template, with the same name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplates")]
     pub volume_claim_templates: Option<serde_json::Value>,
+    /// WorkloadDisruptionProtection controls whether or not pods in this nodeset which are actively running Slurm jobs are protected by
+    /// a Pod Disruption Budget.
+    /// See <https://kubernetes.io/docs/tasks/run-application/configure-pdb/> for more information.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workloadDisruptionProtection")]
+    pub workload_disruption_protection: Option<bool>,
 }
 
 /// controllerRef is a reference to the Controller CR to which this has membership.

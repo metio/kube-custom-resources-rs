@@ -61,7 +61,7 @@ pub struct XBackendTrafficPolicySpec {
     /// ServiceImport, or any implementation-specific backendRef) are the only
     /// valid API target references.
     /// 
-    /// Currently, a TargetRef can not be scoped to a specific port on a
+    /// Currently, a TargetRef cannot be scoped to a specific port on a
     /// Service.
     #[serde(rename = "targetRefs")]
     pub target_refs: Vec<XBackendTrafficPolicyTargetRefs>,
@@ -196,7 +196,7 @@ pub struct XBackendTrafficPolicySessionPersistence {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionName")]
     pub session_name: Option<String>,
     /// Type defines the type of session persistence such as through
-    /// the use a header or cookie. Defaults to cookie based session
+    /// the use of a header or cookie. Defaults to cookie based session
     /// persistence.
     /// 
     /// Support: Core for "Cookie" type

@@ -206,6 +206,10 @@ spec:
                   description: "volumeClaimTemplates is a list of claims that pods are allowed to reference.\nThe NodeSet controller is responsible for mapping network identities to\nclaims in a way that maintains the identity of a pod. Every claim in\nthis list must have at least one matching (by name) volumeMount in one\ncontainer in the template. A claim in this list takes precedence over\nany volumes in the template, with the same name."
                   nullable: true
                   x-kubernetes-preserve-unknown-fields: true
+                workloadDisruptionProtection:
+                  default: true
+                  description: "WorkloadDisruptionProtection controls whether or not pods in this nodeset which are actively running Slurm jobs are protected by\na Pod Disruption Budget.\nSee https://kubernetes.io/docs/tasks/run-application/configure-pdb/ for more information."
+                  type: "boolean"
               required:
                 - "controllerRef"
               type: "object"

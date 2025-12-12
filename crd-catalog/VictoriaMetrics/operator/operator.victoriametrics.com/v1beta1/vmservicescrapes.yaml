@@ -42,6 +42,9 @@ spec:
                 attach_metadata:
                   description: "AttachMetadata configures metadata attaching from service discovery"
                   properties:
+                    namespace:
+                      description: "Namespace instructs vmagent to add namespace specific metadata from service discovery\nValid for roles: pod, service, endpoints, endpointslice, ingress."
+                      type: "boolean"
                     node:
                       description: "Node instructs vmagent to add node specific metadata from service discovery\nValid for roles: pod, endpoints, endpointslice."
                       type: "boolean"
@@ -61,6 +64,9 @@ spec:
                       attach_metadata:
                         description: "AttachMetadata configures metadata attaching from service discovery"
                         properties:
+                          namespace:
+                            description: "Namespace instructs vmagent to add namespace specific metadata from service discovery\nValid for roles: pod, service, endpoints, endpointslice, ingress."
+                            type: "boolean"
                           node:
                             description: "Node instructs vmagent to add node specific metadata from service discovery\nValid for roles: pod, endpoints, endpointslice."
                             type: "boolean"

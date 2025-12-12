@@ -307,7 +307,6 @@ pub struct RuntimeComponentAffinityPodAffinityPreferredDuringSchedulingIgnoredDu
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -318,7 +317,6 @@ pub struct RuntimeComponentAffinityPodAffinityPreferredDuringSchedulingIgnoredDu
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -428,7 +426,6 @@ pub struct RuntimeComponentAffinityPodAffinityRequiredDuringSchedulingIgnoredDur
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -439,7 +436,6 @@ pub struct RuntimeComponentAffinityPodAffinityRequiredDuringSchedulingIgnoredDur
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -580,7 +576,6 @@ pub struct RuntimeComponentAffinityPodAntiAffinityPreferredDuringSchedulingIgnor
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -591,7 +586,6 @@ pub struct RuntimeComponentAffinityPodAntiAffinityPreferredDuringSchedulingIgnor
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -701,7 +695,6 @@ pub struct RuntimeComponentAffinityPodAntiAffinityRequiredDuringSchedulingIgnore
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -712,7 +705,6 @@ pub struct RuntimeComponentAffinityPodAntiAffinityRequiredDuringSchedulingIgnore
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -970,13 +962,13 @@ pub struct RuntimeComponentEnvValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
-/// EnvFromSource represents the source of a set of ConfigMaps
+/// EnvFromSource represents the source of a set of ConfigMaps or Secrets
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentEnvFrom {
     /// The ConfigMap to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<RuntimeComponentEnvFromConfigMapRef>,
-    /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
+    /// Optional text to prepend to the name of each environment variable. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// The Secret to select from
@@ -1281,13 +1273,13 @@ pub struct RuntimeComponentInitContainersEnvValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
-/// EnvFromSource represents the source of a set of ConfigMaps
+/// EnvFromSource represents the source of a set of ConfigMaps or Secrets
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentInitContainersEnvFrom {
     /// The ConfigMap to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<RuntimeComponentInitContainersEnvFromConfigMapRef>,
-    /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
+    /// Optional text to prepend to the name of each environment variable. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// The Secret to select from
@@ -1346,6 +1338,11 @@ pub struct RuntimeComponentInitContainersLifecycle {
     /// More info: <https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<RuntimeComponentInitContainersLifecyclePreStop>,
+    /// StopSignal defines which signal will be sent to a container when it is being stopped.
+    /// If not specified, the default is defined by the container runtime in use.
+    /// StopSignal can only be set for Pods with a non-empty .spec.os.name
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
 }
 
 /// PostStart is called immediately after a container is created. If the handler fails,
@@ -1354,23 +1351,23 @@ pub struct RuntimeComponentInitContainersLifecycle {
 /// More info: <https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentInitContainersLifecyclePostStart {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<RuntimeComponentInitContainersLifecyclePostStartExec>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<RuntimeComponentInitContainersLifecyclePostStartHttpGet>,
-    /// Sleep represents the duration that the container should sleep before being terminated.
+    /// Sleep represents a duration that the container should sleep.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sleep: Option<RuntimeComponentInitContainersLifecyclePostStartSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-    /// for the backward compatibility. There are no validation of this field and
-    /// lifecycle hooks will fail in runtime when tcp handler is specified.
+    /// for backward compatibility. There is no validation of this field and
+    /// lifecycle hooks will fail at runtime when it is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<RuntimeComponentInitContainersLifecyclePostStartTcpSocket>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentInitContainersLifecyclePostStartExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -1382,7 +1379,7 @@ pub struct RuntimeComponentInitContainersLifecyclePostStartExec {
     pub command: Option<Vec<String>>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentInitContainersLifecyclePostStartHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -1415,7 +1412,7 @@ pub struct RuntimeComponentInitContainersLifecyclePostStartHttpGetHttpHeaders {
     pub value: String,
 }
 
-/// Sleep represents the duration that the container should sleep before being terminated.
+/// Sleep represents a duration that the container should sleep.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentInitContainersLifecyclePostStartSleep {
     /// Seconds is the number of seconds to sleep.
@@ -1423,8 +1420,8 @@ pub struct RuntimeComponentInitContainersLifecyclePostStartSleep {
 }
 
 /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-/// for the backward compatibility. There are no validation of this field and
-/// lifecycle hooks will fail in runtime when tcp handler is specified.
+/// for backward compatibility. There is no validation of this field and
+/// lifecycle hooks will fail at runtime when it is specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentInitContainersLifecyclePostStartTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -1447,23 +1444,23 @@ pub struct RuntimeComponentInitContainersLifecyclePostStartTcpSocket {
 /// More info: <https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentInitContainersLifecyclePreStop {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<RuntimeComponentInitContainersLifecyclePreStopExec>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<RuntimeComponentInitContainersLifecyclePreStopHttpGet>,
-    /// Sleep represents the duration that the container should sleep before being terminated.
+    /// Sleep represents a duration that the container should sleep.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sleep: Option<RuntimeComponentInitContainersLifecyclePreStopSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-    /// for the backward compatibility. There are no validation of this field and
-    /// lifecycle hooks will fail in runtime when tcp handler is specified.
+    /// for backward compatibility. There is no validation of this field and
+    /// lifecycle hooks will fail at runtime when it is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<RuntimeComponentInitContainersLifecyclePreStopTcpSocket>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentInitContainersLifecyclePreStopExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -1475,7 +1472,7 @@ pub struct RuntimeComponentInitContainersLifecyclePreStopExec {
     pub command: Option<Vec<String>>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentInitContainersLifecyclePreStopHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -1508,7 +1505,7 @@ pub struct RuntimeComponentInitContainersLifecyclePreStopHttpGetHttpHeaders {
     pub value: String,
 }
 
-/// Sleep represents the duration that the container should sleep before being terminated.
+/// Sleep represents a duration that the container should sleep.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentInitContainersLifecyclePreStopSleep {
     /// Seconds is the number of seconds to sleep.
@@ -1516,8 +1513,8 @@ pub struct RuntimeComponentInitContainersLifecyclePreStopSleep {
 }
 
 /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-/// for the backward compatibility. There are no validation of this field and
-/// lifecycle hooks will fail in runtime when tcp handler is specified.
+/// for backward compatibility. There is no validation of this field and
+/// lifecycle hooks will fail at runtime when it is specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentInitContainersLifecyclePreStopTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -1535,17 +1532,17 @@ pub struct RuntimeComponentInitContainersLifecyclePreStopTcpSocket {
 /// More info: <https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentInitContainersLivenessProbe {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<RuntimeComponentInitContainersLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<RuntimeComponentInitContainersLivenessProbeGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<RuntimeComponentInitContainersLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -1560,7 +1557,7 @@ pub struct RuntimeComponentInitContainersLivenessProbe {
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<RuntimeComponentInitContainersLivenessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
@@ -1582,7 +1579,7 @@ pub struct RuntimeComponentInitContainersLivenessProbe {
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentInitContainersLivenessProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -1594,7 +1591,7 @@ pub struct RuntimeComponentInitContainersLivenessProbeExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentInitContainersLivenessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -1607,7 +1604,7 @@ pub struct RuntimeComponentInitContainersLivenessProbeGrpc {
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentInitContainersLivenessProbeHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -1640,7 +1637,7 @@ pub struct RuntimeComponentInitContainersLivenessProbeHttpGetHttpHeaders {
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentInitContainersLivenessProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -1685,17 +1682,17 @@ pub struct RuntimeComponentInitContainersPorts {
 /// More info: <https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentInitContainersReadinessProbe {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<RuntimeComponentInitContainersReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<RuntimeComponentInitContainersReadinessProbeGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<RuntimeComponentInitContainersReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -1710,7 +1707,7 @@ pub struct RuntimeComponentInitContainersReadinessProbe {
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<RuntimeComponentInitContainersReadinessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
@@ -1732,7 +1729,7 @@ pub struct RuntimeComponentInitContainersReadinessProbe {
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentInitContainersReadinessProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -1744,7 +1741,7 @@ pub struct RuntimeComponentInitContainersReadinessProbeExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentInitContainersReadinessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -1757,7 +1754,7 @@ pub struct RuntimeComponentInitContainersReadinessProbeGrpc {
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentInitContainersReadinessProbeHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -1790,7 +1787,7 @@ pub struct RuntimeComponentInitContainersReadinessProbeHttpGetHttpHeaders {
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentInitContainersReadinessProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -2053,17 +2050,17 @@ pub struct RuntimeComponentInitContainersSecurityContextWindowsOptions {
 /// More info: <https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentInitContainersStartupProbe {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<RuntimeComponentInitContainersStartupProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<RuntimeComponentInitContainersStartupProbeGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<RuntimeComponentInitContainersStartupProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -2078,7 +2075,7 @@ pub struct RuntimeComponentInitContainersStartupProbe {
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<RuntimeComponentInitContainersStartupProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
@@ -2100,7 +2097,7 @@ pub struct RuntimeComponentInitContainersStartupProbe {
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentInitContainersStartupProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -2112,7 +2109,7 @@ pub struct RuntimeComponentInitContainersStartupProbeExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentInitContainersStartupProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -2125,7 +2122,7 @@ pub struct RuntimeComponentInitContainersStartupProbeGrpc {
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentInitContainersStartupProbeHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -2158,7 +2155,7 @@ pub struct RuntimeComponentInitContainersStartupProbeHttpGetHttpHeaders {
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentInitContainersStartupProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -3156,17 +3153,17 @@ pub struct RuntimeComponentProbes {
 /// Periodic probe of container liveness. Container will be restarted if the probe fails.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentProbesLiveness {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<RuntimeComponentProbesLivenessExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<RuntimeComponentProbesLivenessGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<RuntimeComponentProbesLivenessHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -3181,7 +3178,7 @@ pub struct RuntimeComponentProbesLiveness {
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<RuntimeComponentProbesLivenessTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
@@ -3203,7 +3200,7 @@ pub struct RuntimeComponentProbesLiveness {
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentProbesLivenessExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -3215,7 +3212,7 @@ pub struct RuntimeComponentProbesLivenessExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentProbesLivenessGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -3228,7 +3225,7 @@ pub struct RuntimeComponentProbesLivenessGrpc {
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentProbesLivenessHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -3261,7 +3258,7 @@ pub struct RuntimeComponentProbesLivenessHttpGetHttpHeaders {
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentProbesLivenessTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -3276,17 +3273,17 @@ pub struct RuntimeComponentProbesLivenessTcpSocket {
 /// Periodic probe of container service readiness. Container will be removed from service endpoints if the probe fails.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentProbesReadiness {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<RuntimeComponentProbesReadinessExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<RuntimeComponentProbesReadinessGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<RuntimeComponentProbesReadinessHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -3301,7 +3298,7 @@ pub struct RuntimeComponentProbesReadiness {
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<RuntimeComponentProbesReadinessTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
@@ -3323,7 +3320,7 @@ pub struct RuntimeComponentProbesReadiness {
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentProbesReadinessExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -3335,7 +3332,7 @@ pub struct RuntimeComponentProbesReadinessExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentProbesReadinessGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -3348,7 +3345,7 @@ pub struct RuntimeComponentProbesReadinessGrpc {
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentProbesReadinessHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -3381,7 +3378,7 @@ pub struct RuntimeComponentProbesReadinessHttpGetHttpHeaders {
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentProbesReadinessTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -3396,17 +3393,17 @@ pub struct RuntimeComponentProbesReadinessTcpSocket {
 /// Probe to determine successful initialization. If specified, other probes are not executed until this completes successfully.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentProbesStartup {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<RuntimeComponentProbesStartupExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<RuntimeComponentProbesStartupGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<RuntimeComponentProbesStartupHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -3421,7 +3418,7 @@ pub struct RuntimeComponentProbesStartup {
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<RuntimeComponentProbesStartupTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
@@ -3443,7 +3440,7 @@ pub struct RuntimeComponentProbesStartup {
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentProbesStartupExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -3455,7 +3452,7 @@ pub struct RuntimeComponentProbesStartupExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentProbesStartupGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -3468,7 +3465,7 @@ pub struct RuntimeComponentProbesStartupGrpc {
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentProbesStartupHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -3501,7 +3498,7 @@ pub struct RuntimeComponentProbesStartupHttpGetHttpHeaders {
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentProbesStartupTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -3940,13 +3937,13 @@ pub struct RuntimeComponentSidecarContainersEnvValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
-/// EnvFromSource represents the source of a set of ConfigMaps
+/// EnvFromSource represents the source of a set of ConfigMaps or Secrets
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentSidecarContainersEnvFrom {
     /// The ConfigMap to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<RuntimeComponentSidecarContainersEnvFromConfigMapRef>,
-    /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
+    /// Optional text to prepend to the name of each environment variable. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// The Secret to select from
@@ -4005,6 +4002,11 @@ pub struct RuntimeComponentSidecarContainersLifecycle {
     /// More info: <https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<RuntimeComponentSidecarContainersLifecyclePreStop>,
+    /// StopSignal defines which signal will be sent to a container when it is being stopped.
+    /// If not specified, the default is defined by the container runtime in use.
+    /// StopSignal can only be set for Pods with a non-empty .spec.os.name
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
 }
 
 /// PostStart is called immediately after a container is created. If the handler fails,
@@ -4013,23 +4015,23 @@ pub struct RuntimeComponentSidecarContainersLifecycle {
 /// More info: <https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentSidecarContainersLifecyclePostStart {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<RuntimeComponentSidecarContainersLifecyclePostStartExec>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<RuntimeComponentSidecarContainersLifecyclePostStartHttpGet>,
-    /// Sleep represents the duration that the container should sleep before being terminated.
+    /// Sleep represents a duration that the container should sleep.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sleep: Option<RuntimeComponentSidecarContainersLifecyclePostStartSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-    /// for the backward compatibility. There are no validation of this field and
-    /// lifecycle hooks will fail in runtime when tcp handler is specified.
+    /// for backward compatibility. There is no validation of this field and
+    /// lifecycle hooks will fail at runtime when it is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<RuntimeComponentSidecarContainersLifecyclePostStartTcpSocket>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentSidecarContainersLifecyclePostStartExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -4041,7 +4043,7 @@ pub struct RuntimeComponentSidecarContainersLifecyclePostStartExec {
     pub command: Option<Vec<String>>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentSidecarContainersLifecyclePostStartHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -4074,7 +4076,7 @@ pub struct RuntimeComponentSidecarContainersLifecyclePostStartHttpGetHttpHeaders
     pub value: String,
 }
 
-/// Sleep represents the duration that the container should sleep before being terminated.
+/// Sleep represents a duration that the container should sleep.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentSidecarContainersLifecyclePostStartSleep {
     /// Seconds is the number of seconds to sleep.
@@ -4082,8 +4084,8 @@ pub struct RuntimeComponentSidecarContainersLifecyclePostStartSleep {
 }
 
 /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-/// for the backward compatibility. There are no validation of this field and
-/// lifecycle hooks will fail in runtime when tcp handler is specified.
+/// for backward compatibility. There is no validation of this field and
+/// lifecycle hooks will fail at runtime when it is specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentSidecarContainersLifecyclePostStartTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -4106,23 +4108,23 @@ pub struct RuntimeComponentSidecarContainersLifecyclePostStartTcpSocket {
 /// More info: <https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentSidecarContainersLifecyclePreStop {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<RuntimeComponentSidecarContainersLifecyclePreStopExec>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<RuntimeComponentSidecarContainersLifecyclePreStopHttpGet>,
-    /// Sleep represents the duration that the container should sleep before being terminated.
+    /// Sleep represents a duration that the container should sleep.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sleep: Option<RuntimeComponentSidecarContainersLifecyclePreStopSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-    /// for the backward compatibility. There are no validation of this field and
-    /// lifecycle hooks will fail in runtime when tcp handler is specified.
+    /// for backward compatibility. There is no validation of this field and
+    /// lifecycle hooks will fail at runtime when it is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<RuntimeComponentSidecarContainersLifecyclePreStopTcpSocket>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentSidecarContainersLifecyclePreStopExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -4134,7 +4136,7 @@ pub struct RuntimeComponentSidecarContainersLifecyclePreStopExec {
     pub command: Option<Vec<String>>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentSidecarContainersLifecyclePreStopHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -4167,7 +4169,7 @@ pub struct RuntimeComponentSidecarContainersLifecyclePreStopHttpGetHttpHeaders {
     pub value: String,
 }
 
-/// Sleep represents the duration that the container should sleep before being terminated.
+/// Sleep represents a duration that the container should sleep.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentSidecarContainersLifecyclePreStopSleep {
     /// Seconds is the number of seconds to sleep.
@@ -4175,8 +4177,8 @@ pub struct RuntimeComponentSidecarContainersLifecyclePreStopSleep {
 }
 
 /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-/// for the backward compatibility. There are no validation of this field and
-/// lifecycle hooks will fail in runtime when tcp handler is specified.
+/// for backward compatibility. There is no validation of this field and
+/// lifecycle hooks will fail at runtime when it is specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentSidecarContainersLifecyclePreStopTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -4194,17 +4196,17 @@ pub struct RuntimeComponentSidecarContainersLifecyclePreStopTcpSocket {
 /// More info: <https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentSidecarContainersLivenessProbe {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<RuntimeComponentSidecarContainersLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<RuntimeComponentSidecarContainersLivenessProbeGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<RuntimeComponentSidecarContainersLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -4219,7 +4221,7 @@ pub struct RuntimeComponentSidecarContainersLivenessProbe {
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<RuntimeComponentSidecarContainersLivenessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
@@ -4241,7 +4243,7 @@ pub struct RuntimeComponentSidecarContainersLivenessProbe {
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentSidecarContainersLivenessProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -4253,7 +4255,7 @@ pub struct RuntimeComponentSidecarContainersLivenessProbeExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentSidecarContainersLivenessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -4266,7 +4268,7 @@ pub struct RuntimeComponentSidecarContainersLivenessProbeGrpc {
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentSidecarContainersLivenessProbeHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -4299,7 +4301,7 @@ pub struct RuntimeComponentSidecarContainersLivenessProbeHttpGetHttpHeaders {
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentSidecarContainersLivenessProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -4344,17 +4346,17 @@ pub struct RuntimeComponentSidecarContainersPorts {
 /// More info: <https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentSidecarContainersReadinessProbe {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<RuntimeComponentSidecarContainersReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<RuntimeComponentSidecarContainersReadinessProbeGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<RuntimeComponentSidecarContainersReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -4369,7 +4371,7 @@ pub struct RuntimeComponentSidecarContainersReadinessProbe {
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<RuntimeComponentSidecarContainersReadinessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
@@ -4391,7 +4393,7 @@ pub struct RuntimeComponentSidecarContainersReadinessProbe {
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentSidecarContainersReadinessProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -4403,7 +4405,7 @@ pub struct RuntimeComponentSidecarContainersReadinessProbeExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentSidecarContainersReadinessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -4416,7 +4418,7 @@ pub struct RuntimeComponentSidecarContainersReadinessProbeGrpc {
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentSidecarContainersReadinessProbeHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -4449,7 +4451,7 @@ pub struct RuntimeComponentSidecarContainersReadinessProbeHttpGetHttpHeaders {
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentSidecarContainersReadinessProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -4712,17 +4714,17 @@ pub struct RuntimeComponentSidecarContainersSecurityContextWindowsOptions {
 /// More info: <https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentSidecarContainersStartupProbe {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<RuntimeComponentSidecarContainersStartupProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<RuntimeComponentSidecarContainersStartupProbeGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<RuntimeComponentSidecarContainersStartupProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -4737,7 +4739,7 @@ pub struct RuntimeComponentSidecarContainersStartupProbe {
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<RuntimeComponentSidecarContainersStartupProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
@@ -4759,7 +4761,7 @@ pub struct RuntimeComponentSidecarContainersStartupProbe {
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentSidecarContainersStartupProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -4771,7 +4773,7 @@ pub struct RuntimeComponentSidecarContainersStartupProbeExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentSidecarContainersStartupProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -4784,7 +4786,7 @@ pub struct RuntimeComponentSidecarContainersStartupProbeGrpc {
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentSidecarContainersStartupProbeHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -4817,7 +4819,7 @@ pub struct RuntimeComponentSidecarContainersStartupProbeHttpGetHttpHeaders {
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentSidecarContainersStartupProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -5357,26 +5359,35 @@ pub struct RuntimeComponentVolumeMounts {
 pub struct RuntimeComponentVolumes {
     /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
+    /// Deprecated: AWSElasticBlockStore is deprecated. All operations for the in-tree
+    /// awsElasticBlockStore type are redirected to the ebs.csi.aws.com CSI driver.
     /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
     pub aws_elastic_block_store: Option<RuntimeComponentVolumesAwsElasticBlockStore>,
     /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
+    /// Deprecated: AzureDisk is deprecated. All operations for the in-tree azureDisk type
+    /// are redirected to the disk.csi.azure.com CSI driver.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
     pub azure_disk: Option<RuntimeComponentVolumesAzureDisk>,
     /// azureFile represents an Azure File Service mount on the host and bind mount to the pod.
+    /// Deprecated: AzureFile is deprecated. All operations for the in-tree azureFile type
+    /// are redirected to the file.csi.azure.com CSI driver.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureFile")]
     pub azure_file: Option<RuntimeComponentVolumesAzureFile>,
-    /// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime
+    /// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime.
+    /// Deprecated: CephFS is deprecated and the in-tree cephfs type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cephfs: Option<RuntimeComponentVolumesCephfs>,
     /// cinder represents a cinder volume attached and mounted on kubelets host machine.
+    /// Deprecated: Cinder is deprecated. All operations for the in-tree cinder type
+    /// are redirected to the cinder.csi.openstack.org CSI driver.
     /// More info: <https://examples.k8s.io/mysql-cinder-pd/README.md>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cinder: Option<RuntimeComponentVolumesCinder>,
     /// configMap represents a configMap that should populate this volume
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<RuntimeComponentVolumesConfigMap>,
-    /// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature).
+    /// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<RuntimeComponentVolumesCsi>,
     /// downwardAPI represents downward API about the pod that should populate this volume
@@ -5417,23 +5428,28 @@ pub struct RuntimeComponentVolumes {
     pub fc: Option<RuntimeComponentVolumesFc>,
     /// flexVolume represents a generic volume resource that is
     /// provisioned/attached using an exec based plugin.
+    /// Deprecated: FlexVolume is deprecated. Consider using a CSIDriver instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
     pub flex_volume: Option<RuntimeComponentVolumesFlexVolume>,
-    /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
+    /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running.
+    /// Deprecated: Flocker is deprecated and the in-tree flocker type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub flocker: Option<RuntimeComponentVolumesFlocker>,
     /// gcePersistentDisk represents a GCE Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
+    /// Deprecated: GCEPersistentDisk is deprecated. All operations for the in-tree
+    /// gcePersistentDisk type are redirected to the pd.csi.storage.gke.io CSI driver.
     /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
     pub gce_persistent_disk: Option<RuntimeComponentVolumesGcePersistentDisk>,
     /// gitRepo represents a git repository at a particular revision.
-    /// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
+    /// Deprecated: GitRepo is deprecated. To provision a container with a git repo, mount an
     /// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
     /// into the Pod's container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitRepo")]
     pub git_repo: Option<RuntimeComponentVolumesGitRepo>,
     /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
+    /// Deprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer supported.
     /// More info: <https://examples.k8s.io/volumes/glusterfs/README.md>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub glusterfs: Option<RuntimeComponentVolumesGlusterfs>,
@@ -5456,7 +5472,7 @@ pub struct RuntimeComponentVolumes {
     /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
     /// The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
     /// The volume will be mounted read-only (ro) and non-executable files (noexec).
-    /// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath).
+    /// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.
     /// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<RuntimeComponentVolumesImage>,
@@ -5478,23 +5494,30 @@ pub struct RuntimeComponentVolumes {
     /// More info: <https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<RuntimeComponentVolumesPersistentVolumeClaim>,
-    /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
+    /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine.
+    /// Deprecated: PhotonPersistentDisk is deprecated and the in-tree photonPersistentDisk type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
     pub photon_persistent_disk: Option<RuntimeComponentVolumesPhotonPersistentDisk>,
-    /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
+    /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine.
+    /// Deprecated: PortworxVolume is deprecated. All operations for the in-tree portworxVolume type
+    /// are redirected to the pxd.portworx.com CSI driver when the CSIMigrationPortworx feature-gate
+    /// is on.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
     pub portworx_volume: Option<RuntimeComponentVolumesPortworxVolume>,
     /// projected items for all in one resources secrets, configmaps, and downward API
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub projected: Option<RuntimeComponentVolumesProjected>,
-    /// quobyte represents a Quobyte mount on the host that shares a pod's lifetime
+    /// quobyte represents a Quobyte mount on the host that shares a pod's lifetime.
+    /// Deprecated: Quobyte is deprecated and the in-tree quobyte type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub quobyte: Option<RuntimeComponentVolumesQuobyte>,
     /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
+    /// Deprecated: RBD is deprecated and the in-tree rbd type is no longer supported.
     /// More info: <https://examples.k8s.io/volumes/rbd/README.md>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rbd: Option<RuntimeComponentVolumesRbd>,
     /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
+    /// Deprecated: ScaleIO is deprecated and the in-tree scaleIO type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleIO")]
     pub scale_io: Option<RuntimeComponentVolumesScaleIo>,
     /// secret represents a secret that should populate this volume.
@@ -5502,15 +5525,20 @@ pub struct RuntimeComponentVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<RuntimeComponentVolumesSecret>,
     /// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
+    /// Deprecated: StorageOS is deprecated and the in-tree storageos type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storageos: Option<RuntimeComponentVolumesStorageos>,
-    /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
+    /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine.
+    /// Deprecated: VsphereVolume is deprecated. All operations for the in-tree vsphereVolume type
+    /// are redirected to the csi.vsphere.vmware.com CSI driver.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
     pub vsphere_volume: Option<RuntimeComponentVolumesVsphereVolume>,
 }
 
 /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
 /// kubelet's host machine and then exposed to the pod.
+/// Deprecated: AWSElasticBlockStore is deprecated. All operations for the in-tree
+/// awsElasticBlockStore type are redirected to the ebs.csi.aws.com CSI driver.
 /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentVolumesAwsElasticBlockStore {
@@ -5537,6 +5565,8 @@ pub struct RuntimeComponentVolumesAwsElasticBlockStore {
 }
 
 /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
+/// Deprecated: AzureDisk is deprecated. All operations for the in-tree azureDisk type
+/// are redirected to the disk.csi.azure.com CSI driver.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentVolumesAzureDisk {
     /// cachingMode is the Host Caching mode: None, Read Only, Read Write.
@@ -5563,6 +5593,8 @@ pub struct RuntimeComponentVolumesAzureDisk {
 }
 
 /// azureFile represents an Azure File Service mount on the host and bind mount to the pod.
+/// Deprecated: AzureFile is deprecated. All operations for the in-tree azureFile type
+/// are redirected to the file.csi.azure.com CSI driver.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentVolumesAzureFile {
     /// readOnly defaults to false (read/write). ReadOnly here will force
@@ -5577,7 +5609,8 @@ pub struct RuntimeComponentVolumesAzureFile {
     pub share_name: String,
 }
 
-/// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime
+/// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime.
+/// Deprecated: CephFS is deprecated and the in-tree cephfs type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentVolumesCephfs {
     /// monitors is Required: Monitors is a collection of Ceph monitors
@@ -5619,6 +5652,8 @@ pub struct RuntimeComponentVolumesCephfsSecretRef {
 }
 
 /// cinder represents a cinder volume attached and mounted on kubelets host machine.
+/// Deprecated: Cinder is deprecated. All operations for the in-tree cinder type
+/// are redirected to the cinder.csi.openstack.org CSI driver.
 /// More info: <https://examples.k8s.io/mysql-cinder-pd/README.md>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentVolumesCinder {
@@ -5709,7 +5744,7 @@ pub struct RuntimeComponentVolumesConfigMapItems {
     pub path: String,
 }
 
-/// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature).
+/// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentVolumesCsi {
     /// driver is the name of the CSI driver that handles this volume.
@@ -6160,6 +6195,7 @@ pub struct RuntimeComponentVolumesFc {
 
 /// flexVolume represents a generic volume resource that is
 /// provisioned/attached using an exec based plugin.
+/// Deprecated: FlexVolume is deprecated. Consider using a CSIDriver instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentVolumesFlexVolume {
     /// driver is the name of the driver to use for this volume.
@@ -6201,7 +6237,8 @@ pub struct RuntimeComponentVolumesFlexVolumeSecretRef {
     pub name: Option<String>,
 }
 
-/// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
+/// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running.
+/// Deprecated: Flocker is deprecated and the in-tree flocker type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentVolumesFlocker {
     /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker
@@ -6215,6 +6252,8 @@ pub struct RuntimeComponentVolumesFlocker {
 
 /// gcePersistentDisk represents a GCE Disk resource that is attached to a
 /// kubelet's host machine and then exposed to the pod.
+/// Deprecated: GCEPersistentDisk is deprecated. All operations for the in-tree
+/// gcePersistentDisk type are redirected to the pd.csi.storage.gke.io CSI driver.
 /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentVolumesGcePersistentDisk {
@@ -6243,7 +6282,7 @@ pub struct RuntimeComponentVolumesGcePersistentDisk {
 }
 
 /// gitRepo represents a git repository at a particular revision.
-/// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
+/// Deprecated: GitRepo is deprecated. To provision a container with a git repo, mount an
 /// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
 /// into the Pod's container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6262,6 +6301,7 @@ pub struct RuntimeComponentVolumesGitRepo {
 }
 
 /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
+/// Deprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer supported.
 /// More info: <https://examples.k8s.io/volumes/glusterfs/README.md>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentVolumesGlusterfs {
@@ -6308,7 +6348,7 @@ pub struct RuntimeComponentVolumesHostPath {
 /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
 /// The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
 /// The volume will be mounted read-only (ro) and non-executable files (noexec).
-/// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath).
+/// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.
 /// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentVolumesImage {
@@ -6420,7 +6460,8 @@ pub struct RuntimeComponentVolumesPersistentVolumeClaim {
     pub read_only: Option<bool>,
 }
 
-/// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
+/// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine.
+/// Deprecated: PhotonPersistentDisk is deprecated and the in-tree photonPersistentDisk type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentVolumesPhotonPersistentDisk {
     /// fsType is the filesystem type to mount.
@@ -6433,7 +6474,10 @@ pub struct RuntimeComponentVolumesPhotonPersistentDisk {
     pub pd_id: String,
 }
 
-/// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
+/// portworxVolume represents a portworx volume attached and mounted on kubelets host machine.
+/// Deprecated: PortworxVolume is deprecated. All operations for the in-tree portworxVolume type
+/// are redirected to the pxd.portworx.com CSI driver when the CSIMigrationPortworx feature-gate
+/// is on.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentVolumesPortworxVolume {
     /// fSType represents the filesystem type to mount
@@ -6739,7 +6783,8 @@ pub struct RuntimeComponentVolumesProjectedSourcesServiceAccountToken {
     pub path: String,
 }
 
-/// quobyte represents a Quobyte mount on the host that shares a pod's lifetime
+/// quobyte represents a Quobyte mount on the host that shares a pod's lifetime.
+/// Deprecated: Quobyte is deprecated and the in-tree quobyte type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentVolumesQuobyte {
     /// group to map volume access to
@@ -6767,6 +6812,7 @@ pub struct RuntimeComponentVolumesQuobyte {
 }
 
 /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
+/// Deprecated: RBD is deprecated and the in-tree rbd type is no longer supported.
 /// More info: <https://examples.k8s.io/volumes/rbd/README.md>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentVolumesRbd {
@@ -6826,6 +6872,7 @@ pub struct RuntimeComponentVolumesRbdSecretRef {
 }
 
 /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
+/// Deprecated: ScaleIO is deprecated and the in-tree scaleIO type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentVolumesScaleIo {
     /// fsType is the filesystem type to mount.
@@ -6930,6 +6977,7 @@ pub struct RuntimeComponentVolumesSecretItems {
 }
 
 /// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
+/// Deprecated: StorageOS is deprecated and the in-tree storageos type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentVolumesStorageos {
     /// fsType is the filesystem type to mount.
@@ -6972,7 +7020,9 @@ pub struct RuntimeComponentVolumesStorageosSecretRef {
     pub name: Option<String>,
 }
 
-/// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
+/// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine.
+/// Deprecated: VsphereVolume is deprecated. All operations for the in-tree vsphereVolume type
+/// are redirected to the csi.vsphere.vmware.com CSI driver.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentVolumesVsphereVolume {
     /// fsType is filesystem type to mount.

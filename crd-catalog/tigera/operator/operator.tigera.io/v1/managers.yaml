@@ -47,11 +47,13 @@ spec:
                                     description: "ManagerDeploymentContainer is a Manager Deployment container."
                                     properties:
                                       name:
-                                        description: "Name is an enum which identifies the Manager Deployment container by name.\nSupported values are: tigera-voltron, tigera-manager, tigera-ui-apis, and tigera-es-proxy (deprecated)."
+                                        description: "Name is an enum which identifies the Manager Deployment container by name.\nSupported values are: calico-voltron, calico-manager, calico-ui-apis, tigera-voltron (deprecated), tigera-manager (deprecated), tigera-ui-apis (deprecated), tigera-es-proxy (deprecated)"
                                         enum:
+                                          - "calico-voltron"
+                                          - "calico-manager"
+                                          - "calico-ui-apis"
                                           - "tigera-voltron"
                                           - "tigera-manager"
-                                          - "tigera-es-proxy"
                                           - "tigera-ui-apis"
                                         type: "string"
                                       resources:
@@ -104,10 +106,11 @@ spec:
                                     description: "ManagerDeploymentInitContainer is a Manager Deployment init container."
                                     properties:
                                       name:
-                                        description: "Name is an enum which identifies the Manager Deployment init container by name.\nSupported values are: manager-tls-key-cert-provisioner, internal-manager-tls-key-cert-provisioner, tigera-voltron-linseed-tls-key-cert-provisioner"
+                                        description: "Name is an enum which identifies the Manager Deployment init container by name.\nSupported values are: manager-tls-key-cert-provisioner, internal-manager-tls-key-cert-provisioner, calico-voltron-linseed-tls-key-cert-provisioner, tigera-voltron-linseed-tls-key-cert-provisioner (deprecated)"
                                         enum:
                                           - "manager-tls-key-cert-provisioner"
                                           - "internal-manager-tls-key-cert-provisioner"
+                                          - "calico-voltron-linseed-tls-key-cert-provisioner"
                                           - "tigera-voltron-linseed-tls-key-cert-provisioner"
                                         type: "string"
                                       resources:
@@ -211,6 +214,9 @@ spec:
                   type: "string"
               type: "object"
           type: "object"
+          x-kubernetes-validations:
+            - message: "resource name must be 'tigera-secure'"
+              rule: "self.metadata.name == 'tigera-secure'"
       served: true
       storage: true
       subresources:

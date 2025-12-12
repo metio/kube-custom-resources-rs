@@ -1224,6 +1224,11 @@ spec:
                           description: "UnhealthyPodEvictionPolicy defines the criteria for when unhealthy pods\nshould be considered for eviction. Current implementation considers healthy pods,\nas pods that have status.conditions item with type=\"Ready\",status=\"True\".\n\nValid policies are IfHealthyBudget and AlwaysAllow.\nIf no policy is specified, the default behavior will be used,\nwhich corresponds to the IfHealthyBudget policy.\n\nIfHealthyBudget policy means that running pods (status.phase=\"Running\"),\nbut not yet healthy can be evicted only if the guarded application is not\ndisrupted (status.currentHealthy is at least equal to status.desiredHealthy).\nHealthy pods will be subject to the PDB for eviction.\n\nAlwaysAllow policy means that all running pods (status.phase=\"Running\"),\nbut not yet healthy are considered disrupted and can be evicted regardless\nof whether the criteria in a PDB is met. This means perspective running\npods of a disrupted application might not get a chance to become healthy.\nHealthy pods will be subject to the PDB for eviction.\n\nAdditional policies may be added in the future.\nClients making eviction decisions should disallow eviction of unhealthy pods\nif they encounter an unrecognized policy in this field."
                           type: "string"
                       type: "object"
+                    pod_labels:
+                      additionalProperties:
+                        type: "string"
+                      description: "Labels to add to api pods"
+                      type: "object"
                     readinessProbe:
                       description: "Periodic probe of container service readiness.\nContainer will be removed from service endpoints if the probe fails."
                       properties:
@@ -2171,6 +2176,11 @@ spec:
                       additionalProperties:
                         type: "string"
                       description: "NodeSelector for the Pulp pods."
+                      type: "object"
+                    pod_labels:
+                      additionalProperties:
+                        type: "string"
+                      description: "Labels to add to cache pods"
                       type: "object"
                     pvc:
                       description: "PersistenVolumeClaim name that will be used by Redis pods\nIf defined, the PVC must be provisioned by the user and the operator will only\nconfigure the deployment to use it"
@@ -3415,6 +3425,11 @@ spec:
                           description: "UnhealthyPodEvictionPolicy defines the criteria for when unhealthy pods\nshould be considered for eviction. Current implementation considers healthy pods,\nas pods that have status.conditions item with type=\"Ready\",status=\"True\".\n\nValid policies are IfHealthyBudget and AlwaysAllow.\nIf no policy is specified, the default behavior will be used,\nwhich corresponds to the IfHealthyBudget policy.\n\nIfHealthyBudget policy means that running pods (status.phase=\"Running\"),\nbut not yet healthy can be evicted only if the guarded application is not\ndisrupted (status.currentHealthy is at least equal to status.desiredHealthy).\nHealthy pods will be subject to the PDB for eviction.\n\nAlwaysAllow policy means that all running pods (status.phase=\"Running\"),\nbut not yet healthy are considered disrupted and can be evicted regardless\nof whether the criteria in a PDB is met. This means perspective running\npods of a disrupted application might not get a chance to become healthy.\nHealthy pods will be subject to the PDB for eviction.\n\nAdditional policies may be added in the future.\nClients making eviction decisions should disallow eviction of unhealthy pods\nif they encounter an unrecognized policy in this field."
                           type: "string"
                       type: "object"
+                    pod_labels:
+                      additionalProperties:
+                        type: "string"
+                      description: "Labels to add to content pods"
+                      type: "object"
                     readinessProbe:
                       description: "Periodic probe of container service readiness.\nContainer will be removed from service endpoints if the probe fails."
                       properties:
@@ -4356,6 +4371,11 @@ spec:
                       additionalProperties:
                         type: "string"
                       description: "NodeSelector for the database pod."
+                      type: "object"
+                    pod_labels:
+                      additionalProperties:
+                        type: "string"
+                      description: "Labels to add to database pods"
                       type: "object"
                     postgres_data_path:
                       description: "Registry path to the PostgreSQL container to use.\nDefault: \"/var/lib/postgresql/data/pgdata\""
@@ -5437,6 +5457,11 @@ spec:
                         unhealthyPodEvictionPolicy:
                           description: "UnhealthyPodEvictionPolicy defines the criteria for when unhealthy pods\nshould be considered for eviction. Current implementation considers healthy pods,\nas pods that have status.conditions item with type=\"Ready\",status=\"True\".\n\nValid policies are IfHealthyBudget and AlwaysAllow.\nIf no policy is specified, the default behavior will be used,\nwhich corresponds to the IfHealthyBudget policy.\n\nIfHealthyBudget policy means that running pods (status.phase=\"Running\"),\nbut not yet healthy can be evicted only if the guarded application is not\ndisrupted (status.currentHealthy is at least equal to status.desiredHealthy).\nHealthy pods will be subject to the PDB for eviction.\n\nAlwaysAllow policy means that all running pods (status.phase=\"Running\"),\nbut not yet healthy are considered disrupted and can be evicted regardless\nof whether the criteria in a PDB is met. This means perspective running\npods of a disrupted application might not get a chance to become healthy.\nHealthy pods will be subject to the PDB for eviction.\n\nAdditional policies may be added in the future.\nClients making eviction decisions should disallow eviction of unhealthy pods\nif they encounter an unrecognized policy in this field."
                           type: "string"
+                      type: "object"
+                    pod_labels:
+                      additionalProperties:
+                        type: "string"
+                      description: "Labels to add to web pods"
                       type: "object"
                     readinessProbe:
                       description: "Periodic probe of container service readiness.\nContainer will be removed from service endpoints if the probe fails."
@@ -6648,6 +6673,11 @@ spec:
                         unhealthyPodEvictionPolicy:
                           description: "UnhealthyPodEvictionPolicy defines the criteria for when unhealthy pods\nshould be considered for eviction. Current implementation considers healthy pods,\nas pods that have status.conditions item with type=\"Ready\",status=\"True\".\n\nValid policies are IfHealthyBudget and AlwaysAllow.\nIf no policy is specified, the default behavior will be used,\nwhich corresponds to the IfHealthyBudget policy.\n\nIfHealthyBudget policy means that running pods (status.phase=\"Running\"),\nbut not yet healthy can be evicted only if the guarded application is not\ndisrupted (status.currentHealthy is at least equal to status.desiredHealthy).\nHealthy pods will be subject to the PDB for eviction.\n\nAlwaysAllow policy means that all running pods (status.phase=\"Running\"),\nbut not yet healthy are considered disrupted and can be evicted regardless\nof whether the criteria in a PDB is met. This means perspective running\npods of a disrupted application might not get a chance to become healthy.\nHealthy pods will be subject to the PDB for eviction.\n\nAdditional policies may be added in the future.\nClients making eviction decisions should disallow eviction of unhealthy pods\nif they encounter an unrecognized policy in this field."
                           type: "string"
+                      type: "object"
+                    pod_labels:
+                      additionalProperties:
+                        type: "string"
+                      description: "Labels to add to worker pods"
                       type: "object"
                     readinessProbe:
                       description: "Periodic probe of container service readiness.\nContainer will be removed from service endpoints if the probe fails."

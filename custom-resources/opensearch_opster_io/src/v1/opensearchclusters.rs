@@ -50,6 +50,8 @@ pub struct OpenSearchClusterBootstrap {
     pub affinity: Option<OpenSearchClusterBootstrapAffinity>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskSize")]
+    pub disk_size: Option<IntOrString>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
     pub host_aliases: Option<Vec<OpenSearchClusterBootstrapHostAliases>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
@@ -4120,7 +4122,7 @@ pub struct OpenSearchClusterNodePools {
     pub annotations: Option<BTreeMap<String, String>>,
     pub component: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskSize")]
-    pub disk_size: Option<String>,
+    pub disk_size: Option<IntOrString>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<OpenSearchClusterNodePoolsEnv>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
@@ -5303,7 +5305,8 @@ pub struct OpenSearchClusterSecurityConfig {
     /// TLS Secret that contains a client certificate (tls.key, tls.crt, ca.crt) with admin rights in the opensearch cluster. Must be set if http certificates are provided by user and not generated
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminSecret")]
     pub admin_secret: Option<OpenSearchClusterSecurityConfigAdminSecret>,
-    /// Secret that contains the different yml files of the opensearch-security config (config.yml, internal_users.yml, ...)
+    /// Optional secret that contains the different yml files of the opensearch-security config (config.yml, internal_users.yml, ...).
+    /// When omitted the operator seeds the cluster with its bundled defaults.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityConfigSecret")]
     pub security_config_secret: Option<OpenSearchClusterSecurityConfigSecurityConfigSecret>,
     /// Specific configs for the SecurityConfig update job
@@ -5335,7 +5338,8 @@ pub struct OpenSearchClusterSecurityConfigAdminSecret {
     pub name: Option<String>,
 }
 
-/// Secret that contains the different yml files of the opensearch-security config (config.yml, internal_users.yml, ...)
+/// Optional secret that contains the different yml files of the opensearch-security config (config.yml, internal_users.yml, ...).
+/// When omitted the operator seeds the cluster with its bundled defaults.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpenSearchClusterSecurityConfigSecurityConfigSecret {
     /// Name of the referent.
@@ -5424,7 +5428,6 @@ pub struct OpenSearchClusterSecurityTlsHttp {
     /// If false: TLS is explicitly disabled for HTTP.
     /// 
     /// If not set (default): TLS is enabled if HTTP configuration is provided, or if security.tls is set.
-    /// If spec.general.disableSSL is true, this overrides to false.
     /// 
     /// If true: TLS is explicitly enabled. HTTP configuration must be provided.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5532,11 +5535,15 @@ pub struct OpenSearchClusterSecurityTlsTransportSecret {
 /// ClusterStatus defines the observed state of Es
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpenSearchClusterStatus {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub adminsecretcreated: Option<bool>,
     /// AvailableNodes is the number of available instances.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableNodes")]
     pub available_nodes: Option<i32>,
     #[serde(rename = "componentsStatus")]
     pub components_status: Vec<OpenSearchClusterStatusComponentsStatus>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contextsecretcreated: Option<bool>,
     /// OpenSearchHealth is the health of the cluster as returned by the health API.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub health: Option<String>,

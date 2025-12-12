@@ -18,6 +18,14 @@ use self::prelude::*;
 #[kube(schema = "disabled")]
 #[kube(derive="PartialEq")]
 pub struct ServiceImportSpec {
+    /// InternalTrafficPolicy describes how nodes distribute service traffic they
+    /// receive on the ClusterIP. If set to "Local", the proxy will assume that pods
+    /// only want to talk to endpoints of the service on the same node as the pod,
+    /// dropping the traffic if there are no local endpoints. The default value,
+    /// "Cluster", uses the standard behavior of routing to all endpoints evenly
+    /// (possibly modified by topology and other features).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "internalTrafficPolicy")]
+    pub internal_traffic_policy: Option<String>,
     /// IPFamilies identifies all the IPFamilies assigned for this ServiceImport.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilies")]
     pub ip_families: Option<Vec<String>>,
@@ -36,6 +44,14 @@ pub struct ServiceImportSpec {
     /// sessionAffinityConfig contains session affinity configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionAffinityConfig")]
     pub session_affinity_config: Option<ServiceImportSessionAffinityConfig>,
+    /// TrafficDistribution offers a way to express preferences for how traffic
+    /// is distributed to Service endpoints. Implementations can use this field
+    /// as a hint, but are not required to guarantee strict adherence. If the
+    /// field is not set, the implementation will apply its default routing
+    /// strategy. If set to "PreferClose", implementations should prioritize
+    /// endpoints that are in the same zone.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trafficDistribution")]
+    pub traffic_distribution: Option<String>,
     /// type defines the type of this service.
     /// Must be ClusterSetIP or Headless.
     #[serde(rename = "type")]

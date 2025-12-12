@@ -53,7 +53,7 @@ spec:
                   description: "ServiceAccounts within tenant namespaces can be promoted to owners of the given tenant\nthis can be achieved by labeling the serviceaccount and then they are considered owners. This can only be done by other owners of the tenant.\nHowever ServiceAccounts which have been promoted to owner can not promote further serviceAccounts."
                   type: "boolean"
                 enableTLSReconciler:
-                  default: true
+                  default: false
                   description: "Toggles the TLS reconciler, the controller that is able to generate CA and certificates for the webhooks\nwhen not using an already provided CA and certificate, or when these are managed externally with Vault, or cert-manager."
                   type: "boolean"
                 forceTenantPrefix:
@@ -88,9 +88,6 @@ spec:
                         deniedRegex:
                           type: "string"
                       type: "object"
-                  required:
-                    - "forbiddenAnnotations"
-                    - "forbiddenLabels"
                   type: "object"
                 overrides:
                   default:
@@ -153,6 +150,8 @@ spec:
               required:
                 - "enableTLSReconciler"
               type: "object"
+          required:
+            - "spec"
           type: "object"
       served: true
       storage: true

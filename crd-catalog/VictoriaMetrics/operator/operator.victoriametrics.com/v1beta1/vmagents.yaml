@@ -2147,6 +2147,9 @@ spec:
                       attachMetadata:
                         description: "AttachMetadata defines additional metadata to the discovered targets.\nWhen the scrape object defines its own configuration, it takes\nprecedence over the scrape class configuration."
                         properties:
+                          namespace:
+                            description: "Namespace instructs vmagent to add namespace specific metadata from service discovery\nValid for roles: pod, service, endpoints, endpointslice, ingress."
+                            type: "boolean"
                           node:
                             description: "Node instructs vmagent to add node specific metadata from service discovery\nValid for roles: pod, endpoints, endpointslice."
                             type: "boolean"
@@ -3478,7 +3481,7 @@ spec:
                   description: "UseStrictSecurity enables strict security mode for component\nit restricts disk writes access\nuses non-root user out of the box\ndrops not needed security permissions"
                   type: "boolean"
                 useVMConfigReloader:
-                  description: "UseVMConfigReloader replaces prometheus-like config-reloader\nwith vm one. It uses secrets watch instead of file watch\nwhich greatly increases speed of config updates"
+                  description: "UseVMConfigReloader replaces prometheus-like config-reloader\nwith vm one. It uses secrets watch instead of file watch\nwhich greatly increases speed of config updates\nRemoved since v0.67.0: this property is ignored and no longer needed"
                   type: "boolean"
                 vmAgentExternalLabelName:
                   description: "VMAgentExternalLabelName Name of vmAgent external label used to denote vmAgent instance\nname. Defaults to the value of `prometheus`. External label will\n_not_ be added when value is set to empty string (`\"\"`)."

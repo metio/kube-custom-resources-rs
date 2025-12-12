@@ -169,7 +169,7 @@ pub struct VerticalPodAutoscalerUpdatePolicy {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReplicas")]
     pub min_replicas: Option<i32>,
     /// Controls when autoscaler applies changes to the pod resources.
-    /// The default is 'Auto'.
+    /// The default is 'Recreate'.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateMode")]
     pub update_mode: Option<VerticalPodAutoscalerUpdatePolicyUpdateMode>,
 }

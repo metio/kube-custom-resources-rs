@@ -92,6 +92,10 @@ pub struct ResourceSetInputProviderFilter {
     /// that the input provider should exclude.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludeBranch")]
     pub exclude_branch: Option<String>,
+    /// ExcludeEnvironment specifies the regular expression to filter the environments
+    /// that the input provider should exclude.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludeEnvironment")]
+    pub exclude_environment: Option<String>,
     /// ExcludeTag specifies the regular expression to filter the tags
     /// that the input provider should exclude.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludeTag")]
@@ -100,6 +104,10 @@ pub struct ResourceSetInputProviderFilter {
     /// that the input provider should include.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeBranch")]
     pub include_branch: Option<String>,
+    /// IncludeEnvironment specifies the regular expression to filter the environments
+    /// that the input provider should include.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeEnvironment")]
+    pub include_environment: Option<String>,
     /// IncludeTag specifies the regular expression to filter the tags
     /// that the input provider should include.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeTag")]
@@ -165,6 +173,7 @@ pub enum ResourceSetInputProviderType {
     GitLabBranch,
     GitLabTag,
     GitLabMergeRequest,
+    GitLabEnvironment,
     AzureDevOpsBranch,
     AzureDevOpsTag,
     AzureDevOpsPullRequest,

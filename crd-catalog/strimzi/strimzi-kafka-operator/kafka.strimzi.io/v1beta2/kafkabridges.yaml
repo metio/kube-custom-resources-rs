@@ -50,7 +50,7 @@ spec:
             metadata:
               type: "object"
             spec:
-              description: "The specification of the Kafka Bridge."
+              description: "The specification of the HTTP Bridge."
               properties:
                 adminClient:
                   description: "Kafka AdminClient related configuration."
@@ -92,7 +92,7 @@ spec:
                           description: "The name of the file certificate in the Secret."
                           type: "string"
                         key:
-                          description: "The name of the private key in the Secret."
+                          description: "The name of the private key in the secret. The private key must be in unencrypted PKCS #8 format. For more information, see RFC 5208: https://datatracker.ietf.org/doc/html/rfc5208."
                           type: "string"
                         secretName:
                           description: "The name of the Secret containing the certificate."
@@ -271,7 +271,7 @@ spec:
                       type: "integer"
                   type: "object"
                 enableMetrics:
-                  description: "Enable the metrics for the Kafka Bridge. Default is false."
+                  description: "Enable the metrics for the HTTP Bridge. Default is false."
                   type: "boolean"
                 http:
                   description: "The HTTP related configuration."
@@ -299,7 +299,7 @@ spec:
                       type: "integer"
                   type: "object"
                 image:
-                  description: "The container image used for Kafka Bridge pods. If no image name is explicitly specified, the image name corresponds to the image specified in the Cluster Operator configuration. If an image name is not defined in the Cluster Operator configuration, a default value is used."
+                  description: "The container image used for HTTP Bridge pods. If no image name is explicitly specified, the image name corresponds to the image specified in the Cluster Operator configuration. If an image name is not defined in the Cluster Operator configuration, a default value is used."
                   type: "string"
                 jvmOptions:
                   description: "JVM Options for pods."
@@ -358,7 +358,7 @@ spec:
                       type: "integer"
                   type: "object"
                 logging:
-                  description: "Logging configuration for Kafka Bridge."
+                  description: "Logging configuration for HTTP Bridge."
                   properties:
                     loggers:
                       additionalProperties:
@@ -505,10 +505,10 @@ spec:
                       type: "object"
                   type: "object"
                 template:
-                  description: "Template for Kafka Bridge resources. The template allows users to specify how a `Deployment` and `Pod` is generated."
+                  description: "Template for HTTP Bridge resources. The template allows users to specify how a `Deployment` and `Pod` is generated."
                   properties:
                     apiService:
-                      description: "Template for Kafka Bridge API `Service`."
+                      description: "Template for HTTP Bridge API `Service`."
                       properties:
                         ipFamilies:
                           description: "Specifies the IP Families used by the service. Available options are `IPv4` and `IPv6`. If unspecified, Kubernetes will choose the default value based on the `ipFamilyPolicy` setting."
@@ -541,7 +541,7 @@ spec:
                           type: "object"
                       type: "object"
                     bridgeContainer:
-                      description: "Template for the Kafka Bridge container."
+                      description: "Template for the HTTP Bridge container."
                       properties:
                         env:
                           description: "Environment variables which should be applied to the container."
@@ -684,7 +684,7 @@ spec:
                           type: "array"
                       type: "object"
                     clusterRoleBinding:
-                      description: "Template for the Kafka Bridge ClusterRoleBinding."
+                      description: "Template for the HTTP Bridge ClusterRoleBinding."
                       properties:
                         metadata:
                           description: "Metadata applied to the resource."
@@ -702,7 +702,7 @@ spec:
                           type: "object"
                       type: "object"
                     deployment:
-                      description: "Template for Kafka Bridge `Deployment`."
+                      description: "Template for HTTP Bridge `Deployment`."
                       properties:
                         deploymentStrategy:
                           description: "Pod replacement strategy for deployment configuration changes. Valid values are `RollingUpdate` and `Recreate`. Defaults to `RollingUpdate`."
@@ -726,7 +726,7 @@ spec:
                           type: "object"
                       type: "object"
                     initContainer:
-                      description: "Template for the Kafka Bridge init container."
+                      description: "Template for the HTTP Bridge init container."
                       properties:
                         env:
                           description: "Environment variables which should be applied to the container."
@@ -869,7 +869,7 @@ spec:
                           type: "array"
                       type: "object"
                     pod:
-                      description: "Template for Kafka Bridge `Pods`."
+                      description: "Template for HTTP Bridge `Pods`."
                       properties:
                         affinity:
                           description: "The pod's affinity rules."
@@ -1514,7 +1514,7 @@ spec:
                           type: "array"
                       type: "object"
                     podDisruptionBudget:
-                      description: "Template for Kafka Bridge `PodDisruptionBudget`."
+                      description: "Template for HTTP Bridge `PodDisruptionBudget`."
                       properties:
                         maxUnavailable:
                           description: "Maximum number of unavailable pods to allow automatic Pod eviction. A Pod eviction is allowed when the `maxUnavailable` number of pods or fewer are unavailable after the eviction. Setting this value to 0 prevents all voluntary evictions, so the pods must be evicted manually. Defaults to 1."
@@ -1536,7 +1536,7 @@ spec:
                           type: "object"
                       type: "object"
                     serviceAccount:
-                      description: "Template for the Kafka Bridge service account."
+                      description: "Template for the HTTP Bridge service account."
                       properties:
                         metadata:
                           description: "Metadata applied to the resource."
@@ -1555,7 +1555,7 @@ spec:
                       type: "object"
                   type: "object"
                 tls:
-                  description: "TLS configuration for connecting Kafka Bridge to the cluster."
+                  description: "TLS configuration for connecting HTTP Bridge to the cluster."
                   properties:
                     trustedCertificates:
                       description: "Trusted certificates for TLS connection."
@@ -1585,7 +1585,7 @@ spec:
                       type: "array"
                   type: "object"
                 tracing:
-                  description: "The configuration of tracing in Kafka Bridge."
+                  description: "The configuration of tracing in HTTP Bridge."
                   properties:
                     type:
                       description: "Type of the tracing used. Currently the only supported type is `opentelemetry` for OpenTelemetry tracing. As of Strimzi 0.37.0, `jaeger` type is not supported anymore and this option is ignored."
@@ -1600,7 +1600,7 @@ spec:
                 - "bootstrapServers"
               type: "object"
             status:
-              description: "The status of the Kafka Bridge."
+              description: "The status of the HTTP Bridge."
               properties:
                 conditions:
                   description: "List of status conditions."
@@ -1633,7 +1633,7 @@ spec:
                   description: "The current number of pods being used to provide this resource."
                   type: "integer"
                 url:
-                  description: "The URL at which external client applications can access the Kafka Bridge."
+                  description: "The URL at which external client applications can access the HTTP Bridge."
                   type: "string"
               type: "object"
           type: "object"

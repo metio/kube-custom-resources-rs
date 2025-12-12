@@ -171,7 +171,7 @@ spec:
                       format: "int32"
                       type: "integer"
                     updateMode:
-                      description: "Controls when autoscaler applies changes to the pod resources.\nThe default is 'Auto'."
+                      description: "Controls when autoscaler applies changes to the pod resources.\nThe default is 'Recreate'."
                       enum:
                         - "Off"
                         - "Initial"

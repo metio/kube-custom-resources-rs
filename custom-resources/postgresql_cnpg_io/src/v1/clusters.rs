@@ -150,7 +150,10 @@ pub struct ClusterSpec {
     pub postgresql: Option<ClusterPostgresql>,
     /// Method to follow to upgrade the primary server during a rolling
     /// update procedure, after all replicas have been successfully updated:
-    /// it can be with a switchover (`switchover`) or in-place (`restart` - default)
+    /// it can be with a switchover (`switchover`) or in-place (`restart` - default).
+    /// Note: when using `switchover`, the operator will reject updates that change both
+    /// the image name and PostgreSQL configuration parameters simultaneously to avoid
+    /// configuration mismatches during the switchover process.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "primaryUpdateMethod")]
     pub primary_update_method: Option<ClusterPrimaryUpdateMethod>,
     /// Deployment strategy to follow to upgrade the primary server during a rolling

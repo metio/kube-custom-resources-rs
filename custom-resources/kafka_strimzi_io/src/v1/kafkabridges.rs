@@ -12,7 +12,7 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// The specification of the Kafka Bridge.
+/// The specification of the HTTP Bridge.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "kafka.strimzi.io", version = "v1", kind = "KafkaBridge", plural = "kafkabridges")]
 #[kube(namespaced)]
@@ -39,7 +39,7 @@ pub struct KafkaBridgeSpec {
     /// The HTTP related configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http: Option<KafkaBridgeHttp>,
-    /// The container image used for Kafka Bridge pods. If no image name is explicitly specified, the image name corresponds to the image specified in the Cluster Operator configuration. If an image name is not defined in the Cluster Operator configuration, a default value is used.
+    /// The container image used for HTTP Bridge pods. If no image name is explicitly specified, the image name corresponds to the image specified in the Cluster Operator configuration. If an image name is not defined in the Cluster Operator configuration, a default value is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// JVM Options for pods.
@@ -48,7 +48,7 @@ pub struct KafkaBridgeSpec {
     /// Pod liveness checking.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<KafkaBridgeLivenessProbe>,
-    /// Logging configuration for Kafka Bridge.
+    /// Logging configuration for HTTP Bridge.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<KafkaBridgeLogging>,
     /// Metrics configuration.
@@ -68,13 +68,13 @@ pub struct KafkaBridgeSpec {
     /// CPU and memory resources to reserve.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<KafkaBridgeResources>,
-    /// Template for Kafka Bridge resources. The template allows users to specify how a `Deployment` and `Pod` is generated.
+    /// Template for HTTP Bridge resources. The template allows users to specify how a `Deployment` and `Pod` is generated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub template: Option<KafkaBridgeTemplate>,
-    /// TLS configuration for connecting Kafka Bridge to the cluster.
+    /// TLS configuration for connecting HTTP Bridge to the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<KafkaBridgeTls>,
-    /// The configuration of tracing in Kafka Bridge.
+    /// The configuration of tracing in HTTP Bridge.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tracing: Option<KafkaBridgeTracing>,
 }
@@ -115,7 +115,7 @@ pub struct KafkaBridgeAuthentication {
 pub struct KafkaBridgeAuthenticationCertificateAndKey {
     /// The name of the file certificate in the Secret.
     pub certificate: String,
-    /// The name of the private key in the Secret.
+    /// The name of the private key in the secret. The private key must be in unencrypted PKCS #8 format. For more information, see RFC 5208: <https://datatracker.ietf.org/doc/html/rfc5208.>
     pub key: String,
     /// The name of the Secret containing the certificate.
     #[serde(rename = "secretName")]
@@ -233,7 +233,7 @@ pub struct KafkaBridgeLivenessProbe {
     pub timeout_seconds: Option<i64>,
 }
 
-/// Logging configuration for Kafka Bridge.
+/// Logging configuration for HTTP Bridge.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KafkaBridgeLogging {
     /// A Map from logger name to logger level.
@@ -247,7 +247,7 @@ pub struct KafkaBridgeLogging {
     pub value_from: Option<KafkaBridgeLoggingValueFrom>,
 }
 
-/// Logging configuration for Kafka Bridge.
+/// Logging configuration for HTTP Bridge.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaBridgeLoggingType {
     #[serde(rename = "inline")]
@@ -383,36 +383,36 @@ pub struct KafkaBridgeResourcesClaims {
     pub request: Option<String>,
 }
 
-/// Template for Kafka Bridge resources. The template allows users to specify how a `Deployment` and `Pod` is generated.
+/// Template for HTTP Bridge resources. The template allows users to specify how a `Deployment` and `Pod` is generated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaBridgeTemplate {
-    /// Template for Kafka Bridge API `Service`.
+    /// Template for HTTP Bridge API `Service`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiService")]
     pub api_service: Option<KafkaBridgeTemplateApiService>,
-    /// Template for the Kafka Bridge container.
+    /// Template for the HTTP Bridge container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bridgeContainer")]
     pub bridge_container: Option<KafkaBridgeTemplateBridgeContainer>,
-    /// Template for the Kafka Bridge ClusterRoleBinding.
+    /// Template for the HTTP Bridge ClusterRoleBinding.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterRoleBinding")]
     pub cluster_role_binding: Option<KafkaBridgeTemplateClusterRoleBinding>,
-    /// Template for Kafka Bridge `Deployment`.
+    /// Template for HTTP Bridge `Deployment`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deployment: Option<KafkaBridgeTemplateDeployment>,
-    /// Template for the Kafka Bridge init container.
+    /// Template for the HTTP Bridge init container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainer")]
     pub init_container: Option<KafkaBridgeTemplateInitContainer>,
-    /// Template for Kafka Bridge `Pods`.
+    /// Template for HTTP Bridge `Pods`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pod: Option<KafkaBridgeTemplatePod>,
-    /// Template for Kafka Bridge `PodDisruptionBudget`.
+    /// Template for HTTP Bridge `PodDisruptionBudget`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podDisruptionBudget")]
     pub pod_disruption_budget: Option<KafkaBridgeTemplatePodDisruptionBudget>,
-    /// Template for the Kafka Bridge service account.
+    /// Template for the HTTP Bridge service account.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<KafkaBridgeTemplateServiceAccount>,
 }
 
-/// Template for Kafka Bridge API `Service`.
+/// Template for HTTP Bridge API `Service`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaBridgeTemplateApiService {
     /// Specifies the IP Families used by the service. Available options are `IPv4` and `IPv6`. If unspecified, Kubernetes will choose the default value based on the `ipFamilyPolicy` setting.
@@ -426,7 +426,7 @@ pub struct KafkaBridgeTemplateApiService {
     pub metadata: Option<KafkaBridgeTemplateApiServiceMetadata>,
 }
 
-/// Template for Kafka Bridge API `Service`.
+/// Template for HTTP Bridge API `Service`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaBridgeTemplateApiServiceIpFamilyPolicy {
     SingleStack,
@@ -445,7 +445,7 @@ pub struct KafkaBridgeTemplateApiServiceMetadata {
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Template for the Kafka Bridge container.
+/// Template for the HTTP Bridge container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaBridgeTemplateBridgeContainer {
     /// Environment variables which should be applied to the container.
@@ -600,7 +600,7 @@ pub struct KafkaBridgeTemplateBridgeContainerVolumeMounts {
     pub sub_path_expr: Option<String>,
 }
 
-/// Template for the Kafka Bridge ClusterRoleBinding.
+/// Template for the HTTP Bridge ClusterRoleBinding.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaBridgeTemplateClusterRoleBinding {
     /// Metadata applied to the resource.
@@ -619,7 +619,7 @@ pub struct KafkaBridgeTemplateClusterRoleBindingMetadata {
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Template for Kafka Bridge `Deployment`.
+/// Template for HTTP Bridge `Deployment`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaBridgeTemplateDeployment {
     /// Pod replacement strategy for deployment configuration changes. Valid values are `RollingUpdate` and `Recreate`. Defaults to `RollingUpdate`.
@@ -630,7 +630,7 @@ pub struct KafkaBridgeTemplateDeployment {
     pub metadata: Option<KafkaBridgeTemplateDeploymentMetadata>,
 }
 
-/// Template for Kafka Bridge `Deployment`.
+/// Template for HTTP Bridge `Deployment`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaBridgeTemplateDeploymentDeploymentStrategy {
     RollingUpdate,
@@ -648,7 +648,7 @@ pub struct KafkaBridgeTemplateDeploymentMetadata {
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Template for the Kafka Bridge init container.
+/// Template for the HTTP Bridge init container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaBridgeTemplateInitContainer {
     /// Environment variables which should be applied to the container.
@@ -803,7 +803,7 @@ pub struct KafkaBridgeTemplateInitContainerVolumeMounts {
     pub sub_path_expr: Option<String>,
 }
 
-/// Template for Kafka Bridge `Pods`.
+/// Template for HTTP Bridge `Pods`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaBridgeTemplatePod {
     /// The pod's affinity rules.
@@ -1201,7 +1201,7 @@ pub struct KafkaBridgeTemplatePodDnsConfigOptions {
     pub value: Option<String>,
 }
 
-/// Template for Kafka Bridge `Pods`.
+/// Template for HTTP Bridge `Pods`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaBridgeTemplatePodDnsPolicy {
     ClusterFirst,
@@ -1493,7 +1493,7 @@ pub struct KafkaBridgeTemplatePodVolumesSecretItems {
     pub path: Option<String>,
 }
 
-/// Template for Kafka Bridge `PodDisruptionBudget`.
+/// Template for HTTP Bridge `PodDisruptionBudget`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaBridgeTemplatePodDisruptionBudget {
     /// Maximum number of unavailable pods to allow automatic Pod eviction. A Pod eviction is allowed when the `maxUnavailable` number of pods or fewer are unavailable after the eviction. Setting this value to 0 prevents all voluntary evictions, so the pods must be evicted manually. Defaults to 1.
@@ -1515,7 +1515,7 @@ pub struct KafkaBridgeTemplatePodDisruptionBudgetMetadata {
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Template for the Kafka Bridge service account.
+/// Template for the HTTP Bridge service account.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaBridgeTemplateServiceAccount {
     /// Metadata applied to the resource.
@@ -1534,7 +1534,7 @@ pub struct KafkaBridgeTemplateServiceAccountMetadata {
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// TLS configuration for connecting Kafka Bridge to the cluster.
+/// TLS configuration for connecting HTTP Bridge to the cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaBridgeTls {
     /// Trusted certificates for TLS connection.
@@ -1555,7 +1555,7 @@ pub struct KafkaBridgeTlsTrustedCertificates {
     pub secret_name: String,
 }
 
-/// The configuration of tracing in Kafka Bridge.
+/// The configuration of tracing in HTTP Bridge.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KafkaBridgeTracing {
     /// Type of the tracing used. Currently the only supported type is `opentelemetry` for OpenTelemetry tracing. As of Strimzi 0.37.0, `jaeger` type is not supported anymore and this option is ignored.
@@ -1563,14 +1563,14 @@ pub struct KafkaBridgeTracing {
     pub r#type: KafkaBridgeTracingType,
 }
 
-/// The configuration of tracing in Kafka Bridge.
+/// The configuration of tracing in HTTP Bridge.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaBridgeTracingType {
     #[serde(rename = "opentelemetry")]
     Opentelemetry,
 }
 
-/// The status of the Kafka Bridge.
+/// The status of the HTTP Bridge.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaBridgeStatus {
     /// List of status conditions.
@@ -1585,7 +1585,7 @@ pub struct KafkaBridgeStatus {
     /// The current number of pods being used to provide this resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i64>,
-    /// The URL at which external client applications can access the Kafka Bridge.
+    /// The URL at which external client applications can access the HTTP Bridge.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
 }
