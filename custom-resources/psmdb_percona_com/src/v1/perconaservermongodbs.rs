@@ -79,6 +79,8 @@ pub struct PerconaServerMongoDbSpec {
     pub upgrade_options: Option<PerconaServerMongoDbUpgradeOptions>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub users: Option<Vec<PerconaServerMongoDbUsers>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub vault: Option<PerconaServerMongoDbVault>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -20566,6 +20568,28 @@ pub struct PerconaServerMongoDbUsersPasswordSecretRef {
 pub struct PerconaServerMongoDbUsersRoles {
     pub db: String,
     pub name: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMongoDbVault {
+    #[serde(rename = "endpointURL")]
+    pub endpoint_url: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncUsers")]
+    pub sync_users: Option<PerconaServerMongoDbVaultSyncUsers>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsSecret")]
+    pub tls_secret: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMongoDbVaultSyncUsers {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyPath")]
+    pub key_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPath")]
+    pub mount_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub role: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenSecret")]
+    pub token_secret: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

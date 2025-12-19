@@ -2196,6 +2196,10 @@ pub struct TempoStackTemplateQueryFrontend {
     /// JaegerQuery defines options specific to the Jaeger Query component.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jaegerQuery")]
     pub jaeger_query: Option<TempoStackTemplateQueryFrontendJaegerQuery>,
+    /// MCPServer defines the MCP (Model Context Protocol) server configuration.
+    /// The MCP server allows AI assistants to query tracing data.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mcpServer")]
+    pub mcp_server: Option<TempoStackTemplateQueryFrontendMcpServer>,
 }
 
 /// TempoComponentSpec is embedded to extend this definition with further options.
@@ -2751,6 +2755,15 @@ pub struct TempoStackTemplateQueryFrontendJaegerQueryTempoQueryResourcesClaims {
     /// only the result of this request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub request: Option<String>,
+}
+
+/// MCPServer defines the MCP (Model Context Protocol) server configuration.
+/// The MCP server allows AI assistants to query tracing data.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TempoStackTemplateQueryFrontendMcpServer {
+    /// Enabled defines if the MCP (Model Context Protocol) server should be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
 }
 
 /// Tenants defines the per-tenant authentication and authorization spec.

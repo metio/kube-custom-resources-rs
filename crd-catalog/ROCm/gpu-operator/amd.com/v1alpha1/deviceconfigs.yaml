@@ -970,6 +970,9 @@ spec:
                     enable:
                       description: "enable remediation workflows. disabled by default\nenable if operator should automatically handle remediation of node incase of gpu issues"
                       type: "boolean"
+                    maxParallelWorkflows:
+                      description: "MaxParallelWorkflows specifies limit on how many remediation workflows can be executed in parallel. 0 is the default value and it means no limit."
+                      type: "integer"
                     testerImage:
                       description: "Tester image used to run tests and verify if remediation fixed the reported problem."
                       pattern: "^([a-z0-9]+(?:[._-][a-z0-9]+)*(:[0-9]+)?)(/[a-z0-9]+(?:[._-][a-z0-9]+)*)*(?::[a-z0-9._-]+)?(?:@[a-zA-Z0-9]+:[a-f0-9]+)?$"

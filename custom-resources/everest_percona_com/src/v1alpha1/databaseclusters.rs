@@ -124,7 +124,7 @@ pub struct DatabaseClusterDataSource {
 /// BackupSource is the backup source to restore from
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseClusterDataSourceBackupSource {
-    /// BackupStorageName is the name of the BackupStorage used for backups.
+    /// BackupStorageName is the name of the BackupStorage used for storing backups.
     /// The BackupStorage must be created in the same namespace as the DatabaseCluster.
     #[serde(rename = "backupStorageName")]
     pub backup_storage_name: String,
@@ -384,7 +384,7 @@ pub struct DatabaseClusterProxyExpose {
     /// LoadBalancerConfigName is the name of load balancer config if applied
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerConfigName")]
     pub load_balancer_config_name: Option<String>,
-    /// Type is the expose type, can be internal or external
+    /// Type is the expose type, can be ClusterIP, LoadBalancer, NodePort. The types internal and external are deprecated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<DatabaseClusterProxyExposeType>,
 }
@@ -396,6 +396,10 @@ pub enum DatabaseClusterProxyExposeType {
     Internal,
     #[serde(rename = "external")]
     External,
+    #[serde(rename = "ClusterIP")]
+    ClusterIp,
+    LoadBalancer,
+    NodePort,
 }
 
 /// Resources are the resource limits for each proxy replica.

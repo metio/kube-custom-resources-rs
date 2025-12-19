@@ -4225,6 +4225,9 @@ spec:
                                   - "name"
                                 x-kubernetes-list-type: "map"
                             type: "object"
+                          forceBlockFromRoster:
+                            description: "ForceBlockFromRoster, when set to true, forcefully removes all nodes in this rack from the roster.\nWith this enabled, the operator ignores unavailable or dead partitions and proceeds with node removal.\nAdditionally, any failed or pending pods in this rack are also ignored during this process.\nIt may result in data loss. Use this with caution."
+                            type: "boolean"
                           id:
                             description: "Identifier for the rack"
                             type: "integer"
@@ -10058,6 +10061,9 @@ spec:
                                   - "name"
                                 x-kubernetes-list-type: "map"
                             type: "object"
+                          forceBlockFromRoster:
+                            description: "ForceBlockFromRoster, when set to true, forcefully removes all nodes in this rack from the roster.\nWith this enabled, the operator ignores unavailable or dead partitions and proceeds with node removal.\nAdditionally, any failed or pending pods in this rack are also ignored during this process.\nIt may result in data loss. Use this with caution."
+                            type: "boolean"
                           id:
                             description: "Identifier for the rack"
                             type: "integer"

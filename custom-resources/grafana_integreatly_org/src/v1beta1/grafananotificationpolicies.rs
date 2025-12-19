@@ -72,9 +72,10 @@ pub struct GrafanaNotificationPolicyInstanceSelectorMatchExpressions {
 /// Routes for alerts to match against
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GrafanaNotificationPolicyRoute {
+    /// Deprecated: Never worked on the top level route node
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub active_time_intervals: Option<Vec<String>>,
-    /// continue
+    /// Deprecated: Never worked on the top level route node
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "continue")]
     pub r#continue: Option<bool>,
     /// group by
@@ -86,19 +87,19 @@ pub struct GrafanaNotificationPolicyRoute {
     /// group wait
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group_wait: Option<String>,
-    /// match re
+    /// Deprecated: Never worked on the top level route node
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub match_re: Option<BTreeMap<String, String>>,
-    /// matchers
+    /// Deprecated: Never worked on the top level route node
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub matchers: Option<Vec<GrafanaNotificationPolicyRouteMatchers>>,
-    /// mute time intervals
+    /// Deprecated: Never worked on the top level route node
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mute_time_intervals: Option<Vec<String>>,
-    /// object matchers
+    /// Deprecated: Never worked on the top level route node
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub object_matchers: Option<Vec<Vec<String>>>,
-    /// provenance
+    /// Deprecated: Does nothing
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub provenance: Option<String>,
     /// receiver

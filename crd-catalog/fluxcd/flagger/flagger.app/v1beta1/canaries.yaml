@@ -1275,6 +1275,9 @@ spec:
                 previousSessionAffinityCookie:
                   description: "Session affinity cookie of the previous canary run"
                   type: "string"
+                primarySessionAffinityCookie:
+                  description: "Primary session affinity cookie of the current canary run"
+                  type: "string"
                 sessionAffinityCookie:
                   description: "Session affinity cookie of the current canary run"
                   type: "string"

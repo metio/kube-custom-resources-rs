@@ -86,6 +86,7 @@ spec:
                 serviceAccountName:
                   description: "serviceAccountName is the name of the Kubernetes ServiceAccount that user application Pods\nintend to use for access to referenced BucketClaims.\nThis has different behavior based on the BucketAccessClass's defined AuthenticationType:\n- Key: This field is ignored.\n- ServiceAccount: This field is required. The driver should configure the system so that Pods\n  using the ServiceAccount authenticate to the object storage backend automatically."
                   maxLength: 253
+                  minLength: 1
                   type: "string"
                   x-kubernetes-validations:
                     - message: "serviceAccountName is immutable"
@@ -96,7 +97,7 @@ spec:
                 - "protocol"
               type: "object"
               x-kubernetes-validations:
-                - message: "serviceAccountName is immutable"
+                - message: "serviceAccountName cannot be added or removed after creation"
                   rule: "has(oldSelf.serviceAccountName) == has(self.serviceAccountName)"
             status:
               description: "status defines the observed state of BucketAccess"
@@ -120,35 +121,37 @@ spec:
                       - "bucketClaimName"
                       - "bucketName"
                     type: "object"
+                  minItems: 1
                   type: "array"
                   x-kubernetes-list-map-keys:
                     - "bucketName"
                   x-kubernetes-list-type: "map"
                   x-kubernetes-validations:
                     - message: "accessedBuckets is immutable once set"
-                      rule: "oldSelf.size() == 0 || self == oldSelf"
+                      rule: "self == oldSelf"
                 accountID:
                   description: "accountID is the unique identifier for the backend access known to the driver.\nThis field is populated by the COSI Sidecar once access has been successfully granted."
+                  minLength: 1
                   type: "string"
                   x-kubernetes-validations:
                     - message: "accountId is immutable once set"
-                      rule: "oldSelf == '' || self == oldSelf"
+                      rule: "self == oldSelf"
                 authenticationType:
                   description: "authenticationType holds a copy of the BucketAccessClass authentication type from the time of\nBucketAccess provisioning. This field is populated by the COSI Controller."
                   enum:
-                    - ""
                     - "Key"
                     - "ServiceAccount"
                   type: "string"
                   x-kubernetes-validations:
                     - message: "authenticationType is immutable once set"
-                      rule: "oldSelf == '' || self == oldSelf"
+                      rule: "self == oldSelf"
                 driverName:
                   description: "driverName holds a copy of the BucketAccessClass driver name from the time of BucketAccess\nprovisioning. This field is populated by the COSI Controller."
+                  minLength: 1
                   type: "string"
                   x-kubernetes-validations:
                     - message: "driverName is immutable once set"
-                      rule: "oldSelf == '' || self == oldSelf"
+                      rule: "self == oldSelf"
                 error:
                   description: "error holds the most recent error message, with a timestamp.\nThis is cleared when provisioning is successful."
                   properties:
@@ -167,7 +170,7 @@ spec:
                   type: "object"
                   x-kubernetes-validations:
                     - message: "accessedBuckets is immutable once set"
-                      rule: "oldSelf.size() == 0 || self == oldSelf"
+                      rule: "self == oldSelf"
                 readyToUse:
                   description: "readyToUse indicates that the BucketAccess is ready for consumption by workloads."
                   type: "boolean"
@@ -175,15 +178,15 @@ spec:
                 - "readyToUse"
               type: "object"
               x-kubernetes-validations:
-                - message: "accountID is immutable once set"
+                - message: "accountID cannot be removed once set"
                   rule: "!has(oldSelf.accountID) || has(self.accountID)"
-                - message: "accessedBuckets is immutable once set"
+                - message: "accessedBuckets cannot be removed once set"
                   rule: "!has(oldSelf.accessedBuckets) || has(self.accessedBuckets)"
-                - message: "driverName is immutable once set"
+                - message: "driverName cannot be removed once set"
                   rule: "!has(oldSelf.driverName) || has(self.driverName)"
-                - message: "authenticationType is immutable once set"
+                - message: "authenticationType cannot be removed once set"
                   rule: "!has(oldSelf.authenticationType) || has(self.authenticationType)"
-                - message: "parameters is immutable once set"
+                - message: "parameters cannot be removed once set"
                   rule: "!has(oldSelf.parameters) || has(self.parameters)"
           required:
             - "spec"

@@ -42,9 +42,6 @@ pub struct OpenSearchClusterSpec {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpenSearchClusterBootstrap {
-    /// Extra items to add to the opensearch.yml, defaults to General.AdditionalConfig
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalConfig")]
-    pub additional_config: Option<BTreeMap<String, String>>,
     /// Affinity is a group of affinity scheduling rules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<OpenSearchClusterBootstrapAffinity>,
@@ -52,6 +49,8 @@ pub struct OpenSearchClusterBootstrap {
     pub annotations: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskSize")]
     pub disk_size: Option<IntOrString>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub env: Option<Vec<OpenSearchClusterBootstrapEnv>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
     pub host_aliases: Option<Vec<OpenSearchClusterBootstrapHostAliases>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
@@ -60,10 +59,14 @@ pub struct OpenSearchClusterBootstrap {
     pub jvm: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keystore: Option<Vec<OpenSearchClusterBootstrapKeystore>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pluginsList")]
     pub plugins_list: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
+    pub priority_class_name: Option<String>,
     /// ResourceRequirements describes the compute resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<OpenSearchClusterBootstrapResources>,
@@ -764,6 +767,106 @@ pub struct OpenSearchClusterBootstrapAffinityPodAntiAffinityRequiredDuringSchedu
     pub values: Option<Vec<String>>,
 }
 
+/// EnvVar represents an environment variable present in a Container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpenSearchClusterBootstrapEnv {
+    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    pub name: String,
+    /// Variable references $(VAR_NAME) are expanded
+    /// using the previously defined environment variables in the container and
+    /// any service environment variables. If a variable cannot be resolved,
+    /// the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+    /// Escaped references will never be expanded, regardless of whether the variable
+    /// exists or not.
+    /// Defaults to "".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    /// Source for the environment variable's value. Cannot be used if value is not empty.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<OpenSearchClusterBootstrapEnvValueFrom>,
+}
+
+/// Source for the environment variable's value. Cannot be used if value is not empty.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpenSearchClusterBootstrapEnvValueFrom {
+    /// Selects a key of a ConfigMap.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<OpenSearchClusterBootstrapEnvValueFromConfigMapKeyRef>,
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
+    pub field_ref: Option<OpenSearchClusterBootstrapEnvValueFromFieldRef>,
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<OpenSearchClusterBootstrapEnvValueFromResourceFieldRef>,
+    /// Selects a key of a secret in the pod's namespace
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OpenSearchClusterBootstrapEnvValueFromSecretKeyRef>,
+}
+
+/// Selects a key of a ConfigMap.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpenSearchClusterBootstrapEnvValueFromConfigMapKeyRef {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpenSearchClusterBootstrapEnvValueFromFieldRef {
+    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// Path of the field to select in the specified API version.
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
+}
+
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpenSearchClusterBootstrapEnvValueFromResourceFieldRef {
+    /// Container name: required for volumes, optional for env vars
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
+    pub container_name: Option<String>,
+    /// Specifies the output format of the exposed resources, defaults to "1"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub divisor: Option<IntOrString>,
+    /// Required: resource to select
+    pub resource: String,
+}
+
+/// Selects a key of a secret in the pod's namespace
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpenSearchClusterBootstrapEnvValueFromSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
 /// HostAlias holds the mapping between IP and hostnames that will be injected as an entry in the
 /// pod's hosts file.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -916,6 +1019,8 @@ pub struct OpenSearchClusterDashboards {
     /// Set security context for the dashboards pods
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurityContext")]
     pub pod_security_context: Option<OpenSearchClusterDashboardsPodSecurityContext>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
+    pub priority_class_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
     /// ResourceRequirements describes the compute resource requirements.
@@ -4113,6 +4218,7 @@ pub struct OpenSearchClusterInitHelperResourcesClaims {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpenSearchClusterNodePools {
+    /// Extra items to add to the opensearch.yml for this nodepool (merged with general.additionalConfig)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalConfig")]
     pub additional_config: Option<BTreeMap<String, String>>,
     /// Affinity is a group of affinity scheduling rules.
@@ -5354,6 +5460,10 @@ pub struct OpenSearchClusterSecurityConfigSecurityConfigSecret {
 /// Specific configs for the SecurityConfig update job
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpenSearchClusterSecurityConfigUpdateJob {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
+    pub priority_class_name: Option<String>,
     /// ResourceRequirements describes the compute resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<OpenSearchClusterSecurityConfigUpdateJobResources>,

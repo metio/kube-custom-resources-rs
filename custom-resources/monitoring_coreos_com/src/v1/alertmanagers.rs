@@ -115,6 +115,12 @@ pub struct AlertmanagerSpec {
     /// this behaviour may break at any time without notice.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<AlertmanagerContainers>>,
+    /// dispatchStartDelay defines the delay duration of the aggregation groups' first flush.
+    /// The delay helps ensuring that all alerts have been resent by the Prometheus instances to Alertmanager after a roll-out.
+    /// 
+    /// It requires Alertmanager >= 0.30.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dispatchStartDelay")]
+    pub dispatch_start_delay: Option<String>,
     /// dnsConfig defines the DNS configuration for the pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsConfig")]
     pub dns_config: Option<AlertmanagerDnsConfig>,

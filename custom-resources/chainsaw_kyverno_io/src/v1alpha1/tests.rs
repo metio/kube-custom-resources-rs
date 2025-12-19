@@ -814,6 +814,9 @@ pub struct TestScenarios {
     /// Bindings defines binding key/values.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bindings: Option<Vec<TestScenariosBindings>>,
+    /// Scenario name.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// Binding represents a key/value set as a binding in an executing test.

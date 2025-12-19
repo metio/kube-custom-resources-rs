@@ -323,7 +323,7 @@ pub struct VmPodScrapePodMetricsEndpointsMetricRelabelConfigs {
     pub source_labels: Option<Vec<String>>,
     /// UnderScoreSourceLabels - additional form of source labels source_labels
     /// for compatibility with original relabel config.
-    /// if set  both sourceLabels and source_labels, sourceLabels has priority.
+    /// if set both sourceLabels and source_labels, sourceLabels has priority.
     /// for details <https://github.com/VictoriaMetrics/operator/issues/131>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "source_labels")]
     pub source_labels_x: Option<Vec<String>>,
@@ -333,7 +333,7 @@ pub struct VmPodScrapePodMetricsEndpointsMetricRelabelConfigs {
     pub target_label: Option<String>,
     /// UnderScoreTargetLabel - additional form of target label - target_label
     /// for compatibility with original relabel config.
-    /// if set  both targetLabel and target_label, targetLabel has priority.
+    /// if set both targetLabel and target_label, targetLabel has priority.
     /// for details <https://github.com/VictoriaMetrics/operator/issues/131>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "target_label")]
     pub target_label_x: Option<String>,
@@ -470,7 +470,7 @@ pub struct VmPodScrapePodMetricsEndpointsRelabelConfigs {
     pub source_labels: Option<Vec<String>>,
     /// UnderScoreSourceLabels - additional form of source labels source_labels
     /// for compatibility with original relabel config.
-    /// if set  both sourceLabels and source_labels, sourceLabels has priority.
+    /// if set both sourceLabels and source_labels, sourceLabels has priority.
     /// for details <https://github.com/VictoriaMetrics/operator/issues/131>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "source_labels")]
     pub source_labels_x: Option<Vec<String>>,
@@ -480,7 +480,7 @@ pub struct VmPodScrapePodMetricsEndpointsRelabelConfigs {
     pub target_label: Option<String>,
     /// UnderScoreTargetLabel - additional form of target label - target_label
     /// for compatibility with original relabel config.
-    /// if set  both targetLabel and target_label, targetLabel has priority.
+    /// if set both targetLabel and target_label, targetLabel has priority.
     /// for details <https://github.com/VictoriaMetrics/operator/issues/131>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "target_label")]
     pub target_label_x: Option<String>,

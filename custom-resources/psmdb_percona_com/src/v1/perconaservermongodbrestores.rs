@@ -26,8 +26,8 @@ pub struct PerconaServerMongoDbRestoreSpec {
     pub cluster_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pitr: Option<PerconaServerMongoDbRestorePitr>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub replset: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replsetRemapping")]
+    pub replset_remapping: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selective: Option<PerconaServerMongoDbRestoreSelective>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageName")]

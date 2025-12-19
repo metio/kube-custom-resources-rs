@@ -54,6 +54,9 @@ pub struct ApplicationOperationRetry {
     /// Limit is the maximum number of attempts for retrying a failed sync. If set to 0, no retries will be performed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<i64>,
+    /// Refresh indicates if the latest revision should be used on retry instead of the initial one (default: false)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub refresh: Option<bool>,
 }
 
 /// Backoff controls how to backoff on subsequent retries of failed syncs
@@ -1175,9 +1178,11 @@ pub struct ApplicationSourceHydratorHydrateTo {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationSourceHydratorSyncSource {
     /// Path is a directory path within the git repository where hydrated manifests should be committed to and synced
-    /// from. If hydrateTo is set, this is just the path from which hydrated manifests will be synced.
+    /// from. The Path should never point to the root of the repo. If hydrateTo is set, this is just the path from which
+    /// hydrated manifests will be synced.
     pub path: String,
-    /// TargetBranch is the branch to which hydrated manifests should be committed
+    /// TargetBranch is the branch from which hydrated manifests will be synced.
+    /// If HydrateTo is not set, this is also the branch to which hydrated manifests are committed.
     #[serde(rename = "targetBranch")]
     pub target_branch: String,
 }
@@ -1533,6 +1538,9 @@ pub struct ApplicationSyncPolicyRetry {
     /// Limit is the maximum number of attempts for retrying a failed sync. If set to 0, no retries will be performed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<i64>,
+    /// Refresh indicates if the latest revision should be used on retry instead of the initial one (default: false)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub refresh: Option<bool>,
 }
 
 /// Backoff controls how to backoff on subsequent retries of failed syncs
@@ -2330,6 +2338,9 @@ pub struct ApplicationStatusOperationStateOperationRetry {
     /// Limit is the maximum number of attempts for retrying a failed sync. If set to 0, no retries will be performed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<i64>,
+    /// Refresh indicates if the latest revision should be used on retry instead of the initial one (default: false)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub refresh: Option<bool>,
 }
 
 /// Backoff controls how to backoff on subsequent retries of failed syncs
@@ -3831,9 +3842,11 @@ pub struct ApplicationStatusSourceHydratorCurrentOperationSourceHydratorHydrateT
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationStatusSourceHydratorCurrentOperationSourceHydratorSyncSource {
     /// Path is a directory path within the git repository where hydrated manifests should be committed to and synced
-    /// from. If hydrateTo is set, this is just the path from which hydrated manifests will be synced.
+    /// from. The Path should never point to the root of the repo. If hydrateTo is set, this is just the path from which
+    /// hydrated manifests will be synced.
     pub path: String,
-    /// TargetBranch is the branch to which hydrated manifests should be committed
+    /// TargetBranch is the branch from which hydrated manifests will be synced.
+    /// If HydrateTo is not set, this is also the branch to which hydrated manifests are committed.
     #[serde(rename = "targetBranch")]
     pub target_branch: String,
 }
@@ -3893,9 +3906,11 @@ pub struct ApplicationStatusSourceHydratorLastSuccessfulOperationSourceHydratorH
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationStatusSourceHydratorLastSuccessfulOperationSourceHydratorSyncSource {
     /// Path is a directory path within the git repository where hydrated manifests should be committed to and synced
-    /// from. If hydrateTo is set, this is just the path from which hydrated manifests will be synced.
+    /// from. The Path should never point to the root of the repo. If hydrateTo is set, this is just the path from which
+    /// hydrated manifests will be synced.
     pub path: String,
-    /// TargetBranch is the branch to which hydrated manifests should be committed
+    /// TargetBranch is the branch from which hydrated manifests will be synced.
+    /// If HydrateTo is not set, this is also the branch to which hydrated manifests are committed.
     #[serde(rename = "targetBranch")]
     pub target_branch: String,
 }

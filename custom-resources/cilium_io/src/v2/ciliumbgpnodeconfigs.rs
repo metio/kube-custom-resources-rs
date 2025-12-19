@@ -74,13 +74,13 @@ pub struct CiliumBgpNodeConfigBgpInstancesPeers {
 }
 
 /// AutoDiscovery is the configuration for auto-discovery of the peer address.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CiliumBgpNodeConfigBgpInstancesPeersAutoDiscovery {
     /// defaultGateway is the configuration for auto-discovery of the default gateway.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultGateway")]
     pub default_gateway: Option<CiliumBgpNodeConfigBgpInstancesPeersAutoDiscoveryDefaultGateway>,
     /// mode is the mode of the auto-discovery.
-    pub mode: String,
+    pub mode: CiliumBgpNodeConfigBgpInstancesPeersAutoDiscoveryMode,
 }
 
 /// defaultGateway is the configuration for auto-discovery of the default gateway.
@@ -98,6 +98,12 @@ pub enum CiliumBgpNodeConfigBgpInstancesPeersAutoDiscoveryDefaultGatewayAddressF
     Ipv4,
     #[serde(rename = "ipv6")]
     Ipv6,
+}
+
+/// AutoDiscovery is the configuration for auto-discovery of the peer address.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum CiliumBgpNodeConfigBgpInstancesPeersAutoDiscoveryMode {
+    DefaultGateway,
 }
 
 /// PeerConfigRef is a reference to a peer configuration resource.

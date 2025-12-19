@@ -42,13 +42,13 @@ spec:
                         - message: "name is immutable"
                           rule: "self == oldSelf"
                     namespace:
-                      description: "namespace is the namespace of the BucketClaim being referenced.\nIf empty, the Kubernetes 'default' namespace is assumed.\nnamespace is immutable except to update '' to 'default'."
+                      description: "namespace is the namespace of the BucketClaim being referenced."
                       maxLength: 253
-                      minLength: 0
+                      minLength: 1
                       type: "string"
                       x-kubernetes-validations:
                         - message: "namespace is immutable"
-                          rule: "(oldSelf == '' && self == 'default') || self == oldSelf"
+                          rule: "self == oldSelf"
                     uid:
                       description: "uid is the UID of the BucketClaim being referenced."
                       type: "string"
@@ -57,11 +57,12 @@ spec:
                           rule: "oldSelf == '' || self == oldSelf"
                   required:
                     - "name"
+                    - "namespace"
                   type: "object"
                   x-kubernetes-validations:
-                    - message: "namespace is immutable once set"
+                    - message: "namespace cannot be removed once set"
                       rule: "!has(oldSelf.namespace) || has(self.namespace)"
-                    - message: "uid is immutable once set"
+                    - message: "uid cannot be removed once set"
                       rule: "!has(oldSelf.uid) || has(self.uid)"
                 deletionPolicy:
                   description: "deletionPolicy determines whether a Bucket should be deleted when its bound BucketClaim is\ndeleted. This is mutable to allow Admins to change the policy after creation.\nPossible values:\n - Retain: keep both the Bucket object and the backend bucket\n - Delete: delete both the Bucket object and the backend bucket"
@@ -78,6 +79,7 @@ spec:
                       rule: "self == oldSelf"
                 existingBucketID:
                   description: "existingBucketID is the unique identifier for an existing backend bucket known to the driver.\nUse driver documentation to determine how to set this value.\nThis field is used only for Bucket static provisioning.\nThis field will be empty when the Bucket is dynamically provisioned from a BucketClaim."
+                  minLength: 1
                   type: "string"
                   x-kubernetes-validations:
                     - message: "existingBucketID is immutable"
@@ -110,28 +112,29 @@ spec:
                 - "driverName"
               type: "object"
               x-kubernetes-validations:
-                - message: "parameters map is immutable"
+                - message: "parameters map cannot be added or removed after creation"
                   rule: "has(oldSelf.parameters) == has(self.parameters)"
-                - message: "protocols list is immutable"
+                - message: "protocols list cannot be added or removed after creation"
                   rule: "has(oldSelf.protocols) == has(self.protocols)"
-                - message: "existingBucketID is immutable"
+                - message: "existingBucketID cannot be added or removed after creation"
                   rule: "has(oldSelf.existingBucketID) == has(self.existingBucketID)"
             status:
               description: "status defines the observed state of Bucket"
               properties:
                 bucketID:
                   description: "bucketID is the unique identifier for the backend bucket known to the driver."
+                  minLength: 1
                   type: "string"
                   x-kubernetes-validations:
                     - message: "boundBucketName is immutable once set"
-                      rule: "oldSelf == '' || self == oldSelf"
+                      rule: "self == oldSelf"
                 bucketInfo:
                   additionalProperties:
                     type: "string"
-                  description: "BucketInfo reported by the driver, rendered in the COSI_<PROTOCOL>_<KEY> format used for the\nBucketAccess Secret. e.g., COSI_S3_ENDPOINT, COSI_AZURE_STORAGE_ACCOUNT.\nThis should not contain any sensitive information."
+                  description: "bucketInfo contains info about the bucket reported by the driver, rendered in the same\nCOSI_<PROTOCOL>_<KEY> format used for the BucketAccess Secret.\ne.g., COSI_S3_ENDPOINT, COSI_AZURE_STORAGE_ACCOUNT.\nThis should not contain any sensitive information."
                   type: "object"
                 error:
-                  description: "Error holds the most recent error message, with a timestamp.\nThis is cleared when provisioning is successful."
+                  description: "error holds the most recent error message, with a timestamp.\nThis is cleared when provisioning is successful."
                   properties:
                     message:
                       description: "message is a string detailing the encountered error.\nNOTE: message will be logged, and it should not contain sensitive information."
@@ -159,9 +162,9 @@ spec:
                 - "readyToUse"
               type: "object"
               x-kubernetes-validations:
-                - message: "bucketID is immutable once set"
+                - message: "bucketID cannot be removed once set"
                   rule: "!has(oldSelf.bucketID) || has(self.bucketID)"
-                - message: "protocols is immutable once set"
+                - message: "protocols cannot be removed once set"
                   rule: "!has(oldSelf.protocols) || has(self.protocols)"
           required:
             - "spec"

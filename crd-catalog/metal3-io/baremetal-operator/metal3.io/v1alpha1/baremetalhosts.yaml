@@ -142,7 +142,7 @@ spec:
                   description: "When set to true, power off of the node will be disabled,\ninstead, a reboot will be used in place of power on/off"
                   type: "boolean"
                 externallyProvisioned:
-                  description: "ExternallyProvisioned means something else has provisioned the\nimage running on the host, and the operator should only manage\nthe power status. This field is used for integration with already\nprovisioned hosts and when pivoting hosts between clusters. If\nunsure, leave this field as false."
+                  description: "ExternallyProvisioned means something else has provisioned the\nimage running on the host, and the operator should only manage\nthe power status. This field is used for integration with already\nprovisioned hosts and when pivoting hosts between clusters.\n\nThis field can be set to true either:\n1. During initial host creation (e.g., for pre-provisioned hosts)\n2. After inspection completes when the host reaches Available state\n\nWhen used in environments with Cluster API Provider Metal3 (CAPM3),\nensure hosts are labeled appropriately so CAPM3's host selector can\ndistinguish them from CAPM3-managed hosts. If unsure, leave this\nfield as false."
                   type: "boolean"
                 firmware:
                   description: "Firmware (BIOS) configuration for bare metal server. If set, the\nrequested settings will be applied before the host is provisioned.\nOnly some vendor drivers support this field. An alternative is to\nuse HostFirmwareSettings resources that allow changing arbitrary\nvalues and support the generic Redfish-based drivers."

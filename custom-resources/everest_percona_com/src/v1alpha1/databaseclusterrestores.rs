@@ -21,7 +21,7 @@ pub struct DatabaseClusterRestoreSpec {
     /// DataSource defines a data source for restoration.
     #[serde(rename = "dataSource")]
     pub data_source: DatabaseClusterRestoreDataSource,
-    /// DBClusterName defines the cluster name to restore.
+    /// DBClusterName defines the target database cluster name that needs to be restored from backup.
     #[serde(rename = "dbClusterName")]
     pub db_cluster_name: String,
 }
@@ -29,21 +29,25 @@ pub struct DatabaseClusterRestoreSpec {
 /// DataSource defines a data source for restoration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseClusterRestoreDataSource {
-    /// BackupSource is the backup source to restore from
+    /// BackupSource is the backup source to restore from.
+    /// Shall be set either this field or DBClusterBackupName.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupSource")]
     pub backup_source: Option<DatabaseClusterRestoreDataSourceBackupSource>,
-    /// DBClusterBackupName is the name of the DB cluster backup to restore from
+    /// DBClusterBackupName is the name of the DB cluster backup to restore from.
+    /// Shall be set either this field or BackupSource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dbClusterBackupName")]
     pub db_cluster_backup_name: Option<String>,
-    /// PITR is the point-in-time recovery configuration
+    /// PITR is the point-in-time recovery configuration.
+    /// May be set in addition to DBClusterBackupName or BackupSource to perform PITR restore.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pitr: Option<DatabaseClusterRestoreDataSourcePitr>,
 }
 
-/// BackupSource is the backup source to restore from
+/// BackupSource is the backup source to restore from.
+/// Shall be set either this field or DBClusterBackupName.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseClusterRestoreDataSourceBackupSource {
-    /// BackupStorageName is the name of the BackupStorage used for backups.
+    /// BackupStorageName is the name of the BackupStorage used for storing backups.
     /// The BackupStorage must be created in the same namespace as the DatabaseCluster.
     #[serde(rename = "backupStorageName")]
     pub backup_storage_name: String,
@@ -51,7 +55,8 @@ pub struct DatabaseClusterRestoreDataSourceBackupSource {
     pub path: String,
 }
 
-/// PITR is the point-in-time recovery configuration
+/// PITR is the point-in-time recovery configuration.
+/// May be set in addition to DBClusterBackupName or BackupSource to perform PITR restore.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseClusterRestoreDataSourcePitr {
     /// Date is the UTC date to recover to. The accepted format: "2006-01-02T15:04:05Z".
@@ -62,7 +67,8 @@ pub struct DatabaseClusterRestoreDataSourcePitr {
     pub r#type: Option<DatabaseClusterRestoreDataSourcePitrType>,
 }
 
-/// PITR is the point-in-time recovery configuration
+/// PITR is the point-in-time recovery configuration.
+/// May be set in addition to DBClusterBackupName or BackupSource to perform PITR restore.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum DatabaseClusterRestoreDataSourcePitrType {
     #[serde(rename = "date")]
@@ -76,6 +82,9 @@ pub enum DatabaseClusterRestoreDataSourcePitrType {
 pub struct DatabaseClusterRestoreStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub completed: Option<String>,
+    /// InUse is a flag that indicates if this restore resource is being used to restore DB cluster from backup.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inUse")]
+    pub in_use: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
     /// RestoreState represents state of restoration.

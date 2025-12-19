@@ -275,6 +275,11 @@ pub struct ClusterComponentSpecs {
     /// ordinal consistency within the Cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "offlineInstances")]
     pub offline_instances: Option<Vec<String>>,
+    /// Specifies the desired Ordinals.
+    /// The Ordinals used to specify the ordinal of the instance (pod) names to be generated under this component.
+    /// If Ordinals are defined, their number must be equal to or more than the corresponding replicas.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ordinals: Option<ClusterComponentSpecsOrdinals>,
     /// Controls the concurrency of pods during initial scale up, when replacing pods on nodes,
     /// or when scaling down. It only used when `PodManagementPolicy` is set to `Parallel`.
     /// The default Concurrency is 100%.
@@ -2544,6 +2549,25 @@ pub struct ClusterComponentSpecsNetworkHostPorts {
     pub name: String,
     /// The port number of the host port.
     pub port: i32,
+}
+
+/// Specifies the desired Ordinals.
+/// The Ordinals used to specify the ordinal of the instance (pod) names to be generated under this component.
+/// If Ordinals are defined, their number must be equal to or more than the corresponding replicas.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterComponentSpecsOrdinals {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub discrete: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ranges: Option<Vec<ClusterComponentSpecsOrdinalsRanges>>,
+}
+
+/// Range represents a range with a start and an end value. Both start and end are included.
+/// It is used to define a continuous segment.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterComponentSpecsOrdinalsRanges {
+    pub end: i32,
+    pub start: i32,
 }
 
 /// persistentVolumeClaimRetentionPolicy describes the lifecycle of persistent
@@ -6974,6 +6998,9 @@ pub struct ClusterShardingsShardTemplates {
     /// 
     /// The name can't be empty.
     pub name: String,
+    /// Specifies an override for the desired Ordinals of the shard.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ordinals: Option<ClusterShardingsShardTemplatesOrdinals>,
     /// Specifies the desired number of replicas for the shard which are created from this template.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
@@ -8460,6 +8487,23 @@ pub struct ClusterShardingsShardTemplatesInstancesVolumeClaimTemplatesSpecSelect
     pub values: Option<Vec<String>>,
 }
 
+/// Specifies an override for the desired Ordinals of the shard.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesOrdinals {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub discrete: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ranges: Option<Vec<ClusterShardingsShardTemplatesOrdinalsRanges>>,
+}
+
+/// Range represents a range with a start and an end value. Both start and end are included.
+/// It is used to define a continuous segment.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesOrdinalsRanges {
+    pub end: i32,
+    pub start: i32,
+}
+
 /// Specifies an override for the resource requirements of the shard.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterShardingsShardTemplatesResources {
@@ -9755,6 +9799,11 @@ pub struct ClusterShardingsTemplate {
     /// ordinal consistency within the Cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "offlineInstances")]
     pub offline_instances: Option<Vec<String>>,
+    /// Specifies the desired Ordinals.
+    /// The Ordinals used to specify the ordinal of the instance (pod) names to be generated under this component.
+    /// If Ordinals are defined, their number must be equal to or more than the corresponding replicas.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ordinals: Option<ClusterShardingsTemplateOrdinals>,
     /// Controls the concurrency of pods during initial scale up, when replacing pods on nodes,
     /// or when scaling down. It only used when `PodManagementPolicy` is set to `Parallel`.
     /// The default Concurrency is 100%.
@@ -12024,6 +12073,25 @@ pub struct ClusterShardingsTemplateNetworkHostPorts {
     pub name: String,
     /// The port number of the host port.
     pub port: i32,
+}
+
+/// Specifies the desired Ordinals.
+/// The Ordinals used to specify the ordinal of the instance (pod) names to be generated under this component.
+/// If Ordinals are defined, their number must be equal to or more than the corresponding replicas.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsTemplateOrdinals {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub discrete: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ranges: Option<Vec<ClusterShardingsTemplateOrdinalsRanges>>,
+}
+
+/// Range represents a range with a start and an end value. Both start and end are included.
+/// It is used to define a continuous segment.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsTemplateOrdinalsRanges {
+    pub end: i32,
+    pub start: i32,
 }
 
 /// persistentVolumeClaimRetentionPolicy describes the lifecycle of persistent

@@ -1552,10 +1552,23 @@ pub struct TempoMonolithicPodSecurityContextWindowsOptions {
 /// Query defines query configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoMonolithicQuery {
+    /// MCPServer defines the MCP (Model Context Protocol) server configuration.
+    /// The MCP server allows AI assistants to query tracing data.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mcpServer")]
+    pub mcp_server: Option<TempoMonolithicQueryMcpServer>,
     /// RBAC defines query RBAC options.
     /// This option can be used only with multi-tenancy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rbac: Option<TempoMonolithicQueryRbac>,
+}
+
+/// MCPServer defines the MCP (Model Context Protocol) server configuration.
+/// The MCP server allows AI assistants to query tracing data.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TempoMonolithicQueryMcpServer {
+    /// Enabled defines if the MCP (Model Context Protocol) server should be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
 }
 
 /// RBAC defines query RBAC options.

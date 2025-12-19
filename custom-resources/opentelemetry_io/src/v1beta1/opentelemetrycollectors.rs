@@ -2822,6 +2822,8 @@ pub struct OpenTelemetryCollectorTargetAllocatorPrometheusCr {
     pub pod_monitor_selector: Option<OpenTelemetryCollectorTargetAllocatorPrometheusCrPodMonitorSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "probeSelector")]
     pub probe_selector: Option<OpenTelemetryCollectorTargetAllocatorPrometheusCrProbeSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeClasses")]
+    pub scrape_classes: Option<Vec<OpenTelemetryCollectorTargetAllocatorPrometheusCrScrapeClasses>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeConfigSelector")]
     pub scrape_config_selector: Option<OpenTelemetryCollectorTargetAllocatorPrometheusCrScrapeConfigSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeInterval")]
@@ -2860,6 +2862,10 @@ pub struct OpenTelemetryCollectorTargetAllocatorPrometheusCrProbeSelectorMatchEx
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpenTelemetryCollectorTargetAllocatorPrometheusCrScrapeClasses {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

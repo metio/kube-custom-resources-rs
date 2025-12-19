@@ -26,6 +26,9 @@ pub struct QueueSpec {
     /// ResourceList is a set of (resource name, quantity) pairs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capability: Option<BTreeMap<String, IntOrString>>,
+    /// DequeueStrategy defines the dequeue strategy of queue
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dequeueStrategy")]
+    pub dequeue_strategy: Option<QueueDequeueStrategy>,
     /// The amount of resources configured by the user. This part of resource can be shared with other queues and reclaimed back.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deserved: Option<BTreeMap<String, IntOrString>>,
@@ -78,6 +81,16 @@ pub struct QueueAffinityNodeGroupAntiAffinity {
     pub preferred_during_scheduling_ignored_during_execution: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
     pub required_during_scheduling_ignored_during_execution: Option<Vec<String>>,
+}
+
+/// Specification of the desired behavior of the queue.
+/// More info: <https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status>
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum QueueDequeueStrategy {
+    #[serde(rename = "fifo")]
+    Fifo,
+    #[serde(rename = "traverse")]
+    Traverse,
 }
 
 /// CluterSpec represents the template of Cluster

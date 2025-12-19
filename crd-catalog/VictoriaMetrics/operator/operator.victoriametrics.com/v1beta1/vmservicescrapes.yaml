@@ -213,7 +213,7 @@ spec:
                                 type: "string"
                               type: "array"
                             source_labels:
-                              description: "UnderScoreSourceLabels - additional form of source labels source_labels\nfor compatibility with original relabel config.\nif set  both sourceLabels and source_labels, sourceLabels has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
+                              description: "UnderScoreSourceLabels - additional form of source labels source_labels\nfor compatibility with original relabel config.\nif set both sourceLabels and source_labels, sourceLabels has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
                               items:
                                 type: "string"
                               type: "array"
@@ -221,7 +221,7 @@ spec:
                               description: "Label to which the resulting value is written in a replace action.\nIt is mandatory for replace actions. Regex capture groups are available."
                               type: "string"
                             target_label:
-                              description: "UnderScoreTargetLabel - additional form of target label - target_label\nfor compatibility with original relabel config.\nif set  both targetLabel and target_label, targetLabel has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
+                              description: "UnderScoreTargetLabel - additional form of target label - target_label\nfor compatibility with original relabel config.\nif set both targetLabel and target_label, targetLabel has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
                               type: "string"
                           type: "object"
                         type: "array"
@@ -364,7 +364,7 @@ spec:
                                 type: "string"
                               type: "array"
                             source_labels:
-                              description: "UnderScoreSourceLabels - additional form of source labels source_labels\nfor compatibility with original relabel config.\nif set  both sourceLabels and source_labels, sourceLabels has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
+                              description: "UnderScoreSourceLabels - additional form of source labels source_labels\nfor compatibility with original relabel config.\nif set both sourceLabels and source_labels, sourceLabels has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
                               items:
                                 type: "string"
                               type: "array"
@@ -372,7 +372,7 @@ spec:
                               description: "Label to which the resulting value is written in a replace action.\nIt is mandatory for replace actions. Regex capture groups are available."
                               type: "string"
                             target_label:
-                              description: "UnderScoreTargetLabel - additional form of target label - target_label\nfor compatibility with original relabel config.\nif set  both targetLabel and target_label, targetLabel has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
+                              description: "UnderScoreTargetLabel - additional form of target label - target_label\nfor compatibility with original relabel config.\nif set both targetLabel and target_label, targetLabel has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
                               type: "string"
                           type: "object"
                         type: "array"
