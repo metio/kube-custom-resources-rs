@@ -1328,6 +1328,9 @@ pub struct DeviceConfigRemediationWorkflow {
     /// enable if operator should automatically handle remediation of node incase of gpu issues
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
+    /// MaxParallelWorkflows specifies limit on how many remediation workflows can be executed in parallel. 0 is the default value and it means no limit.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxParallelWorkflows")]
+    pub max_parallel_workflows: Option<i64>,
     /// Tester image used to run tests and verify if remediation fixed the reported problem.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "testerImage")]
     pub tester_image: Option<String>,

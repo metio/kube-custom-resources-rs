@@ -2122,11 +2122,11 @@ spec:
                       type: "boolean"
                   type: "object"
                 deploymentModel:
-                  default: "Direct"
-                  description: "`deploymentModel` defines the desired type of deployment for flow processing. Possible values are:<br>\n- `Direct` (default) to make the flow processor listen directly from the agents using the host network, backed by a DaemonSet. Only recommended on small clusters, below 15 nodes.<br>\n- `Service` to make the flow processor listen as a Kubernetes Service, backed by a scalable Deployment.<br>\n- `Kafka` to make flows sent to a Kafka pipeline before consumption by the processor.<br>\nKafka can provide better scalability, resiliency, and high availability (for more details, see https://www.redhat.com/en/topics/integration/what-is-apache-kafka).<br>\n`Direct` is not recommended on large clusters as it is less memory efficient."
+                  default: "Service"
+                  description: "`deploymentModel` defines the desired type of deployment for flow processing. Possible values are:<br>\n- `Service` (default) to make the flow processor listen as a Kubernetes Service, backed by a scalable Deployment.<br>\n- `Kafka` to make flows sent to a Kafka pipeline before consumption by the processor.<br>\n- `Direct` to make the flow processor listen directly from the agents using the host network, backed by a DaemonSet. Only recommended on small clusters, below 15 nodes.<br>\nKafka can provide better scalability, resiliency, and high availability (for more details, see https://www.redhat.com/en/topics/integration/what-is-apache-kafka).<br>\n`Direct` is not recommended on large clusters as it is less memory efficient."
                   enum:
-                    - "Direct"
                     - "Service"
+                    - "Direct"
                     - "Kafka"
                   type: "string"
                 exporters:
@@ -3971,11 +3971,11 @@ spec:
                       description: "`Metrics` define the processor configuration regarding metrics"
                       properties:
                         alerts:
-                          description: "`alerts` is a list of alerts to be created for Prometheus AlertManager, organized by templates and variants [Unsupported (*)].\nThis is currently an experimental feature behind a feature gate. To enable, edit `spec.processor.advanced.env` by adding `EXPERIMENTAL_ALERTS_HEALTH` set to `true`.\nMore information on alerts: https://github.com/netobserv/network-observability-operator/blob/main/docs/Alerts.md"
+                          description: "`alerts` is a list of alerts to be created for Prometheus AlertManager, organized by templates and variants.\nMore information on alerts: https://github.com/netobserv/network-observability-operator/blob/main/docs/Alerts.md"
                           items:
                             properties:
                               template:
-                                description: "Alert template name.\nPossible values are: `PacketDropsByKernel`, `PacketDropsByDevice`, `IPsecErrors`, `NetpolDenied`,\n`LatencyHighTrend`, `DNSErrors`, `ExternalEgressHighTrend`, `ExternalIngressHighTrend`, `CrossAZ`.\nMore information on alerts: https://github.com/netobserv/network-observability-operator/blob/main/docs/Alerts.md"
+                                description: "Alert template name.\nPossible values are: `PacketDropsByKernel`, `PacketDropsByDevice`, `IPsecErrors`, `NetpolDenied`,\n`LatencyHighTrend`, `DNSErrors`, `DNSNxDomain`, `ExternalEgressHighTrend`, `ExternalIngressHighTrend`.\nMore information on alerts: https://github.com/netobserv/network-observability-operator/blob/main/docs/Alerts.md"
                                 enum:
                                   - "PacketDropsByKernel"
                                   - "PacketDropsByDevice"
@@ -3983,9 +3983,9 @@ spec:
                                   - "NetpolDenied"
                                   - "LatencyHighTrend"
                                   - "DNSErrors"
+                                  - "DNSNxDomain"
                                   - "ExternalEgressHighTrend"
                                   - "ExternalIngressHighTrend"
-                                  - "CrossAZ"
                                 type: "string"
                               variants:
                                 description: "A list of variants for this template"
@@ -4031,7 +4031,7 @@ spec:
                             type: "object"
                           type: "array"
                         disableAlerts:
-                          description: "`disableAlerts` is a list of alert groups that should be disabled from the default set of alerts.\nPossible values are: `NetObservNoFlows`, `NetObservLokiError`, `PacketDropsByKernel`, `PacketDropsByDevice`, `IPsecErrors`, `NetpolDenied`,\n`LatencyHighTrend`, `DNSErrors`, `ExternalEgressHighTrend`, `ExternalIngressHighTrend`, `CrossAZ`.\nMore information on alerts: https://github.com/netobserv/network-observability-operator/blob/main/docs/Alerts.md"
+                          description: "`disableAlerts` is a list of alert groups that should be disabled from the default set of alerts.\nPossible values are: `NetObservNoFlows`, `NetObservLokiError`, `PacketDropsByKernel`, `PacketDropsByDevice`, `IPsecErrors`, `NetpolDenied`,\n`LatencyHighTrend`, `DNSErrors`, `DNSNxDomain`, `ExternalEgressHighTrend`, `ExternalIngressHighTrend`.\nMore information on alerts: https://github.com/netobserv/network-observability-operator/blob/main/docs/Alerts.md"
                           items:
                             type: "string"
                           type: "array"
@@ -4195,6 +4195,28 @@ spec:
                             x-kubernetes-int-or-string: true
                           description: "Requests describes the minimum amount of compute resources required.\nIf Requests is omitted for a container, it defaults to Limits if that is explicitly specified,\notherwise to an implementation-defined value. Requests cannot exceed Limits.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                           type: "object"
+                      type: "object"
+                    slicesConfig:
+                      description: "Global configuration managing FlowCollectorSlices custom resources."
+                      properties:
+                        collectionMode:
+                          default: "AlwaysCollect"
+                          description: "`collectionMode` determines how the FlowCollectorSlice custom resources impacts the flow collection process:<br>\n- When set to `AlwaysCollect`, all flows are collected regardless of the presence of FlowCollectorSlice.<br>\n- When set to `AllowList`, only the flows related to namespaces where a FlowCollectorSlice resource is present, or configured via the global `namespacesAllowList`, are collected.<br>"
+                          enum:
+                            - "AlwaysCollect"
+                            - "AllowList"
+                          type: "string"
+                        enable:
+                          default: false
+                          description: "`enable` determines if the FlowCollectorSlice feature is enabled. If not, all resources of kind FlowCollectorSlice are simply ignored."
+                          type: "boolean"
+                        namespacesAllowList:
+                          description: "`namespacesAllowList` is a list of namespaces for which flows are always collected, regardless of the presence of FlowCollectorSlice in those namespaces.\nAn entry enclosed by slashes, such as `/openshift-.*/`, is matched as a regular expression.\nThis setting is ignored if `collectionMode` is different from `AllowList`."
+                          items:
+                            type: "string"
+                          type: "array"
+                      required:
+                        - "enable"
                       type: "object"
                     subnetLabels:
                       description: "`subnetLabels` allows to define custom labels on subnets and IPs or to enable automatic labelling of recognized subnets in OpenShift, which is used to identify cluster external traffic.\nWhen a subnet matches the source or destination IP of a flow, a corresponding field is added: `SrcSubnetLabel` or `DstSubnetLabel`."

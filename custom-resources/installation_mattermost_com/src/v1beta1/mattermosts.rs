@@ -374,6 +374,10 @@ pub struct MattermostFileStoreExternalVolume {
 /// Defines the configuration of PVC backed storage (local). This is NOT recommended for production environments.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MattermostFileStoreLocal {
+    /// Defines the access modes for the PVC. If not specified, defaults to ReadWriteMany for new installations.
+    /// For backwards compatibility, existing PVCs with ReadWriteOnce will be preserved until explicitly changed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
+    pub access_modes: Option<Vec<String>>,
     /// Set to use local (PVC) storage, require explicit enabled to prevent accidental misconfiguration.
     pub enabled: bool,
     /// Defines the storage size for the PVC. (default 50Gi)

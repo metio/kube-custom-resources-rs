@@ -32,9 +32,9 @@ pub struct FlowCollectorSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "consolePlugin")]
     pub console_plugin: Option<FlowCollectorConsolePlugin>,
     /// `deploymentModel` defines the desired type of deployment for flow processing. Possible values are:<br>
-    /// - `Direct` (default) to make the flow processor listen directly from the agents using the host network, backed by a DaemonSet. Only recommended on small clusters, below 15 nodes.<br>
-    /// - `Service` to make the flow processor listen as a Kubernetes Service, backed by a scalable Deployment.<br>
+    /// - `Service` (default) to make the flow processor listen as a Kubernetes Service, backed by a scalable Deployment.<br>
     /// - `Kafka` to make flows sent to a Kafka pipeline before consumption by the processor.<br>
+    /// - `Direct` to make the flow processor listen directly from the agents using the host network, backed by a DaemonSet. Only recommended on small clusters, below 15 nodes.<br>
     /// Kafka can provide better scalability, resiliency, and high availability (for more details, see <https://www.redhat.com/en/topics/integration/what-is-apache-kafka).<br>>
     /// `Direct` is not recommended on large clusters as it is less memory efficient.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploymentModel")]
@@ -2527,8 +2527,8 @@ pub struct FlowCollectorConsolePluginResourcesClaims {
 /// for these features as a best effort only.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorDeploymentModel {
-    Direct,
     Service,
+    Direct,
     Kafka,
 }
 
@@ -3644,6 +3644,9 @@ pub struct FlowCollectorProcessor {
     /// For more information, see <https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<FlowCollectorProcessorResources>,
+    /// Global configuration managing FlowCollectorSlices custom resources.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "slicesConfig")]
+    pub slices_config: Option<FlowCollectorProcessorSlicesConfig>,
     /// `subnetLabels` allows to define custom labels on subnets and IPs or to enable automatic labelling of recognized subnets in OpenShift, which is used to identify cluster external traffic.
     /// When a subnet matches the source or destination IP of a flow, a corresponding field is added: `SrcSubnetLabel` or `DstSubnetLabel`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetLabels")]
@@ -4762,14 +4765,13 @@ pub enum FlowCollectorProcessorLogTypes {
 /// `Metrics` define the processor configuration regarding metrics
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorProcessorMetrics {
-    /// `alerts` is a list of alerts to be created for Prometheus AlertManager, organized by templates and variants [Unsupported (*)].
-    /// This is currently an experimental feature behind a feature gate. To enable, edit `spec.processor.advanced.env` by adding `EXPERIMENTAL_ALERTS_HEALTH` set to `true`.
+    /// `alerts` is a list of alerts to be created for Prometheus AlertManager, organized by templates and variants.
     /// More information on alerts: <https://github.com/netobserv/network-observability-operator/blob/main/docs/Alerts.md>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub alerts: Option<Vec<FlowCollectorProcessorMetricsAlerts>>,
     /// `disableAlerts` is a list of alert groups that should be disabled from the default set of alerts.
     /// Possible values are: `NetObservNoFlows`, `NetObservLokiError`, `PacketDropsByKernel`, `PacketDropsByDevice`, `IPsecErrors`, `NetpolDenied`,
-    /// `LatencyHighTrend`, `DNSErrors`, `ExternalEgressHighTrend`, `ExternalIngressHighTrend`, `CrossAZ`.
+    /// `LatencyHighTrend`, `DNSErrors`, `DNSNxDomain`, `ExternalEgressHighTrend`, `ExternalIngressHighTrend`.
     /// More information on alerts: <https://github.com/netobserv/network-observability-operator/blob/main/docs/Alerts.md>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableAlerts")]
     pub disable_alerts: Option<Vec<String>>,
@@ -4794,7 +4796,7 @@ pub struct FlowCollectorProcessorMetrics {
 pub struct FlowCollectorProcessorMetricsAlerts {
     /// Alert template name.
     /// Possible values are: `PacketDropsByKernel`, `PacketDropsByDevice`, `IPsecErrors`, `NetpolDenied`,
-    /// `LatencyHighTrend`, `DNSErrors`, `ExternalEgressHighTrend`, `ExternalIngressHighTrend`, `CrossAZ`.
+    /// `LatencyHighTrend`, `DNSErrors`, `DNSNxDomain`, `ExternalEgressHighTrend`, `ExternalIngressHighTrend`.
     /// More information on alerts: <https://github.com/netobserv/network-observability-operator/blob/main/docs/Alerts.md>
     pub template: FlowCollectorProcessorMetricsAlertsTemplate,
     /// A list of variants for this template
@@ -4810,10 +4812,10 @@ pub enum FlowCollectorProcessorMetricsAlertsTemplate {
     LatencyHighTrend,
     #[serde(rename = "DNSErrors")]
     DnsErrors,
+    #[serde(rename = "DNSNxDomain")]
+    DnsNxDomain,
     ExternalEgressHighTrend,
     ExternalIngressHighTrend,
-    #[serde(rename = "CrossAZ")]
-    CrossAz,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4995,6 +4997,30 @@ pub struct FlowCollectorProcessorResourcesClaims {
     /// only the result of this request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub request: Option<String>,
+}
+
+/// Global configuration managing FlowCollectorSlices custom resources.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlowCollectorProcessorSlicesConfig {
+    /// `collectionMode` determines how the FlowCollectorSlice custom resources impacts the flow collection process:<br>
+    /// - When set to `AlwaysCollect`, all flows are collected regardless of the presence of FlowCollectorSlice.<br>
+    /// - When set to `AllowList`, only the flows related to namespaces where a FlowCollectorSlice resource is present, or configured via the global `namespacesAllowList`, are collected.<br>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "collectionMode")]
+    pub collection_mode: Option<FlowCollectorProcessorSlicesConfigCollectionMode>,
+    /// `enable` determines if the FlowCollectorSlice feature is enabled. If not, all resources of kind FlowCollectorSlice are simply ignored.
+    pub enable: bool,
+    /// `namespacesAllowList` is a list of namespaces for which flows are always collected, regardless of the presence of FlowCollectorSlice in those namespaces.
+    /// An entry enclosed by slashes, such as `/openshift-.*/`, is matched as a regular expression.
+    /// This setting is ignored if `collectionMode` is different from `AllowList`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespacesAllowList")]
+    pub namespaces_allow_list: Option<Vec<String>>,
+}
+
+/// Global configuration managing FlowCollectorSlices custom resources.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum FlowCollectorProcessorSlicesConfigCollectionMode {
+    AlwaysCollect,
+    AllowList,
 }
 
 /// `subnetLabels` allows to define custom labels on subnets and IPs or to enable automatic labelling of recognized subnets in OpenShift, which is used to identify cluster external traffic.

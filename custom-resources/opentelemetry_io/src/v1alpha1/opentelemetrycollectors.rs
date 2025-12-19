@@ -2673,10 +2673,16 @@ pub struct OpenTelemetryCollectorTargetAllocatorPrometheusCr {
     pub enabled: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podMonitorSelector")]
     pub pod_monitor_selector: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeClasses")]
+    pub scrape_classes: Option<Vec<OpenTelemetryCollectorTargetAllocatorPrometheusCrScrapeClasses>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeInterval")]
     pub scrape_interval: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceMonitorSelector")]
     pub service_monitor_selector: Option<BTreeMap<String, String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpenTelemetryCollectorTargetAllocatorPrometheusCrScrapeClasses {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

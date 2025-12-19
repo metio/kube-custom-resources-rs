@@ -3011,6 +3011,10 @@ pub struct LokiStackTenants {
     /// Authorization defines the lokistack-gateway component authorization configuration spec per tenant.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<LokiStackTenantsAuthorization>,
+    /// DisableIngress disables automatic creation of external access resources (Route / Ingress).
+    /// When true, no Route or Ingress will be created for the gateway.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableIngress")]
+    pub disable_ingress: Option<bool>,
     /// Mode defines the mode in which lokistack-gateway component will be configured.
     pub mode: LokiStackTenantsMode,
     /// Openshift defines the configuration specific to Openshift modes.

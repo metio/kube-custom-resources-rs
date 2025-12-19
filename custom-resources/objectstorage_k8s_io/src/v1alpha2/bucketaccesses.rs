@@ -128,8 +128,6 @@ pub struct BucketAccessStatusAccessedBuckets {
 /// status defines the observed state of BucketAccess
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum BucketAccessStatusAuthenticationType {
-    #[serde(rename = "")]
-    KopiumEmpty,
     Key,
     ServiceAccount,
 }

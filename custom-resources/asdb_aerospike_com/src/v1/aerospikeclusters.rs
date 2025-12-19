@@ -4455,6 +4455,12 @@ pub struct AerospikeClusterRackConfigRacks {
     /// Effective/operative storage. The resultant is user input if specified else global storage
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveStorage")]
     pub effective_storage: Option<AerospikeClusterRackConfigRacksEffectiveStorage>,
+    /// ForceBlockFromRoster, when set to true, forcefully removes all nodes in this rack from the roster.
+    /// With this enabled, the operator ignores unavailable or dead partitions and proceeds with node removal.
+    /// Additionally, any failed or pending pods in this rack are also ignored during this process.
+    /// It may result in data loss. Use this with caution.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceBlockFromRoster")]
+    pub force_block_from_roster: Option<bool>,
     /// Identifier for the rack
     pub id: i64,
     /// K8s Node name for setting rack affinity. Rack pods will be deployed in given k8s Node
@@ -12471,6 +12477,12 @@ pub struct AerospikeClusterStatusRackConfigRacks {
     /// Effective/operative storage. The resultant is user input if specified else global storage
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveStorage")]
     pub effective_storage: Option<AerospikeClusterStatusRackConfigRacksEffectiveStorage>,
+    /// ForceBlockFromRoster, when set to true, forcefully removes all nodes in this rack from the roster.
+    /// With this enabled, the operator ignores unavailable or dead partitions and proceeds with node removal.
+    /// Additionally, any failed or pending pods in this rack are also ignored during this process.
+    /// It may result in data loss. Use this with caution.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceBlockFromRoster")]
+    pub force_block_from_roster: Option<bool>,
     /// Identifier for the rack
     pub id: i64,
     /// K8s Node name for setting rack affinity. Rack pods will be deployed in given k8s Node

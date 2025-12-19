@@ -32,9 +32,11 @@ pub struct PodGroupSpec {
     /// will not start anyone.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minResources")]
     pub min_resources: Option<BTreeMap<String, IntOrString>>,
-    /// MinTaskMember defines the minimal number of pods to run each task in the pod group;
+    /// MinTaskMember defines the minimal number of pods to run for each task in the pod group;
     /// if there's not enough resources to start each task, the scheduler
     /// will not start anyone.
+    /// SubGroupPolicy covers all capabilities of minTaskMember, while providing richer network topology and Gang scheduling management capabilities.
+    /// Recommend using SubGroupPolicy to uniformly manage Gang scheduling for each Task group.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minTaskMember")]
     pub min_task_member: Option<BTreeMap<String, i32>>,
     /// NetworkTopology defines the NetworkTopology config, this field works in conjunction with network topology feature and hyperNode CRD.
@@ -52,7 +54,8 @@ pub struct PodGroupSpec {
     /// the PodGroup will not be scheduled. Defaults to `default` Queue with the lowest weight.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub queue: Option<String>,
-    /// SubGroupPolicy defines policies for dividing all pods within the podGroup into multiple groups.
+    /// Compared with minTaskMember, it offers more comprehensive topology scheduling and Gang scheduling management capabilities.
+    /// Concurrent use with minTaskMember is not recommended, and SubGroupPolicy is the long-term evolution direction.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subGroupPolicy")]
     pub sub_group_policy: Option<Vec<PodGroupSubGroupPolicy>>,
 }
@@ -83,11 +86,20 @@ pub enum PodGroupNetworkTopologyMode {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PodGroupSubGroupPolicy {
-    /// MatchPolicy defines matching strategies for different groups, where pods with the same labelKey value are grouped together.
-    /// The LabelKey in the list is unique.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchPolicy")]
-    pub match_policy: Option<Vec<PodGroupSubGroupPolicyMatchPolicy>>,
-    /// MinSubGroups defines the minimum number of sub-affinity groups required.
+    /// LabelSelector is used to find matching pods.
+    /// Pods that match this label selector are counted to determine the number of pods
+    /// in their corresponding topology domain.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<PodGroupSubGroupPolicyLabelSelector>,
+    /// MatchLabelKeys: A label-based grouping configuration field for Pods, defining filtering rules for grouping label keys
+    /// Core function: Refine grouping of Pods that meet LabelSelector criteria by label attributes, with the following rules and constraints:
+    /// 1. Scope: Only applies to Pods matching the predefined LabelSelector
+    /// 2. Grouping rule: Specify one or more label keys; Pods containing the target label keys with exactly the same corresponding label values are grouped together
+    /// 3. Policy constraint: Pods in the same group follow a unified NetworkTopology policy to achieve group-level network behavior governance
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MinSubGroups: Minimum number of subgroups required to trigger scheduling. Scheduling is initiated only if cluster resources meet the requirements of at least this number of subgroups.
+    /// Subgroup-level Gang Scheduling
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minSubGroups")]
     pub min_sub_groups: Option<i32>,
     /// Name specifies the name of SubGroupPolicy
@@ -102,11 +114,36 @@ pub struct PodGroupSubGroupPolicy {
     pub sub_group_size: Option<i32>,
 }
 
+/// LabelSelector is used to find matching pods.
+/// Pods that match this label selector are counted to determine the number of pods
+/// in their corresponding topology domain.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PodGroupSubGroupPolicyMatchPolicy {
-    /// LabelKey specifies the label key used to group pods.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelKey")]
-    pub label_key: Option<String>,
+pub struct PodGroupSubGroupPolicyLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<PodGroupSubGroupPolicyLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PodGroupSubGroupPolicyLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 /// NetworkTopology defines the NetworkTopology config, this field works in conjunction with network topology feature and hyperNode CRD.

@@ -20,6 +20,7 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct GrafanaNotificationPolicyRouteSpec {
+    /// active time intervals
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub active_time_intervals: Option<Vec<String>>,
     /// continue
@@ -46,7 +47,7 @@ pub struct GrafanaNotificationPolicyRouteSpec {
     /// object matchers
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub object_matchers: Option<Vec<Vec<String>>>,
-    /// provenance
+    /// Deprecated: Does nothing
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub provenance: Option<String>,
     /// receiver

@@ -107,6 +107,11 @@ pub struct ComponentSpec {
     /// The administrator must manually manage the cleanup and removal of these resources when they are no longer needed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "offlineInstances")]
     pub offline_instances: Option<Vec<String>>,
+    /// Specifies the desired Ordinals.
+    /// The Ordinals used to specify the ordinal of the instance (pod) names to be generated under this component.
+    /// If Ordinals are defined, their number must be equal to or more than the corresponding replicas.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ordinals: Option<ComponentOrdinals>,
     /// Controls the concurrency of pods during initial scale up, when replacing pods on nodes,
     /// or when scaling down. It only used when `PodManagementPolicy` is set to `Parallel`.
     /// The default Concurrency is 100%.
@@ -2344,6 +2349,25 @@ pub struct ComponentNetworkHostPorts {
     pub name: String,
     /// The port number of the host port.
     pub port: i32,
+}
+
+/// Specifies the desired Ordinals.
+/// The Ordinals used to specify the ordinal of the instance (pod) names to be generated under this component.
+/// If Ordinals are defined, their number must be equal to or more than the corresponding replicas.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentOrdinals {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub discrete: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ranges: Option<Vec<ComponentOrdinalsRanges>>,
+}
+
+/// Range represents a range with a start and an end value. Both start and end are included.
+/// It is used to define a continuous segment.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentOrdinalsRanges {
+    pub end: i32,
+    pub start: i32,
 }
 
 /// persistentVolumeClaimRetentionPolicy describes the lifecycle of persistent

@@ -56,10 +56,7 @@ pub struct BucketBucketClaim {
     /// name is the name of the BucketClaim being referenced.
     pub name: String,
     /// namespace is the namespace of the BucketClaim being referenced.
-    /// If empty, the Kubernetes 'default' namespace is assumed.
-    /// namespace is immutable except to update '' to 'default'.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
+    pub namespace: String,
     /// uid is the UID of the BucketClaim being referenced.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
@@ -78,12 +75,13 @@ pub struct BucketStatus {
     /// bucketID is the unique identifier for the backend bucket known to the driver.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bucketID")]
     pub bucket_id: Option<String>,
-    /// BucketInfo reported by the driver, rendered in the COSI_<PROTOCOL>_<KEY> format used for the
-    /// BucketAccess Secret. e.g., COSI_S3_ENDPOINT, COSI_AZURE_STORAGE_ACCOUNT.
+    /// bucketInfo contains info about the bucket reported by the driver, rendered in the same
+    /// COSI_<PROTOCOL>_<KEY> format used for the BucketAccess Secret.
+    /// e.g., COSI_S3_ENDPOINT, COSI_AZURE_STORAGE_ACCOUNT.
     /// This should not contain any sensitive information.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bucketInfo")]
     pub bucket_info: Option<BTreeMap<String, String>>,
-    /// Error holds the most recent error message, with a timestamp.
+    /// error holds the most recent error message, with a timestamp.
     /// This is cleared when provisioning is successful.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub error: Option<BucketStatusError>,
@@ -96,7 +94,7 @@ pub struct BucketStatus {
     pub ready_to_use: bool,
 }
 
-/// Error holds the most recent error message, with a timestamp.
+/// error holds the most recent error message, with a timestamp.
 /// This is cleared when provisioning is successful.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketStatusError {

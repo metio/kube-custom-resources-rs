@@ -584,7 +584,7 @@ spec:
                   type: "object"
                 fromPostgresVersion:
                   description: "The major version of PostgreSQL before the upgrade."
-                  maximum: 16.0
+                  maximum: 17.0
                   minimum: 12.0
                   type: "integer"
                 image:

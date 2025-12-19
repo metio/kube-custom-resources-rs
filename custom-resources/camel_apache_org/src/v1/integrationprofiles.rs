@@ -349,6 +349,9 @@ pub struct IntegrationProfileTraits {
     /// The configuration of GC trait
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gc: Option<IntegrationProfileTraitsGc>,
+    /// The configuration of GitOps trait
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub gitops: Option<IntegrationProfileTraitsGitops>,
     /// The configuration of Health trait
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub health: Option<IntegrationProfileTraitsHealth>,
@@ -924,6 +927,51 @@ pub enum IntegrationProfileTraitsGcDiscoveryCache {
     Memory,
 }
 
+/// The configuration of GitOps trait
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IntegrationProfileTraitsGitops {
+    /// the git branch to check out.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub branch: Option<String>,
+    /// the git branch to push to. If omitted, the operator will push to a new branch named as `cicd/release-candidate-<datetime>`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "branchPush")]
+    pub branch_push: Option<String>,
+    /// the git commit (full SHA) to check out.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub commit: Option<String>,
+    /// The email used to commit the GitOps changes (default `camel-k-operator@apache.org`).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "committerEmail")]
+    pub committer_email: Option<String>,
+    /// The name used to commit the GitOps changes (default `Camel K Operator`).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "committerName")]
+    pub committer_name: Option<String>,
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// Can be used to enable or disable a trait. All traits share this common property.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// The root path where to store Kustomize overlays (default `integrations`).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "integrationDirectory")]
+    pub integration_directory: Option<String>,
+    /// a list of overlays to provide (default {"dev","stag","prod"}).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub overlays: Option<Vec<String>>,
+    /// a flag (default, false) to overwrite any existing overlay.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "overwriteOverlay")]
+    pub overwrite_overlay: Option<bool>,
+    /// the Kubernetes secret where the Git token is stored. The operator will pick up the first secret key only, whichever the name it is.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<String>,
+    /// the git tag to check out.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tag: Option<String>,
+    /// the URL of the repository where the project is stored.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
+}
+
 /// The configuration of Health trait
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationProfileTraitsHealth {
@@ -1165,6 +1213,19 @@ pub struct IntegrationProfileTraitsJvm {
     /// A list of JVM agents to download and execute with format `<agent-name>;<agent-url>[;<jvm-agent-options>]`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub agents: Option<Vec<String>>,
+    /// The secret should contain PEM-encoded certificates.
+    /// Example: "secret:my-ca-certs" or "secret:my-ca-certs/custom-ca.crt"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCert")]
+    pub ca_cert: Option<String>,
+    /// The path where the generated truststore will be mounted
+    /// Default: "/etc/camel/conf.d/_truststore"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertMountPath")]
+    pub ca_cert_mount_path: Option<String>,
+    /// Required when caCert is set. A secret reference containing the truststore password.
+    /// If the secret key is not specified, "password" is used as the default key.
+    /// Example: "secret:my-truststore-password" or "secret:my-truststore-password/mykey"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertPassword")]
+    pub ca_cert_password: Option<String>,
     /// Additional JVM classpath (use `Linux` classpath separator)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub classpath: Option<String>,
@@ -1220,6 +1281,13 @@ pub struct IntegrationProfileTraitsKamelets {
 /// The configuration of Keda trait
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationProfileTraitsKeda {
+    /// Automatically discover KEDA triggers from Camel component URIs.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub auto: Option<bool>,
+    /// Additional metadata to merge into auto-discovered triggers. Keys are trigger types (e.g., "kafka"),
+    /// values are maps of metadata key-value pairs to merge (e.g., {"lagThreshold": "10"}).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoMetadata")]
+    pub auto_metadata: Option<BTreeMap<String, BTreeMap<String, String>>>,
     /// Legacy trait configuration parameters.
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2295,6 +2363,9 @@ pub struct IntegrationProfileStatusTraits {
     /// The configuration of GC trait
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gc: Option<IntegrationProfileStatusTraitsGc>,
+    /// The configuration of GitOps trait
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub gitops: Option<IntegrationProfileStatusTraitsGitops>,
     /// The configuration of Health trait
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub health: Option<IntegrationProfileStatusTraitsHealth>,
@@ -2870,6 +2941,51 @@ pub enum IntegrationProfileStatusTraitsGcDiscoveryCache {
     Memory,
 }
 
+/// The configuration of GitOps trait
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IntegrationProfileStatusTraitsGitops {
+    /// the git branch to check out.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub branch: Option<String>,
+    /// the git branch to push to. If omitted, the operator will push to a new branch named as `cicd/release-candidate-<datetime>`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "branchPush")]
+    pub branch_push: Option<String>,
+    /// the git commit (full SHA) to check out.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub commit: Option<String>,
+    /// The email used to commit the GitOps changes (default `camel-k-operator@apache.org`).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "committerEmail")]
+    pub committer_email: Option<String>,
+    /// The name used to commit the GitOps changes (default `Camel K Operator`).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "committerName")]
+    pub committer_name: Option<String>,
+    /// Legacy trait configuration parameters.
+    /// Deprecated: for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<BTreeMap<String, serde_json::Value>>,
+    /// Can be used to enable or disable a trait. All traits share this common property.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// The root path where to store Kustomize overlays (default `integrations`).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "integrationDirectory")]
+    pub integration_directory: Option<String>,
+    /// a list of overlays to provide (default {"dev","stag","prod"}).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub overlays: Option<Vec<String>>,
+    /// a flag (default, false) to overwrite any existing overlay.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "overwriteOverlay")]
+    pub overwrite_overlay: Option<bool>,
+    /// the Kubernetes secret where the Git token is stored. The operator will pick up the first secret key only, whichever the name it is.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<String>,
+    /// the git tag to check out.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tag: Option<String>,
+    /// the URL of the repository where the project is stored.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
+}
+
 /// The configuration of Health trait
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationProfileStatusTraitsHealth {
@@ -3111,6 +3227,19 @@ pub struct IntegrationProfileStatusTraitsJvm {
     /// A list of JVM agents to download and execute with format `<agent-name>;<agent-url>[;<jvm-agent-options>]`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub agents: Option<Vec<String>>,
+    /// The secret should contain PEM-encoded certificates.
+    /// Example: "secret:my-ca-certs" or "secret:my-ca-certs/custom-ca.crt"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCert")]
+    pub ca_cert: Option<String>,
+    /// The path where the generated truststore will be mounted
+    /// Default: "/etc/camel/conf.d/_truststore"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertMountPath")]
+    pub ca_cert_mount_path: Option<String>,
+    /// Required when caCert is set. A secret reference containing the truststore password.
+    /// If the secret key is not specified, "password" is used as the default key.
+    /// Example: "secret:my-truststore-password" or "secret:my-truststore-password/mykey"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertPassword")]
+    pub ca_cert_password: Option<String>,
     /// Additional JVM classpath (use `Linux` classpath separator)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub classpath: Option<String>,
@@ -3166,6 +3295,13 @@ pub struct IntegrationProfileStatusTraitsKamelets {
 /// The configuration of Keda trait
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationProfileStatusTraitsKeda {
+    /// Automatically discover KEDA triggers from Camel component URIs.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub auto: Option<bool>,
+    /// Additional metadata to merge into auto-discovered triggers. Keys are trigger types (e.g., "kafka"),
+    /// values are maps of metadata key-value pairs to merge (e.g., {"lagThreshold": "10"}).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoMetadata")]
+    pub auto_metadata: Option<BTreeMap<String, BTreeMap<String, String>>>,
     /// Legacy trait configuration parameters.
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]

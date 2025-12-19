@@ -253,7 +253,6 @@ spec:
                                 type: "array"
                             type: "object"
                           weight:
-                            format: "int32"
                             type: "integer"
                         required:
                           - "preference"

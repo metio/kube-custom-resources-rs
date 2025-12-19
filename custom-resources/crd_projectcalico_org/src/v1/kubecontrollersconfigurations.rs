@@ -40,6 +40,8 @@ pub struct KubeControllersConfigurationControllers {
     pub node: Option<KubeControllersConfigurationControllersNode>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub policy: Option<KubeControllersConfigurationControllersPolicy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "policyMigration")]
+    pub policy_migration: Option<KubeControllersConfigurationControllersPolicyMigration>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<KubeControllersConfigurationControllersServiceAccount>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workloadEndpoint")]
@@ -101,6 +103,18 @@ pub struct KubeControllersConfigurationControllersPolicy {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KubeControllersConfigurationControllersPolicyMigration {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<KubeControllersConfigurationControllersPolicyMigrationEnabled>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KubeControllersConfigurationControllersPolicyMigrationEnabled {
+    Disabled,
+    Enabled,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubeControllersConfigurationControllersServiceAccount {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconcilerPeriod")]
     pub reconciler_period: Option<String>,
@@ -145,6 +159,8 @@ pub struct KubeControllersConfigurationStatusRunningConfigControllers {
     pub node: Option<KubeControllersConfigurationStatusRunningConfigControllersNode>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub policy: Option<KubeControllersConfigurationStatusRunningConfigControllersPolicy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "policyMigration")]
+    pub policy_migration: Option<KubeControllersConfigurationStatusRunningConfigControllersPolicyMigration>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<KubeControllersConfigurationStatusRunningConfigControllersServiceAccount>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workloadEndpoint")]
@@ -203,6 +219,18 @@ pub struct KubeControllersConfigurationStatusRunningConfigControllersNodeHostEnd
 pub struct KubeControllersConfigurationStatusRunningConfigControllersPolicy {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconcilerPeriod")]
     pub reconciler_period: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KubeControllersConfigurationStatusRunningConfigControllersPolicyMigration {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<KubeControllersConfigurationStatusRunningConfigControllersPolicyMigrationEnabled>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KubeControllersConfigurationStatusRunningConfigControllersPolicyMigrationEnabled {
+    Disabled,
+    Enabled,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

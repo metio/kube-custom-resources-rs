@@ -45,12 +45,6 @@ spec:
             spec:
               description: "VMAgentSpec defines the desired state of VMAgent"
               properties:
-                aPIServerConfig:
-                  description: "APIServerConfig allows specifying a host and auth methods to access apiserver.\nIf left empty, VMAgent is assumed to run inside of the cluster\nand will discover API servers automatically and use the pod's CA certificate\nand bearer token file at /var/run/secrets/kubernetes.io/serviceaccount/.\naPIServerConfig is deprecated use apiServerConfig instead"
-                  required:
-                    - "host"
-                  type: "object"
-                  x-kubernetes-preserve-unknown-fields: true
                 additionalScrapeConfigs:
                   description: "AdditionalScrapeConfigs As scrape configs are appended, the user is responsible to make sure it\nis valid. Note that using this feature may expose the possibility to\nbreak upgrades of VMAgent. It is advised to review VMAgent release\nnotes to ensure that no incompatible scrape configs are going to break\nVMAgent after the upgrade."
                   properties:
@@ -516,8 +510,11 @@ spec:
                     type: "string"
                   description: "ConfigReloaderExtraArgs that will be passed to  VMAuths config-reloader container\nfor example resyncInterval: \"30s\""
                   type: "object"
+                configReloaderImage:
+                  description: "ConfigReloaderImage defines image:tag for config-reloader container"
+                  type: "string"
                 configReloaderImageTag:
-                  description: "ConfigReloaderImageTag defines image:tag for config-reloader container"
+                  description: "ConfigReloaderImageTag defines image:tag for config-reloader container\nDeprecated: use configReloaderImage instead"
                   type: "string"
                 configReloaderResources:
                   description: "ConfigReloaderResources config-reloader container resource request and limits, https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/\nif not defined default resources from operator config will be used"
@@ -618,6 +615,9 @@ spec:
                 enforcedNamespaceLabel:
                   description: "EnforcedNamespaceLabel enforces adding a namespace label of origin for each alert\nand metric that is user created. The label value will always be the namespace of the object that is\nbeing created."
                   type: "string"
+                externalLabelName:
+                  description: "ExternalLabelName Name of external label used to denote scraping agent instance\nname. Defaults to the value of `prometheus`. External label will\n_not_ be added when value is set to empty string (`\"\"`)."
+                  type: "string"
                 externalLabels:
                   additionalProperties:
                     type: "string"
@@ -716,7 +716,7 @@ spec:
                           type: "string"
                         type: "array"
                       source_labels:
-                        description: "UnderScoreSourceLabels - additional form of source labels source_labels\nfor compatibility with original relabel config.\nif set  both sourceLabels and source_labels, sourceLabels has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
+                        description: "UnderScoreSourceLabels - additional form of source labels source_labels\nfor compatibility with original relabel config.\nif set both sourceLabels and source_labels, sourceLabels has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
                         items:
                           type: "string"
                         type: "array"
@@ -724,7 +724,7 @@ spec:
                         description: "Label to which the resulting value is written in a replace action.\nIt is mandatory for replace actions. Regex capture groups are available."
                         type: "string"
                       target_label:
-                        description: "UnderScoreTargetLabel - additional form of target label - target_label\nfor compatibility with original relabel config.\nif set  both targetLabel and target_label, targetLabel has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
+                        description: "UnderScoreTargetLabel - additional form of target label - target_label\nfor compatibility with original relabel config.\nif set both targetLabel and target_label, targetLabel has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
                         type: "string"
                     type: "object"
                   type: "array"
@@ -766,7 +766,7 @@ spec:
                           type: "string"
                         type: "array"
                       source_labels:
-                        description: "UnderScoreSourceLabels - additional form of source labels source_labels\nfor compatibility with original relabel config.\nif set  both sourceLabels and source_labels, sourceLabels has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
+                        description: "UnderScoreSourceLabels - additional form of source labels source_labels\nfor compatibility with original relabel config.\nif set both sourceLabels and source_labels, sourceLabels has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
                         items:
                           type: "string"
                         type: "array"
@@ -774,7 +774,7 @@ spec:
                         description: "Label to which the resulting value is written in a replace action.\nIt is mandatory for replace actions. Regex capture groups are available."
                         type: "string"
                       target_label:
-                        description: "UnderScoreTargetLabel - additional form of target label - target_label\nfor compatibility with original relabel config.\nif set  both targetLabel and target_label, targetLabel has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
+                        description: "UnderScoreTargetLabel - additional form of target label - target_label\nfor compatibility with original relabel config.\nif set both targetLabel and target_label, targetLabel has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
                         type: "string"
                     type: "object"
                   type: "array"
@@ -818,7 +818,7 @@ spec:
                     type: "object"
                   type: "array"
                 ignoreNamespaceSelectors:
-                  description: "IgnoreNamespaceSelectors if set to true will ignore NamespaceSelector settings from\nscrape objects, and they will only discover endpoints\nwithin their current namespace.  Defaults to false."
+                  description: "IgnoreNamespaceSelectors if set to true will ignore NamespaceSelector settings from\nscrape objects, and they will only discover endpoints\nwithin their current namespace. Defaults to false."
                   type: "boolean"
                 image:
                   description: "Image - docker image settings\nif no specified operator uses default version from operator config"
@@ -895,7 +895,7 @@ spec:
                           type: "string"
                         type: "array"
                       source_labels:
-                        description: "UnderScoreSourceLabels - additional form of source labels source_labels\nfor compatibility with original relabel config.\nif set  both sourceLabels and source_labels, sourceLabels has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
+                        description: "UnderScoreSourceLabels - additional form of source labels source_labels\nfor compatibility with original relabel config.\nif set both sourceLabels and source_labels, sourceLabels has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
                         items:
                           type: "string"
                         type: "array"
@@ -903,7 +903,7 @@ spec:
                         description: "Label to which the resulting value is written in a replace action.\nIt is mandatory for replace actions. Regex capture groups are available."
                         type: "string"
                       target_label:
-                        description: "UnderScoreTargetLabel - additional form of target label - target_label\nfor compatibility with original relabel config.\nif set  both targetLabel and target_label, targetLabel has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
+                        description: "UnderScoreTargetLabel - additional form of target label - target_label\nfor compatibility with original relabel config.\nif set both targetLabel and target_label, targetLabel has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
                         type: "string"
                     type: "object"
                   type: "array"
@@ -1070,7 +1070,7 @@ spec:
                           type: "string"
                         type: "array"
                       source_labels:
-                        description: "UnderScoreSourceLabels - additional form of source labels source_labels\nfor compatibility with original relabel config.\nif set  both sourceLabels and source_labels, sourceLabels has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
+                        description: "UnderScoreSourceLabels - additional form of source labels source_labels\nfor compatibility with original relabel config.\nif set both sourceLabels and source_labels, sourceLabels has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
                         items:
                           type: "string"
                         type: "array"
@@ -1078,7 +1078,7 @@ spec:
                         description: "Label to which the resulting value is written in a replace action.\nIt is mandatory for replace actions. Regex capture groups are available."
                         type: "string"
                       target_label:
-                        description: "UnderScoreTargetLabel - additional form of target label - target_label\nfor compatibility with original relabel config.\nif set  both targetLabel and target_label, targetLabel has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
+                        description: "UnderScoreTargetLabel - additional form of target label - target_label\nfor compatibility with original relabel config.\nif set both targetLabel and target_label, targetLabel has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
                         type: "string"
                     type: "object"
                   type: "array"
@@ -1121,7 +1121,7 @@ spec:
                   description: "NodeSelector Define which Nodes the Pods are scheduled on."
                   type: "object"
                 overrideHonorLabels:
-                  description: "OverrideHonorLabels if set to true overrides all user configured honor_labels.\nIf HonorLabels is set in scrape objects  to true, this overrides honor_labels to false."
+                  description: "OverrideHonorLabels if set to true overrides all user configured honor_labels.\nIf HonorLabels is set in scrape objects to true, this overrides honor_labels to false."
                   type: "boolean"
                 overrideHonorTimestamps:
                   description: "OverrideHonorTimestamps allows to globally enforce honoring timestamps in all scrape configs."
@@ -1254,7 +1254,7 @@ spec:
                           type: "string"
                         type: "array"
                       source_labels:
-                        description: "UnderScoreSourceLabels - additional form of source labels source_labels\nfor compatibility with original relabel config.\nif set  both sourceLabels and source_labels, sourceLabels has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
+                        description: "UnderScoreSourceLabels - additional form of source labels source_labels\nfor compatibility with original relabel config.\nif set both sourceLabels and source_labels, sourceLabels has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
                         items:
                           type: "string"
                         type: "array"
@@ -1262,7 +1262,7 @@ spec:
                         description: "Label to which the resulting value is written in a replace action.\nIt is mandatory for replace actions. Regex capture groups are available."
                         type: "string"
                       target_label:
-                        description: "UnderScoreTargetLabel - additional form of target label - target_label\nfor compatibility with original relabel config.\nif set  both targetLabel and target_label, targetLabel has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
+                        description: "UnderScoreTargetLabel - additional form of target label - target_label\nfor compatibility with original relabel config.\nif set both targetLabel and target_label, targetLabel has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
                         type: "string"
                     type: "object"
                   type: "array"
@@ -1376,7 +1376,7 @@ spec:
                           type: "string"
                         type: "array"
                       source_labels:
-                        description: "UnderScoreSourceLabels - additional form of source labels source_labels\nfor compatibility with original relabel config.\nif set  both sourceLabels and source_labels, sourceLabels has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
+                        description: "UnderScoreSourceLabels - additional form of source labels source_labels\nfor compatibility with original relabel config.\nif set both sourceLabels and source_labels, sourceLabels has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
                         items:
                           type: "string"
                         type: "array"
@@ -1384,7 +1384,7 @@ spec:
                         description: "Label to which the resulting value is written in a replace action.\nIt is mandatory for replace actions. Regex capture groups are available."
                         type: "string"
                       target_label:
-                        description: "UnderScoreTargetLabel - additional form of target label - target_label\nfor compatibility with original relabel config.\nif set  both targetLabel and target_label, targetLabel has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
+                        description: "UnderScoreTargetLabel - additional form of target label - target_label\nfor compatibility with original relabel config.\nif set both targetLabel and target_label, targetLabel has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
                         type: "string"
                     type: "object"
                   type: "array"
@@ -1585,7 +1585,7 @@ spec:
                                 type: "string"
                               type: "array"
                             source_labels:
-                              description: "UnderScoreSourceLabels - additional form of source labels source_labels\nfor compatibility with original relabel config.\nif set  both sourceLabels and source_labels, sourceLabels has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
+                              description: "UnderScoreSourceLabels - additional form of source labels source_labels\nfor compatibility with original relabel config.\nif set both sourceLabels and source_labels, sourceLabels has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
                               items:
                                 type: "string"
                               type: "array"
@@ -1593,7 +1593,7 @@ spec:
                               description: "Label to which the resulting value is written in a replace action.\nIt is mandatory for replace actions. Regex capture groups are available."
                               type: "string"
                             target_label:
-                              description: "UnderScoreTargetLabel - additional form of target label - target_label\nfor compatibility with original relabel config.\nif set  both targetLabel and target_label, targetLabel has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
+                              description: "UnderScoreTargetLabel - additional form of target label - target_label\nfor compatibility with original relabel config.\nif set both targetLabel and target_label, targetLabel has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
                               type: "string"
                           type: "object"
                         type: "array"
@@ -1808,7 +1808,7 @@ spec:
                                           type: "string"
                                         type: "array"
                                       source_labels:
-                                        description: "UnderScoreSourceLabels - additional form of source labels source_labels\nfor compatibility with original relabel config.\nif set  both sourceLabels and source_labels, sourceLabels has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
+                                        description: "UnderScoreSourceLabels - additional form of source labels source_labels\nfor compatibility with original relabel config.\nif set both sourceLabels and source_labels, sourceLabels has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
                                         items:
                                           type: "string"
                                         type: "array"
@@ -1816,7 +1816,7 @@ spec:
                                         description: "Label to which the resulting value is written in a replace action.\nIt is mandatory for replace actions. Regex capture groups are available."
                                         type: "string"
                                       target_label:
-                                        description: "UnderScoreTargetLabel - additional form of target label - target_label\nfor compatibility with original relabel config.\nif set  both targetLabel and target_label, targetLabel has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
+                                        description: "UnderScoreTargetLabel - additional form of target label - target_label\nfor compatibility with original relabel config.\nif set both targetLabel and target_label, targetLabel has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
                                         type: "string"
                                     type: "object"
                                   type: "array"
@@ -1870,7 +1870,7 @@ spec:
                                           type: "string"
                                         type: "array"
                                       source_labels:
-                                        description: "UnderScoreSourceLabels - additional form of source labels source_labels\nfor compatibility with original relabel config.\nif set  both sourceLabels and source_labels, sourceLabels has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
+                                        description: "UnderScoreSourceLabels - additional form of source labels source_labels\nfor compatibility with original relabel config.\nif set both sourceLabels and source_labels, sourceLabels has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
                                         items:
                                           type: "string"
                                         type: "array"
@@ -1878,7 +1878,7 @@ spec:
                                         description: "Label to which the resulting value is written in a replace action.\nIt is mandatory for replace actions. Regex capture groups are available."
                                         type: "string"
                                       target_label:
-                                        description: "UnderScoreTargetLabel - additional form of target label - target_label\nfor compatibility with original relabel config.\nif set  both targetLabel and target_label, targetLabel has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
+                                        description: "UnderScoreTargetLabel - additional form of target label - target_label\nfor compatibility with original relabel config.\nif set both targetLabel and target_label, targetLabel has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
                                         type: "string"
                                     type: "object"
                                   type: "array"
@@ -2284,7 +2284,7 @@ spec:
                                 type: "string"
                               type: "array"
                             source_labels:
-                              description: "UnderScoreSourceLabels - additional form of source labels source_labels\nfor compatibility with original relabel config.\nif set  both sourceLabels and source_labels, sourceLabels has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
+                              description: "UnderScoreSourceLabels - additional form of source labels source_labels\nfor compatibility with original relabel config.\nif set both sourceLabels and source_labels, sourceLabels has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
                               items:
                                 type: "string"
                               type: "array"
@@ -2292,7 +2292,7 @@ spec:
                               description: "Label to which the resulting value is written in a replace action.\nIt is mandatory for replace actions. Regex capture groups are available."
                               type: "string"
                             target_label:
-                              description: "UnderScoreTargetLabel - additional form of target label - target_label\nfor compatibility with original relabel config.\nif set  both targetLabel and target_label, targetLabel has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
+                              description: "UnderScoreTargetLabel - additional form of target label - target_label\nfor compatibility with original relabel config.\nif set both targetLabel and target_label, targetLabel has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
                               type: "string"
                           type: "object"
                         type: "array"
@@ -2423,7 +2423,7 @@ spec:
                                 type: "string"
                               type: "array"
                             source_labels:
-                              description: "UnderScoreSourceLabels - additional form of source labels source_labels\nfor compatibility with original relabel config.\nif set  both sourceLabels and source_labels, sourceLabels has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
+                              description: "UnderScoreSourceLabels - additional form of source labels source_labels\nfor compatibility with original relabel config.\nif set both sourceLabels and source_labels, sourceLabels has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
                               items:
                                 type: "string"
                               type: "array"
@@ -2431,7 +2431,7 @@ spec:
                               description: "Label to which the resulting value is written in a replace action.\nIt is mandatory for replace actions. Regex capture groups are available."
                               type: "string"
                             target_label:
-                              description: "UnderScoreTargetLabel - additional form of target label - target_label\nfor compatibility with original relabel config.\nif set  both targetLabel and target_label, targetLabel has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
+                              description: "UnderScoreTargetLabel - additional form of target label - target_label\nfor compatibility with original relabel config.\nif set both targetLabel and target_label, targetLabel has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
                               type: "string"
                           type: "object"
                         type: "array"
@@ -2625,7 +2625,7 @@ spec:
                           type: "string"
                         type: "array"
                       source_labels:
-                        description: "UnderScoreSourceLabels - additional form of source labels source_labels\nfor compatibility with original relabel config.\nif set  both sourceLabels and source_labels, sourceLabels has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
+                        description: "UnderScoreSourceLabels - additional form of source labels source_labels\nfor compatibility with original relabel config.\nif set both sourceLabels and source_labels, sourceLabels has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
                         items:
                           type: "string"
                         type: "array"
@@ -2633,7 +2633,7 @@ spec:
                         description: "Label to which the resulting value is written in a replace action.\nIt is mandatory for replace actions. Regex capture groups are available."
                         type: "string"
                       target_label:
-                        description: "UnderScoreTargetLabel - additional form of target label - target_label\nfor compatibility with original relabel config.\nif set  both targetLabel and target_label, targetLabel has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
+                        description: "UnderScoreTargetLabel - additional form of target label - target_label\nfor compatibility with original relabel config.\nif set both targetLabel and target_label, targetLabel has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
                         type: "string"
                     type: "object"
                   type: "array"
@@ -2764,7 +2764,7 @@ spec:
                           type: "string"
                         type: "array"
                       source_labels:
-                        description: "UnderScoreSourceLabels - additional form of source labels source_labels\nfor compatibility with original relabel config.\nif set  both sourceLabels and source_labels, sourceLabels has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
+                        description: "UnderScoreSourceLabels - additional form of source labels source_labels\nfor compatibility with original relabel config.\nif set both sourceLabels and source_labels, sourceLabels has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
                         items:
                           type: "string"
                         type: "array"
@@ -2772,7 +2772,7 @@ spec:
                         description: "Label to which the resulting value is written in a replace action.\nIt is mandatory for replace actions. Regex capture groups are available."
                         type: "string"
                       target_label:
-                        description: "UnderScoreTargetLabel - additional form of target label - target_label\nfor compatibility with original relabel config.\nif set  both targetLabel and target_label, targetLabel has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
+                        description: "UnderScoreTargetLabel - additional form of target label - target_label\nfor compatibility with original relabel config.\nif set both targetLabel and target_label, targetLabel has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
                         type: "string"
                     type: "object"
                   type: "array"
@@ -3176,7 +3176,7 @@ spec:
                           type: "string"
                         type: "array"
                       source_labels:
-                        description: "UnderScoreSourceLabels - additional form of source labels source_labels\nfor compatibility with original relabel config.\nif set  both sourceLabels and source_labels, sourceLabels has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
+                        description: "UnderScoreSourceLabels - additional form of source labels source_labels\nfor compatibility with original relabel config.\nif set both sourceLabels and source_labels, sourceLabels has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
                         items:
                           type: "string"
                         type: "array"
@@ -3184,7 +3184,7 @@ spec:
                         description: "Label to which the resulting value is written in a replace action.\nIt is mandatory for replace actions. Regex capture groups are available."
                         type: "string"
                       target_label:
-                        description: "UnderScoreTargetLabel - additional form of target label - target_label\nfor compatibility with original relabel config.\nif set  both targetLabel and target_label, targetLabel has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
+                        description: "UnderScoreTargetLabel - additional form of target label - target_label\nfor compatibility with original relabel config.\nif set both targetLabel and target_label, targetLabel has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
                         type: "string"
                     type: "object"
                   type: "array"
@@ -3337,7 +3337,7 @@ spec:
                                     type: "string"
                                   type: "array"
                                 source_labels:
-                                  description: "UnderScoreSourceLabels - additional form of source labels source_labels\nfor compatibility with original relabel config.\nif set  both sourceLabels and source_labels, sourceLabels has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
+                                  description: "UnderScoreSourceLabels - additional form of source labels source_labels\nfor compatibility with original relabel config.\nif set both sourceLabels and source_labels, sourceLabels has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
                                   items:
                                     type: "string"
                                   type: "array"
@@ -3345,7 +3345,7 @@ spec:
                                   description: "Label to which the resulting value is written in a replace action.\nIt is mandatory for replace actions. Regex capture groups are available."
                                   type: "string"
                                 target_label:
-                                  description: "UnderScoreTargetLabel - additional form of target label - target_label\nfor compatibility with original relabel config.\nif set  both targetLabel and target_label, targetLabel has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
+                                  description: "UnderScoreTargetLabel - additional form of target label - target_label\nfor compatibility with original relabel config.\nif set both targetLabel and target_label, targetLabel has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
                                   type: "string"
                               type: "object"
                             type: "array"
@@ -3399,7 +3399,7 @@ spec:
                                     type: "string"
                                   type: "array"
                                 source_labels:
-                                  description: "UnderScoreSourceLabels - additional form of source labels source_labels\nfor compatibility with original relabel config.\nif set  both sourceLabels and source_labels, sourceLabels has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
+                                  description: "UnderScoreSourceLabels - additional form of source labels source_labels\nfor compatibility with original relabel config.\nif set both sourceLabels and source_labels, sourceLabels has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
                                   items:
                                     type: "string"
                                   type: "array"
@@ -3407,7 +3407,7 @@ spec:
                                   description: "Label to which the resulting value is written in a replace action.\nIt is mandatory for replace actions. Regex capture groups are available."
                                   type: "string"
                                 target_label:
-                                  description: "UnderScoreTargetLabel - additional form of target label - target_label\nfor compatibility with original relabel config.\nif set  both targetLabel and target_label, targetLabel has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
+                                  description: "UnderScoreTargetLabel - additional form of target label - target_label\nfor compatibility with original relabel config.\nif set both targetLabel and target_label, targetLabel has priority.\nfor details https://github.com/VictoriaMetrics/operator/issues/131"
                                   type: "string"
                               type: "object"
                             type: "array"
@@ -3484,7 +3484,7 @@ spec:
                   description: "UseVMConfigReloader replaces prometheus-like config-reloader\nwith vm one. It uses secrets watch instead of file watch\nwhich greatly increases speed of config updates\nRemoved since v0.67.0: this property is ignored and no longer needed"
                   type: "boolean"
                 vmAgentExternalLabelName:
-                  description: "VMAgentExternalLabelName Name of vmAgent external label used to denote vmAgent instance\nname. Defaults to the value of `prometheus`. External label will\n_not_ be added when value is set to empty string (`\"\"`)."
+                  description: "VMAgentExternalLabelName Name of vmAgent external label used to denote vmAgent instance\nname. Defaults to the value of `prometheus`. External label will\n_not_ be added when value is set to empty string (`\"\"`).\nDeprecated: use externalLabelName instead. will be removed in v0.69.0"
                   type: "string"
                 volumeMounts:
                   description: "VolumeMounts allows configuration of additional VolumeMounts on the output Deployment/StatefulSet definition.\nVolumeMounts specified will be appended to other VolumeMounts in the Application container"

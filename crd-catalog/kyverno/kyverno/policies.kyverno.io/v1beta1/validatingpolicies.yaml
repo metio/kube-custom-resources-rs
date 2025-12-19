@@ -748,6 +748,6 @@ spec:
       selectableFields:
         - jsonPath: ".spec.evaluation.mode"
       served: true
-      storage: false
+      storage: true
       subresources:
         status: {}

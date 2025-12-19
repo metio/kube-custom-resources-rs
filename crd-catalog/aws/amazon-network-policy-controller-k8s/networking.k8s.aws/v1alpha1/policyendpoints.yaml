@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.16.3"
+    controller-gen.kubebuilder.io/version: "v0.17.0"
   name: "policyendpoints.networking.k8s.aws"
 spec:
   group: "networking.k8s.aws"
@@ -37,41 +37,9 @@ spec:
                       cidr:
                         description: "CIDR is the network address(s) of the endpoint"
                         type: "string"
-                      except:
-                        description: "Except is the exceptions to the CIDR ranges mentioned above."
-                        items:
-                          type: "string"
-                        type: "array"
-                      ports:
-                        description: "Ports is the list of ports"
-                        items:
-                          description: "Port contains information about the transport port/protocol"
-                          properties:
-                            endPort:
-                              description: "Endport specifies the port range port to endPort\nport must be defined and an integer, endPort > port"
-                              format: "int32"
-                              type: "integer"
-                            port:
-                              description: "Port specifies the numerical port for the protocol. If empty applies to all ports"
-                              format: "int32"
-                              type: "integer"
-                            protocol:
-                              default: "TCP"
-                              description: "Protocol specifies the transport protocol, default TCP"
-                              type: "string"
-                          type: "object"
-                        type: "array"
-                    required:
-                      - "cidr"
-                    type: "object"
-                  type: "array"
-                ingress:
-                  description: "Ingress is the list of ingress rules containing resolved network addresses"
-                  items:
-                    description: "EndpointInfo defines the network endpoint information for the policy ingress/egress"
-                    properties:
-                      cidr:
-                        description: "CIDR is the network address(s) of the endpoint"
+                      domainName:
+                        description: "DomainName is the FQDN for the endpoint (mutually exclusive with CIDR, egress-only)\nNote: This field should only be used in egress rules, not ingress"
+                        pattern: "^(\\*\\.)?([a-zA-z0-9]([-a-zA-Z0-9_]*[a-zA-Z0-9])?\\.)+[a-zA-z0-9]([-a-zA-Z0-9_]*[a-zA-Z0-9])?\\.?$"
                         type: "string"
                       except:
                         description: "Except is the exceptions to the CIDR ranges mentioned above."
@@ -97,8 +65,44 @@ spec:
                               type: "string"
                           type: "object"
                         type: "array"
-                    required:
-                      - "cidr"
+                    type: "object"
+                  type: "array"
+                ingress:
+                  description: "Ingress is the list of ingress rules containing resolved network addresses"
+                  items:
+                    description: "EndpointInfo defines the network endpoint information for the policy ingress/egress"
+                    properties:
+                      cidr:
+                        description: "CIDR is the network address(s) of the endpoint"
+                        type: "string"
+                      domainName:
+                        description: "DomainName is the FQDN for the endpoint (mutually exclusive with CIDR, egress-only)\nNote: This field should only be used in egress rules, not ingress"
+                        pattern: "^(\\*\\.)?([a-zA-z0-9]([-a-zA-Z0-9_]*[a-zA-Z0-9])?\\.)+[a-zA-z0-9]([-a-zA-Z0-9_]*[a-zA-Z0-9])?\\.?$"
+                        type: "string"
+                      except:
+                        description: "Except is the exceptions to the CIDR ranges mentioned above."
+                        items:
+                          type: "string"
+                        type: "array"
+                      ports:
+                        description: "Ports is the list of ports"
+                        items:
+                          description: "Port contains information about the transport port/protocol"
+                          properties:
+                            endPort:
+                              description: "Endport specifies the port range port to endPort\nport must be defined and an integer, endPort > port"
+                              format: "int32"
+                              type: "integer"
+                            port:
+                              description: "Port specifies the numerical port for the protocol. If empty applies to all ports"
+                              format: "int32"
+                              type: "integer"
+                            protocol:
+                              default: "TCP"
+                              description: "Protocol specifies the transport protocol, default TCP"
+                              type: "string"
+                          type: "object"
+                        type: "array"
                     type: "object"
                   type: "array"
                 podIsolation:

@@ -72,8 +72,11 @@ spec:
                     type: "string"
                   description: "ConfigReloaderExtraArgs that will be passed to  VMAuths config-reloader container\nfor example resyncInterval: \"30s\""
                   type: "object"
+                configReloaderImage:
+                  description: "ConfigReloaderImage defines image:tag for config-reloader container"
+                  type: "string"
                 configReloaderImageTag:
-                  description: "ConfigReloaderImageTag defines image:tag for config-reloader container"
+                  description: "ConfigReloaderImageTag defines image:tag for config-reloader container\nDeprecated: use configReloaderImage instead"
                   type: "string"
                 configReloaderResources:
                   description: "ConfigReloaderResources config-reloader container resource request and limits, https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/\nif not defined default resources from operator config will be used"

@@ -3287,6 +3287,10 @@ pub struct AlertmanagerConfigReceiversPagerdutyConfigs {
     /// source defines the unique location of the affected system.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source: Option<String>,
+    /// timeout is the maximum time allowed to invoke the pagerduty
+    /// It requires Alertmanager >= v0.30.0.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timeout: Option<String>,
     /// url defines the URL to send requests to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
@@ -5575,6 +5579,11 @@ pub struct AlertmanagerConfigReceiversSlackConfigs {
     /// on the right side of the message attachment.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "thumbURL")]
     pub thumb_url: Option<String>,
+    /// timeout defines the maximum time to wait for a webhook request to complete,
+    /// before failing the request and allowing it to be retried.
+    /// It requires Alertmanager >= v0.30.0.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timeout: Option<String>,
     /// title defines the title text displayed in the Slack message attachment.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,

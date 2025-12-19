@@ -74,11 +74,36 @@ pub struct BackupStorageLocationObjectStorage {
     /// Bucket is the bucket to use for object storage.
     pub bucket: String,
     /// CACert defines a CA bundle to use when verifying TLS connections to the provider.
+    /// Deprecated: Use CACertRef instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCert")]
     pub ca_cert: Option<String>,
+    /// CACertRef is a reference to a Secret containing the CA certificate bundle to use
+    /// when verifying TLS connections to the provider. The Secret must be in the same
+    /// namespace as the BackupStorageLocation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertRef")]
+    pub ca_cert_ref: Option<BackupStorageLocationObjectStorageCaCertRef>,
     /// Prefix is the path inside a bucket to use for Velero storage. Optional.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
+}
+
+/// CACertRef is a reference to a Secret containing the CA certificate bundle to use
+/// when verifying TLS connections to the provider. The Secret must be in the same
+/// namespace as the BackupStorageLocation.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BackupStorageLocationObjectStorageCaCertRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 /// BackupStorageLocationStatus defines the observed state of BackupStorageLocation

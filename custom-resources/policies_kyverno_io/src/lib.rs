@@ -3,6 +3,10 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 
 # Available Custom Resources
 
+## policies.kyverno.io/v1
+- `ImageValidatingPolicy`
+- `PolicyException`
+- `ValidatingPolicy`
 ## policies.kyverno.io/v1alpha1
 - `ImageValidatingPolicy`
 - `PolicyException`
@@ -12,6 +16,8 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `PolicyException`
 - `ValidatingPolicy`
 */
+#[cfg(feature = "v1")]
+pub mod v1;
 #[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;
 #[cfg(feature = "v1beta1")]

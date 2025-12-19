@@ -46,7 +46,12 @@ pub struct PolicyEndpointSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PolicyEndpointEgress {
     /// CIDR is the network address(s) of the endpoint
-    pub cidr: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cidr: Option<String>,
+    /// DomainName is the FQDN for the endpoint (mutually exclusive with CIDR, egress-only)
+    /// Note: This field should only be used in egress rules, not ingress
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "domainName")]
+    pub domain_name: Option<String>,
     /// Except is the exceptions to the CIDR ranges mentioned above.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub except: Option<Vec<String>>,
@@ -74,7 +79,12 @@ pub struct PolicyEndpointEgressPorts {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PolicyEndpointIngress {
     /// CIDR is the network address(s) of the endpoint
-    pub cidr: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cidr: Option<String>,
+    /// DomainName is the FQDN for the endpoint (mutually exclusive with CIDR, egress-only)
+    /// Note: This field should only be used in egress rules, not ingress
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "domainName")]
+    pub domain_name: Option<String>,
     /// Except is the exceptions to the CIDR ranges mentioned above.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub except: Option<Vec<String>>,

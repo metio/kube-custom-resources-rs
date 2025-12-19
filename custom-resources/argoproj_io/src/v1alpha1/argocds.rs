@@ -215,7 +215,8 @@ pub struct ArgoCdApplicationSet {
 /// EnvVar represents an environment variable present in a Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCdApplicationSetEnv {
-    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    /// Name of the environment variable.
+    /// May consist of any printable ASCII characters except '='.
     pub name: String,
     /// Variable references $(VAR_NAME) are expanded
     /// using the previously defined environment variables in the container and
@@ -243,6 +244,10 @@ pub struct ArgoCdApplicationSetEnvValueFrom {
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<ArgoCdApplicationSetEnvValueFromFieldRef>,
+    /// FileKeyRef selects a key of the env file.
+    /// Requires the EnvFiles feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileKeyRef")]
+    pub file_key_ref: Option<ArgoCdApplicationSetEnvValueFromFileKeyRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
@@ -279,6 +284,31 @@ pub struct ArgoCdApplicationSetEnvValueFromFieldRef {
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
     pub field_path: String,
+}
+
+/// FileKeyRef selects a key of the env file.
+/// Requires the EnvFiles feature gate to be enabled.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCdApplicationSetEnvValueFromFileKeyRef {
+    /// The key within the env file. An invalid key will prevent the pod from starting.
+    /// The keys defined within a source may consist of any printable ASCII characters except '='.
+    /// During Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters.
+    pub key: String,
+    /// Specify whether the file or its key must be defined. If the file or key
+    /// does not exist, then the env var is not published.
+    /// If optional is set to true and the specified key does not exist,
+    /// the environment variable will not be set in the Pod's containers.
+    /// 
+    /// If optional is set to false and the specified key does not exist,
+    /// an error will be returned during Pod creation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    /// The path within the volume from which to select the file.
+    /// Must be relative and may not contain the '..' path or start with '..'.
+    pub path: String,
+    /// The name of the volume mount containing the env file.
+    #[serde(rename = "volumeName")]
+    pub volume_name: String,
 }
 
 /// Selects a resource of the container: only resources limits and requests
@@ -327,7 +357,7 @@ pub struct ArgoCdApplicationSetResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// 
     /// This field is immutable. It can only be set for containers.
@@ -584,7 +614,8 @@ pub struct ArgoCdArgoCdAgentAgentClient {
 /// EnvVar represents an environment variable present in a Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCdArgoCdAgentAgentEnv {
-    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    /// Name of the environment variable.
+    /// May consist of any printable ASCII characters except '='.
     pub name: String,
     /// Variable references $(VAR_NAME) are expanded
     /// using the previously defined environment variables in the container and
@@ -612,6 +643,10 @@ pub struct ArgoCdArgoCdAgentAgentEnvValueFrom {
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<ArgoCdArgoCdAgentAgentEnvValueFromFieldRef>,
+    /// FileKeyRef selects a key of the env file.
+    /// Requires the EnvFiles feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileKeyRef")]
+    pub file_key_ref: Option<ArgoCdArgoCdAgentAgentEnvValueFromFileKeyRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
@@ -648,6 +683,31 @@ pub struct ArgoCdArgoCdAgentAgentEnvValueFromFieldRef {
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
     pub field_path: String,
+}
+
+/// FileKeyRef selects a key of the env file.
+/// Requires the EnvFiles feature gate to be enabled.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCdArgoCdAgentAgentEnvValueFromFileKeyRef {
+    /// The key within the env file. An invalid key will prevent the pod from starting.
+    /// The keys defined within a source may consist of any printable ASCII characters except '='.
+    /// During Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters.
+    pub key: String,
+    /// Specify whether the file or its key must be defined. If the file or key
+    /// does not exist, then the env var is not published.
+    /// If optional is set to true and the specified key does not exist,
+    /// the environment variable will not be set in the Pod's containers.
+    /// 
+    /// If optional is set to false and the specified key does not exist,
+    /// an error will be returned during Pod creation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    /// The path within the volume from which to select the file.
+    /// Must be relative and may not contain the '..' path or start with '..'.
+    pub path: String,
+    /// The name of the volume mount containing the env file.
+    #[serde(rename = "volumeName")]
+    pub volume_name: String,
 }
 
 /// Selects a resource of the container: only resources limits and requests
@@ -747,7 +807,8 @@ pub struct ArgoCdArgoCdAgentPrincipal {
 /// EnvVar represents an environment variable present in a Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCdArgoCdAgentPrincipalEnv {
-    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    /// Name of the environment variable.
+    /// May consist of any printable ASCII characters except '='.
     pub name: String,
     /// Variable references $(VAR_NAME) are expanded
     /// using the previously defined environment variables in the container and
@@ -775,6 +836,10 @@ pub struct ArgoCdArgoCdAgentPrincipalEnvValueFrom {
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<ArgoCdArgoCdAgentPrincipalEnvValueFromFieldRef>,
+    /// FileKeyRef selects a key of the env file.
+    /// Requires the EnvFiles feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileKeyRef")]
+    pub file_key_ref: Option<ArgoCdArgoCdAgentPrincipalEnvValueFromFileKeyRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
@@ -811,6 +876,31 @@ pub struct ArgoCdArgoCdAgentPrincipalEnvValueFromFieldRef {
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
     pub field_path: String,
+}
+
+/// FileKeyRef selects a key of the env file.
+/// Requires the EnvFiles feature gate to be enabled.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCdArgoCdAgentPrincipalEnvValueFromFileKeyRef {
+    /// The key within the env file. An invalid key will prevent the pod from starting.
+    /// The keys defined within a source may consist of any printable ASCII characters except '='.
+    /// During Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters.
+    pub key: String,
+    /// Specify whether the file or its key must be defined. If the file or key
+    /// does not exist, then the env var is not published.
+    /// If optional is set to true and the specified key does not exist,
+    /// the environment variable will not be set in the Pod's containers.
+    /// 
+    /// If optional is set to false and the specified key does not exist,
+    /// an error will be returned during Pod creation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    /// The path within the volume from which to select the file.
+    /// Must be relative and may not contain the '..' path or start with '..'.
+    pub path: String,
+    /// The name of the volume mount containing the env file.
+    #[serde(rename = "volumeName")]
+    pub volume_name: String,
 }
 
 /// Selects a resource of the container: only resources limits and requests
@@ -999,7 +1089,8 @@ pub struct ArgoCdController {
 /// EnvVar represents an environment variable present in a Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCdControllerEnv {
-    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    /// Name of the environment variable.
+    /// May consist of any printable ASCII characters except '='.
     pub name: String,
     /// Variable references $(VAR_NAME) are expanded
     /// using the previously defined environment variables in the container and
@@ -1027,6 +1118,10 @@ pub struct ArgoCdControllerEnvValueFrom {
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<ArgoCdControllerEnvValueFromFieldRef>,
+    /// FileKeyRef selects a key of the env file.
+    /// Requires the EnvFiles feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileKeyRef")]
+    pub file_key_ref: Option<ArgoCdControllerEnvValueFromFileKeyRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
@@ -1063,6 +1158,31 @@ pub struct ArgoCdControllerEnvValueFromFieldRef {
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
     pub field_path: String,
+}
+
+/// FileKeyRef selects a key of the env file.
+/// Requires the EnvFiles feature gate to be enabled.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCdControllerEnvValueFromFileKeyRef {
+    /// The key within the env file. An invalid key will prevent the pod from starting.
+    /// The keys defined within a source may consist of any printable ASCII characters except '='.
+    /// During Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters.
+    pub key: String,
+    /// Specify whether the file or its key must be defined. If the file or key
+    /// does not exist, then the env var is not published.
+    /// If optional is set to true and the specified key does not exist,
+    /// the environment variable will not be set in the Pod's containers.
+    /// 
+    /// If optional is set to false and the specified key does not exist,
+    /// an error will be returned during Pod creation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    /// The path within the volume from which to select the file.
+    /// Must be relative and may not contain the '..' path or start with '..'.
+    pub path: String,
+    /// The name of the volume mount containing the env file.
+    #[serde(rename = "volumeName")]
+    pub volume_name: String,
 }
 
 /// Selects a resource of the container: only resources limits and requests
@@ -1113,7 +1233,7 @@ pub struct ArgoCdControllerResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// 
     /// This field is immutable. It can only be set for containers.
@@ -1198,7 +1318,7 @@ pub struct ArgoCdDexResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// 
     /// This field is immutable. It can only be set for containers.
@@ -1305,7 +1425,7 @@ pub struct ArgoCdGrafanaResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// 
     /// This field is immutable. It can only be set for containers.
@@ -1460,7 +1580,7 @@ pub struct ArgoCdHaResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// 
     /// This field is immutable. It can only be set for containers.
@@ -1629,7 +1749,8 @@ pub struct ArgoCdNotifications {
 /// EnvVar represents an environment variable present in a Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCdNotificationsEnv {
-    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    /// Name of the environment variable.
+    /// May consist of any printable ASCII characters except '='.
     pub name: String,
     /// Variable references $(VAR_NAME) are expanded
     /// using the previously defined environment variables in the container and
@@ -1657,6 +1778,10 @@ pub struct ArgoCdNotificationsEnvValueFrom {
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<ArgoCdNotificationsEnvValueFromFieldRef>,
+    /// FileKeyRef selects a key of the env file.
+    /// Requires the EnvFiles feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileKeyRef")]
+    pub file_key_ref: Option<ArgoCdNotificationsEnvValueFromFileKeyRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
@@ -1693,6 +1818,31 @@ pub struct ArgoCdNotificationsEnvValueFromFieldRef {
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
     pub field_path: String,
+}
+
+/// FileKeyRef selects a key of the env file.
+/// Requires the EnvFiles feature gate to be enabled.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCdNotificationsEnvValueFromFileKeyRef {
+    /// The key within the env file. An invalid key will prevent the pod from starting.
+    /// The keys defined within a source may consist of any printable ASCII characters except '='.
+    /// During Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters.
+    pub key: String,
+    /// Specify whether the file or its key must be defined. If the file or key
+    /// does not exist, then the env var is not published.
+    /// If optional is set to true and the specified key does not exist,
+    /// the environment variable will not be set in the Pod's containers.
+    /// 
+    /// If optional is set to false and the specified key does not exist,
+    /// an error will be returned during Pod creation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    /// The path within the volume from which to select the file.
+    /// Must be relative and may not contain the '..' path or start with '..'.
+    pub path: String,
+    /// The name of the volume mount containing the env file.
+    #[serde(rename = "volumeName")]
+    pub volume_name: String,
 }
 
 /// Selects a resource of the container: only resources limits and requests
@@ -1741,7 +1891,7 @@ pub struct ArgoCdNotificationsResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// 
     /// This field is immutable. It can only be set for containers.
@@ -1988,7 +2138,7 @@ pub struct ArgoCdRedisResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// 
     /// This field is immutable. It can only be set for containers.
@@ -2085,7 +2235,8 @@ pub struct ArgoCdRepo {
 /// EnvVar represents an environment variable present in a Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCdRepoEnv {
-    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    /// Name of the environment variable.
+    /// May consist of any printable ASCII characters except '='.
     pub name: String,
     /// Variable references $(VAR_NAME) are expanded
     /// using the previously defined environment variables in the container and
@@ -2113,6 +2264,10 @@ pub struct ArgoCdRepoEnvValueFrom {
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<ArgoCdRepoEnvValueFromFieldRef>,
+    /// FileKeyRef selects a key of the env file.
+    /// Requires the EnvFiles feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileKeyRef")]
+    pub file_key_ref: Option<ArgoCdRepoEnvValueFromFileKeyRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
@@ -2149,6 +2304,31 @@ pub struct ArgoCdRepoEnvValueFromFieldRef {
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
     pub field_path: String,
+}
+
+/// FileKeyRef selects a key of the env file.
+/// Requires the EnvFiles feature gate to be enabled.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCdRepoEnvValueFromFileKeyRef {
+    /// The key within the env file. An invalid key will prevent the pod from starting.
+    /// The keys defined within a source may consist of any printable ASCII characters except '='.
+    /// During Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters.
+    pub key: String,
+    /// Specify whether the file or its key must be defined. If the file or key
+    /// does not exist, then the env var is not published.
+    /// If optional is set to true and the specified key does not exist,
+    /// the environment variable will not be set in the Pod's containers.
+    /// 
+    /// If optional is set to false and the specified key does not exist,
+    /// an error will be returned during Pod creation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    /// The path within the volume from which to select the file.
+    /// Must be relative and may not contain the '..' path or start with '..'.
+    pub path: String,
+    /// The name of the volume mount containing the env file.
+    #[serde(rename = "volumeName")]
+    pub volume_name: String,
 }
 
 /// Selects a resource of the container: only resources limits and requests
@@ -2210,8 +2390,8 @@ pub struct ArgoCdRepoInitContainers {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ArgoCdRepoInitContainersEnv>>,
     /// List of sources to populate environment variables in the container.
-    /// The keys defined within a source must be a C_IDENTIFIER. All invalid keys
-    /// will be reported as an event when the container is starting. When a key exists in multiple
+    /// The keys defined within a source may consist of any printable ASCII characters except '='.
+    /// When a key exists in multiple
     /// sources, the value associated with the last source will take precedence.
     /// Values defined by an Env with a duplicate key will take precedence.
     /// Cannot be updated.
@@ -2268,10 +2448,10 @@ pub struct ArgoCdRepoInitContainers {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ArgoCdRepoInitContainersResources>,
     /// RestartPolicy defines the restart behavior of individual containers in a pod.
-    /// This field may only be set for init containers, and the only allowed value is "Always".
-    /// For non-init containers or when this field is not specified,
+    /// This overrides the pod-level restart policy. When this field is not specified,
     /// the restart behavior is defined by the Pod's restart policy and the container type.
-    /// Setting the RestartPolicy as "Always" for the init container will have the following effect:
+    /// Additionally, setting the RestartPolicy as "Always" for the init container will
+    /// have the following effect:
     /// this init container will be continually restarted on
     /// exit until all regular containers have terminated. Once all regular
     /// containers have completed, all init containers with restartPolicy "Always"
@@ -2284,6 +2464,19 @@ pub struct ArgoCdRepoInitContainers {
     /// completed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
+    /// Represents a list of rules to be checked to determine if the
+    /// container should be restarted on exit. The rules are evaluated in
+    /// order. Once a rule matches a container exit condition, the remaining
+    /// rules are ignored. If no rule matches the container exit condition,
+    /// the Container-level restart policy determines the whether the container
+    /// is restarted or not. Constraints on the rules:
+    /// - At most 20 rules are allowed.
+    /// - Rules can have the same action.
+    /// - Identical rules are not forbidden in validations.
+    /// When rules are specified, container MUST set RestartPolicy explicitly
+    /// even it if matches the Pod's RestartPolicy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicyRules")]
+    pub restart_policy_rules: Option<Vec<ArgoCdRepoInitContainersRestartPolicyRules>>,
     /// SecurityContext defines the security options the container should be run with.
     /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
     /// More info: <https://kubernetes.io/docs/tasks/configure-pod-container/security-context/>
@@ -2352,7 +2545,8 @@ pub struct ArgoCdRepoInitContainers {
 /// EnvVar represents an environment variable present in a Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCdRepoInitContainersEnv {
-    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    /// Name of the environment variable.
+    /// May consist of any printable ASCII characters except '='.
     pub name: String,
     /// Variable references $(VAR_NAME) are expanded
     /// using the previously defined environment variables in the container and
@@ -2380,6 +2574,10 @@ pub struct ArgoCdRepoInitContainersEnvValueFrom {
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<ArgoCdRepoInitContainersEnvValueFromFieldRef>,
+    /// FileKeyRef selects a key of the env file.
+    /// Requires the EnvFiles feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileKeyRef")]
+    pub file_key_ref: Option<ArgoCdRepoInitContainersEnvValueFromFileKeyRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
@@ -2416,6 +2614,31 @@ pub struct ArgoCdRepoInitContainersEnvValueFromFieldRef {
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
     pub field_path: String,
+}
+
+/// FileKeyRef selects a key of the env file.
+/// Requires the EnvFiles feature gate to be enabled.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCdRepoInitContainersEnvValueFromFileKeyRef {
+    /// The key within the env file. An invalid key will prevent the pod from starting.
+    /// The keys defined within a source may consist of any printable ASCII characters except '='.
+    /// During Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters.
+    pub key: String,
+    /// Specify whether the file or its key must be defined. If the file or key
+    /// does not exist, then the env var is not published.
+    /// If optional is set to true and the specified key does not exist,
+    /// the environment variable will not be set in the Pod's containers.
+    /// 
+    /// If optional is set to false and the specified key does not exist,
+    /// an error will be returned during Pod creation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    /// The path within the volume from which to select the file.
+    /// Must be relative and may not contain the '..' path or start with '..'.
+    pub path: String,
+    /// The name of the volume mount containing the env file.
+    #[serde(rename = "volumeName")]
+    pub volume_name: String,
 }
 
 /// Selects a resource of the container: only resources limits and requests
@@ -2455,7 +2678,8 @@ pub struct ArgoCdRepoInitContainersEnvFrom {
     /// The ConfigMap to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<ArgoCdRepoInitContainersEnvFromConfigMapRef>,
-    /// Optional text to prepend to the name of each environment variable. Must be a C_IDENTIFIER.
+    /// Optional text to prepend to the name of each environment variable.
+    /// May consist of any printable ASCII characters except '='.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// The Secret to select from
@@ -2996,7 +3220,7 @@ pub struct ArgoCdRepoInitContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// 
     /// This field is immutable. It can only be set for containers.
@@ -3026,6 +3250,34 @@ pub struct ArgoCdRepoInitContainersResourcesClaims {
     /// only the result of this request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub request: Option<String>,
+}
+
+/// ContainerRestartRule describes how a container exit is handled.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCdRepoInitContainersRestartPolicyRules {
+    /// Specifies the action taken on a container exit if the requirements
+    /// are satisfied. The only possible value is "Restart" to restart the
+    /// container.
+    pub action: String,
+    /// Represents the exit codes to check on container exits.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exitCodes")]
+    pub exit_codes: Option<ArgoCdRepoInitContainersRestartPolicyRulesExitCodes>,
+}
+
+/// Represents the exit codes to check on container exits.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCdRepoInitContainersRestartPolicyRulesExitCodes {
+    /// Represents the relationship between the container exit code(s) and the
+    /// specified values. Possible values are:
+    /// - In: the requirement is satisfied if the container exit code is in the
+    ///   set of specified values.
+    /// - NotIn: the requirement is satisfied if the container exit code is
+    ///   not in the set of specified values.
+    pub operator: String,
+    /// Specifies the set of values to check for container exit codes.
+    /// At most 255 elements are allowed.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<i64>>,
 }
 
 /// SecurityContext defines the security options the container should be run with.
@@ -3410,7 +3662,7 @@ pub struct ArgoCdRepoResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// 
     /// This field is immutable. It can only be set for containers.
@@ -3470,8 +3722,8 @@ pub struct ArgoCdRepoSidecarContainers {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ArgoCdRepoSidecarContainersEnv>>,
     /// List of sources to populate environment variables in the container.
-    /// The keys defined within a source must be a C_IDENTIFIER. All invalid keys
-    /// will be reported as an event when the container is starting. When a key exists in multiple
+    /// The keys defined within a source may consist of any printable ASCII characters except '='.
+    /// When a key exists in multiple
     /// sources, the value associated with the last source will take precedence.
     /// Values defined by an Env with a duplicate key will take precedence.
     /// Cannot be updated.
@@ -3528,10 +3780,10 @@ pub struct ArgoCdRepoSidecarContainers {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ArgoCdRepoSidecarContainersResources>,
     /// RestartPolicy defines the restart behavior of individual containers in a pod.
-    /// This field may only be set for init containers, and the only allowed value is "Always".
-    /// For non-init containers or when this field is not specified,
+    /// This overrides the pod-level restart policy. When this field is not specified,
     /// the restart behavior is defined by the Pod's restart policy and the container type.
-    /// Setting the RestartPolicy as "Always" for the init container will have the following effect:
+    /// Additionally, setting the RestartPolicy as "Always" for the init container will
+    /// have the following effect:
     /// this init container will be continually restarted on
     /// exit until all regular containers have terminated. Once all regular
     /// containers have completed, all init containers with restartPolicy "Always"
@@ -3544,6 +3796,19 @@ pub struct ArgoCdRepoSidecarContainers {
     /// completed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
+    /// Represents a list of rules to be checked to determine if the
+    /// container should be restarted on exit. The rules are evaluated in
+    /// order. Once a rule matches a container exit condition, the remaining
+    /// rules are ignored. If no rule matches the container exit condition,
+    /// the Container-level restart policy determines the whether the container
+    /// is restarted or not. Constraints on the rules:
+    /// - At most 20 rules are allowed.
+    /// - Rules can have the same action.
+    /// - Identical rules are not forbidden in validations.
+    /// When rules are specified, container MUST set RestartPolicy explicitly
+    /// even it if matches the Pod's RestartPolicy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicyRules")]
+    pub restart_policy_rules: Option<Vec<ArgoCdRepoSidecarContainersRestartPolicyRules>>,
     /// SecurityContext defines the security options the container should be run with.
     /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
     /// More info: <https://kubernetes.io/docs/tasks/configure-pod-container/security-context/>
@@ -3612,7 +3877,8 @@ pub struct ArgoCdRepoSidecarContainers {
 /// EnvVar represents an environment variable present in a Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCdRepoSidecarContainersEnv {
-    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    /// Name of the environment variable.
+    /// May consist of any printable ASCII characters except '='.
     pub name: String,
     /// Variable references $(VAR_NAME) are expanded
     /// using the previously defined environment variables in the container and
@@ -3640,6 +3906,10 @@ pub struct ArgoCdRepoSidecarContainersEnvValueFrom {
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<ArgoCdRepoSidecarContainersEnvValueFromFieldRef>,
+    /// FileKeyRef selects a key of the env file.
+    /// Requires the EnvFiles feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileKeyRef")]
+    pub file_key_ref: Option<ArgoCdRepoSidecarContainersEnvValueFromFileKeyRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
@@ -3676,6 +3946,31 @@ pub struct ArgoCdRepoSidecarContainersEnvValueFromFieldRef {
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
     pub field_path: String,
+}
+
+/// FileKeyRef selects a key of the env file.
+/// Requires the EnvFiles feature gate to be enabled.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCdRepoSidecarContainersEnvValueFromFileKeyRef {
+    /// The key within the env file. An invalid key will prevent the pod from starting.
+    /// The keys defined within a source may consist of any printable ASCII characters except '='.
+    /// During Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters.
+    pub key: String,
+    /// Specify whether the file or its key must be defined. If the file or key
+    /// does not exist, then the env var is not published.
+    /// If optional is set to true and the specified key does not exist,
+    /// the environment variable will not be set in the Pod's containers.
+    /// 
+    /// If optional is set to false and the specified key does not exist,
+    /// an error will be returned during Pod creation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    /// The path within the volume from which to select the file.
+    /// Must be relative and may not contain the '..' path or start with '..'.
+    pub path: String,
+    /// The name of the volume mount containing the env file.
+    #[serde(rename = "volumeName")]
+    pub volume_name: String,
 }
 
 /// Selects a resource of the container: only resources limits and requests
@@ -3715,7 +4010,8 @@ pub struct ArgoCdRepoSidecarContainersEnvFrom {
     /// The ConfigMap to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<ArgoCdRepoSidecarContainersEnvFromConfigMapRef>,
-    /// Optional text to prepend to the name of each environment variable. Must be a C_IDENTIFIER.
+    /// Optional text to prepend to the name of each environment variable.
+    /// May consist of any printable ASCII characters except '='.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// The Secret to select from
@@ -4256,7 +4552,7 @@ pub struct ArgoCdRepoSidecarContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// 
     /// This field is immutable. It can only be set for containers.
@@ -4286,6 +4582,34 @@ pub struct ArgoCdRepoSidecarContainersResourcesClaims {
     /// only the result of this request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub request: Option<String>,
+}
+
+/// ContainerRestartRule describes how a container exit is handled.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCdRepoSidecarContainersRestartPolicyRules {
+    /// Specifies the action taken on a container exit if the requirements
+    /// are satisfied. The only possible value is "Restart" to restart the
+    /// container.
+    pub action: String,
+    /// Represents the exit codes to check on container exits.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exitCodes")]
+    pub exit_codes: Option<ArgoCdRepoSidecarContainersRestartPolicyRulesExitCodes>,
+}
+
+/// Represents the exit codes to check on container exits.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCdRepoSidecarContainersRestartPolicyRulesExitCodes {
+    /// Represents the relationship between the container exit code(s) and the
+    /// specified values. Possible values are:
+    /// - In: the requirement is satisfied if the container exit code is in the
+    ///   set of specified values.
+    /// - NotIn: the requirement is satisfied if the container exit code is
+    ///   not in the set of specified values.
+    pub operator: String,
+    /// Specifies the set of values to check for container exit codes.
+    /// At most 255 elements are allowed.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<i64>>,
 }
 
 /// SecurityContext defines the security options the container should be run with.
@@ -4811,7 +5135,6 @@ pub struct ArgoCdRepoVolumes {
     pub git_repo: Option<ArgoCdRepoVolumesGitRepo>,
     /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
     /// Deprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer supported.
-    /// More info: <https://examples.k8s.io/volumes/glusterfs/README.md>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub glusterfs: Option<ArgoCdRepoVolumesGlusterfs>,
     /// hostPath represents a pre-existing file or directory on the host
@@ -4839,7 +5162,7 @@ pub struct ArgoCdRepoVolumes {
     pub image: Option<ArgoCdRepoVolumesImage>,
     /// iscsi represents an ISCSI Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
-    /// More info: <https://examples.k8s.io/volumes/iscsi/README.md>
+    /// More info: <https://kubernetes.io/docs/concepts/storage/volumes/#iscsi>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub iscsi: Option<ArgoCdRepoVolumesIscsi>,
     /// name of the volume.
@@ -4874,7 +5197,6 @@ pub struct ArgoCdRepoVolumes {
     pub quobyte: Option<ArgoCdRepoVolumesQuobyte>,
     /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
     /// Deprecated: RBD is deprecated and the in-tree rbd type is no longer supported.
-    /// More info: <https://examples.k8s.io/volumes/rbd/README.md>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rbd: Option<ArgoCdRepoVolumesRbd>,
     /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
@@ -5389,15 +5711,13 @@ pub struct ArgoCdRepoVolumesEphemeralVolumeClaimTemplateSpec {
     /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
     /// If specified, the CSI driver will create or update the volume with the attributes defined
     /// in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,
-    /// it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass
-    /// will be applied to the claim but it's not allowed to reset this field to empty string once it is set.
-    /// If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass
-    /// will be set by the persistentvolume controller if it exists.
+    /// it can be changed after the claim is created. An empty string or nil value indicates that no
+    /// VolumeAttributesClass will be applied to the claim. If the claim enters an Infeasible error state,
+    /// this field can be reset to its previous value (including nil) to cancel the modification.
     /// If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
     /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
     /// exists.
     /// More info: <https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/>
-    /// (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
@@ -5653,11 +5973,9 @@ pub struct ArgoCdRepoVolumesGitRepo {
 
 /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
 /// Deprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer supported.
-/// More info: <https://examples.k8s.io/volumes/glusterfs/README.md>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCdRepoVolumesGlusterfs {
     /// endpoints is the endpoint name that details Glusterfs topology.
-    /// More info: <https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod>
     pub endpoints: String,
     /// path is the Glusterfs volume path.
     /// More info: <https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod>
@@ -5722,7 +6040,7 @@ pub struct ArgoCdRepoVolumesImage {
 
 /// iscsi represents an ISCSI Disk resource that is attached to a
 /// kubelet's host machine and then exposed to the pod.
-/// More info: <https://examples.k8s.io/volumes/iscsi/README.md>
+/// More info: <https://kubernetes.io/docs/concepts/storage/volumes/#iscsi>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCdRepoVolumesIscsi {
     /// chapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication
@@ -5887,6 +6205,42 @@ pub struct ArgoCdRepoVolumesProjectedSources {
     /// downwardAPI information about the downwardAPI data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<ArgoCdRepoVolumesProjectedSourcesDownwardApi>,
+    /// Projects an auto-rotating credential bundle (private key and certificate
+    /// chain) that the pod can use either as a TLS client or server.
+    /// 
+    /// Kubelet generates a private key and uses it to send a
+    /// PodCertificateRequest to the named signer.  Once the signer approves the
+    /// request and issues a certificate chain, Kubelet writes the key and
+    /// certificate chain to the pod filesystem.  The pod does not start until
+    /// certificates have been issued for each podCertificate projected volume
+    /// source in its spec.
+    /// 
+    /// Kubelet will begin trying to rotate the certificate at the time indicated
+    /// by the signer using the PodCertificateRequest.Status.BeginRefreshAt
+    /// timestamp.
+    /// 
+    /// Kubelet can write a single file, indicated by the credentialBundlePath
+    /// field, or separate files, indicated by the keyPath and
+    /// certificateChainPath fields.
+    /// 
+    /// The credential bundle is a single file in PEM format.  The first PEM
+    /// entry is the private key (in PKCS#8 format), and the remaining PEM
+    /// entries are the certificate chain issued by the signer (typically,
+    /// signers will return their certificate chain in leaf-to-root order).
+    /// 
+    /// Prefer using the credential bundle format, since your application code
+    /// can read it atomically.  If you use keyPath and certificateChainPath,
+    /// your application must make two separate file reads. If these coincide
+    /// with a certificate rotation, it is possible that the private key and leaf
+    /// certificate you read may not correspond to each other.  Your application
+    /// will need to check for this condition, and re-read until they are
+    /// consistent.
+    /// 
+    /// The named signer controls chooses the format of the certificate it
+    /// issues; consult the signer implementation's documentation to learn how to
+    /// use the certificates it issues.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podCertificate")]
+    pub pod_certificate: Option<ArgoCdRepoVolumesProjectedSourcesPodCertificate>,
     /// secret information about the secret data to project
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<ArgoCdRepoVolumesProjectedSourcesSecret>,
@@ -6068,6 +6422,101 @@ pub struct ArgoCdRepoVolumesProjectedSourcesDownwardApiItemsResourceFieldRef {
     pub resource: String,
 }
 
+/// Projects an auto-rotating credential bundle (private key and certificate
+/// chain) that the pod can use either as a TLS client or server.
+/// 
+/// Kubelet generates a private key and uses it to send a
+/// PodCertificateRequest to the named signer.  Once the signer approves the
+/// request and issues a certificate chain, Kubelet writes the key and
+/// certificate chain to the pod filesystem.  The pod does not start until
+/// certificates have been issued for each podCertificate projected volume
+/// source in its spec.
+/// 
+/// Kubelet will begin trying to rotate the certificate at the time indicated
+/// by the signer using the PodCertificateRequest.Status.BeginRefreshAt
+/// timestamp.
+/// 
+/// Kubelet can write a single file, indicated by the credentialBundlePath
+/// field, or separate files, indicated by the keyPath and
+/// certificateChainPath fields.
+/// 
+/// The credential bundle is a single file in PEM format.  The first PEM
+/// entry is the private key (in PKCS#8 format), and the remaining PEM
+/// entries are the certificate chain issued by the signer (typically,
+/// signers will return their certificate chain in leaf-to-root order).
+/// 
+/// Prefer using the credential bundle format, since your application code
+/// can read it atomically.  If you use keyPath and certificateChainPath,
+/// your application must make two separate file reads. If these coincide
+/// with a certificate rotation, it is possible that the private key and leaf
+/// certificate you read may not correspond to each other.  Your application
+/// will need to check for this condition, and re-read until they are
+/// consistent.
+/// 
+/// The named signer controls chooses the format of the certificate it
+/// issues; consult the signer implementation's documentation to learn how to
+/// use the certificates it issues.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCdRepoVolumesProjectedSourcesPodCertificate {
+    /// Write the certificate chain at this path in the projected volume.
+    /// 
+    /// Most applications should use credentialBundlePath.  When using keyPath
+    /// and certificateChainPath, your application needs to check that the key
+    /// and leaf certificate are consistent, because it is possible to read the
+    /// files mid-rotation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateChainPath")]
+    pub certificate_chain_path: Option<String>,
+    /// Write the credential bundle at this path in the projected volume.
+    /// 
+    /// The credential bundle is a single file that contains multiple PEM blocks.
+    /// The first PEM block is a PRIVATE KEY block, containing a PKCS#8 private
+    /// key.
+    /// 
+    /// The remaining blocks are CERTIFICATE blocks, containing the issued
+    /// certificate chain from the signer (leaf and any intermediates).
+    /// 
+    /// Using credentialBundlePath lets your Pod's application code make a single
+    /// atomic read that retrieves a consistent key and certificate chain.  If you
+    /// project them to separate files, your application code will need to
+    /// additionally check that the leaf certificate was issued to the key.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialBundlePath")]
+    pub credential_bundle_path: Option<String>,
+    /// Write the key at this path in the projected volume.
+    /// 
+    /// Most applications should use credentialBundlePath.  When using keyPath
+    /// and certificateChainPath, your application needs to check that the key
+    /// and leaf certificate are consistent, because it is possible to read the
+    /// files mid-rotation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyPath")]
+    pub key_path: Option<String>,
+    /// The type of keypair Kubelet will generate for the pod.
+    /// 
+    /// Valid values are "RSA3072", "RSA4096", "ECDSAP256", "ECDSAP384",
+    /// "ECDSAP521", and "ED25519".
+    #[serde(rename = "keyType")]
+    pub key_type: String,
+    /// maxExpirationSeconds is the maximum lifetime permitted for the
+    /// certificate.
+    /// 
+    /// Kubelet copies this value verbatim into the PodCertificateRequests it
+    /// generates for this projection.
+    /// 
+    /// If omitted, kube-apiserver will set it to 86400(24 hours). kube-apiserver
+    /// will reject values shorter than 3600 (1 hour).  The maximum allowable
+    /// value is 7862400 (91 days).
+    /// 
+    /// The signer implementation is then free to issue a certificate with any
+    /// lifetime *shorter* than MaxExpirationSeconds, but no shorter than 3600
+    /// seconds (1 hour).  This constraint is enforced by kube-apiserver.
+    /// `kubernetes.io` signers will never issue certificates with a lifetime
+    /// longer than 24 hours.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxExpirationSeconds")]
+    pub max_expiration_seconds: Option<i32>,
+    /// Kubelet's generated CSRs will be addressed to this signer.
+    #[serde(rename = "signerName")]
+    pub signer_name: String,
+}
+
 /// secret information about the secret data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCdRepoVolumesProjectedSourcesSecret {
@@ -6164,7 +6613,6 @@ pub struct ArgoCdRepoVolumesQuobyte {
 
 /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
 /// Deprecated: RBD is deprecated and the in-tree rbd type is no longer supported.
-/// More info: <https://examples.k8s.io/volumes/rbd/README.md>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCdRepoVolumesRbd {
     /// fsType is the filesystem type of the volume that you want to mount.
@@ -6552,7 +7000,8 @@ pub struct ArgoCdServerAutoscaleHpaScaleTargetRef {
 /// EnvVar represents an environment variable present in a Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCdServerEnv {
-    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    /// Name of the environment variable.
+    /// May consist of any printable ASCII characters except '='.
     pub name: String,
     /// Variable references $(VAR_NAME) are expanded
     /// using the previously defined environment variables in the container and
@@ -6580,6 +7029,10 @@ pub struct ArgoCdServerEnvValueFrom {
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<ArgoCdServerEnvValueFromFieldRef>,
+    /// FileKeyRef selects a key of the env file.
+    /// Requires the EnvFiles feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileKeyRef")]
+    pub file_key_ref: Option<ArgoCdServerEnvValueFromFileKeyRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
@@ -6616,6 +7069,31 @@ pub struct ArgoCdServerEnvValueFromFieldRef {
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
     pub field_path: String,
+}
+
+/// FileKeyRef selects a key of the env file.
+/// Requires the EnvFiles feature gate to be enabled.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCdServerEnvValueFromFileKeyRef {
+    /// The key within the env file. An invalid key will prevent the pod from starting.
+    /// The keys defined within a source may consist of any printable ASCII characters except '='.
+    /// During Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters.
+    pub key: String,
+    /// Specify whether the file or its key must be defined. If the file or key
+    /// does not exist, then the env var is not published.
+    /// If optional is set to true and the specified key does not exist,
+    /// the environment variable will not be set in the Pod's containers.
+    /// 
+    /// If optional is set to false and the specified key does not exist,
+    /// an error will be returned during Pod creation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    /// The path within the volume from which to select the file.
+    /// Must be relative and may not contain the '..' path or start with '..'.
+    pub path: String,
+    /// The name of the volume mount containing the env file.
+    #[serde(rename = "volumeName")]
+    pub volume_name: String,
 }
 
 /// Selects a resource of the container: only resources limits and requests
@@ -6748,7 +7226,7 @@ pub struct ArgoCdServerResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// 
     /// This field is immutable. It can only be set for containers.
@@ -6949,7 +7427,7 @@ pub struct ArgoCdSsoDexResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// 
     /// This field is immutable. It can only be set for containers.
@@ -7011,7 +7489,7 @@ pub struct ArgoCdSsoKeycloakResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// 
     /// This field is immutable. It can only be set for containers.
@@ -7050,7 +7528,7 @@ pub struct ArgoCdSsoResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// 
     /// This field is immutable. It can only be set for containers.

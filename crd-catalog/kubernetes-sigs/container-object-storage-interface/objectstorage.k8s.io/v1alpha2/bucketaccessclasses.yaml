@@ -31,22 +31,18 @@ spec:
               description: "spec defines the desired state of BucketAccessClass"
               properties:
                 authenticationType:
-                  allOf:
-                    - enum:
-                        - ""
-                        - "Key"
-                        - "ServiceAccount"
-                    - enum:
-                        - "Key"
-                        - "ServiceAccount"
                   description: "authenticationType specifies which authentication mechanism is used bucket access.\nPossible values:\n - Key: The driver should generate a protocol-appropriate access key that clients can use to\n   authenticate to the backend object store.\n - ServiceAccount: The driver should configure the system such that Pods using the given\n   ServiceAccount authenticate to the backend object store automatically."
+                  enum:
+                    - "Key"
+                    - "ServiceAccount"
                   type: "string"
                 driverName:
                   description: "driverName is the name of the driver that fulfills requests for this BucketAccessClass."
                   minLength: 1
                   type: "string"
                 featureOptions:
-                  description: "featureOptions can be used to adjust various COSI access provisioning behaviors."
+                  description: "featureOptions can be used to adjust various COSI access provisioning behaviors.\nIf specified, at least one option must be set."
+                  minProperties: 1
                   properties:
                     disallowMultiBucketAccess:
                       description: "disallowMultiBucketAccess disables the ability for a BucketAccess to reference multiple\nBucketClaims when set."
@@ -80,5 +76,3 @@ spec:
           type: "object"
       served: true
       storage: true
-      subresources:
-        status: {}

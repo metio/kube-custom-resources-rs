@@ -213,7 +213,7 @@ pub struct PostgresqlNodeAffinity {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PostgresqlNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
     pub preference: PostgresqlNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
-    pub weight: i32,
+    pub weight: i64,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

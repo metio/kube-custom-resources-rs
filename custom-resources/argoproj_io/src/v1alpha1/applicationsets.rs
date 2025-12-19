@@ -675,6 +675,8 @@ pub struct ApplicationSetGeneratorsClusterDecisionResourceTemplateSpecSyncPolicy
     pub backoff: Option<ApplicationSetGeneratorsClusterDecisionResourceTemplateSpecSyncPolicyRetryBackoff>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub refresh: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1294,6 +1296,8 @@ pub struct ApplicationSetGeneratorsClustersTemplateSpecSyncPolicyRetry {
     pub backoff: Option<ApplicationSetGeneratorsClustersTemplateSpecSyncPolicyRetryBackoff>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub refresh: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1918,6 +1922,8 @@ pub struct ApplicationSetGeneratorsGitTemplateSpecSyncPolicyRetry {
     pub backoff: Option<ApplicationSetGeneratorsGitTemplateSpecSyncPolicyRetryBackoff>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub refresh: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2519,6 +2525,8 @@ pub struct ApplicationSetGeneratorsListTemplateSpecSyncPolicyRetry {
     pub backoff: Option<ApplicationSetGeneratorsListTemplateSpecSyncPolicyRetryBackoff>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub refresh: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3173,6 +3181,8 @@ pub struct ApplicationSetGeneratorsMatrixGeneratorsClusterDecisionResourceTempla
     pub backoff: Option<ApplicationSetGeneratorsMatrixGeneratorsClusterDecisionResourceTemplateSpecSyncPolicyRetryBackoff>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub refresh: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3792,6 +3802,8 @@ pub struct ApplicationSetGeneratorsMatrixGeneratorsClustersTemplateSpecSyncPolic
     pub backoff: Option<ApplicationSetGeneratorsMatrixGeneratorsClustersTemplateSpecSyncPolicyRetryBackoff>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub refresh: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4416,6 +4428,8 @@ pub struct ApplicationSetGeneratorsMatrixGeneratorsGitTemplateSpecSyncPolicyRetr
     pub backoff: Option<ApplicationSetGeneratorsMatrixGeneratorsGitTemplateSpecSyncPolicyRetryBackoff>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub refresh: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5017,6 +5031,8 @@ pub struct ApplicationSetGeneratorsMatrixGeneratorsListTemplateSpecSyncPolicyRet
     pub backoff: Option<ApplicationSetGeneratorsMatrixGeneratorsListTemplateSpecSyncPolicyRetryBackoff>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub refresh: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5633,6 +5649,8 @@ pub struct ApplicationSetGeneratorsMatrixGeneratorsPluginTemplateSpecSyncPolicyR
     pub backoff: Option<ApplicationSetGeneratorsMatrixGeneratorsPluginTemplateSpecSyncPolicyRetryBackoff>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub refresh: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5653,6 +5671,8 @@ pub struct ApplicationSetGeneratorsMatrixGeneratorsPullRequest {
     pub bitbucket: Option<ApplicationSetGeneratorsMatrixGeneratorsPullRequestBitbucket>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bitbucketServer")]
     pub bitbucket_server: Option<ApplicationSetGeneratorsMatrixGeneratorsPullRequestBitbucketServer>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "continueOnRepoNotFoundError")]
+    pub continue_on_repo_not_found_error: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub filters: Option<Vec<ApplicationSetGeneratorsMatrixGeneratorsPullRequestFilters>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5783,6 +5803,8 @@ pub struct ApplicationSetGeneratorsMatrixGeneratorsPullRequestFilters {
     pub branch_match: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetBranchMatch")]
     pub target_branch_match: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "titleMatch")]
+    pub title_match: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6436,6 +6458,8 @@ pub struct ApplicationSetGeneratorsMatrixGeneratorsPullRequestTemplateSpecSyncPo
     pub backoff: Option<ApplicationSetGeneratorsMatrixGeneratorsPullRequestTemplateSpecSyncPolicyRetryBackoff>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub refresh: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -7249,6 +7273,8 @@ pub struct ApplicationSetGeneratorsMatrixGeneratorsScmProviderTemplateSpecSyncPo
     pub backoff: Option<ApplicationSetGeneratorsMatrixGeneratorsScmProviderTemplateSpecSyncPolicyRetryBackoff>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub refresh: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -7856,6 +7882,8 @@ pub struct ApplicationSetGeneratorsMatrixTemplateSpecSyncPolicyRetry {
     pub backoff: Option<ApplicationSetGeneratorsMatrixTemplateSpecSyncPolicyRetryBackoff>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub refresh: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -8512,6 +8540,8 @@ pub struct ApplicationSetGeneratorsMergeGeneratorsClusterDecisionResourceTemplat
     pub backoff: Option<ApplicationSetGeneratorsMergeGeneratorsClusterDecisionResourceTemplateSpecSyncPolicyRetryBackoff>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub refresh: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -9131,6 +9161,8 @@ pub struct ApplicationSetGeneratorsMergeGeneratorsClustersTemplateSpecSyncPolicy
     pub backoff: Option<ApplicationSetGeneratorsMergeGeneratorsClustersTemplateSpecSyncPolicyRetryBackoff>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub refresh: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -9755,6 +9787,8 @@ pub struct ApplicationSetGeneratorsMergeGeneratorsGitTemplateSpecSyncPolicyRetry
     pub backoff: Option<ApplicationSetGeneratorsMergeGeneratorsGitTemplateSpecSyncPolicyRetryBackoff>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub refresh: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -10356,6 +10390,8 @@ pub struct ApplicationSetGeneratorsMergeGeneratorsListTemplateSpecSyncPolicyRetr
     pub backoff: Option<ApplicationSetGeneratorsMergeGeneratorsListTemplateSpecSyncPolicyRetryBackoff>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub refresh: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -10972,6 +11008,8 @@ pub struct ApplicationSetGeneratorsMergeGeneratorsPluginTemplateSpecSyncPolicyRe
     pub backoff: Option<ApplicationSetGeneratorsMergeGeneratorsPluginTemplateSpecSyncPolicyRetryBackoff>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub refresh: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -10992,6 +11030,8 @@ pub struct ApplicationSetGeneratorsMergeGeneratorsPullRequest {
     pub bitbucket: Option<ApplicationSetGeneratorsMergeGeneratorsPullRequestBitbucket>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bitbucketServer")]
     pub bitbucket_server: Option<ApplicationSetGeneratorsMergeGeneratorsPullRequestBitbucketServer>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "continueOnRepoNotFoundError")]
+    pub continue_on_repo_not_found_error: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub filters: Option<Vec<ApplicationSetGeneratorsMergeGeneratorsPullRequestFilters>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -11122,6 +11162,8 @@ pub struct ApplicationSetGeneratorsMergeGeneratorsPullRequestFilters {
     pub branch_match: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetBranchMatch")]
     pub target_branch_match: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "titleMatch")]
+    pub title_match: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -11775,6 +11817,8 @@ pub struct ApplicationSetGeneratorsMergeGeneratorsPullRequestTemplateSpecSyncPol
     pub backoff: Option<ApplicationSetGeneratorsMergeGeneratorsPullRequestTemplateSpecSyncPolicyRetryBackoff>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub refresh: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -12588,6 +12632,8 @@ pub struct ApplicationSetGeneratorsMergeGeneratorsScmProviderTemplateSpecSyncPol
     pub backoff: Option<ApplicationSetGeneratorsMergeGeneratorsScmProviderTemplateSpecSyncPolicyRetryBackoff>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub refresh: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -13195,6 +13241,8 @@ pub struct ApplicationSetGeneratorsMergeTemplateSpecSyncPolicyRetry {
     pub backoff: Option<ApplicationSetGeneratorsMergeTemplateSpecSyncPolicyRetryBackoff>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub refresh: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -13811,6 +13859,8 @@ pub struct ApplicationSetGeneratorsPluginTemplateSpecSyncPolicyRetry {
     pub backoff: Option<ApplicationSetGeneratorsPluginTemplateSpecSyncPolicyRetryBackoff>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub refresh: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -13831,6 +13881,8 @@ pub struct ApplicationSetGeneratorsPullRequest {
     pub bitbucket: Option<ApplicationSetGeneratorsPullRequestBitbucket>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bitbucketServer")]
     pub bitbucket_server: Option<ApplicationSetGeneratorsPullRequestBitbucketServer>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "continueOnRepoNotFoundError")]
+    pub continue_on_repo_not_found_error: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub filters: Option<Vec<ApplicationSetGeneratorsPullRequestFilters>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -13961,6 +14013,8 @@ pub struct ApplicationSetGeneratorsPullRequestFilters {
     pub branch_match: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetBranchMatch")]
     pub target_branch_match: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "titleMatch")]
+    pub title_match: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -14614,6 +14668,8 @@ pub struct ApplicationSetGeneratorsPullRequestTemplateSpecSyncPolicyRetry {
     pub backoff: Option<ApplicationSetGeneratorsPullRequestTemplateSpecSyncPolicyRetryBackoff>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub refresh: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -15427,6 +15483,8 @@ pub struct ApplicationSetGeneratorsScmProviderTemplateSpecSyncPolicyRetry {
     pub backoff: Option<ApplicationSetGeneratorsScmProviderTemplateSpecSyncPolicyRetryBackoff>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub refresh: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -15475,6 +15533,8 @@ pub struct ApplicationSetPreservedFields {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationSetStrategy {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletionOrder")]
+    pub deletion_order: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingSync")]
     pub rolling_sync: Option<ApplicationSetStrategyRollingSync>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -16104,6 +16164,8 @@ pub struct ApplicationSetTemplateSpecSyncPolicyRetry {
     pub backoff: Option<ApplicationSetTemplateSpecSyncPolicyRetryBackoff>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub refresh: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -16124,6 +16186,8 @@ pub struct ApplicationSetStatus {
     pub conditions: Option<Vec<Condition>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<Vec<ApplicationSetStatusResources>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourcesCount")]
+    pub resources_count: Option<i64>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

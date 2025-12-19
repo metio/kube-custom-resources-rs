@@ -11,6 +11,10 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 
 ## Available Custom Resources
 
+### policies.kyverno.io/v1
+- `ImageValidatingPolicy`
+- `PolicyException`
+- `ValidatingPolicy`
 ### policies.kyverno.io/v1alpha1
 - `ImageValidatingPolicy`
 - `PolicyException`

@@ -1006,6 +1006,9 @@ pub struct CanaryStatus {
     /// Session affinity cookie of the previous canary run
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "previousSessionAffinityCookie")]
     pub previous_session_affinity_cookie: Option<String>,
+    /// Primary session affinity cookie of the current canary run
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "primarySessionAffinityCookie")]
+    pub primary_session_affinity_cookie: Option<String>,
     /// Session affinity cookie of the current canary run
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionAffinityCookie")]
     pub session_affinity_cookie: Option<String>,

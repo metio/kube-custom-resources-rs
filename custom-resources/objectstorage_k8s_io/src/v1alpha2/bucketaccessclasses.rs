@@ -11,10 +11,9 @@ mod prelude {
 use self::prelude::*;
 
 /// spec defines the desired state of BucketAccessClass
-#[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[kube(group = "objectstorage.k8s.io", version = "v1alpha2", kind = "BucketAccessClass", plural = "bucketaccessclasses")]
 #[kube(schema = "disabled")]
-#[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct BucketAccessClassSpec {
     /// authenticationType specifies which authentication mechanism is used bucket access.
@@ -24,11 +23,12 @@ pub struct BucketAccessClassSpec {
     ///  - ServiceAccount: The driver should configure the system such that Pods using the given
     ///    ServiceAccount authenticate to the backend object store automatically.
     #[serde(rename = "authenticationType")]
-    pub authentication_type: String,
+    pub authentication_type: BucketAccessClassAuthenticationType,
     /// driverName is the name of the driver that fulfills requests for this BucketAccessClass.
     #[serde(rename = "driverName")]
     pub driver_name: String,
     /// featureOptions can be used to adjust various COSI access provisioning behaviors.
+    /// If specified, at least one option must be set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "featureOptions")]
     pub feature_options: Option<BucketAccessClassFeatureOptions>,
     /// parameters is an opaque map of driver-specific configuration items passed to the driver that
@@ -37,7 +37,15 @@ pub struct BucketAccessClassSpec {
     pub parameters: Option<BTreeMap<String, String>>,
 }
 
+/// spec defines the desired state of BucketAccessClass
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum BucketAccessClassAuthenticationType {
+    Key,
+    ServiceAccount,
+}
+
 /// featureOptions can be used to adjust various COSI access provisioning behaviors.
+/// If specified, at least one option must be set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketAccessClassFeatureOptions {
     /// disallowMultiBucketAccess disables the ability for a BucketAccess to reference multiple
