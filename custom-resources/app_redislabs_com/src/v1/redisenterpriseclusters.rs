@@ -26,6 +26,9 @@ pub struct RedisEnterpriseClusterSpec {
     /// Additional antiAffinity terms in order to support installation on different zones/vcenters
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "antiAffinityAdditionalTopologyKeys")]
     pub anti_affinity_additional_topology_keys: Option<Vec<String>>,
+    /// Cluster-level configuration for auditing database connection and authentication events. Includes both the audit listener connection parameters and the default policy for new databases.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub auditing: Option<RedisEnterpriseClusterAuditing>,
     /// Cluster-wide backup configurations
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub backup: Option<RedisEnterpriseClusterBackup>,
@@ -38,7 +41,7 @@ pub struct RedisEnterpriseClusterSpec {
     /// RS Cluster Certificates. Used to modify the certificates used by the cluster. See the "RSClusterCertificates" struct described above to see the supported certificates.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub certificates: Option<RedisEnterpriseClusterCertificates>,
-    /// Secret Name/Path to use for Cluster Credentials. To be used only if ClusterCredentialSecretType is vault. If left blank, will use cluster name.
+    /// Name or path of the secret containing cluster credentials. Defaults to the cluster name if left blank. For Kubernetes secrets (default):  Must be set to the cluster name or left blank. The secret can be pre-created with 'username' and 'password' fields, or otherwise it will be automatically created with a default username and auto-generated password. For Vault secrets:  Can be customized with the path of the secret within Vault. The secret must be pre-created in Vault before REC creation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterCredentialSecretName")]
     pub cluster_credential_secret_name: Option<String>,
     /// Used only if ClusterCredentialSecretType is vault, to define vault role to be used.  If blank, defaults to "redis-enterprise-operator"
@@ -53,7 +56,7 @@ pub struct RedisEnterpriseClusterSpec {
     /// Container timezone configuration. While the default timezone on all containers is UTC, this setting can be used to set the timezone on services rigger/bootstrapper/RS containers. You can either propagate the hosts timezone to RS pods or set it manually via timezoneName.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerTimezone")]
     pub container_timezone: Option<RedisEnterpriseClusterContainerTimezone>,
-    /// Whether to create service account
+    /// Creates a service account for Redis Enterprise.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "createServiceAccount")]
     pub create_service_account: Option<bool>,
     /// Internode encryption (INE) cluster wide policy. An optional boolean setting. Specifies if INE should be on/off for new created REDBs. May be overridden for specific REDB via similar setting, please view the similar setting for REDB for more info.
@@ -74,7 +77,7 @@ pub struct RedisEnterpriseClusterSpec {
     /// Adds hostAliases entries to the Redis Enterprise pods
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
     pub host_aliases: Option<Vec<RedisEnterpriseClusterHostAliases>>,
-    /// Access configurations for the Redis Enterprise Cluster and Databases. At most one of ingressOrRouteSpec or activeActive fields can be set at the same time.
+    /// Access configurations for the Redis Enterprise cluster and databases. At most one of ingressOrRouteSpec or activeActive fields can be set at the same time.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressOrRouteSpec")]
     pub ingress_or_route_spec: Option<RedisEnterpriseClusterIngressOrRouteSpec>,
     /// Cluster-level LDAP configuration, such as server addresses, protocol, authentication and query settings.
@@ -95,7 +98,7 @@ pub struct RedisEnterpriseClusterSpec {
     /// An API object that represents the cluster's OCSP configuration. To enable OCSP, the cluster's proxy certificate should contain the OCSP responder URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ocspConfiguration")]
     pub ocsp_configuration: Option<RedisEnterpriseClusterOcspConfiguration>,
-    /// Specification for Redis Enterprise Cluster persistence
+    /// Persistent storage configuration for Redis Enterprise cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentSpec")]
     pub persistent_spec: Option<RedisEnterpriseClusterPersistentSpec>,
     /// annotations for the service rigger and redis enterprise pods
@@ -149,10 +152,10 @@ pub struct RedisEnterpriseClusterSpec {
     /// additional volume mounts within the redis enterprise containers. More info: <https://kubernetes.io/docs/concepts/storage/volumes/>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "redisEnterpriseVolumeMounts")]
     pub redis_enterprise_volume_mounts: Option<Vec<RedisEnterpriseClusterRedisEnterpriseVolumeMounts>>,
-    /// Stores configurations specific to redis on flash. If provided, the cluster will be capable of creating redis on flash databases.
+    /// Auto Tiering (Redis on Flash) configuration. When provided, the cluster can create Auto Tiering databases.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "redisOnFlashSpec")]
     pub redis_on_flash_spec: Option<RedisEnterpriseClusterRedisOnFlashSpec>,
-    /// Redis upgrade policy to be set on the Redis Enterprise Cluster. Possible values: major/latest This value is used by the cluster to choose the Redis version of the database when an upgrade is performed. The Redis Enterprise Cluster includes multiple versions of OSS Redis that can be used for databases.
+    /// Redis upgrade policy to be set on the Redis Enterprise cluster. Possible values: major/latest This value is used by the cluster to choose the Redis version of the database when an upgrade is performed. The Redis Enterprise cluster includes multiple versions of OSS Redis that can be used for databases.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "redisUpgradePolicy")]
     pub redis_upgrade_policy: Option<RedisEnterpriseClusterRedisUpgradePolicy>,
     /// Whether databases will turn on RESP3 compatibility upon database upgrade. Note - Deleting this property after explicitly setting its value shall have no effect. Please view the corresponding field in RS doc for more info.
@@ -161,7 +164,7 @@ pub struct RedisEnterpriseClusterSpec {
     /// The security configuration that will be applied to RS pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<RedisEnterpriseClusterSecurityContext>,
-    /// Name of the service account to use
+    /// Name of the service account to use for Redis Enterprise.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
     /// Customization options for operator-managed service resources created for Redis Enterprise clusters and databases
@@ -175,18 +178,24 @@ pub struct RedisEnterpriseClusterSpec {
     /// Slave high availability mechanism configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "slaveHA")]
     pub slave_ha: Option<RedisEnterpriseClusterSlaveHa>,
-    /// Annotations for Redis Enterprise UI service. This annotations will override the overlapping global annotations set under spec.services.servicesAnnotations The specified annotations will not override annotations that already exist and didn't originate from the operator, except for the 'redis.io/last-keys' annotation which is reserved.
+    /// Cluster-level SSO configuration for authentication to the Cluster Manager UI.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sso: Option<RedisEnterpriseClusterSso>,
+    /// Additional annotations for the Redis Enterprise UI service. These annotations override overlapping global annotations set under spec.services.servicesAnnotations. The specified annotations will not override annotations that already exist and didn't originate from the operator, except for the 'redis.io/last-keys' annotation which is reserved.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "uiAnnotations")]
     pub ui_annotations: Option<BTreeMap<String, String>>,
-    /// Type of service used to expose Redis Enterprise UI (<https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types)>
+    /// Service type for exposing the Redis Enterprise UI (<https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types).>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "uiServiceType")]
     pub ui_service_type: Option<RedisEnterpriseClusterUiServiceType>,
-    /// Specification for upgrades of Redis Enterprise
+    /// Redis Enterprise upgrade configuration
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "upgradeSpec")]
     pub upgrade_spec: Option<RedisEnterpriseClusterUpgradeSpec>,
     /// The configuration of the usage meter.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "usageMeter")]
     pub usage_meter: Option<RedisEnterpriseClusterUsageMeter>,
+    /// List of user-defined modules to be downloaded and installed during cluster bootstrap The modules on the list will be downloaded on cluster creation, upgrade, scale-out and recovery and installed on all nodes. Note that changing this field for a running cluster will trigger a rolling update.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userDefinedModules")]
+    pub user_defined_modules: Option<Vec<RedisEnterpriseClusterUserDefinedModules>>,
     /// Username for the admin user of Redis Enterprise
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
@@ -221,6 +230,46 @@ pub enum RedisEnterpriseClusterActiveActiveMethod {
     OpenShiftRoute,
     #[serde(rename = "ingress")]
     Ingress,
+}
+
+/// Cluster-level configuration for auditing database connection and authentication events. Includes both the audit listener connection parameters and the default policy for new databases.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseClusterAuditing {
+    /// Configuration for the audit listener connection
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub config: Option<RedisEnterpriseClusterAuditingConfig>,
+    /// Cluster-wide default policy for database connection auditing. When set to true, connection auditing will be enabled by default for all new databases. Existing databases are not affected and can override this setting individually.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dbConnsAuditing")]
+    pub db_conns_auditing: Option<bool>,
+}
+
+/// Configuration for the audit listener connection
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct RedisEnterpriseClusterAuditingConfig {
+    /// TCP/IP address or file path where audit notifications will be sent. For TCP protocol: IP address of the audit listener. For local protocol: file path for audit output (development/testing only).
+    #[serde(rename = "auditAddress")]
+    pub audit_address: String,
+    /// Port number where audit notifications will be sent (TCP protocol only).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "auditPort")]
+    pub audit_port: Option<i64>,
+    /// Protocol used to send audit notifications. Valid values: "TCP" or "local". For production systems, use "TCP". "local" is for development/testing only.
+    #[serde(rename = "auditProtocol")]
+    pub audit_protocol: RedisEnterpriseClusterAuditingConfigAuditProtocol,
+    /// Interval in seconds between attempts to reconnect to the audit listener.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "auditReconnectInterval")]
+    pub audit_reconnect_interval: Option<i64>,
+    /// Maximum number of attempts to reconnect to the audit listener. Set to 0 for infinite attempts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "auditReconnectMaxAttempts")]
+    pub audit_reconnect_max_attempts: Option<i64>,
+}
+
+/// Configuration for the audit listener connection
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum RedisEnterpriseClusterAuditingConfigAuditProtocol {
+    #[serde(rename = "TCP")]
+    Tcp,
+    #[serde(rename = "local")]
+    Local,
 }
 
 /// Cluster-wide backup configurations
@@ -280,28 +329,34 @@ pub struct RedisEnterpriseClusterBootstrapperResourcesClaims {
 /// RS Cluster Certificates. Used to modify the certificates used by the cluster. See the "RSClusterCertificates" struct described above to see the supported certificates.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RedisEnterpriseClusterCertificates {
-    /// Secret name to use for cluster's API certificate. If left blank, a cluster-provided certificate will be used.
+    /// Secret name to use for cluster's API certificate. The secret must contain the following structure - A key 'name' with the value 'api'. - A key 'certificate' with the value of the certificate in PEM format. - A key 'key' with the value of the private key. If left blank, a cluster-provided certificate will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiCertificateSecretName")]
     pub api_certificate_secret_name: Option<String>,
-    /// Secret name to use for cluster's CM (Cluster Manager) certificate. If left blank, a cluster-provided certificate will be used.
+    /// Secret name to use for cluster's CM (Cluster Manager) certificate. The secret must contain the following structure - A key 'name' with the value 'cm'. - A key 'certificate' with the value of the certificate in PEM format. - A key 'key' with the value of the private key. If left blank, a cluster-provided certificate will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cmCertificateSecretName")]
     pub cm_certificate_secret_name: Option<String>,
-    /// Secret name to use for cluster's Control Plane Internode Encryption (CPINE) certificate. If left blank, a cluster-provided certificate will be used.
+    /// Secret name to use for cluster's Control Plane Internode Encryption (CPINE) certificate. The secret must contain the following structure - A key 'name' with the value 'ccs_internode_encryption'. - A key 'certificate' with the value of the certificate in PEM format. - A key 'key' with the value of the private key. If left blank, a cluster-provided certificate will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpInternodeEncryptionCertificateSecretName")]
     pub cp_internode_encryption_certificate_secret_name: Option<String>,
-    /// Secret name to use for cluster's Data Plane Internode Encryption (DPINE) certificate. If left blank, a cluster-provided certificate will be used.
+    /// Secret name to use for cluster's Data Plane Internode Encryption (DPINE) certificate. The secret must contain the following structure - A key 'name' with the value 'data_internode_encryption'. - A key 'certificate' with the value of the certificate in PEM format. - A key 'key' with the value of the private key. If left blank, a cluster-provided certificate will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dpInternodeEncryptionCertificateSecretName")]
     pub dp_internode_encryption_certificate_secret_name: Option<String>,
-    /// Secret name to use for cluster's LDAP client certificate. If left blank, LDAP client certificate authentication will be disabled.
+    /// Secret name to use for cluster's LDAP client certificate. The secret must contain the following structure - A key 'name' with the value 'ldap_client'. - A key 'certificate' with the value of the certificate in PEM format. - A key 'key' with the value of the private key. If left blank, LDAP client certificate authentication will be disabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ldapClientCertificateSecretName")]
     pub ldap_client_certificate_secret_name: Option<String>,
-    /// Secret name to use for cluster's Metrics Exporter certificate. If left blank, a cluster-provided certificate will be used.
+    /// Secret name to use for cluster's Metrics Exporter certificate. The secret must contain the following structure - A key 'name' with the value 'metrics_exporter'. - A key 'certificate' with the value of the certificate in PEM format. - A key 'key' with the value of the private key. If left blank, a cluster-provided certificate will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricsExporterCertificateSecretName")]
     pub metrics_exporter_certificate_secret_name: Option<String>,
-    /// Secret name to use for cluster's Proxy certificate. If left blank, a cluster-provided certificate will be used.
+    /// Secret name to use for cluster's Proxy certificate. The secret must contain the following structure - A key 'name' with the value 'proxy'. - A key 'certificate' with the value of the certificate in PEM format. - A key 'key' with the value of the private key. If left blank, a cluster-provided certificate will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyCertificateSecretName")]
     pub proxy_certificate_secret_name: Option<String>,
-    /// Secret name to use for cluster's Syncer certificate. If left blank, a cluster-provided certificate will be used.
+    /// Secret name to use for the SSO Identity Provider (IdP) certificate. This is the public certificate from your SAML Identity Provider used to verify SAML assertions. The secret must contain 'name' and 'certificate' fields (no 'key' field needed for IdP cert). This is optional - if using IdP metadata XML, the IdP certificate is included in the metadata.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ssoIssuerCertificateSecretName")]
+    pub sso_issuer_certificate_secret_name: Option<String>,
+    /// Secret name to use for cluster's SSO service certificate. Used for SAML-based SSO authentication to the Cluster Manager. The secret must contain 'name', 'certificate', and 'key' fields (same format as other cluster certificates). If left blank, SSO will not be configured.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ssoServiceCertificateSecretName")]
+    pub sso_service_certificate_secret_name: Option<String>,
+    /// Secret name to use for cluster's Syncer certificate. The secret must contain the following structure - A key 'name' with the value 'syncer'. - A key 'certificate' with the value of the certificate in PEM format. - A key 'key' with the value of the private key. If left blank, a cluster-provided certificate will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncerCertificateSecretName")]
     pub syncer_certificate_secret_name: Option<String>,
 }
@@ -398,7 +453,7 @@ pub struct RedisEnterpriseClusterHostAliases {
     pub ip: Option<String>,
 }
 
-/// Access configurations for the Redis Enterprise Cluster and Databases. At most one of ingressOrRouteSpec or activeActive fields can be set at the same time.
+/// Access configurations for the Redis Enterprise cluster and databases. At most one of ingressOrRouteSpec or activeActive fields can be set at the same time.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RedisEnterpriseClusterIngressOrRouteSpec {
     /// RS API URL
@@ -414,7 +469,7 @@ pub struct RedisEnterpriseClusterIngressOrRouteSpec {
     pub method: RedisEnterpriseClusterIngressOrRouteSpecMethod,
 }
 
-/// Access configurations for the Redis Enterprise Cluster and Databases. At most one of ingressOrRouteSpec or activeActive fields can be set at the same time.
+/// Access configurations for the Redis Enterprise cluster and databases. At most one of ingressOrRouteSpec or activeActive fields can be set at the same time.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum RedisEnterpriseClusterIngressOrRouteSpecMethod {
     #[serde(rename = "openShiftRoute")]
@@ -559,7 +614,7 @@ pub struct RedisEnterpriseClusterOcspConfiguration {
     pub response_timeout: Option<i64>,
 }
 
-/// Specification for Redis Enterprise Cluster persistence
+/// Persistent storage configuration for Redis Enterprise cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RedisEnterpriseClusterPersistentSpec {
     /// Whether to enable PersistentVolumes resize. Disabled by default. Read the instruction in pvc_expansion readme carefully before using this feature.
@@ -683,9 +738,9 @@ pub struct RedisEnterpriseClusterPodAntiAffinityRequiredDuringSchedulingIgnoredD
 /// Mitigation setting for STS pods stuck in "ContainerCreating"
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RedisEnterpriseClusterPodStartingPolicy {
-    /// Whether to detect and attempt to mitigate pod startup issues
+    /// Enables detection and mitigation of pod startup issues.
     pub enabled: bool,
-    /// Time in seconds to wait for a pod to be stuck while starting up before action is taken. If set to 0, will be treated as if disabled.
+    /// Time in seconds to wait before taking action on a pod stuck during startup. Set to 0 to disable.
     #[serde(rename = "startingThresholdSeconds")]
     pub starting_threshold_seconds: i32,
 }
@@ -3190,7 +3245,7 @@ pub struct RedisEnterpriseClusterRedisEnterpriseVolumeMounts {
     pub sub_path_expr: Option<String>,
 }
 
-/// Stores configurations specific to redis on flash. If provided, the cluster will be capable of creating redis on flash databases.
+/// Auto Tiering (Redis on Flash) configuration. When provided, the cluster can create Auto Tiering databases.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RedisEnterpriseClusterRedisOnFlashSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bigStoreDriver")]
@@ -3204,7 +3259,7 @@ pub struct RedisEnterpriseClusterRedisOnFlashSpec {
     pub storage_class_name: String,
 }
 
-/// Stores configurations specific to redis on flash. If provided, the cluster will be capable of creating redis on flash databases.
+/// Auto Tiering (Redis on Flash) configuration. When provided, the cluster can create Auto Tiering databases.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum RedisEnterpriseClusterRedisOnFlashSpecBigStoreDriver {
     #[serde(rename = "rocksdb")]
@@ -3213,7 +3268,7 @@ pub enum RedisEnterpriseClusterRedisOnFlashSpecBigStoreDriver {
     Speedb,
 }
 
-/// Stores configurations specific to redis on flash. If provided, the cluster will be capable of creating redis on flash databases.
+/// Auto Tiering (Redis on Flash) configuration. When provided, the cluster can create Auto Tiering databases.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum RedisEnterpriseClusterRedisOnFlashSpecFlashStorageEngine {
     #[serde(rename = "rocksdb")]
@@ -3235,7 +3290,7 @@ pub struct RedisEnterpriseClusterSecurityContext {
     /// Policy controlling whether to enable read-only root filesystem for the Redis Enterprise software containers. Note that certain filesystem paths remain writable through mounted volumes to ensure proper functionality.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystemPolicy")]
     pub read_only_root_filesystem_policy: Option<RedisEnterpriseClusterSecurityContextReadOnlyRootFilesystemPolicy>,
-    /// Settings pertaining to resource limits management by the Redis Enterprise Node container.
+    /// Settings pertaining to resource limits management by the Redis Enterprise node container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceLimits")]
     pub resource_limits: Option<RedisEnterpriseClusterSecurityContextResourceLimits>,
 }
@@ -3247,7 +3302,7 @@ pub struct RedisEnterpriseClusterSecurityContextReadOnlyRootFilesystemPolicy {
     pub enabled: bool,
 }
 
-/// Settings pertaining to resource limits management by the Redis Enterprise Node container.
+/// Settings pertaining to resource limits management by the Redis Enterprise node container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RedisEnterpriseClusterSecurityContextResourceLimits {
     /// Allow Redis Enterprise to adjust resource limits, like max open file descriptors, of its data plane processes. When this option is enabled, the SYS_RESOURCE capability is added to the Redis Enterprise pods, and their allowPrivilegeEscalation field is set. Turned off by default.
@@ -6193,9 +6248,60 @@ pub struct RedisEnterpriseClusterSideContainersSpecVolumeMounts {
 /// Slave high availability mechanism configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RedisEnterpriseClusterSlaveHa {
-    /// Time in seconds between when a node fails, and when slave high availability mechanism starts relocating shards. If set to 0, will not affect cluster configuration.
+    /// Grace period in seconds between node failure and when the high availability mechanism starts relocating shards. Set to 0 to not affect cluster configuration.
     #[serde(rename = "slaveHAGracePeriod")]
     pub slave_ha_grace_period: i32,
+}
+
+/// Cluster-level SSO configuration for authentication to the Cluster Manager UI.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseClusterSso {
+    /// Enables SSO for Cluster Manager authentication. SSO requires the following configuration - Service Provider certificate (spec.certificates.ssoServiceCertificateSecretName), Identity Provider certificate (spec.certificates.ssoIssuerCertificateSecretName), IdP metadata or manual issuer configuration (spec.sso.saml.idpMetadataSecretName or spec.sso.saml.issuer), and Base address for Service Provider URLs (auto-determined from UI service or set via spec.sso.saml.serviceProvider.baseAddress).
+    pub enabled: bool,
+    /// Enforces SSO-only authentication for the Cluster Manager. When true, local username/password authentication is disabled for non-admin users. When false (default), both SSO and local authentication are available.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enforceSSO")]
+    pub enforce_sso: Option<bool>,
+    /// SAML-based SSO configuration. Currently,SAML is the only supported SSO protocol.
+    pub saml: RedisEnterpriseClusterSsoSaml,
+}
+
+/// SAML-based SSO configuration. Currently,SAML is the only supported SSO protocol.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseClusterSsoSaml {
+    /// Name of a secret in the same namespace that contains the Identity Provider (IdP) metadata XML. The secret must contain a key named 'idp_metadata' with the IdP metadata XML content. The XML can be plain text or base64-encoded; the operator handles encoding as needed. Obtain this metadata from your SAML Identity Provider (e.g., Okta or Azure AD). This is the recommended configuration method, as it's less error-prone. Either idpMetadataSecretName or issuer must be specified. If both are provided, idpMetadataSecretName takes precedence and issuer is ignored.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "idpMetadataSecretName")]
+    pub idp_metadata_secret_name: Option<String>,
+    /// Manual Identity Provider (IdP) configuration. Use this when IdP metadata XML is unavailable. Either idpMetadataSecretName or issuer must be specified. If both are provided, idpMetadataSecretName takes precedence and issuer is ignored.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub issuer: Option<RedisEnterpriseClusterSsoSamlIssuer>,
+    /// Service Provider (SP) configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceProvider")]
+    pub service_provider: Option<RedisEnterpriseClusterSsoSamlServiceProvider>,
+    /// Name of a secret where the operator stores the Service Provider (SP) metadata XML. The operator creates this secret with a key named 'sp_metadata' that contains the base64-encoded SP metadata XML. Upload this metadata to your Identity Provider. If not specified, defaults to "<cluster-name>-sso-sp-metadata". If not specified, the Service Provider metadata isn't stored in a K8s secret, but can still be obtained directly from the cluster's UI and/or API. Note: This secret is only created when the cluster is configured to use Kubernetes secrets (spec.clusterCredentialSecretType is unset or set to "kubernetes"). When using Vault secrets, the operator does not create this secret. Users can obtain the SP metadata directly from the Redis Enterprise Server API endpoint: GET /v1/cluster/sso/saml/metadata/sp and store it in Vault themselves if needed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "spMetadataSecretName")]
+    pub sp_metadata_secret_name: Option<String>,
+}
+
+/// Manual Identity Provider (IdP) configuration. Use this when IdP metadata XML is unavailable. Either idpMetadataSecretName or issuer must be specified. If both are provided, idpMetadataSecretName takes precedence and issuer is ignored.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseClusterSsoSamlIssuer {
+    /// Identity Provider entity ID (issuer identifier). Example: "urn:sso:example:idp" or "<https://idp.example.com".>
+    #[serde(rename = "entityID")]
+    pub entity_id: String,
+    /// Identity Provider SSO login URL where SAML authentication requests are sent. Example: "<https://idp.example.com/sso/saml".>
+    #[serde(rename = "loginURL")]
+    pub login_url: String,
+    /// Identity Provider single logout URL where SAML logout requests are sent.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logoutURL")]
+    pub logout_url: Option<String>,
+}
+
+/// Service Provider (SP) configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseClusterSsoSamlServiceProvider {
+    /// Base address used to construct Service Provider (SP) URLs, such as the ACS URL and SLO URL. Format: [<scheme>://]<hostname>[:<port>]. Examples: "<https://redis-ui.example.com:9443"> (recommended - explicit scheme), "redis-ui.example.com:9443" (defaults to <https://),> "<http://redis-ui.example.com:9443"> (NOT recommended for production). If the scheme is not specified, the operator automatically prepends "<https://".> WARNING: Using "<http://"> is NOT recommended for production environments as it transmits sensitive SAML assertions in plaintext. Only use "<http://"> for testing/development purposes. If set, this value is used to construct the SP URLs. If unset, the base address is automatically determined from the REC Cluster Manager UI service: - If the UI service type is LoadBalancer (configured via spec.uiServiceType), the load balancer address is used. - Otherwise, the cluster-internal DNS name is used (e.g., rec-ui.svc.cluster.local). - The port defaults to 8443 if not specified. Usage guidelines: - For LoadBalancer services: Leave this field blank to use the default REC UI service, or set it explicitly to the LoadBalancer address for custom services. - For Ingress: Set this to the ingress hostname and port (typically 443), e.g., "<https://redis-ui.example.com:443".>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseAddress")]
+    pub base_address: Option<String>,
 }
 
 /// RedisEnterpriseClusterSpec defines the desired state of RedisEnterpriseCluster
@@ -6208,10 +6314,10 @@ pub enum RedisEnterpriseClusterUiServiceType {
     ExternalName,
 }
 
-/// Specification for upgrades of Redis Enterprise
+/// Redis Enterprise upgrade configuration
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RedisEnterpriseClusterUpgradeSpec {
-    /// Whether to upgrade Redis Enterprise automatically when operator is upgraded
+    /// Enables automatic Redis Enterprise upgrades when the operator is upgraded.
     #[serde(rename = "autoUpgradeRedisEnterprise")]
     pub auto_upgrade_redis_enterprise: bool,
 }
@@ -6277,6 +6383,46 @@ pub struct RedisEnterpriseClusterUsageMeterCallHomeClientResources {
 pub struct RedisEnterpriseClusterUsageMeterCallHomeClientResourcesClaims {
     /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
     pub name: String,
+}
+
+/// UserDefinedModule represents a user-defined Redis module to be downloaded and installed during bootstrap
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseClusterUserDefinedModules {
+    /// Name of the module
+    pub name: String,
+    /// Source location for downloading the module
+    pub source: RedisEnterpriseClusterUserDefinedModulesSource,
+}
+
+/// Source location for downloading the module
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseClusterUserDefinedModulesSource {
+    /// HTTP source configuration for downloading the module via HTTP
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub http: Option<RedisEnterpriseClusterUserDefinedModulesSourceHttp>,
+    /// HTTPS source configuration for downloading the module via HTTPS
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub https: Option<RedisEnterpriseClusterUserDefinedModulesSourceHttps>,
+}
+
+/// HTTP source configuration for downloading the module via HTTP
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseClusterUserDefinedModulesSourceHttp {
+    /// Name of the Kubernetes secret containing credentials for downloading the module, if needed. The secret must contain 'username' and 'password' keys.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsSecret")]
+    pub credentials_secret: Option<String>,
+    /// URL to download the module from (must use http:// scheme)
+    pub url: String,
+}
+
+/// HTTPS source configuration for downloading the module via HTTPS
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseClusterUserDefinedModulesSourceHttps {
+    /// Name of the Kubernetes secret containing credentials for downloading the module, if needed. The secret must contain 'username' and 'password' keys.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsSecret")]
+    pub credentials_secret: Option<String>,
+    /// URL to download the module from (must use https:// scheme)
+    pub url: String,
 }
 
 /// Volume represents a named volume in a pod that may be accessed by any container in the pod. More info: <https://kubernetes.io/docs/concepts/storage/volumes>
@@ -6879,7 +7025,7 @@ pub struct RedisEnterpriseClusterStatus {
     /// An API object that represents the cluster's OCSP status
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ocspStatus")]
     pub ocsp_status: Option<RedisEnterpriseClusterStatusOcspStatus>,
-    /// The status of the Persistent Volume Claims that are used for Redis Enterprise Cluster persistence. The status will correspond to the status of one or more of the PVCs (failed/resizing if one of them is in resize or failed to resize)
+    /// The status of the Persistent Volume Claims that are used for Redis Enterprise cluster persistence. The status will correspond to the status of one or more of the PVCs (failed/resizing if one of them is in resize or failed to resize)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistenceStatus")]
     pub persistence_status: Option<RedisEnterpriseClusterStatusPersistenceStatus>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "redisEnterpriseIPFamily")]
@@ -6977,7 +7123,7 @@ pub struct RedisEnterpriseClusterStatusOcspStatus {
     pub this_update: Option<String>,
 }
 
-/// The status of the Persistent Volume Claims that are used for Redis Enterprise Cluster persistence. The status will correspond to the status of one or more of the PVCs (failed/resizing if one of them is in resize or failed to resize)
+/// The status of the Persistent Volume Claims that are used for Redis Enterprise cluster persistence. The status will correspond to the status of one or more of the PVCs (failed/resizing if one of them is in resize or failed to resize)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RedisEnterpriseClusterStatusPersistenceStatus {
     /// The current status of the PVCs

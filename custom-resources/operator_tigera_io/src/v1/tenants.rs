@@ -1071,6 +1071,7 @@ pub enum TenantIndicesDataType {
     ThreatFeedsIpSet,
     #[serde(rename = "WAFLogs")]
     WafLogs,
+    PolicyActivity,
 }
 
 /// LinseedDeployment configures the linseed Deployment.

@@ -57,7 +57,12 @@ spec:
                             properties:
                               name:
                                 description: "Name specifies the exact name of the node to match."
+                                maxLength: 253
+                                minLength: 1
+                                pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
                                 type: "string"
+                            required:
+                              - "name"
                             type: "object"
                           labelMatch:
                             description: "LabelMatch defines the labels match criteria (only take effect when Member Type is \"Node\")."
@@ -97,7 +102,10 @@ spec:
                             properties:
                               pattern:
                                 description: "Pattern defines the regex pattern to match node names."
+                                minLength: 1
                                 type: "string"
+                            required:
+                              - "pattern"
                             type: "object"
                         type: "object"
                         x-kubernetes-validations:
@@ -114,12 +122,15 @@ spec:
                     required:
                       - "type"
                     type: "object"
+                  minItems: 1
                   type: "array"
                 tier:
                   description: "Tier categorizes the performance level of the HyperNode."
+                  minimum: 0.0
                   type: "integer"
                 tierName:
                   description: "TierName represents the level name of the HyperNode."
+                  maxLength: 253
                   type: "string"
               required:
                 - "tier"

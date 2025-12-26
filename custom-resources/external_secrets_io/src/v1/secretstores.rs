@@ -2120,6 +2120,15 @@ pub struct SecretStoreProviderIbmAuthSecretRefSecretApiKeySecretRef {
 pub struct SecretStoreProviderInfisical {
     /// Auth configures how the Operator authenticates with the Infisical API
     pub auth: SecretStoreProviderInfisicalAuth,
+    /// CABundle is a PEM-encoded CA certificate bundle used to validate
+    /// the Infisical server's TLS certificate. Mutually exclusive with CAProvider.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
+    pub ca_bundle: Option<String>,
+    /// CAProvider is a reference to a Secret or ConfigMap that contains a CA certificate.
+    /// The certificate is used to validate the Infisical server's TLS certificate.
+    /// Mutually exclusive with CABundle.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caProvider")]
+    pub ca_provider: Option<SecretStoreProviderInfisicalCaProvider>,
     /// HostAPI specifies the base URL of the Infisical API. If not provided, it defaults to "<https://app.infisical.com/api".>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAPI")]
     pub host_api: Option<String>,
@@ -2691,6 +2700,34 @@ pub struct SecretStoreProviderInfisicalAuthUniversalAuthCredentialsClientSecret 
     /// Ignored if referent is not cluster-scoped, otherwise defaults to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+}
+
+/// CAProvider is a reference to a Secret or ConfigMap that contains a CA certificate.
+/// The certificate is used to validate the Infisical server's TLS certificate.
+/// Mutually exclusive with CABundle.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct SecretStoreProviderInfisicalCaProvider {
+    /// The key where the CA certificate can be found in the Secret or ConfigMap.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the object located at the provider type.
+    pub name: String,
+    /// The namespace the Provider type is in.
+    /// Can only be defined when used in a ClusterSecretStore.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+    /// The type of provider to use such as "Secret", or "ConfigMap".
+    #[serde(rename = "type")]
+    pub r#type: SecretStoreProviderInfisicalCaProviderType,
+}
+
+/// CAProvider is a reference to a Secret or ConfigMap that contains a CA certificate.
+/// The certificate is used to validate the Infisical server's TLS certificate.
+/// Mutually exclusive with CABundle.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum SecretStoreProviderInfisicalCaProviderType {
+    Secret,
+    ConfigMap,
 }
 
 /// SecretsScope defines the scope of the secrets within the workspace

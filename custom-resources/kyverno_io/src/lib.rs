@@ -20,6 +20,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `ClusterAdmissionReport`
 - `ClusterBackgroundScanReport`
 - `ClusterCleanupPolicy`
+- `GlobalContextEntry`
 - `PolicyException`
 - `UpdateRequest`
 ## kyverno.io/v2alpha1

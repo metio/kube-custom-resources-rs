@@ -169,16 +169,16 @@ pub struct ServiceMonitorAttachMetadata {
 /// Prometheus.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceMonitorEndpoints {
-    /// authorization configures the Authorization header credentials to use when
-    /// scraping the target.
+    /// authorization configures the Authorization header credentials used by
+    /// the client.
     /// 
-    /// Cannot be set at the same time as `basicAuth`, or `oauth2`.
+    /// Cannot be set at the same time as `basicAuth`, `bearerTokenSecret` or `oauth2`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<ServiceMonitorEndpointsAuthorization>,
-    /// basicAuth defines the Basic Authentication credentials to use when
-    /// scraping the target.
+    /// basicAuth defines the Basic Authentication credentials used by the
+    /// client.
     /// 
-    /// Cannot be set at the same time as `authorization`, or `oauth2`.
+    /// Cannot be set at the same time as `authorization`, `bearerTokenSecret` or `oauth2`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<ServiceMonitorEndpointsBasicAuth>,
     /// bearerTokenFile defines the file to read bearer token for scraping the target.
@@ -186,14 +186,17 @@ pub struct ServiceMonitorEndpoints {
     /// Deprecated: use `authorization` instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenFile")]
     pub bearer_token_file: Option<String>,
-    /// bearerTokenSecret defines a key of a Secret containing the bearer
-    /// token for scraping targets. The secret needs to be in the same namespace
-    /// as the ServiceMonitor object and readable by the Prometheus Operator.
+    /// bearerTokenSecret defines a key of a Secret containing the bearer token
+    /// used by the client for authentication. The secret needs to be in the
+    /// same namespace as the custom resource and readable by the Prometheus
+    /// Operator.
+    /// 
+    /// Cannot be set at the same time as `authorization`, `basicAuth` or `oauth2`.
     /// 
     /// Deprecated: use `authorization` instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
     pub bearer_token_secret: Option<ServiceMonitorEndpointsBearerTokenSecret>,
-    /// enableHttp2 can be used to disable HTTP2 when scraping the target.
+    /// enableHttp2 can be used to disable HTTP2.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHttp2")]
     pub enable_http2: Option<bool>,
     /// filterRunning when true, the pods which are not running (e.g. either in Failed or
@@ -204,8 +207,8 @@ pub struct ServiceMonitorEndpoints {
     /// More info: <https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-phase>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "filterRunning")]
     pub filter_running: Option<bool>,
-    /// followRedirects defines whether the scrape requests should follow HTTP
-    /// 3xx redirects.
+    /// followRedirects defines whether the client should follow HTTP 3xx
+    /// redirects.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     /// honorLabels defines when true the metric's labels when they collide
@@ -232,11 +235,11 @@ pub struct ServiceMonitorEndpoints {
     /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
-    /// oauth2 defines the OAuth2 settings to use when scraping the target.
+    /// oauth2 defines the OAuth2 settings used by the client.
     /// 
     /// It requires Prometheus >= 2.27.0.
     /// 
-    /// Cannot be set at the same time as `authorization`, or `basicAuth`.
+    /// Cannot be set at the same time as `authorization`, `basicAuth` or `bearerTokenSecret`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oauth2: Option<ServiceMonitorEndpointsOauth2>,
     /// params define optional HTTP URL parameters.
@@ -290,7 +293,7 @@ pub struct ServiceMonitorEndpoints {
     /// Service. The port must be specified with the container's port property.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPort")]
     pub target_port: Option<IntOrString>,
-    /// tlsConfig defines the TLS configuration to use when scraping the target.
+    /// tlsConfig defines TLS configuration used by the client.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
     pub tls_config: Option<ServiceMonitorEndpointsTlsConfig>,
     /// trackTimestampsStaleness defines whether Prometheus tracks staleness of
@@ -302,10 +305,10 @@ pub struct ServiceMonitorEndpoints {
     pub track_timestamps_staleness: Option<bool>,
 }
 
-/// authorization configures the Authorization header credentials to use when
-/// scraping the target.
+/// authorization configures the Authorization header credentials used by
+/// the client.
 /// 
-/// Cannot be set at the same time as `basicAuth`, or `oauth2`.
+/// Cannot be set at the same time as `basicAuth`, `bearerTokenSecret` or `oauth2`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceMonitorEndpointsAuthorization {
     /// credentials defines a key of a Secret in the namespace that contains the credentials for authentication.
@@ -337,10 +340,10 @@ pub struct ServiceMonitorEndpointsAuthorizationCredentials {
     pub optional: Option<bool>,
 }
 
-/// basicAuth defines the Basic Authentication credentials to use when
-/// scraping the target.
+/// basicAuth defines the Basic Authentication credentials used by the
+/// client.
 /// 
-/// Cannot be set at the same time as `authorization`, or `oauth2`.
+/// Cannot be set at the same time as `authorization`, `bearerTokenSecret` or `oauth2`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceMonitorEndpointsBasicAuth {
     /// password defines a key of a Secret containing the password for
@@ -389,9 +392,12 @@ pub struct ServiceMonitorEndpointsBasicAuthUsername {
     pub optional: Option<bool>,
 }
 
-/// bearerTokenSecret defines a key of a Secret containing the bearer
-/// token for scraping targets. The secret needs to be in the same namespace
-/// as the ServiceMonitor object and readable by the Prometheus Operator.
+/// bearerTokenSecret defines a key of a Secret containing the bearer token
+/// used by the client for authentication. The secret needs to be in the
+/// same namespace as the custom resource and readable by the Prometheus
+/// Operator.
+/// 
+/// Cannot be set at the same time as `authorization`, `basicAuth` or `oauth2`.
 /// 
 /// Deprecated: use `authorization` instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -502,11 +508,11 @@ pub enum ServiceMonitorEndpointsMetricRelabelingsAction {
     DropEqual,
 }
 
-/// oauth2 defines the OAuth2 settings to use when scraping the target.
+/// oauth2 defines the OAuth2 settings used by the client.
 /// 
 /// It requires Prometheus >= 2.27.0.
 /// 
-/// Cannot be set at the same time as `authorization`, or `basicAuth`.
+/// Cannot be set at the same time as `authorization`, `basicAuth` or `bearerTokenSecret`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceMonitorEndpointsOauth2 {
     /// clientId defines a key of a Secret or ConfigMap containing the
@@ -924,7 +930,7 @@ pub enum ServiceMonitorEndpointsScheme {
     HttpsX,
 }
 
-/// tlsConfig defines the TLS configuration to use when scraping the target.
+/// tlsConfig defines TLS configuration used by the client.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceMonitorEndpointsTlsConfig {
     /// ca defines the Certificate authority used when verifying server certificates.
@@ -1070,7 +1076,7 @@ pub struct ServiceMonitorEndpointsTlsConfigKeySecret {
     pub optional: Option<bool>,
 }
 
-/// tlsConfig defines the TLS configuration to use when scraping the target.
+/// tlsConfig defines TLS configuration used by the client.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ServiceMonitorEndpointsTlsConfigMaxVersion {
     #[serde(rename = "TLS10")]
@@ -1083,7 +1089,7 @@ pub enum ServiceMonitorEndpointsTlsConfigMaxVersion {
     Tls13,
 }
 
-/// tlsConfig defines the TLS configuration to use when scraping the target.
+/// tlsConfig defines TLS configuration used by the client.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ServiceMonitorEndpointsTlsConfigMinVersion {
     #[serde(rename = "TLS10")]

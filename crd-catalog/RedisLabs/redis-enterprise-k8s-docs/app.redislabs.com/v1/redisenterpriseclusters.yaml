@@ -85,6 +85,38 @@ spec:
                   items:
                     type: "string"
                   type: "array"
+                auditing:
+                  description: "Cluster-level configuration for auditing database connection and authentication events. Includes both the audit listener connection parameters and the default policy for new databases."
+                  properties:
+                    config:
+                      description: "Configuration for the audit listener connection"
+                      properties:
+                        auditAddress:
+                          description: "TCP/IP address or file path where audit notifications will be sent. For TCP protocol: IP address of the audit listener. For local protocol: file path for audit output (development/testing only)."
+                          type: "string"
+                        auditPort:
+                          description: "Port number where audit notifications will be sent (TCP protocol only)."
+                          type: "integer"
+                        auditProtocol:
+                          description: "Protocol used to send audit notifications. Valid values: \"TCP\" or \"local\". For production systems, use \"TCP\". \"local\" is for development/testing only."
+                          enum:
+                            - "TCP"
+                            - "local"
+                          type: "string"
+                        auditReconnectInterval:
+                          description: "Interval in seconds between attempts to reconnect to the audit listener."
+                          type: "integer"
+                        auditReconnectMaxAttempts:
+                          description: "Maximum number of attempts to reconnect to the audit listener. Set to 0 for infinite attempts."
+                          type: "integer"
+                      required:
+                        - "auditAddress"
+                        - "auditProtocol"
+                      type: "object"
+                    dbConnsAuditing:
+                      description: "Cluster-wide default policy for database connection auditing. When set to true, connection auditing will be enabled by default for all new databases. Existing databases are not affected and can override this setting individually."
+                      type: "boolean"
+                  type: "object"
                 backup:
                   description: "Cluster-wide backup configurations"
                   properties:
@@ -152,32 +184,38 @@ spec:
                   description: "RS Cluster Certificates. Used to modify the certificates used by the cluster. See the \"RSClusterCertificates\" struct described above to see the supported certificates."
                   properties:
                     apiCertificateSecretName:
-                      description: "Secret name to use for cluster's API certificate. If left blank, a cluster-provided certificate will be used."
+                      description: "Secret name to use for cluster's API certificate. The secret must contain the following structure - A key 'name' with the value 'api'. - A key 'certificate' with the value of the certificate in PEM format. - A key 'key' with the value of the private key. If left blank, a cluster-provided certificate will be used."
                       type: "string"
                     cmCertificateSecretName:
-                      description: "Secret name to use for cluster's CM (Cluster Manager) certificate. If left blank, a cluster-provided certificate will be used."
+                      description: "Secret name to use for cluster's CM (Cluster Manager) certificate. The secret must contain the following structure - A key 'name' with the value 'cm'. - A key 'certificate' with the value of the certificate in PEM format. - A key 'key' with the value of the private key. If left blank, a cluster-provided certificate will be used."
                       type: "string"
                     cpInternodeEncryptionCertificateSecretName:
-                      description: "Secret name to use for cluster's Control Plane Internode Encryption (CPINE) certificate. If left blank, a cluster-provided certificate will be used."
+                      description: "Secret name to use for cluster's Control Plane Internode Encryption (CPINE) certificate. The secret must contain the following structure - A key 'name' with the value 'ccs_internode_encryption'. - A key 'certificate' with the value of the certificate in PEM format. - A key 'key' with the value of the private key. If left blank, a cluster-provided certificate will be used."
                       type: "string"
                     dpInternodeEncryptionCertificateSecretName:
-                      description: "Secret name to use for cluster's Data Plane Internode Encryption (DPINE) certificate. If left blank, a cluster-provided certificate will be used."
+                      description: "Secret name to use for cluster's Data Plane Internode Encryption (DPINE) certificate. The secret must contain the following structure - A key 'name' with the value 'data_internode_encryption'. - A key 'certificate' with the value of the certificate in PEM format. - A key 'key' with the value of the private key. If left blank, a cluster-provided certificate will be used."
                       type: "string"
                     ldapClientCertificateSecretName:
-                      description: "Secret name to use for cluster's LDAP client certificate. If left blank, LDAP client certificate authentication will be disabled."
+                      description: "Secret name to use for cluster's LDAP client certificate. The secret must contain the following structure - A key 'name' with the value 'ldap_client'. - A key 'certificate' with the value of the certificate in PEM format. - A key 'key' with the value of the private key. If left blank, LDAP client certificate authentication will be disabled."
                       type: "string"
                     metricsExporterCertificateSecretName:
-                      description: "Secret name to use for cluster's Metrics Exporter certificate. If left blank, a cluster-provided certificate will be used."
+                      description: "Secret name to use for cluster's Metrics Exporter certificate. The secret must contain the following structure - A key 'name' with the value 'metrics_exporter'. - A key 'certificate' with the value of the certificate in PEM format. - A key 'key' with the value of the private key. If left blank, a cluster-provided certificate will be used."
                       type: "string"
                     proxyCertificateSecretName:
-                      description: "Secret name to use for cluster's Proxy certificate. If left blank, a cluster-provided certificate will be used."
+                      description: "Secret name to use for cluster's Proxy certificate. The secret must contain the following structure - A key 'name' with the value 'proxy'. - A key 'certificate' with the value of the certificate in PEM format. - A key 'key' with the value of the private key. If left blank, a cluster-provided certificate will be used."
+                      type: "string"
+                    ssoIssuerCertificateSecretName:
+                      description: "Secret name to use for the SSO Identity Provider (IdP) certificate. This is the public certificate from your SAML Identity Provider used to verify SAML assertions. The secret must contain 'name' and 'certificate' fields (no 'key' field needed for IdP cert). This is optional - if using IdP metadata XML, the IdP certificate is included in the metadata."
+                      type: "string"
+                    ssoServiceCertificateSecretName:
+                      description: "Secret name to use for cluster's SSO service certificate. Used for SAML-based SSO authentication to the Cluster Manager. The secret must contain 'name', 'certificate', and 'key' fields (same format as other cluster certificates). If left blank, SSO will not be configured."
                       type: "string"
                     syncerCertificateSecretName:
-                      description: "Secret name to use for cluster's Syncer certificate. If left blank, a cluster-provided certificate will be used."
+                      description: "Secret name to use for cluster's Syncer certificate. The secret must contain the following structure - A key 'name' with the value 'syncer'. - A key 'certificate' with the value of the certificate in PEM format. - A key 'key' with the value of the private key. If left blank, a cluster-provided certificate will be used."
                       type: "string"
                   type: "object"
                 clusterCredentialSecretName:
-                  description: "Secret Name/Path to use for Cluster Credentials. To be used only if ClusterCredentialSecretType is vault. If left blank, will use cluster name."
+                  description: "Name or path of the secret containing cluster credentials. Defaults to the cluster name if left blank. For Kubernetes secrets (default):  Must be set to the cluster name or left blank. The secret can be pre-created with 'username' and 'password' fields, or otherwise it will be automatically created with a default username and auto-generated password. For Vault secrets:  Can be customized with the path of the secret within Vault. The secret must be pre-created in Vault before REC creation."
                   type: "string"
                 clusterCredentialSecretRole:
                   description: "Used only if ClusterCredentialSecretType is vault, to define vault role to be used.  If blank, defaults to \"redis-enterprise-operator\""
@@ -202,7 +240,7 @@ spec:
                       type: "string"
                   type: "object"
                 createServiceAccount:
-                  description: "Whether to create service account"
+                  description: "Creates a service account for Redis Enterprise."
                   type: "boolean"
                 dataInternodeEncryption:
                   description: "Internode encryption (INE) cluster wide policy. An optional boolean setting. Specifies if INE should be on/off for new created REDBs. May be overridden for specific REDB via similar setting, please view the similar setting for REDB for more info."
@@ -295,7 +333,7 @@ spec:
                     type: "object"
                   type: "array"
                 ingressOrRouteSpec:
-                  description: "Access configurations for the Redis Enterprise Cluster and Databases. At most one of ingressOrRouteSpec or activeActive fields can be set at the same time."
+                  description: "Access configurations for the Redis Enterprise cluster and databases. At most one of ingressOrRouteSpec or activeActive fields can be set at the same time."
                   properties:
                     apiFqdnUrl:
                       description: "RS API URL"
@@ -461,7 +499,7 @@ spec:
                       type: "integer"
                   type: "object"
                 persistentSpec:
-                  description: "Specification for Redis Enterprise Cluster persistence"
+                  description: "Persistent storage configuration for Redis Enterprise cluster."
                   properties:
                     enablePersistentVolumeResize:
                       description: "Whether to enable PersistentVolumes resize. Disabled by default. Read the instruction in pvc_expansion readme carefully before using this feature."
@@ -620,10 +658,10 @@ spec:
                   description: "Mitigation setting for STS pods stuck in \"ContainerCreating\""
                   properties:
                     enabled:
-                      description: "Whether to detect and attempt to mitigate pod startup issues"
+                      description: "Enables detection and mitigation of pod startup issues."
                       type: "boolean"
                     startingThresholdSeconds:
-                      description: "Time in seconds to wait for a pod to be stuck while starting up before action is taken. If set to 0, will be treated as if disabled."
+                      description: "Time in seconds to wait before taking action on a pod stuck during startup. Set to 0 to disable."
                       format: "int32"
                       type: "integer"
                   required:
@@ -3403,7 +3441,7 @@ spec:
                     type: "object"
                   type: "array"
                 redisOnFlashSpec:
-                  description: "Stores configurations specific to redis on flash. If provided, the cluster will be capable of creating redis on flash databases."
+                  description: "Auto Tiering (Redis on Flash) configuration. When provided, the cluster can create Auto Tiering databases."
                   properties:
                     bigStoreDriver:
                       enum:
@@ -3429,7 +3467,7 @@ spec:
                     - "storageClassName"
                   type: "object"
                 redisUpgradePolicy:
-                  description: "Redis upgrade policy to be set on the Redis Enterprise Cluster. Possible values: major/latest This value is used by the cluster to choose the Redis version of the database when an upgrade is performed. The Redis Enterprise Cluster includes multiple versions of OSS Redis that can be used for databases."
+                  description: "Redis upgrade policy to be set on the Redis Enterprise cluster. Possible values: major/latest This value is used by the cluster to choose the Redis version of the database when an upgrade is performed. The Redis Enterprise cluster includes multiple versions of OSS Redis that can be used for databases."
                   enum:
                     - "major"
                     - "latest"
@@ -3450,7 +3488,7 @@ spec:
                         - "enabled"
                       type: "object"
                     resourceLimits:
-                      description: "Settings pertaining to resource limits management by the Redis Enterprise Node container."
+                      description: "Settings pertaining to resource limits management by the Redis Enterprise node container."
                       properties:
                         allowAutoAdjustment:
                           description: "Allow Redis Enterprise to adjust resource limits, like max open file descriptors, of its data plane processes. When this option is enabled, the SYS_RESOURCE capability is added to the Redis Enterprise pods, and their allowPrivilegeEscalation field is set. Turned off by default."
@@ -3458,7 +3496,7 @@ spec:
                       type: "object"
                   type: "object"
                 serviceAccountName:
-                  description: "Name of the service account to use"
+                  description: "Name of the service account to use for Redis Enterprise."
                   type: "string"
                 services:
                   description: "Customization options for operator-managed service resources created for Redis Enterprise clusters and databases"
@@ -6709,19 +6747,65 @@ spec:
                   description: "Slave high availability mechanism configuration."
                   properties:
                     slaveHAGracePeriod:
-                      description: "Time in seconds between when a node fails, and when slave high availability mechanism starts relocating shards. If set to 0, will not affect cluster configuration."
+                      description: "Grace period in seconds between node failure and when the high availability mechanism starts relocating shards. Set to 0 to not affect cluster configuration."
                       format: "int32"
                       type: "integer"
                   required:
                     - "slaveHAGracePeriod"
                   type: "object"
+                sso:
+                  description: "Cluster-level SSO configuration for authentication to the Cluster Manager UI."
+                  properties:
+                    enabled:
+                      description: "Enables SSO for Cluster Manager authentication. SSO requires the following configuration - Service Provider certificate (spec.certificates.ssoServiceCertificateSecretName), Identity Provider certificate (spec.certificates.ssoIssuerCertificateSecretName), IdP metadata or manual issuer configuration (spec.sso.saml.idpMetadataSecretName or spec.sso.saml.issuer), and Base address for Service Provider URLs (auto-determined from UI service or set via spec.sso.saml.serviceProvider.baseAddress)."
+                      type: "boolean"
+                    enforceSSO:
+                      description: "Enforces SSO-only authentication for the Cluster Manager. When true, local username/password authentication is disabled for non-admin users. When false (default), both SSO and local authentication are available."
+                      type: "boolean"
+                    saml:
+                      description: "SAML-based SSO configuration. Currently,SAML is the only supported SSO protocol."
+                      properties:
+                        idpMetadataSecretName:
+                          description: "Name of a secret in the same namespace that contains the Identity Provider (IdP) metadata XML. The secret must contain a key named 'idp_metadata' with the IdP metadata XML content. The XML can be plain text or base64-encoded; the operator handles encoding as needed. Obtain this metadata from your SAML Identity Provider (e.g., Okta or Azure AD). This is the recommended configuration method, as it's less error-prone. Either idpMetadataSecretName or issuer must be specified. If both are provided, idpMetadataSecretName takes precedence and issuer is ignored."
+                          type: "string"
+                        issuer:
+                          description: "Manual Identity Provider (IdP) configuration. Use this when IdP metadata XML is unavailable. Either idpMetadataSecretName or issuer must be specified. If both are provided, idpMetadataSecretName takes precedence and issuer is ignored."
+                          properties:
+                            entityID:
+                              description: "Identity Provider entity ID (issuer identifier). Example: \"urn:sso:example:idp\" or \"https://idp.example.com\"."
+                              type: "string"
+                            loginURL:
+                              description: "Identity Provider SSO login URL where SAML authentication requests are sent. Example: \"https://idp.example.com/sso/saml\"."
+                              type: "string"
+                            logoutURL:
+                              description: "Identity Provider single logout URL where SAML logout requests are sent."
+                              type: "string"
+                          required:
+                            - "entityID"
+                            - "loginURL"
+                          type: "object"
+                        serviceProvider:
+                          description: "Service Provider (SP) configuration."
+                          properties:
+                            baseAddress:
+                              description: "Base address used to construct Service Provider (SP) URLs, such as the ACS URL and SLO URL. Format: [<scheme>://]<hostname>[:<port>]. Examples: \"https://redis-ui.example.com:9443\" (recommended - explicit scheme), \"redis-ui.example.com:9443\" (defaults to https://), \"http://redis-ui.example.com:9443\" (NOT recommended for production). If the scheme is not specified, the operator automatically prepends \"https://\". WARNING: Using \"http://\" is NOT recommended for production environments as it transmits sensitive SAML assertions in plaintext. Only use \"http://\" for testing/development purposes. If set, this value is used to construct the SP URLs. If unset, the base address is automatically determined from the REC Cluster Manager UI service: - If the UI service type is LoadBalancer (configured via spec.uiServiceType), the load balancer address is used. - Otherwise, the cluster-internal DNS name is used (e.g., rec-ui.svc.cluster.local). - The port defaults to 8443 if not specified. Usage guidelines: - For LoadBalancer services: Leave this field blank to use the default REC UI service, or set it explicitly to the LoadBalancer address for custom services. - For Ingress: Set this to the ingress hostname and port (typically 443), e.g., \"https://redis-ui.example.com:443\"."
+                              type: "string"
+                          type: "object"
+                        spMetadataSecretName:
+                          description: "Name of a secret where the operator stores the Service Provider (SP) metadata XML. The operator creates this secret with a key named 'sp_metadata' that contains the base64-encoded SP metadata XML. Upload this metadata to your Identity Provider. If not specified, defaults to \"<cluster-name>-sso-sp-metadata\". If not specified, the Service Provider metadata isn't stored in a K8s secret, but can still be obtained directly from the cluster's UI and/or API. Note: This secret is only created when the cluster is configured to use Kubernetes secrets (spec.clusterCredentialSecretType is unset or set to \"kubernetes\"). When using Vault secrets, the operator does not create this secret. Users can obtain the SP metadata directly from the Redis Enterprise Server API endpoint: GET /v1/cluster/sso/saml/metadata/sp and store it in Vault themselves if needed."
+                          type: "string"
+                      type: "object"
+                  required:
+                    - "enabled"
+                    - "saml"
+                  type: "object"
                 uiAnnotations:
                   additionalProperties:
                     type: "string"
-                  description: "Annotations for Redis Enterprise UI service. This annotations will override the overlapping global annotations set under spec.services.servicesAnnotations The specified annotations will not override annotations that already exist and didn't originate from the operator, except for the 'redis.io/last-keys' annotation which is reserved."
+                  description: "Additional annotations for the Redis Enterprise UI service. These annotations override overlapping global annotations set under spec.services.servicesAnnotations. The specified annotations will not override annotations that already exist and didn't originate from the operator, except for the 'redis.io/last-keys' annotation which is reserved."
                   type: "object"
                 uiServiceType:
-                  description: "Type of service used to expose Redis Enterprise UI (https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types)"
+                  description: "Service type for exposing the Redis Enterprise UI (https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types)."
                   enum:
                     - "ClusterIP"
                     - "NodePort"
@@ -6729,10 +6813,10 @@ spec:
                     - "ExternalName"
                   type: "string"
                 upgradeSpec:
-                  description: "Specification for upgrades of Redis Enterprise"
+                  description: "Redis Enterprise upgrade configuration"
                   properties:
                     autoUpgradeRedisEnterprise:
-                      description: "Whether to upgrade Redis Enterprise automatically when operator is upgraded"
+                      description: "Enables automatic Redis Enterprise upgrades when the operator is upgraded."
                       type: "boolean"
                   required:
                     - "autoUpgradeRedisEnterprise"
@@ -6803,6 +6887,47 @@ spec:
                           type: "object"
                       type: "object"
                   type: "object"
+                userDefinedModules:
+                  description: "List of user-defined modules to be downloaded and installed during cluster bootstrap The modules on the list will be downloaded on cluster creation, upgrade, scale-out and recovery and installed on all nodes. Note that changing this field for a running cluster will trigger a rolling update."
+                  items:
+                    description: "UserDefinedModule represents a user-defined Redis module to be downloaded and installed during bootstrap"
+                    properties:
+                      name:
+                        description: "Name of the module"
+                        type: "string"
+                      source:
+                        description: "Source location for downloading the module"
+                        properties:
+                          http:
+                            description: "HTTP source configuration for downloading the module via HTTP"
+                            properties:
+                              credentialsSecret:
+                                description: "Name of the Kubernetes secret containing credentials for downloading the module, if needed. The secret must contain 'username' and 'password' keys."
+                                type: "string"
+                              url:
+                                description: "URL to download the module from (must use http:// scheme)"
+                                type: "string"
+                            required:
+                              - "url"
+                            type: "object"
+                          https:
+                            description: "HTTPS source configuration for downloading the module via HTTPS"
+                            properties:
+                              credentialsSecret:
+                                description: "Name of the Kubernetes secret containing credentials for downloading the module, if needed. The secret must contain 'username' and 'password' keys."
+                                type: "string"
+                              url:
+                                description: "URL to download the module from (must use https:// scheme)"
+                                type: "string"
+                            required:
+                              - "url"
+                            type: "object"
+                        type: "object"
+                    required:
+                      - "name"
+                      - "source"
+                    type: "object"
+                  type: "array"
                 username:
                   description: "Username for the admin user of Redis Enterprise"
                   type: "string"
@@ -7512,7 +7637,7 @@ spec:
                       type: "string"
                   type: "object"
                 persistenceStatus:
-                  description: "The status of the Persistent Volume Claims that are used for Redis Enterprise Cluster persistence. The status will correspond to the status of one or more of the PVCs (failed/resizing if one of them is in resize or failed to resize)"
+                  description: "The status of the Persistent Volume Claims that are used for Redis Enterprise cluster persistence. The status will correspond to the status of one or more of the PVCs (failed/resizing if one of them is in resize or failed to resize)"
                   properties:
                     status:
                       description: "The current status of the PVCs"

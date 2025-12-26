@@ -136,7 +136,7 @@ pub struct QueueStatus {
     pub running: Option<i32>,
     /// State is state of queue
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub state: Option<String>,
+    pub state: Option<QueueStatusState>,
     /// The number of 'Unknown' PodGroup in this queue.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub unknown: Option<i32>,
@@ -151,5 +151,14 @@ pub struct QueueStatusReservation {
     /// Resource is a list of total idle resource in locked nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resource: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// The status of queue.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum QueueStatusState {
+    Open,
+    Closed,
+    Closing,
+    Unknown,
 }
 

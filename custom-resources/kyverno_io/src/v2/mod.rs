@@ -4,5 +4,6 @@ pub mod cleanuppolicies;
 pub mod clusteradmissionreports;
 pub mod clusterbackgroundscanreports;
 pub mod clustercleanuppolicies;
+pub mod globalcontextentries;
 pub mod policyexceptions;
 pub mod updaterequests;

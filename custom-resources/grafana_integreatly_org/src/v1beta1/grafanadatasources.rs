@@ -175,7 +175,7 @@ pub struct GrafanaDatasourceStatus {
     /// The datasource instanceSelector can't find matching grafana instances
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "NoMatchingInstances")]
     pub no_matching_instances: Option<bool>,
-    /// Results when synchonizing resource with Grafana instances
+    /// Results when synchronizing resource with Grafana instances
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

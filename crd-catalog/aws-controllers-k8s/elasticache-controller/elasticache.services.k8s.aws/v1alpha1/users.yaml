@@ -32,7 +32,7 @@ spec:
                   description: "Access permissions string used for this user.\n\nRegex Pattern: `\\S`"
                   type: "string"
                 engine:
-                  description: "The current supported value is Redis.\n\nRegex Pattern: `^[a-zA-Z]*$`"
+                  description: "The options are valkey or redis.\n\nRegex Pattern: `^[a-zA-Z]*$`"
                   type: "string"
                 noPasswordRequired:
                   description: "Indicates a password is not required for this user."

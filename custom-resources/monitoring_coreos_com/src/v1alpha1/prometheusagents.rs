@@ -7701,10 +7701,10 @@ pub struct PrometheusAgentTopologySpreadConstraintsLabelSelectorMatchExpressions
 /// in a breaking way.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentTracingConfig {
-    /// clientType defines the client used to export the traces. Supported values are `http` or `grpc`.
+    /// clientType defines the client used to export the traces. Supported values are `HTTP` and `GRPC`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientType")]
     pub client_type: Option<PrometheusAgentTracingConfigClientType>,
-    /// compression key for supported compression types. The only supported value is `gzip`.
+    /// compression key for supported compression types. The only supported value is `Gzip`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub compression: Option<PrometheusAgentTracingConfigCompression>,
     /// endpoint to send the traces to. Should be provided in format <host>:<port>.
@@ -7736,6 +7736,10 @@ pub enum PrometheusAgentTracingConfigClientType {
     Http,
     #[serde(rename = "grpc")]
     Grpc,
+    #[serde(rename = "HTTP")]
+    HttpX,
+    #[serde(rename = "GRPC")]
+    GrpcX,
 }
 
 /// tracingConfig defines tracing in Prometheus.
@@ -7746,6 +7750,8 @@ pub enum PrometheusAgentTracingConfigClientType {
 pub enum PrometheusAgentTracingConfigCompression {
     #[serde(rename = "gzip")]
     Gzip,
+    #[serde(rename = "Gzip")]
+    GzipX,
 }
 
 /// tlsConfig to use when sending traces.

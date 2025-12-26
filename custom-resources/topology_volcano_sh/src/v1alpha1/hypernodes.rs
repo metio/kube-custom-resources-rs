@@ -58,8 +58,7 @@ pub struct HyperNodeMembersSelector {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperNodeMembersSelectorExactMatch {
     /// Name specifies the exact name of the node to match.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub name: String,
 }
 
 /// LabelMatch defines the labels match criteria (only take effect when Member Type is "Node").
@@ -96,8 +95,7 @@ pub struct HyperNodeMembersSelectorLabelMatchMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperNodeMembersSelectorRegexMatch {
     /// Pattern defines the regex pattern to match node names.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub pattern: Option<String>,
+    pub pattern: String,
 }
 
 /// MemberSpec represents a specific node or a hyperNodes in the hyperNode.

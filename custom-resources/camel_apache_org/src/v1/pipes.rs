@@ -7174,17 +7174,16 @@ pub struct PipeIntegrationTraitsJvm {
     /// A list of JVM agents to download and execute with format `<agent-name>;<agent-url>[;<jvm-agent-options>]`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub agents: Option<Vec<String>>,
-    /// The secret should contain PEM-encoded certificates.
-    /// Example: "secret:my-ca-certs" or "secret:my-ca-certs/custom-ca.crt"
+    /// Path to a PEM-encoded CA certificate file.
+    /// Example: "/etc/camel/conf.d/_secrets/my-ca/ca.crt"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCert")]
     pub ca_cert: Option<String>,
-    /// The path where the generated truststore will be mounted
+    /// The path where the generated truststore will be mounted.
     /// Default: "/etc/camel/conf.d/_truststore"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertMountPath")]
     pub ca_cert_mount_path: Option<String>,
-    /// Required when caCert is set. A secret reference containing the truststore password.
-    /// If the secret key is not specified, "password" is used as the default key.
-    /// Example: "secret:my-truststore-password" or "secret:my-truststore-password/mykey"
+    /// Required when caCert is set. Path to a file containing the truststore password.
+    /// Example: "/etc/camel/conf.d/_secrets/truststore-pass/password"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertPassword")]
     pub ca_cert_password: Option<String>,
     /// Additional JVM classpath (use `Linux` classpath separator)
@@ -9086,17 +9085,16 @@ pub struct PipeTraitsJvm {
     /// A list of JVM agents to download and execute with format `<agent-name>;<agent-url>[;<jvm-agent-options>]`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub agents: Option<Vec<String>>,
-    /// The secret should contain PEM-encoded certificates.
-    /// Example: "secret:my-ca-certs" or "secret:my-ca-certs/custom-ca.crt"
+    /// Path to a PEM-encoded CA certificate file.
+    /// Example: "/etc/camel/conf.d/_secrets/my-ca/ca.crt"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCert")]
     pub ca_cert: Option<String>,
-    /// The path where the generated truststore will be mounted
+    /// The path where the generated truststore will be mounted.
     /// Default: "/etc/camel/conf.d/_truststore"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertMountPath")]
     pub ca_cert_mount_path: Option<String>,
-    /// Required when caCert is set. A secret reference containing the truststore password.
-    /// If the secret key is not specified, "password" is used as the default key.
-    /// Example: "secret:my-truststore-password" or "secret:my-truststore-password/mykey"
+    /// Required when caCert is set. Path to a file containing the truststore password.
+    /// Example: "/etc/camel/conf.d/_secrets/truststore-pass/password"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertPassword")]
     pub ca_cert_password: Option<String>,
     /// Additional JVM classpath (use `Linux` classpath separator)

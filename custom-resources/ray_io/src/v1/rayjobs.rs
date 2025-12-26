@@ -76,12 +76,19 @@ pub struct RayJobDeletionStrategyDeletionRules {
     pub policy: RayJobDeletionStrategyDeletionRulesPolicy,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RayJobDeletionStrategyDeletionRulesCondition {
-    #[serde(rename = "jobStatus")]
-    pub job_status: RayJobDeletionStrategyDeletionRulesConditionJobStatus,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobDeploymentStatus")]
+    pub job_deployment_status: Option<RayJobDeletionStrategyDeletionRulesConditionJobDeploymentStatus>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobStatus")]
+    pub job_status: Option<RayJobDeletionStrategyDeletionRulesConditionJobStatus>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ttlSeconds")]
     pub ttl_seconds: Option<i32>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum RayJobDeletionStrategyDeletionRulesConditionJobDeploymentStatus {
+    Failed,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]

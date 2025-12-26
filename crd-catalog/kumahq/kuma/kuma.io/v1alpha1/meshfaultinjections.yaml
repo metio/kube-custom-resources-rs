@@ -27,6 +27,7 @@ spec:
       name: "v1alpha1"
       schema:
         openAPIV3Schema:
+          description: "MeshFaultInjection allows you to test the resiliency of your services by injecting faults like delays, connection aborts, and response bandwidth limits into the traffic. This is useful for chaos testing and validating that your applications handle failures gracefully."
           properties:
             apiVersion:
               description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"

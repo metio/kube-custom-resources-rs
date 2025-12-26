@@ -30,7 +30,7 @@ spec:
               description: "CacheParameterGroupSpec defines the desired state of CacheParameterGroup.\n\nRepresents the output of a CreateCacheParameterGroup operation."
               properties:
                 cacheParameterGroupFamily:
-                  description: "The name of the cache parameter group family that the cache parameter group\ncan be used with.\n\nValid values are: memcached1.4 | memcached1.5 | memcached1.6 | redis2.6 |\nredis2.8 | redis3.2 | redis4.0 | redis5.0 | redis6.x | redis7"
+                  description: "The name of the cache parameter group family that the cache parameter group\ncan be used with.\n\nValid values are: valkey8 | valkey7 | memcached1.4 | memcached1.5 | memcached1.6\n| redis2.6 | redis2.8 |redis3.2 | redis4.0 | redis5.0 | redis6.x | redis7"
                   type: "string"
                 cacheParameterGroupName:
                   description: "A user-specified name for the cache parameter group."
