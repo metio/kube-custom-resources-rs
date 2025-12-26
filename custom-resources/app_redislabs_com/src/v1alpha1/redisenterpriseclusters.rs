@@ -24,6 +24,8 @@ pub struct RedisEnterpriseClusterSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "antiAffinityAdditionalTopologyKeys")]
     pub anti_affinity_additional_topology_keys: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub auditing: Option<RedisEnterpriseClusterAuditing>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub backup: Option<RedisEnterpriseClusterBackup>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootstrapperImageSpec")]
     pub bootstrapper_image_spec: Option<RedisEnterpriseClusterBootstrapperImageSpec>,
@@ -128,6 +130,8 @@ pub struct RedisEnterpriseClusterSpec {
     pub side_containers_spec: Option<Vec<RedisEnterpriseClusterSideContainersSpec>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "slaveHA")]
     pub slave_ha: Option<RedisEnterpriseClusterSlaveHa>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sso: Option<RedisEnterpriseClusterSso>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "uiAnnotations")]
     pub ui_annotations: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "uiServiceType")]
@@ -136,6 +140,8 @@ pub struct RedisEnterpriseClusterSpec {
     pub upgrade_spec: Option<RedisEnterpriseClusterUpgradeSpec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "usageMeter")]
     pub usage_meter: Option<RedisEnterpriseClusterUsageMeter>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userDefinedModules")]
+    pub user_defined_modules: Option<Vec<RedisEnterpriseClusterUserDefinedModules>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vaultCASecret")]
@@ -163,6 +169,36 @@ pub enum RedisEnterpriseClusterActiveActiveMethod {
     Ingress,
     #[serde(rename = "istio")]
     Istio,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseClusterAuditing {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub config: Option<RedisEnterpriseClusterAuditingConfig>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dbConnsAuditing")]
+    pub db_conns_auditing: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct RedisEnterpriseClusterAuditingConfig {
+    #[serde(rename = "auditAddress")]
+    pub audit_address: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "auditPort")]
+    pub audit_port: Option<i64>,
+    #[serde(rename = "auditProtocol")]
+    pub audit_protocol: RedisEnterpriseClusterAuditingConfigAuditProtocol,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "auditReconnectInterval")]
+    pub audit_reconnect_interval: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "auditReconnectMaxAttempts")]
+    pub audit_reconnect_max_attempts: Option<i64>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum RedisEnterpriseClusterAuditingConfigAuditProtocol {
+    #[serde(rename = "TCP")]
+    Tcp,
+    #[serde(rename = "local")]
+    Local,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -222,6 +258,10 @@ pub struct RedisEnterpriseClusterCertificates {
     pub metrics_exporter_certificate_secret_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyCertificateSecretName")]
     pub proxy_certificate_secret_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ssoIssuerCertificateSecretName")]
+    pub sso_issuer_certificate_secret_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ssoServiceCertificateSecretName")]
+    pub sso_service_certificate_secret_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncerCertificateSecretName")]
     pub syncer_certificate_secret_name: Option<String>,
 }
@@ -574,8 +614,6 @@ pub struct RedisEnterpriseClusterPullSecrets {
 pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributes {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeDeadlineSeconds")]
     pub active_deadline_seconds: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub affinity: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinity>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "automountServiceAccountToken")]
     pub automount_service_account_token: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsConfig")]
@@ -628,8 +666,6 @@ pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributes {
     pub scheduler_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulingGates")]
     pub scheduling_gates: Option<Vec<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesSchedulingGates>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
-    pub security_context: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
@@ -646,292 +682,6 @@ pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributes {
     pub tolerations: Option<Vec<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesTolerations>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
     pub topology_spread_constraints: Option<Vec<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesTopologySpreadConstraints>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub volumes: Option<Vec<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumes>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinity {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
-    pub node_affinity: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityNodeAffinity>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
-    pub pod_affinity: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAffinity>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
-    pub pod_anti_affinity: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAntiAffinity>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityNodeAffinity {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
-    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
-    pub required_during_scheduling_ignored_during_execution: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
-    pub preference: RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
-    pub weight: i32,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFields")]
-    pub match_fields: Option<Vec<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
-    pub key: String,
-    pub operator: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
-    pub key: String,
-    pub operator: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution {
-    #[serde(rename = "nodeSelectorTerms")]
-    pub node_selector_terms: Vec<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFields")]
-    pub match_fields: Option<Vec<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
-    pub key: String,
-    pub operator: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
-    pub key: String,
-    pub operator: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAffinity {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
-    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
-    pub required_during_scheduling_ignored_during_execution: Option<Vec<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution {
-    #[serde(rename = "podAffinityTerm")]
-    pub pod_affinity_term: RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
-    pub weight: i32,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
-    pub label_selector: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
-    pub namespace_selector: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespaces: Option<Vec<String>>,
-    #[serde(rename = "topologyKey")]
-    pub topology_key: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, String>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
-    pub key: String,
-    pub operator: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, String>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
-    pub key: String,
-    pub operator: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
-    pub label_selector: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
-    pub namespace_selector: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespaces: Option<Vec<String>>,
-    #[serde(rename = "topologyKey")]
-    pub topology_key: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, String>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
-    pub key: String,
-    pub operator: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, String>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
-    pub key: String,
-    pub operator: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAntiAffinity {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
-    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
-    pub required_during_scheduling_ignored_during_execution: Option<Vec<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution {
-    #[serde(rename = "podAffinityTerm")]
-    pub pod_affinity_term: RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
-    pub weight: i32,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
-    pub label_selector: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
-    pub namespace_selector: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespaces: Option<Vec<String>>,
-    #[serde(rename = "topologyKey")]
-    pub topology_key: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, String>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
-    pub key: String,
-    pub operator: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, String>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
-    pub key: String,
-    pub operator: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
-    pub label_selector: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
-    pub namespace_selector: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespaces: Option<Vec<String>>,
-    #[serde(rename = "topologyKey")]
-    pub topology_key: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, String>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
-    pub key: String,
-    pub operator: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, String>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
-    pub key: String,
-    pub operator: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2054,68 +1804,6 @@ pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesSched
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesSecurityContext {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
-    pub fs_group: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
-    pub fs_group_change_policy: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
-    pub run_as_group: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
-    pub run_as_non_root: Option<bool>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
-    pub run_as_user: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
-    pub se_linux_options: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesSecurityContextSeLinuxOptions>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
-    pub seccomp_profile: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesSecurityContextSeccompProfile>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
-    pub supplemental_groups: Option<Vec<i64>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sysctls: Option<Vec<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesSecurityContextSysctls>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
-    pub windows_options: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesSecurityContextWindowsOptions>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesSecurityContextSeLinuxOptions {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub level: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub role: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
-    pub r#type: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub user: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesSecurityContextSeccompProfile {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
-    pub localhost_profile: Option<String>,
-    #[serde(rename = "type")]
-    pub r#type: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesSecurityContextSysctls {
-    pub name: String,
-    pub value: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesSecurityContextWindowsOptions {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
-    pub gmsa_credential_spec: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
-    pub gmsa_credential_spec_name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
-    pub host_process: Option<bool>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
-    pub run_as_user_name: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub effect: Option<String>,
@@ -2163,673 +1851,6 @@ pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesTopol
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumes {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
-    pub aws_elastic_block_store: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesAwsElasticBlockStore>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
-    pub azure_disk: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesAzureDisk>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureFile")]
-    pub azure_file: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesAzureFile>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cephfs: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesCephfs>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cinder: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesCinder>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesConfigMap>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub csi: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesCsi>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
-    pub downward_api: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesDownwardApi>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
-    pub empty_dir: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesEmptyDir>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ephemeral: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesEphemeral>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub fc: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesFc>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
-    pub flex_volume: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesFlexVolume>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub flocker: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesFlocker>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
-    pub gce_persistent_disk: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesGcePersistentDisk>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitRepo")]
-    pub git_repo: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesGitRepo>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub glusterfs: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesGlusterfs>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
-    pub host_path: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesHostPath>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub iscsi: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesIscsi>,
-    pub name: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub nfs: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesNfs>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
-    pub persistent_volume_claim: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesPersistentVolumeClaim>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
-    pub photon_persistent_disk: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesPhotonPersistentDisk>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
-    pub portworx_volume: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesPortworxVolume>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub projected: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesProjected>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub quobyte: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesQuobyte>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub rbd: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesRbd>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleIO")]
-    pub scale_io: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesScaleIo>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesSecret>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub storageos: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesStorageos>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
-    pub vsphere_volume: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesVsphereVolume>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesAwsElasticBlockStore {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
-    pub fs_type: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub partition: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    #[serde(rename = "volumeID")]
-    pub volume_id: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesAzureDisk {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingMode")]
-    pub caching_mode: Option<String>,
-    #[serde(rename = "diskName")]
-    pub disk_name: String,
-    #[serde(rename = "diskURI")]
-    pub disk_uri: String,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
-    pub fs_type: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesAzureFile {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    #[serde(rename = "secretName")]
-    pub secret_name: String,
-    #[serde(rename = "shareName")]
-    pub share_name: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesCephfs {
-    pub monitors: Vec<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub path: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretFile")]
-    pub secret_file: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesCephfsSecretRef>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub user: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesCephfsSecretRef {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesCinder {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
-    pub fs_type: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesCinderSecretRef>,
-    #[serde(rename = "volumeID")]
-    pub volume_id: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesCinderSecretRef {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesConfigMap {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
-    pub default_mode: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesConfigMapItems>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesConfigMapItems {
-    pub key: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub mode: Option<i32>,
-    pub path: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesCsi {
-    pub driver: String,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
-    pub fs_type: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
-    pub node_publish_secret_ref: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesCsiNodePublishSecretRef>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
-    pub volume_attributes: Option<BTreeMap<String, String>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesCsiNodePublishSecretRef {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesDownwardApi {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
-    pub default_mode: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesDownwardApiItems>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesDownwardApiItems {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesDownwardApiItemsFieldRef>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub mode: Option<i32>,
-    pub path: String,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
-    pub resource_field_ref: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesDownwardApiItemsResourceFieldRef>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesDownwardApiItemsFieldRef {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
-    pub api_version: Option<String>,
-    #[serde(rename = "fieldPath")]
-    pub field_path: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesDownwardApiItemsResourceFieldRef {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
-    pub container_name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub divisor: Option<IntOrString>,
-    pub resource: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesEmptyDir {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub medium: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
-    pub size_limit: Option<IntOrString>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesEphemeral {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
-    pub volume_claim_template: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesEphemeralVolumeClaimTemplate>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesEphemeralVolumeClaimTemplate {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesEphemeralVolumeClaimTemplateMetadata>,
-    pub spec: RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesEphemeralVolumeClaimTemplateSpec,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesEphemeralVolumeClaimTemplateMetadata {
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesEphemeralVolumeClaimTemplateSpec {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
-    pub access_modes: Option<Vec<String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
-    pub data_source: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesEphemeralVolumeClaimTemplateSpecDataSource>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
-    pub data_source_ref: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesEphemeralVolumeClaimTemplateSpecResources>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub selector: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesEphemeralVolumeClaimTemplateSpecSelector>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
-    pub storage_class_name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
-    pub volume_mode: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
-    pub volume_name: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesEphemeralVolumeClaimTemplateSpecDataSource {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
-    pub api_group: Option<String>,
-    pub kind: String,
-    pub name: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
-    pub api_group: Option<String>,
-    pub kind: String,
-    pub name: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesEphemeralVolumeClaimTemplateSpecResources {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<Vec<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesEphemeralVolumeClaimTemplateSpecResourcesClaims>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub limits: Option<BTreeMap<String, IntOrString>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub requests: Option<BTreeMap<String, IntOrString>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesEphemeralVolumeClaimTemplateSpecResourcesClaims {
-    pub name: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesEphemeralVolumeClaimTemplateSpecSelector {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, String>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions {
-    pub key: String,
-    pub operator: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesFc {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
-    pub fs_type: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub lun: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetWWNs")]
-    pub target_ww_ns: Option<Vec<String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub wwids: Option<Vec<String>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesFlexVolume {
-    pub driver: String,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
-    pub fs_type: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub options: Option<BTreeMap<String, String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesFlexVolumeSecretRef>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesFlexVolumeSecretRef {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesFlocker {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
-    pub dataset_name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetUUID")]
-    pub dataset_uuid: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesGcePersistentDisk {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
-    pub fs_type: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub partition: Option<i32>,
-    #[serde(rename = "pdName")]
-    pub pd_name: String,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesGitRepo {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub directory: Option<String>,
-    pub repository: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub revision: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesGlusterfs {
-    pub endpoints: String,
-    pub path: String,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesHostPath {
-    pub path: String,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
-    pub r#type: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesIscsi {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
-    pub chap_auth_discovery: Option<bool>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthSession")]
-    pub chap_auth_session: Option<bool>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
-    pub fs_type: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initiatorName")]
-    pub initiator_name: Option<String>,
-    pub iqn: String,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iscsiInterface")]
-    pub iscsi_interface: Option<String>,
-    pub lun: i32,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub portals: Option<Vec<String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesIscsiSecretRef>,
-    #[serde(rename = "targetPortal")]
-    pub target_portal: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesIscsiSecretRef {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesNfs {
-    pub path: String,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    pub server: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesPersistentVolumeClaim {
-    #[serde(rename = "claimName")]
-    pub claim_name: String,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesPhotonPersistentDisk {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
-    pub fs_type: Option<String>,
-    #[serde(rename = "pdID")]
-    pub pd_id: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesPortworxVolume {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
-    pub fs_type: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    #[serde(rename = "volumeID")]
-    pub volume_id: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesProjected {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
-    pub default_mode: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sources: Option<Vec<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesProjectedSources>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesProjectedSources {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesProjectedSourcesConfigMap>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
-    pub downward_api: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesProjectedSourcesDownwardApi>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesProjectedSourcesSecret>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
-    pub service_account_token: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesProjectedSourcesServiceAccountToken>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesProjectedSourcesConfigMap {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesProjectedSourcesConfigMapItems>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesProjectedSourcesConfigMapItems {
-    pub key: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub mode: Option<i32>,
-    pub path: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesProjectedSourcesDownwardApi {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesProjectedSourcesDownwardApiItems>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesProjectedSourcesDownwardApiItems {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesProjectedSourcesDownwardApiItemsFieldRef>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub mode: Option<i32>,
-    pub path: String,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
-    pub resource_field_ref: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesProjectedSourcesDownwardApiItemsResourceFieldRef>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesProjectedSourcesDownwardApiItemsFieldRef {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
-    pub api_version: Option<String>,
-    #[serde(rename = "fieldPath")]
-    pub field_path: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesProjectedSourcesDownwardApiItemsResourceFieldRef {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
-    pub container_name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub divisor: Option<IntOrString>,
-    pub resource: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesProjectedSourcesSecret {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesProjectedSourcesSecretItems>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesProjectedSourcesSecretItems {
-    pub key: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub mode: Option<i32>,
-    pub path: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesProjectedSourcesServiceAccountToken {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub audience: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
-    pub expiration_seconds: Option<i64>,
-    pub path: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesQuobyte {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub group: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    pub registry: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tenant: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub user: Option<String>,
-    pub volume: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesRbd {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
-    pub fs_type: Option<String>,
-    pub image: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub keyring: Option<String>,
-    pub monitors: Vec<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub pool: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesRbdSecretRef>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub user: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesRbdSecretRef {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesScaleIo {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
-    pub fs_type: Option<String>,
-    pub gateway: String,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectionDomain")]
-    pub protection_domain: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    #[serde(rename = "secretRef")]
-    pub secret_ref: RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesScaleIoSecretRef,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
-    pub ssl_enabled: Option<bool>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageMode")]
-    pub storage_mode: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePool")]
-    pub storage_pool: Option<String>,
-    pub system: String,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
-    pub volume_name: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesScaleIoSecretRef {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesSecret {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
-    pub default_mode: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesSecretItems>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
-    pub secret_name: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesSecretItems {
-    pub key: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub mode: Option<i32>,
-    pub path: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesStorageos {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
-    pub fs_type: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesStorageosSecretRef>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
-    pub volume_name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNamespace")]
-    pub volume_namespace: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesStorageosSecretRef {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterRedisEnterpriseAdditionalPodSpecAttributesVolumesVsphereVolume {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
-    pub fs_type: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyID")]
-    pub storage_policy_id: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyName")]
-    pub storage_policy_name: Option<String>,
-    #[serde(rename = "volumePath")]
-    pub volume_path: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -3064,7 +2085,7 @@ pub struct RedisEnterpriseClusterSecurityContext {
     /// Policy controlling whether to enable read-only root filesystem for the Redis Enterprise software containers. Note that certain filesystem paths remain writable through mounted volumes to ensure proper functionality.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystemPolicy")]
     pub read_only_root_filesystem_policy: Option<RedisEnterpriseClusterSecurityContextReadOnlyRootFilesystemPolicy>,
-    /// Settings pertaining to resource limits management by the Redis Enterprise Node container.
+    /// Settings pertaining to resource limits management by the Redis Enterprise node container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceLimits")]
     pub resource_limits: Option<RedisEnterpriseClusterSecurityContextResourceLimits>,
 }
@@ -3076,7 +2097,7 @@ pub struct RedisEnterpriseClusterSecurityContextReadOnlyRootFilesystemPolicy {
     pub enabled: bool,
 }
 
-/// Settings pertaining to resource limits management by the Redis Enterprise Node container.
+/// Settings pertaining to resource limits management by the Redis Enterprise node container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RedisEnterpriseClusterSecurityContextResourceLimits {
     /// Allow Redis Enterprise to adjust resource limits, like max open file descriptors, of its data plane processes. When this option is enabled, the SYS_RESOURCE capability is added to the Redis Enterprise pods, and their allowPrivilegeEscalation field is set. Turned off by default.
@@ -3253,8 +2274,6 @@ pub struct RedisEnterpriseClusterServicesRiggerSpecServicesRiggerAdditionalPodSp
     pub scheduler_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulingGates")]
     pub scheduling_gates: Option<Vec<RedisEnterpriseClusterServicesRiggerSpecServicesRiggerAdditionalPodSpecAttributesSchedulingGates>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
-    pub security_context: Option<RedisEnterpriseClusterServicesRiggerSpecServicesRiggerAdditionalPodSpecAttributesSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
@@ -4679,68 +3698,6 @@ pub struct RedisEnterpriseClusterServicesRiggerSpecServicesRiggerAdditionalPodSp
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterServicesRiggerSpecServicesRiggerAdditionalPodSpecAttributesSecurityContext {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
-    pub fs_group: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
-    pub fs_group_change_policy: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
-    pub run_as_group: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
-    pub run_as_non_root: Option<bool>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
-    pub run_as_user: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
-    pub se_linux_options: Option<RedisEnterpriseClusterServicesRiggerSpecServicesRiggerAdditionalPodSpecAttributesSecurityContextSeLinuxOptions>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
-    pub seccomp_profile: Option<RedisEnterpriseClusterServicesRiggerSpecServicesRiggerAdditionalPodSpecAttributesSecurityContextSeccompProfile>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
-    pub supplemental_groups: Option<Vec<i64>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sysctls: Option<Vec<RedisEnterpriseClusterServicesRiggerSpecServicesRiggerAdditionalPodSpecAttributesSecurityContextSysctls>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
-    pub windows_options: Option<RedisEnterpriseClusterServicesRiggerSpecServicesRiggerAdditionalPodSpecAttributesSecurityContextWindowsOptions>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterServicesRiggerSpecServicesRiggerAdditionalPodSpecAttributesSecurityContextSeLinuxOptions {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub level: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub role: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
-    pub r#type: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub user: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterServicesRiggerSpecServicesRiggerAdditionalPodSpecAttributesSecurityContextSeccompProfile {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
-    pub localhost_profile: Option<String>,
-    #[serde(rename = "type")]
-    pub r#type: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterServicesRiggerSpecServicesRiggerAdditionalPodSpecAttributesSecurityContextSysctls {
-    pub name: String,
-    pub value: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RedisEnterpriseClusterServicesRiggerSpecServicesRiggerAdditionalPodSpecAttributesSecurityContextWindowsOptions {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
-    pub gmsa_credential_spec: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
-    pub gmsa_credential_spec_name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
-    pub host_process: Option<bool>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
-    pub run_as_user_name: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RedisEnterpriseClusterServicesRiggerSpecServicesRiggerAdditionalPodSpecAttributesTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub effect: Option<String>,
@@ -5990,6 +4947,42 @@ pub struct RedisEnterpriseClusterSlaveHa {
     pub slave_ha_grace_period: i32,
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseClusterSso {
+    pub enabled: bool,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enforceSSO")]
+    pub enforce_sso: Option<bool>,
+    pub saml: RedisEnterpriseClusterSsoSaml,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseClusterSsoSaml {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "idpMetadataSecretName")]
+    pub idp_metadata_secret_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub issuer: Option<RedisEnterpriseClusterSsoSamlIssuer>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceProvider")]
+    pub service_provider: Option<RedisEnterpriseClusterSsoSamlServiceProvider>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "spMetadataSecretName")]
+    pub sp_metadata_secret_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseClusterSsoSamlIssuer {
+    #[serde(rename = "entityID")]
+    pub entity_id: String,
+    #[serde(rename = "loginURL")]
+    pub login_url: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logoutURL")]
+    pub logout_url: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseClusterSsoSamlServiceProvider {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseAddress")]
+    pub base_address: Option<String>,
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum RedisEnterpriseClusterUiServiceType {
     #[serde(rename = "ClusterIP")]
@@ -6048,6 +5041,34 @@ pub struct RedisEnterpriseClusterUsageMeterCallHomeClientResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RedisEnterpriseClusterUsageMeterCallHomeClientResourcesClaims {
     pub name: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseClusterUserDefinedModules {
+    pub name: String,
+    pub source: RedisEnterpriseClusterUserDefinedModulesSource,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseClusterUserDefinedModulesSource {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub http: Option<RedisEnterpriseClusterUserDefinedModulesSourceHttp>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub https: Option<RedisEnterpriseClusterUserDefinedModulesSourceHttps>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseClusterUserDefinedModulesSourceHttp {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsSecret")]
+    pub credentials_secret: Option<String>,
+    pub url: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseClusterUserDefinedModulesSourceHttps {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsSecret")]
+    pub credentials_secret: Option<String>,
+    pub url: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

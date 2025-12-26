@@ -182,12 +182,23 @@ pub struct PodGroupStatus {
     pub failed: Option<i32>,
     /// Current phase of PodGroup.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub phase: Option<String>,
+    pub phase: Option<PodGroupStatusPhase>,
     /// The number of actively running pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub running: Option<i32>,
     /// The number of pods which reached phase Succeeded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub succeeded: Option<i32>,
+}
+
+/// Status represents the current information about a pod group.
+/// This data may not be up to date.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PodGroupStatusPhase {
+    Pending,
+    Running,
+    Unknown,
+    Inqueue,
+    Completed,
 }
 

@@ -18,7 +18,7 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct UserGroupSpec {
-    /// The current supported value is Redis user.
+    /// Sets the engine listed in a user group. The options are valkey or redis.
     /// 
     /// Regex Pattern: `^[a-zA-Z]*$`
     pub engine: String,

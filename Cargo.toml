@@ -319,6 +319,7 @@ members = [
     "custom-resources/oracle_db_anthosapis_com",
     "custom-resources/org_eclipse_che",
     "custom-resources/organizations_services_k8s_aws",
+    "custom-resources/packageregistry_k8s_elastic_co",
     "custom-resources/parameters_kubeblocks_io",
     "custom-resources/perses_dev",
     "custom-resources/pgv2_percona_com",

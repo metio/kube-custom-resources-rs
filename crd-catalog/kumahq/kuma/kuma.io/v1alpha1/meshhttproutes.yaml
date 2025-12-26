@@ -27,6 +27,7 @@ spec:
       name: "v1alpha1"
       schema:
         openAPIV3Schema:
+          description: "NOTICE: This policy defines its own `GetDefault` method so that it can have the given\nstructure for deserialization but still use the generic policy merging\nmachinery.\n//\nMeshHTTPRoute configures how HTTP requests are routed between services in the mesh. It enables advanced traffic management including path-based routing, header matching, request/response modification, redirects, URL rewrites, traffic mirroring, and weighted load balancing across service endpoints."
           properties:
             apiVersion:
               description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"

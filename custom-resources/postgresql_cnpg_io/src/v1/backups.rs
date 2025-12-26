@@ -189,6 +189,12 @@ pub struct BackupStatus {
     /// A map containing the plugin metadata
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pluginMetadata")]
     pub plugin_metadata: Option<BTreeMap<String, String>>,
+    /// When the backup process was started by the operator
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconciliationStartedAt")]
+    pub reconciliation_started_at: Option<String>,
+    /// When the reconciliation was terminated by the operator (either successfully or not)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconciliationTerminatedAt")]
+    pub reconciliation_terminated_at: Option<String>,
     /// The credentials to use to upload data to S3
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3Credentials")]
     pub s3_credentials: Option<BackupStatusS3Credentials>,
@@ -199,10 +205,10 @@ pub struct BackupStatus {
     /// Status of the volumeSnapshot backup
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotBackupStatus")]
     pub snapshot_backup_status: Option<BackupStatusSnapshotBackupStatus>,
-    /// When the backup was started
+    /// When the backup execution was started by the backup tool
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startedAt")]
     pub started_at: Option<String>,
-    /// When the backup was terminated
+    /// When the backup execution was terminated by the backup tool
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stoppedAt")]
     pub stopped_at: Option<String>,
     /// Tablespace map file content as returned by Postgres in case of online (hot) backups

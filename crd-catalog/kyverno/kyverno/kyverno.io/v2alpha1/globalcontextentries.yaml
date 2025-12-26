@@ -27,6 +27,7 @@ spec:
         - jsonPath: ".status.lastRefreshTime"
           name: "LAST REFRESH"
           type: "date"
+      deprecated: true
       name: "v2alpha1"
       schema:
         openAPIV3Schema:
@@ -208,6 +209,6 @@ spec:
             - "spec"
           type: "object"
       served: true
-      storage: true
+      storage: false
       subresources:
         status: {}

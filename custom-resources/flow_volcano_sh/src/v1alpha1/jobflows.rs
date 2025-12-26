@@ -3552,6 +3552,15 @@ pub struct JobFlowStatusJobStatusListRunningHistories {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobFlowStatusState {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub phase: Option<String>,
+    pub phase: Option<JobFlowStatusStatePhase>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum JobFlowStatusStatePhase {
+    Succeed,
+    Terminating,
+    Failed,
+    Running,
+    Pending,
 }
 

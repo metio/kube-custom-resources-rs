@@ -23,7 +23,7 @@ pub struct UserSpec {
     /// Regex Pattern: `\S`
     #[serde(rename = "accessString")]
     pub access_string: String,
-    /// The current supported value is Redis.
+    /// The options are valkey or redis.
     /// 
     /// Regex Pattern: `^[a-zA-Z]*$`
     pub engine: String,

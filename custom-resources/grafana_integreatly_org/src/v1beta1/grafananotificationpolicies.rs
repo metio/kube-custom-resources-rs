@@ -165,7 +165,7 @@ pub struct GrafanaNotificationPolicyRouteRouteSelectorMatchExpressions {
 /// GrafanaNotificationPolicyStatus defines the observed state of GrafanaNotificationPolicy
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GrafanaNotificationPolicyStatus {
-    /// Results when synchonizing resource with Grafana instances
+    /// Results when synchronizing resource with Grafana instances
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "discoveredRoutes")]

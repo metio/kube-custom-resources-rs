@@ -370,8 +370,8 @@ pub struct KialiDeployment {
     pub custom_envs: Option<Vec<KialiDeploymentCustomEnvs>>,
     /// Defines additional secrets that are to be mounted in the Kiali pod.
     /// 
-    /// These are useful to contain certs that are used by Kiali to securely connect to third party systems
-    /// (for example, see `external_services.tracing.auth.ca_file`).
+    /// These are useful to contain client certificates that are used by Kiali to authenticate to third party systems
+    /// using mTLS (for example, see `external_services.tracing.auth.cert_file` and `external_services.tracing.auth.key_file`).
     /// 
     /// These secrets must be created by an external mechanism. Kiali will not generate these secrets; it
     /// is assumed these secrets are externally managed. You can define 0, 1, or more secrets.
@@ -605,7 +605,7 @@ pub struct KialiDeploymentCustomSecrets {
     /// Defines CSI-specific settings that allows a secret from an external CSI secret store to be injected in the pod via a volume mount. For details, see <https://secrets-store-csi-driver.sigs.k8s.io/>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<BTreeMap<String, serde_json::Value>>,
-    /// The file path location where the secret content will be mounted. The custom secret cannot be mounted on a path that the operator will use to mount its secrets. Make sure you set your custom secret mount path to a unique, unused path. Paths such as `/kiali-configuration`, `/kiali-cert`, `/kiali-cabundle`, and `/kiali-secret` should not be used as mount paths for custom secrets because the operator may want to use one of those paths.
+    /// The file path location where the secret content will be mounted. The custom secret cannot be mounted on a path that the operator will use to mount its secrets. Make sure you set your custom secret mount path to a unique, unused path. Paths such as `/kiali-configuration`, `/kiali-cert`, `/kiali-cabundle`, `/kiali-secret`, `/kiali-override-secrets`, and `/kiali-remote-cluster-secrets` should not be used as mount paths for custom secrets because the operator may want to use one of those paths.
     pub mount: String,
     /// The name of the secret that is to be mounted to the Kiali pod's file system. The name of the custom secret must not be the same name as one created by the operator. Names such as `kiali`, `kiali-cert-secret`, and `kiali-cabundle` should not be used as a custom secret name because the operator may want to create one with one of those names.
     pub name: String,
@@ -1053,16 +1053,22 @@ pub struct KialiExternalServicesCustomDashboardsPrometheus {
 /// Settings used to authenticate with the Prometheus instance.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KialiExternalServicesCustomDashboardsPrometheusAuth {
-    /// The certificate authority file to use when accessing Prometheus using https. An empty string means no extra certificate authority file is used.
+    /// DEPRECATED since v2.20: This setting is deprecated and will be ignored. To configure custom CA certificates, use the kiali-cabundle ConfigMap instead. See the TLS Configuration documentation for details.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ca_file: Option<String>,
+    /// The client certificate file to use when accessing Prometheus using https with mTLS. An empty string means no client certificate is used. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the certificate is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cert_file: Option<String>,
     /// Set true to skip verifying certificate validity when Kiali contacts Prometheus over https.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub insecure_skip_verify: Option<bool>,
-    /// Password to be used when making requests to Prometheus, for basic authentication. May refer to a secret.
+    /// The client private key file to use when accessing Prometheus using https with mTLS. An empty string means no client private key is used. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the key is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key_file: Option<String>,
+    /// Password to be used when making requests to Prometheus, for basic authentication. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the password is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<String>,
-    /// Token / API key to access Prometheus, for token-based authentication. May refer to a secret.
+    /// Token / API key to access Prometheus, for token-based authentication. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the token is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub token: Option<String>,
     /// The type of authentication to use when contacting the server. Use `bearer` to send the token to the Prometheus server. Use `basic` to connect with username and password credentials. Use `none` to not use any authentication.
@@ -1071,7 +1077,7 @@ pub struct KialiExternalServicesCustomDashboardsPrometheusAuth {
     /// When true and if `auth.type` is `bearer`, Kiali Service Account token will be used for the API calls to Prometheus (in this case, `auth.token` config is ignored).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub use_kiali_token: Option<bool>,
-    /// Username to be used when making requests to Prometheus with `basic` authentication. May refer to a secret.
+    /// Username to be used when making requests to Prometheus with `basic` authentication. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the username is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
 }
@@ -1082,10 +1088,10 @@ pub struct KialiExternalServicesCustomDashboardsPrometheusThanosProxy {
     /// Set to true when a Thanos proxy is in front of Prometheus.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    /// Thanos Retention period value expresed as a string.
+    /// Thanos Retention period value expressed as a string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retention_period: Option<String>,
-    /// Thanos Scrape interval value expresed as a string.
+    /// Thanos Scrape interval value expressed as a string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scrape_interval: Option<String>,
 }
@@ -1128,16 +1134,22 @@ pub struct KialiExternalServicesGrafana {
 /// Settings used to authenticate with the Grafana instance.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KialiExternalServicesGrafanaAuth {
-    /// The certificate authority file to use when accessing Grafana using https. An empty string means no extra certificate authority file is used.
+    /// DEPRECATED since v2.20: This setting is deprecated and will be ignored. To configure custom CA certificates, use the kiali-cabundle ConfigMap instead. See the TLS Configuration documentation for details.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ca_file: Option<String>,
+    /// The client certificate file to use when accessing Grafana using https with mTLS. An empty string means no client certificate is used. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the certificate is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cert_file: Option<String>,
     /// Set true to skip verifying certificate validity when Kiali contacts Grafana over https.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub insecure_skip_verify: Option<bool>,
-    /// Password to be used when making requests to Grafana, for basic authentication. May refer to a secret.
+    /// The client private key file to use when accessing Grafana using https with mTLS. An empty string means no client private key is used. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the key is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key_file: Option<String>,
+    /// Password to be used when making requests to Grafana, for basic authentication. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the password is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<String>,
-    /// Token / API key to access Grafana, for token-based authentication. May refer to a secret.
+    /// Token / API key to access Grafana, for token-based authentication. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the token is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub token: Option<String>,
     /// The type of authentication to use when contacting the server. Use `bearer` to send the token to the Grafana server. Use `basic` to connect with username and password credentials. Use `none` to not use any authentication.
@@ -1146,7 +1158,7 @@ pub struct KialiExternalServicesGrafanaAuth {
     /// When true and if `auth.type` is `bearer`, Kiali Service Account token will be used for the API calls to Grafana (in this case, `auth.token` config is ignored).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub use_kiali_token: Option<bool>,
-    /// Username to be used when making requests to Grafana with `basic` authentication. May refer to a secret.
+    /// Username to be used when making requests to Grafana with `basic` authentication. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the username is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
 }
@@ -1325,7 +1337,7 @@ pub struct KialiExternalServicesPerses {
     /// The name of the project where the Dashboards are defined.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub project: Option<String>,
-    /// The url format. Use `openshift` when using Perses Dashboards via the Cluster Observability operator in OpenShift. Use `default` for standard Perses upstream. 
+    /// The URL format. Leave empty (the default) for standard Perses upstream. Use `openshift` when using Perses Dashboards via the Cluster Observability operator in OpenShift.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url_format: Option<KialiExternalServicesPersesUrlFormat>,
 }
@@ -1333,22 +1345,28 @@ pub struct KialiExternalServicesPerses {
 /// Settings used to authenticate with the Perses instance.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KialiExternalServicesPersesAuth {
-    /// The certificate authority file to use when accessing Perses using https. An empty string means no extra certificate authority file is used.
+    /// DEPRECATED since v2.20: This setting is deprecated and will be ignored. To configure custom CA certificates, use the kiali-cabundle ConfigMap instead. See the TLS Configuration documentation for details.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ca_file: Option<String>,
+    /// The client certificate file to use when accessing Perses using https with mTLS. An empty string means no client certificate is used. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the certificate is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cert_file: Option<String>,
     /// Set true to skip verifying certificate validity when Kiali contacts Perses over https.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub insecure_skip_verify: Option<bool>,
-    /// Password to be used when making requests to Perses, for basic authentication. May refer to a secret.
+    /// The client private key file to use when accessing Perses using https with mTLS. An empty string means no client private key is used. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the key is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key_file: Option<String>,
+    /// Password to be used when making requests to Perses, for basic authentication. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the password is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<String>,
     /// The type of authentication to use when contacting the server. Use `bearer` to send the token to the Perses server. Use `basic` to connect with username and password credentials. Use `none` to not use any authentication.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
-    /// When true and if `auth.type` is `bearer`, Kiali Service Account token will be used for the API calls to Perses (in this case, `auth.token` config is ignored).
+    /// When true and if `auth.type` is `bearer`, Kiali Service Account token will be used for the API calls to Perses.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub use_kiali_token: Option<bool>,
-    /// Username to be used when making requests to Perses with `basic` authentication. May refer to a secret.
+    /// Username to be used when making requests to Perses with `basic` authentication. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the username is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
 }
@@ -1431,16 +1449,22 @@ pub struct KialiExternalServicesPrometheus {
 /// Settings used to authenticate with the Prometheus instance.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KialiExternalServicesPrometheusAuth {
-    /// The certificate authority file to use when accessing Prometheus using https. An empty string means no extra certificate authority file is used.
+    /// DEPRECATED since v2.20: This setting is deprecated and will be ignored. To configure custom CA certificates, use the kiali-cabundle ConfigMap instead. See the TLS Configuration documentation for details.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ca_file: Option<String>,
+    /// The client certificate file to use when accessing Prometheus using https with mTLS. An empty string means no client certificate is used. May refer to a secret.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cert_file: Option<String>,
     /// Set true to skip verifying certificate validity when Kiali contacts Prometheus over https.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub insecure_skip_verify: Option<bool>,
-    /// Password to be used when making requests to Prometheus, for basic authentication. May refer to a secret.
+    /// The client private key file to use when accessing Prometheus using https with mTLS. An empty string means no client private key is used. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the key is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key_file: Option<String>,
+    /// Password to be used when making requests to Prometheus, for basic authentication. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the password is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<String>,
-    /// Token / API key to access Prometheus, for token-based authentication. May refer to a secret.
+    /// Token / API key to access Prometheus, for token-based authentication. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the token is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub token: Option<String>,
     /// The type of authentication to use when contacting the server. Use `bearer` to send the token to the Prometheus server. Use `basic` to connect with username and password credentials. Use `none` to not use any authentication (this is the default).
@@ -1449,7 +1473,7 @@ pub struct KialiExternalServicesPrometheusAuth {
     /// When true and if `auth.type` is `bearer`, Kiali Service Account token will be used for the API calls to Prometheus (in this case, `auth.token` config is ignored).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub use_kiali_token: Option<bool>,
-    /// Username to be used when making requests to Prometheus with `basic` authentication. May refer to a secret.
+    /// Username to be used when making requests to Prometheus with `basic` authentication. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the username is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
 }
@@ -1460,10 +1484,10 @@ pub struct KialiExternalServicesPrometheusThanosProxy {
     /// Set to true when a Thanos proxy is in front of Prometheus.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    /// Thanos Retention period value expresed as a string.
+    /// Thanos Retention period value expressed as a string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retention_period: Option<String>,
-    /// Thanos Scrape interval value expresed as a string.
+    /// Thanos Scrape interval value expressed as a string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scrape_interval: Option<String>,
 }
@@ -1530,16 +1554,22 @@ pub struct KialiExternalServicesTracing {
 /// Settings used to authenticate with the Tracing server instance.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KialiExternalServicesTracingAuth {
-    /// The certificate authority file to use when accessing the Tracing server using https. An empty string means no extra certificate authority file is used.
+    /// DEPRECATED since v2.20: This setting is deprecated and will be ignored. To configure custom CA certificates, use the kiali-cabundle ConfigMap instead. See the TLS Configuration documentation for details.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ca_file: Option<String>,
+    /// The client certificate file to use when accessing the Tracing server using https with mTLS. An empty string means no client certificate is used. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the certificate is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cert_file: Option<String>,
     /// Set true to skip verifying certificate validity when Kiali contacts the Tracing server over https.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub insecure_skip_verify: Option<bool>,
-    /// Password to be used when making requests to the Tracing server, for basic authentication. May refer to a secret.
+    /// The client private key file to use when accessing the Tracing server using https with mTLS. An empty string means no client private key is used. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the key is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key_file: Option<String>,
+    /// Password to be used when making requests to the Tracing server, for basic authentication. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the password is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<String>,
-    /// Token / API key to access the Tracing server, for token-based authentication. May refer to a secret.
+    /// Token / API key to access the Tracing server, for token-based authentication. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the token is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub token: Option<String>,
     /// The type of authentication to use when contacting the server. Use `bearer` to send the token to the Tracing server. Use `basic` to connect with username and password credentials. Use `none` to not use any authentication (this is the default).
@@ -1548,7 +1578,7 @@ pub struct KialiExternalServicesTracingAuth {
     /// When true and if `auth.type` is `bearer`, Kiali Service Account token will be used for the API calls to the Tracing server (in this case, `auth.token` config is ignored).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub use_kiali_token: Option<bool>,
-    /// Username to be used when making requests to the Tracing server with `basic` authentication. May refer to a secret.
+    /// Username to be used when making requests to the Tracing server with `basic` authentication. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the username is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
 }
@@ -2201,7 +2231,7 @@ pub struct KialiLoginToken {
     /// A user's login token expiration specified in seconds. This is applicable to token and header auth strategies only.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expiration_seconds: Option<i64>,
-    /// The signing key used to generate tokens for user authentication. Because this is potentially sensitive, you have the option to store this value in a secret. If you store this signing key value in a secret, you must indicate what key in what secret by setting this value to a string in the form of `secret:<secretName>:<secretKey>`. If left as an empty string, a secret with a random signing key will be generated for you. The signing key must be 16, 24 or 32 byte long.
+    /// The signing key used to generate tokens for user authentication. Because this is potentially sensitive, you have the option to store this value in a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the signing key is read dynamically, enabling automatic rotation without pod restart. If left as an empty string, a secret with a random signing key will be generated for you. The signing key must be 16, 24 or 32 byte long.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub signing_key: Option<String>,
 }
@@ -2290,7 +2320,7 @@ pub struct KialiServerObservabilityTracing {
     /// The collector type to use. Today the only valid value is `otel`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub collector_type: Option<KialiServerObservabilityTracingCollectorType>,
-    /// Usd to determine where the Kiali server tracing data will be stored.
+    /// Used to determine where the Kiali server tracing data will be stored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub collector_url: Option<String>,
     /// When true, the Kiali server itself will product its own tracing data.
@@ -2314,7 +2344,7 @@ pub enum KialiServerObservabilityTracingCollectorType {
 /// Specific properties when the collector type is `otel`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KialiServerObservabilityTracingOtel {
-    /// The name of the CA cert; this is used when `tls_enabled` is `true` and `skip_verify` is `false`.
+    /// DEPRECATED since v2.20: This setting is deprecated and will be ignored. To configure custom CA certificates, use the kiali-cabundle ConfigMap instead. See the TLS Configuration documentation for details.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ca_name: Option<String>,
     /// Protocol. Value must be one of: `http`, `https` or `grpc`.
@@ -2323,7 +2353,7 @@ pub struct KialiServerObservabilityTracingOtel {
     /// If true, TLS certificate verification will not be performed. This is an unsecure option and is recommended only for testing.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub skip_verify: Option<bool>,
-    /// Enable TLS for the collector. This must be specified when `protocol` is `https` or `grpc`. When you set this to `true`, you must also set a `ca_name` or set `skip_verify` to true.
+    /// Enable TLS for the collector. This must be specified when `protocol` is `https` or `grpc`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls_enabled: Option<bool>,
 }

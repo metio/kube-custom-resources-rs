@@ -217,7 +217,7 @@ spec:
                   description: "The datasource instanceSelector can't find matching grafana instances"
                   type: "boolean"
                 conditions:
-                  description: "Results when synchonizing resource with Grafana instances"
+                  description: "Results when synchronizing resource with Grafana instances"
                   items:
                     description: "Condition contains details for one aspect of the current state of this API Resource."
                     properties:

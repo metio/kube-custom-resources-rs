@@ -129,7 +129,6 @@ pub struct DnsRecordProviderRef {
 pub struct DnsRecordStatus {
     /// conditions are any conditions associated with the record in the dns provider.
     /// 
-    /// 
     /// If publishing the record fails, the "Failed" condition will be set with a
     /// reason and message describing the cause of the failure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -158,7 +157,6 @@ pub struct DnsRecordStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "queuedAt")]
     pub queued_at: Option<String>,
     /// remoteRecordStatuses is a map of cluster IDs and their unique DNSRecordStatus as raw JSON.
-    /// 
     /// 
     /// A CRD can't reference a type within itself so the `apiextensionsv1.JSON` type is used.
     /// Use GetRemoteRecordStatuses to get the converted type.

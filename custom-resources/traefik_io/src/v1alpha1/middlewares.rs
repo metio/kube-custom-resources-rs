@@ -1074,7 +1074,8 @@ pub struct MiddlewareRedirectRegex {
 /// More info: <https://doc.traefik.io/traefik/v3.6/middlewares/http/redirectscheme/>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MiddlewareRedirectScheme {
-    /// Permanent defines whether the redirection is permanent (308).
+    /// Permanent defines whether the redirection is permanent.
+    /// For HTTP GET requests a 301 is returned, otherwise a 308 is returned.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub permanent: Option<bool>,
     /// Port defines the port of the new URL.

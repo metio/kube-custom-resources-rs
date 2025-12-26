@@ -3447,9 +3447,23 @@ pub struct JobStatusState {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub phase: Option<String>,
+    pub phase: Option<JobStatusStatePhase>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum JobStatusStatePhase {
+    Pending,
+    Aborting,
+    Aborted,
+    Running,
+    Restarting,
+    Completing,
+    Completed,
+    Terminating,
+    Terminated,
+    Failed,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

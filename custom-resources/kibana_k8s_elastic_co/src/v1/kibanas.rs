@@ -45,6 +45,9 @@ pub struct KibanaSpec {
     /// Elasticsearch monitoring clusters running in the same Kubernetes cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub monitoring: Option<KibanaMonitoring>,
+    /// PackageRegistryRef is a reference to an Elastic Package Registry running in the same Kubernetes cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "packageRegistryRef")]
+    pub package_registry_ref: Option<KibanaPackageRegistryRef>,
     /// PodTemplate provides customisation options (labels, annotations, affinity rules, resource requests, and so on) for the Kibana pods
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podTemplate")]
     pub pod_template: Option<BTreeMap<String, serde_json::Value>>,
@@ -586,6 +589,33 @@ pub struct KibanaMonitoringMetricsElasticsearchRefs {
     pub service_name: Option<String>,
 }
 
+/// PackageRegistryRef is a reference to an Elastic Package Registry running in the same Kubernetes cluster.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KibanaPackageRegistryRef {
+    /// Name of an existing Kubernetes object corresponding to an Elastic resource managed by ECK.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Namespace of the Kubernetes object. If empty, defaults to the current namespace.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+    /// SecretName is the name of an existing Kubernetes secret that contains connection information for associating an
+    /// Elastic resource not managed by the operator.
+    /// The referenced secret must contain the following:
+    /// - `url`: the URL to reach the Elastic resource
+    /// - `username`: the username of the user to be authenticated to the Elastic resource
+    /// - `password`: the password of the user to be authenticated to the Elastic resource
+    /// - `ca.crt`: the CA certificate in PEM format (optional)
+    /// - `api-key`: the key to authenticate against the Elastic resource instead of a username and password (supported only for `elasticsearchRefs` in AgentSpec and in BeatSpec)
+    /// This field cannot be used in combination with the other fields name, namespace or serviceName.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
+    pub secret_name: Option<String>,
+    /// ServiceName is the name of an existing Kubernetes service which is used to make requests to the referenced
+    /// object. It has to be in the same namespace as the referenced resource. If left empty, the default HTTP service of
+    /// the referenced resource is used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
+    pub service_name: Option<String>,
+}
+
 /// SecretSource defines a data source based on a Kubernetes Secret.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KibanaSecureSettings {
@@ -641,6 +671,9 @@ pub struct KibanaStatus {
     /// controller has not yet processed the changes contained in the Kibana specification.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
+    /// PackageRegistryAssociationStatus is the status of any auto-linking to Elastic Package Registry.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "packageRegistryAssociationStatus")]
+    pub package_registry_association_status: Option<String>,
     /// Selector is the label selector used to find all pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<String>,

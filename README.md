@@ -359,6 +359,7 @@ The following groups are available:
 - [oracle.db.anthosapis.com](https://crates.io/crates/kcr_oracle_db_anthosapis_com)
 - [org.eclipse.che](https://crates.io/crates/kcr_org_eclipse_che)
 - [organizations.services.k8s.aws](https://crates.io/crates/kcr_organizations_services_k8s_aws)
+- [packageregistry.k8s.elastic.co](https://crates.io/crates/kcr_packageregistry_k8s_elastic_co)
 - [parameters.kubeblocks.io](https://crates.io/crates/kcr_parameters_kubeblocks_io)
 - [perses.dev](https://crates.io/crates/kcr_perses_dev)
 - [pgv2.percona.com](https://crates.io/crates/kcr_pgv2_percona_com)

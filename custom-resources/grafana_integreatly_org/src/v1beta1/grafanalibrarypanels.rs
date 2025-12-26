@@ -319,7 +319,7 @@ pub struct GrafanaLibraryPanelUrlAuthorizationBasicAuthUsername {
 /// GrafanaLibraryPanelStatus defines the observed state of GrafanaLibraryPanel
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GrafanaLibraryPanelStatus {
-    /// Results when synchonizing resource with Grafana instances
+    /// Results when synchronizing resource with Grafana instances
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentCache")]

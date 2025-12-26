@@ -25,6 +25,9 @@ pub struct RedisEnterpriseDatabaseSpec {
     /// Settings for database alerts
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "alertSettings")]
     pub alert_settings: Option<RedisEnterpriseDatabaseAlertSettings>,
+    /// Database auditing configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub auditing: Option<RedisEnterpriseDatabaseAuditing>,
     /// Target for automatic database backups.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub backup: Option<RedisEnterpriseDatabaseBackup>,
@@ -88,6 +91,9 @@ pub struct RedisEnterpriseDatabaseSpec {
     /// Whether this database supports RESP3 protocol. Note - Deleting this property after explicitly setting its value shall have no effect. Please view the corresponding field in RS doc for more info.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resp3: Option<bool>,
+    /// RAM allocation ratio for Redis Flex (v2) databases as a percentage of total data size. Valid range 0-100. When omitted, RS uses the default value of 50%. Controls how much RAM is allocated per unit of data (e.g., 30% means 3MB RAM per 10MB data). RAM grows proportionally with data until rofRamSize limit is reached (if specified). Only applicable when isRof=true and Redis version >= 8.0 (BigStore v2 - Redis Flex).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rofRamRatio")]
+    pub rof_ram_ratio: Option<i64>,
     /// The size of the RAM portion of an Auto Tiering (formerly Redis on Flash) database. Similarly to "memorySize" use formats like 100MB, 0.1GB. It must be at least 10% of combined memory size (RAM and Flash), as specified by "memorySize".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rofRamSize")]
     pub rof_ram_size: Option<String>,
@@ -292,6 +298,17 @@ pub struct RedisEnterpriseDatabaseAlertSettingsBdbSize {
     /// Alert enabled or disabled
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
+}
+
+/// Database auditing configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseDatabaseAuditing {
+    /// Enables auditing of database connection and authentication events.
+    /// When enabled, connection, authentication, and disconnection events are tracked and sent
+    /// to the configured audit listener (configured at the cluster level).
+    /// The cluster-level auditing configuration must be set before enabling this on a database.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dbConnsAuditing")]
+    pub db_conns_auditing: Option<bool>,
 }
 
 /// Target for automatic database backups.
@@ -517,6 +534,9 @@ pub struct RedisEnterpriseDatabaseStatus {
     /// Information on the database's periodic backup
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupInfo")]
     pub backup_info: Option<RedisEnterpriseDatabaseStatusBackupInfo>,
+    /// BigStore version for Redis on Flash databases (1 for Auto Tiering, 2 for Redis Flex). Read-only field populated from RS.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bigstoreVersion")]
+    pub bigstore_version: Option<i64>,
     /// Time when the database was created
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "createdTime")]
     pub created_time: Option<String>,

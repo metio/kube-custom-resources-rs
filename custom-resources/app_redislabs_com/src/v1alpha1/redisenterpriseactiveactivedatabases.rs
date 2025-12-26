@@ -35,9 +35,12 @@ pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurations {
     /// Connection/ association to the Active-Active database.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeActive")]
     pub active_active: Option<RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsActiveActive>,
-    /// Settings for database alerts. Note - Alert settings are not supported for Active-Active database.
+    /// Settings for database alerts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "alertSettings")]
     pub alert_settings: Option<RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsAlertSettings>,
+    /// Database auditing configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub auditing: Option<RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsAuditing>,
     /// Target for automatic database backups.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub backup: Option<RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsBackup>,
@@ -101,6 +104,9 @@ pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurations {
     /// Whether this database supports RESP3 protocol. Note - Deleting this property after explicitly setting its value shall have no effect. Please view the corresponding field in RS doc for more info.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resp3: Option<bool>,
+    /// RAM allocation ratio for Redis Flex (v2) databases as a percentage of total data size. Valid range 0-100. When omitted, RS uses the default value of 50%. Controls how much RAM is allocated per unit of data (e.g., 30% means 3MB RAM per 10MB data). RAM grows proportionally with data until rofRamSize limit is reached (if specified). Only applicable when isRof=true and Redis version >= 8.0 (BigStore v2 - Redis Flex).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rofRamRatio")]
+    pub rof_ram_ratio: Option<i64>,
     /// The size of the RAM portion of an RoF database. Similarly to "memorySize" use formats like 100MB, 0.1GB It must be at least 10% of combined memory size (RAM+Flash), as specified by "memorySize".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rofRamSize")]
     pub rof_ram_size: Option<String>,
@@ -137,7 +143,7 @@ pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsActiveActive {
     pub participating_cluster_name: String,
 }
 
-/// Settings for database alerts. Note - Alert settings are not supported for Active-Active database.
+/// Settings for database alerts.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsAlertSettings {
     /// Periodic backup has been delayed for longer than specified threshold value [minutes]
@@ -320,6 +326,14 @@ pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsAlertSettingsB
     pub enabled: bool,
     /// Threshold for alert going on/off
     pub threshold: String,
+}
+
+/// Database auditing configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsAuditing {
+    /// Enables auditing of database connection and authentication events. When enabled, connection, authentication, and disconnection events are tracked and sent to the configured audit listener (configured at the cluster level). The cluster-level auditing configuration must be set before enabling this on a database.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dbConnsAuditing")]
+    pub db_conns_auditing: Option<bool>,
 }
 
 /// Target for automatic database backups.

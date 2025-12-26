@@ -5047,13 +5047,13 @@ spec:
                             type: "string"
                           type: "array"
                         caCert:
-                          description: "The secret should contain PEM-encoded certificates.\nExample: \"secret:my-ca-certs\" or \"secret:my-ca-certs/custom-ca.crt\""
+                          description: "Path to a PEM-encoded CA certificate file.\nExample: \"/etc/camel/conf.d/_secrets/my-ca/ca.crt\""
                           type: "string"
                         caCertMountPath:
-                          description: "The path where the generated truststore will be mounted\nDefault: \"/etc/camel/conf.d/_truststore\""
+                          description: "The path where the generated truststore will be mounted.\nDefault: \"/etc/camel/conf.d/_truststore\""
                           type: "string"
                         caCertPassword:
-                          description: "Required when caCert is set. A secret reference containing the truststore password.\nIf the secret key is not specified, \"password\" is used as the default key.\nExample: \"secret:my-truststore-password\" or \"secret:my-truststore-password/mykey\""
+                          description: "Required when caCert is set. Path to a file containing the truststore password.\nExample: \"/etc/camel/conf.d/_secrets/truststore-pass/password\""
                           type: "string"
                         classpath:
                           description: "Additional JVM classpath (use `Linux` classpath separator)"
@@ -6743,13 +6743,13 @@ spec:
                             type: "string"
                           type: "array"
                         caCert:
-                          description: "The secret should contain PEM-encoded certificates.\nExample: \"secret:my-ca-certs\" or \"secret:my-ca-certs/custom-ca.crt\""
+                          description: "Path to a PEM-encoded CA certificate file.\nExample: \"/etc/camel/conf.d/_secrets/my-ca/ca.crt\""
                           type: "string"
                         caCertMountPath:
-                          description: "The path where the generated truststore will be mounted\nDefault: \"/etc/camel/conf.d/_truststore\""
+                          description: "The path where the generated truststore will be mounted.\nDefault: \"/etc/camel/conf.d/_truststore\""
                           type: "string"
                         caCertPassword:
-                          description: "Required when caCert is set. A secret reference containing the truststore password.\nIf the secret key is not specified, \"password\" is used as the default key.\nExample: \"secret:my-truststore-password\" or \"secret:my-truststore-password/mykey\""
+                          description: "Required when caCert is set. Path to a file containing the truststore password.\nExample: \"/etc/camel/conf.d/_secrets/truststore-pass/password\""
                           type: "string"
                         classpath:
                           description: "Additional JVM classpath (use `Linux` classpath separator)"

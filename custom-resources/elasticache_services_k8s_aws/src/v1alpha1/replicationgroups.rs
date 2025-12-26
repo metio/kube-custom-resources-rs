@@ -30,9 +30,10 @@ pub struct ReplicationGroupSpec {
     /// group.
     /// 
     /// Required: Only available when creating a replication group in an Amazon VPC
-    /// using Redis OSS version 3.2.6, 4.x or later.
+    /// using Valkey 7.2 and later, Redis OSS version 3.2.6, or Redis OSS 4.x and
+    /// later.
     /// 
-    /// Default: false
+    /// Default: true when using Valkey, false when using Redis OSS
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "atRestEncryptionEnabled")]
     pub at_rest_encryption_enabled: Option<bool>,
     /// Reserved parameter. The password used to access a password protected server.
@@ -170,7 +171,7 @@ pub struct ReplicationGroupSpec {
     /// A user-created description for the replication group.
     pub description: String,
     /// The name of the cache engine to be used for the clusters in this replication
-    /// group. The value must be set to Redis.
+    /// group. The value must be set to valkey or redis.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub engine: Option<String>,
     /// The version number of the cache engine to be used for the clusters in this
@@ -187,7 +188,7 @@ pub struct ReplicationGroupSpec {
     pub engine_version: Option<String>,
     /// The network type you choose when creating a replication group, either ipv4
     /// | ipv6. IPv6 is supported for workloads using Valkey 7.2 and above, Redis
-    /// OSS engine version 6.2 and above or Memcached engine version 1.6.6 and above
+    /// OSS engine version 6.2 to 7.1 or Memcached engine version 1.6.6 and above
     /// on all instances built on the Nitro system (<http://aws.amazon.com/ec2/nitro/).>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipDiscovery")]
     pub ip_discovery: Option<String>,
@@ -202,7 +203,7 @@ pub struct ReplicationGroupSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "multiAZEnabled")]
     pub multi_az_enabled: Option<bool>,
     /// Must be either ipv4 | ipv6 | dual_stack. IPv6 is supported for workloads
-    /// using Valkey 7.2 and above, Redis OSS engine version 6.2 and above or Memcached
+    /// using Valkey 7.2 and above, Redis OSS engine version 6.2 to 7.1 and Memcached
     /// engine version 1.6.6 and above on all instances built on the Nitro system
     /// (<http://aws.amazon.com/ec2/nitro/).>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkType")]

@@ -75,7 +75,7 @@ pub struct GrafanaNotificationTemplateInstanceSelectorMatchExpressions {
 /// The most recent observed state of a Grafana resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GrafanaNotificationTemplateStatus {
-    /// Results when synchonizing resource with Grafana instances
+    /// Results when synchronizing resource with Grafana instances
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// Last time the resource was synchronized with Grafana instances

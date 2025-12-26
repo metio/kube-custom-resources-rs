@@ -164,33 +164,33 @@ pub struct MaxScaleAffinity {
     /// Make sure you have at least as many Nodes available as the replicas to not end up with unscheduled Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "antiAffinityEnabled")]
     pub anti_affinity_enabled: Option<bool>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#nodeaffinity-v1-core>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeaffinity-v1-core>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<MaxScaleAffinityNodeAffinity>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#podantiaffinity-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#podantiaffinity-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<MaxScaleAffinityPodAntiAffinity>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#nodeaffinity-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeaffinity-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleAffinityNodeAffinity {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
     pub preferred_during_scheduling_ignored_during_execution: Option<Vec<MaxScaleAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#nodeselector-v1-core>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselector-v1-core>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
     pub required_during_scheduling_ignored_during_execution: Option<MaxScaleAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#preferredschedulingterm-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#preferredschedulingterm-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#nodeselectorterm-v1-core>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorterm-v1-core>
     pub preference: MaxScaleAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
     pub weight: i32,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#nodeselectorterm-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorterm-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
@@ -199,7 +199,7 @@ pub struct MaxScaleAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExe
     pub match_fields: Option<Vec<MaxScaleAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#nodeselectorrequirement-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorrequirement-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     pub key: String,
@@ -210,7 +210,7 @@ pub struct MaxScaleAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExe
     pub values: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#nodeselectorrequirement-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorrequirement-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     pub key: String,
@@ -221,14 +221,14 @@ pub struct MaxScaleAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExe
     pub values: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#nodeselector-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselector-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     #[serde(rename = "nodeSelectorTerms")]
     pub node_selector_terms: Vec<MaxScaleAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#nodeselectorterm-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorterm-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
@@ -237,7 +237,7 @@ pub struct MaxScaleAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExec
     pub match_fields: Option<Vec<MaxScaleAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#nodeselectorrequirement-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorrequirement-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     pub key: String,
@@ -248,7 +248,7 @@ pub struct MaxScaleAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExec
     pub values: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#nodeselectorrequirement-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorrequirement-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     pub key: String,
@@ -259,7 +259,7 @@ pub struct MaxScaleAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExec
     pub values: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#podantiaffinity-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#podantiaffinity-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleAffinityPodAntiAffinity {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
@@ -268,26 +268,26 @@ pub struct MaxScaleAffinityPodAntiAffinity {
     pub required_during_scheduling_ignored_during_execution: Option<Vec<MaxScaleAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#weightedpodaffinityterm-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#weightedpodaffinityterm-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#podaffinityterm-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#podaffinityterm-v1-core.>
     #[serde(rename = "podAffinityTerm")]
     pub pod_affinity_term: MaxScaleAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
     pub weight: i32,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#podaffinityterm-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#podaffinityterm-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#labelselector-v1-meta>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselector-v1-meta>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<MaxScaleAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#labelselector-v1-meta>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselector-v1-meta>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
@@ -296,7 +296,7 @@ pub struct MaxScaleAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuring
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#labelselectorrequirement-v1-meta>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselectorrequirement-v1-meta>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     pub key: String,
@@ -306,17 +306,17 @@ pub struct MaxScaleAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuring
     pub values: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#podaffinityterm-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#podaffinityterm-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#labelselector-v1-meta>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselector-v1-meta>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<MaxScaleAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#labelselector-v1-meta>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselector-v1-meta>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
@@ -325,7 +325,7 @@ pub struct MaxScaleAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringE
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#labelselectorrequirement-v1-meta>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselectorrequirement-v1-meta>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     pub key: String,
@@ -659,33 +659,33 @@ pub struct MaxScaleConnectionSecretTemplateMetadata {
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#envvarsource-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#envvarsource-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#envvarsource-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#envvarsource-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
     pub value_from: Option<MaxScaleEnvValueFrom>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#envvarsource-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#envvarsource-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleEnvValueFrom {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#configmapkeyselector-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#configmapkeyselector-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<MaxScaleEnvValueFromConfigMapKeyRef>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#objectfieldselector-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#objectfieldselector-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<MaxScaleEnvValueFromFieldRef>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#secretkeyselector-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#secretkeyselector-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<MaxScaleEnvValueFromSecretKeyRef>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#configmapkeyselector-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#configmapkeyselector-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleEnvValueFromConfigMapKeyRef {
     pub key: String,
@@ -693,7 +693,7 @@ pub struct MaxScaleEnvValueFromConfigMapKeyRef {
     pub name: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#objectfieldselector-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#objectfieldselector-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleEnvValueFromFieldRef {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
@@ -702,7 +702,7 @@ pub struct MaxScaleEnvValueFromFieldRef {
     pub field_path: String,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#secretkeyselector-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#secretkeyselector-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleEnvValueFromSecretKeyRef {
     pub key: String,
@@ -710,27 +710,27 @@ pub struct MaxScaleEnvValueFromSecretKeyRef {
     pub name: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#envfromsource-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#envfromsource-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleEnvFrom {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#localobjectreference-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#localobjectreference-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<MaxScaleEnvFromConfigMapRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#localobjectreference-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#localobjectreference-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<MaxScaleEnvFromSecretRef>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#localobjectreference-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#localobjectreference-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleEnvFromConfigMapRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#localobjectreference-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#localobjectreference-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleEnvFromSecretRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -791,7 +791,7 @@ pub enum MaxScaleImagePullPolicy {
     IfNotPresent,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#localobjectreference-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#localobjectreference-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleImagePullSecrets {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -858,12 +858,12 @@ pub enum MaxScaleKubernetesServiceType {
 /// LivenessProbe to be used in the Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleLivenessProbe {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#execaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<MaxScaleLivenessProbeExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#httpgetaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<MaxScaleLivenessProbeHttpGet>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
@@ -872,21 +872,21 @@ pub struct MaxScaleLivenessProbe {
     pub period_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#tcpsocketaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#tcpsocketaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<MaxScaleLivenessProbeTcpSocket>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#execaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleLivenessProbeExec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#httpgetaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleLivenessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -899,7 +899,7 @@ pub struct MaxScaleLivenessProbeHttpGet {
     pub scheme: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#tcpsocketaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#tcpsocketaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleLivenessProbeTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -988,33 +988,33 @@ pub struct MaxScaleMetricsExporterAffinity {
     /// Make sure you have at least as many Nodes available as the replicas to not end up with unscheduled Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "antiAffinityEnabled")]
     pub anti_affinity_enabled: Option<bool>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#nodeaffinity-v1-core>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeaffinity-v1-core>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<MaxScaleMetricsExporterAffinityNodeAffinity>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#podantiaffinity-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#podantiaffinity-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<MaxScaleMetricsExporterAffinityPodAntiAffinity>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#nodeaffinity-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeaffinity-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleMetricsExporterAffinityNodeAffinity {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
     pub preferred_during_scheduling_ignored_during_execution: Option<Vec<MaxScaleMetricsExporterAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#nodeselector-v1-core>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselector-v1-core>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
     pub required_during_scheduling_ignored_during_execution: Option<MaxScaleMetricsExporterAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#preferredschedulingterm-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#preferredschedulingterm-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleMetricsExporterAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#nodeselectorterm-v1-core>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorterm-v1-core>
     pub preference: MaxScaleMetricsExporterAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
     pub weight: i32,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#nodeselectorterm-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorterm-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleMetricsExporterAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
@@ -1023,7 +1023,7 @@ pub struct MaxScaleMetricsExporterAffinityNodeAffinityPreferredDuringSchedulingI
     pub match_fields: Option<Vec<MaxScaleMetricsExporterAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#nodeselectorrequirement-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorrequirement-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleMetricsExporterAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     pub key: String,
@@ -1034,7 +1034,7 @@ pub struct MaxScaleMetricsExporterAffinityNodeAffinityPreferredDuringSchedulingI
     pub values: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#nodeselectorrequirement-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorrequirement-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleMetricsExporterAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     pub key: String,
@@ -1045,14 +1045,14 @@ pub struct MaxScaleMetricsExporterAffinityNodeAffinityPreferredDuringSchedulingI
     pub values: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#nodeselector-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselector-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleMetricsExporterAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     #[serde(rename = "nodeSelectorTerms")]
     pub node_selector_terms: Vec<MaxScaleMetricsExporterAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#nodeselectorterm-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorterm-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleMetricsExporterAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
@@ -1061,7 +1061,7 @@ pub struct MaxScaleMetricsExporterAffinityNodeAffinityRequiredDuringSchedulingIg
     pub match_fields: Option<Vec<MaxScaleMetricsExporterAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#nodeselectorrequirement-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorrequirement-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleMetricsExporterAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     pub key: String,
@@ -1072,7 +1072,7 @@ pub struct MaxScaleMetricsExporterAffinityNodeAffinityRequiredDuringSchedulingIg
     pub values: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#nodeselectorrequirement-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorrequirement-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleMetricsExporterAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     pub key: String,
@@ -1083,7 +1083,7 @@ pub struct MaxScaleMetricsExporterAffinityNodeAffinityRequiredDuringSchedulingIg
     pub values: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#podantiaffinity-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#podantiaffinity-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleMetricsExporterAffinityPodAntiAffinity {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
@@ -1092,26 +1092,26 @@ pub struct MaxScaleMetricsExporterAffinityPodAntiAffinity {
     pub required_during_scheduling_ignored_during_execution: Option<Vec<MaxScaleMetricsExporterAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#weightedpodaffinityterm-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#weightedpodaffinityterm-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleMetricsExporterAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#podaffinityterm-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#podaffinityterm-v1-core.>
     #[serde(rename = "podAffinityTerm")]
     pub pod_affinity_term: MaxScaleMetricsExporterAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
     pub weight: i32,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#podaffinityterm-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#podaffinityterm-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleMetricsExporterAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#labelselector-v1-meta>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselector-v1-meta>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<MaxScaleMetricsExporterAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#labelselector-v1-meta>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselector-v1-meta>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleMetricsExporterAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
@@ -1120,7 +1120,7 @@ pub struct MaxScaleMetricsExporterAffinityPodAntiAffinityPreferredDuringScheduli
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#labelselectorrequirement-v1-meta>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselectorrequirement-v1-meta>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleMetricsExporterAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     pub key: String,
@@ -1130,17 +1130,17 @@ pub struct MaxScaleMetricsExporterAffinityPodAntiAffinityPreferredDuringScheduli
     pub values: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#podaffinityterm-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#podaffinityterm-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleMetricsExporterAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#labelselector-v1-meta>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselector-v1-meta>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<MaxScaleMetricsExporterAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#labelselector-v1-meta>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselector-v1-meta>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleMetricsExporterAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
@@ -1149,7 +1149,7 @@ pub struct MaxScaleMetricsExporterAffinityPodAntiAffinityRequiredDuringSchedulin
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#labelselectorrequirement-v1-meta>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselectorrequirement-v1-meta>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleMetricsExporterAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     pub key: String,
@@ -1167,7 +1167,7 @@ pub enum MaxScaleMetricsExporterImagePullPolicy {
     IfNotPresent,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#localobjectreference-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#localobjectreference-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleMetricsExporterImagePullSecrets {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1324,9 +1324,10 @@ pub struct MaxScaleMetricsExporterTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// Operator represents a key's relationship to the value.
-    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Valid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.
     /// Exists is equivalent to wildcard for value, so that a pod can
     /// tolerate all taints of a particular category.
+    /// Lt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
     /// TolerationSeconds represents the period of time the toleration (which must be
@@ -1505,12 +1506,12 @@ pub struct MaxScalePodSecurityContextSeccompProfile {
 /// ReadinessProbe to be used in the Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleReadinessProbe {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#execaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<MaxScaleReadinessProbeExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#httpgetaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<MaxScaleReadinessProbeHttpGet>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
@@ -1519,21 +1520,21 @@ pub struct MaxScaleReadinessProbe {
     pub period_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#tcpsocketaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#tcpsocketaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<MaxScaleReadinessProbeTcpSocket>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#execaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleReadinessProbeExec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#httpgetaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleReadinessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1546,7 +1547,7 @@ pub struct MaxScaleReadinessProbeHttpGet {
     pub scheme: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#tcpsocketaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#tcpsocketaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleReadinessProbeTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1676,12 +1677,12 @@ pub enum MaxScaleServicesRouter {
 /// StartupProbe to be used in the Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleStartupProbe {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#execaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<MaxScaleStartupProbeExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#httpgetaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<MaxScaleStartupProbeHttpGet>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
@@ -1690,21 +1691,21 @@ pub struct MaxScaleStartupProbe {
     pub period_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#tcpsocketaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#tcpsocketaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<MaxScaleStartupProbeTcpSocket>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#execaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleStartupProbeExec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#httpgetaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleStartupProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1717,7 +1718,7 @@ pub struct MaxScaleStartupProbeHttpGet {
     pub scheme: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#tcpsocketaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#tcpsocketaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleStartupProbeTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1882,9 +1883,10 @@ pub struct MaxScaleTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// Operator represents a key's relationship to the value.
-    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Valid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.
     /// Exists is equivalent to wildcard for value, so that a pod can
     /// tolerate all taints of a particular category.
+    /// Lt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
     /// TolerationSeconds represents the period of time the toleration (which must be
@@ -1899,7 +1901,7 @@ pub struct MaxScaleTolerations {
     pub value: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#topologyspreadconstraint-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#topologyspreadconstraint-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleTopologySpreadConstraints {
     /// A label selector is a label query over a set of resources. The result of matchLabels and
@@ -1975,10 +1977,10 @@ pub struct MaxScaleUpdateStrategyRollingUpdate {
     /// The maximum number of pods that can be unavailable during the update.
     /// Value can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%).
     /// Absolute number is calculated from percentage by rounding up. This can not be 0.
-    /// Defaults to 1. This field is alpha-level and is only honored by servers that enable the
-    /// MaxUnavailableStatefulSet feature. The field applies to all pods in the range 0 to
+    /// Defaults to 1. This field is beta-level and is enabled by default. The field applies to all pods in the range 0 to
     /// Replicas-1. That means if there is any unavailable pod in the range 0 to Replicas-1, it
     /// will be counted towards MaxUnavailable.
+    /// This setting might not be effective for the OrderedReady podManagementPolicy. That policy ensures pods are created and become ready one at a time.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
     /// Partition indicates the ordinal at which the StatefulSet should be partitioned
@@ -1989,7 +1991,7 @@ pub struct MaxScaleUpdateStrategyRollingUpdate {
     pub partition: Option<i32>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#volumemount-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#volumemount-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleVolumeMounts {
     #[serde(rename = "mountPath")]
