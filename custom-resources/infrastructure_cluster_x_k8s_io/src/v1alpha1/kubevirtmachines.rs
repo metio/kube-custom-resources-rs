@@ -474,6 +474,9 @@ pub struct KubevirtMachineVirtualMachineTemplateSpecDataVolumeTemplatesSpecSourc
     /// DiskID provides id of a disk to be imported
     #[serde(rename = "diskId")]
     pub disk_id: String,
+    /// InsecureSkipVerify is a flag to skip certificate verification
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
+    pub insecure_skip_verify: Option<bool>,
     /// SecretRef provides the secret reference needed to access the ovirt-engine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<String>,
@@ -2106,6 +2109,10 @@ pub struct KubevirtMachineVirtualMachineTemplateSpecTemplateSpecDomainDevicesDis
     /// Attach a volume as a cdrom to the vmi.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cdrom: Option<KubevirtMachineVirtualMachineTemplateSpecTemplateSpecDomainDevicesDisksCdrom>,
+    /// ChangedBlockTracking indicates this disk should have CBT option
+    /// Defaults to false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "changedBlockTracking")]
+    pub changed_block_tracking: Option<bool>,
     /// dedicatedIOThread indicates this disk should have an exclusive IO Thread.
     /// Enabling this implies useIOThreads = true.
     /// Defaults to false.
@@ -2151,8 +2158,12 @@ pub struct KubevirtMachineVirtualMachineTemplateSpecTemplateSpecDomainDevicesDis
 /// CustomBlockSize represents the desired logical and physical block size for a VM disk.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubevirtMachineVirtualMachineTemplateSpecTemplateSpecDomainDevicesDisksBlockSizeCustom {
-    pub logical: i64,
-    pub physical: i64,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "discardGranularity")]
+    pub discard_granularity: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub logical: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub physical: Option<i64>,
 }
 
 /// Represents if a feature is enabled or disabled.
@@ -2989,6 +3000,12 @@ pub struct KubevirtMachineVirtualMachineTemplateSpecTemplateSpecDomainLaunchSecu
     /// AMD Secure Encrypted Virtualization (SEV).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sev: Option<KubevirtMachineVirtualMachineTemplateSpecTemplateSpecDomainLaunchSecuritySev>,
+    /// AMD SEV-SNP flags defined by the SEV-SNP specifications.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub snp: Option<KubevirtMachineVirtualMachineTemplateSpecTemplateSpecDomainLaunchSecuritySnp>,
+    /// Intel Trust Domain Extensions (TDX).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tdx: Option<KubevirtMachineVirtualMachineTemplateSpecTemplateSpecDomainLaunchSecurityTdx>,
 }
 
 /// AMD Secure Encrypted Virtualization (SEV).
@@ -3022,6 +3039,16 @@ pub struct KubevirtMachineVirtualMachineTemplateSpecTemplateSpecDomainLaunchSecu
     /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "encryptedState")]
     pub encrypted_state: Option<bool>,
+}
+
+/// AMD SEV-SNP flags defined by the SEV-SNP specifications.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KubevirtMachineVirtualMachineTemplateSpecTemplateSpecDomainLaunchSecuritySnp {
+}
+
+/// Intel Trust Domain Extensions (TDX).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KubevirtMachineVirtualMachineTemplateSpecTemplateSpecDomainLaunchSecurityTdx {
 }
 
 /// Machine type.

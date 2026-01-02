@@ -90,6 +90,7 @@ The following groups are available:
 - [authentication.stackable.tech](https://crates.io/crates/kcr_authentication_stackable_tech)
 - [authzed.com](https://crates.io/crates/kcr_authzed_com)
 - [automation.kubensync.com](https://crates.io/crates/kcr_automation_kubensync_com)
+- [autoops.k8s.elastic.co](https://crates.io/crates/kcr_autoops_k8s_elastic_co)
 - [autoscaling.k8s.elastic.co](https://crates.io/crates/kcr_autoscaling_k8s_elastic_co)
 - [autoscaling.k8s.io](https://crates.io/crates/kcr_autoscaling_k8s_io)
 - [autoscaling.karmada.io](https://crates.io/crates/kcr_autoscaling_karmada_io)

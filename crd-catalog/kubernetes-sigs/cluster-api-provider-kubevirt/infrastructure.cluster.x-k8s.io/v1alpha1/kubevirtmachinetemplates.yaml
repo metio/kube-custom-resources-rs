@@ -301,6 +301,9 @@ spec:
                                                   diskId:
                                                     description: "DiskID provides id of a disk to be imported"
                                                     type: "string"
+                                                  insecureSkipVerify:
+                                                    description: "InsecureSkipVerify is a flag to skip certificate verification"
+                                                    type: "boolean"
                                                   secretRef:
                                                     description: "SecretRef provides the secret reference needed to access the ovirt-engine"
                                                     type: "string"
@@ -1444,13 +1447,12 @@ spec:
                                                           custom:
                                                             description: "CustomBlockSize represents the desired logical and physical block size for a VM disk."
                                                             properties:
+                                                              discardGranularity:
+                                                                type: "integer"
                                                               logical:
                                                                 type: "integer"
                                                               physical:
                                                                 type: "integer"
-                                                            required:
-                                                              - "logical"
-                                                              - "physical"
                                                             type: "object"
                                                           matchVolume:
                                                             description: "Represents if a feature is enabled or disabled."
@@ -1479,6 +1481,9 @@ spec:
                                                             description: "Tray indicates if the tray of the device is open or closed.\nAllowed values are \"open\" and \"closed\".\nDefaults to closed."
                                                             type: "string"
                                                         type: "object"
+                                                      changedBlockTracking:
+                                                        description: "ChangedBlockTracking indicates this disk should have CBT option\nDefaults to false."
+                                                        type: "boolean"
                                                       dedicatedIOThread:
                                                         description: "dedicatedIOThread indicates this disk should have an exclusive IO Thread.\nEnabling this implies useIOThreads = true.\nDefaults to false."
                                                         type: "boolean"
@@ -2080,6 +2085,12 @@ spec:
                                                     session:
                                                       description: "Base64 encoded session blob."
                                                       type: "string"
+                                                  type: "object"
+                                                snp:
+                                                  description: "AMD SEV-SNP flags defined by the SEV-SNP specifications."
+                                                  type: "object"
+                                                tdx:
+                                                  description: "Intel Trust Domain Extensions (TDX)."
                                                   type: "object"
                                               type: "object"
                                             machine:

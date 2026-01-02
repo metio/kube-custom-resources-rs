@@ -155,6 +155,8 @@ pub struct RayJobRayClusterSpec {
     pub ray_version: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub suspend: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "upgradeStrategy")]
+    pub upgrade_strategy: Option<RayJobRayClusterSpecUpgradeStrategy>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workerGroupSpecs")]
     pub worker_group_specs: Option<Vec<RayJobRayClusterSpecWorkerGroupSpecs>>,
 }
@@ -3839,6 +3841,18 @@ pub struct RayJobRayClusterSpecHeadGroupSpecTemplateSpecVolumesVsphereVolume {
     pub storage_policy_name: Option<String>,
     #[serde(rename = "volumePath")]
     pub volume_path: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayJobRayClusterSpecUpgradeStrategy {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<RayJobRayClusterSpecUpgradeStrategyType>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum RayJobRayClusterSpecUpgradeStrategyType {
+    Recreate,
+    None,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

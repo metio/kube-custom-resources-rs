@@ -82,11 +82,11 @@ pub struct NodeClaimRequirements {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minValues")]
     pub min_values: Option<i64>,
     /// Represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, Lt, Gte, and Lte.
     pub operator: NodeClaimRequirementsOperator,
     /// An array of string values. If the operator is In or NotIn,
     /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty. If the operator is Gt or Lt, the values
+    /// the values array must be empty. If the operator is Gt, Lt, Gte, or Lte, the values
     /// array must have a single element, which will be interpreted as an integer.
     /// This array is replaced during a strategic merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -97,6 +97,8 @@ pub struct NodeClaimRequirements {
 /// and minValues that represent the requirement to have at least that many values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum NodeClaimRequirementsOperator {
+    Gte,
+    Lte,
     In,
     NotIn,
     Exists,

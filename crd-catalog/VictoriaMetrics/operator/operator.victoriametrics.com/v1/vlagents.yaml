@@ -854,7 +854,7 @@ spec:
                   format: "int32"
                   type: "integer"
                 rollingUpdateStrategy:
-                  description: "StatefulRollingUpdateStrategy allows configuration for strategyType\nset it to RollingUpdate for disabling operator statefulSet rollingUpdate"
+                  description: "RollingUpdateStrategy allows configuration for strategyType\nset it to RollingUpdate for disabling operator statefulSet rollingUpdate"
                   type: "string"
                 runtimeClassName:
                   description: "RuntimeClassName - defines runtime class for kubernetes pod.\nhttps://kubernetes.io/docs/concepts/containers/runtime-class/"
@@ -915,7 +915,7 @@ spec:
                   type: "object"
                   x-kubernetes-preserve-unknown-fields: true
                 storage:
-                  description: "StatefulStorage configures storage for StatefulSet"
+                  description: "Storage configures storage for StatefulSet"
                   properties:
                     disableMountSubPath:
                       description: "Deprecated: subPath usage will be disabled by default in a future release, this option will become unnecessary.\nDisableMountSubPath allows to remove any subPath usage in volume mounts."

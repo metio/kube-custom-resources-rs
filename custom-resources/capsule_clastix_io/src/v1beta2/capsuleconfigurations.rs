@@ -12,6 +12,7 @@ use self::prelude::*;
 /// CapsuleConfigurationSpec defines the Capsule configuration.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "capsule.clastix.io", version = "v1beta2", kind = "CapsuleConfiguration", plural = "capsuleconfigurations")]
+#[kube(status = "CapsuleConfigurationStatus")]
 #[kube(schema = "disabled")]
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
@@ -137,6 +138,29 @@ pub struct CapsuleConfigurationUsers {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum CapsuleConfigurationUsersKind {
+    User,
+    Group,
+    ServiceAccount,
+}
+
+/// CapsuleConfigurationStatus defines the Capsule configuration status.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CapsuleConfigurationStatus {
+    /// Users which are considered Capsule Users and are bound to the Capsule Tenant construct.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub users: Option<Vec<CapsuleConfigurationStatusUsers>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CapsuleConfigurationStatusUsers {
+    /// Kind of entity. Possible values are "User", "Group", and "ServiceAccount"
+    pub kind: CapsuleConfigurationStatusUsersKind,
+    /// Name of the entity.
+    pub name: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum CapsuleConfigurationStatusUsersKind {
     User,
     Group,
     ServiceAccount,

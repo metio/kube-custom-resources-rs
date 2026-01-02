@@ -37,6 +37,9 @@ pub struct BuildSpec {
     /// Contains information about retention params
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retention: Option<BuildRetention>,
+    /// RuntimeClassName specifies the RuntimeClass to be used to run the Pod
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeClassName")]
+    pub runtime_class_name: Option<String>,
     /// SchedulerName specifies the scheduler to be used to dispatch the Pod
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
     pub scheduler_name: Option<String>,

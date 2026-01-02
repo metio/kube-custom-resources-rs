@@ -400,7 +400,7 @@ spec:
                                   type: "string"
                                 timeoutSeconds:
                                   default: 0
-                                  description: "Specifies the maximum duration in seconds that the Action is allowed to run.\n\n\nIf the Action does not complete within this time frame, it will be terminated.\n\n\nThis field cannot be updated."
+                                  description: "Specifies the maximum duration in seconds that the Action is allowed to run.\n\n\nBehavior based on the value:\n- Positive (> 0): The action will be terminated after this many seconds. The maximum allowed value is 60.\n- Zero (= 0): The timeout is managed by the system, defaulting to 30 seconds typically.\n- Negative (< 0): No timeout is applied; the action runs until the command completes.\n\n\nThis field cannot be updated."
                                   format: "int32"
                                   type: "integer"
                               type: "object"
@@ -2499,7 +2499,7 @@ spec:
                                   description: "The unique identifier of the secret."
                                   type: "string"
                                 namespace:
-                                  description: "The namespace where the secret is located."
+                                  description: "The namespace where the secret is located.\n\n\nIf not specified, the secret is assumed to be in the same namespace as the cluster."
                                   type: "string"
                                 password:
                                   default: "password"
@@ -2507,7 +2507,6 @@ spec:
                                   type: "string"
                               required:
                                 - "name"
-                                - "namespace"
                               type: "object"
                           required:
                             - "name"
@@ -2517,7 +2516,7 @@ spec:
                         description: "A boolean flag that indicates whether the Component should use Transport Layer Security (TLS)\nfor secure communication.\nWhen set to true, the Component will be configured to use TLS encryption for its network connections.\nThis ensures that the data transmitted between the Component and its clients or other Components is encrypted\nand protected from unauthorized access.\nIf TLS is enabled, the Component may require additional configuration, such as specifying TLS certificates and keys,\nto properly set up the secure communication channel."
                         type: "boolean"
                       volumeClaimTemplates:
-                        description: "Specifies a list of PersistentVolumeClaim templates that represent the storage requirements for the Component.\nEach template specifies the desired characteristics of a persistent volume, such as storage class,\nsize, and access modes.\nThese templates are used to dynamically provision persistent volumes for the Component."
+                        description: "Specifies a list of PersistentVolumeClaim templates that represent the storage requirements for the Component.\n\n\nEach template defines the desired characteristics of a persistent volume, such as storage class,\nsize, and access modes, used for dynamic provisioning.\n\n\nPVC Adoption Mechanism:\nKubeBlocks supports adopting existing PVCs (static provisioning) if they meet the following criteria\nbefore the Cluster is created:\n1. Naming: The PVC name must follow the KubeBlocks naming convention:\n   $(vct-name)-$(pod-name) (e.g., \"data-mycluster-mysql-0\").\n2. Labeling: The PVC must carry the label \"app.kubernetes.io/managed-by=kubeblocks\".\n3. Ownership: The PVC must not have any existing controller reference.\n\n\nIf these conditions are met, KubeBlocks will automatically take over the PVCs and\nset the Component (or its controlled resources) as the owner/controller reference."
                         items:
                           properties:
                             annotations:
@@ -6678,7 +6677,7 @@ spec:
                                       type: "string"
                                     timeoutSeconds:
                                       default: 0
-                                      description: "Specifies the maximum duration in seconds that the Action is allowed to run.\n\n\nIf the Action does not complete within this time frame, it will be terminated.\n\n\nThis field cannot be updated."
+                                      description: "Specifies the maximum duration in seconds that the Action is allowed to run.\n\n\nBehavior based on the value:\n- Positive (> 0): The action will be terminated after this many seconds. The maximum allowed value is 60.\n- Zero (= 0): The timeout is managed by the system, defaulting to 30 seconds typically.\n- Negative (< 0): No timeout is applied; the action runs until the command completes.\n\n\nThis field cannot be updated."
                                       format: "int32"
                                       type: "integer"
                                   type: "object"
@@ -8777,7 +8776,7 @@ spec:
                                       description: "The unique identifier of the secret."
                                       type: "string"
                                     namespace:
-                                      description: "The namespace where the secret is located."
+                                      description: "The namespace where the secret is located.\n\n\nIf not specified, the secret is assumed to be in the same namespace as the cluster."
                                       type: "string"
                                     password:
                                       default: "password"
@@ -8785,7 +8784,6 @@ spec:
                                       type: "string"
                                   required:
                                     - "name"
-                                    - "namespace"
                                   type: "object"
                               required:
                                 - "name"
@@ -8795,7 +8793,7 @@ spec:
                             description: "A boolean flag that indicates whether the Component should use Transport Layer Security (TLS)\nfor secure communication.\nWhen set to true, the Component will be configured to use TLS encryption for its network connections.\nThis ensures that the data transmitted between the Component and its clients or other Components is encrypted\nand protected from unauthorized access.\nIf TLS is enabled, the Component may require additional configuration, such as specifying TLS certificates and keys,\nto properly set up the secure communication channel."
                             type: "boolean"
                           volumeClaimTemplates:
-                            description: "Specifies a list of PersistentVolumeClaim templates that represent the storage requirements for the Component.\nEach template specifies the desired characteristics of a persistent volume, such as storage class,\nsize, and access modes.\nThese templates are used to dynamically provision persistent volumes for the Component."
+                            description: "Specifies a list of PersistentVolumeClaim templates that represent the storage requirements for the Component.\n\n\nEach template defines the desired characteristics of a persistent volume, such as storage class,\nsize, and access modes, used for dynamic provisioning.\n\n\nPVC Adoption Mechanism:\nKubeBlocks supports adopting existing PVCs (static provisioning) if they meet the following criteria\nbefore the Cluster is created:\n1. Naming: The PVC name must follow the KubeBlocks naming convention:\n   $(vct-name)-$(pod-name) (e.g., \"data-mycluster-mysql-0\").\n2. Labeling: The PVC must carry the label \"app.kubernetes.io/managed-by=kubeblocks\".\n3. Ownership: The PVC must not have any existing controller reference.\n\n\nIf these conditions are met, KubeBlocks will automatically take over the PVCs and\nset the Component (or its controlled resources) as the owner/controller reference."
                             items:
                               properties:
                                 annotations:
