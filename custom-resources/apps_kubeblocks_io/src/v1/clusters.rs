@@ -392,9 +392,23 @@ pub struct ClusterComponentSpecs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<bool>,
     /// Specifies a list of PersistentVolumeClaim templates that represent the storage requirements for the Component.
-    /// Each template specifies the desired characteristics of a persistent volume, such as storage class,
-    /// size, and access modes.
-    /// These templates are used to dynamically provision persistent volumes for the Component.
+    /// 
+    /// 
+    /// Each template defines the desired characteristics of a persistent volume, such as storage class,
+    /// size, and access modes, used for dynamic provisioning.
+    /// 
+    /// 
+    /// PVC Adoption Mechanism:
+    /// KubeBlocks supports adopting existing PVCs (static provisioning) if they meet the following criteria
+    /// before the Cluster is created:
+    /// 1. Naming: The PVC name must follow the KubeBlocks naming convention:
+    ///    $(vct-name)-$(pod-name) (e.g., "data-mycluster-mysql-0").
+    /// 2. Labeling: The PVC must carry the label "app.kubernetes.io/managed-by=kubeblocks".
+    /// 3. Ownership: The PVC must not have any existing controller reference.
+    /// 
+    /// 
+    /// If these conditions are met, KubeBlocks will automatically take over the PVCs and
+    /// set the Component (or its controlled resources) as the owner/controller reference.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplates")]
     pub volume_claim_templates: Option<Vec<ClusterComponentSpecsVolumeClaimTemplates>>,
     /// List of volumes to override.
@@ -576,7 +590,10 @@ pub struct ClusterComponentSpecsConfigsReconfigure {
     /// Specifies the maximum duration in seconds that the Action is allowed to run.
     /// 
     /// 
-    /// If the Action does not complete within this time frame, it will be terminated.
+    /// Behavior based on the value:
+    /// - Positive (> 0): The action will be terminated after this many seconds. The maximum allowed value is 60.
+    /// - Zero (= 0): The timeout is managed by the system, defaulting to 30 seconds typically.
+    /// - Negative (< 0): No timeout is applied; the action runs until the command completes.
     /// 
     /// 
     /// This field cannot be updated.
@@ -3812,7 +3829,11 @@ pub struct ClusterComponentSpecsSystemAccountsSecretRef {
     /// The unique identifier of the secret.
     pub name: String,
     /// The namespace where the secret is located.
-    pub namespace: String,
+    /// 
+    /// 
+    /// If not specified, the secret is assumed to be in the same namespace as the cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
     /// The key in the secret data that contains the password.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<String>,
@@ -9916,9 +9937,23 @@ pub struct ClusterShardingsTemplate {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<bool>,
     /// Specifies a list of PersistentVolumeClaim templates that represent the storage requirements for the Component.
-    /// Each template specifies the desired characteristics of a persistent volume, such as storage class,
-    /// size, and access modes.
-    /// These templates are used to dynamically provision persistent volumes for the Component.
+    /// 
+    /// 
+    /// Each template defines the desired characteristics of a persistent volume, such as storage class,
+    /// size, and access modes, used for dynamic provisioning.
+    /// 
+    /// 
+    /// PVC Adoption Mechanism:
+    /// KubeBlocks supports adopting existing PVCs (static provisioning) if they meet the following criteria
+    /// before the Cluster is created:
+    /// 1. Naming: The PVC name must follow the KubeBlocks naming convention:
+    ///    $(vct-name)-$(pod-name) (e.g., "data-mycluster-mysql-0").
+    /// 2. Labeling: The PVC must carry the label "app.kubernetes.io/managed-by=kubeblocks".
+    /// 3. Ownership: The PVC must not have any existing controller reference.
+    /// 
+    /// 
+    /// If these conditions are met, KubeBlocks will automatically take over the PVCs and
+    /// set the Component (or its controlled resources) as the owner/controller reference.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplates")]
     pub volume_claim_templates: Option<Vec<ClusterShardingsTemplateVolumeClaimTemplates>>,
     /// List of volumes to override.
@@ -10100,7 +10135,10 @@ pub struct ClusterShardingsTemplateConfigsReconfigure {
     /// Specifies the maximum duration in seconds that the Action is allowed to run.
     /// 
     /// 
-    /// If the Action does not complete within this time frame, it will be terminated.
+    /// Behavior based on the value:
+    /// - Positive (> 0): The action will be terminated after this many seconds. The maximum allowed value is 60.
+    /// - Zero (= 0): The timeout is managed by the system, defaulting to 30 seconds typically.
+    /// - Negative (< 0): No timeout is applied; the action runs until the command completes.
     /// 
     /// 
     /// This field cannot be updated.
@@ -13356,7 +13394,11 @@ pub struct ClusterShardingsTemplateSystemAccountsSecretRef {
     /// The unique identifier of the secret.
     pub name: String,
     /// The namespace where the secret is located.
-    pub namespace: String,
+    /// 
+    /// 
+    /// If not specified, the secret is assumed to be in the same namespace as the cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
     /// The key in the secret data that contains the password.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<String>,

@@ -38,6 +38,8 @@ pub struct RayClusterSpec {
     pub ray_version: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub suspend: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "upgradeStrategy")]
+    pub upgrade_strategy: Option<RayClusterUpgradeStrategy>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workerGroupSpecs")]
     pub worker_group_specs: Option<Vec<RayClusterWorkerGroupSpecs>>,
 }
@@ -3722,6 +3724,18 @@ pub struct RayClusterHeadGroupSpecTemplateSpecVolumesVsphereVolume {
     pub storage_policy_name: Option<String>,
     #[serde(rename = "volumePath")]
     pub volume_path: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayClusterUpgradeStrategy {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<RayClusterUpgradeStrategyType>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum RayClusterUpgradeStrategyType {
+    Recreate,
+    None,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

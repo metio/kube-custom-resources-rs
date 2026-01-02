@@ -22,10 +22,14 @@ use self::prelude::*;
 pub struct QueueSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentBasedDeduplication")]
     pub content_based_deduplication: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deduplicationScope")]
+    pub deduplication_scope: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "delaySeconds")]
     pub delay_seconds: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fifoQueue")]
     pub fifo_queue: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fifoThroughputLimit")]
+    pub fifo_throughput_limit: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsDataKeyReusePeriodSeconds")]
     pub kms_data_key_reuse_period_seconds: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsMasterKeyID")]

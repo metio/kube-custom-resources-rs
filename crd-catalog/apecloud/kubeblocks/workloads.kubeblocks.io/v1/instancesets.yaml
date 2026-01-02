@@ -307,7 +307,7 @@ spec:
                             type: "string"
                           timeoutSeconds:
                             default: 0
-                            description: "Specifies the maximum duration in seconds that the Action is allowed to run.\n\n\nIf the Action does not complete within this time frame, it will be terminated.\n\n\nThis field cannot be updated."
+                            description: "Specifies the maximum duration in seconds that the Action is allowed to run.\n\n\nBehavior based on the value:\n- Positive (> 0): The action will be terminated after this many seconds. The maximum allowed value is 60.\n- Zero (= 0): The timeout is managed by the system, defaulting to 30 seconds typically.\n- Negative (< 0): No timeout is applied; the action runs until the command completes.\n\n\nThis field cannot be updated."
                             format: "int32"
                             type: "integer"
                         type: "object"
@@ -1682,7 +1682,7 @@ spec:
                           type: "string"
                         timeoutSeconds:
                           default: 0
-                          description: "Specifies the maximum duration in seconds that the Action is allowed to run.\n\n\nIf the Action does not complete within this time frame, it will be terminated.\n\n\nThis field cannot be updated."
+                          description: "Specifies the maximum duration in seconds that the Action is allowed to run.\n\n\nBehavior based on the value:\n- Positive (> 0): The action will be terminated after this many seconds. The maximum allowed value is 60.\n- Zero (= 0): The timeout is managed by the system, defaulting to 30 seconds typically.\n- Negative (< 0): No timeout is applied; the action runs until the command completes.\n\n\nThis field cannot be updated."
                           format: "int32"
                           type: "integer"
                       type: "object"
@@ -1922,7 +1922,7 @@ spec:
                           type: "string"
                         timeoutSeconds:
                           default: 0
-                          description: "Specifies the maximum duration in seconds that the Action is allowed to run.\n\n\nIf the Action does not complete within this time frame, it will be terminated.\n\n\nThis field cannot be updated."
+                          description: "Specifies the maximum duration in seconds that the Action is allowed to run.\n\n\nBehavior based on the value:\n- Positive (> 0): The action will be terminated after this many seconds. The maximum allowed value is 60.\n- Zero (= 0): The timeout is managed by the system, defaulting to 30 seconds typically.\n- Negative (< 0): No timeout is applied; the action runs until the command completes.\n\n\nThis field cannot be updated."
                           format: "int32"
                           type: "integer"
                       type: "object"

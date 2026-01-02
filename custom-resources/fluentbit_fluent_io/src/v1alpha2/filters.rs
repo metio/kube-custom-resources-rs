@@ -374,6 +374,10 @@ pub struct FilterFiltersLua {
     /// Inline LUA code instead of loading from a path via script.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub code: Option<String>,
+    /// If enabled, null will be converted to flb_null in Lua.
+    /// This helps prevent removing key/value since nil is a special value to remove key/value from map in Lua. Default value: false.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enable_flb_null: Option<bool>,
     /// If enabled, Lua script will be executed in protected mode.
     /// It prevents to crash when invalid Lua script is executed. Default is true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectedMode")]

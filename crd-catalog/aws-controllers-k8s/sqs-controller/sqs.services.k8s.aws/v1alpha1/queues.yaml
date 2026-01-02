@@ -56,9 +56,13 @@ spec:
               properties:
                 contentBasedDeduplication:
                   type: "string"
+                deduplicationScope:
+                  type: "string"
                 delaySeconds:
                   type: "string"
                 fifoQueue:
+                  type: "string"
+                fifoThroughputLimit:
                   type: "string"
                 kmsDataKeyReusePeriodSeconds:
                   type: "string"

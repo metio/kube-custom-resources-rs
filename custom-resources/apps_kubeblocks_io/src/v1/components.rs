@@ -415,7 +415,10 @@ pub struct ComponentConfigsReconfigure {
     /// Specifies the maximum duration in seconds that the Action is allowed to run.
     /// 
     /// 
-    /// If the Action does not complete within this time frame, it will be terminated.
+    /// Behavior based on the value:
+    /// - Positive (> 0): The action will be terminated after this many seconds. The maximum allowed value is 60.
+    /// - Zero (= 0): The timeout is managed by the system, defaulting to 30 seconds typically.
+    /// - Negative (< 0): No timeout is applied; the action runs until the command completes.
     /// 
     /// 
     /// This field cannot be updated.
@@ -3978,7 +3981,11 @@ pub struct ComponentSystemAccountsSecretRef {
     /// The unique identifier of the secret.
     pub name: String,
     /// The namespace where the secret is located.
-    pub namespace: String,
+    /// 
+    /// 
+    /// If not specified, the secret is assumed to be in the same namespace as the cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
     /// The key in the secret data that contains the password.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<String>,

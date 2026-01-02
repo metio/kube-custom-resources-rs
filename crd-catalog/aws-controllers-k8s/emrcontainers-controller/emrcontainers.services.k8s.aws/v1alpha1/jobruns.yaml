@@ -83,6 +83,9 @@ spec:
                     type: "string"
                   description: "The tags assigned to job runs."
                   type: "object"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
                 virtualClusterID:
                   description: "The virtual cluster ID for which the job run request is submitted.\n\nRegex Pattern: `^[0-9a-z]+$`"
                   type: "string"

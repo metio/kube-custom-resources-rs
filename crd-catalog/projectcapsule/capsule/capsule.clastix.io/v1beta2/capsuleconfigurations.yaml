@@ -117,8 +117,6 @@ spec:
                   description: "Disallow creation of namespaces, whose name matches this regexp"
                   type: "string"
                 userGroups:
-                  default:
-                    - "capsule.clastix.io"
                   description: "Deprecated: use users property instead (https://projectcapsule.dev/docs/operating/setup/configuration/#users)\n\nNames of the groups considered as Capsule users."
                   items:
                     type: "string"
@@ -150,8 +148,33 @@ spec:
               required:
                 - "enableTLSReconciler"
               type: "object"
+            status:
+              description: "CapsuleConfigurationStatus defines the Capsule configuration status."
+              properties:
+                users:
+                  description: "Users which are considered Capsule Users and are bound to the Capsule Tenant construct."
+                  items:
+                    properties:
+                      kind:
+                        description: "Kind of entity. Possible values are \"User\", \"Group\", and \"ServiceAccount\""
+                        enum:
+                          - "User"
+                          - "Group"
+                          - "ServiceAccount"
+                        type: "string"
+                      name:
+                        description: "Name of the entity."
+                        type: "string"
+                    required:
+                      - "kind"
+                      - "name"
+                    type: "object"
+                  type: "array"
+              type: "object"
           required:
             - "spec"
           type: "object"
       served: true
       storage: true
+      subresources:
+        status: {}

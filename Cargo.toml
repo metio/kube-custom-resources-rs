@@ -50,6 +50,7 @@ members = [
     "custom-resources/authentication_stackable_tech",
     "custom-resources/authzed_com",
     "custom-resources/automation_kubensync_com",
+    "custom-resources/autoops_k8s_elastic_co",
     "custom-resources/autoscaling_k8s_elastic_co",
     "custom-resources/autoscaling_k8s_io",
     "custom-resources/autoscaling_karmada_io",

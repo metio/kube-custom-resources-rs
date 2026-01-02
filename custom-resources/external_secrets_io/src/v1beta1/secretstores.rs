@@ -20,7 +20,7 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct SecretStoreSpec {
-    /// Used to constraint a ClusterSecretStore to specific namespaces. Relevant only to ClusterSecretStore
+    /// Used to constrain a ClusterSecretStore to specific namespaces. Relevant only to ClusterSecretStore.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<SecretStoreConditions>>,
     /// Used to select the correct ESO controller (think: ingress.ingressClassName)
@@ -32,7 +32,7 @@ pub struct SecretStoreSpec {
     /// Used to configure store refresh interval in seconds. Empty or 0 will default to the controller config.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
     pub refresh_interval: Option<i64>,
-    /// Used to configure http retries if failed
+    /// Used to configure HTTP retries on failures.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retrySettings")]
     pub retry_settings: Option<SecretStoreRetrySettings>,
 }
@@ -131,7 +131,7 @@ pub struct SecretStoreProvider {
     /// GCPSM configures this store to sync secrets using Google Cloud Platform Secret Manager provider
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gcpsm: Option<SecretStoreProviderGcpsm>,
-    /// Github configures this store to push Github Action secrets using Github API provider
+    /// Github configures this store to push GitHub Actions secrets using the GitHub API provider.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub github: Option<SecretStoreProviderGithub>,
     /// GitLab configures this store to sync secrets using GitLab Variables provider
@@ -170,7 +170,7 @@ pub struct SecretStoreProvider {
     /// Pulumi configures this store to sync secrets using the Pulumi provider
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pulumi: Option<SecretStoreProviderPulumi>,
-    /// Scaleway
+    /// Scaleway configures this store to sync secrets using the Scaleway provider.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scaleway: Option<SecretStoreProviderScaleway>,
     /// SecretServer configures this store to sync secrets using SecretServer provider
@@ -180,7 +180,7 @@ pub struct SecretStoreProvider {
     /// Senhasegura configures this store to sync secrets using senhasegura provider
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub senhasegura: Option<SecretStoreProviderSenhasegura>,
-    /// Vault configures this store to sync secrets using Hashi provider
+    /// Vault configures this store to sync secrets using the HashiCorp Vault provider.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub vault: Option<SecretStoreProviderVault>,
     /// Webhook configures this store to sync secrets using a generic templated webhook
@@ -1650,7 +1650,7 @@ pub struct SecretStoreProviderGcpsmAuthWorkloadIdentityServiceAccountRef {
     pub namespace: Option<String>,
 }
 
-/// Github configures this store to push Github Action secrets using Github API provider
+/// Github configures this store to push GitHub Actions secrets using the GitHub API provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderGithub {
     /// appID specifies the Github APP that will be used to authenticate the client
@@ -2530,7 +2530,7 @@ pub struct SecretStoreProviderPulumiAccessTokenSecretRef {
     pub namespace: Option<String>,
 }
 
-/// Scaleway
+/// Scaleway configures this store to sync secrets using the Scaleway provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderScaleway {
     /// AccessKey is the non-secret part of the api key.
@@ -2713,7 +2713,7 @@ pub struct SecretStoreProviderSenhaseguraAuthClientSecretSecretRef {
     pub namespace: Option<String>,
 }
 
-/// Vault configures this store to sync secrets using Hashi provider
+/// Vault configures this store to sync secrets using the HashiCorp Vault provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderVault {
     /// Auth configures how secret-manager authenticates with the Vault server.
@@ -3345,7 +3345,7 @@ pub struct SecretStoreProviderVaultTlsKeySecretRef {
     pub namespace: Option<String>,
 }
 
-/// Vault configures this store to sync secrets using Hashi provider
+/// Vault configures this store to sync secrets using the HashiCorp Vault provider.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum SecretStoreProviderVaultVersion {
     #[serde(rename = "v1")]
@@ -3629,7 +3629,7 @@ pub struct SecretStoreProviderYandexlockboxCaProviderCertSecretRef {
     pub namespace: Option<String>,
 }
 
-/// Used to configure http retries if failed
+/// Used to configure HTTP retries on failures.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreRetrySettings {
     /// MaxRetries is the maximum number of retry attempts.

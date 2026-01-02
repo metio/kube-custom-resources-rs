@@ -975,8 +975,8 @@ pub struct OpenSearchClusterConfMgmt {
     pub ver_update: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoScaler")]
     pub auto_scaler: Option<bool>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "smartScaler")]
-    pub smart_scaler: Option<bool>,
+    #[serde(rename = "smartScaler")]
+    pub smart_scaler: bool,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
