@@ -72,36 +72,36 @@ pub struct UpdateRequestContextAdmissionRequestInfo {
 /// AdmissionRequest describes the admission.Attributes for the admission request.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UpdateRequestContextAdmissionRequestInfoAdmissionRequest {
-    /// DryRun indicates that modifications will definitely not be persisted for this request.
+    /// dryRun indicates that modifications will definitely not be persisted for this request.
     /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dryRun")]
     pub dry_run: Option<bool>,
-    /// Kind is the fully-qualified type of object being submitted (for example, v1.Pod or autoscaling.v1.Scale)
+    /// kind is the fully-qualified type of object being submitted (for example, v1.Pod or autoscaling.v1.Scale)
     pub kind: UpdateRequestContextAdmissionRequestInfoAdmissionRequestKind,
-    /// Name is the name of the object as presented in the request.  On a CREATE operation, the client may omit name and
+    /// name is the name of the object as presented in the request.  On a CREATE operation, the client may omit name and
     /// rely on the server to generate the name.  If that is the case, this field will contain an empty string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace is the namespace associated with the request (if any).
+    /// namespace is the namespace associated with the request (if any).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Object is the object from the incoming request.
+    /// object is the object from the incoming request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub object: Option<BTreeMap<String, serde_json::Value>>,
-    /// OldObject is the existing object. Only populated for DELETE and UPDATE requests.
+    /// oldObject is the existing object. Only populated for DELETE and UPDATE requests.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "oldObject")]
     pub old_object: Option<BTreeMap<String, serde_json::Value>>,
-    /// Operation is the operation being performed. This may be different than the operation
+    /// operation is the operation being performed. This may be different than the operation
     /// requested. e.g. a patch can result in either a CREATE or UPDATE Operation.
     pub operation: String,
-    /// Options is the operation option structure of the operation being performed.
+    /// options is the operation option structure of the operation being performed.
     /// e.g. `meta.k8s.io/v1.DeleteOptions` or `meta.k8s.io/v1.CreateOptions`. This may be
     /// different than the options the caller provided. e.g. for a patch request the performed
     /// Operation might be a CREATE, in which case the Options will a
     /// `meta.k8s.io/v1.CreateOptions` even though the caller provided `meta.k8s.io/v1.PatchOptions`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub options: Option<BTreeMap<String, serde_json::Value>>,
-    /// RequestKind is the fully-qualified type of the original API request (for example, v1.Pod or autoscaling.v1.Scale).
+    /// requestKind is the fully-qualified type of the original API request (for example, v1.Pod or autoscaling.v1.Scale).
     /// If this is specified and differs from the value in "kind", an equivalent match and conversion was performed.
     /// 
     /// For example, if deployments can be modified via apps/v1 and apps/v1beta1, and a webhook registered a rule of
@@ -113,7 +113,7 @@ pub struct UpdateRequestContextAdmissionRequestInfoAdmissionRequest {
     /// See documentation for the "matchPolicy" field in the webhook configuration type for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestKind")]
     pub request_kind: Option<UpdateRequestContextAdmissionRequestInfoAdmissionRequestRequestKind>,
-    /// RequestResource is the fully-qualified resource of the original API request (for example, v1.pods).
+    /// requestResource is the fully-qualified resource of the original API request (for example, v1.pods).
     /// If this is specified and differs from the value in "resource", an equivalent match and conversion was performed.
     /// 
     /// For example, if deployments can be modified via apps/v1 and apps/v1beta1, and a webhook registered a rule of
@@ -125,27 +125,27 @@ pub struct UpdateRequestContextAdmissionRequestInfoAdmissionRequest {
     /// See documentation for the "matchPolicy" field in the webhook configuration type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestResource")]
     pub request_resource: Option<UpdateRequestContextAdmissionRequestInfoAdmissionRequestRequestResource>,
-    /// RequestSubResource is the name of the subresource of the original API request, if any (for example, "status" or "scale")
+    /// requestSubResource is the name of the subresource of the original API request, if any (for example, "status" or "scale")
     /// If this is specified and differs from the value in "subResource", an equivalent match and conversion was performed.
     /// See documentation for the "matchPolicy" field in the webhook configuration type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestSubResource")]
     pub request_sub_resource: Option<String>,
-    /// Resource is the fully-qualified resource being requested (for example, v1.pods)
+    /// resource is the fully-qualified resource being requested (for example, v1.pods)
     pub resource: UpdateRequestContextAdmissionRequestInfoAdmissionRequestResource,
-    /// SubResource is the subresource being requested, if any (for example, "status" or "scale")
+    /// subResource is the subresource being requested, if any (for example, "status" or "scale")
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subResource")]
     pub sub_resource: Option<String>,
-    /// UID is an identifier for the individual request/response. It allows us to distinguish instances of requests which are
+    /// uid is an identifier for the individual request/response. It allows us to distinguish instances of requests which are
     /// otherwise identical (parallel requests, requests when earlier requests did not modify etc)
     /// The UID is meant to track the round trip (request/response) between the KAS and the WebHook, not the user request.
     /// It is suitable for correlating log entries between the webhook and apiserver, for either auditing or debugging.
     pub uid: String,
-    /// UserInfo is information about the requesting user
+    /// userInfo is information about the requesting user
     #[serde(rename = "userInfo")]
     pub user_info: UpdateRequestContextAdmissionRequestInfoAdmissionRequestUserInfo,
 }
 
-/// Kind is the fully-qualified type of object being submitted (for example, v1.Pod or autoscaling.v1.Scale)
+/// kind is the fully-qualified type of object being submitted (for example, v1.Pod or autoscaling.v1.Scale)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UpdateRequestContextAdmissionRequestInfoAdmissionRequestKind {
     pub group: String,
@@ -153,7 +153,7 @@ pub struct UpdateRequestContextAdmissionRequestInfoAdmissionRequestKind {
     pub version: String,
 }
 
-/// RequestKind is the fully-qualified type of the original API request (for example, v1.Pod or autoscaling.v1.Scale).
+/// requestKind is the fully-qualified type of the original API request (for example, v1.Pod or autoscaling.v1.Scale).
 /// If this is specified and differs from the value in "kind", an equivalent match and conversion was performed.
 /// 
 /// For example, if deployments can be modified via apps/v1 and apps/v1beta1, and a webhook registered a rule of
@@ -170,7 +170,7 @@ pub struct UpdateRequestContextAdmissionRequestInfoAdmissionRequestRequestKind {
     pub version: String,
 }
 
-/// RequestResource is the fully-qualified resource of the original API request (for example, v1.pods).
+/// requestResource is the fully-qualified resource of the original API request (for example, v1.pods).
 /// If this is specified and differs from the value in "resource", an equivalent match and conversion was performed.
 /// 
 /// For example, if deployments can be modified via apps/v1 and apps/v1beta1, and a webhook registered a rule of
@@ -187,7 +187,7 @@ pub struct UpdateRequestContextAdmissionRequestInfoAdmissionRequestRequestResour
     pub version: String,
 }
 
-/// Resource is the fully-qualified resource being requested (for example, v1.pods)
+/// resource is the fully-qualified resource being requested (for example, v1.pods)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UpdateRequestContextAdmissionRequestInfoAdmissionRequestResource {
     pub group: String,
@@ -195,7 +195,7 @@ pub struct UpdateRequestContextAdmissionRequestInfoAdmissionRequestResource {
     pub version: String,
 }
 
-/// UserInfo is information about the requesting user
+/// userInfo is information about the requesting user
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UpdateRequestContextAdmissionRequestInfoAdmissionRequestUserInfo {
     /// Any additional information provided by the authenticator.

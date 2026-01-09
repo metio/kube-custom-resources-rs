@@ -434,7 +434,7 @@ spec:
                                       description: "Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s))."
                                       properties:
                                         preferredDuringSchedulingIgnoredDuringExecution:
-                                          description: "The scheduler will prefer to schedule pods to nodes that satisfy\nthe anti-affinity expressions specified by this field, but it may choose\na node that violates one or more of the expressions. The node that is\nmost preferred is the one with the greatest sum of weights, i.e.\nfor each node that meets all of the scheduling requirements (resource\nrequest, requiredDuringScheduling anti-affinity expressions, etc.),\ncompute a sum by iterating through the elements of this field and adding\n\"weight\" to the sum if the node has pods which matches the corresponding podAffinityTerm; the\nnode(s) with the highest sum are the most preferred."
+                                          description: "The scheduler will prefer to schedule pods to nodes that satisfy\nthe anti-affinity expressions specified by this field, but it may choose\na node that violates one or more of the expressions. The node that is\nmost preferred is the one with the greatest sum of weights, i.e.\nfor each node that meets all of the scheduling requirements (resource\nrequest, requiredDuringScheduling anti-affinity expressions, etc.),\ncompute a sum by iterating through the elements of this field and subtracting\n\"weight\" from the sum if the node has pods which matches the corresponding podAffinityTerm; the\nnode(s) with the highest sum are the most preferred."
                                           items:
                                             description: "The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)"
                                             properties:
@@ -655,7 +655,7 @@ spec:
                                         description: "Resources allows customization of limits and requests for compute resources such as cpu and memory.\nIf specified, this overrides the named calico-kube-controllers Deployment container's resources.\nIf omitted, the calico-kube-controllers Deployment will use its default value for this container's resources.\nIf used in conjunction with the deprecated ComponentResources, then this value takes precedence."
                                         properties:
                                           claims:
-                                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
+                                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis field depends on the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
                                             items:
                                               description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                               properties:
@@ -1304,7 +1304,7 @@ spec:
                                       description: "Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s))."
                                       properties:
                                         preferredDuringSchedulingIgnoredDuringExecution:
-                                          description: "The scheduler will prefer to schedule pods to nodes that satisfy\nthe anti-affinity expressions specified by this field, but it may choose\na node that violates one or more of the expressions. The node that is\nmost preferred is the one with the greatest sum of weights, i.e.\nfor each node that meets all of the scheduling requirements (resource\nrequest, requiredDuringScheduling anti-affinity expressions, etc.),\ncompute a sum by iterating through the elements of this field and adding\n\"weight\" to the sum if the node has pods which matches the corresponding podAffinityTerm; the\nnode(s) with the highest sum are the most preferred."
+                                          description: "The scheduler will prefer to schedule pods to nodes that satisfy\nthe anti-affinity expressions specified by this field, but it may choose\na node that violates one or more of the expressions. The node that is\nmost preferred is the one with the greatest sum of weights, i.e.\nfor each node that meets all of the scheduling requirements (resource\nrequest, requiredDuringScheduling anti-affinity expressions, etc.),\ncompute a sum by iterating through the elements of this field and subtracting\n\"weight\" from the sum if the node has pods which matches the corresponding podAffinityTerm; the\nnode(s) with the highest sum are the most preferred."
                                           items:
                                             description: "The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)"
                                             properties:
@@ -1524,7 +1524,7 @@ spec:
                                         description: "Resources allows customization of limits and requests for compute resources such as cpu and memory.\nIf specified, this overrides the named calico-node DaemonSet container's resources.\nIf omitted, the calico-node DaemonSet will use its default value for this container's resources.\nIf used in conjunction with the deprecated ComponentResources, then this value takes precedence."
                                         properties:
                                           claims:
-                                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
+                                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis field depends on the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
                                             items:
                                               description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                               properties:
@@ -1623,7 +1623,7 @@ spec:
                                         description: "Resources allows customization of limits and requests for compute resources such as cpu and memory.\nIf specified, this overrides the named calico-node DaemonSet init container's resources.\nIf omitted, the calico-node DaemonSet will use its default value for this container's resources.\nIf used in conjunction with the deprecated ComponentResources, then this value takes precedence."
                                         properties:
                                           claims:
-                                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
+                                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis field depends on the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
                                             items:
                                               description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                               properties:
@@ -2089,7 +2089,7 @@ spec:
                                       description: "Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s))."
                                       properties:
                                         preferredDuringSchedulingIgnoredDuringExecution:
-                                          description: "The scheduler will prefer to schedule pods to nodes that satisfy\nthe anti-affinity expressions specified by this field, but it may choose\na node that violates one or more of the expressions. The node that is\nmost preferred is the one with the greatest sum of weights, i.e.\nfor each node that meets all of the scheduling requirements (resource\nrequest, requiredDuringScheduling anti-affinity expressions, etc.),\ncompute a sum by iterating through the elements of this field and adding\n\"weight\" to the sum if the node has pods which matches the corresponding podAffinityTerm; the\nnode(s) with the highest sum are the most preferred."
+                                          description: "The scheduler will prefer to schedule pods to nodes that satisfy\nthe anti-affinity expressions specified by this field, but it may choose\na node that violates one or more of the expressions. The node that is\nmost preferred is the one with the greatest sum of weights, i.e.\nfor each node that meets all of the scheduling requirements (resource\nrequest, requiredDuringScheduling anti-affinity expressions, etc.),\ncompute a sum by iterating through the elements of this field and subtracting\n\"weight\" from the sum if the node has pods which matches the corresponding podAffinityTerm; the\nnode(s) with the highest sum are the most preferred."
                                           items:
                                             description: "The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)"
                                             properties:
@@ -2309,7 +2309,7 @@ spec:
                                         description: "Resources allows customization of limits and requests for compute resources such as cpu and memory.\nIf specified, this overrides the named calico-node-windows DaemonSet container's resources.\nIf omitted, the calico-node-windows DaemonSet will use its default value for this container's resources.\nIf used in conjunction with the deprecated ComponentResources, then this value takes precedence."
                                         properties:
                                           claims:
-                                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
+                                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis field depends on the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
                                             items:
                                               description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                               properties:
@@ -2367,7 +2367,7 @@ spec:
                                         description: "Resources allows customization of limits and requests for compute resources such as cpu and memory.\nIf specified, this overrides the named calico-node-windows DaemonSet init container's resources.\nIf omitted, the calico-node-windows DaemonSet will use its default value for this container's resources.\nIf used in conjunction with the deprecated ComponentResources, then this value takes precedence."
                                         properties:
                                           claims:
-                                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
+                                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis field depends on the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
                                             items:
                                               description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                               properties:
@@ -2833,7 +2833,7 @@ spec:
                                       description: "Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s))."
                                       properties:
                                         preferredDuringSchedulingIgnoredDuringExecution:
-                                          description: "The scheduler will prefer to schedule pods to nodes that satisfy\nthe anti-affinity expressions specified by this field, but it may choose\na node that violates one or more of the expressions. The node that is\nmost preferred is the one with the greatest sum of weights, i.e.\nfor each node that meets all of the scheduling requirements (resource\nrequest, requiredDuringScheduling anti-affinity expressions, etc.),\ncompute a sum by iterating through the elements of this field and adding\n\"weight\" to the sum if the node has pods which matches the corresponding podAffinityTerm; the\nnode(s) with the highest sum are the most preferred."
+                                          description: "The scheduler will prefer to schedule pods to nodes that satisfy\nthe anti-affinity expressions specified by this field, but it may choose\na node that violates one or more of the expressions. The node that is\nmost preferred is the one with the greatest sum of weights, i.e.\nfor each node that meets all of the scheduling requirements (resource\nrequest, requiredDuringScheduling anti-affinity expressions, etc.),\ncompute a sum by iterating through the elements of this field and subtracting\n\"weight\" from the sum if the node has pods which matches the corresponding podAffinityTerm; the\nnode(s) with the highest sum are the most preferred."
                                           items:
                                             description: "The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)"
                                             properties:
@@ -3053,7 +3053,7 @@ spec:
                                         description: "Resources allows customization of limits and requests for compute resources such as cpu and memory.\nIf specified, this overrides the named calico-windows-upgrade DaemonSet container's resources.\nIf omitted, the calico-windows-upgrade DaemonSet will use its default value for this container's resources."
                                         properties:
                                           claims:
-                                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
+                                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis field depends on the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
                                             items:
                                               description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                               properties:
@@ -3211,7 +3211,7 @@ spec:
                         description: "ResourceRequirements allows customization of limits and requests for compute resources such as cpu and memory."
                         properties:
                           claims:
-                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
+                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis field depends on the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
                             items:
                               description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                               properties:
@@ -3678,7 +3678,7 @@ spec:
                                       description: "Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s))."
                                       properties:
                                         preferredDuringSchedulingIgnoredDuringExecution:
-                                          description: "The scheduler will prefer to schedule pods to nodes that satisfy\nthe anti-affinity expressions specified by this field, but it may choose\na node that violates one or more of the expressions. The node that is\nmost preferred is the one with the greatest sum of weights, i.e.\nfor each node that meets all of the scheduling requirements (resource\nrequest, requiredDuringScheduling anti-affinity expressions, etc.),\ncompute a sum by iterating through the elements of this field and adding\n\"weight\" to the sum if the node has pods which matches the corresponding podAffinityTerm; the\nnode(s) with the highest sum are the most preferred."
+                                          description: "The scheduler will prefer to schedule pods to nodes that satisfy\nthe anti-affinity expressions specified by this field, but it may choose\na node that violates one or more of the expressions. The node that is\nmost preferred is the one with the greatest sum of weights, i.e.\nfor each node that meets all of the scheduling requirements (resource\nrequest, requiredDuringScheduling anti-affinity expressions, etc.),\ncompute a sum by iterating through the elements of this field and subtracting\n\"weight\" from the sum if the node has pods which matches the corresponding podAffinityTerm; the\nnode(s) with the highest sum are the most preferred."
                                           items:
                                             description: "The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)"
                                             properties:
@@ -3900,7 +3900,7 @@ spec:
                                         description: "Resources allows customization of limits and requests for compute resources such as cpu and memory.\nIf specified, this overrides the named csi-node-driver DaemonSet container's resources.\nIf omitted, the csi-node-driver DaemonSet will use its default value for this container's resources."
                                         properties:
                                           claims:
-                                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
+                                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis field depends on the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
                                             items:
                                               description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                               properties:
@@ -4060,7 +4060,7 @@ spec:
                           anyOf:
                             - type: "integer"
                             - type: "string"
-                          description: "The maximum number of nodes with an existing available DaemonSet pod that\ncan have an updated DaemonSet pod during during an update.\nValue can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%).\nThis can not be 0 if MaxUnavailable is 0.\nAbsolute number is calculated from percentage by rounding up to a minimum of 1.\nDefault value is 0.\nExample: when this is set to 30%, at most 30% of the total number of nodes\nthat should be running the daemon pod (i.e. status.desiredNumberScheduled)\ncan have their a new pod created before the old pod is marked as deleted.\nThe update starts by launching new pods on 30% of nodes. Once an updated\npod is available (Ready for at least minReadySeconds) the old DaemonSet pod\non that node is marked deleted. If the old pod becomes unavailable for any\nreason (Ready transitions to false, is evicted, or is drained) an updated\npod is immediatedly created on that node without considering surge limits.\nAllowing surge implies the possibility that the resources consumed by the\ndaemonset on any given node can double if the readiness check fails, and\nso resource intensive daemonsets should take into account that they may\ncause evictions during disruption."
+                          description: "The maximum number of nodes with an existing available DaemonSet pod that\ncan have an updated DaemonSet pod during during an update.\nValue can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%).\nThis can not be 0 if MaxUnavailable is 0.\nAbsolute number is calculated from percentage by rounding up to a minimum of 1.\nDefault value is 0.\nExample: when this is set to 30%, at most 30% of the total number of nodes\nthat should be running the daemon pod (i.e. status.desiredNumberScheduled)\ncan have their a new pod created before the old pod is marked as deleted.\nThe update starts by launching new pods on 30% of nodes. Once an updated\npod is available (Ready for at least minReadySeconds) the old DaemonSet pod\non that node is marked deleted. If the old pod becomes unavailable for any\nreason (Ready transitions to false, is evicted, or is drained) an updated\npod is immediately created on that node without considering surge limits.\nAllowing surge implies the possibility that the resources consumed by the\ndaemonset on any given node can double if the readiness check fails, and\nso resource intensive daemonsets should take into account that they may\ncause evictions during disruption."
                           x-kubernetes-int-or-string: true
                         maxUnavailable:
                           anyOf:
@@ -4670,7 +4670,7 @@ spec:
                                       description: "Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s))."
                                       properties:
                                         preferredDuringSchedulingIgnoredDuringExecution:
-                                          description: "The scheduler will prefer to schedule pods to nodes that satisfy\nthe anti-affinity expressions specified by this field, but it may choose\na node that violates one or more of the expressions. The node that is\nmost preferred is the one with the greatest sum of weights, i.e.\nfor each node that meets all of the scheduling requirements (resource\nrequest, requiredDuringScheduling anti-affinity expressions, etc.),\ncompute a sum by iterating through the elements of this field and adding\n\"weight\" to the sum if the node has pods which matches the corresponding podAffinityTerm; the\nnode(s) with the highest sum are the most preferred."
+                                          description: "The scheduler will prefer to schedule pods to nodes that satisfy\nthe anti-affinity expressions specified by this field, but it may choose\na node that violates one or more of the expressions. The node that is\nmost preferred is the one with the greatest sum of weights, i.e.\nfor each node that meets all of the scheduling requirements (resource\nrequest, requiredDuringScheduling anti-affinity expressions, etc.),\ncompute a sum by iterating through the elements of this field and subtracting\n\"weight\" from the sum if the node has pods which matches the corresponding podAffinityTerm; the\nnode(s) with the highest sum are the most preferred."
                                           items:
                                             description: "The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)"
                                             properties:
@@ -4890,7 +4890,7 @@ spec:
                                         description: "Resources allows customization of limits and requests for compute resources such as cpu and memory.\nIf specified, this overrides the named typha Deployment container's resources.\nIf omitted, the typha Deployment will use its default value for this container's resources.\nIf used in conjunction with the deprecated ComponentResources, then this value takes precedence."
                                         properties:
                                           claims:
-                                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
+                                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis field depends on the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
                                             items:
                                               description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                               properties:
@@ -4944,7 +4944,7 @@ spec:
                                         description: "Resources allows customization of limits and requests for compute resources such as cpu and memory.\nIf specified, this overrides the named typha Deployment init container's resources.\nIf omitted, the typha Deployment will use its default value for this init container's resources.\nIf used in conjunction with the deprecated ComponentResources, then this value takes precedence."
                                         properties:
                                           claims:
-                                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
+                                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis field depends on the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
                                             items:
                                               description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                               properties:
@@ -5535,7 +5535,7 @@ spec:
                                           description: "Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s))."
                                           properties:
                                             preferredDuringSchedulingIgnoredDuringExecution:
-                                              description: "The scheduler will prefer to schedule pods to nodes that satisfy\nthe anti-affinity expressions specified by this field, but it may choose\na node that violates one or more of the expressions. The node that is\nmost preferred is the one with the greatest sum of weights, i.e.\nfor each node that meets all of the scheduling requirements (resource\nrequest, requiredDuringScheduling anti-affinity expressions, etc.),\ncompute a sum by iterating through the elements of this field and adding\n\"weight\" to the sum if the node has pods which matches the corresponding podAffinityTerm; the\nnode(s) with the highest sum are the most preferred."
+                                              description: "The scheduler will prefer to schedule pods to nodes that satisfy\nthe anti-affinity expressions specified by this field, but it may choose\na node that violates one or more of the expressions. The node that is\nmost preferred is the one with the greatest sum of weights, i.e.\nfor each node that meets all of the scheduling requirements (resource\nrequest, requiredDuringScheduling anti-affinity expressions, etc.),\ncompute a sum by iterating through the elements of this field and subtracting\n\"weight\" from the sum if the node has pods which matches the corresponding podAffinityTerm; the\nnode(s) with the highest sum are the most preferred."
                                               items:
                                                 description: "The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)"
                                                 properties:
@@ -5756,7 +5756,7 @@ spec:
                                             description: "Resources allows customization of limits and requests for compute resources such as cpu and memory.\nIf specified, this overrides the named calico-kube-controllers Deployment container's resources.\nIf omitted, the calico-kube-controllers Deployment will use its default value for this container's resources.\nIf used in conjunction with the deprecated ComponentResources, then this value takes precedence."
                                             properties:
                                               claims:
-                                                description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
+                                                description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis field depends on the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
                                                 items:
                                                   description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                                   properties:
@@ -6405,7 +6405,7 @@ spec:
                                           description: "Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s))."
                                           properties:
                                             preferredDuringSchedulingIgnoredDuringExecution:
-                                              description: "The scheduler will prefer to schedule pods to nodes that satisfy\nthe anti-affinity expressions specified by this field, but it may choose\na node that violates one or more of the expressions. The node that is\nmost preferred is the one with the greatest sum of weights, i.e.\nfor each node that meets all of the scheduling requirements (resource\nrequest, requiredDuringScheduling anti-affinity expressions, etc.),\ncompute a sum by iterating through the elements of this field and adding\n\"weight\" to the sum if the node has pods which matches the corresponding podAffinityTerm; the\nnode(s) with the highest sum are the most preferred."
+                                              description: "The scheduler will prefer to schedule pods to nodes that satisfy\nthe anti-affinity expressions specified by this field, but it may choose\na node that violates one or more of the expressions. The node that is\nmost preferred is the one with the greatest sum of weights, i.e.\nfor each node that meets all of the scheduling requirements (resource\nrequest, requiredDuringScheduling anti-affinity expressions, etc.),\ncompute a sum by iterating through the elements of this field and subtracting\n\"weight\" from the sum if the node has pods which matches the corresponding podAffinityTerm; the\nnode(s) with the highest sum are the most preferred."
                                               items:
                                                 description: "The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)"
                                                 properties:
@@ -6625,7 +6625,7 @@ spec:
                                             description: "Resources allows customization of limits and requests for compute resources such as cpu and memory.\nIf specified, this overrides the named calico-node DaemonSet container's resources.\nIf omitted, the calico-node DaemonSet will use its default value for this container's resources.\nIf used in conjunction with the deprecated ComponentResources, then this value takes precedence."
                                             properties:
                                               claims:
-                                                description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
+                                                description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis field depends on the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
                                                 items:
                                                   description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                                   properties:
@@ -6724,7 +6724,7 @@ spec:
                                             description: "Resources allows customization of limits and requests for compute resources such as cpu and memory.\nIf specified, this overrides the named calico-node DaemonSet init container's resources.\nIf omitted, the calico-node DaemonSet will use its default value for this container's resources.\nIf used in conjunction with the deprecated ComponentResources, then this value takes precedence."
                                             properties:
                                               claims:
-                                                description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
+                                                description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis field depends on the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
                                                 items:
                                                   description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                                   properties:
@@ -7190,7 +7190,7 @@ spec:
                                           description: "Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s))."
                                           properties:
                                             preferredDuringSchedulingIgnoredDuringExecution:
-                                              description: "The scheduler will prefer to schedule pods to nodes that satisfy\nthe anti-affinity expressions specified by this field, but it may choose\na node that violates one or more of the expressions. The node that is\nmost preferred is the one with the greatest sum of weights, i.e.\nfor each node that meets all of the scheduling requirements (resource\nrequest, requiredDuringScheduling anti-affinity expressions, etc.),\ncompute a sum by iterating through the elements of this field and adding\n\"weight\" to the sum if the node has pods which matches the corresponding podAffinityTerm; the\nnode(s) with the highest sum are the most preferred."
+                                              description: "The scheduler will prefer to schedule pods to nodes that satisfy\nthe anti-affinity expressions specified by this field, but it may choose\na node that violates one or more of the expressions. The node that is\nmost preferred is the one with the greatest sum of weights, i.e.\nfor each node that meets all of the scheduling requirements (resource\nrequest, requiredDuringScheduling anti-affinity expressions, etc.),\ncompute a sum by iterating through the elements of this field and subtracting\n\"weight\" from the sum if the node has pods which matches the corresponding podAffinityTerm; the\nnode(s) with the highest sum are the most preferred."
                                               items:
                                                 description: "The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)"
                                                 properties:
@@ -7410,7 +7410,7 @@ spec:
                                             description: "Resources allows customization of limits and requests for compute resources such as cpu and memory.\nIf specified, this overrides the named calico-node-windows DaemonSet container's resources.\nIf omitted, the calico-node-windows DaemonSet will use its default value for this container's resources.\nIf used in conjunction with the deprecated ComponentResources, then this value takes precedence."
                                             properties:
                                               claims:
-                                                description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
+                                                description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis field depends on the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
                                                 items:
                                                   description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                                   properties:
@@ -7468,7 +7468,7 @@ spec:
                                             description: "Resources allows customization of limits and requests for compute resources such as cpu and memory.\nIf specified, this overrides the named calico-node-windows DaemonSet init container's resources.\nIf omitted, the calico-node-windows DaemonSet will use its default value for this container's resources.\nIf used in conjunction with the deprecated ComponentResources, then this value takes precedence."
                                             properties:
                                               claims:
-                                                description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
+                                                description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis field depends on the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
                                                 items:
                                                   description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                                   properties:
@@ -7934,7 +7934,7 @@ spec:
                                           description: "Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s))."
                                           properties:
                                             preferredDuringSchedulingIgnoredDuringExecution:
-                                              description: "The scheduler will prefer to schedule pods to nodes that satisfy\nthe anti-affinity expressions specified by this field, but it may choose\na node that violates one or more of the expressions. The node that is\nmost preferred is the one with the greatest sum of weights, i.e.\nfor each node that meets all of the scheduling requirements (resource\nrequest, requiredDuringScheduling anti-affinity expressions, etc.),\ncompute a sum by iterating through the elements of this field and adding\n\"weight\" to the sum if the node has pods which matches the corresponding podAffinityTerm; the\nnode(s) with the highest sum are the most preferred."
+                                              description: "The scheduler will prefer to schedule pods to nodes that satisfy\nthe anti-affinity expressions specified by this field, but it may choose\na node that violates one or more of the expressions. The node that is\nmost preferred is the one with the greatest sum of weights, i.e.\nfor each node that meets all of the scheduling requirements (resource\nrequest, requiredDuringScheduling anti-affinity expressions, etc.),\ncompute a sum by iterating through the elements of this field and subtracting\n\"weight\" from the sum if the node has pods which matches the corresponding podAffinityTerm; the\nnode(s) with the highest sum are the most preferred."
                                               items:
                                                 description: "The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)"
                                                 properties:
@@ -8154,7 +8154,7 @@ spec:
                                             description: "Resources allows customization of limits and requests for compute resources such as cpu and memory.\nIf specified, this overrides the named calico-windows-upgrade DaemonSet container's resources.\nIf omitted, the calico-windows-upgrade DaemonSet will use its default value for this container's resources."
                                             properties:
                                               claims:
-                                                description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
+                                                description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis field depends on the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
                                                 items:
                                                   description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                                   properties:
@@ -8312,7 +8312,7 @@ spec:
                             description: "ResourceRequirements allows customization of limits and requests for compute resources such as cpu and memory."
                             properties:
                               claims:
-                                description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
+                                description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis field depends on the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
                                 items:
                                   description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                   properties:
@@ -8779,7 +8779,7 @@ spec:
                                           description: "Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s))."
                                           properties:
                                             preferredDuringSchedulingIgnoredDuringExecution:
-                                              description: "The scheduler will prefer to schedule pods to nodes that satisfy\nthe anti-affinity expressions specified by this field, but it may choose\na node that violates one or more of the expressions. The node that is\nmost preferred is the one with the greatest sum of weights, i.e.\nfor each node that meets all of the scheduling requirements (resource\nrequest, requiredDuringScheduling anti-affinity expressions, etc.),\ncompute a sum by iterating through the elements of this field and adding\n\"weight\" to the sum if the node has pods which matches the corresponding podAffinityTerm; the\nnode(s) with the highest sum are the most preferred."
+                                              description: "The scheduler will prefer to schedule pods to nodes that satisfy\nthe anti-affinity expressions specified by this field, but it may choose\na node that violates one or more of the expressions. The node that is\nmost preferred is the one with the greatest sum of weights, i.e.\nfor each node that meets all of the scheduling requirements (resource\nrequest, requiredDuringScheduling anti-affinity expressions, etc.),\ncompute a sum by iterating through the elements of this field and subtracting\n\"weight\" from the sum if the node has pods which matches the corresponding podAffinityTerm; the\nnode(s) with the highest sum are the most preferred."
                                               items:
                                                 description: "The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)"
                                                 properties:
@@ -9001,7 +9001,7 @@ spec:
                                             description: "Resources allows customization of limits and requests for compute resources such as cpu and memory.\nIf specified, this overrides the named csi-node-driver DaemonSet container's resources.\nIf omitted, the csi-node-driver DaemonSet will use its default value for this container's resources."
                                             properties:
                                               claims:
-                                                description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
+                                                description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis field depends on the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
                                                 items:
                                                   description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                                   properties:
@@ -9161,7 +9161,7 @@ spec:
                               anyOf:
                                 - type: "integer"
                                 - type: "string"
-                              description: "The maximum number of nodes with an existing available DaemonSet pod that\ncan have an updated DaemonSet pod during during an update.\nValue can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%).\nThis can not be 0 if MaxUnavailable is 0.\nAbsolute number is calculated from percentage by rounding up to a minimum of 1.\nDefault value is 0.\nExample: when this is set to 30%, at most 30% of the total number of nodes\nthat should be running the daemon pod (i.e. status.desiredNumberScheduled)\ncan have their a new pod created before the old pod is marked as deleted.\nThe update starts by launching new pods on 30% of nodes. Once an updated\npod is available (Ready for at least minReadySeconds) the old DaemonSet pod\non that node is marked deleted. If the old pod becomes unavailable for any\nreason (Ready transitions to false, is evicted, or is drained) an updated\npod is immediatedly created on that node without considering surge limits.\nAllowing surge implies the possibility that the resources consumed by the\ndaemonset on any given node can double if the readiness check fails, and\nso resource intensive daemonsets should take into account that they may\ncause evictions during disruption."
+                              description: "The maximum number of nodes with an existing available DaemonSet pod that\ncan have an updated DaemonSet pod during during an update.\nValue can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%).\nThis can not be 0 if MaxUnavailable is 0.\nAbsolute number is calculated from percentage by rounding up to a minimum of 1.\nDefault value is 0.\nExample: when this is set to 30%, at most 30% of the total number of nodes\nthat should be running the daemon pod (i.e. status.desiredNumberScheduled)\ncan have their a new pod created before the old pod is marked as deleted.\nThe update starts by launching new pods on 30% of nodes. Once an updated\npod is available (Ready for at least minReadySeconds) the old DaemonSet pod\non that node is marked deleted. If the old pod becomes unavailable for any\nreason (Ready transitions to false, is evicted, or is drained) an updated\npod is immediately created on that node without considering surge limits.\nAllowing surge implies the possibility that the resources consumed by the\ndaemonset on any given node can double if the readiness check fails, and\nso resource intensive daemonsets should take into account that they may\ncause evictions during disruption."
                               x-kubernetes-int-or-string: true
                             maxUnavailable:
                               anyOf:
@@ -9771,7 +9771,7 @@ spec:
                                           description: "Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s))."
                                           properties:
                                             preferredDuringSchedulingIgnoredDuringExecution:
-                                              description: "The scheduler will prefer to schedule pods to nodes that satisfy\nthe anti-affinity expressions specified by this field, but it may choose\na node that violates one or more of the expressions. The node that is\nmost preferred is the one with the greatest sum of weights, i.e.\nfor each node that meets all of the scheduling requirements (resource\nrequest, requiredDuringScheduling anti-affinity expressions, etc.),\ncompute a sum by iterating through the elements of this field and adding\n\"weight\" to the sum if the node has pods which matches the corresponding podAffinityTerm; the\nnode(s) with the highest sum are the most preferred."
+                                              description: "The scheduler will prefer to schedule pods to nodes that satisfy\nthe anti-affinity expressions specified by this field, but it may choose\na node that violates one or more of the expressions. The node that is\nmost preferred is the one with the greatest sum of weights, i.e.\nfor each node that meets all of the scheduling requirements (resource\nrequest, requiredDuringScheduling anti-affinity expressions, etc.),\ncompute a sum by iterating through the elements of this field and subtracting\n\"weight\" from the sum if the node has pods which matches the corresponding podAffinityTerm; the\nnode(s) with the highest sum are the most preferred."
                                               items:
                                                 description: "The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)"
                                                 properties:
@@ -9991,7 +9991,7 @@ spec:
                                             description: "Resources allows customization of limits and requests for compute resources such as cpu and memory.\nIf specified, this overrides the named typha Deployment container's resources.\nIf omitted, the typha Deployment will use its default value for this container's resources.\nIf used in conjunction with the deprecated ComponentResources, then this value takes precedence."
                                             properties:
                                               claims:
-                                                description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
+                                                description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis field depends on the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
                                                 items:
                                                   description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                                   properties:
@@ -10045,7 +10045,7 @@ spec:
                                             description: "Resources allows customization of limits and requests for compute resources such as cpu and memory.\nIf specified, this overrides the named typha Deployment init container's resources.\nIf omitted, the typha Deployment will use its default value for this init container's resources.\nIf used in conjunction with the deprecated ComponentResources, then this value takes precedence."
                                             properties:
                                               claims:
-                                                description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
+                                                description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis field depends on the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
                                                 items:
                                                   description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                                   properties:

@@ -458,6 +458,9 @@ pub struct PulpApi {
     /// Environment variables to add to pulpcore-api container
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env_vars: Option<Vec<PulpApiEnvVars>>,
+    /// For the gunicorn --access-logformat CLI command used to format the access logs.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub gunicorn_access_logformat: Option<String>,
     /// The timeout for the gunicorn process.
     /// Default: 90
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3227,6 +3230,9 @@ pub struct PulpContent {
     /// Environment variables to add to pulpcore-content container
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env_vars: Option<Vec<PulpContentEnvVars>>,
+    /// For the gunicorn --access-logformat CLI command used to format the access logs.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub gunicorn_access_logformat: Option<String>,
     /// The timeout for the gunicorn process.
     /// Default: 90
     #[serde(default, skip_serializing_if = "Option::is_none")]

@@ -31,7 +31,7 @@ spec:
       name: "v2alpha1"
       schema:
         openAPIV3Schema:
-          description: "DatadogAgent defines Agent configuration, see reference https://github.com/DataDog/datadog-operator/blob/main/docs/configuration.v2alpha1.md"
+          description: "DatadogAgent Deployment with the Datadog Operator."
           properties:
             apiVersion:
               description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
@@ -733,6 +733,13 @@ spec:
                     autoscaling:
                       description: "Autoscaling configuration."
                       properties:
+                        cluster:
+                          description: "Cluster contains the configuration for the cluster autoscaling product."
+                          properties:
+                            enabled:
+                              description: "Enabled enables the cluster autoscaling product.\n(Requires Cluster Agent 7.74.0+)\nDefault: false"
+                              type: "boolean"
+                          type: "object"
                         workload:
                           description: "Workload contains the configuration for the workload autoscaling product."
                           properties:
@@ -2173,9 +2180,6 @@ spec:
                     registry:
                       description: "Registry is the image registry to use for all Agent images.\nUse 'public.ecr.aws/datadog' for AWS ECR.\nUse 'datadoghq.azurecr.io' for Azure Container Registry.\nUse 'gcr.io/datadoghq' for Google Container Registry.\nUse 'eu.gcr.io/datadoghq' for Google Container Registry in the EU region.\nUse 'asia.gcr.io/datadoghq' for Google Container Registry in the Asia region.\nUse 'docker.io/datadog' for DockerHub.\nDefault: 'gcr.io/datadoghq'"
                       type: "string"
-                    runProcessChecksInCoreAgent:
-                      description: "Configure whether the Process Agent or core Agent collects process and/or container information (Linux only).\nIf no other checks are running, the Process Agent container will not initialize.\n(Requires Agent 7.60.0+)\nDefault: 'true'\nDeprecated: Functionality now handled automatically. Use env var `DD_PROCESS_CONFIG_RUN_IN_CORE_AGENT_ENABLED` to override."
-                      type: "boolean"
                     secretBackend:
                       description: "Configure the secret backend feature https://docs.datadoghq.com/agent/guide/secrets-management\nSee also: https://github.com/DataDog/datadog-operator/blob/main/docs/secret_management.md"
                       properties:
@@ -6020,6 +6024,13 @@ spec:
                         autoscaling:
                           description: "Autoscaling configuration."
                           properties:
+                            cluster:
+                              description: "Cluster contains the configuration for the cluster autoscaling product."
+                              properties:
+                                enabled:
+                                  description: "Enabled enables the cluster autoscaling product.\n(Requires Cluster Agent 7.74.0+)\nDefault: false"
+                                  type: "boolean"
+                              type: "object"
                             workload:
                               description: "Workload contains the configuration for the workload autoscaling product."
                               properties:

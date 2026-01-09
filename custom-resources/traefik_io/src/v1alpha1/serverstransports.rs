@@ -21,6 +21,9 @@ pub struct ServersTransportSpec {
     /// CertificatesSecrets defines a list of secret storing client certificates for mTLS.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificatesSecrets")]
     pub certificates_secrets: Option<Vec<String>>,
+    /// CipherSuites defines the cipher suites to use when contacting backend servers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cipherSuites")]
+    pub cipher_suites: Option<Vec<String>>,
     /// DisableHTTP2 disables HTTP/2 for connections with backend servers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableHTTP2")]
     pub disable_http2: Option<bool>,
@@ -33,6 +36,12 @@ pub struct ServersTransportSpec {
     /// MaxIdleConnsPerHost controls the maximum idle (keep-alive) to keep per-host.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxIdleConnsPerHost")]
     pub max_idle_conns_per_host: Option<i64>,
+    /// MaxVersion defines the maximum TLS version to use when contacting backend servers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<String>,
+    /// MinVersion defines the minimum TLS version to use when contacting backend servers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<String>,
     /// PeerCertURI defines the peer cert URI used to match against SAN URI during the peer certificate verification.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "peerCertURI")]
     pub peer_cert_uri: Option<String>,

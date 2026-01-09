@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.19.0"
+    controller-gen.kubebuilder.io/version: "v0.20.0"
   name: "fluentbitagents.logging.banzaicloud.io"
 spec:
   group: "logging.banzaicloud.io"
@@ -801,6 +801,10 @@ spec:
                       type: "boolean"
                     prometheusRules:
                       type: "boolean"
+                    prometheusRulesLabels:
+                      additionalProperties:
+                        type: "string"
+                      type: "object"
                     prometheusRulesOverride:
                       items:
                         properties:
@@ -1590,6 +1594,8 @@ spec:
                       type: "string"
                     Exclude_Path:
                       type: "string"
+                    File_Cache_Advise:
+                      type: "string"
                     Ignore_Older:
                       type: "string"
                     Key:
@@ -1739,6 +1745,10 @@ spec:
                       type: "boolean"
                     prometheusRules:
                       type: "boolean"
+                    prometheusRulesLabels:
+                      additionalProperties:
+                        type: "string"
+                      type: "object"
                     prometheusRulesOverride:
                       items:
                         properties:

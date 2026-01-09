@@ -38,6 +38,11 @@ pub struct EngineSpec {
     pub log_requested: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeID")]
     pub node_id: Option<String>,
+    /// RebuildConcurrentSyncLimit controls the maximum number of file synchronization operations that can run
+    /// concurrently during a single replica rebuild.
+    /// It is determined by the global setting or the volume spec field with the same name.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rebuildConcurrentSyncLimit")]
+    pub rebuild_concurrent_sync_limit: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaAddressMap")]
     pub replica_address_map: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestedBackupRestore")]
@@ -131,6 +136,11 @@ pub struct EngineStatus {
     pub port: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "purgeStatus")]
     pub purge_status: Option<BTreeMap<String, EngineStatusPurgeStatus>>,
+    /// RebuildConcurrentSyncLimit controls the maximum number of file synchronization operations that can run
+    /// concurrently during a single replica rebuild.
+    /// It is determined by the global setting or the volume spec field with the same name.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rebuildConcurrentSyncLimit")]
+    pub rebuild_concurrent_sync_limit: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rebuildStatus")]
     pub rebuild_status: Option<BTreeMap<String, EngineStatusRebuildStatus>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaModeMap")]
@@ -216,8 +226,11 @@ pub struct EngineStatusRebuildStatus {
     pub applied_rebuilding_m_bps: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub error: Option<String>,
+    /// Deprecated. We are now using FromReplicaAddressList to list all source replicas.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromReplicaAddress")]
     pub from_replica_address: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromReplicaAddressList")]
+    pub from_replica_address_list: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isRebuilding")]
     pub is_rebuilding: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

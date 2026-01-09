@@ -7,7 +7,6 @@ mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
@@ -285,13 +284,13 @@ pub struct AirflowClusterCeleryExecutorsConfigResourcesCpu {
     /// Cores are specified either as a decimal point number or as milli units.
     /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub max: Option<IntOrString>,
+    pub max: Option<String>,
     /// The minimal amount of CPU cores that Pods need to run.
     /// Equivalent to the `request` for Pod resource configuration.
     /// Cores are specified either as a decimal point number or as milli units.
     /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub min: Option<IntOrString>,
+    pub min: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -303,7 +302,7 @@ pub struct AirflowClusterCeleryExecutorsConfigResourcesMemory {
     /// For example, the following represent roughly the same value:
     /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub limit: Option<IntOrString>,
+    pub limit: Option<String>,
     /// Additional options that can be specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeLimits")]
     pub runtime_limits: Option<AirflowClusterCeleryExecutorsConfigResourcesMemoryRuntimeLimits>,
@@ -561,13 +560,13 @@ pub struct AirflowClusterCeleryExecutorsRoleGroupsConfigResourcesCpu {
     /// Cores are specified either as a decimal point number or as milli units.
     /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub max: Option<IntOrString>,
+    pub max: Option<String>,
     /// The minimal amount of CPU cores that Pods need to run.
     /// Equivalent to the `request` for Pod resource configuration.
     /// Cores are specified either as a decimal point number or as milli units.
     /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub min: Option<IntOrString>,
+    pub min: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -579,7 +578,7 @@ pub struct AirflowClusterCeleryExecutorsRoleGroupsConfigResourcesMemory {
     /// For example, the following represent roughly the same value:
     /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub limit: Option<IntOrString>,
+    pub limit: Option<String>,
     /// Additional options that can be specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeLimits")]
     pub runtime_limits: Option<AirflowClusterCeleryExecutorsRoleGroupsConfigResourcesMemoryRuntimeLimits>,
@@ -1006,13 +1005,13 @@ pub struct AirflowClusterDagProcessorsConfigResourcesCpu {
     /// Cores are specified either as a decimal point number or as milli units.
     /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub max: Option<IntOrString>,
+    pub max: Option<String>,
     /// The minimal amount of CPU cores that Pods need to run.
     /// Equivalent to the `request` for Pod resource configuration.
     /// Cores are specified either as a decimal point number or as milli units.
     /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub min: Option<IntOrString>,
+    pub min: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1024,7 +1023,7 @@ pub struct AirflowClusterDagProcessorsConfigResourcesMemory {
     /// For example, the following represent roughly the same value:
     /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub limit: Option<IntOrString>,
+    pub limit: Option<String>,
     /// Additional options that can be specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeLimits")]
     pub runtime_limits: Option<AirflowClusterDagProcessorsConfigResourcesMemoryRuntimeLimits>,
@@ -1282,13 +1281,13 @@ pub struct AirflowClusterDagProcessorsRoleGroupsConfigResourcesCpu {
     /// Cores are specified either as a decimal point number or as milli units.
     /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub max: Option<IntOrString>,
+    pub max: Option<String>,
     /// The minimal amount of CPU cores that Pods need to run.
     /// Equivalent to the `request` for Pod resource configuration.
     /// Cores are specified either as a decimal point number or as milli units.
     /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub min: Option<IntOrString>,
+    pub min: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1300,7 +1299,7 @@ pub struct AirflowClusterDagProcessorsRoleGroupsConfigResourcesMemory {
     /// For example, the following represent roughly the same value:
     /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub limit: Option<IntOrString>,
+    pub limit: Option<String>,
     /// Additional options that can be specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeLimits")]
     pub runtime_limits: Option<AirflowClusterDagProcessorsRoleGroupsConfigResourcesMemoryRuntimeLimits>,
@@ -1573,13 +1572,13 @@ pub struct AirflowClusterKubernetesExecutorsConfigResourcesCpu {
     /// Cores are specified either as a decimal point number or as milli units.
     /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub max: Option<IntOrString>,
+    pub max: Option<String>,
     /// The minimal amount of CPU cores that Pods need to run.
     /// Equivalent to the `request` for Pod resource configuration.
     /// Cores are specified either as a decimal point number or as milli units.
     /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub min: Option<IntOrString>,
+    pub min: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1591,7 +1590,7 @@ pub struct AirflowClusterKubernetesExecutorsConfigResourcesMemory {
     /// For example, the following represent roughly the same value:
     /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub limit: Option<IntOrString>,
+    pub limit: Option<String>,
     /// Additional options that can be specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeLimits")]
     pub runtime_limits: Option<AirflowClusterKubernetesExecutorsConfigResourcesMemoryRuntimeLimits>,
@@ -1819,13 +1818,13 @@ pub struct AirflowClusterSchedulersConfigResourcesCpu {
     /// Cores are specified either as a decimal point number or as milli units.
     /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub max: Option<IntOrString>,
+    pub max: Option<String>,
     /// The minimal amount of CPU cores that Pods need to run.
     /// Equivalent to the `request` for Pod resource configuration.
     /// Cores are specified either as a decimal point number or as milli units.
     /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub min: Option<IntOrString>,
+    pub min: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1837,7 +1836,7 @@ pub struct AirflowClusterSchedulersConfigResourcesMemory {
     /// For example, the following represent roughly the same value:
     /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub limit: Option<IntOrString>,
+    pub limit: Option<String>,
     /// Additional options that can be specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeLimits")]
     pub runtime_limits: Option<AirflowClusterSchedulersConfigResourcesMemoryRuntimeLimits>,
@@ -2095,13 +2094,13 @@ pub struct AirflowClusterSchedulersRoleGroupsConfigResourcesCpu {
     /// Cores are specified either as a decimal point number or as milli units.
     /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub max: Option<IntOrString>,
+    pub max: Option<String>,
     /// The minimal amount of CPU cores that Pods need to run.
     /// Equivalent to the `request` for Pod resource configuration.
     /// Cores are specified either as a decimal point number or as milli units.
     /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub min: Option<IntOrString>,
+    pub min: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2113,7 +2112,7 @@ pub struct AirflowClusterSchedulersRoleGroupsConfigResourcesMemory {
     /// For example, the following represent roughly the same value:
     /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub limit: Option<IntOrString>,
+    pub limit: Option<String>,
     /// Additional options that can be specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeLimits")]
     pub runtime_limits: Option<AirflowClusterSchedulersRoleGroupsConfigResourcesMemoryRuntimeLimits>,
@@ -2340,13 +2339,13 @@ pub struct AirflowClusterTriggerersConfigResourcesCpu {
     /// Cores are specified either as a decimal point number or as milli units.
     /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub max: Option<IntOrString>,
+    pub max: Option<String>,
     /// The minimal amount of CPU cores that Pods need to run.
     /// Equivalent to the `request` for Pod resource configuration.
     /// Cores are specified either as a decimal point number or as milli units.
     /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub min: Option<IntOrString>,
+    pub min: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2358,7 +2357,7 @@ pub struct AirflowClusterTriggerersConfigResourcesMemory {
     /// For example, the following represent roughly the same value:
     /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub limit: Option<IntOrString>,
+    pub limit: Option<String>,
     /// Additional options that can be specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeLimits")]
     pub runtime_limits: Option<AirflowClusterTriggerersConfigResourcesMemoryRuntimeLimits>,
@@ -2616,13 +2615,13 @@ pub struct AirflowClusterTriggerersRoleGroupsConfigResourcesCpu {
     /// Cores are specified either as a decimal point number or as milli units.
     /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub max: Option<IntOrString>,
+    pub max: Option<String>,
     /// The minimal amount of CPU cores that Pods need to run.
     /// Equivalent to the `request` for Pod resource configuration.
     /// Cores are specified either as a decimal point number or as milli units.
     /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub min: Option<IntOrString>,
+    pub min: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2634,7 +2633,7 @@ pub struct AirflowClusterTriggerersRoleGroupsConfigResourcesMemory {
     /// For example, the following represent roughly the same value:
     /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub limit: Option<IntOrString>,
+    pub limit: Option<String>,
     /// Additional options that can be specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeLimits")]
     pub runtime_limits: Option<AirflowClusterTriggerersRoleGroupsConfigResourcesMemoryRuntimeLimits>,
@@ -2861,13 +2860,13 @@ pub struct AirflowClusterWebserversConfigResourcesCpu {
     /// Cores are specified either as a decimal point number or as milli units.
     /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub max: Option<IntOrString>,
+    pub max: Option<String>,
     /// The minimal amount of CPU cores that Pods need to run.
     /// Equivalent to the `request` for Pod resource configuration.
     /// Cores are specified either as a decimal point number or as milli units.
     /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub min: Option<IntOrString>,
+    pub min: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2879,7 +2878,7 @@ pub struct AirflowClusterWebserversConfigResourcesMemory {
     /// For example, the following represent roughly the same value:
     /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub limit: Option<IntOrString>,
+    pub limit: Option<String>,
     /// Additional options that can be specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeLimits")]
     pub runtime_limits: Option<AirflowClusterWebserversConfigResourcesMemoryRuntimeLimits>,
@@ -3140,13 +3139,13 @@ pub struct AirflowClusterWebserversRoleGroupsConfigResourcesCpu {
     /// Cores are specified either as a decimal point number or as milli units.
     /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub max: Option<IntOrString>,
+    pub max: Option<String>,
     /// The minimal amount of CPU cores that Pods need to run.
     /// Equivalent to the `request` for Pod resource configuration.
     /// Cores are specified either as a decimal point number or as milli units.
     /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub min: Option<IntOrString>,
+    pub min: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3158,7 +3157,7 @@ pub struct AirflowClusterWebserversRoleGroupsConfigResourcesMemory {
     /// For example, the following represent roughly the same value:
     /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub limit: Option<IntOrString>,
+    pub limit: Option<String>,
     /// Additional options that can be specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeLimits")]
     pub runtime_limits: Option<AirflowClusterWebserversRoleGroupsConfigResourcesMemoryRuntimeLimits>,

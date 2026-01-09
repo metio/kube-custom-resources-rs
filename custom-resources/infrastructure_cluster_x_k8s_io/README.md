@@ -62,3 +62,11 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 - `IBMVPCCluster`
 - `IBMVPCMachine`
 - `IBMVPCMachineTemplate`
+- `VSphereClusterIdentity`
+- `VSphereCluster`
+- `VSphereClusterTemplate`
+- `VSphereDeploymentZone`
+- `VSphereFailureDomain`
+- `VSphereMachine`
+- `VSphereMachineTemplate`
+- `VSphereVM`

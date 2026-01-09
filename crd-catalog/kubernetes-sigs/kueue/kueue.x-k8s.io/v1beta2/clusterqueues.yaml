@@ -133,7 +133,7 @@ spec:
                       type: "string"
                     whenCanPreempt:
                       default: "TryNextFlavor"
-                      description: "whenCanPreempt determines whether a workload should try the next flavor\nbefore borrowing in current flavor. The possible values are:\n\n- `MayStopSearch`: stop the search for candidate flavors if workload fits or requires\n  preemption to fit.\n- `TryNextFlavor` (default): try next flavor if workload requires preemption\n  to fit in current flavor."
+                      description: "whenCanPreempt determines whether a workload should try the next flavor\nbefore preempting in current flavor. The possible values are:\n\n- `MayStopSearch`: stop the search for candidate flavors if workload fits or requires\n  preemption to fit.\n- `TryNextFlavor` (default): try next flavor if workload requires preemption\n  to fit in current flavor."
                       enum:
                         - "MayStopSearch"
                         - "TryNextFlavor"

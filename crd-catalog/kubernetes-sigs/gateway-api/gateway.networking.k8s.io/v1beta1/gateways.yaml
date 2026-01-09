@@ -397,8 +397,8 @@ spec:
                   maxItems: 16
                   type: "array"
                   x-kubernetes-list-type: "atomic"
-                attachedListeners:
-                  description: "AttachedListeners represents the total number of ListenerSets that have been\nsuccessfully attached to this Gateway.\n\nA ListenerSet is successfully attached to a Gateway\nwhen all the following conditions are met :\n- The ListenerSet is selected by the Gateway's AllowedListeners field\n- The ListenerSet has a valid ParentRef selecting the Gateway\n- The ListenerSet's status has the condition \"Accepted: true\"\n\nUses for this field include troubleshooting AttachedListeners attachment and\nmeasuring blast radius/impact of changes to a Gateway."
+                attachedListenerSets:
+                  description: "AttachedListenerSets represents the total number of ListenerSets that have been\nsuccessfully attached to this Gateway.\n\nA ListenerSet is successfully attached to a Gateway when all the following conditions are met:\n- The ListenerSet is selected by the Gateway's AllowedListeners field\n- The ListenerSet has a valid ParentRef selecting the Gateway\n- The ListenerSet's status has the condition \"Accepted: true\"\n\nUses for this field include troubleshooting AttachedListenerSets attachment and\nmeasuring blast radius/impact of changes to a Gateway."
                   format: "int32"
                   type: "integer"
                 conditions:

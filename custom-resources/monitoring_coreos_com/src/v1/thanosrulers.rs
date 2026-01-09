@@ -377,6 +377,13 @@ pub struct ThanosRulerSpec {
     /// This field takes precedence over `tracingConfig`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tracingConfigFile")]
     pub tracing_config_file: Option<String>,
+    /// updateStrategy indicates the strategy that will be employed to update
+    /// Pods in the StatefulSet when a revision is made to statefulset's Pod
+    /// Template.
+    /// 
+    /// The default strategy is RollingUpdate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateStrategy")]
+    pub update_strategy: Option<ThanosRulerUpdateStrategy>,
     /// version of Thanos to be deployed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
@@ -4357,22 +4364,32 @@ pub struct ThanosRulerRemoteWriteAzureAd {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cloud: Option<ThanosRulerRemoteWriteAzureAdCloud>,
     /// managedIdentity defines the Azure User-assigned Managed identity.
-    /// Cannot be set at the same time as `oauth` or `sdk`.
+    /// Cannot be set at the same time as `oauth`, `sdk` or `workloadIdentity`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "managedIdentity")]
     pub managed_identity: Option<ThanosRulerRemoteWriteAzureAdManagedIdentity>,
     /// oauth defines the oauth config that is being used to authenticate.
-    /// Cannot be set at the same time as `managedIdentity` or `sdk`.
+    /// Cannot be set at the same time as `managedIdentity`, `sdk` or `workloadIdentity`.
     /// 
     /// It requires Prometheus >= v2.48.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oauth: Option<ThanosRulerRemoteWriteAzureAdOauth>,
+    /// scope is the custom OAuth 2.0 scope to request when acquiring tokens.
+    /// It requires Prometheus >= 3.9.0. Currently not supported by Thanos.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scope: Option<String>,
     /// sdk defines the Azure SDK config that is being used to authenticate.
     /// See <https://learn.microsoft.com/en-us/azure/developer/go/azure-sdk-authentication>
-    /// Cannot be set at the same time as `oauth` or `managedIdentity`.
+    /// Cannot be set at the same time as `oauth`, `managedIdentity` or `workloadIdentity`.
     /// 
     /// It requires Prometheus >= v2.52.0 or Thanos >= v0.36.0.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sdk: Option<ThanosRulerRemoteWriteAzureAdSdk>,
+    /// workloadIdentity defines the Azure Workload Identity authentication.
+    /// Cannot be set at the same time as `oauth`, `managedIdentity`, or `sdk`.
+    /// 
+    /// It requires Prometheus >= 3.7.0. Currently not supported by Thanos.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workloadIdentity")]
+    pub workload_identity: Option<ThanosRulerRemoteWriteAzureAdWorkloadIdentity>,
 }
 
 /// azureAd for the URL.
@@ -4388,7 +4405,7 @@ pub enum ThanosRulerRemoteWriteAzureAdCloud {
 }
 
 /// managedIdentity defines the Azure User-assigned Managed identity.
-/// Cannot be set at the same time as `oauth` or `sdk`.
+/// Cannot be set at the same time as `oauth`, `sdk` or `workloadIdentity`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ThanosRulerRemoteWriteAzureAdManagedIdentity {
     /// clientId defines the Azure User-assigned Managed identity.
@@ -4399,7 +4416,7 @@ pub struct ThanosRulerRemoteWriteAzureAdManagedIdentity {
 }
 
 /// oauth defines the oauth config that is being used to authenticate.
-/// Cannot be set at the same time as `managedIdentity` or `sdk`.
+/// Cannot be set at the same time as `managedIdentity`, `sdk` or `workloadIdentity`.
 /// 
 /// It requires Prometheus >= v2.48.0 or Thanos >= v0.31.0.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4434,7 +4451,7 @@ pub struct ThanosRulerRemoteWriteAzureAdOauthClientSecret {
 
 /// sdk defines the Azure SDK config that is being used to authenticate.
 /// See <https://learn.microsoft.com/en-us/azure/developer/go/azure-sdk-authentication>
-/// Cannot be set at the same time as `oauth` or `managedIdentity`.
+/// Cannot be set at the same time as `oauth`, `managedIdentity` or `workloadIdentity`.
 /// 
 /// It requires Prometheus >= v2.52.0 or Thanos >= v0.36.0.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4442,6 +4459,20 @@ pub struct ThanosRulerRemoteWriteAzureAdSdk {
     /// tenantId defines the tenant ID of the azure active directory application that is being used to authenticate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tenantId")]
     pub tenant_id: Option<String>,
+}
+
+/// workloadIdentity defines the Azure Workload Identity authentication.
+/// Cannot be set at the same time as `oauth`, `managedIdentity`, or `sdk`.
+/// 
+/// It requires Prometheus >= 3.7.0. Currently not supported by Thanos.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerRemoteWriteAzureAdWorkloadIdentity {
+    /// clientId is the clientID of the Azure Active Directory application.
+    #[serde(rename = "clientId")]
+    pub client_id: String,
+    /// tenantId is the tenant ID of the Azure Active Directory application.
+    #[serde(rename = "tenantId")]
+    pub tenant_id: String,
 }
 
 /// basicAuth configuration for the URL.
@@ -6389,6 +6420,49 @@ pub struct ThanosRulerTracingConfig {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// updateStrategy indicates the strategy that will be employed to update
+/// Pods in the StatefulSet when a revision is made to statefulset's Pod
+/// Template.
+/// 
+/// The default strategy is RollingUpdate.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ThanosRulerUpdateStrategy {
+    /// rollingUpdate is used to communicate parameters when type is RollingUpdate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
+    pub rolling_update: Option<ThanosRulerUpdateStrategyRollingUpdate>,
+    /// type indicates the type of the StatefulSetUpdateStrategy.
+    /// 
+    /// Default is RollingUpdate.
+    #[serde(rename = "type")]
+    pub r#type: ThanosRulerUpdateStrategyType,
+}
+
+/// rollingUpdate is used to communicate parameters when type is RollingUpdate.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerUpdateStrategyRollingUpdate {
+    /// maxUnavailable is the maximum number of pods that can be unavailable
+    /// during the update. The value can be an absolute number (ex: 5) or a
+    /// percentage of desired pods (ex: 10%). Absolute number is calculated from
+    /// percentage by rounding up. This can not be 0.  Defaults to 1. This field
+    /// is alpha-level and is only honored by servers that enable the
+    /// MaxUnavailableStatefulSet feature. The field applies to all pods in the
+    /// range 0 to Replicas-1.  That means if there is any unavailable pod in
+    /// the range 0 to Replicas-1, it will be counted towards MaxUnavailable.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
+    pub max_unavailable: Option<IntOrString>,
+}
+
+/// updateStrategy indicates the strategy that will be employed to update
+/// Pods in the StatefulSet when a revision is made to statefulset's Pod
+/// Template.
+/// 
+/// The default strategy is RollingUpdate.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ThanosRulerUpdateStrategyType {
+    OnDelete,
+    RollingUpdate,
 }
 
 /// VolumeMount describes a mounting of a Volume within a container.

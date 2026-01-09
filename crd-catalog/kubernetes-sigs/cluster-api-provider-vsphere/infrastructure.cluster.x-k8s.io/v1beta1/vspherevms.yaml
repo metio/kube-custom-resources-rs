@@ -15,7 +15,8 @@ spec:
     singular: "vspherevm"
   scope: "Namespaced"
   versions:
-    - name: "v1beta1"
+    - deprecated: true
+      name: "v1beta1"
       schema:
         openAPIV3Schema:
           description: "VSphereVM is the Schema for the vspherevms API."
@@ -590,6 +591,6 @@ spec:
               type: "object"
           type: "object"
       served: true
-      storage: true
+      storage: false
       subresources:
         status: {}

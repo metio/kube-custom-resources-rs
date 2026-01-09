@@ -175,13 +175,13 @@ pub struct KubevirtClusterStatus {
     /// FailureDomains don't mean much in CAPD since it's all local, but we can see how the rest of cluster API
     /// will use this if we populate it.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomains")]
-    pub failure_domains: Option<Vec<KubevirtClusterStatusFailureDomains>>,
+    pub failure_domains: Option<BTreeMap<String, KubevirtClusterStatusFailureDomains>>,
     /// Ready denotes that the infrastructure is ready.
     pub ready: bool,
 }
 
-/// FailureDomain is the Schema for Cluster API failure domains.
-/// It allows controllers to understand how many failure domains a cluster can optionally span across.
+/// FailureDomains don't mean much in CAPD since it's all local, but we can see how the rest of cluster API
+/// will use this if we populate it.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubevirtClusterStatusFailureDomains {
     /// attributes is a free form map of attributes an infrastructure provider might use or require.
@@ -190,7 +190,5 @@ pub struct KubevirtClusterStatusFailureDomains {
     /// controlPlane determines if this failure domain is suitable for use by control plane machines.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlane")]
     pub control_plane: Option<bool>,
-    /// name is the name of the failure domain.
-    pub name: String,
 }
 

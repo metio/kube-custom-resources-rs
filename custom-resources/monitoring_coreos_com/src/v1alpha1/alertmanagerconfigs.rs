@@ -8009,8 +8009,8 @@ pub struct AlertmanagerConfigReceiversVictoropsConfigs {
     pub monitoring_tool: Option<String>,
     /// routingKey defines a key used to map the alert to a team.
     /// This determines which VictorOps team will receive the alert notification.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "routingKey")]
-    pub routing_key: Option<String>,
+    #[serde(rename = "routingKey")]
+    pub routing_key: String,
     /// sendResolved defines whether or not to notify about resolved alerts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sendResolved")]
     pub send_resolved: Option<bool>,

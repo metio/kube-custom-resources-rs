@@ -3040,6 +3040,9 @@ pub struct ClusterOutputOpentelemetry {
     /// Fluent Bit provides integrated support for Transport Layer Security (TLS) and it predecessor Secure Sockets Layer (SSL) respectively.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<ClusterOutputOpentelemetryTls>,
+    /// Limit the maximum number of Chunks in the filesystem for the current output logical destination.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "totalLimitSize")]
+    pub total_limit_size: Option<String>,
     /// Specify an optional HTTP URI for the target web server listening for traces, e.g: /v1/traces
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tracesUri")]
     pub traces_uri: Option<String>,

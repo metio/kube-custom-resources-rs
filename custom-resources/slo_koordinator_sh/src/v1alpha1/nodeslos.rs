@@ -1286,7 +1286,7 @@ pub struct NodeSloResourceUsedThresholdWithBe {
     /// if be.cpuUsage >= CPUEvictBEUsageThresholdPercent/100, then start to calculate the resources need to be released.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuEvictBEUsageThresholdPercent")]
     pub cpu_evict_be_usage_threshold_percent: Option<i64>,
-    /// lower: CPU release util usage under CPUEvictLowerPercent, default = CPUEvictLowerPercent - 2
+    /// lower: CPU release util usage under CPUEvictLowerPercent, default = CPUEvictThresholdPercent - 2
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuEvictLowerPercent")]
     pub cpu_evict_lower_percent: Option<i64>,
     /// CPUEvictPolicy defines the policy for the BECPUEvict feature.

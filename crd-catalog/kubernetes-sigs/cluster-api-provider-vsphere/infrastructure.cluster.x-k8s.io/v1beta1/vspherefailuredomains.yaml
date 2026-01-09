@@ -15,7 +15,8 @@ spec:
     singular: "vspherefailuredomain"
   scope: "Cluster"
   versions:
-    - name: "v1beta1"
+    - deprecated: true
+      name: "v1beta1"
       schema:
         openAPIV3Schema:
           description: "VSphereFailureDomain is the Schema for the vspherefailuredomains API."
@@ -232,4 +233,4 @@ spec:
               type: "object"
           type: "object"
       served: true
-      storage: true
+      storage: false

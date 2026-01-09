@@ -39,6 +39,9 @@ pub struct DeviceSpec {
     /// Required: The protocol configuration used to connect to the device.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<DeviceProtocol>,
+    /// StateReport represents the configuration of state reporting for a device.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stateReport")]
+    pub state_report: Option<DeviceStateReport>,
 }
 
 /// Required: DeviceModelRef is reference to the device model used as a template
@@ -306,73 +309,28 @@ pub struct DeviceProtocol {
     pub protocol_name: Option<String>,
 }
 
-/// DeviceStatus reports the device state and the desired/reported values of twin attributes.
+/// StateReport represents the configuration of state reporting for a device.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DeviceStateReport {
+    /// Optional: Define how frequent mapper will report the device state.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reportCycle")]
+    pub report_cycle: Option<i64>,
+    /// Optional: whether be reported to the cloud
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reportToCloud")]
+    pub report_to_cloud: Option<bool>,
+}
+
+/// We schedule to extract the status field of Device CRD to a separate CRD DeviceStatus
+/// The DeviceStatusOld is kept temporarily to avoid breaking changes during the transition period.
+/// After the transition period, DeviceStatusOld and related code will be removed.
+/// DeviceStatusOld represents the status of a device instance.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceStatus {
-    /// Optional: The last time the device was online.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastOnlineTime")]
-    pub last_online_time: Option<String>,
     /// Optional: Define how frequent mapper will report the device status.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reportCycle")]
     pub report_cycle: Option<i64>,
     /// Optional: whether be reported to the cloud
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reportToCloud")]
     pub report_to_cloud: Option<bool>,
-    /// Optional: The state of the device.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub state: Option<String>,
-    /// A list of device twins containing desired/reported desired/reported values of twin properties.
-    /// Optional: A passive device won't have twin properties and this list could be empty.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub twins: Option<Vec<DeviceStatusTwins>>,
-}
-
-/// Twin provides a logical representation of control properties (writable properties in the
-/// device model). The properties can have a Desired state and a Reported state. The cloud configures
-/// the `Desired`state of a device property and this configuration update is pushed to the edge node.
-/// The mapper sends a command to the device to change this property value as per the desired state .
-/// It receives the `Reported` state of the property once the previous operation is complete and sends
-/// the reported state to the cloud. Offline device interaction in the edge is possible via twin
-/// properties for control/command operations.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct DeviceStatusTwins {
-    /// The meaning of here is to indicate desired value of `deviceProperty.Desired`
-    /// that the mapper has received in current cycle.
-    /// Useful in cases that people want to check whether the mapper is working
-    /// appropriately and its internal status is up-to-date.
-    /// This value should be only updated by devicecontroller upstream.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedDesired")]
-    pub observed_desired: Option<DeviceStatusTwinsObservedDesired>,
-    /// Required: The property name for which the desired/reported values are specified.
-    /// This property should be present in the device model.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "propertyName")]
-    pub property_name: Option<String>,
-    /// Required: the reported property value.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub reported: Option<DeviceStatusTwinsReported>,
-}
-
-/// The meaning of here is to indicate desired value of `deviceProperty.Desired`
-/// that the mapper has received in current cycle.
-/// Useful in cases that people want to check whether the mapper is working
-/// appropriately and its internal status is up-to-date.
-/// This value should be only updated by devicecontroller upstream.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct DeviceStatusTwinsObservedDesired {
-    /// Additional metadata like timestamp when the value was reported etc.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<BTreeMap<String, String>>,
-    /// Required: The value for this property.
-    pub value: String,
-}
-
-/// Required: the reported property value.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct DeviceStatusTwinsReported {
-    /// Additional metadata like timestamp when the value was reported etc.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<BTreeMap<String, String>>,
-    /// Required: The value for this property.
-    pub value: String,
 }
 

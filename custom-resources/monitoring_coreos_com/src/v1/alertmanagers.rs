@@ -115,12 +115,6 @@ pub struct AlertmanagerSpec {
     /// this behaviour may break at any time without notice.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<AlertmanagerContainers>>,
-    /// dispatchStartDelay defines the delay duration of the aggregation groups' first flush.
-    /// The delay helps ensuring that all alerts have been resent by the Prometheus instances to Alertmanager after a roll-out.
-    /// 
-    /// It requires Alertmanager >= 0.30.0.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dispatchStartDelay")]
-    pub dispatch_start_delay: Option<String>,
     /// dnsConfig defines the DNS configuration for the pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsConfig")]
     pub dns_config: Option<AlertmanagerDnsConfig>,
@@ -198,10 +192,18 @@ pub struct AlertmanagerSpec {
     /// logLevel for Alertmanager to be configured with.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<AlertmanagerLogLevel>,
-    /// minReadySeconds defines the minimum number of seconds for which a newly created pod should be ready
-    /// without any of its container crashing for it to be considered available.
+    /// minReadySeconds defines the minimum number of seconds for which a newly
+    /// created pod should be ready without any of its container crashing for it
+    /// to be considered available.
     /// 
     /// If unset, pods will be considered available as soon as they are ready.
+    /// 
+    /// When the Alertmanager version is greater than or equal to v0.30.0, the
+    /// duration is also used to delay the first flush of the aggregation
+    /// groups. This delay helps ensuring that all alerts have been resent by
+    /// the Prometheus instances to Alertmanager after a roll-out. It is
+    /// possible to override this behavior passing a custom value via
+    /// `.spec.additionalArgs`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i32>,
     /// nodeSelector defines which Nodes the Pods are scheduled on.
@@ -313,6 +315,13 @@ pub struct AlertmanagerSpec {
     /// topologySpreadConstraints defines the Pod's topology spread constraints.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
     pub topology_spread_constraints: Option<Vec<AlertmanagerTopologySpreadConstraints>>,
+    /// updateStrategy indicates the strategy that will be employed to update
+    /// Pods in the StatefulSet when a revision is made to statefulset's Pod
+    /// Template.
+    /// 
+    /// The default strategy is RollingUpdate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateStrategy")]
+    pub update_strategy: Option<AlertmanagerUpdateStrategy>,
     /// version the cluster should be on.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
@@ -1176,7 +1185,7 @@ pub struct AlertmanagerAlertmanagerConfigurationGlobal {
     /// victorops defines the default configuration for VictorOps.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub victorops: Option<AlertmanagerAlertmanagerConfigurationGlobalVictorops>,
-    /// webex defines the default configuration for Jira.
+    /// webex defines the default configuration for Webex.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub webex: Option<AlertmanagerAlertmanagerConfigurationGlobalWebex>,
     /// wechat defines the default WeChat Config
@@ -2235,7 +2244,7 @@ pub struct AlertmanagerAlertmanagerConfigurationGlobalVictoropsApiKey {
     pub optional: Option<bool>,
 }
 
-/// webex defines the default configuration for Jira.
+/// webex defines the default configuration for Webex.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlertmanagerAlertmanagerConfigurationGlobalWebex {
     /// apiURL defines the is the default Webex API URL.
@@ -6548,6 +6557,49 @@ pub struct AlertmanagerTopologySpreadConstraintsLabelSelectorMatchExpressions {
     /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
+}
+
+/// updateStrategy indicates the strategy that will be employed to update
+/// Pods in the StatefulSet when a revision is made to statefulset's Pod
+/// Template.
+/// 
+/// The default strategy is RollingUpdate.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct AlertmanagerUpdateStrategy {
+    /// rollingUpdate is used to communicate parameters when type is RollingUpdate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
+    pub rolling_update: Option<AlertmanagerUpdateStrategyRollingUpdate>,
+    /// type indicates the type of the StatefulSetUpdateStrategy.
+    /// 
+    /// Default is RollingUpdate.
+    #[serde(rename = "type")]
+    pub r#type: AlertmanagerUpdateStrategyType,
+}
+
+/// rollingUpdate is used to communicate parameters when type is RollingUpdate.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlertmanagerUpdateStrategyRollingUpdate {
+    /// maxUnavailable is the maximum number of pods that can be unavailable
+    /// during the update. The value can be an absolute number (ex: 5) or a
+    /// percentage of desired pods (ex: 10%). Absolute number is calculated from
+    /// percentage by rounding up. This can not be 0.  Defaults to 1. This field
+    /// is alpha-level and is only honored by servers that enable the
+    /// MaxUnavailableStatefulSet feature. The field applies to all pods in the
+    /// range 0 to Replicas-1.  That means if there is any unavailable pod in
+    /// the range 0 to Replicas-1, it will be counted towards MaxUnavailable.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
+    pub max_unavailable: Option<IntOrString>,
+}
+
+/// updateStrategy indicates the strategy that will be employed to update
+/// Pods in the StatefulSet when a revision is made to statefulset's Pod
+/// Template.
+/// 
+/// The default strategy is RollingUpdate.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AlertmanagerUpdateStrategyType {
+    OnDelete,
+    RollingUpdate,
 }
 
 /// VolumeMount describes a mounting of a Volume within a container.

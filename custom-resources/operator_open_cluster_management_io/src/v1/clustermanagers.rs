@@ -328,6 +328,9 @@ pub struct ClusterManagerRegistrationConfiguration {
     ///  	he can set featuregate/Foo=false before upgrading. Let's say the cluster-admin wants featuregate/Foo=false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "featureGates")]
     pub feature_gates: Option<Vec<ClusterManagerRegistrationConfigurationFeatureGates>>,
+    /// ImporterConfiguration represents the configuration of the cluster importer
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "importerConfiguration")]
+    pub importer_configuration: Option<ClusterManagerRegistrationConfigurationImporterConfiguration>,
     /// RegistrationDrivers represent the list of hub registration drivers that contain information used by hub to initialize the hub cluster
     /// A RegistrationDriverHub contains details of authentication type and the hub cluster ARN
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "registrationDrivers")]
@@ -349,6 +352,15 @@ pub struct ClusterManagerRegistrationConfigurationFeatureGates {
 pub enum ClusterManagerRegistrationConfigurationFeatureGatesMode {
     Enable,
     Disable,
+}
+
+/// ImporterConfiguration represents the configuration of the cluster importer
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterManagerRegistrationConfigurationImporterConfiguration {
+    /// renderers specifies which import renderers to use.
+    /// Valid values are: "render-auto", "render-from-config-secret"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub renderers: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]

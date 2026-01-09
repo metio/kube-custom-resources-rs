@@ -977,7 +977,7 @@ pub struct FluentdBufferPvcSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
     pub data_source_ref: Option<FluentdBufferPvcSpecDataSourceRef>,
     /// resources represents the minimum resources the volume should have.
-    /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+    /// Users are allowed to specify resource requirements
     /// that are lower than previous value but must still be higher than capacity recorded in the
     /// status field of the claim.
     /// More info: <https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources>
@@ -1074,7 +1074,7 @@ pub struct FluentdBufferPvcSpecDataSourceRef {
 }
 
 /// resources represents the minimum resources the volume should have.
-/// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+/// Users are allowed to specify resource requirements
 /// that are lower than previous value but must still be higher than capacity recorded in the
 /// status field of the claim.
 /// More info: <https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources>
@@ -1164,8 +1164,6 @@ pub struct FluentdBufferPvcStatus {
     /// should ignore the update for the purpose it was designed. For example - a controller that
     /// only is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid
     /// resources associated with PVC.
-    /// 
-    /// This is an alpha field and requires enabling RecoverVolumeExpansionFailure feature.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocatedResourceStatuses")]
     pub allocated_resource_statuses: Option<BTreeMap<String, String>>,
     /// allocatedResources tracks the resources allocated to a PVC including its capacity.
@@ -1188,8 +1186,6 @@ pub struct FluentdBufferPvcStatus {
     /// should ignore the update for the purpose it was designed. For example - a controller that
     /// only is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid
     /// resources associated with PVC.
-    /// 
-    /// This is an alpha field and requires enabling RecoverVolumeExpansionFailure feature.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocatedResources")]
     pub allocated_resources: Option<BTreeMap<String, IntOrString>>,
     /// capacity represents the actual resources of the underlying volume.
@@ -3371,7 +3367,7 @@ pub struct FluentdPositionDbEphemeralVolumeClaimTemplateSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
     pub data_source_ref: Option<FluentdPositionDbEphemeralVolumeClaimTemplateSpecDataSourceRef>,
     /// resources represents the minimum resources the volume should have.
-    /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+    /// Users are allowed to specify resource requirements
     /// that are lower than previous value but must still be higher than capacity recorded in the
     /// status field of the claim.
     /// More info: <https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources>
@@ -3468,7 +3464,7 @@ pub struct FluentdPositionDbEphemeralVolumeClaimTemplateSpecDataSourceRef {
 }
 
 /// resources represents the minimum resources the volume should have.
-/// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+/// Users are allowed to specify resource requirements
 /// that are lower than previous value but must still be higher than capacity recorded in the
 /// status field of the claim.
 /// More info: <https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources>
@@ -4191,6 +4187,21 @@ pub struct FluentdPositionDbProjectedSourcesPodCertificate {
     /// Kubelet's generated CSRs will be addressed to this signer.
     #[serde(rename = "signerName")]
     pub signer_name: String,
+    /// userAnnotations allow pod authors to pass additional information to
+    /// the signer implementation.  Kubernetes does not restrict or validate this
+    /// metadata in any way.
+    /// 
+    /// These values are copied verbatim into the `spec.unverifiedUserAnnotations` field of
+    /// the PodCertificateRequest objects that Kubelet creates.
+    /// 
+    /// Entries are subject to the same validation as object metadata annotations,
+    /// with the addition that all keys must be domain-prefixed. No restrictions
+    /// are placed on values, except an overall size limitation on the entire field.
+    /// 
+    /// Signers should document the keys and values they support. Signers should
+    /// deny requests that contain keys they do not recognize.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userAnnotations")]
+    pub user_annotations: Option<BTreeMap<String, String>>,
 }
 
 /// secret information about the secret data to project
@@ -4955,9 +4966,10 @@ pub struct FluentdTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// Operator represents a key's relationship to the value.
-    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Valid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.
     /// Exists is equivalent to wildcard for value, so that a pod can
     /// tolerate all taints of a particular category.
+    /// Lt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
     /// TolerationSeconds represents the period of time the toleration (which must be
@@ -5063,7 +5075,7 @@ pub struct FluentdVolumeClaimTemplatesSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
     pub data_source_ref: Option<FluentdVolumeClaimTemplatesSpecDataSourceRef>,
     /// resources represents the minimum resources the volume should have.
-    /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+    /// Users are allowed to specify resource requirements
     /// that are lower than previous value but must still be higher than capacity recorded in the
     /// status field of the claim.
     /// More info: <https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources>
@@ -5160,7 +5172,7 @@ pub struct FluentdVolumeClaimTemplatesSpecDataSourceRef {
 }
 
 /// resources represents the minimum resources the volume should have.
-/// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+/// Users are allowed to specify resource requirements
 /// that are lower than previous value but must still be higher than capacity recorded in the
 /// status field of the claim.
 /// More info: <https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources>
@@ -5250,8 +5262,6 @@ pub struct FluentdVolumeClaimTemplatesStatus {
     /// should ignore the update for the purpose it was designed. For example - a controller that
     /// only is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid
     /// resources associated with PVC.
-    /// 
-    /// This is an alpha field and requires enabling RecoverVolumeExpansionFailure feature.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocatedResourceStatuses")]
     pub allocated_resource_statuses: Option<BTreeMap<String, String>>,
     /// allocatedResources tracks the resources allocated to a PVC including its capacity.
@@ -5274,8 +5284,6 @@ pub struct FluentdVolumeClaimTemplatesStatus {
     /// should ignore the update for the purpose it was designed. For example - a controller that
     /// only is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid
     /// resources associated with PVC.
-    /// 
-    /// This is an alpha field and requires enabling RecoverVolumeExpansionFailure feature.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocatedResources")]
     pub allocated_resources: Option<BTreeMap<String, IntOrString>>,
     /// capacity represents the actual resources of the underlying volume.
@@ -6035,7 +6043,7 @@ pub struct FluentdVolumesEphemeralVolumeClaimTemplateSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
     pub data_source_ref: Option<FluentdVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
     /// resources represents the minimum resources the volume should have.
-    /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+    /// Users are allowed to specify resource requirements
     /// that are lower than previous value but must still be higher than capacity recorded in the
     /// status field of the claim.
     /// More info: <https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources>
@@ -6132,7 +6140,7 @@ pub struct FluentdVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef {
 }
 
 /// resources represents the minimum resources the volume should have.
-/// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+/// Users are allowed to specify resource requirements
 /// that are lower than previous value but must still be higher than capacity recorded in the
 /// status field of the claim.
 /// More info: <https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources>
@@ -6855,6 +6863,21 @@ pub struct FluentdVolumesProjectedSourcesPodCertificate {
     /// Kubelet's generated CSRs will be addressed to this signer.
     #[serde(rename = "signerName")]
     pub signer_name: String,
+    /// userAnnotations allow pod authors to pass additional information to
+    /// the signer implementation.  Kubernetes does not restrict or validate this
+    /// metadata in any way.
+    /// 
+    /// These values are copied verbatim into the `spec.unverifiedUserAnnotations` field of
+    /// the PodCertificateRequest objects that Kubelet creates.
+    /// 
+    /// Entries are subject to the same validation as object metadata annotations,
+    /// with the addition that all keys must be domain-prefixed. No restrictions
+    /// are placed on values, except an overall size limitation on the entire field.
+    /// 
+    /// Signers should document the keys and values they support. Signers should
+    /// deny requests that contain keys they do not recognize.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userAnnotations")]
+    pub user_annotations: Option<BTreeMap<String, String>>,
 }
 
 /// secret information about the secret data to project

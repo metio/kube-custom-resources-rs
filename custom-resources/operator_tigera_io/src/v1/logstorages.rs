@@ -87,7 +87,7 @@ pub enum LogStorageComponentResourcesComponentName {
 pub struct LogStorageComponentResourcesResourceRequirements {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -185,7 +185,7 @@ pub enum LogStorageEckOperatorStatefulSetSpecTemplateSpecContainersName {
 pub struct LogStorageEckOperatorStatefulSetSpecTemplateSpecContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -235,7 +235,7 @@ pub struct LogStorageEckOperatorStatefulSetSpecTemplateSpecInitContainers {
 pub struct LogStorageEckOperatorStatefulSetSpecTemplateSpecInitContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -332,7 +332,7 @@ pub enum LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecContainersName 
 pub struct LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -390,7 +390,7 @@ pub enum LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecInitContainersN
 pub struct LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecInitContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -487,7 +487,7 @@ pub enum LogStorageEsGatewayDeploymentSpecTemplateSpecContainersName {
 pub struct LogStorageEsGatewayDeploymentSpecTemplateSpecContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -545,7 +545,7 @@ pub enum LogStorageEsGatewayDeploymentSpecTemplateSpecInitContainersName {
 pub struct LogStorageEsGatewayDeploymentSpecTemplateSpecInitContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -650,7 +650,7 @@ pub enum LogStorageKibanaSpecTemplateSpecContainersName {
 pub struct LogStorageKibanaSpecTemplateSpecContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -710,7 +710,7 @@ pub enum LogStorageKibanaSpecTemplateSpecInitContainersName {
 pub struct LogStorageKibanaSpecTemplateSpecInitContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -807,7 +807,7 @@ pub enum LogStorageLinseedDeploymentSpecTemplateSpecContainersName {
 pub struct LogStorageLinseedDeploymentSpecTemplateSpecContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -867,7 +867,7 @@ pub enum LogStorageLinseedDeploymentSpecTemplateSpecInitContainersName {
 pub struct LogStorageLinseedDeploymentSpecTemplateSpecInitContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -938,7 +938,7 @@ pub struct LogStorageNodesNodeSetsSelectionAttributes {
 pub struct LogStorageNodesResourceRequirements {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]

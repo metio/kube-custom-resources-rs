@@ -1059,9 +1059,22 @@ pub struct DatadogAgentFeaturesAsmThreats {
 /// Autoscaling configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentFeaturesAutoscaling {
+    /// Cluster contains the configuration for the cluster autoscaling product.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cluster: Option<DatadogAgentFeaturesAutoscalingCluster>,
     /// Workload contains the configuration for the workload autoscaling product.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub workload: Option<DatadogAgentFeaturesAutoscalingWorkload>,
+}
+
+/// Cluster contains the configuration for the cluster autoscaling product.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentFeaturesAutoscalingCluster {
+    /// Enabled enables the cluster autoscaling product.
+    /// (Requires Cluster Agent 7.74.0+)
+    /// Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
 }
 
 /// Workload contains the configuration for the workload autoscaling product.
@@ -2335,13 +2348,6 @@ pub struct DatadogAgentGlobal {
     /// Default: 'gcr.io/datadoghq'
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub registry: Option<String>,
-    /// Configure whether the Process Agent or core Agent collects process and/or container information (Linux only).
-    /// If no other checks are running, the Process Agent container will not initialize.
-    /// (Requires Agent 7.60.0+)
-    /// Default: 'true'
-    /// Deprecated: Functionality now handled automatically. Use env var `DD_PROCESS_CONFIG_RUN_IN_CORE_AGENT_ENABLED` to override.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runProcessChecksInCoreAgent")]
-    pub run_process_checks_in_core_agent: Option<bool>,
     /// Configure the secret backend feature <https://docs.datadoghq.com/agent/guide/secrets-management>
     /// See also: <https://github.com/DataDog/datadog-operator/blob/main/docs/secret_management.md>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretBackend")]
@@ -8321,9 +8327,22 @@ pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesAsmThreats {
 /// Autoscaling configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesAutoscaling {
+    /// Cluster contains the configuration for the cluster autoscaling product.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cluster: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesAutoscalingCluster>,
     /// Workload contains the configuration for the workload autoscaling product.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub workload: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesAutoscalingWorkload>,
+}
+
+/// Cluster contains the configuration for the cluster autoscaling product.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesAutoscalingCluster {
+    /// Enabled enables the cluster autoscaling product.
+    /// (Requires Cluster Agent 7.74.0+)
+    /// Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
 }
 
 /// Workload contains the configuration for the workload autoscaling product.

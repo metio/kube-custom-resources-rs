@@ -143,6 +143,11 @@ pub struct CiliumNetworkPolicyEgress {
     /// Example:
     /// Any endpoint with the label "role=frontend" can communicate with any
     /// endpoint carrying the label "role=backend".
+    /// 
+    /// Note that while an empty non-nil ToEndpoints does not select anything,
+    /// nil ToEndpoints is implicitly treated as a wildcard selector if ToPorts
+    /// are also specified.
+    /// To select everything, use one EndpointSelector without any match requirements.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "toEndpoints")]
     pub to_endpoints: Option<Vec<CiliumNetworkPolicyEgressToEndpoints>>,
     /// ToEntities is a list of special entities to which the endpoint subject
@@ -377,17 +382,19 @@ pub struct CiliumNetworkPolicyEgressToFqdNs {
     /// the pattern. As a special case a "*" as the leftmost character, without a
     /// following "." matches all subdomains as well as the name to the right.
     /// A trailing "." is automatically added when missing.
+    /// - "**." is a special prefix which matches all multilevel subdomains in the prefix.
     /// 
     /// Examples:
-    /// `*.cilium.io` matches subdomains of cilium at that level
+    /// 1. `*.cilium.io` matches subdomains of cilium at that level
     ///   www.cilium.io and blog.cilium.io match, cilium.io and google.com do not
-    /// `*cilium.io` matches cilium.io and all subdomains ends with "cilium.io"
+    /// 2. `*cilium.io` matches cilium.io and all subdomains ends with "cilium.io"
     ///   except those containing "." separator, subcilium.io and sub-cilium.io match,
     ///   www.cilium.io and blog.cilium.io does not
-    /// sub*.cilium.io matches subdomains of cilium where the subdomain component
-    /// begins with "sub"
-    ///   sub.cilium.io and subdomain.cilium.io match, www.cilium.io,
+    /// 3. `sub*.cilium.io` matches subdomains of cilium where the subdomain component
+    ///   begins with "sub". sub.cilium.io and subdomain.cilium.io match while www.cilium.io,
     ///   blog.cilium.io, cilium.io and google.com do not
+    /// 4. `**.cilium.io` matches all multilevel subdomains of cilium.io.
+    ///   "app.cilium.io" and "test.app.cilium.io" match but not "cilium.io"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchPattern")]
     pub match_pattern: Option<String>,
 }
@@ -659,17 +666,19 @@ pub struct CiliumNetworkPolicyEgressToPortsRulesDns {
     /// the pattern. As a special case a "*" as the leftmost character, without a
     /// following "." matches all subdomains as well as the name to the right.
     /// A trailing "." is automatically added when missing.
+    /// - "**." is a special prefix which matches all multilevel subdomains in the prefix.
     /// 
     /// Examples:
-    /// `*.cilium.io` matches subdomains of cilium at that level
+    /// 1. `*.cilium.io` matches subdomains of cilium at that level
     ///   www.cilium.io and blog.cilium.io match, cilium.io and google.com do not
-    /// `*cilium.io` matches cilium.io and all subdomains ends with "cilium.io"
+    /// 2. `*cilium.io` matches cilium.io and all subdomains ends with "cilium.io"
     ///   except those containing "." separator, subcilium.io and sub-cilium.io match,
     ///   www.cilium.io and blog.cilium.io does not
-    /// sub*.cilium.io matches subdomains of cilium where the subdomain component
-    /// begins with "sub"
-    ///   sub.cilium.io and subdomain.cilium.io match, www.cilium.io,
+    /// 3. `sub*.cilium.io` matches subdomains of cilium where the subdomain component
+    ///   begins with "sub". sub.cilium.io and subdomain.cilium.io match while www.cilium.io,
     ///   blog.cilium.io, cilium.io and google.com do not
+    /// 4. `**.cilium.io` matches all multilevel subdomains of cilium.io.
+    ///   "app.cilium.io" and "test.app.cilium.io" match but not "cilium.io"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchPattern")]
     pub match_pattern: Option<String>,
 }
@@ -1029,6 +1038,11 @@ pub struct CiliumNetworkPolicyEgressDeny {
     /// Example:
     /// Any endpoint with the label "role=frontend" can communicate with any
     /// endpoint carrying the label "role=backend".
+    /// 
+    /// Note that while an empty non-nil ToEndpoints does not select anything,
+    /// nil ToEndpoints is implicitly treated as a wildcard selector if ToPorts
+    /// are also specified.
+    /// To select everything, use one EndpointSelector without any match requirements.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "toEndpoints")]
     pub to_endpoints: Option<Vec<CiliumNetworkPolicyEgressDenyToEndpoints>>,
     /// ToEntities is a list of special entities to which the endpoint subject
@@ -1523,6 +1537,11 @@ pub struct CiliumNetworkPolicyIngress {
     /// Example:
     /// Any endpoint with the label "role=backend" can be consumed by any
     /// endpoint carrying the label "role=frontend".
+    /// 
+    /// Note that while an empty non-nil FromEndpoints does not select anything,
+    /// nil FromEndpoints is implicitly treated as a wildcard selector if ToPorts
+    /// are also specified.
+    /// To select everything, use one EndpointSelector without any match requirements.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromEndpoints")]
     pub from_endpoints: Option<Vec<CiliumNetworkPolicyIngressFromEndpoints>>,
     /// FromEntities is a list of special entities which the endpoint subject
@@ -2002,17 +2021,19 @@ pub struct CiliumNetworkPolicyIngressToPortsRulesDns {
     /// the pattern. As a special case a "*" as the leftmost character, without a
     /// following "." matches all subdomains as well as the name to the right.
     /// A trailing "." is automatically added when missing.
+    /// - "**." is a special prefix which matches all multilevel subdomains in the prefix.
     /// 
     /// Examples:
-    /// `*.cilium.io` matches subdomains of cilium at that level
+    /// 1. `*.cilium.io` matches subdomains of cilium at that level
     ///   www.cilium.io and blog.cilium.io match, cilium.io and google.com do not
-    /// `*cilium.io` matches cilium.io and all subdomains ends with "cilium.io"
+    /// 2. `*cilium.io` matches cilium.io and all subdomains ends with "cilium.io"
     ///   except those containing "." separator, subcilium.io and sub-cilium.io match,
     ///   www.cilium.io and blog.cilium.io does not
-    /// sub*.cilium.io matches subdomains of cilium where the subdomain component
-    /// begins with "sub"
-    ///   sub.cilium.io and subdomain.cilium.io match, www.cilium.io,
+    /// 3. `sub*.cilium.io` matches subdomains of cilium where the subdomain component
+    ///   begins with "sub". sub.cilium.io and subdomain.cilium.io match while www.cilium.io,
     ///   blog.cilium.io, cilium.io and google.com do not
+    /// 4. `**.cilium.io` matches all multilevel subdomains of cilium.io.
+    ///   "app.cilium.io" and "test.app.cilium.io" match but not "cilium.io"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchPattern")]
     pub match_pattern: Option<String>,
 }
@@ -2293,6 +2314,11 @@ pub struct CiliumNetworkPolicyIngressDeny {
     /// Example:
     /// Any endpoint with the label "role=backend" can be consumed by any
     /// endpoint carrying the label "role=frontend".
+    /// 
+    /// Note that while an empty non-nil FromEndpoints does not select anything,
+    /// nil FromEndpoints is implicitly treated as a wildcard selector if ToPorts
+    /// are also specified.
+    /// To select everything, use one EndpointSelector without any match requirements.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromEndpoints")]
     pub from_endpoints: Option<Vec<CiliumNetworkPolicyIngressDenyFromEndpoints>>,
     /// FromEntities is a list of special entities which the endpoint subject
@@ -2796,6 +2822,11 @@ pub struct CiliumNetworkPolicysEgress {
     /// Example:
     /// Any endpoint with the label "role=frontend" can communicate with any
     /// endpoint carrying the label "role=backend".
+    /// 
+    /// Note that while an empty non-nil ToEndpoints does not select anything,
+    /// nil ToEndpoints is implicitly treated as a wildcard selector if ToPorts
+    /// are also specified.
+    /// To select everything, use one EndpointSelector without any match requirements.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "toEndpoints")]
     pub to_endpoints: Option<Vec<CiliumNetworkPolicysEgressToEndpoints>>,
     /// ToEntities is a list of special entities to which the endpoint subject
@@ -3030,17 +3061,19 @@ pub struct CiliumNetworkPolicysEgressToFqdNs {
     /// the pattern. As a special case a "*" as the leftmost character, without a
     /// following "." matches all subdomains as well as the name to the right.
     /// A trailing "." is automatically added when missing.
+    /// - "**." is a special prefix which matches all multilevel subdomains in the prefix.
     /// 
     /// Examples:
-    /// `*.cilium.io` matches subdomains of cilium at that level
+    /// 1. `*.cilium.io` matches subdomains of cilium at that level
     ///   www.cilium.io and blog.cilium.io match, cilium.io and google.com do not
-    /// `*cilium.io` matches cilium.io and all subdomains ends with "cilium.io"
+    /// 2. `*cilium.io` matches cilium.io and all subdomains ends with "cilium.io"
     ///   except those containing "." separator, subcilium.io and sub-cilium.io match,
     ///   www.cilium.io and blog.cilium.io does not
-    /// sub*.cilium.io matches subdomains of cilium where the subdomain component
-    /// begins with "sub"
-    ///   sub.cilium.io and subdomain.cilium.io match, www.cilium.io,
+    /// 3. `sub*.cilium.io` matches subdomains of cilium where the subdomain component
+    ///   begins with "sub". sub.cilium.io and subdomain.cilium.io match while www.cilium.io,
     ///   blog.cilium.io, cilium.io and google.com do not
+    /// 4. `**.cilium.io` matches all multilevel subdomains of cilium.io.
+    ///   "app.cilium.io" and "test.app.cilium.io" match but not "cilium.io"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchPattern")]
     pub match_pattern: Option<String>,
 }
@@ -3312,17 +3345,19 @@ pub struct CiliumNetworkPolicysEgressToPortsRulesDns {
     /// the pattern. As a special case a "*" as the leftmost character, without a
     /// following "." matches all subdomains as well as the name to the right.
     /// A trailing "." is automatically added when missing.
+    /// - "**." is a special prefix which matches all multilevel subdomains in the prefix.
     /// 
     /// Examples:
-    /// `*.cilium.io` matches subdomains of cilium at that level
+    /// 1. `*.cilium.io` matches subdomains of cilium at that level
     ///   www.cilium.io and blog.cilium.io match, cilium.io and google.com do not
-    /// `*cilium.io` matches cilium.io and all subdomains ends with "cilium.io"
+    /// 2. `*cilium.io` matches cilium.io and all subdomains ends with "cilium.io"
     ///   except those containing "." separator, subcilium.io and sub-cilium.io match,
     ///   www.cilium.io and blog.cilium.io does not
-    /// sub*.cilium.io matches subdomains of cilium where the subdomain component
-    /// begins with "sub"
-    ///   sub.cilium.io and subdomain.cilium.io match, www.cilium.io,
+    /// 3. `sub*.cilium.io` matches subdomains of cilium where the subdomain component
+    ///   begins with "sub". sub.cilium.io and subdomain.cilium.io match while www.cilium.io,
     ///   blog.cilium.io, cilium.io and google.com do not
+    /// 4. `**.cilium.io` matches all multilevel subdomains of cilium.io.
+    ///   "app.cilium.io" and "test.app.cilium.io" match but not "cilium.io"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchPattern")]
     pub match_pattern: Option<String>,
 }
@@ -3682,6 +3717,11 @@ pub struct CiliumNetworkPolicysEgressDeny {
     /// Example:
     /// Any endpoint with the label "role=frontend" can communicate with any
     /// endpoint carrying the label "role=backend".
+    /// 
+    /// Note that while an empty non-nil ToEndpoints does not select anything,
+    /// nil ToEndpoints is implicitly treated as a wildcard selector if ToPorts
+    /// are also specified.
+    /// To select everything, use one EndpointSelector without any match requirements.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "toEndpoints")]
     pub to_endpoints: Option<Vec<CiliumNetworkPolicysEgressDenyToEndpoints>>,
     /// ToEntities is a list of special entities to which the endpoint subject
@@ -4176,6 +4216,11 @@ pub struct CiliumNetworkPolicysIngress {
     /// Example:
     /// Any endpoint with the label "role=backend" can be consumed by any
     /// endpoint carrying the label "role=frontend".
+    /// 
+    /// Note that while an empty non-nil FromEndpoints does not select anything,
+    /// nil FromEndpoints is implicitly treated as a wildcard selector if ToPorts
+    /// are also specified.
+    /// To select everything, use one EndpointSelector without any match requirements.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromEndpoints")]
     pub from_endpoints: Option<Vec<CiliumNetworkPolicysIngressFromEndpoints>>,
     /// FromEntities is a list of special entities which the endpoint subject
@@ -4655,17 +4700,19 @@ pub struct CiliumNetworkPolicysIngressToPortsRulesDns {
     /// the pattern. As a special case a "*" as the leftmost character, without a
     /// following "." matches all subdomains as well as the name to the right.
     /// A trailing "." is automatically added when missing.
+    /// - "**." is a special prefix which matches all multilevel subdomains in the prefix.
     /// 
     /// Examples:
-    /// `*.cilium.io` matches subdomains of cilium at that level
+    /// 1. `*.cilium.io` matches subdomains of cilium at that level
     ///   www.cilium.io and blog.cilium.io match, cilium.io and google.com do not
-    /// `*cilium.io` matches cilium.io and all subdomains ends with "cilium.io"
+    /// 2. `*cilium.io` matches cilium.io and all subdomains ends with "cilium.io"
     ///   except those containing "." separator, subcilium.io and sub-cilium.io match,
     ///   www.cilium.io and blog.cilium.io does not
-    /// sub*.cilium.io matches subdomains of cilium where the subdomain component
-    /// begins with "sub"
-    ///   sub.cilium.io and subdomain.cilium.io match, www.cilium.io,
+    /// 3. `sub*.cilium.io` matches subdomains of cilium where the subdomain component
+    ///   begins with "sub". sub.cilium.io and subdomain.cilium.io match while www.cilium.io,
     ///   blog.cilium.io, cilium.io and google.com do not
+    /// 4. `**.cilium.io` matches all multilevel subdomains of cilium.io.
+    ///   "app.cilium.io" and "test.app.cilium.io" match but not "cilium.io"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchPattern")]
     pub match_pattern: Option<String>,
 }
@@ -4946,6 +4993,11 @@ pub struct CiliumNetworkPolicysIngressDeny {
     /// Example:
     /// Any endpoint with the label "role=backend" can be consumed by any
     /// endpoint carrying the label "role=frontend".
+    /// 
+    /// Note that while an empty non-nil FromEndpoints does not select anything,
+    /// nil FromEndpoints is implicitly treated as a wildcard selector if ToPorts
+    /// are also specified.
+    /// To select everything, use one EndpointSelector without any match requirements.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromEndpoints")]
     pub from_endpoints: Option<Vec<CiliumNetworkPolicysIngressDenyFromEndpoints>>,
     /// FromEntities is a list of special entities which the endpoint subject

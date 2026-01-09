@@ -203,7 +203,7 @@ spec:
                         requirements:
                           description: "Requirements are layered with GetLabels and applied to every node."
                           items:
-                            description: "A node selector requirement with min values is a selector that contains values, a key, an operator that relates the key and values\nand minValues that represent the requirement to have at least that many values."
+                            description: "A node selector requirement is a selector that contains values, a key, an operator that relates the key and values\nand minValues that represent the requirement to have at least that many values."
                             properties:
                               key:
                                 description: "The label key that the selector applies to."

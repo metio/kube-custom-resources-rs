@@ -65,7 +65,7 @@ pub enum IntrusionDetectionComponentResourcesComponentName {
 pub struct IntrusionDetectionComponentResourcesResourceRequirements {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -154,7 +154,7 @@ pub enum IntrusionDetectionDeepPacketInspectionDaemonsetSpecTemplateSpecInitCont
 pub struct IntrusionDetectionDeepPacketInspectionDaemonsetSpecTemplateSpecInitContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -253,7 +253,7 @@ pub enum IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateSpe
 pub struct IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateSpecContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -311,7 +311,7 @@ pub enum IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateSpe
 pub struct IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateSpecInitContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
