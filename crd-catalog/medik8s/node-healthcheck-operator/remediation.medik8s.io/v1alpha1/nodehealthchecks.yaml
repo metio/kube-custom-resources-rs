@@ -157,6 +157,10 @@ spec:
                       type: "object"
                   type: "object"
                   x-kubernetes-map-type: "atomic"
+                stormTerminationDelay:
+                  description: "StormTerminationDelay introduces a configurable delay after storm recovery\nexit criteria are satisfied (for example, when the number of healthy nodes\nrises above the configured minHealthy constraint). While this\ndelay is in effect, NHC remains in storm recovery mode and does not create\nnew remediations. Once the delay elapses, storm recovery mode exits and normal\nremediation resumes.\n\nExpects a string of decimal numbers each with optional fraction and a unit\nsuffix, e.g. \"300ms\", \"1.5h\" or \"2h45m\". Valid time units are \"ns\", \"us\"\n(or \"µs\"), \"ms\", \"s\", \"m\", \"h\"."
+                  pattern: "^([0-9]+(\\.[0-9]+)?(ns|us|µs|ms|s|m|h))+$"
+                  type: "string"
                 unhealthyConditions:
                   default:
                     - duration: "300s"
@@ -263,6 +267,10 @@ spec:
                   type: "string"
                 reason:
                   description: "Reason explains the current phase in more detail."
+                  type: "string"
+                stormTerminationStartTime:
+                  description: "StormTerminationStartTime records when storm recovery mode regained the minHealthy/maxUnhealthy constraint\nand the storm is about to end (after NodeHealthCheckSpec.StormTerminationDelay has passed)."
+                  format: "date-time"
                   type: "string"
                 unhealthyNodes:
                   description: "UnhealthyNodes tracks currently unhealthy nodes and their remediations."

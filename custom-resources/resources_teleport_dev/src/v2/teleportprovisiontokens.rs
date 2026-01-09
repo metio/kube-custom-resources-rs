@@ -56,6 +56,9 @@ pub struct TeleportProvisionTokenSpec {
     /// GitLab allows the configuration of options specific to the "gitlab" join method.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gitlab: Option<TeleportProvisionTokenGitlab>,
+    /// Integration name which provides credentials for validating join attempts. Currently only in use for validating the AWS Organization ID in the IAM Join method.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub integration: Option<String>,
     /// JoinMethod is the joining method required in order to use this token. Supported joining methods include: azure, circleci, ec2, gcp, github, gitlab, iam, kubernetes, spacelift, token, tpm
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub join_method: Option<String>,

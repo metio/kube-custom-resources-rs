@@ -133,14 +133,26 @@ pub struct AerospikeClusterAerospikeAccessControlRoles {
 /// AerospikeUserSpec specifies an Aerospike database user, the secret name for the password and, associated roles.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterAerospikeAccessControlUsers {
+    /// AuthMode specifies an authentication mode (Internal or PKIOnly) enabled for the user.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authMode")]
+    pub auth_mode: Option<AerospikeClusterAerospikeAccessControlUsersAuthMode>,
     /// Name is the user's username.
     pub name: String,
     /// Roles is the list of roles granted to the user.
     pub roles: Vec<String>,
-    /// SecretName has secret info created by user. User needs to create this secret from password literal.
+    /// SecretName has secret info created by the user. User needs to create this secret from password literal.
+    /// It is a required field in case of 'Internal' AuthMode.
     /// eg: kubectl create secret generic dev-db-secret --from-literal=password='password'
-    #[serde(rename = "secretName")]
-    pub secret_name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
+    pub secret_name: Option<String>,
+}
+
+/// AerospikeUserSpec specifies an Aerospike database user, the secret name for the password and, associated roles.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AerospikeClusterAerospikeAccessControlUsersAuthMode {
+    Internal,
+    #[serde(rename = "PKIOnly")]
+    PkiOnly,
 }
 
 /// AerospikeNetworkPolicy specifies how clients and tools access the Aerospike cluster.
@@ -8044,14 +8056,26 @@ pub struct AerospikeClusterStatusAerospikeAccessControlRoles {
 /// AerospikeUserSpec specifies an Aerospike database user, the secret name for the password and, associated roles.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterStatusAerospikeAccessControlUsers {
+    /// AuthMode specifies an authentication mode (Internal or PKIOnly) enabled for the user.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authMode")]
+    pub auth_mode: Option<AerospikeClusterStatusAerospikeAccessControlUsersAuthMode>,
     /// Name is the user's username.
     pub name: String,
     /// Roles is the list of roles granted to the user.
     pub roles: Vec<String>,
-    /// SecretName has secret info created by user. User needs to create this secret from password literal.
+    /// SecretName has secret info created by the user. User needs to create this secret from password literal.
+    /// It is a required field in case of 'Internal' AuthMode.
     /// eg: kubectl create secret generic dev-db-secret --from-literal=password='password'
-    #[serde(rename = "secretName")]
-    pub secret_name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
+    pub secret_name: Option<String>,
+}
+
+/// AerospikeUserSpec specifies an Aerospike database user, the secret name for the password and, associated roles.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AerospikeClusterStatusAerospikeAccessControlUsersAuthMode {
+    Internal,
+    #[serde(rename = "PKIOnly")]
+    PkiOnly,
 }
 
 /// AerospikeNetworkPolicy specifies how clients and tools access the Aerospike cluster.

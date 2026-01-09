@@ -163,6 +163,11 @@ spec:
                     - "disabled"
                     - "enabled"
                   type: "string"
+                rebuildConcurrentSyncLimit:
+                  description: "RebuildConcurrentSyncLimit controls the maximum number of file synchronization operations that can run\nconcurrently during a single replica rebuild.\nWhen set to 0, it means following the global setting."
+                  maximum: 5.0
+                  minimum: 0.0
+                  type: "integer"
                 replicaAutoBalance:
                   enum:
                     - "ignored"

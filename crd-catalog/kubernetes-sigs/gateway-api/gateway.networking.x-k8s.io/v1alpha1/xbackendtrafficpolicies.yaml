@@ -122,6 +122,8 @@ spec:
                   x-kubernetes-validations:
                     - message: "AbsoluteTimeout must be specified when cookie lifetimeType is Permanent"
                       rule: "!has(self.cookieConfig) || !has(self.cookieConfig.lifetimeType) || self.cookieConfig.lifetimeType != 'Permanent' || has(self.absoluteTimeout)"
+                    - message: "cookieConfig can only be set with type Cookie"
+                      rule: "!has(self.cookieConfig) || self.type == 'Cookie'"
                 targetRefs:
                   description: "TargetRefs identifies API object(s) to apply this policy to.\nCurrently, Backends (A grouping of like endpoints such as Service,\nServiceImport, or any implementation-specific backendRef) are the only\nvalid API target references.\n\nCurrently, a TargetRef cannot be scoped to a specific port on a\nService."
                   items:

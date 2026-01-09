@@ -1136,6 +1136,10 @@ pub struct ReplicationDestinationRcloneMoverVolumes {
 /// volumeSource represents the secret or PersistentVolumeClaim that should be mounted to the mover pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ReplicationDestinationRcloneMoverVolumesVolumeSource {
+    /// nfs represents an NFS mount on the host that shares a pod's lifetime
+    /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#nfs>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub nfs: Option<ReplicationDestinationRcloneMoverVolumesVolumeSourceNfs>,
     /// persistentVolumeClaimVolumeSource represents a reference to a
     /// PersistentVolumeClaim in the same namespace.
     /// More info: <https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims>
@@ -1146,6 +1150,23 @@ pub struct ReplicationDestinationRcloneMoverVolumesVolumeSource {
     /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#secret>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<ReplicationDestinationRcloneMoverVolumesVolumeSourceSecret>,
+}
+
+/// nfs represents an NFS mount on the host that shares a pod's lifetime
+/// More info: <https://kubernetes.io/docs/concepts/storage/volumes#nfs>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ReplicationDestinationRcloneMoverVolumesVolumeSourceNfs {
+    /// path that is exported by the NFS server.
+    /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#nfs>
+    pub path: String,
+    /// readOnly here will force the NFS export to be mounted with read-only permissions.
+    /// Defaults to false.
+    /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#nfs>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// server is the hostname or IP address of the NFS server.
+    /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#nfs>
+    pub server: String,
 }
 
 /// persistentVolumeClaimVolumeSource represents a reference to a
@@ -2311,6 +2332,10 @@ pub struct ReplicationDestinationResticMoverVolumes {
 /// volumeSource represents the secret or PersistentVolumeClaim that should be mounted to the mover pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ReplicationDestinationResticMoverVolumesVolumeSource {
+    /// nfs represents an NFS mount on the host that shares a pod's lifetime
+    /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#nfs>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub nfs: Option<ReplicationDestinationResticMoverVolumesVolumeSourceNfs>,
     /// persistentVolumeClaimVolumeSource represents a reference to a
     /// PersistentVolumeClaim in the same namespace.
     /// More info: <https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims>
@@ -2321,6 +2346,23 @@ pub struct ReplicationDestinationResticMoverVolumesVolumeSource {
     /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#secret>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<ReplicationDestinationResticMoverVolumesVolumeSourceSecret>,
+}
+
+/// nfs represents an NFS mount on the host that shares a pod's lifetime
+/// More info: <https://kubernetes.io/docs/concepts/storage/volumes#nfs>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ReplicationDestinationResticMoverVolumesVolumeSourceNfs {
+    /// path that is exported by the NFS server.
+    /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#nfs>
+    pub path: String,
+    /// readOnly here will force the NFS export to be mounted with read-only permissions.
+    /// Defaults to false.
+    /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#nfs>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// server is the hostname or IP address of the NFS server.
+    /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#nfs>
+    pub server: String,
 }
 
 /// persistentVolumeClaimVolumeSource represents a reference to a
@@ -3590,6 +3632,10 @@ pub struct ReplicationDestinationRsyncTlsMoverVolumes {
 /// volumeSource represents the secret or PersistentVolumeClaim that should be mounted to the mover pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ReplicationDestinationRsyncTlsMoverVolumesVolumeSource {
+    /// nfs represents an NFS mount on the host that shares a pod's lifetime
+    /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#nfs>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub nfs: Option<ReplicationDestinationRsyncTlsMoverVolumesVolumeSourceNfs>,
     /// persistentVolumeClaimVolumeSource represents a reference to a
     /// PersistentVolumeClaim in the same namespace.
     /// More info: <https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims>
@@ -3600,6 +3646,23 @@ pub struct ReplicationDestinationRsyncTlsMoverVolumesVolumeSource {
     /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#secret>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<ReplicationDestinationRsyncTlsMoverVolumesVolumeSourceSecret>,
+}
+
+/// nfs represents an NFS mount on the host that shares a pod's lifetime
+/// More info: <https://kubernetes.io/docs/concepts/storage/volumes#nfs>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ReplicationDestinationRsyncTlsMoverVolumesVolumeSourceNfs {
+    /// path that is exported by the NFS server.
+    /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#nfs>
+    pub path: String,
+    /// readOnly here will force the NFS export to be mounted with read-only permissions.
+    /// Defaults to false.
+    /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#nfs>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// server is the hostname or IP address of the NFS server.
+    /// More info: <https://kubernetes.io/docs/concepts/storage/volumes#nfs>
+    pub server: String,
 }
 
 /// persistentVolumeClaimVolumeSource represents a reference to a

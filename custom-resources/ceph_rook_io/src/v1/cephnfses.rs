@@ -286,6 +286,8 @@ pub struct CephNfsSecurityKerberosConfigFilesVolumeSourceProjectedSourcesPodCert
     pub max_expiration_seconds: Option<i32>,
     #[serde(rename = "signerName")]
     pub signer_name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userAnnotations")]
+    pub user_annotations: Option<BTreeMap<String, String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -524,6 +526,8 @@ pub struct CephNfsSecurityKerberosKeytabFileVolumeSourceProjectedSourcesPodCerti
     pub max_expiration_seconds: Option<i32>,
     #[serde(rename = "signerName")]
     pub signer_name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userAnnotations")]
+    pub user_annotations: Option<BTreeMap<String, String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -802,6 +806,8 @@ pub struct CephNfsSecuritySssdSidecarAdditionalFilesVolumeSourceProjectedSources
     pub max_expiration_seconds: Option<i32>,
     #[serde(rename = "signerName")]
     pub signer_name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userAnnotations")]
+    pub user_annotations: Option<BTreeMap<String, String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1078,6 +1084,8 @@ pub struct CephNfsSecuritySssdSidecarSssdConfigFileVolumeSourceProjectedSourcesP
     pub max_expiration_seconds: Option<i32>,
     #[serde(rename = "signerName")]
     pub signer_name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userAnnotations")]
+    pub user_annotations: Option<BTreeMap<String, String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

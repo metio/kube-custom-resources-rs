@@ -648,10 +648,10 @@ pub struct LogstashUpdateStrategyRollingUpdate {
     /// The maximum number of pods that can be unavailable during the update.
     /// Value can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%).
     /// Absolute number is calculated from percentage by rounding up. This can not be 0.
-    /// Defaults to 1. This field is alpha-level and is only honored by servers that enable the
-    /// MaxUnavailableStatefulSet feature. The field applies to all pods in the range 0 to
+    /// Defaults to 1. This field is beta-level and is enabled by default. The field applies to all pods in the range 0 to
     /// Replicas-1. That means if there is any unavailable pod in the range 0 to Replicas-1, it
     /// will be counted towards MaxUnavailable.
+    /// This setting might not be effective for the OrderedReady podManagementPolicy. That policy ensures pods are created and become ready one at a time.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
     /// Partition indicates the ordinal at which the StatefulSet should be partitioned
@@ -753,7 +753,7 @@ pub struct LogstashVolumeClaimTemplatesSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
     pub data_source_ref: Option<LogstashVolumeClaimTemplatesSpecDataSourceRef>,
     /// resources represents the minimum resources the volume should have.
-    /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+    /// Users are allowed to specify resource requirements
     /// that are lower than previous value but must still be higher than capacity recorded in the
     /// status field of the claim.
     /// More info: <https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources>
@@ -850,7 +850,7 @@ pub struct LogstashVolumeClaimTemplatesSpecDataSourceRef {
 }
 
 /// resources represents the minimum resources the volume should have.
-/// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+/// Users are allowed to specify resource requirements
 /// that are lower than previous value but must still be higher than capacity recorded in the
 /// status field of the claim.
 /// More info: <https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources>
@@ -940,8 +940,6 @@ pub struct LogstashVolumeClaimTemplatesStatus {
     /// should ignore the update for the purpose it was designed. For example - a controller that
     /// only is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid
     /// resources associated with PVC.
-    /// 
-    /// This is an alpha field and requires enabling RecoverVolumeExpansionFailure feature.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocatedResourceStatuses")]
     pub allocated_resource_statuses: Option<BTreeMap<String, String>>,
     /// allocatedResources tracks the resources allocated to a PVC including its capacity.
@@ -964,8 +962,6 @@ pub struct LogstashVolumeClaimTemplatesStatus {
     /// should ignore the update for the purpose it was designed. For example - a controller that
     /// only is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid
     /// resources associated with PVC.
-    /// 
-    /// This is an alpha field and requires enabling RecoverVolumeExpansionFailure feature.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocatedResources")]
     pub allocated_resources: Option<BTreeMap<String, IntOrString>>,
     /// capacity represents the actual resources of the underlying volume.

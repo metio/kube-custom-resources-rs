@@ -103,7 +103,7 @@ pub enum ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecContainersName 
 pub struct ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -161,7 +161,7 @@ pub enum ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecInitContainersN
 pub struct ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecInitContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -258,7 +258,7 @@ pub enum ComplianceComplianceControllerDeploymentSpecTemplateSpecContainersName 
 pub struct ComplianceComplianceControllerDeploymentSpecTemplateSpecContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -316,7 +316,7 @@ pub enum ComplianceComplianceControllerDeploymentSpecTemplateSpecInitContainersN
 pub struct ComplianceComplianceControllerDeploymentSpecTemplateSpecInitContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -405,7 +405,7 @@ pub enum ComplianceComplianceReporterPodTemplateTemplateSpecContainersName {
 pub struct ComplianceComplianceReporterPodTemplateTemplateSpecContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -463,7 +463,7 @@ pub enum ComplianceComplianceReporterPodTemplateTemplateSpecInitContainersName {
 pub struct ComplianceComplianceReporterPodTemplateTemplateSpecInitContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -560,7 +560,7 @@ pub enum ComplianceComplianceServerDeploymentSpecTemplateSpecContainersName {
 pub struct ComplianceComplianceServerDeploymentSpecTemplateSpecContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -618,7 +618,7 @@ pub enum ComplianceComplianceServerDeploymentSpecTemplateSpecInitContainersName 
 pub struct ComplianceComplianceServerDeploymentSpecTemplateSpecInitContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -715,7 +715,7 @@ pub enum ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecContainersName
 pub struct ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -773,7 +773,7 @@ pub enum ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecInitContainers
 pub struct ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecInitContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]

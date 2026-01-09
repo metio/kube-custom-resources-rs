@@ -71,7 +71,7 @@ pub struct NodeClaimNodeClassRef {
     pub name: String,
 }
 
-/// A node selector requirement with min values is a selector that contains values, a key, an operator that relates the key and values
+/// A node selector requirement is a selector that contains values, a key, an operator that relates the key and values
 /// and minValues that represent the requirement to have at least that many values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct NodeClaimRequirements {
@@ -93,7 +93,7 @@ pub struct NodeClaimRequirements {
     pub values: Option<Vec<String>>,
 }
 
-/// A node selector requirement with min values is a selector that contains values, a key, an operator that relates the key and values
+/// A node selector requirement is a selector that contains values, a key, an operator that relates the key and values
 /// and minValues that represent the requirement to have at least that many values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum NodeClaimRequirementsOperator {

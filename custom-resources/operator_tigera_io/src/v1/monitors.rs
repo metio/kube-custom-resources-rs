@@ -54,7 +54,7 @@ pub struct MonitorAlertManagerSpec {
 pub struct MonitorAlertManagerSpecResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -400,7 +400,7 @@ pub enum MonitorPrometheusSpecCommonPrometheusFieldsContainersName {
 pub struct MonitorPrometheusSpecCommonPrometheusFieldsContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -436,7 +436,7 @@ pub struct MonitorPrometheusSpecCommonPrometheusFieldsContainersResourcesClaims 
 pub struct MonitorPrometheusSpecCommonPrometheusFieldsResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    /// This is an alpha field and requires enabling the
+    /// This field depends on the
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]

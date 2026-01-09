@@ -230,6 +230,7 @@ pub struct StackConfigPolicyStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<i64>,
     /// ResourcesStatuses holds the status for each resource to be configured.
+    /// 
     /// Deprecated: Details is used to store the status of resources from ECK 2.11
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourcesStatuses")]
     pub resources_statuses: Option<BTreeMap<String, StackConfigPolicyStatusResourcesStatuses>>,
@@ -260,6 +261,7 @@ pub struct StackConfigPolicyStatusDetailsError {
 }
 
 /// ResourcesStatuses holds the status for each resource to be configured.
+/// 
 /// Deprecated: Details is used to store the status of resources from ECK 2.11
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct StackConfigPolicyStatusResourcesStatuses {

@@ -559,6 +559,13 @@ pub struct FelixConfigurationSpec {
     /// Felix uses these ranges to separate host and workload traffic. [Default: 30000:32767].
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeNodePortRanges")]
     pub kube_node_port_ranges: Option<Vec<IntOrString>>,
+    /// LogActionRateLimit sets the rate of hitting a Log action. The value must be in the format "N/unit",
+    /// where N is a number and unit is one of: second, minute, hour, or day. For example: "10/second" or "100/hour".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logActionRateLimit")]
+    pub log_action_rate_limit: Option<String>,
+    /// LogActionRateLimitBurst sets the rate limit burst of hitting a Log action when LogActionRateLimit is enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logActionRateLimitBurst")]
+    pub log_action_rate_limit_burst: Option<i64>,
     /// LogDebugFilenameRegex controls which source code files have their Debug log output included in the logs.
     /// Only logs from files with names that match the given regular expression are included.  The filter only applies
     /// to Debug level logs.

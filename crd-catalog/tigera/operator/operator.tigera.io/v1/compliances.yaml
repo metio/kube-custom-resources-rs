@@ -55,7 +55,7 @@ spec:
                                         description: "Resources allows customization of limits and requests for compute resources such as cpu and memory.\nIf specified, this overrides the named Compliance Benchmarker DaemonSet container's resources.\nIf omitted, the Compliance Benchmarker DaemonSet will use its default value for this container's resources."
                                         properties:
                                           claims:
-                                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
+                                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis field depends on the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
                                             items:
                                               description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                               properties:
@@ -109,7 +109,7 @@ spec:
                                         description: "Resources allows customization of limits and requests for compute resources such as cpu and memory.\nIf specified, this overrides the named Compliance Benchmarker DaemonSet init container's resources.\nIf omitted, the Compliance Benchmarker DaemonSet will use its default value for this init container's resources."
                                         properties:
                                           claims:
-                                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
+                                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis field depends on the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
                                             items:
                                               description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                               properties:
@@ -179,7 +179,7 @@ spec:
                                         description: "Resources allows customization of limits and requests for compute resources such as cpu and memory.\nIf specified, this overrides the named compliance controller Deployment container's resources.\nIf omitted, the compliance controller Deployment will use its default value for this container's resources."
                                         properties:
                                           claims:
-                                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
+                                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis field depends on the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
                                             items:
                                               description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                               properties:
@@ -233,7 +233,7 @@ spec:
                                         description: "Resources allows customization of limits and requests for compute resources such as cpu and memory.\nIf specified, this overrides the named compliance controller Deployment init container's resources.\nIf omitted, the compliance controller Deployment will use its default value for this init container's resources."
                                         properties:
                                           claims:
-                                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
+                                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis field depends on the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
                                             items:
                                               description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                               properties:
@@ -300,7 +300,7 @@ spec:
                                     description: "Resources allows customization of limits and requests for compute resources such as cpu and memory.\nIf specified, this overrides the named ComplianceServer Deployment container's resources.\nIf omitted, the ComplianceServer Deployment will use its default value for this container's resources."
                                     properties:
                                       claims:
-                                        description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
+                                        description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis field depends on the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
                                         items:
                                           description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                           properties:
@@ -354,7 +354,7 @@ spec:
                                     description: "Resources allows customization of limits and requests for compute resources such as cpu and memory.\nIf specified, this overrides the named ComplianceReporter PodSpec init container's resources.\nIf omitted, the ComplianceServer Deployment will use its default value for this init container's resources."
                                     properties:
                                       claims:
-                                        description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
+                                        description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis field depends on the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
                                         items:
                                           description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                           properties:
@@ -423,7 +423,7 @@ spec:
                                         description: "Resources allows customization of limits and requests for compute resources such as cpu and memory.\nIf specified, this overrides the named ComplianceServer Deployment container's resources.\nIf omitted, the ComplianceServer Deployment will use its default value for this container's resources."
                                         properties:
                                           claims:
-                                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
+                                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis field depends on the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
                                             items:
                                               description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                               properties:
@@ -477,7 +477,7 @@ spec:
                                         description: "Resources allows customization of limits and requests for compute resources such as cpu and memory.\nIf specified, this overrides the named ComplianceServer Deployment init container's resources.\nIf omitted, the ComplianceServer Deployment will use its default value for this init container's resources."
                                         properties:
                                           claims:
-                                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
+                                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis field depends on the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
                                             items:
                                               description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                               properties:
@@ -547,7 +547,7 @@ spec:
                                         description: "Resources allows customization of limits and requests for compute resources such as cpu and memory.\nIf specified, this overrides the named compliance snapshotter Deployment container's resources.\nIf omitted, the compliance snapshotter Deployment will use its default value for this container's resources."
                                         properties:
                                           claims:
-                                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
+                                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis field depends on the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
                                             items:
                                               description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                               properties:
@@ -601,7 +601,7 @@ spec:
                                         description: "Resources allows customization of limits and requests for compute resources such as cpu and memory.\nIf specified, this overrides the named compliance snapshotter Deployment init container's resources.\nIf omitted, the compliance snapshotter Deployment will use its default value for this init container's resources."
                                         properties:
                                           claims:
-                                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
+                                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\nThis field depends on the\nDynamicResourceAllocation feature gate.\nThis field is immutable. It can only be set for containers."
                                             items:
                                               description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                               properties:

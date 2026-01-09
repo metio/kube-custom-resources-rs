@@ -30,6 +30,9 @@ pub struct MariaDbSpec {
     /// BootstrapFrom defines a source to bootstrap from.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootstrapFrom")]
     pub bootstrap_from: Option<MariaDbBootstrapFrom>,
+    /// CleanupPolicy defines the behavior for cleaning up the initial User, Database, and Grant created by the operator.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cleanupPolicy")]
+    pub cleanup_policy: Option<MariaDbCleanupPolicy>,
     /// Command to be used in the Container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
@@ -1029,6 +1032,13 @@ pub struct MariaDbBootstrapFromVolumePersistentVolumeClaim {
 pub struct MariaDbBootstrapFromVolumeSnapshotRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+}
+
+/// MariaDBSpec defines the desired state of MariaDB
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum MariaDbCleanupPolicy {
+    Skip,
+    Delete,
 }
 
 /// Connection defines a template to configure the general Connection object.
@@ -4742,6 +4752,12 @@ pub struct MariaDbStorage {
     /// Ephemeral indicates whether to use ephemeral storage in the PVCs. It is only compatible with non HA MariaDBs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ephemeral: Option<bool>,
+    /// PersistentVolumeClaimRetentionPolicy describes the lifecycle of PVCs created from volumeClaimTemplates.
+    /// By default, all persistent volume claims are created as needed and retained until manually deleted.
+    /// This policy allows the lifecycle to be altered, for example by deleting PVCs when their statefulset is deleted,
+    /// or when their pod is scaled down.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pvcRetentionPolicy")]
+    pub pvc_retention_policy: Option<MariaDbStoragePvcRetentionPolicy>,
     /// ResizeInUseVolumes indicates whether the PVCs can be resized. The 'StorageClassName' used should have 'allowVolumeExpansion' set to 'true' to allow resizing.
     /// It defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizeInUseVolumes")]
@@ -4760,6 +4776,22 @@ pub struct MariaDbStorage {
     /// It defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "waitForVolumeResize")]
     pub wait_for_volume_resize: Option<bool>,
+}
+
+/// PersistentVolumeClaimRetentionPolicy describes the lifecycle of PVCs created from volumeClaimTemplates.
+/// By default, all persistent volume claims are created as needed and retained until manually deleted.
+/// This policy allows the lifecycle to be altered, for example by deleting PVCs when their statefulset is deleted,
+/// or when their pod is scaled down.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbStoragePvcRetentionPolicy {
+    /// PersistentVolumeClaimRetentionPolicyType describes the lifecycle of persistent volume claims.
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#statefulsetpersistentvolumeclaimretentionpolicy-v1-apps.>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "whenDeleted")]
+    pub when_deleted: Option<String>,
+    /// PersistentVolumeClaimRetentionPolicyType describes the lifecycle of persistent volume claims.
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#statefulsetpersistentvolumeclaimretentionpolicy-v1-apps.>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "whenScaled")]
+    pub when_scaled: Option<String>,
 }
 
 /// VolumeClaimTemplate provides a template to define the PVCs.

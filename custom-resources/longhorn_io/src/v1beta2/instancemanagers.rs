@@ -7,6 +7,7 @@ mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
@@ -63,6 +64,8 @@ pub struct InstanceManagerStatus {
     pub api_version: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backingImages")]
     pub backing_images: Option<BTreeMap<String, InstanceManagerStatusBackingImages>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentState")]
     pub current_state: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataEngineStatus")]

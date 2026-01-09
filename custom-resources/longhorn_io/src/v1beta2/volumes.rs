@@ -74,6 +74,11 @@ pub struct VolumeSpec {
     /// - disabled: Disable offline rebuilding for this volume, regardless of the global setting
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "offlineRebuilding")]
     pub offline_rebuilding: Option<VolumeOfflineRebuilding>,
+    /// RebuildConcurrentSyncLimit controls the maximum number of file synchronization operations that can run
+    /// concurrently during a single replica rebuild.
+    /// When set to 0, it means following the global setting.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rebuildConcurrentSyncLimit")]
+    pub rebuild_concurrent_sync_limit: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaAutoBalance")]
     pub replica_auto_balance: Option<VolumeReplicaAutoBalance>,
     /// Replica disk soft anti affinity of the volume. Set enabled to allow replicas to be scheduled in the same disk.

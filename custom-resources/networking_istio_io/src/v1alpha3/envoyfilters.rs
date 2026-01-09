@@ -98,7 +98,6 @@ pub struct EnvoyFilterConfigPatchesMatch {
     /// Match on envoy HTTP route configuration attributes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "routeConfiguration")]
     pub route_configuration: Option<EnvoyFilterConfigPatchesMatchRouteConfiguration>,
-    /// Match on waypoint attributes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub waypoint: Option<EnvoyFilterConfigPatchesMatchWaypoint>,
 }
@@ -267,7 +266,6 @@ pub enum EnvoyFilterConfigPatchesMatchRouteConfigurationVhostRouteAction {
     DirectResponse,
 }
 
-/// Match on waypoint attributes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyFilterConfigPatchesMatchWaypoint {
     /// The name of a specific filter to apply the patch to.

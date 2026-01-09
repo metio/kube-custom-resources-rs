@@ -890,6 +890,12 @@ spec:
                           type: "string"
                       type: "object"
                   type: "object"
+                cleanupPolicy:
+                  description: "CleanupPolicy defines the behavior for cleaning up the initial User, Database, and Grant created by the operator."
+                  enum:
+                    - "Skip"
+                    - "Delete"
+                  type: "string"
                 command:
                   description: "Command to be used in the Container."
                   items:
@@ -4667,6 +4673,16 @@ spec:
                     ephemeral:
                       description: "Ephemeral indicates whether to use ephemeral storage in the PVCs. It is only compatible with non HA MariaDBs."
                       type: "boolean"
+                    pvcRetentionPolicy:
+                      description: "PersistentVolumeClaimRetentionPolicy describes the lifecycle of PVCs created from volumeClaimTemplates.\nBy default, all persistent volume claims are created as needed and retained until manually deleted.\nThis policy allows the lifecycle to be altered, for example by deleting PVCs when their statefulset is deleted,\nor when their pod is scaled down."
+                      properties:
+                        whenDeleted:
+                          description: "PersistentVolumeClaimRetentionPolicyType describes the lifecycle of persistent volume claims.\nRefer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#statefulsetpersistentvolumeclaimretentionpolicy-v1-apps."
+                          type: "string"
+                        whenScaled:
+                          description: "PersistentVolumeClaimRetentionPolicyType describes the lifecycle of persistent volume claims.\nRefer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#statefulsetpersistentvolumeclaimretentionpolicy-v1-apps."
+                          type: "string"
+                      type: "object"
                     resizeInUseVolumes:
                       description: "ResizeInUseVolumes indicates whether the PVCs can be resized. The 'StorageClassName' used should have 'allowVolumeExpansion' set to 'true' to allow resizing.\nIt defaults to true."
                       type: "boolean"

@@ -226,12 +226,16 @@ pub struct KialiAuthOpenid {
     pub api_token: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authentication_timeout: Option<i64>,
+    /// DEPRECATED since v2.21: Use auth.openid.discovery_override.authorization_endpoint instead. The URL of the provider's authorization endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization_endpoint: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disable_rbac: Option<bool>,
+    /// Optional configuration to override OpenID Connect auto-discovery. Use when the IdP restricts access to /.well-known/openid-configuration endpoint.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub discovery_override: Option<KialiAuthOpenidDiscoveryOverride>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http_proxy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -244,6 +248,23 @@ pub struct KialiAuthOpenid {
     pub scopes: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username_claim: Option<String>,
+}
+
+/// Optional configuration to override OpenID Connect auto-discovery. Use when the IdP restricts access to /.well-known/openid-configuration endpoint.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KialiAuthOpenidDiscoveryOverride {
+    /// The URL of the provider's authorization endpoint.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub authorization_endpoint: Option<String>,
+    /// The URL of the provider's JWK Set document.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub jwks_uri: Option<String>,
+    /// The URL of the provider's token endpoint.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub token_endpoint: Option<String>,
+    /// The URL of the provider's UserInfo endpoint.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub userinfo_endpoint: Option<String>,
 }
 
 /// To learn more about these settings and how to configure the OpenShift authentication strategy, read the documentation at <https://kiali.io/docs/configuration/authentication/openshift/>

@@ -47,6 +47,12 @@ spec:
                 archived:
                   description: "Whether this plan should be archived."
                   type: "boolean"
+                conversionTempStorageClass:
+                  description: "ConversionTempStorageClass specifies the storage class to use for temporary conversion storage.\nWhen specified, virt-v2v conversion pods will use a temporary PVC from this storage class\ninstead of using the node's ephemeral storage for the conversion scratch space.\nThis is useful for:\n  - Large VM migrations (10+ TB disks) where fstrim operations create large overlays\n  - OVA imports that require full uncompressed disk copies in temporary storage\n  - Nodes with limited ephemeral storage that may cause pod eviction due to storage pressure\nThe temporary PVC is automatically created and deleted with the conversion pod."
+                  type: "string"
+                conversionTempStorageSize:
+                  description: "ConversionTempStorageSize specifies the size of the temporary conversion storage PVC.\nOnly used when ConversionTempStorageClass is specified.\nUser specification allows for buffer space beyond the largest disk size to accommodate:\n  - Temporary files during conversion\n  - Multiple concurrent conversions\n  - OVA imports requiring full uncompressed copies\nRecommended minimum: size of the largest VM disk being migrated.\nFormat: standard Kubernetes resource quantity (e.g., \"30Gi\", \"1Ti\")"
+                  type: "string"
                 convertorAffinity:
                   description: "ConvertorAffinity allows specifying hard- and soft-affinity for virt-v2v convertor pods.\nThis can be used to optimize placement for disk conversion performance, such as co-locating\nwith storage or ensuring network proximity to VMware infrastructure for cold migration data transfers.\nSee Pod Affinity documentation for more details,\nhttps://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity"
                   properties:

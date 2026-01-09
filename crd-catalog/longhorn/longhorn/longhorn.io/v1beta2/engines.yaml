@@ -87,6 +87,11 @@ spec:
                   type: "boolean"
                 nodeID:
                   type: "string"
+                rebuildConcurrentSyncLimit:
+                  description: "RebuildConcurrentSyncLimit controls the maximum number of file synchronization operations that can run\nconcurrently during a single replica rebuild.\nIt is determined by the global setting or the volume spec field with the same name."
+                  maximum: 5.0
+                  minimum: 0.0
+                  type: "integer"
                 replicaAddressMap:
                   additionalProperties:
                     type: "string"
@@ -231,6 +236,10 @@ spec:
                     type: "object"
                   nullable: true
                   type: "object"
+                rebuildConcurrentSyncLimit:
+                  description: "RebuildConcurrentSyncLimit controls the maximum number of file synchronization operations that can run\nconcurrently during a single replica rebuild.\nIt is determined by the global setting or the volume spec field with the same name."
+                  minimum: 0.0
+                  type: "integer"
                 rebuildStatus:
                   additionalProperties:
                     properties:
@@ -240,7 +249,12 @@ spec:
                       error:
                         type: "string"
                       fromReplicaAddress:
+                        description: "Deprecated. We are now using FromReplicaAddressList to list all source replicas."
                         type: "string"
+                      fromReplicaAddressList:
+                        items:
+                          type: "string"
+                        type: "array"
                       isRebuilding:
                         type: "boolean"
                       progress:

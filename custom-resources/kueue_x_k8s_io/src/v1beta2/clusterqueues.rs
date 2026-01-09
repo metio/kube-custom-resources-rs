@@ -172,7 +172,7 @@ pub struct ClusterQueueFlavorFungibility {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "whenCanBorrow")]
     pub when_can_borrow: Option<ClusterQueueFlavorFungibilityWhenCanBorrow>,
     /// whenCanPreempt determines whether a workload should try the next flavor
-    /// before borrowing in current flavor. The possible values are:
+    /// before preempting in current flavor. The possible values are:
     /// 
     /// - `MayStopSearch`: stop the search for candidate flavors if workload fits or requires
     ///   preemption to fit.

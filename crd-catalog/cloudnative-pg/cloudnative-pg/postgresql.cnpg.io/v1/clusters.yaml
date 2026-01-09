@@ -704,6 +704,9 @@ spec:
                                 - "key"
                                 - "name"
                               type: "object"
+                            useDefaultAzureCredentials:
+                              description: "Use the default Azure authentication flow, which includes DefaultAzureCredential.\nThis allows authentication using environment variables and managed identities."
+                              type: "boolean"
                           type: "object"
                         data:
                           description: "The configuration to be used to backup the data files\nWhen not defined, base backups files will be stored uncompressed and may\nbe unencrypted in the object store, according to the bucket default\npolicy."
@@ -1744,6 +1747,9 @@ spec:
                                   - "key"
                                   - "name"
                                 type: "object"
+                              useDefaultAzureCredentials:
+                                description: "Use the default Azure authentication flow, which includes DefaultAzureCredential.\nThis allows authentication using environment variables and managed identities."
+                                type: "boolean"
                             type: "object"
                           data:
                             description: "The configuration to be used to backup the data files\nWhen not defined, base backups files will be stored uncompressed and may\nbe unencrypted in the object store, according to the bucket default\npolicy."

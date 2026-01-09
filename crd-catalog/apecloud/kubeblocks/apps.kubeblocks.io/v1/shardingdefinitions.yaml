@@ -51,7 +51,7 @@ spec:
                   description: "Defines a set of hooks and procedures that customize the behavior of a sharding throughout its lifecycle.\n\n\nThis field is immutable."
                   properties:
                     postProvision:
-                      description: "Specifies the hook to be executed after a sharding's creation.\n\n\nBy setting `postProvision.preCondition`, you can determine the specific lifecycle stage at which\nthe action should trigger, available conditions for sharding include: `Immediately`, `ComponentReady`,\nand `ClusterReady`. For sharding, the `ComponentReady` condition means all components of the sharding are ready.\n\n\nWith `ComponentReady` being the default.\n\n\nThe PostProvision Action is intended to run only once.\n\n\nNote: This field is immutable once it has been set."
+                      description: "Specifies the hook to be executed after a sharding's creation.\n\n\nBy setting `postProvision.preCondition`, you can determine the specific lifecycle stage at which\nthe action should trigger, available conditions for sharding include: `Immediately`, `ComponentReady`,\nand `ClusterReady`. For sharding, the `ComponentReady` condition means all components of the sharding are ready.\n\n\nWith `ComponentReady` being the default.\n\n\nThe PostProvision action is intended to run only once.\n\n\nNote: This field is immutable once it has been set."
                       properties:
                         exec:
                           description: "Defines the command to run.\n\n\nThis field cannot be updated."
@@ -283,6 +283,12 @@ spec:
                             - "All"
                             - "Role"
                             - "Ordinal"
+                          type: "string"
+                        targetShardSelector:
+                          description: "Defines the criteria used to select the target shard(s) for executing the Action.\nIt provides precise control over which shard(s) should be targeted.\n\n\nThe default selection logic (when this field is omitted) is context-dependent:\n1. Contextual Default: If the Action is triggered by or originates from a specific shard,\n   that shard is selected as the default target.\n2. Global Default: In other cases (where no specific shard context exists),\n   one shard is selected randomly by default.\n\n\nThis field cannot be updated."
+                          enum:
+                            - "Any"
+                            - "All"
                           type: "string"
                         timeoutSeconds:
                           default: 0
@@ -291,7 +297,7 @@ spec:
                           type: "integer"
                       type: "object"
                     preTerminate:
-                      description: "Specifies the hook to be executed prior to terminating a sharding.\n\n\nThe PreTerminate Action is intended to run only once.\n\n\nThis action is executed immediately when a terminate operation for the sharding is initiated.\nThe actual termination and cleanup of the sharding and its associated resources will not proceed\nuntil the PreTerminate action has completed successfully.\n\n\nNote: This field is immutable once it has been set."
+                      description: "Specifies the hook to be executed prior to terminating a sharding.\n\n\nThe PreTerminate action is intended to run only once.\n\n\nThis action is executed immediately when a terminate operation for the sharding is initiated.\nThe actual termination and cleanup of the sharding and its associated resources will not proceed\nuntil the PreTerminate action has completed successfully.\n\n\nIf a PostProvision action is defined, this action will only execute if PostProvision reaches\nthe 'Succeeded' phase. If the defined PostProvision fails, this action will be skipped.\n\n\nNote: This field is immutable once it has been set."
                       properties:
                         exec:
                           description: "Defines the command to run.\n\n\nThis field cannot be updated."
@@ -523,6 +529,12 @@ spec:
                             - "All"
                             - "Role"
                             - "Ordinal"
+                          type: "string"
+                        targetShardSelector:
+                          description: "Defines the criteria used to select the target shard(s) for executing the Action.\nIt provides precise control over which shard(s) should be targeted.\n\n\nThe default selection logic (when this field is omitted) is context-dependent:\n1. Contextual Default: If the Action is triggered by or originates from a specific shard,\n   that shard is selected as the default target.\n2. Global Default: In other cases (where no specific shard context exists),\n   one shard is selected randomly by default.\n\n\nThis field cannot be updated."
+                          enum:
+                            - "Any"
+                            - "All"
                           type: "string"
                         timeoutSeconds:
                           default: 0
@@ -531,7 +543,7 @@ spec:
                           type: "integer"
                       type: "object"
                     shardAdd:
-                      description: "Specifies the hook to be executed after a shard added.\n\n\nNote: This field is immutable once it has been set."
+                      description: "Specifies the hook to be executed after a shard added.\n\n\nThe container executing this action has access to following variables:\n\n\n- KB_ADD_SHARD_NAME: The name of the shard being added.\n\n\nNote: This field is immutable once it has been set."
                       properties:
                         exec:
                           description: "Defines the command to run.\n\n\nThis field cannot be updated."
@@ -763,6 +775,12 @@ spec:
                             - "All"
                             - "Role"
                             - "Ordinal"
+                          type: "string"
+                        targetShardSelector:
+                          description: "Defines the criteria used to select the target shard(s) for executing the Action.\nIt provides precise control over which shard(s) should be targeted.\n\n\nThe default selection logic (when this field is omitted) is context-dependent:\n1. Contextual Default: If the Action is triggered by or originates from a specific shard,\n   that shard is selected as the default target.\n2. Global Default: In other cases (where no specific shard context exists),\n   one shard is selected randomly by default.\n\n\nThis field cannot be updated."
+                          enum:
+                            - "Any"
+                            - "All"
                           type: "string"
                         timeoutSeconds:
                           default: 0
@@ -771,7 +789,7 @@ spec:
                           type: "integer"
                       type: "object"
                     shardRemove:
-                      description: "Specifies the hook to be executed prior to remove a shard.\n\n\nNote: This field is immutable once it has been set."
+                      description: "Specifies the hook to be executed prior to remove a shard.\n\n\nThe container executing this action has access to following variables:\n\n\n- KB_REMOVE_SHARD_NAME: The name of the shard being removed.\n\n\nNote: This field is immutable once it has been set."
                       properties:
                         exec:
                           description: "Defines the command to run.\n\n\nThis field cannot be updated."
@@ -1003,6 +1021,12 @@ spec:
                             - "All"
                             - "Role"
                             - "Ordinal"
+                          type: "string"
+                        targetShardSelector:
+                          description: "Defines the criteria used to select the target shard(s) for executing the Action.\nIt provides precise control over which shard(s) should be targeted.\n\n\nThe default selection logic (when this field is omitted) is context-dependent:\n1. Contextual Default: If the Action is triggered by or originates from a specific shard,\n   that shard is selected as the default target.\n2. Global Default: In other cases (where no specific shard context exists),\n   one shard is selected randomly by default.\n\n\nThis field cannot be updated."
+                          enum:
+                            - "Any"
+                            - "All"
                           type: "string"
                         timeoutSeconds:
                           default: 0

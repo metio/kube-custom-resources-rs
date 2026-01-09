@@ -87,12 +87,29 @@ spec:
                           default: 300
                           type: "integer"
                         authorization_endpoint:
+                          description: "DEPRECATED since v2.21: Use auth.openid.discovery_override.authorization_endpoint instead. The URL of the provider's authorization endpoint."
                           type: "string"
                         client_id:
                           type: "string"
                         disable_rbac:
                           default: false
                           type: "boolean"
+                        discovery_override:
+                          description: "Optional configuration to override OpenID Connect auto-discovery. Use when the IdP restricts access to /.well-known/openid-configuration endpoint."
+                          properties:
+                            authorization_endpoint:
+                              description: "The URL of the provider's authorization endpoint."
+                              type: "string"
+                            jwks_uri:
+                              description: "The URL of the provider's JWK Set document."
+                              type: "string"
+                            token_endpoint:
+                              description: "The URL of the provider's token endpoint."
+                              type: "string"
+                            userinfo_endpoint:
+                              description: "The URL of the provider's UserInfo endpoint."
+                              type: "string"
+                          type: "object"
                         http_proxy:
                           type: "string"
                         https_proxy:

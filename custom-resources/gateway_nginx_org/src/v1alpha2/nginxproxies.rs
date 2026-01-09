@@ -7007,12 +7007,30 @@ pub struct NginxProxyLoggingAccessLog {
     /// Disable turns off access logging when set to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disable: Option<bool>,
+    /// Escape specifies how to escape characters in variables for access log.
+    /// Possible values are: default, json, none.
+    /// If not specified, 'default' escaping is used.
+    /// See <https://nginx.org/en/docs/http/ngx_http_log_module.html#log_format>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub escape: Option<NginxProxyLoggingAccessLogEscape>,
     /// Format specifies the custom log format string.
     /// If not specified, NGINX default 'combined' format is used.
     /// For now only path /dev/stdout can be used.
     /// See <https://nginx.org/en/docs/http/ngx_http_log_module.html#log_format>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub format: Option<String>,
+}
+
+/// AccessLog defines the access log settings, including format itself and disabling option.
+/// For now only path /dev/stdout can be used.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum NginxProxyLoggingAccessLogEscape {
+    #[serde(rename = "default")]
+    Default,
+    #[serde(rename = "json")]
+    Json,
+    #[serde(rename = "none")]
+    None,
 }
 
 /// Logging defines logging related settings for NGINX.

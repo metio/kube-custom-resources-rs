@@ -1093,6 +1093,10 @@ pub struct ClusterBackupBarmanObjectStoreAzureCredentials {
     /// the storage account name
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageSasToken")]
     pub storage_sas_token: Option<ClusterBackupBarmanObjectStoreAzureCredentialsStorageSasToken>,
+    /// Use the default Azure authentication flow, which includes DefaultAzureCredential.
+    /// This allows authentication using environment variables and managed identities.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useDefaultAzureCredentials")]
+    pub use_default_azure_credentials: Option<bool>,
 }
 
 /// The connection string to be used
@@ -2597,6 +2601,10 @@ pub struct ClusterExternalClustersBarmanObjectStoreAzureCredentials {
     /// the storage account name
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageSasToken")]
     pub storage_sas_token: Option<ClusterExternalClustersBarmanObjectStoreAzureCredentialsStorageSasToken>,
+    /// Use the default Azure authentication flow, which includes DefaultAzureCredential.
+    /// This allows authentication using environment variables and managed identities.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useDefaultAzureCredentials")]
+    pub use_default_azure_credentials: Option<bool>,
 }
 
 /// The connection string to be used

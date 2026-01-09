@@ -30,6 +30,9 @@ pub struct ComponentSpec {
     /// Specifies the configuration content of a config template.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configs: Option<Vec<ComponentConfigs>>,
+    /// Specifies custom actions that can be performed on the Component.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customActions")]
+    pub custom_actions: Option<Vec<ComponentCustomActions>>,
     /// Determines whether metrics exporter information is annotated on the Component's headless Service.
     /// 
     /// 
@@ -766,6 +769,442 @@ pub struct ComponentConfigsReconfigureRetryPolicy {
 /// Note: This field is immutable once it has been set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ComponentConfigsReconfigureTargetPodSelector {
+    Any,
+    All,
+    Role,
+    Ordinal,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentCustomActions {
+    /// Specifies the action to be performed.
+    pub action: ComponentCustomActionsAction,
+    /// Name specifies the unique name of the custom action.
+    /// 
+    /// 
+    /// The name will be used as the action name when invoking the action.
+    pub name: String,
+}
+
+/// Specifies the action to be performed.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentCustomActionsAction {
+    /// Defines the command to run.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<ComponentCustomActionsActionExec>,
+    /// Defines the gRPC call to issue.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub grpc: Option<ComponentCustomActionsActionGrpc>,
+    /// Defines the HTTP request to perform.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub http: Option<ComponentCustomActionsActionHttp>,
+    /// Used in conjunction with the `targetPodSelector` field to refine the selection of target pod(s) for Action execution.
+    /// The impact of this field depends on the `targetPodSelector` value:
+    /// 
+    /// 
+    /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
+    /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
+    ///   will be selected for the Action.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
+    pub matching_key: Option<String>,
+    /// Specifies the state that the cluster must reach before the Action is executed.
+    /// Currently, this is only applicable to the `postProvision` action.
+    /// 
+    /// 
+    /// The conditions are as follows:
+    /// 
+    /// 
+    /// - `Immediately`: Executed right after the Component object is created.
+    ///   The readiness of the Component and its resources is not guaranteed at this stage.
+    /// - `RuntimeReady`: The Action is triggered after the Component object has been created and all associated
+    ///   runtime resources (e.g. Pods) are in a ready state.
+    /// - `ComponentReady`: The Action is triggered after the Component itself is in a ready state.
+    ///   This process does not affect the readiness state of the Component or the Cluster.
+    /// - `ClusterReady`: The Action is executed after the Cluster is in a ready state.
+    ///   This execution does not alter the Component or the Cluster's state of readiness.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preCondition")]
+    pub pre_condition: Option<String>,
+    /// Defines the strategy to be taken when retrying the Action after a failure.
+    /// 
+    /// 
+    /// It specifies the conditions under which the Action should be retried and the limits to apply,
+    /// such as the maximum number of retries and backoff strategy.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryPolicy")]
+    pub retry_policy: Option<ComponentCustomActionsActionRetryPolicy>,
+    /// Defines the criteria used to select the target Pod(s) for executing the Action.
+    /// This is useful when there is no default target replica identified.
+    /// It allows for precise control over which Pod(s) the Action should run in.
+    /// 
+    /// 
+    /// If not specified, the Action will be executed in the pod where the Action is triggered, such as the pod
+    /// to be removed or added; or a random pod if the Action is triggered at the component level, such as
+    /// post-provision or pre-terminate of the component.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
+    pub target_pod_selector: Option<ComponentCustomActionsActionTargetPodSelector>,
+    /// Specifies the maximum duration in seconds that the Action is allowed to run.
+    /// 
+    /// 
+    /// Behavior based on the value:
+    /// - Positive (> 0): The action will be terminated after this many seconds. The maximum allowed value is 60.
+    /// - Zero (= 0): The timeout is managed by the system, defaulting to 30 seconds typically.
+    /// - Negative (< 0): No timeout is applied; the action runs until the command completes.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
+}
+
+/// Defines the command to run.
+/// 
+/// 
+/// This field cannot be updated.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentCustomActionsActionExec {
+    /// Args represents the arguments that are passed to the `command` for execution.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub args: Option<Vec<String>>,
+    /// Specifies the command to be executed inside the container.
+    /// The working directory for this command is the container's root directory('/').
+    /// Commands are executed directly without a shell environment, meaning shell-specific syntax ('|', etc.) is not supported.
+    /// If the shell is required, it must be explicitly invoked in the command.
+    /// 
+    /// 
+    /// A successful execution is indicated by an exit status of 0; any non-zero status signifies a failure.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+    /// Specifies the name of the container within the same pod whose resources will be shared with the action.
+    /// This allows the action to utilize the specified container's resources without executing within it.
+    /// 
+    /// 
+    /// The name must match one of the containers defined in `componentDefinition.spec.runtime`.
+    /// 
+    /// 
+    /// The resources that can be shared are included:
+    /// 
+    /// 
+    /// - volume mounts
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub container: Option<String>,
+    /// Represents a list of environment variables that will be injected into the container.
+    /// These variables enable the container to adapt its behavior based on the environment it's running in.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub env: Option<Vec<ComponentCustomActionsActionExecEnv>>,
+    /// Specifies the container image to be used for running the Action.
+    /// 
+    /// 
+    /// When specified, a dedicated container will be created using this image to execute the Action.
+    /// All actions with same image will share the same container.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<String>,
+    /// Used in conjunction with the `targetPodSelector` field to refine the selection of target pod(s) for Action execution.
+    /// The impact of this field depends on the `targetPodSelector` value:
+    /// 
+    /// 
+    /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
+    /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
+    ///   will be selected for the Action.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
+    pub matching_key: Option<String>,
+    /// Defines the criteria used to select the target Pod(s) for executing the Action.
+    /// This is useful when there is no default target replica identified.
+    /// It allows for precise control over which Pod(s) the Action should run in.
+    /// 
+    /// 
+    /// If not specified, the Action will be executed in the pod where the Action is triggered, such as the pod
+    /// to be removed or added; or a random pod if the Action is triggered at the component level, such as
+    /// post-provision or pre-terminate of the component.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
+    pub target_pod_selector: Option<ComponentCustomActionsActionExecTargetPodSelector>,
+}
+
+/// EnvVar represents an environment variable present in a Container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentCustomActionsActionExecEnv {
+    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    pub name: String,
+    /// Variable references $(VAR_NAME) are expanded
+    /// using the previously defined environment variables in the container and
+    /// any service environment variables. If a variable cannot be resolved,
+    /// the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+    /// Escaped references will never be expanded, regardless of whether the variable
+    /// exists or not.
+    /// Defaults to "".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    /// Source for the environment variable's value. Cannot be used if value is not empty.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<ComponentCustomActionsActionExecEnvValueFrom>,
+}
+
+/// Source for the environment variable's value. Cannot be used if value is not empty.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentCustomActionsActionExecEnvValueFrom {
+    /// Selects a key of a ConfigMap.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ComponentCustomActionsActionExecEnvValueFromConfigMapKeyRef>,
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
+    pub field_ref: Option<ComponentCustomActionsActionExecEnvValueFromFieldRef>,
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ComponentCustomActionsActionExecEnvValueFromResourceFieldRef>,
+    /// Selects a key of a secret in the pod's namespace
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ComponentCustomActionsActionExecEnvValueFromSecretKeyRef>,
+}
+
+/// Selects a key of a ConfigMap.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentCustomActionsActionExecEnvValueFromConfigMapKeyRef {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent.
+    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentCustomActionsActionExecEnvValueFromFieldRef {
+    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// Path of the field to select in the specified API version.
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
+}
+
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentCustomActionsActionExecEnvValueFromResourceFieldRef {
+    /// Container name: required for volumes, optional for env vars
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
+    pub container_name: Option<String>,
+    /// Specifies the output format of the exposed resources, defaults to "1"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub divisor: Option<IntOrString>,
+    /// Required: resource to select
+    pub resource: String,
+}
+
+/// Selects a key of a secret in the pod's namespace
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentCustomActionsActionExecEnvValueFromSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Defines the command to run.
+/// 
+/// 
+/// This field cannot be updated.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ComponentCustomActionsActionExecTargetPodSelector {
+    Any,
+    All,
+    Role,
+    Ordinal,
+}
+
+/// Defines the gRPC call to issue.
+/// 
+/// 
+/// This field cannot be updated.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentCustomActionsActionGrpc {
+    /// The target host to connect to.
+    /// Defaults to "127.0.0.1" if not specified.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Name of the method to invoke on the gRPC service.
+    pub method: String,
+    /// The port to access on the host.
+    /// It may be a numeric string (e.g., "50051") or a named port defined in the container spec.
+    pub port: String,
+    /// Request payload for the gRPC method.
+    /// 
+    /// 
+    /// Keys are proto field names (lowerCamelCase); values are strings that can include Go templates.
+    /// Templates are rendered with predefined action variables before the request is sent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<BTreeMap<String, String>>,
+    /// Required response schema for the gRPC method.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub response: Option<ComponentCustomActionsActionGrpcResponse>,
+    /// Fully-qualified name of the gRPC service to call.
+    pub service: String,
+}
+
+/// Required response schema for the gRPC method.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentCustomActionsActionGrpcResponse {
+    /// Name of the field in the response whose value should be output.
+    /// Printed to stdout on success, or stderr on failure.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub message: Option<String>,
+    /// Name of the string field in the response that carries status information.
+    /// If non-empty, the action fails.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub status: Option<String>,
+}
+
+/// Defines the HTTP request to perform.
+/// 
+/// 
+/// This field cannot be updated.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentCustomActionsActionHttp {
+    /// Optional HTTP request body.
+    /// 
+    /// 
+    /// Supports Go text/template syntax; rendered with predefined variables before sending.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub body: Option<String>,
+    /// Custom headers to set in the request.
+    /// Header values may use Go text/template syntax, rendered with predefined variables.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub headers: Option<Vec<ComponentCustomActionsActionHttpHeaders>>,
+    /// The target host to connect to.
+    /// Defaults to "127.0.0.1" if not specified.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// The HTTP method to use.
+    /// Defaults to "GET".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub method: Option<ComponentCustomActionsActionHttpMethod>,
+    /// The path to request on the HTTP server.
+    /// Defaults to "/" if not specified.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// The port to access on the host.
+    /// It may be a numeric string (e.g., "8080") or a named port defined in the container spec.
+    pub port: String,
+    /// The scheme to use for connecting to the host.
+    /// Defaults to "HTTP".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<ComponentCustomActionsActionHttpScheme>,
+}
+
+/// HTTPHeader represents a single HTTP header key/value pair.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentCustomActionsActionHttpHeaders {
+    /// Name of the header field.
+    pub name: String,
+    /// Value of the header field.
+    pub value: String,
+}
+
+/// Defines the HTTP request to perform.
+/// 
+/// 
+/// This field cannot be updated.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ComponentCustomActionsActionHttpMethod {
+    #[serde(rename = "GET")]
+    Get,
+    #[serde(rename = "POST")]
+    Post,
+    #[serde(rename = "PUT")]
+    Put,
+    #[serde(rename = "DELETE")]
+    Delete,
+    #[serde(rename = "HEAD")]
+    Head,
+    #[serde(rename = "PATCH")]
+    Patch,
+}
+
+/// Defines the HTTP request to perform.
+/// 
+/// 
+/// This field cannot be updated.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ComponentCustomActionsActionHttpScheme {
+    #[serde(rename = "HTTP")]
+    Http,
+    #[serde(rename = "HTTPS")]
+    Https,
+}
+
+/// Defines the strategy to be taken when retrying the Action after a failure.
+/// 
+/// 
+/// It specifies the conditions under which the Action should be retried and the limits to apply,
+/// such as the maximum number of retries and backoff strategy.
+/// 
+/// 
+/// This field cannot be updated.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentCustomActionsActionRetryPolicy {
+    /// Defines the maximum number of retry attempts that should be made for a given Action.
+    /// This value is set to 0 by default, indicating that no retries will be made.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
+    pub max_retries: Option<i64>,
+    /// Indicates the duration of time to wait between each retry attempt.
+    /// This value is set to 0 by default, indicating that there will be no delay between retry attempts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
+    pub retry_interval: Option<i64>,
+}
+
+/// Specifies the action to be performed.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ComponentCustomActionsActionTargetPodSelector {
     Any,
     All,
     Role,

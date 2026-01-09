@@ -76,7 +76,7 @@ pub struct ShardingDefinitionLifecycleActions {
     /// With `ComponentReady` being the default.
     /// 
     /// 
-    /// The PostProvision Action is intended to run only once.
+    /// The PostProvision action is intended to run only once.
     /// 
     /// 
     /// Note: This field is immutable once it has been set.
@@ -85,12 +85,16 @@ pub struct ShardingDefinitionLifecycleActions {
     /// Specifies the hook to be executed prior to terminating a sharding.
     /// 
     /// 
-    /// The PreTerminate Action is intended to run only once.
+    /// The PreTerminate action is intended to run only once.
     /// 
     /// 
     /// This action is executed immediately when a terminate operation for the sharding is initiated.
     /// The actual termination and cleanup of the sharding and its associated resources will not proceed
     /// until the PreTerminate action has completed successfully.
+    /// 
+    /// 
+    /// If a PostProvision action is defined, this action will only execute if PostProvision reaches
+    /// the 'Succeeded' phase. If the defined PostProvision fails, this action will be skipped.
     /// 
     /// 
     /// Note: This field is immutable once it has been set.
@@ -99,10 +103,22 @@ pub struct ShardingDefinitionLifecycleActions {
     /// Specifies the hook to be executed after a shard added.
     /// 
     /// 
+    /// The container executing this action has access to following variables:
+    /// 
+    /// 
+    /// - KB_ADD_SHARD_NAME: The name of the shard being added.
+    /// 
+    /// 
     /// Note: This field is immutable once it has been set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "shardAdd")]
     pub shard_add: Option<ShardingDefinitionLifecycleActionsShardAdd>,
     /// Specifies the hook to be executed prior to remove a shard.
+    /// 
+    /// 
+    /// The container executing this action has access to following variables:
+    /// 
+    /// 
+    /// - KB_REMOVE_SHARD_NAME: The name of the shard being removed.
     /// 
     /// 
     /// Note: This field is immutable once it has been set.
@@ -121,7 +137,7 @@ pub struct ShardingDefinitionLifecycleActions {
 /// With `ComponentReady` being the default.
 /// 
 /// 
-/// The PostProvision Action is intended to run only once.
+/// The PostProvision action is intended to run only once.
 /// 
 /// 
 /// Note: This field is immutable once it has been set.
@@ -200,6 +216,20 @@ pub struct ShardingDefinitionLifecycleActionsPostProvision {
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
     pub target_pod_selector: Option<ShardingDefinitionLifecycleActionsPostProvisionTargetPodSelector>,
+    /// Defines the criteria used to select the target shard(s) for executing the Action.
+    /// It provides precise control over which shard(s) should be targeted.
+    /// 
+    /// 
+    /// The default selection logic (when this field is omitted) is context-dependent:
+    /// 1. Contextual Default: If the Action is triggered by or originates from a specific shard,
+    ///    that shard is selected as the default target.
+    /// 2. Global Default: In other cases (where no specific shard context exists),
+    ///    one shard is selected randomly by default.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetShardSelector")]
+    pub target_shard_selector: Option<ShardingDefinitionLifecycleActionsPostProvisionTargetShardSelector>,
     /// Specifies the maximum duration in seconds that the Action is allowed to run.
     /// 
     /// 
@@ -551,7 +581,7 @@ pub struct ShardingDefinitionLifecycleActionsPostProvisionRetryPolicy {
 /// With `ComponentReady` being the default.
 /// 
 /// 
-/// The PostProvision Action is intended to run only once.
+/// The PostProvision action is intended to run only once.
 /// 
 /// 
 /// Note: This field is immutable once it has been set.
@@ -563,15 +593,40 @@ pub enum ShardingDefinitionLifecycleActionsPostProvisionTargetPodSelector {
     Ordinal,
 }
 
+/// Specifies the hook to be executed after a sharding's creation.
+/// 
+/// 
+/// By setting `postProvision.preCondition`, you can determine the specific lifecycle stage at which
+/// the action should trigger, available conditions for sharding include: `Immediately`, `ComponentReady`,
+/// and `ClusterReady`. For sharding, the `ComponentReady` condition means all components of the sharding are ready.
+/// 
+/// 
+/// With `ComponentReady` being the default.
+/// 
+/// 
+/// The PostProvision action is intended to run only once.
+/// 
+/// 
+/// Note: This field is immutable once it has been set.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ShardingDefinitionLifecycleActionsPostProvisionTargetShardSelector {
+    Any,
+    All,
+}
+
 /// Specifies the hook to be executed prior to terminating a sharding.
 /// 
 /// 
-/// The PreTerminate Action is intended to run only once.
+/// The PreTerminate action is intended to run only once.
 /// 
 /// 
 /// This action is executed immediately when a terminate operation for the sharding is initiated.
 /// The actual termination and cleanup of the sharding and its associated resources will not proceed
 /// until the PreTerminate action has completed successfully.
+/// 
+/// 
+/// If a PostProvision action is defined, this action will only execute if PostProvision reaches
+/// the 'Succeeded' phase. If the defined PostProvision fails, this action will be skipped.
 /// 
 /// 
 /// Note: This field is immutable once it has been set.
@@ -650,6 +705,20 @@ pub struct ShardingDefinitionLifecycleActionsPreTerminate {
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
     pub target_pod_selector: Option<ShardingDefinitionLifecycleActionsPreTerminateTargetPodSelector>,
+    /// Defines the criteria used to select the target shard(s) for executing the Action.
+    /// It provides precise control over which shard(s) should be targeted.
+    /// 
+    /// 
+    /// The default selection logic (when this field is omitted) is context-dependent:
+    /// 1. Contextual Default: If the Action is triggered by or originates from a specific shard,
+    ///    that shard is selected as the default target.
+    /// 2. Global Default: In other cases (where no specific shard context exists),
+    ///    one shard is selected randomly by default.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetShardSelector")]
+    pub target_shard_selector: Option<ShardingDefinitionLifecycleActionsPreTerminateTargetShardSelector>,
     /// Specifies the maximum duration in seconds that the Action is allowed to run.
     /// 
     /// 
@@ -993,12 +1062,16 @@ pub struct ShardingDefinitionLifecycleActionsPreTerminateRetryPolicy {
 /// Specifies the hook to be executed prior to terminating a sharding.
 /// 
 /// 
-/// The PreTerminate Action is intended to run only once.
+/// The PreTerminate action is intended to run only once.
 /// 
 /// 
 /// This action is executed immediately when a terminate operation for the sharding is initiated.
 /// The actual termination and cleanup of the sharding and its associated resources will not proceed
 /// until the PreTerminate action has completed successfully.
+/// 
+/// 
+/// If a PostProvision action is defined, this action will only execute if PostProvision reaches
+/// the 'Succeeded' phase. If the defined PostProvision fails, this action will be skipped.
 /// 
 /// 
 /// Note: This field is immutable once it has been set.
@@ -1010,7 +1083,35 @@ pub enum ShardingDefinitionLifecycleActionsPreTerminateTargetPodSelector {
     Ordinal,
 }
 
+/// Specifies the hook to be executed prior to terminating a sharding.
+/// 
+/// 
+/// The PreTerminate action is intended to run only once.
+/// 
+/// 
+/// This action is executed immediately when a terminate operation for the sharding is initiated.
+/// The actual termination and cleanup of the sharding and its associated resources will not proceed
+/// until the PreTerminate action has completed successfully.
+/// 
+/// 
+/// If a PostProvision action is defined, this action will only execute if PostProvision reaches
+/// the 'Succeeded' phase. If the defined PostProvision fails, this action will be skipped.
+/// 
+/// 
+/// Note: This field is immutable once it has been set.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ShardingDefinitionLifecycleActionsPreTerminateTargetShardSelector {
+    Any,
+    All,
+}
+
 /// Specifies the hook to be executed after a shard added.
+/// 
+/// 
+/// The container executing this action has access to following variables:
+/// 
+/// 
+/// - KB_ADD_SHARD_NAME: The name of the shard being added.
 /// 
 /// 
 /// Note: This field is immutable once it has been set.
@@ -1089,6 +1190,20 @@ pub struct ShardingDefinitionLifecycleActionsShardAdd {
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
     pub target_pod_selector: Option<ShardingDefinitionLifecycleActionsShardAddTargetPodSelector>,
+    /// Defines the criteria used to select the target shard(s) for executing the Action.
+    /// It provides precise control over which shard(s) should be targeted.
+    /// 
+    /// 
+    /// The default selection logic (when this field is omitted) is context-dependent:
+    /// 1. Contextual Default: If the Action is triggered by or originates from a specific shard,
+    ///    that shard is selected as the default target.
+    /// 2. Global Default: In other cases (where no specific shard context exists),
+    ///    one shard is selected randomly by default.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetShardSelector")]
+    pub target_shard_selector: Option<ShardingDefinitionLifecycleActionsShardAddTargetShardSelector>,
     /// Specifies the maximum duration in seconds that the Action is allowed to run.
     /// 
     /// 
@@ -1432,6 +1547,12 @@ pub struct ShardingDefinitionLifecycleActionsShardAddRetryPolicy {
 /// Specifies the hook to be executed after a shard added.
 /// 
 /// 
+/// The container executing this action has access to following variables:
+/// 
+/// 
+/// - KB_ADD_SHARD_NAME: The name of the shard being added.
+/// 
+/// 
 /// Note: This field is immutable once it has been set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ShardingDefinitionLifecycleActionsShardAddTargetPodSelector {
@@ -1441,7 +1562,29 @@ pub enum ShardingDefinitionLifecycleActionsShardAddTargetPodSelector {
     Ordinal,
 }
 
+/// Specifies the hook to be executed after a shard added.
+/// 
+/// 
+/// The container executing this action has access to following variables:
+/// 
+/// 
+/// - KB_ADD_SHARD_NAME: The name of the shard being added.
+/// 
+/// 
+/// Note: This field is immutable once it has been set.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ShardingDefinitionLifecycleActionsShardAddTargetShardSelector {
+    Any,
+    All,
+}
+
 /// Specifies the hook to be executed prior to remove a shard.
+/// 
+/// 
+/// The container executing this action has access to following variables:
+/// 
+/// 
+/// - KB_REMOVE_SHARD_NAME: The name of the shard being removed.
 /// 
 /// 
 /// Note: This field is immutable once it has been set.
@@ -1520,6 +1663,20 @@ pub struct ShardingDefinitionLifecycleActionsShardRemove {
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
     pub target_pod_selector: Option<ShardingDefinitionLifecycleActionsShardRemoveTargetPodSelector>,
+    /// Defines the criteria used to select the target shard(s) for executing the Action.
+    /// It provides precise control over which shard(s) should be targeted.
+    /// 
+    /// 
+    /// The default selection logic (when this field is omitted) is context-dependent:
+    /// 1. Contextual Default: If the Action is triggered by or originates from a specific shard,
+    ///    that shard is selected as the default target.
+    /// 2. Global Default: In other cases (where no specific shard context exists),
+    ///    one shard is selected randomly by default.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetShardSelector")]
+    pub target_shard_selector: Option<ShardingDefinitionLifecycleActionsShardRemoveTargetShardSelector>,
     /// Specifies the maximum duration in seconds that the Action is allowed to run.
     /// 
     /// 
@@ -1863,6 +2020,12 @@ pub struct ShardingDefinitionLifecycleActionsShardRemoveRetryPolicy {
 /// Specifies the hook to be executed prior to remove a shard.
 /// 
 /// 
+/// The container executing this action has access to following variables:
+/// 
+/// 
+/// - KB_REMOVE_SHARD_NAME: The name of the shard being removed.
+/// 
+/// 
 /// Note: This field is immutable once it has been set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ShardingDefinitionLifecycleActionsShardRemoveTargetPodSelector {
@@ -1870,6 +2033,22 @@ pub enum ShardingDefinitionLifecycleActionsShardRemoveTargetPodSelector {
     All,
     Role,
     Ordinal,
+}
+
+/// Specifies the hook to be executed prior to remove a shard.
+/// 
+/// 
+/// The container executing this action has access to following variables:
+/// 
+/// 
+/// - KB_REMOVE_SHARD_NAME: The name of the shard being removed.
+/// 
+/// 
+/// Note: This field is immutable once it has been set.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ShardingDefinitionLifecycleActionsShardRemoveTargetShardSelector {
+    Any,
+    All,
 }
 
 /// ShardingDefinitionSpec defines the desired state of ShardingDefinition

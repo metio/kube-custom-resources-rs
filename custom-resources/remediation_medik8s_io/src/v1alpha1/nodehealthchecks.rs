@@ -75,6 +75,18 @@ pub struct NodeHealthCheckSpec {
     /// CRs will continue to work with an empty selector, which matches all nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<NodeHealthCheckSelector>,
+    /// StormTerminationDelay introduces a configurable delay after storm recovery
+    /// exit criteria are satisfied (for example, when the number of healthy nodes
+    /// rises above the configured minHealthy constraint). While this
+    /// delay is in effect, NHC remains in storm recovery mode and does not create
+    /// new remediations. Once the delay elapses, storm recovery mode exits and normal
+    /// remediation resumes.
+    /// 
+    /// Expects a string of decimal numbers each with optional fraction and a unit
+    /// suffix, e.g. "300ms", "1.5h" or "2h45m". Valid time units are "ns", "us"
+    /// (or "µs"), "ms", "s", "m", "h".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stormTerminationDelay")]
+    pub storm_termination_delay: Option<String>,
     /// UnhealthyConditions contains a list of the conditions that determine
     /// whether a node is considered unhealthy.  The conditions are combined in a
     /// logical OR, i.e. if any of the conditions is met, the node is unhealthy.
@@ -276,6 +288,10 @@ pub struct NodeHealthCheckStatus {
     /// Reason explains the current phase in more detail.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
+    /// StormTerminationStartTime records when storm recovery mode regained the minHealthy/maxUnhealthy constraint
+    /// and the storm is about to end (after NodeHealthCheckSpec.StormTerminationDelay has passed).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stormTerminationStartTime")]
+    pub storm_termination_start_time: Option<String>,
     /// UnhealthyNodes tracks currently unhealthy nodes and their remediations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyNodes")]
     pub unhealthy_nodes: Option<Vec<NodeHealthCheckStatusUnhealthyNodes>>,

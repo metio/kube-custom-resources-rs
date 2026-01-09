@@ -6972,9 +6972,9 @@ pub struct ClusterShardings {
     /// KubeBlocks provides lifecycle management for sharding, including:
     /// 
     /// 
-    /// - Executing the shardProvision Action defined in the ShardingDefinition when the number of shards increases.
+    /// - Executing the shardAdd Action defined in the ShardingDefinition when the number of shards increases.
     ///   This allows for custom actions to be performed after a new shard is provisioned.
-    /// - Executing the shardTerminate Action defined in the ShardingDefinition when the number of shards decreases.
+    /// - Executing the shardRemove Action defined in the ShardingDefinition when the number of shards decreases.
     ///   This enables custom cleanup or data migration tasks to be executed before a shard is terminated.
     ///   Resources and data associated with the corresponding Component will also be deleted.
     pub shards: i32,
@@ -15304,16 +15304,25 @@ pub enum ClusterStatusPhase {
 /// Records the current status information of all shardings within the Cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterStatusShardings {
-    /// Records detailed information about the Component in its current phase.
+    /// Records detailed information about the sharding in its current phase.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<BTreeMap<String, String>>,
-    /// Indicates the most recent generation of the component state observed.
+    /// Indicates the most recent generation of the sharding state observed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
-    /// Specifies the current state of the Component.
+    /// Specifies the current state of the sharding.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<ClusterStatusShardingsPhase>,
-    /// Indicates whether the component state observed is up-to-date with the desired state.
+    /// PostProvision records the status of the sharding post-provision action.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "postProvision")]
+    pub post_provision: Option<ClusterStatusShardingsPostProvision>,
+    /// PreTerminate records the status of the sharding pre-terminate action.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preTerminate")]
+    pub pre_terminate: Option<ClusterStatusShardingsPreTerminate>,
+    /// Records the name of the sharding definition used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shardingDef")]
+    pub sharding_def: Option<String>,
+    /// Indicates whether the sharding state observed is up-to-date with the desired state.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "upToDate")]
     pub up_to_date: Option<bool>,
 }
@@ -15329,5 +15338,59 @@ pub enum ClusterStatusShardingsPhase {
     Running,
     Stopped,
     Failed,
+}
+
+/// PostProvision records the status of the sharding post-provision action.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterStatusShardingsPostProvision {
+    /// CompletionTime records the time when the action reached a terminal state (Succeeded, Failed, or Skipped).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "completionTime")]
+    pub completion_time: Option<String>,
+    /// Message is a human-readable message providing details about the current phase.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub message: Option<String>,
+    /// Phase is the current phase of the lifecycle action.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub phase: Option<ClusterStatusShardingsPostProvisionPhase>,
+    /// StartTime records the time when the action started execution.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTime")]
+    pub start_time: Option<String>,
+}
+
+/// PostProvision records the status of the sharding post-provision action.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterStatusShardingsPostProvisionPhase {
+    Pending,
+    Running,
+    Succeeded,
+    Failed,
+    Skipped,
+}
+
+/// PreTerminate records the status of the sharding pre-terminate action.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterStatusShardingsPreTerminate {
+    /// CompletionTime records the time when the action reached a terminal state (Succeeded, Failed, or Skipped).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "completionTime")]
+    pub completion_time: Option<String>,
+    /// Message is a human-readable message providing details about the current phase.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub message: Option<String>,
+    /// Phase is the current phase of the lifecycle action.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub phase: Option<ClusterStatusShardingsPreTerminatePhase>,
+    /// StartTime records the time when the action started execution.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTime")]
+    pub start_time: Option<String>,
+}
+
+/// PreTerminate records the status of the sharding pre-terminate action.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterStatusShardingsPreTerminatePhase {
+    Pending,
+    Running,
+    Succeeded,
+    Failed,
+    Skipped,
 }
 

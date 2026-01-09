@@ -92,6 +92,8 @@ pub struct PerconaServerMongoDbBackup {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerSecurityContext")]
     pub container_security_context: Option<PerconaServerMongoDbBackupContainerSecurityContext>,
     pub enabled: bool,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hookScript")]
+    pub hook_script: Option<PerconaServerMongoDbBackupHookScript>,
     pub image: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
@@ -235,6 +237,20 @@ pub struct PerconaServerMongoDbBackupContainerSecurityContextWindowsOptions {
     pub host_process: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMongoDbBackupHookScript {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
+    pub config_map_ref: Option<PerconaServerMongoDbBackupHookScriptConfigMapRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub script: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMongoDbBackupHookScriptConfigMapRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -649,6 +665,8 @@ pub struct PerconaServerMongoDbLogcollector {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub logrotate: Option<PerconaServerMongoDbLogcollectorLogrotate>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<PerconaServerMongoDbLogcollectorResources>,
 }
 
@@ -823,6 +841,22 @@ pub struct PerconaServerMongoDbLogcollectorEnvFromSecretRef {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMongoDbLogcollectorLogrotate {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configuration: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraConfig")]
+    pub extra_config: Option<PerconaServerMongoDbLogcollectorLogrotateExtraConfig>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub schedule: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMongoDbLogcollectorLogrotateExtraConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PerconaServerMongoDbLogcollectorResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<PerconaServerMongoDbLogcollectorResourcesClaims>>,
@@ -982,6 +1016,8 @@ pub struct PerconaServerMongoDbReplsets {
     pub external_nodes: Option<Vec<PerconaServerMongoDbReplsetsExternalNodes>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hidden: Option<PerconaServerMongoDbReplsetsHidden>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hookScript")]
+    pub hook_script: Option<PerconaServerMongoDbReplsetsHookScript>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
     pub host_aliases: Option<Vec<PerconaServerMongoDbReplsetsHostAliases>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1348,6 +1384,8 @@ pub struct PerconaServerMongoDbReplsetsArbiter {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     pub enabled: bool,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hookScript")]
+    pub hook_script: Option<PerconaServerMongoDbReplsetsArbiterHookScript>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
@@ -1683,6 +1721,20 @@ pub struct PerconaServerMongoDbReplsetsArbiterAffinityAdvancedPodAntiAffinityReq
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMongoDbReplsetsArbiterHookScript {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
+    pub config_map_ref: Option<PerconaServerMongoDbReplsetsArbiterHookScriptConfigMapRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub script: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMongoDbReplsetsArbiterHookScriptConfigMapRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3408,6 +3460,8 @@ pub struct PerconaServerMongoDbReplsetsHidden {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerSecurityContext")]
     pub container_security_context: Option<PerconaServerMongoDbReplsetsHiddenContainerSecurityContext>,
     pub enabled: bool,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hookScript")]
+    pub hook_script: Option<PerconaServerMongoDbReplsetsHiddenHookScript>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
@@ -3827,6 +3881,20 @@ pub struct PerconaServerMongoDbReplsetsHiddenContainerSecurityContextWindowsOpti
     pub host_process: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMongoDbReplsetsHiddenHookScript {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
+    pub config_map_ref: Option<PerconaServerMongoDbReplsetsHiddenHookScriptConfigMapRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub script: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMongoDbReplsetsHiddenHookScriptConfigMapRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5631,6 +5699,20 @@ pub struct PerconaServerMongoDbReplsetsHiddenVolumeSpecPersistentVolumeClaimSele
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMongoDbReplsetsHookScript {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
+    pub config_map_ref: Option<PerconaServerMongoDbReplsetsHookScriptConfigMapRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub script: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMongoDbReplsetsHookScriptConfigMapRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PerconaServerMongoDbReplsetsHostAliases {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostnames: Option<Vec<String>>,
@@ -5713,6 +5795,8 @@ pub struct PerconaServerMongoDbReplsetsNonvoting {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerSecurityContext")]
     pub container_security_context: Option<PerconaServerMongoDbReplsetsNonvotingContainerSecurityContext>,
     pub enabled: bool,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hookScript")]
+    pub hook_script: Option<PerconaServerMongoDbReplsetsNonvotingHookScript>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
@@ -6132,6 +6216,20 @@ pub struct PerconaServerMongoDbReplsetsNonvotingContainerSecurityContextWindowsO
     pub host_process: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMongoDbReplsetsNonvotingHookScript {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
+    pub config_map_ref: Option<PerconaServerMongoDbReplsetsNonvotingHookScriptConfigMapRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub script: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMongoDbReplsetsNonvotingHookScriptConfigMapRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -9854,6 +9952,8 @@ pub struct PerconaServerMongoDbShardingConfigsvrReplSet {
     pub external_nodes: Option<Vec<PerconaServerMongoDbShardingConfigsvrReplSetExternalNodes>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hidden: Option<PerconaServerMongoDbShardingConfigsvrReplSetHidden>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hookScript")]
+    pub hook_script: Option<PerconaServerMongoDbShardingConfigsvrReplSetHookScript>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
     pub host_aliases: Option<Vec<PerconaServerMongoDbShardingConfigsvrReplSetHostAliases>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -10220,6 +10320,8 @@ pub struct PerconaServerMongoDbShardingConfigsvrReplSetArbiter {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     pub enabled: bool,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hookScript")]
+    pub hook_script: Option<PerconaServerMongoDbShardingConfigsvrReplSetArbiterHookScript>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
@@ -10555,6 +10657,20 @@ pub struct PerconaServerMongoDbShardingConfigsvrReplSetArbiterAffinityAdvancedPo
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMongoDbShardingConfigsvrReplSetArbiterHookScript {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
+    pub config_map_ref: Option<PerconaServerMongoDbShardingConfigsvrReplSetArbiterHookScriptConfigMapRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub script: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMongoDbShardingConfigsvrReplSetArbiterHookScriptConfigMapRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -12280,6 +12396,8 @@ pub struct PerconaServerMongoDbShardingConfigsvrReplSetHidden {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerSecurityContext")]
     pub container_security_context: Option<PerconaServerMongoDbShardingConfigsvrReplSetHiddenContainerSecurityContext>,
     pub enabled: bool,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hookScript")]
+    pub hook_script: Option<PerconaServerMongoDbShardingConfigsvrReplSetHiddenHookScript>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
@@ -12699,6 +12817,20 @@ pub struct PerconaServerMongoDbShardingConfigsvrReplSetHiddenContainerSecurityCo
     pub host_process: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMongoDbShardingConfigsvrReplSetHiddenHookScript {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
+    pub config_map_ref: Option<PerconaServerMongoDbShardingConfigsvrReplSetHiddenHookScriptConfigMapRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub script: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMongoDbShardingConfigsvrReplSetHiddenHookScriptConfigMapRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -14503,6 +14635,20 @@ pub struct PerconaServerMongoDbShardingConfigsvrReplSetHiddenVolumeSpecPersisten
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMongoDbShardingConfigsvrReplSetHookScript {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
+    pub config_map_ref: Option<PerconaServerMongoDbShardingConfigsvrReplSetHookScriptConfigMapRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub script: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMongoDbShardingConfigsvrReplSetHookScriptConfigMapRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PerconaServerMongoDbShardingConfigsvrReplSetHostAliases {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostnames: Option<Vec<String>>,
@@ -14585,6 +14731,8 @@ pub struct PerconaServerMongoDbShardingConfigsvrReplSetNonvoting {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerSecurityContext")]
     pub container_security_context: Option<PerconaServerMongoDbShardingConfigsvrReplSetNonvotingContainerSecurityContext>,
     pub enabled: bool,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hookScript")]
+    pub hook_script: Option<PerconaServerMongoDbShardingConfigsvrReplSetNonvotingHookScript>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
@@ -15004,6 +15152,20 @@ pub struct PerconaServerMongoDbShardingConfigsvrReplSetNonvotingContainerSecurit
     pub host_process: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMongoDbShardingConfigsvrReplSetNonvotingHookScript {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
+    pub config_map_ref: Option<PerconaServerMongoDbShardingConfigsvrReplSetNonvotingHookScriptConfigMapRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub script: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMongoDbShardingConfigsvrReplSetNonvotingHookScriptConfigMapRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -18639,6 +18801,8 @@ pub struct PerconaServerMongoDbShardingMongos {
     pub env_from: Option<Vec<PerconaServerMongoDbShardingMongosEnvFrom>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expose: Option<PerconaServerMongoDbShardingMongosExpose>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hookScript")]
+    pub hook_script: Option<PerconaServerMongoDbShardingMongosHookScript>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
     pub host_aliases: Option<Vec<PerconaServerMongoDbShardingMongosHostAliases>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPort")]
@@ -19187,6 +19351,20 @@ pub struct PerconaServerMongoDbShardingMongosExpose {
     pub service_per_pod: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMongoDbShardingMongosHookScript {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
+    pub config_map_ref: Option<PerconaServerMongoDbShardingMongosHookScriptConfigMapRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub script: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMongoDbShardingMongosHookScriptConfigMapRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

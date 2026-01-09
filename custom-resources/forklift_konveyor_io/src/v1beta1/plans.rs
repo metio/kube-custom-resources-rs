@@ -24,6 +24,26 @@ pub struct PlanSpec {
     /// Whether this plan should be archived.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub archived: Option<bool>,
+    /// ConversionTempStorageClass specifies the storage class to use for temporary conversion storage.
+    /// When specified, virt-v2v conversion pods will use a temporary PVC from this storage class
+    /// instead of using the node's ephemeral storage for the conversion scratch space.
+    /// This is useful for:
+    ///   - Large VM migrations (10+ TB disks) where fstrim operations create large overlays
+    ///   - OVA imports that require full uncompressed disk copies in temporary storage
+    ///   - Nodes with limited ephemeral storage that may cause pod eviction due to storage pressure
+    /// The temporary PVC is automatically created and deleted with the conversion pod.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "conversionTempStorageClass")]
+    pub conversion_temp_storage_class: Option<String>,
+    /// ConversionTempStorageSize specifies the size of the temporary conversion storage PVC.
+    /// Only used when ConversionTempStorageClass is specified.
+    /// User specification allows for buffer space beyond the largest disk size to accommodate:
+    ///   - Temporary files during conversion
+    ///   - Multiple concurrent conversions
+    ///   - OVA imports requiring full uncompressed copies
+    /// Recommended minimum: size of the largest VM disk being migrated.
+    /// Format: standard Kubernetes resource quantity (e.g., "30Gi", "1Ti")
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "conversionTempStorageSize")]
+    pub conversion_temp_storage_size: Option<String>,
     /// ConvertorAffinity allows specifying hard- and soft-affinity for virt-v2v convertor pods.
     /// This can be used to optimize placement for disk conversion performance, such as co-locating
     /// with storage or ensuring network proximity to VMware infrastructure for cold migration data transfers.

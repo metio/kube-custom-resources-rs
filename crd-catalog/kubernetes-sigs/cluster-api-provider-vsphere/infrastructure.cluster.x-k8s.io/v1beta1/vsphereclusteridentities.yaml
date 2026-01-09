@@ -15,7 +15,8 @@ spec:
     singular: "vsphereclusteridentity"
   scope: "Cluster"
   versions:
-    - name: "v1beta1"
+    - deprecated: true
+      name: "v1beta1"
       schema:
         openAPIV3Schema:
           description: "VSphereClusterIdentity defines the account to be used for reconciling clusters."
@@ -170,6 +171,6 @@ spec:
               type: "object"
           type: "object"
       served: true
-      storage: true
+      storage: false
       subresources:
         status: {}
