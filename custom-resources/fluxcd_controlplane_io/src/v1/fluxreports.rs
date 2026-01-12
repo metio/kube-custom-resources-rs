@@ -112,7 +112,7 @@ pub struct FluxReportReconcilers {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluxReportReconcilersStats {
     /// Failing is the number of reconciled
-    /// resources in the Failing state.
+    /// resources in the Failing state and not Suspended.
     pub failing: i64,
     /// Running is the number of reconciled
     /// resources in the Running state.

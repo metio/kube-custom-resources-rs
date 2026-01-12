@@ -36,7 +36,7 @@ pub struct VSphereClusterTemplateTemplateSpec {
     /// for each of the objects responsible for creation of VM objects belonging to the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterModules")]
     pub cluster_modules: Option<Vec<VSphereClusterTemplateTemplateSpecClusterModules>>,
-    /// ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
+    /// controlPlaneEndpoint represents the endpoint used to communicate with the control plane.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneEndpoint")]
     pub control_plane_endpoint: Option<VSphereClusterTemplateTemplateSpecControlPlaneEndpoint>,
     /// DisableClusterModule is used to explicitly turn off the ClusterModule feature.
@@ -81,13 +81,13 @@ pub struct VSphereClusterTemplateTemplateSpecClusterModules {
     pub target_object_name: String,
 }
 
-/// ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
+/// controlPlaneEndpoint represents the endpoint used to communicate with the control plane.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereClusterTemplateTemplateSpecControlPlaneEndpoint {
-    /// The hostname on which the API server is serving.
+    /// host is the hostname on which the API server is serving.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// The port on which the API server is serving.
+    /// port is the port on which the API server is serving.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
 }

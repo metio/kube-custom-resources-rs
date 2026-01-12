@@ -70,14 +70,19 @@ spec:
                     type: "object"
                   type: "array"
                 controlPlaneEndpoint:
-                  description: "ControlPlaneEndpoint represents the endpoint used to communicate with the control plane."
+                  description: "controlPlaneEndpoint represents the endpoint used to communicate with the control plane."
+                  minProperties: 1
                   properties:
                     host:
-                      description: "The hostname on which the API server is serving."
+                      description: "host is the hostname on which the API server is serving."
+                      maxLength: 512
+                      minLength: 1
                       type: "string"
                     port:
-                      description: "The port on which the API server is serving."
+                      description: "port is the port on which the API server is serving."
                       format: "int32"
+                      maximum: 65535.0
+                      minimum: 1.0
                       type: "integer"
                   type: "object"
                 disableClusterModule:
@@ -237,8 +242,9 @@ spec:
                       type: "object"
                   type: "object"
                 failureDomains:
-                  additionalProperties:
-                    description: "FailureDomainSpec is the Schema for Cluster API failure domains.\nIt allows controllers to understand how many failure domains a cluster can optionally span across."
+                  description: "failureDomains is a list of failure domain objects synced from the infrastructure provider."
+                  items:
+                    description: "FailureDomain is the Schema for Cluster API failure domains.\nIt allows controllers to understand how many failure domains a cluster can optionally span across."
                     properties:
                       attributes:
                         additionalProperties:
@@ -248,11 +254,28 @@ spec:
                       controlPlane:
                         description: "controlPlane determines if this failure domain is suitable for use by control plane machines."
                         type: "boolean"
+                      name:
+                        description: "name is the name of the failure domain."
+                        maxLength: 256
+                        minLength: 1
+                        type: "string"
+                    required:
+                      - "name"
                     type: "object"
-                  description: "FailureDomains is a list of failure domain objects synced from the infrastructure provider."
+                  maxItems: 100
+                  minItems: 1
+                  type: "array"
+                  x-kubernetes-list-map-keys:
+                    - "name"
+                  x-kubernetes-list-type: "map"
+                initialization:
+                  description: "initialization provides observations of the VSphereCluster initialization process.\nNOTE: Fields in this struct are part of the Cluster API contract and are used to orchestrate initial Cluster provisioning."
+                  minProperties: 1
+                  properties:
+                    provisioned:
+                      description: "provisioned is true when the infrastructure provider reports that the Cluster's infrastructure is fully provisioned.\nNOTE: this field is part of the Cluster API contract, and it is used to orchestrate initial Cluster provisioning."
+                      type: "boolean"
                   type: "object"
-                ready:
-                  type: "boolean"
                 vCenterVersion:
                   description: "VCenterVersion defines the version of the vCenter server defined in the spec."
                   type: "string"

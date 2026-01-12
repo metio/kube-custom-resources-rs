@@ -125,6 +125,9 @@ pub struct SecretStoreProvider {
     /// Doppler configures this store to sync secrets using the Doppler provider
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub doppler: Option<SecretStoreProviderDoppler>,
+    /// DVLS configures this store to sync secrets using Devolutions Server provider
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub dvls: Option<SecretStoreProviderDvls>,
     /// Fake configures a store with static key/value pairs
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fake: Option<SecretStoreProviderFake>,
@@ -1680,6 +1683,72 @@ pub enum SecretStoreProviderDopplerNameTransformer {
     LowerKebab,
 }
 
+/// DVLS configures this store to sync secrets using Devolutions Server provider
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderDvls {
+    /// Auth defines the authentication method to use.
+    pub auth: SecretStoreProviderDvlsAuth,
+    /// Insecure allows connecting to DVLS over plain HTTP.
+    /// This is NOT RECOMMENDED for production use.
+    /// Set to true only if you understand the security implications.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub insecure: Option<bool>,
+    /// ServerURL is the DVLS instance URL (e.g., <https://dvls.example.com).>
+    #[serde(rename = "serverUrl")]
+    pub server_url: String,
+}
+
+/// Auth defines the authentication method to use.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderDvlsAuth {
+    /// SecretRef contains the Application ID and Application Secret for authentication.
+    #[serde(rename = "secretRef")]
+    pub secret_ref: SecretStoreProviderDvlsAuthSecretRef,
+}
+
+/// SecretRef contains the Application ID and Application Secret for authentication.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderDvlsAuthSecretRef {
+    /// AppID is the reference to the secret containing the Application ID.
+    #[serde(rename = "appId")]
+    pub app_id: SecretStoreProviderDvlsAuthSecretRefAppId,
+    /// AppSecret is the reference to the secret containing the Application Secret.
+    #[serde(rename = "appSecret")]
+    pub app_secret: SecretStoreProviderDvlsAuthSecretRefAppSecret,
+}
+
+/// AppID is the reference to the secret containing the Application ID.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderDvlsAuthSecretRefAppId {
+    /// A key in the referenced Secret.
+    /// Some instances of this field may be defaulted, in others it may be required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the Secret resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// The namespace of the Secret resource being referred to.
+    /// Ignored if referent is not cluster-scoped, otherwise defaults to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// AppSecret is the reference to the secret containing the Application Secret.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderDvlsAuthSecretRefAppSecret {
+    /// A key in the referenced Secret.
+    /// Some instances of this field may be defaulted, in others it may be required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the Secret resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// The namespace of the Secret resource being referred to.
+    /// Ignored if referent is not cluster-scoped, otherwise defaults to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
 /// Fake configures a store with static key/value pairs
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderFake {
@@ -3111,6 +3180,13 @@ pub struct SecretStoreProviderOnepasswordAuthSecretRefConnectTokenSecretRef {
 pub struct SecretStoreProviderOnepasswordSdk {
     /// Auth defines the information necessary to authenticate against OnePassword API.
     pub auth: SecretStoreProviderOnepasswordSdkAuth,
+    /// Cache configures client-side caching for read operations (GetSecret, GetSecretMap).
+    /// When enabled, secrets are cached with the specified TTL.
+    /// Write operations (PushSecret, DeleteSecret) automatically invalidate relevant cache entries.
+    /// If omitted, caching is disabled (default).
+    /// cache: {} is a valid option to set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cache: Option<SecretStoreProviderOnepasswordSdkCache>,
     /// IntegrationInfo specifies the name and version of the integration built using the 1Password Go SDK.
     /// If you don't know which name and version to use, use `DefaultIntegrationName` and `DefaultIntegrationVersion`, respectively.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "integrationInfo")]
@@ -3141,6 +3217,23 @@ pub struct SecretStoreProviderOnepasswordSdkAuthServiceAccountSecretRef {
     /// Ignored if referent is not cluster-scoped, otherwise defaults to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+}
+
+/// Cache configures client-side caching for read operations (GetSecret, GetSecretMap).
+/// When enabled, secrets are cached with the specified TTL.
+/// Write operations (PushSecret, DeleteSecret) automatically invalidate relevant cache entries.
+/// If omitted, caching is disabled (default).
+/// cache: {} is a valid option to set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderOnepasswordSdkCache {
+    /// MaxSize is the maximum number of secrets to cache.
+    /// When the cache is full, least-recently-used entries are evicted.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSize")]
+    pub max_size: Option<i64>,
+    /// TTL is the time-to-live for cached secrets.
+    /// Format: duration string (e.g., "5m", "1h", "30s")
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ttl: Option<String>,
 }
 
 /// IntegrationInfo specifies the name and version of the integration built using the 1Password Go SDK.

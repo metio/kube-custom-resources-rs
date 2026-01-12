@@ -139,7 +139,7 @@ pub struct ForkliftControllerSpec {
     /// Enable OCP live migration (default: false)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub feature_ocp_live_migration: Option<ForkliftControllerFeatureOcpLiveMigration>,
-    /// Enable OVA appliance management endpoints (default: false)
+    /// Enable OVF-based appliance management endpoints (OVA, HyperV)  (default: false)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub feature_ova_appliance_management: Option<ForkliftControllerFeatureOvaApplianceManagement>,
     /// Enable UI plugin (default: true)
@@ -166,6 +166,21 @@ pub struct ForkliftControllerSpec {
     /// Hooks memory request (default: 150Mi)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hooks_container_requests_memory: Option<String>,
+    /// HyperV CPU limit (default: 1000m)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub hyperv_container_limits_cpu: Option<String>,
+    /// HyperV memory limit (default: 1Gi)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub hyperv_container_limits_memory: Option<String>,
+    /// HyperV CPU request (default: 100m)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub hyperv_container_requests_cpu: Option<String>,
+    /// HyperV memory request (default: 512Mi)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub hyperv_container_requests_memory: Option<String>,
+    /// HyperV provider server image
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub hyperv_provider_server_fqin: Option<String>,
     /// Image pull policy (default: Always)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image_pull_policy: Option<ForkliftControllerImagePullPolicy>,

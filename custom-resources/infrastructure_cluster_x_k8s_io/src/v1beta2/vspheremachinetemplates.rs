@@ -155,7 +155,7 @@ pub struct VSphereMachineTemplateTemplateSpec {
     /// If omitted, the mode defaults to hard.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "powerOffMode")]
     pub power_off_mode: Option<VSphereMachineTemplateTemplateSpecPowerOffMode>,
-    /// ProviderID is the virtual machine's BIOS UUID formated as
+    /// providerID is the virtual machine's BIOS UUID formated as
     /// vsphere://12345678-1234-1234-1234-123456789abc
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerID")]
     pub provider_id: Option<String>,

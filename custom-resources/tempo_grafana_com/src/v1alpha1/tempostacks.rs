@@ -313,6 +313,12 @@ pub struct TempoStackObservabilityMetrics {
     /// CreateServiceMonitors specifies if ServiceMonitors should be created for Tempo components.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "createServiceMonitors")]
     pub create_service_monitors: Option<bool>,
+    /// ExtraPrometheusRuleLabels defines additional labels for the PrometheusRule objects.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraPrometheusRuleLabels")]
+    pub extra_prometheus_rule_labels: Option<BTreeMap<String, String>>,
+    /// ExtraServiceMonitorLabels defines additional labels for the ServiceMonitor objects.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraServiceMonitorLabels")]
+    pub extra_service_monitor_labels: Option<BTreeMap<String, String>>,
 }
 
 /// Tracing defines a config for operands.
