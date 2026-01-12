@@ -1314,6 +1314,9 @@ pub struct TempoMonolithicObservabilityMetrics {
 pub struct TempoMonolithicObservabilityMetricsPrometheusRules {
     /// Enabled defines if PrometheusRule objects should be created for this Tempo deployment.
     pub enabled: bool,
+    /// ExtraLabels defines additional labels for the PrometheusRules objects.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraLabels")]
+    pub extra_labels: Option<BTreeMap<String, String>>,
 }
 
 /// ServiceMonitors defines the ServiceMonitor configuration.
@@ -1321,6 +1324,9 @@ pub struct TempoMonolithicObservabilityMetricsPrometheusRules {
 pub struct TempoMonolithicObservabilityMetricsServiceMonitors {
     /// Enabled defines if ServiceMonitor objects should be created for this Tempo deployment.
     pub enabled: bool,
+    /// ExtraLabels defines additional labels for the ServiceMonitor objects.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraLabels")]
+    pub extra_labels: Option<BTreeMap<String, String>>,
 }
 
 /// PodSecurityContext defines the security context that will be applied to the Tempo Pod.

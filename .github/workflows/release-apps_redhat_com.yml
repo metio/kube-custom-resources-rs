@@ -23,7 +23,7 @@ jobs:
       - id: release
         name: Create Release Version
         if: steps.commits.outputs.count > 0
-        run: echo "version=2.$(date --utc +'%Y%m%d').$(date --utc +'%-H%M%S')" >> $GITHUB_OUTPUT
+        run: echo "version=3.$(date --utc +'%Y%m%d').$(date --utc +'%-H%M%S')" >> $GITHUB_OUTPUT
       - name: Set up Rust
         if: steps.commits.outputs.count > 0
         uses: dtolnay/rust-toolchain@stable

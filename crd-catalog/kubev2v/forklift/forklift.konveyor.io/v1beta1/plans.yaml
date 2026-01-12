@@ -618,6 +618,32 @@ spec:
                     type: "string"
                   description: "ConvertorNodeSelector constrains the scheduler to only schedule virt-v2v convertor pods on nodes\nwhich contain the specified labels. This is useful for dedicating specific nodes for disk conversion\nworkloads that require high I/O performance or network access to source VMware infrastructure.\nSee Pod NodeSelector documentation for more details,\nhttps://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector"
                   type: "object"
+                customizationScripts:
+                  description: "CustomizationScripts references a ConfigMap containing customization scripts\nto run during guest conversion. The ConfigMap must exist in the specified\nnamespace and contain script files with keys following these patterns:\n  - Windows: [0-9]+_win_firstboot_[description_text].ps1\n  - Linux: [0-9]+_linux_(run|firstboot)_[description_text].sh\nScripts are mounted at /mnt/dynamic_scripts in the conversion pod and\nexecuted by virt-customize. The number at the start of the key determines the\nexecution order. If not specified, no custom scripts are injected."
+                  properties:
+                    apiVersion:
+                      description: "API version of the referent."
+                      type: "string"
+                    fieldPath:
+                      description: "If referring to a piece of an object instead of an entire object, this string\nshould contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].\nFor example, if the object reference is to a container within a pod, this would take on a value like:\n\"spec.containers{name}\" (where \"name\" refers to the name of the container that triggered\nthe event) or if no container name is specified \"spec.containers[2]\" (container with\nindex 2 in this pod). This syntax is chosen only to have some well-defined way of\nreferencing a part of an object."
+                      type: "string"
+                    kind:
+                      description: "Kind of the referent.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+                      type: "string"
+                    name:
+                      description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                      type: "string"
+                    namespace:
+                      description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
+                      type: "string"
+                    resourceVersion:
+                      description: "Specific resourceVersion to which this reference is made, if any.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency"
+                      type: "string"
+                    uid:
+                      description: "UID of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids"
+                      type: "string"
+                  type: "object"
+                  x-kubernetes-map-type: "atomic"
                 deleteGuestConversionPod:
                   description: "DeleteGuestConversionPod determines if the guest conversion pod should be deleted after successful migration.\nNote:\n  - If this option is enabled and migration succeeds then the pod will get deleted. However the VM could still not boot and the virt-v2v logs, with additional information, will be deleted alongside guest conversion pod.\n  - If migration fails the conversion pod will remain present even if this option is enabled."
                   type: "boolean"
@@ -779,6 +805,9 @@ spec:
                 skipGuestConversion:
                   default: false
                   description: "Determines if the plan should skip the guest conversion."
+                  type: "boolean"
+                skipZoneNodeSelector:
+                  description: "SkipZoneNodeSelector controls whether to skip adding a zone-based node selector to\nmigrated VMs. By default, the migration automatically reads the availability zone from\nthe source provider's spec.settings.target-az configuration and adds a node selector\n(topology.kubernetes.io/zone=<target-az>) to the target VM. This ensures VMs are\nscheduled on nodes in the same zone as their EBS volumes, which is required for\nvolume attachment by the CSI driver.\nCurrently supported for EC2 provider only.\n- false (default): Add zone-based node selector using value from provider's spec.settings.target-az\n- true: Skip adding zone-based node selector"
                   type: "boolean"
                 targetAffinity:
                   description: "TargetAffinity allows specifying hard- and soft-affinity for VMs.\nit is possible to write matching rules against workloads (VMs and Pods) and Nodes.\nSince VMs are a workload type based on Pods, Pod-affinity affects VMs as well.\nSee virtual machine instance Affinity documentation for more details,\nhttps://kubevirt.io/user-guide/compute/node_assignment/#affinity-and-anti-affinity"

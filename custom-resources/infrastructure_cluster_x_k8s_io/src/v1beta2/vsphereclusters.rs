@@ -24,7 +24,7 @@ pub struct VSphereClusterSpec {
     /// for each of the objects responsible for creation of VM objects belonging to the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterModules")]
     pub cluster_modules: Option<Vec<VSphereClusterClusterModules>>,
-    /// ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
+    /// controlPlaneEndpoint represents the endpoint used to communicate with the control plane.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneEndpoint")]
     pub control_plane_endpoint: Option<VSphereClusterControlPlaneEndpoint>,
     /// DisableClusterModule is used to explicitly turn off the ClusterModule feature.
@@ -69,13 +69,13 @@ pub struct VSphereClusterClusterModules {
     pub target_object_name: String,
 }
 
-/// ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
+/// controlPlaneEndpoint represents the endpoint used to communicate with the control plane.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereClusterControlPlaneEndpoint {
-    /// The hostname on which the API server is serving.
+    /// host is the hostname on which the API server is serving.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// The port on which the API server is serving.
+    /// port is the port on which the API server is serving.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
 }
@@ -142,11 +142,13 @@ pub struct VSphereClusterStatus {
     /// deprecated groups all the status fields that are deprecated and will be removed when all the nested field are removed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deprecated: Option<VSphereClusterStatusDeprecated>,
-    /// FailureDomains is a list of failure domain objects synced from the infrastructure provider.
+    /// failureDomains is a list of failure domain objects synced from the infrastructure provider.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomains")]
-    pub failure_domains: Option<BTreeMap<String, VSphereClusterStatusFailureDomains>>,
+    pub failure_domains: Option<Vec<VSphereClusterStatusFailureDomains>>,
+    /// initialization provides observations of the VSphereCluster initialization process.
+    /// NOTE: Fields in this struct are part of the Cluster API contract and are used to orchestrate initial Cluster provisioning.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ready: Option<bool>,
+    pub initialization: Option<VSphereClusterStatusInitialization>,
     /// VCenterVersion defines the version of the vCenter server defined in the spec.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vCenterVersion")]
     pub v_center_version: Option<String>,
@@ -170,7 +172,8 @@ pub struct VSphereClusterStatusDeprecatedV1beta1 {
     pub conditions: Option<Vec<Condition>>,
 }
 
-/// FailureDomains is a list of failure domain objects synced from the infrastructure provider.
+/// FailureDomain is the Schema for Cluster API failure domains.
+/// It allows controllers to understand how many failure domains a cluster can optionally span across.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereClusterStatusFailureDomains {
     /// attributes is a free form map of attributes an infrastructure provider might use or require.
@@ -179,5 +182,17 @@ pub struct VSphereClusterStatusFailureDomains {
     /// controlPlane determines if this failure domain is suitable for use by control plane machines.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlane")]
     pub control_plane: Option<bool>,
+    /// name is the name of the failure domain.
+    pub name: String,
+}
+
+/// initialization provides observations of the VSphereCluster initialization process.
+/// NOTE: Fields in this struct are part of the Cluster API contract and are used to orchestrate initial Cluster provisioning.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VSphereClusterStatusInitialization {
+    /// provisioned is true when the infrastructure provider reports that the Cluster's infrastructure is fully provisioned.
+    /// NOTE: this field is part of the Cluster API contract, and it is used to orchestrate initial Cluster provisioning.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub provisioned: Option<bool>,
 }
 

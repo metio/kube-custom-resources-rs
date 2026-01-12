@@ -9,7 +9,7 @@ use std::path::Path;
 
 pub mod catalog;
 
-const KUBERNETES_MAJOR_VERSION: usize = 34;
+const KUBERNETES_MAJOR_VERSION: usize = 35;
 
 pub fn k8s_openapi_kubernetes_version() -> String {
     format!("v1_{}", KUBERNETES_MAJOR_VERSION)

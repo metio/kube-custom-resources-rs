@@ -238,6 +238,11 @@ pub struct InstanaAgentRemoteAgentPod {
     /// More info: <https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Override the liveness probe configuration for the agent container.
+    /// If not specified, default values will be used (initialDelaySeconds: 600, timeoutSeconds: 5,
+    /// periodSeconds: 10, failureThreshold: 6).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
+    pub liveness_probe: Option<InstanaAgentRemoteAgentPodLivenessProbe>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// agent.pod.priorityClassName is the name of an existing PriorityClass that should be set on the agent pods
@@ -1099,6 +1104,128 @@ pub struct InstanaAgentRemoteAgentPodEnvValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
+/// Override the liveness probe configuration for the agent container.
+/// If not specified, default values will be used (initialDelaySeconds: 600, timeoutSeconds: 5,
+/// periodSeconds: 10, failureThreshold: 6).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstanaAgentRemoteAgentPodLivenessProbe {
+    /// Exec specifies a command to execute in the container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<InstanaAgentRemoteAgentPodLivenessProbeExec>,
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
+    /// Defaults to 3. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i32>,
+    /// GRPC specifies a GRPC HealthCheckRequest.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub grpc: Option<InstanaAgentRemoteAgentPodLivenessProbeGrpc>,
+    /// HTTPGet specifies an HTTP GET request to perform.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<InstanaAgentRemoteAgentPodLivenessProbeHttpGet>,
+    /// Number of seconds after the container has started before liveness probes are initiated.
+    /// More info: <https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
+    pub initial_delay_seconds: Option<i32>,
+    /// How often (in seconds) to perform the probe.
+    /// Default to 10 seconds. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
+    pub period_seconds: Option<i32>,
+    /// Minimum consecutive successes for the probe to be considered successful after having failed.
+    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
+    pub success_threshold: Option<i32>,
+    /// TCPSocket specifies a connection to a TCP port.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<InstanaAgentRemoteAgentPodLivenessProbeTcpSocket>,
+    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
+    /// The grace period is the duration in seconds after the processes running in the pod are sent
+    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
+    /// Set this value longer than the expected cleanup time for your process.
+    /// If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this
+    /// value overrides the value provided by the pod spec.
+    /// Value must be non-negative integer. The value zero indicates stop immediately via
+    /// the kill signal (no opportunity to shut down).
+    /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
+    /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
+    pub termination_grace_period_seconds: Option<i64>,
+    /// Number of seconds after which the probe times out.
+    /// Defaults to 1 second. Minimum value is 1.
+    /// More info: <https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
+}
+
+/// Exec specifies a command to execute in the container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstanaAgentRemoteAgentPodLivenessProbeExec {
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+/// GRPC specifies a GRPC HealthCheckRequest.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstanaAgentRemoteAgentPodLivenessProbeGrpc {
+    /// Port number of the gRPC service. Number must be in the range 1 to 65535.
+    pub port: i32,
+    /// Service is the name of the service to place in the gRPC HealthCheckRequest
+    /// (see <https://github.com/grpc/grpc/blob/master/doc/health-checking.md).>
+    /// 
+    /// If this is not specified, the default behavior is defined by gRPC.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub service: Option<String>,
+}
+
+/// HTTPGet specifies an HTTP GET request to perform.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstanaAgentRemoteAgentPodLivenessProbeHttpGet {
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Custom headers to set in the request. HTTP allows repeated headers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<InstanaAgentRemoteAgentPodLivenessProbeHttpGetHttpHeaders>>,
+    /// Path to access on the HTTP server.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+/// HTTPHeader describes a custom header to be used in HTTP probes
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstanaAgentRemoteAgentPodLivenessProbeHttpGetHttpHeaders {
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    pub name: String,
+    /// The header field value
+    pub value: String,
+}
+
+/// TCPSocket specifies a connection to a TCP port.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstanaAgentRemoteAgentPodLivenessProbeTcpSocket {
+    /// Optional: Host name to connect to, defaults to the pod IP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+}
+
 /// The pod this Toleration is attached to tolerates any taint that matches
 /// the triple <key,value,effect> using the matching operator <operator>.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1112,9 +1239,10 @@ pub struct InstanaAgentRemoteAgentPodTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// Operator represents a key's relationship to the value.
-    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Valid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.
     /// Exists is equivalent to wildcard for value, so that a pod can
     /// tolerate all taints of a particular category.
+    /// Lt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
     /// TolerationSeconds represents the period of time the toleration (which must be
@@ -1836,7 +1964,7 @@ pub struct InstanaAgentRemoteAgentPodVolumesEphemeralVolumeClaimTemplateSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
     pub data_source_ref: Option<InstanaAgentRemoteAgentPodVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
     /// resources represents the minimum resources the volume should have.
-    /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+    /// Users are allowed to specify resource requirements
     /// that are lower than previous value but must still be higher than capacity recorded in the
     /// status field of the claim.
     /// More info: <https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources>
@@ -1933,7 +2061,7 @@ pub struct InstanaAgentRemoteAgentPodVolumesEphemeralVolumeClaimTemplateSpecData
 }
 
 /// resources represents the minimum resources the volume should have.
-/// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+/// Users are allowed to specify resource requirements
 /// that are lower than previous value but must still be higher than capacity recorded in the
 /// status field of the claim.
 /// More info: <https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources>
@@ -2656,6 +2784,21 @@ pub struct InstanaAgentRemoteAgentPodVolumesProjectedSourcesPodCertificate {
     /// Kubelet's generated CSRs will be addressed to this signer.
     #[serde(rename = "signerName")]
     pub signer_name: String,
+    /// userAnnotations allow pod authors to pass additional information to
+    /// the signer implementation.  Kubernetes does not restrict or validate this
+    /// metadata in any way.
+    /// 
+    /// These values are copied verbatim into the `spec.unverifiedUserAnnotations` field of
+    /// the PodCertificateRequest objects that Kubelet creates.
+    /// 
+    /// Entries are subject to the same validation as object metadata annotations,
+    /// with the addition that all keys must be domain-prefixed. No restrictions
+    /// are placed on values, except an overall size limitation on the entire field.
+    /// 
+    /// Signers should document the keys and values they support. Signers should
+    /// deny requests that contain keys they do not recognize.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userAnnotations")]
+    pub user_annotations: Option<BTreeMap<String, String>>,
 }
 
 /// secret information about the secret data to project

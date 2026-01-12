@@ -32,6 +32,14 @@ spec:
         - jsonPath: ".metadata.creationTimestamp"
           name: "Age"
           type: "date"
+        - jsonPath: ".spec.updatePolicy.minReplicas"
+          name: "MinReplicas"
+          priority: 1
+          type: "integer"
+        - jsonPath: ".spec.updatePolicy.evictAfterOOMThreshold"
+          name: "OOMThreshold"
+          priority: 1
+          type: "string"
       name: "v1"
       schema:
         openAPIV3Schema:
@@ -144,6 +152,11 @@ spec:
                 updatePolicy:
                   description: "Describes the rules on how changes are applied to the pods.\nIf not specified, all fields in the `PodUpdatePolicy` are set to their\ndefault values."
                   properties:
+                    evictAfterOOMThreshold:
+                      description: "EvictAfterOOMThreshold specifies the time to wait after an OOM event before\nconsidering the pod for eviction. Pods that have OOMed in less than this threshold\nsince start will be evicted."
+                      format: "duration"
+                      pattern: "^([0-9]+(\\.[0-9]+)?(ns|us|µs|ms|s|m|h))+$"
+                      type: "string"
                     evictionRequirements:
                       description: "EvictionRequirements is a list of EvictionRequirements that need to\nevaluate to true in order for a Pod to be evicted. If more than one\nEvictionRequirement is specified, all of them need to be fulfilled to allow eviction."
                       items:
@@ -180,6 +193,9 @@ spec:
                         - "Auto"
                       type: "string"
                   type: "object"
+                  x-kubernetes-validations:
+                    - message: "evictAfterOOMThreshold must be greater than 0"
+                      rule: "!has(self.evictAfterOOMThreshold) || duration(self.evictAfterOOMThreshold) > duration('0s')"
               required:
                 - "targetRef"
               type: "object"

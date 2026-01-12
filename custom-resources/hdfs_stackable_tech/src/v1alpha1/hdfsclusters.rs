@@ -2,3 +2,2474 @@
 // kopium command: kopium --docs --derive=Default --derive=PartialEq --smart-derive-elision --filename crd-catalog/stackabletech/hdfs-operator/hdfs.stackable.tech/v1alpha1/hdfsclusters.yaml
 // kopium version: 0.22.5
 
+#[allow(unused_imports)]
+mod prelude {
+    pub use kube::CustomResource;
+    pub use serde::{Serialize, Deserialize};
+    pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
+}
+use self::prelude::*;
+
+/// An HDFS cluster stacklet. This resource is managed by the Stackable operator for Apache Hadoop HDFS.
+/// Find more information on how to use it and the resources that the operator generates in the
+/// [operator documentation](<https://docs.stackable.tech/home/nightly/hdfs/).>
+/// 
+/// The CRD contains three roles: `nameNodes`, `dataNodes` and `journalNodes`.
+#[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[kube(group = "hdfs.stackable.tech", version = "v1alpha1", kind = "HdfsCluster", plural = "hdfsclusters")]
+#[kube(namespaced)]
+#[kube(status = "HdfsClusterStatus")]
+#[kube(schema = "disabled")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
+pub struct HdfsClusterSpec {
+    /// Configuration that applies to all roles and role groups.
+    /// This includes settings for authentication, logging and the ZooKeeper cluster to use.
+    #[serde(rename = "clusterConfig")]
+    pub cluster_config: HdfsClusterClusterConfig,
+    /// [Cluster operations](<https://docs.stackable.tech/home/nightly/concepts/operations/cluster_operations)>
+    /// properties, allow stopping the product instance as well as pausing reconciliation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterOperation")]
+    pub cluster_operation: Option<HdfsClusterClusterOperation>,
+    /// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing
+    /// all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable
+    /// at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured
+    /// on role level. There is also a second form of config, which can only be configured
+    /// at role level, the `roleConfig`.
+    /// You can learn more about this in the
+    /// [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataNodes")]
+    pub data_nodes: Option<HdfsClusterDataNodes>,
+    /// Specify which image to use, the easiest way is to only configure the `productVersion`.
+    /// You can also configure a custom image registry to pull from, as well as completely custom
+    /// images.
+    /// 
+    /// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)>
+    /// for details.
+    pub image: HdfsClusterImage,
+    /// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing
+    /// all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable
+    /// at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured
+    /// on role level. There is also a second form of config, which can only be configured
+    /// at role level, the `roleConfig`.
+    /// You can learn more about this in the
+    /// [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "journalNodes")]
+    pub journal_nodes: Option<HdfsClusterJournalNodes>,
+    /// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing
+    /// all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable
+    /// at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured
+    /// on role level. There is also a second form of config, which can only be configured
+    /// at role level, the `roleConfig`.
+    /// You can learn more about this in the
+    /// [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nameNodes")]
+    pub name_nodes: Option<HdfsClusterNameNodes>,
+    /// A list of generic Kubernetes objects, which are merged into the objects that the operator
+    /// creates.
+    /// 
+    /// List entries are arbitrary YAML objects, which need to be valid Kubernetes objects.
+    /// 
+    /// Read the [Object overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#object-overrides)>
+    /// for more information.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectOverrides")]
+    pub object_overrides: Option<Vec<BTreeMap<String, serde_json::Value>>>,
+}
+
+/// Configuration that applies to all roles and role groups.
+/// This includes settings for authentication, logging and the ZooKeeper cluster to use.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterClusterConfig {
+    /// Settings related to user [authentication](<https://docs.stackable.tech/home/nightly/usage-guide/security).>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub authentication: Option<HdfsClusterClusterConfigAuthentication>,
+    /// Authorization options for HDFS.
+    /// Learn more in the [HDFS authorization usage guide](<https://docs.stackable.tech/home/nightly/hdfs/usage-guide/security#authorization).>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub authorization: Option<HdfsClusterClusterConfigAuthorization>,
+    /// `dfsReplication` is the factor of how many times a file will be replicated to different data nodes.
+    /// The default is 3.
+    /// You need at least the same amount of data nodes so each file can be replicated correctly, otherwise a warning will be printed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dfsReplication")]
+    pub dfs_replication: Option<u8>,
+    /// Deprecated, please use `.spec.nameNodes.config.listenerClass` and `.spec.dataNodes.config.listenerClass` instead.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenerClass")]
+    pub listener_class: Option<HdfsClusterClusterConfigListenerClass>,
+    /// Configuration to control HDFS topology (rack) awareness feature
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rackAwareness")]
+    pub rack_awareness: Option<Vec<HdfsClusterClusterConfigRackAwareness>>,
+    /// Name of the Vector aggregator [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery).>
+    /// It must contain the key `ADDRESS` with the address of the Vector aggregator.
+    /// Follow the [logging tutorial](<https://docs.stackable.tech/home/nightly/tutorials/logging-vector-aggregator)>
+    /// to learn how to configure log aggregation with Vector.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vectorAggregatorConfigMapName")]
+    pub vector_aggregator_config_map_name: Option<String>,
+    /// Name of the [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery)>
+    /// for a ZooKeeper cluster.
+    #[serde(rename = "zookeeperConfigMapName")]
+    pub zookeeper_config_map_name: String,
+}
+
+/// Settings related to user [authentication](<https://docs.stackable.tech/home/nightly/usage-guide/security).>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterClusterConfigAuthentication {
+    /// Kerberos configuration.
+    pub kerberos: HdfsClusterClusterConfigAuthenticationKerberos,
+    /// Name of the SecretClass providing the tls certificates for the WebUIs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsSecretClass")]
+    pub tls_secret_class: Option<String>,
+}
+
+/// Kerberos configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterClusterConfigAuthenticationKerberos {
+    /// Name of the SecretClass providing the keytab for the HDFS services.
+    #[serde(rename = "secretClass")]
+    pub secret_class: String,
+}
+
+/// Authorization options for HDFS.
+/// Learn more in the [HDFS authorization usage guide](<https://docs.stackable.tech/home/nightly/hdfs/usage-guide/security#authorization).>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterClusterConfigAuthorization {
+    /// Configure the OPA stacklet [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery)>
+    /// and the name of the Rego package containing your authorization rules.
+    /// Consult the [OPA authorization documentation](<https://docs.stackable.tech/home/nightly/concepts/opa)>
+    /// to learn how to deploy Rego authorization rules with OPA.
+    pub opa: HdfsClusterClusterConfigAuthorizationOpa,
+}
+
+/// Configure the OPA stacklet [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery)>
+/// and the name of the Rego package containing your authorization rules.
+/// Consult the [OPA authorization documentation](<https://docs.stackable.tech/home/nightly/concepts/opa)>
+/// to learn how to deploy Rego authorization rules with OPA.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterClusterConfigAuthorizationOpa {
+    /// The [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery)>
+    /// for the OPA stacklet that should be used for authorization requests.
+    #[serde(rename = "configMapName")]
+    pub config_map_name: String,
+    /// The name of the Rego package containing the Rego rules for the product.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub package: Option<String>,
+}
+
+/// Configuration that applies to all roles and role groups.
+/// This includes settings for authentication, logging and the ZooKeeper cluster to use.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum HdfsClusterClusterConfigListenerClass {
+    #[serde(rename = "cluster-internal")]
+    ClusterInternal,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterClusterConfigRackAwareness {
+    /// Name of the label on the Kubernetes Node (where the Pod is placed on) used to resolve a datanode to a topology
+    /// zone.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeLabel")]
+    pub node_label: Option<String>,
+    /// Name of the label on the Kubernetes Pod used to resolve a datanode to a topology zone.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podLabel")]
+    pub pod_label: Option<String>,
+}
+
+/// [Cluster operations](<https://docs.stackable.tech/home/nightly/concepts/operations/cluster_operations)>
+/// properties, allow stopping the product instance as well as pausing reconciliation.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterClusterOperation {
+    /// Flag to stop cluster reconciliation by the operator. This means that all changes in the
+    /// custom resource spec are ignored until this flag is set to false or removed. The operator
+    /// will however still watch the deployed resources at the time and update the custom resource
+    /// status field.
+    /// If applied at the same time with `stopped`, `reconciliationPaused` will take precedence over
+    /// `stopped` and stop the reconciliation immediately.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconciliationPaused")]
+    pub reconciliation_paused: Option<bool>,
+    /// Flag to stop the cluster. This means all deployed resources (e.g. Services, StatefulSets,
+    /// ConfigMaps) are kept but all deployed Pods (e.g. replicas from a StatefulSet) are scaled to 0
+    /// and therefore stopped and removed.
+    /// If applied at the same time with `reconciliationPaused`, the latter will pause reconciliation
+    /// and `stopped` will take no effect until `reconciliationPaused` is set to false or removed.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stopped: Option<bool>,
+}
+
+/// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing
+/// all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable
+/// at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured
+/// on role level. There is also a second form of config, which can only be configured
+/// at role level, the `roleConfig`.
+/// You can learn more about this in the
+/// [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterDataNodes {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cliOverrides")]
+    pub cli_overrides: Option<BTreeMap<String, String>>,
+    /// Configuration options that are available for all roles.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub config: Option<HdfsClusterDataNodesConfig>,
+    /// The `configOverrides` can be used to configure properties in product config files
+    /// that are not exposed in the CRD. Read the
+    /// [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)>
+    /// and consult the operator specific usage guide documentation for details on the
+    /// available config files and settings for the specific product.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configOverrides")]
+    pub config_overrides: Option<BTreeMap<String, BTreeMap<String, String>>>,
+    /// `envOverrides` configure environment variables to be set in the Pods.
+    /// It is a map from strings to strings - environment variables and the value to set.
+    /// Read the
+    /// [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)>
+    /// for more information and consult the operator specific usage guide to find out about
+    /// the product specific environment variables that are available.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envOverrides")]
+    pub env_overrides: Option<BTreeMap<String, String>>,
+    /// Allows overriding JVM arguments.
+    /// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+    /// for details on the usage.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
+    pub jvm_argument_overrides: Option<HdfsClusterDataNodesJvmArgumentOverrides>,
+    /// In the `podOverrides` property you can define a
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// to override any property that can be set on a Kubernetes Pod.
+    /// Read the
+    /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
+    /// for more information.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podOverrides")]
+    pub pod_overrides: Option<BTreeMap<String, serde_json::Value>>,
+    /// This is a product-agnostic RoleConfig, which is sufficient for most of the products.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleConfig")]
+    pub role_config: Option<HdfsClusterDataNodesRoleConfig>,
+    #[serde(rename = "roleGroups")]
+    pub role_groups: BTreeMap<String, HdfsClusterDataNodesRoleGroups>,
+}
+
+/// Configuration options that are available for all roles.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterDataNodesConfig {
+    /// These configuration settings control
+    /// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub affinity: Option<HdfsClusterDataNodesConfigAffinity>,
+    /// Time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Consult the operator documentation for details.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracefulShutdownTimeout")]
+    pub graceful_shutdown_timeout: Option<String>,
+    /// This field controls which [ListenerClass](<https://docs.stackable.tech/home/nightly/listener-operator/listenerclass.html)> is used to expose this rolegroup.
+    /// DataNodes should have a direct ListenerClass, such as `cluster-internal` or `external-unstable`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenerClass")]
+    pub listener_class: Option<String>,
+    /// Logging configuration, learn more in the [logging concept documentation](<https://docs.stackable.tech/home/nightly/concepts/logging).>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub logging: Option<HdfsClusterDataNodesConfigLogging>,
+    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`.
+    /// This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestedSecretLifetime")]
+    pub requested_secret_lifetime: Option<String>,
+    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+    /// usage, if this role needs any.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<HdfsClusterDataNodesConfigResources>,
+}
+
+/// These configuration settings control
+/// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterDataNodesConfigAffinity {
+    /// Same as the `spec.affinity.nodeAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
+    pub node_affinity: Option<BTreeMap<String, serde_json::Value>>,
+    /// Simple key-value pairs forming a nodeSelector, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<BTreeMap<String, String>>,
+    /// Same as the `spec.affinity.podAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
+    pub pod_affinity: Option<BTreeMap<String, serde_json::Value>>,
+    /// Same as the `spec.affinity.podAntiAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<BTreeMap<String, serde_json::Value>>,
+}
+
+/// Logging configuration, learn more in the [logging concept documentation](<https://docs.stackable.tech/home/nightly/concepts/logging).>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterDataNodesConfigLogging {
+    /// Log configuration per container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub containers: Option<BTreeMap<String, HdfsClusterDataNodesConfigLoggingContainers>>,
+    /// Wether or not to deploy a container with the Vector log agent.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableVectorAgent")]
+    pub enable_vector_agent: Option<bool>,
+}
+
+/// Log configuration per container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterDataNodesConfigLoggingContainers {
+    /// Configuration for the console appender
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub console: Option<HdfsClusterDataNodesConfigLoggingContainersConsole>,
+    /// Log configuration provided in a ConfigMap
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub custom: Option<HdfsClusterDataNodesConfigLoggingContainersCustom>,
+    /// Configuration for the file appender
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub file: Option<HdfsClusterDataNodesConfigLoggingContainersFile>,
+    /// Configuration per logger
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub loggers: Option<BTreeMap<String, HdfsClusterDataNodesConfigLoggingContainersLoggers>>,
+}
+
+/// Configuration for the console appender
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterDataNodesConfigLoggingContainersConsole {
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub level: Option<HdfsClusterDataNodesConfigLoggingContainersConsoleLevel>,
+}
+
+/// Configuration for the console appender
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum HdfsClusterDataNodesConfigLoggingContainersConsoleLevel {
+    #[serde(rename = "TRACE")]
+    Trace,
+    #[serde(rename = "DEBUG")]
+    Debug,
+    #[serde(rename = "INFO")]
+    Info,
+    #[serde(rename = "WARN")]
+    Warn,
+    #[serde(rename = "ERROR")]
+    Error,
+    #[serde(rename = "FATAL")]
+    Fatal,
+    #[serde(rename = "NONE")]
+    None,
+}
+
+/// Log configuration provided in a ConfigMap
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterDataNodesConfigLoggingContainersCustom {
+    /// ConfigMap containing the log configuration files
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<String>,
+}
+
+/// Configuration for the file appender
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterDataNodesConfigLoggingContainersFile {
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub level: Option<HdfsClusterDataNodesConfigLoggingContainersFileLevel>,
+}
+
+/// Configuration for the file appender
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum HdfsClusterDataNodesConfigLoggingContainersFileLevel {
+    #[serde(rename = "TRACE")]
+    Trace,
+    #[serde(rename = "DEBUG")]
+    Debug,
+    #[serde(rename = "INFO")]
+    Info,
+    #[serde(rename = "WARN")]
+    Warn,
+    #[serde(rename = "ERROR")]
+    Error,
+    #[serde(rename = "FATAL")]
+    Fatal,
+    #[serde(rename = "NONE")]
+    None,
+}
+
+/// Configuration per logger
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterDataNodesConfigLoggingContainersLoggers {
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub level: Option<HdfsClusterDataNodesConfigLoggingContainersLoggersLevel>,
+}
+
+/// Configuration per logger
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum HdfsClusterDataNodesConfigLoggingContainersLoggersLevel {
+    #[serde(rename = "TRACE")]
+    Trace,
+    #[serde(rename = "DEBUG")]
+    Debug,
+    #[serde(rename = "INFO")]
+    Info,
+    #[serde(rename = "WARN")]
+    Warn,
+    #[serde(rename = "ERROR")]
+    Error,
+    #[serde(rename = "FATAL")]
+    Fatal,
+    #[serde(rename = "NONE")]
+    None,
+}
+
+/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+/// usage, if this role needs any.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterDataNodesConfigResources {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cpu: Option<HdfsClusterDataNodesConfigResourcesCpu>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub memory: Option<HdfsClusterDataNodesConfigResourcesMemory>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub storage: Option<BTreeMap<String, HdfsClusterDataNodesConfigResourcesStorage>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterDataNodesConfigResourcesCpu {
+    /// The maximum amount of CPU cores that can be requested by Pods.
+    /// Equivalent to the `limit` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub max: Option<String>,
+    /// The minimal amount of CPU cores that Pods need to run.
+    /// Equivalent to the `request` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub min: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterDataNodesConfigResourcesMemory {
+    /// The maximum amount of memory that should be available to the Pod.
+    /// Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),>
+    /// which means these suffixes are supported: E, P, T, G, M, k.
+    /// You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki.
+    /// For example, the following represent roughly the same value:
+    /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limit: Option<String>,
+    /// Additional options that can be specified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeLimits")]
+    pub runtime_limits: Option<HdfsClusterDataNodesConfigResourcesMemoryRuntimeLimits>,
+}
+
+/// Additional options that can be specified.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterDataNodesConfigResourcesMemoryRuntimeLimits {
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterDataNodesConfigResourcesStorage {
+    /// Quantity is a fixed-point representation of a number. It provides convenient marshaling/unmarshaling in JSON and YAML, in addition to String() and AsInt64() accessors.
+    /// 
+    /// The serialization format is:
+    /// 
+    /// ``` <quantity>        ::= <signedNumber><suffix>
+    /// 
+    /// 	(Note that <suffix> may be empty, from the "" case in <decimalSI>.)
+    /// 
+    /// <digit>           ::= 0 | 1 | ... | 9 <digits>          ::= <digit> | <digit><digits> <number>          ::= <digits> | <digits>.<digits> | <digits>. | .<digits> <sign>            ::= "+" | "-" <signedNumber>    ::= <number> | <sign><number> <suffix>          ::= <binarySI> | <decimalExponent> | <decimalSI> <binarySI>        ::= Ki | Mi | Gi | Ti | Pi | Ei
+    /// 
+    /// 	(International System of units; See: <http://physics.nist.gov/cuu/Units/binary.html)>
+    /// 
+    /// <decimalSI>       ::= m | "" | k | M | G | T | P | E
+    /// 
+    /// 	(Note that 1024 = 1Ki but 1000 = 1k; I didn't choose the capitalization.)
+    /// 
+    /// <decimalExponent> ::= "e" <signedNumber> | "E" <signedNumber> ```
+    /// 
+    /// No matter which of the three exponent forms is used, no quantity may represent a number greater than 2^63-1 in magnitude, nor may it have more than 3 decimal places. Numbers larger or more precise will be capped or rounded up. (E.g.: 0.1m will rounded up to 1m.) This may be extended in the future if we require larger or smaller quantities.
+    /// 
+    /// When a Quantity is parsed from a string, it will remember the type of suffix it had, and will use the same type again when it is serialized.
+    /// 
+    /// Before serializing, Quantity will be put in "canonical form". This means that Exponent/suffix will be adjusted up or down (with a corresponding increase or decrease in Mantissa) such that:
+    /// 
+    /// - No precision is lost - No fractional digits will be emitted - The exponent (or suffix) is as large as possible.
+    /// 
+    /// The sign will be omitted unless the number is negative.
+    /// 
+    /// Examples:
+    /// 
+    /// - 1.5 will be serialized as "1500m" - 1.5Gi will be serialized as "1536Mi"
+    /// 
+    /// Note that the quantity will NEVER be internally represented by a floating point number. That is the whole point of this exercise.
+    /// 
+    /// Non-canonical values will still parse as long as they are well formed, but will be re-emitted in their canonical form. (So always use canonical form, or don't diff.)
+    /// 
+    /// This format is intended to make it difficult to use these numbers without writing some sort of special handling code in the hopes that that will cause implementors to also use a fixed point implementation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub capacity: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub count: Option<u16>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hdfsStorageType")]
+    pub hdfs_storage_type: Option<HdfsClusterDataNodesConfigResourcesStorageHdfsStorageType>,
+    /// A label selector is a label query over a set of resources. The result of matchLabels and matchExpressions are ANDed. An empty label selector matches all objects. A null label selector matches no objects.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selectors: Option<HdfsClusterDataNodesConfigResourcesStorageSelectors>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClass")]
+    pub storage_class: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum HdfsClusterDataNodesConfigResourcesStorageHdfsStorageType {
+    Archive,
+    Disk,
+    #[serde(rename = "SSD")]
+    Ssd,
+    #[serde(rename = "RAMDisk")]
+    RamDisk,
+}
+
+/// A label selector is a label query over a set of resources. The result of matchLabels and matchExpressions are ANDed. An empty label selector matches all objects. A null label selector matches no objects.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterDataNodesConfigResourcesStorageSelectors {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<HdfsClusterDataNodesConfigResourcesStorageSelectorsMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterDataNodesConfigResourcesStorageSelectorsMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Allows overriding JVM arguments.
+/// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+/// for details on the usage.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterDataNodesJvmArgumentOverrides {
+    /// JVM arguments to be added
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub add: Option<Vec<String>>,
+    /// JVM arguments to be removed by exact match
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub remove: Option<Vec<String>>,
+    /// JVM arguments matching any of this regexes will be removed
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "removeRegex")]
+    pub remove_regex: Option<Vec<String>>,
+}
+
+/// This is a product-agnostic RoleConfig, which is sufficient for most of the products.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterDataNodesRoleConfig {
+    /// This struct is used to configure:
+    /// 
+    /// 1. If PodDisruptionBudgets are created by the operator
+    /// 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
+    /// 
+    /// Learn more in the
+    /// [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podDisruptionBudget")]
+    pub pod_disruption_budget: Option<HdfsClusterDataNodesRoleConfigPodDisruptionBudget>,
+}
+
+/// This struct is used to configure:
+/// 
+/// 1. If PodDisruptionBudgets are created by the operator
+/// 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
+/// 
+/// Learn more in the
+/// [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterDataNodesRoleConfigPodDisruptionBudget {
+    /// Whether a PodDisruptionBudget should be written out for this role.
+    /// Disabling this enables you to specify your own - custom - one.
+    /// Defaults to true.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// The number of Pods that are allowed to be down because of voluntary disruptions.
+    /// If you don't explicitly set this, the operator will use a sane default based
+    /// upon knowledge about the individual product.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
+    pub max_unavailable: Option<u16>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterDataNodesRoleGroups {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cliOverrides")]
+    pub cli_overrides: Option<BTreeMap<String, String>>,
+    /// Configuration options that are available for all roles.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub config: Option<HdfsClusterDataNodesRoleGroupsConfig>,
+    /// The `configOverrides` can be used to configure properties in product config files
+    /// that are not exposed in the CRD. Read the
+    /// [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)>
+    /// and consult the operator specific usage guide documentation for details on the
+    /// available config files and settings for the specific product.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configOverrides")]
+    pub config_overrides: Option<BTreeMap<String, BTreeMap<String, String>>>,
+    /// `envOverrides` configure environment variables to be set in the Pods.
+    /// It is a map from strings to strings - environment variables and the value to set.
+    /// Read the
+    /// [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)>
+    /// for more information and consult the operator specific usage guide to find out about
+    /// the product specific environment variables that are available.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envOverrides")]
+    pub env_overrides: Option<BTreeMap<String, String>>,
+    /// Allows overriding JVM arguments.
+    /// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+    /// for details on the usage.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
+    pub jvm_argument_overrides: Option<HdfsClusterDataNodesRoleGroupsJvmArgumentOverrides>,
+    /// In the `podOverrides` property you can define a
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// to override any property that can be set on a Kubernetes Pod.
+    /// Read the
+    /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
+    /// for more information.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podOverrides")]
+    pub pod_overrides: Option<BTreeMap<String, serde_json::Value>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub replicas: Option<u16>,
+}
+
+/// Configuration options that are available for all roles.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterDataNodesRoleGroupsConfig {
+    /// These configuration settings control
+    /// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub affinity: Option<HdfsClusterDataNodesRoleGroupsConfigAffinity>,
+    /// Time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Consult the operator documentation for details.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracefulShutdownTimeout")]
+    pub graceful_shutdown_timeout: Option<String>,
+    /// This field controls which [ListenerClass](<https://docs.stackable.tech/home/nightly/listener-operator/listenerclass.html)> is used to expose this rolegroup.
+    /// DataNodes should have a direct ListenerClass, such as `cluster-internal` or `external-unstable`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenerClass")]
+    pub listener_class: Option<String>,
+    /// Logging configuration, learn more in the [logging concept documentation](<https://docs.stackable.tech/home/nightly/concepts/logging).>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub logging: Option<HdfsClusterDataNodesRoleGroupsConfigLogging>,
+    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`.
+    /// This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestedSecretLifetime")]
+    pub requested_secret_lifetime: Option<String>,
+    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+    /// usage, if this role needs any.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<HdfsClusterDataNodesRoleGroupsConfigResources>,
+}
+
+/// These configuration settings control
+/// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterDataNodesRoleGroupsConfigAffinity {
+    /// Same as the `spec.affinity.nodeAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
+    pub node_affinity: Option<BTreeMap<String, serde_json::Value>>,
+    /// Simple key-value pairs forming a nodeSelector, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<BTreeMap<String, String>>,
+    /// Same as the `spec.affinity.podAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
+    pub pod_affinity: Option<BTreeMap<String, serde_json::Value>>,
+    /// Same as the `spec.affinity.podAntiAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<BTreeMap<String, serde_json::Value>>,
+}
+
+/// Logging configuration, learn more in the [logging concept documentation](<https://docs.stackable.tech/home/nightly/concepts/logging).>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterDataNodesRoleGroupsConfigLogging {
+    /// Log configuration per container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub containers: Option<BTreeMap<String, HdfsClusterDataNodesRoleGroupsConfigLoggingContainers>>,
+    /// Wether or not to deploy a container with the Vector log agent.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableVectorAgent")]
+    pub enable_vector_agent: Option<bool>,
+}
+
+/// Log configuration per container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterDataNodesRoleGroupsConfigLoggingContainers {
+    /// Configuration for the console appender
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub console: Option<HdfsClusterDataNodesRoleGroupsConfigLoggingContainersConsole>,
+    /// Log configuration provided in a ConfigMap
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub custom: Option<HdfsClusterDataNodesRoleGroupsConfigLoggingContainersCustom>,
+    /// Configuration for the file appender
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub file: Option<HdfsClusterDataNodesRoleGroupsConfigLoggingContainersFile>,
+    /// Configuration per logger
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub loggers: Option<BTreeMap<String, HdfsClusterDataNodesRoleGroupsConfigLoggingContainersLoggers>>,
+}
+
+/// Configuration for the console appender
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterDataNodesRoleGroupsConfigLoggingContainersConsole {
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub level: Option<HdfsClusterDataNodesRoleGroupsConfigLoggingContainersConsoleLevel>,
+}
+
+/// Configuration for the console appender
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum HdfsClusterDataNodesRoleGroupsConfigLoggingContainersConsoleLevel {
+    #[serde(rename = "TRACE")]
+    Trace,
+    #[serde(rename = "DEBUG")]
+    Debug,
+    #[serde(rename = "INFO")]
+    Info,
+    #[serde(rename = "WARN")]
+    Warn,
+    #[serde(rename = "ERROR")]
+    Error,
+    #[serde(rename = "FATAL")]
+    Fatal,
+    #[serde(rename = "NONE")]
+    None,
+}
+
+/// Log configuration provided in a ConfigMap
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterDataNodesRoleGroupsConfigLoggingContainersCustom {
+    /// ConfigMap containing the log configuration files
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<String>,
+}
+
+/// Configuration for the file appender
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterDataNodesRoleGroupsConfigLoggingContainersFile {
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub level: Option<HdfsClusterDataNodesRoleGroupsConfigLoggingContainersFileLevel>,
+}
+
+/// Configuration for the file appender
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum HdfsClusterDataNodesRoleGroupsConfigLoggingContainersFileLevel {
+    #[serde(rename = "TRACE")]
+    Trace,
+    #[serde(rename = "DEBUG")]
+    Debug,
+    #[serde(rename = "INFO")]
+    Info,
+    #[serde(rename = "WARN")]
+    Warn,
+    #[serde(rename = "ERROR")]
+    Error,
+    #[serde(rename = "FATAL")]
+    Fatal,
+    #[serde(rename = "NONE")]
+    None,
+}
+
+/// Configuration per logger
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterDataNodesRoleGroupsConfigLoggingContainersLoggers {
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub level: Option<HdfsClusterDataNodesRoleGroupsConfigLoggingContainersLoggersLevel>,
+}
+
+/// Configuration per logger
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum HdfsClusterDataNodesRoleGroupsConfigLoggingContainersLoggersLevel {
+    #[serde(rename = "TRACE")]
+    Trace,
+    #[serde(rename = "DEBUG")]
+    Debug,
+    #[serde(rename = "INFO")]
+    Info,
+    #[serde(rename = "WARN")]
+    Warn,
+    #[serde(rename = "ERROR")]
+    Error,
+    #[serde(rename = "FATAL")]
+    Fatal,
+    #[serde(rename = "NONE")]
+    None,
+}
+
+/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+/// usage, if this role needs any.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterDataNodesRoleGroupsConfigResources {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cpu: Option<HdfsClusterDataNodesRoleGroupsConfigResourcesCpu>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub memory: Option<HdfsClusterDataNodesRoleGroupsConfigResourcesMemory>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub storage: Option<BTreeMap<String, HdfsClusterDataNodesRoleGroupsConfigResourcesStorage>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterDataNodesRoleGroupsConfigResourcesCpu {
+    /// The maximum amount of CPU cores that can be requested by Pods.
+    /// Equivalent to the `limit` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub max: Option<String>,
+    /// The minimal amount of CPU cores that Pods need to run.
+    /// Equivalent to the `request` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub min: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterDataNodesRoleGroupsConfigResourcesMemory {
+    /// The maximum amount of memory that should be available to the Pod.
+    /// Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),>
+    /// which means these suffixes are supported: E, P, T, G, M, k.
+    /// You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki.
+    /// For example, the following represent roughly the same value:
+    /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limit: Option<String>,
+    /// Additional options that can be specified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeLimits")]
+    pub runtime_limits: Option<HdfsClusterDataNodesRoleGroupsConfigResourcesMemoryRuntimeLimits>,
+}
+
+/// Additional options that can be specified.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterDataNodesRoleGroupsConfigResourcesMemoryRuntimeLimits {
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterDataNodesRoleGroupsConfigResourcesStorage {
+    /// Quantity is a fixed-point representation of a number. It provides convenient marshaling/unmarshaling in JSON and YAML, in addition to String() and AsInt64() accessors.
+    /// 
+    /// The serialization format is:
+    /// 
+    /// ``` <quantity>        ::= <signedNumber><suffix>
+    /// 
+    /// 	(Note that <suffix> may be empty, from the "" case in <decimalSI>.)
+    /// 
+    /// <digit>           ::= 0 | 1 | ... | 9 <digits>          ::= <digit> | <digit><digits> <number>          ::= <digits> | <digits>.<digits> | <digits>. | .<digits> <sign>            ::= "+" | "-" <signedNumber>    ::= <number> | <sign><number> <suffix>          ::= <binarySI> | <decimalExponent> | <decimalSI> <binarySI>        ::= Ki | Mi | Gi | Ti | Pi | Ei
+    /// 
+    /// 	(International System of units; See: <http://physics.nist.gov/cuu/Units/binary.html)>
+    /// 
+    /// <decimalSI>       ::= m | "" | k | M | G | T | P | E
+    /// 
+    /// 	(Note that 1024 = 1Ki but 1000 = 1k; I didn't choose the capitalization.)
+    /// 
+    /// <decimalExponent> ::= "e" <signedNumber> | "E" <signedNumber> ```
+    /// 
+    /// No matter which of the three exponent forms is used, no quantity may represent a number greater than 2^63-1 in magnitude, nor may it have more than 3 decimal places. Numbers larger or more precise will be capped or rounded up. (E.g.: 0.1m will rounded up to 1m.) This may be extended in the future if we require larger or smaller quantities.
+    /// 
+    /// When a Quantity is parsed from a string, it will remember the type of suffix it had, and will use the same type again when it is serialized.
+    /// 
+    /// Before serializing, Quantity will be put in "canonical form". This means that Exponent/suffix will be adjusted up or down (with a corresponding increase or decrease in Mantissa) such that:
+    /// 
+    /// - No precision is lost - No fractional digits will be emitted - The exponent (or suffix) is as large as possible.
+    /// 
+    /// The sign will be omitted unless the number is negative.
+    /// 
+    /// Examples:
+    /// 
+    /// - 1.5 will be serialized as "1500m" - 1.5Gi will be serialized as "1536Mi"
+    /// 
+    /// Note that the quantity will NEVER be internally represented by a floating point number. That is the whole point of this exercise.
+    /// 
+    /// Non-canonical values will still parse as long as they are well formed, but will be re-emitted in their canonical form. (So always use canonical form, or don't diff.)
+    /// 
+    /// This format is intended to make it difficult to use these numbers without writing some sort of special handling code in the hopes that that will cause implementors to also use a fixed point implementation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub capacity: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub count: Option<u16>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hdfsStorageType")]
+    pub hdfs_storage_type: Option<HdfsClusterDataNodesRoleGroupsConfigResourcesStorageHdfsStorageType>,
+    /// A label selector is a label query over a set of resources. The result of matchLabels and matchExpressions are ANDed. An empty label selector matches all objects. A null label selector matches no objects.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selectors: Option<HdfsClusterDataNodesRoleGroupsConfigResourcesStorageSelectors>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClass")]
+    pub storage_class: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum HdfsClusterDataNodesRoleGroupsConfigResourcesStorageHdfsStorageType {
+    Archive,
+    Disk,
+    #[serde(rename = "SSD")]
+    Ssd,
+    #[serde(rename = "RAMDisk")]
+    RamDisk,
+}
+
+/// A label selector is a label query over a set of resources. The result of matchLabels and matchExpressions are ANDed. An empty label selector matches all objects. A null label selector matches no objects.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterDataNodesRoleGroupsConfigResourcesStorageSelectors {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<HdfsClusterDataNodesRoleGroupsConfigResourcesStorageSelectorsMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterDataNodesRoleGroupsConfigResourcesStorageSelectorsMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Allows overriding JVM arguments.
+/// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+/// for details on the usage.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterDataNodesRoleGroupsJvmArgumentOverrides {
+    /// JVM arguments to be added
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub add: Option<Vec<String>>,
+    /// JVM arguments to be removed by exact match
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub remove: Option<Vec<String>>,
+    /// JVM arguments matching any of this regexes will be removed
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "removeRegex")]
+    pub remove_regex: Option<Vec<String>>,
+}
+
+/// Specify which image to use, the easiest way is to only configure the `productVersion`.
+/// You can also configure a custom image registry to pull from, as well as completely custom
+/// images.
+/// 
+/// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)>
+/// for details.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterImage {
+    /// Overwrite the docker image.
+    /// Specify the full docker image name, e.g. `oci.stackable.tech/sdp/superset:1.4.1-stackable2.1.0`
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub custom: Option<String>,
+    /// Version of the product, e.g. `1.4.1`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "productVersion")]
+    pub product_version: Option<String>,
+    /// [Pull policy](<https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy)> used when pulling the image.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
+    pub pull_policy: Option<HdfsClusterImagePullPolicy>,
+    /// [Image pull secrets](<https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod)> to pull images from a private registry.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullSecrets")]
+    pub pull_secrets: Option<Vec<HdfsClusterImagePullSecrets>>,
+    /// Name of the docker repo, e.g. `oci.stackable.tech/sdp`
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub repo: Option<String>,
+    /// Stackable version of the product, e.g. `23.4`, `23.4.1` or `0.0.0-dev`.
+    /// If not specified, the operator will use its own version, e.g. `23.4.1`.
+    /// When using a nightly operator or a pr version, it will use the nightly `0.0.0-dev` image.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stackableVersion")]
+    pub stackable_version: Option<String>,
+}
+
+/// Specify which image to use, the easiest way is to only configure the `productVersion`.
+/// You can also configure a custom image registry to pull from, as well as completely custom
+/// images.
+/// 
+/// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)>
+/// for details.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum HdfsClusterImagePullPolicy {
+    IfNotPresent,
+    Always,
+    Never,
+}
+
+/// LocalObjectReference contains enough information to let you locate the referenced object inside the same namespace.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterImagePullSecrets {
+    /// Name of the referent. This field is effectively required, but due to backwards compatibility is allowed to be empty. Instances of this type with an empty value here are almost certainly wrong. More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
+    pub name: String,
+}
+
+/// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing
+/// all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable
+/// at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured
+/// on role level. There is also a second form of config, which can only be configured
+/// at role level, the `roleConfig`.
+/// You can learn more about this in the
+/// [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterJournalNodes {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cliOverrides")]
+    pub cli_overrides: Option<BTreeMap<String, String>>,
+    /// Configuration options that are available for all roles.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub config: Option<HdfsClusterJournalNodesConfig>,
+    /// The `configOverrides` can be used to configure properties in product config files
+    /// that are not exposed in the CRD. Read the
+    /// [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)>
+    /// and consult the operator specific usage guide documentation for details on the
+    /// available config files and settings for the specific product.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configOverrides")]
+    pub config_overrides: Option<BTreeMap<String, BTreeMap<String, String>>>,
+    /// `envOverrides` configure environment variables to be set in the Pods.
+    /// It is a map from strings to strings - environment variables and the value to set.
+    /// Read the
+    /// [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)>
+    /// for more information and consult the operator specific usage guide to find out about
+    /// the product specific environment variables that are available.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envOverrides")]
+    pub env_overrides: Option<BTreeMap<String, String>>,
+    /// Allows overriding JVM arguments.
+    /// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+    /// for details on the usage.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
+    pub jvm_argument_overrides: Option<HdfsClusterJournalNodesJvmArgumentOverrides>,
+    /// In the `podOverrides` property you can define a
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// to override any property that can be set on a Kubernetes Pod.
+    /// Read the
+    /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
+    /// for more information.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podOverrides")]
+    pub pod_overrides: Option<BTreeMap<String, serde_json::Value>>,
+    /// This is a product-agnostic RoleConfig, which is sufficient for most of the products.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleConfig")]
+    pub role_config: Option<HdfsClusterJournalNodesRoleConfig>,
+    #[serde(rename = "roleGroups")]
+    pub role_groups: BTreeMap<String, HdfsClusterJournalNodesRoleGroups>,
+}
+
+/// Configuration options that are available for all roles.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterJournalNodesConfig {
+    /// These configuration settings control
+    /// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub affinity: Option<HdfsClusterJournalNodesConfigAffinity>,
+    /// Time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Consult the operator documentation for details.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracefulShutdownTimeout")]
+    pub graceful_shutdown_timeout: Option<String>,
+    /// Logging configuration, learn more in the [logging concept documentation](<https://docs.stackable.tech/home/nightly/concepts/logging).>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub logging: Option<HdfsClusterJournalNodesConfigLogging>,
+    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`.
+    /// This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestedSecretLifetime")]
+    pub requested_secret_lifetime: Option<String>,
+    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+    /// usage, if this role needs any.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<HdfsClusterJournalNodesConfigResources>,
+}
+
+/// These configuration settings control
+/// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterJournalNodesConfigAffinity {
+    /// Same as the `spec.affinity.nodeAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
+    pub node_affinity: Option<BTreeMap<String, serde_json::Value>>,
+    /// Simple key-value pairs forming a nodeSelector, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<BTreeMap<String, String>>,
+    /// Same as the `spec.affinity.podAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
+    pub pod_affinity: Option<BTreeMap<String, serde_json::Value>>,
+    /// Same as the `spec.affinity.podAntiAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<BTreeMap<String, serde_json::Value>>,
+}
+
+/// Logging configuration, learn more in the [logging concept documentation](<https://docs.stackable.tech/home/nightly/concepts/logging).>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterJournalNodesConfigLogging {
+    /// Log configuration per container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub containers: Option<BTreeMap<String, HdfsClusterJournalNodesConfigLoggingContainers>>,
+    /// Wether or not to deploy a container with the Vector log agent.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableVectorAgent")]
+    pub enable_vector_agent: Option<bool>,
+}
+
+/// Log configuration per container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterJournalNodesConfigLoggingContainers {
+    /// Configuration for the console appender
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub console: Option<HdfsClusterJournalNodesConfigLoggingContainersConsole>,
+    /// Log configuration provided in a ConfigMap
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub custom: Option<HdfsClusterJournalNodesConfigLoggingContainersCustom>,
+    /// Configuration for the file appender
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub file: Option<HdfsClusterJournalNodesConfigLoggingContainersFile>,
+    /// Configuration per logger
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub loggers: Option<BTreeMap<String, HdfsClusterJournalNodesConfigLoggingContainersLoggers>>,
+}
+
+/// Configuration for the console appender
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterJournalNodesConfigLoggingContainersConsole {
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub level: Option<HdfsClusterJournalNodesConfigLoggingContainersConsoleLevel>,
+}
+
+/// Configuration for the console appender
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum HdfsClusterJournalNodesConfigLoggingContainersConsoleLevel {
+    #[serde(rename = "TRACE")]
+    Trace,
+    #[serde(rename = "DEBUG")]
+    Debug,
+    #[serde(rename = "INFO")]
+    Info,
+    #[serde(rename = "WARN")]
+    Warn,
+    #[serde(rename = "ERROR")]
+    Error,
+    #[serde(rename = "FATAL")]
+    Fatal,
+    #[serde(rename = "NONE")]
+    None,
+}
+
+/// Log configuration provided in a ConfigMap
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterJournalNodesConfigLoggingContainersCustom {
+    /// ConfigMap containing the log configuration files
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<String>,
+}
+
+/// Configuration for the file appender
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterJournalNodesConfigLoggingContainersFile {
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub level: Option<HdfsClusterJournalNodesConfigLoggingContainersFileLevel>,
+}
+
+/// Configuration for the file appender
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum HdfsClusterJournalNodesConfigLoggingContainersFileLevel {
+    #[serde(rename = "TRACE")]
+    Trace,
+    #[serde(rename = "DEBUG")]
+    Debug,
+    #[serde(rename = "INFO")]
+    Info,
+    #[serde(rename = "WARN")]
+    Warn,
+    #[serde(rename = "ERROR")]
+    Error,
+    #[serde(rename = "FATAL")]
+    Fatal,
+    #[serde(rename = "NONE")]
+    None,
+}
+
+/// Configuration per logger
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterJournalNodesConfigLoggingContainersLoggers {
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub level: Option<HdfsClusterJournalNodesConfigLoggingContainersLoggersLevel>,
+}
+
+/// Configuration per logger
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum HdfsClusterJournalNodesConfigLoggingContainersLoggersLevel {
+    #[serde(rename = "TRACE")]
+    Trace,
+    #[serde(rename = "DEBUG")]
+    Debug,
+    #[serde(rename = "INFO")]
+    Info,
+    #[serde(rename = "WARN")]
+    Warn,
+    #[serde(rename = "ERROR")]
+    Error,
+    #[serde(rename = "FATAL")]
+    Fatal,
+    #[serde(rename = "NONE")]
+    None,
+}
+
+/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+/// usage, if this role needs any.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterJournalNodesConfigResources {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cpu: Option<HdfsClusterJournalNodesConfigResourcesCpu>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub memory: Option<HdfsClusterJournalNodesConfigResourcesMemory>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub storage: Option<HdfsClusterJournalNodesConfigResourcesStorage>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterJournalNodesConfigResourcesCpu {
+    /// The maximum amount of CPU cores that can be requested by Pods.
+    /// Equivalent to the `limit` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub max: Option<String>,
+    /// The minimal amount of CPU cores that Pods need to run.
+    /// Equivalent to the `request` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub min: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterJournalNodesConfigResourcesMemory {
+    /// The maximum amount of memory that should be available to the Pod.
+    /// Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),>
+    /// which means these suffixes are supported: E, P, T, G, M, k.
+    /// You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki.
+    /// For example, the following represent roughly the same value:
+    /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limit: Option<String>,
+    /// Additional options that can be specified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeLimits")]
+    pub runtime_limits: Option<HdfsClusterJournalNodesConfigResourcesMemoryRuntimeLimits>,
+}
+
+/// Additional options that can be specified.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterJournalNodesConfigResourcesMemoryRuntimeLimits {
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterJournalNodesConfigResourcesStorage {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub data: Option<HdfsClusterJournalNodesConfigResourcesStorageData>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterJournalNodesConfigResourcesStorageData {
+    /// Quantity is a fixed-point representation of a number. It provides convenient marshaling/unmarshaling in JSON and YAML, in addition to String() and AsInt64() accessors.
+    /// 
+    /// The serialization format is:
+    /// 
+    /// ``` <quantity>        ::= <signedNumber><suffix>
+    /// 
+    /// 	(Note that <suffix> may be empty, from the "" case in <decimalSI>.)
+    /// 
+    /// <digit>           ::= 0 | 1 | ... | 9 <digits>          ::= <digit> | <digit><digits> <number>          ::= <digits> | <digits>.<digits> | <digits>. | .<digits> <sign>            ::= "+" | "-" <signedNumber>    ::= <number> | <sign><number> <suffix>          ::= <binarySI> | <decimalExponent> | <decimalSI> <binarySI>        ::= Ki | Mi | Gi | Ti | Pi | Ei
+    /// 
+    /// 	(International System of units; See: <http://physics.nist.gov/cuu/Units/binary.html)>
+    /// 
+    /// <decimalSI>       ::= m | "" | k | M | G | T | P | E
+    /// 
+    /// 	(Note that 1024 = 1Ki but 1000 = 1k; I didn't choose the capitalization.)
+    /// 
+    /// <decimalExponent> ::= "e" <signedNumber> | "E" <signedNumber> ```
+    /// 
+    /// No matter which of the three exponent forms is used, no quantity may represent a number greater than 2^63-1 in magnitude, nor may it have more than 3 decimal places. Numbers larger or more precise will be capped or rounded up. (E.g.: 0.1m will rounded up to 1m.) This may be extended in the future if we require larger or smaller quantities.
+    /// 
+    /// When a Quantity is parsed from a string, it will remember the type of suffix it had, and will use the same type again when it is serialized.
+    /// 
+    /// Before serializing, Quantity will be put in "canonical form". This means that Exponent/suffix will be adjusted up or down (with a corresponding increase or decrease in Mantissa) such that:
+    /// 
+    /// - No precision is lost - No fractional digits will be emitted - The exponent (or suffix) is as large as possible.
+    /// 
+    /// The sign will be omitted unless the number is negative.
+    /// 
+    /// Examples:
+    /// 
+    /// - 1.5 will be serialized as "1500m" - 1.5Gi will be serialized as "1536Mi"
+    /// 
+    /// Note that the quantity will NEVER be internally represented by a floating point number. That is the whole point of this exercise.
+    /// 
+    /// Non-canonical values will still parse as long as they are well formed, but will be re-emitted in their canonical form. (So always use canonical form, or don't diff.)
+    /// 
+    /// This format is intended to make it difficult to use these numbers without writing some sort of special handling code in the hopes that that will cause implementors to also use a fixed point implementation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub capacity: Option<String>,
+    /// A label selector is a label query over a set of resources. The result of matchLabels and matchExpressions are ANDed. An empty label selector matches all objects. A null label selector matches no objects.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selectors: Option<HdfsClusterJournalNodesConfigResourcesStorageDataSelectors>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClass")]
+    pub storage_class: Option<String>,
+}
+
+/// A label selector is a label query over a set of resources. The result of matchLabels and matchExpressions are ANDed. An empty label selector matches all objects. A null label selector matches no objects.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterJournalNodesConfigResourcesStorageDataSelectors {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<HdfsClusterJournalNodesConfigResourcesStorageDataSelectorsMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterJournalNodesConfigResourcesStorageDataSelectorsMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Allows overriding JVM arguments.
+/// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+/// for details on the usage.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterJournalNodesJvmArgumentOverrides {
+    /// JVM arguments to be added
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub add: Option<Vec<String>>,
+    /// JVM arguments to be removed by exact match
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub remove: Option<Vec<String>>,
+    /// JVM arguments matching any of this regexes will be removed
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "removeRegex")]
+    pub remove_regex: Option<Vec<String>>,
+}
+
+/// This is a product-agnostic RoleConfig, which is sufficient for most of the products.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterJournalNodesRoleConfig {
+    /// This struct is used to configure:
+    /// 
+    /// 1. If PodDisruptionBudgets are created by the operator
+    /// 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
+    /// 
+    /// Learn more in the
+    /// [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podDisruptionBudget")]
+    pub pod_disruption_budget: Option<HdfsClusterJournalNodesRoleConfigPodDisruptionBudget>,
+}
+
+/// This struct is used to configure:
+/// 
+/// 1. If PodDisruptionBudgets are created by the operator
+/// 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
+/// 
+/// Learn more in the
+/// [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterJournalNodesRoleConfigPodDisruptionBudget {
+    /// Whether a PodDisruptionBudget should be written out for this role.
+    /// Disabling this enables you to specify your own - custom - one.
+    /// Defaults to true.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// The number of Pods that are allowed to be down because of voluntary disruptions.
+    /// If you don't explicitly set this, the operator will use a sane default based
+    /// upon knowledge about the individual product.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
+    pub max_unavailable: Option<u16>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterJournalNodesRoleGroups {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cliOverrides")]
+    pub cli_overrides: Option<BTreeMap<String, String>>,
+    /// Configuration options that are available for all roles.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub config: Option<HdfsClusterJournalNodesRoleGroupsConfig>,
+    /// The `configOverrides` can be used to configure properties in product config files
+    /// that are not exposed in the CRD. Read the
+    /// [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)>
+    /// and consult the operator specific usage guide documentation for details on the
+    /// available config files and settings for the specific product.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configOverrides")]
+    pub config_overrides: Option<BTreeMap<String, BTreeMap<String, String>>>,
+    /// `envOverrides` configure environment variables to be set in the Pods.
+    /// It is a map from strings to strings - environment variables and the value to set.
+    /// Read the
+    /// [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)>
+    /// for more information and consult the operator specific usage guide to find out about
+    /// the product specific environment variables that are available.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envOverrides")]
+    pub env_overrides: Option<BTreeMap<String, String>>,
+    /// Allows overriding JVM arguments.
+    /// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+    /// for details on the usage.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
+    pub jvm_argument_overrides: Option<HdfsClusterJournalNodesRoleGroupsJvmArgumentOverrides>,
+    /// In the `podOverrides` property you can define a
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// to override any property that can be set on a Kubernetes Pod.
+    /// Read the
+    /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
+    /// for more information.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podOverrides")]
+    pub pod_overrides: Option<BTreeMap<String, serde_json::Value>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub replicas: Option<u16>,
+}
+
+/// Configuration options that are available for all roles.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterJournalNodesRoleGroupsConfig {
+    /// These configuration settings control
+    /// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub affinity: Option<HdfsClusterJournalNodesRoleGroupsConfigAffinity>,
+    /// Time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Consult the operator documentation for details.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracefulShutdownTimeout")]
+    pub graceful_shutdown_timeout: Option<String>,
+    /// Logging configuration, learn more in the [logging concept documentation](<https://docs.stackable.tech/home/nightly/concepts/logging).>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub logging: Option<HdfsClusterJournalNodesRoleGroupsConfigLogging>,
+    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`.
+    /// This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestedSecretLifetime")]
+    pub requested_secret_lifetime: Option<String>,
+    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+    /// usage, if this role needs any.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<HdfsClusterJournalNodesRoleGroupsConfigResources>,
+}
+
+/// These configuration settings control
+/// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterJournalNodesRoleGroupsConfigAffinity {
+    /// Same as the `spec.affinity.nodeAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
+    pub node_affinity: Option<BTreeMap<String, serde_json::Value>>,
+    /// Simple key-value pairs forming a nodeSelector, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<BTreeMap<String, String>>,
+    /// Same as the `spec.affinity.podAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
+    pub pod_affinity: Option<BTreeMap<String, serde_json::Value>>,
+    /// Same as the `spec.affinity.podAntiAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<BTreeMap<String, serde_json::Value>>,
+}
+
+/// Logging configuration, learn more in the [logging concept documentation](<https://docs.stackable.tech/home/nightly/concepts/logging).>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterJournalNodesRoleGroupsConfigLogging {
+    /// Log configuration per container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub containers: Option<BTreeMap<String, HdfsClusterJournalNodesRoleGroupsConfigLoggingContainers>>,
+    /// Wether or not to deploy a container with the Vector log agent.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableVectorAgent")]
+    pub enable_vector_agent: Option<bool>,
+}
+
+/// Log configuration per container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterJournalNodesRoleGroupsConfigLoggingContainers {
+    /// Configuration for the console appender
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub console: Option<HdfsClusterJournalNodesRoleGroupsConfigLoggingContainersConsole>,
+    /// Log configuration provided in a ConfigMap
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub custom: Option<HdfsClusterJournalNodesRoleGroupsConfigLoggingContainersCustom>,
+    /// Configuration for the file appender
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub file: Option<HdfsClusterJournalNodesRoleGroupsConfigLoggingContainersFile>,
+    /// Configuration per logger
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub loggers: Option<BTreeMap<String, HdfsClusterJournalNodesRoleGroupsConfigLoggingContainersLoggers>>,
+}
+
+/// Configuration for the console appender
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterJournalNodesRoleGroupsConfigLoggingContainersConsole {
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub level: Option<HdfsClusterJournalNodesRoleGroupsConfigLoggingContainersConsoleLevel>,
+}
+
+/// Configuration for the console appender
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum HdfsClusterJournalNodesRoleGroupsConfigLoggingContainersConsoleLevel {
+    #[serde(rename = "TRACE")]
+    Trace,
+    #[serde(rename = "DEBUG")]
+    Debug,
+    #[serde(rename = "INFO")]
+    Info,
+    #[serde(rename = "WARN")]
+    Warn,
+    #[serde(rename = "ERROR")]
+    Error,
+    #[serde(rename = "FATAL")]
+    Fatal,
+    #[serde(rename = "NONE")]
+    None,
+}
+
+/// Log configuration provided in a ConfigMap
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterJournalNodesRoleGroupsConfigLoggingContainersCustom {
+    /// ConfigMap containing the log configuration files
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<String>,
+}
+
+/// Configuration for the file appender
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterJournalNodesRoleGroupsConfigLoggingContainersFile {
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub level: Option<HdfsClusterJournalNodesRoleGroupsConfigLoggingContainersFileLevel>,
+}
+
+/// Configuration for the file appender
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum HdfsClusterJournalNodesRoleGroupsConfigLoggingContainersFileLevel {
+    #[serde(rename = "TRACE")]
+    Trace,
+    #[serde(rename = "DEBUG")]
+    Debug,
+    #[serde(rename = "INFO")]
+    Info,
+    #[serde(rename = "WARN")]
+    Warn,
+    #[serde(rename = "ERROR")]
+    Error,
+    #[serde(rename = "FATAL")]
+    Fatal,
+    #[serde(rename = "NONE")]
+    None,
+}
+
+/// Configuration per logger
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterJournalNodesRoleGroupsConfigLoggingContainersLoggers {
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub level: Option<HdfsClusterJournalNodesRoleGroupsConfigLoggingContainersLoggersLevel>,
+}
+
+/// Configuration per logger
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum HdfsClusterJournalNodesRoleGroupsConfigLoggingContainersLoggersLevel {
+    #[serde(rename = "TRACE")]
+    Trace,
+    #[serde(rename = "DEBUG")]
+    Debug,
+    #[serde(rename = "INFO")]
+    Info,
+    #[serde(rename = "WARN")]
+    Warn,
+    #[serde(rename = "ERROR")]
+    Error,
+    #[serde(rename = "FATAL")]
+    Fatal,
+    #[serde(rename = "NONE")]
+    None,
+}
+
+/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+/// usage, if this role needs any.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterJournalNodesRoleGroupsConfigResources {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cpu: Option<HdfsClusterJournalNodesRoleGroupsConfigResourcesCpu>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub memory: Option<HdfsClusterJournalNodesRoleGroupsConfigResourcesMemory>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub storage: Option<HdfsClusterJournalNodesRoleGroupsConfigResourcesStorage>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterJournalNodesRoleGroupsConfigResourcesCpu {
+    /// The maximum amount of CPU cores that can be requested by Pods.
+    /// Equivalent to the `limit` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub max: Option<String>,
+    /// The minimal amount of CPU cores that Pods need to run.
+    /// Equivalent to the `request` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub min: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterJournalNodesRoleGroupsConfigResourcesMemory {
+    /// The maximum amount of memory that should be available to the Pod.
+    /// Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),>
+    /// which means these suffixes are supported: E, P, T, G, M, k.
+    /// You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki.
+    /// For example, the following represent roughly the same value:
+    /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limit: Option<String>,
+    /// Additional options that can be specified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeLimits")]
+    pub runtime_limits: Option<HdfsClusterJournalNodesRoleGroupsConfigResourcesMemoryRuntimeLimits>,
+}
+
+/// Additional options that can be specified.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterJournalNodesRoleGroupsConfigResourcesMemoryRuntimeLimits {
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterJournalNodesRoleGroupsConfigResourcesStorage {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub data: Option<HdfsClusterJournalNodesRoleGroupsConfigResourcesStorageData>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterJournalNodesRoleGroupsConfigResourcesStorageData {
+    /// Quantity is a fixed-point representation of a number. It provides convenient marshaling/unmarshaling in JSON and YAML, in addition to String() and AsInt64() accessors.
+    /// 
+    /// The serialization format is:
+    /// 
+    /// ``` <quantity>        ::= <signedNumber><suffix>
+    /// 
+    /// 	(Note that <suffix> may be empty, from the "" case in <decimalSI>.)
+    /// 
+    /// <digit>           ::= 0 | 1 | ... | 9 <digits>          ::= <digit> | <digit><digits> <number>          ::= <digits> | <digits>.<digits> | <digits>. | .<digits> <sign>            ::= "+" | "-" <signedNumber>    ::= <number> | <sign><number> <suffix>          ::= <binarySI> | <decimalExponent> | <decimalSI> <binarySI>        ::= Ki | Mi | Gi | Ti | Pi | Ei
+    /// 
+    /// 	(International System of units; See: <http://physics.nist.gov/cuu/Units/binary.html)>
+    /// 
+    /// <decimalSI>       ::= m | "" | k | M | G | T | P | E
+    /// 
+    /// 	(Note that 1024 = 1Ki but 1000 = 1k; I didn't choose the capitalization.)
+    /// 
+    /// <decimalExponent> ::= "e" <signedNumber> | "E" <signedNumber> ```
+    /// 
+    /// No matter which of the three exponent forms is used, no quantity may represent a number greater than 2^63-1 in magnitude, nor may it have more than 3 decimal places. Numbers larger or more precise will be capped or rounded up. (E.g.: 0.1m will rounded up to 1m.) This may be extended in the future if we require larger or smaller quantities.
+    /// 
+    /// When a Quantity is parsed from a string, it will remember the type of suffix it had, and will use the same type again when it is serialized.
+    /// 
+    /// Before serializing, Quantity will be put in "canonical form". This means that Exponent/suffix will be adjusted up or down (with a corresponding increase or decrease in Mantissa) such that:
+    /// 
+    /// - No precision is lost - No fractional digits will be emitted - The exponent (or suffix) is as large as possible.
+    /// 
+    /// The sign will be omitted unless the number is negative.
+    /// 
+    /// Examples:
+    /// 
+    /// - 1.5 will be serialized as "1500m" - 1.5Gi will be serialized as "1536Mi"
+    /// 
+    /// Note that the quantity will NEVER be internally represented by a floating point number. That is the whole point of this exercise.
+    /// 
+    /// Non-canonical values will still parse as long as they are well formed, but will be re-emitted in their canonical form. (So always use canonical form, or don't diff.)
+    /// 
+    /// This format is intended to make it difficult to use these numbers without writing some sort of special handling code in the hopes that that will cause implementors to also use a fixed point implementation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub capacity: Option<String>,
+    /// A label selector is a label query over a set of resources. The result of matchLabels and matchExpressions are ANDed. An empty label selector matches all objects. A null label selector matches no objects.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selectors: Option<HdfsClusterJournalNodesRoleGroupsConfigResourcesStorageDataSelectors>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClass")]
+    pub storage_class: Option<String>,
+}
+
+/// A label selector is a label query over a set of resources. The result of matchLabels and matchExpressions are ANDed. An empty label selector matches all objects. A null label selector matches no objects.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterJournalNodesRoleGroupsConfigResourcesStorageDataSelectors {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<HdfsClusterJournalNodesRoleGroupsConfigResourcesStorageDataSelectorsMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterJournalNodesRoleGroupsConfigResourcesStorageDataSelectorsMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Allows overriding JVM arguments.
+/// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+/// for details on the usage.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterJournalNodesRoleGroupsJvmArgumentOverrides {
+    /// JVM arguments to be added
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub add: Option<Vec<String>>,
+    /// JVM arguments to be removed by exact match
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub remove: Option<Vec<String>>,
+    /// JVM arguments matching any of this regexes will be removed
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "removeRegex")]
+    pub remove_regex: Option<Vec<String>>,
+}
+
+/// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing
+/// all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable
+/// at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured
+/// on role level. There is also a second form of config, which can only be configured
+/// at role level, the `roleConfig`.
+/// You can learn more about this in the
+/// [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterNameNodes {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cliOverrides")]
+    pub cli_overrides: Option<BTreeMap<String, String>>,
+    /// Configuration options that are available for all roles.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub config: Option<HdfsClusterNameNodesConfig>,
+    /// The `configOverrides` can be used to configure properties in product config files
+    /// that are not exposed in the CRD. Read the
+    /// [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)>
+    /// and consult the operator specific usage guide documentation for details on the
+    /// available config files and settings for the specific product.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configOverrides")]
+    pub config_overrides: Option<BTreeMap<String, BTreeMap<String, String>>>,
+    /// `envOverrides` configure environment variables to be set in the Pods.
+    /// It is a map from strings to strings - environment variables and the value to set.
+    /// Read the
+    /// [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)>
+    /// for more information and consult the operator specific usage guide to find out about
+    /// the product specific environment variables that are available.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envOverrides")]
+    pub env_overrides: Option<BTreeMap<String, String>>,
+    /// Allows overriding JVM arguments.
+    /// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+    /// for details on the usage.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
+    pub jvm_argument_overrides: Option<HdfsClusterNameNodesJvmArgumentOverrides>,
+    /// In the `podOverrides` property you can define a
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// to override any property that can be set on a Kubernetes Pod.
+    /// Read the
+    /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
+    /// for more information.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podOverrides")]
+    pub pod_overrides: Option<BTreeMap<String, serde_json::Value>>,
+    /// This is a product-agnostic RoleConfig, which is sufficient for most of the products.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleConfig")]
+    pub role_config: Option<HdfsClusterNameNodesRoleConfig>,
+    #[serde(rename = "roleGroups")]
+    pub role_groups: BTreeMap<String, HdfsClusterNameNodesRoleGroups>,
+}
+
+/// Configuration options that are available for all roles.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterNameNodesConfig {
+    /// These configuration settings control
+    /// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub affinity: Option<HdfsClusterNameNodesConfigAffinity>,
+    /// Time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Consult the operator documentation for details.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracefulShutdownTimeout")]
+    pub graceful_shutdown_timeout: Option<String>,
+    /// This field controls which [ListenerClass](<https://docs.stackable.tech/home/nightly/listener-operator/listenerclass.html)> is used to expose this rolegroup.
+    /// NameNodes should have a stable ListenerClass, such as `cluster-internal` or `external-stable`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenerClass")]
+    pub listener_class: Option<String>,
+    /// Logging configuration, learn more in the [logging concept documentation](<https://docs.stackable.tech/home/nightly/concepts/logging).>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub logging: Option<HdfsClusterNameNodesConfigLogging>,
+    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`.
+    /// This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestedSecretLifetime")]
+    pub requested_secret_lifetime: Option<String>,
+    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+    /// usage, if this role needs any.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<HdfsClusterNameNodesConfigResources>,
+}
+
+/// These configuration settings control
+/// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterNameNodesConfigAffinity {
+    /// Same as the `spec.affinity.nodeAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
+    pub node_affinity: Option<BTreeMap<String, serde_json::Value>>,
+    /// Simple key-value pairs forming a nodeSelector, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<BTreeMap<String, String>>,
+    /// Same as the `spec.affinity.podAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
+    pub pod_affinity: Option<BTreeMap<String, serde_json::Value>>,
+    /// Same as the `spec.affinity.podAntiAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<BTreeMap<String, serde_json::Value>>,
+}
+
+/// Logging configuration, learn more in the [logging concept documentation](<https://docs.stackable.tech/home/nightly/concepts/logging).>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterNameNodesConfigLogging {
+    /// Log configuration per container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub containers: Option<BTreeMap<String, HdfsClusterNameNodesConfigLoggingContainers>>,
+    /// Wether or not to deploy a container with the Vector log agent.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableVectorAgent")]
+    pub enable_vector_agent: Option<bool>,
+}
+
+/// Log configuration per container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterNameNodesConfigLoggingContainers {
+    /// Configuration for the console appender
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub console: Option<HdfsClusterNameNodesConfigLoggingContainersConsole>,
+    /// Log configuration provided in a ConfigMap
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub custom: Option<HdfsClusterNameNodesConfigLoggingContainersCustom>,
+    /// Configuration for the file appender
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub file: Option<HdfsClusterNameNodesConfigLoggingContainersFile>,
+    /// Configuration per logger
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub loggers: Option<BTreeMap<String, HdfsClusterNameNodesConfigLoggingContainersLoggers>>,
+}
+
+/// Configuration for the console appender
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterNameNodesConfigLoggingContainersConsole {
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub level: Option<HdfsClusterNameNodesConfigLoggingContainersConsoleLevel>,
+}
+
+/// Configuration for the console appender
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum HdfsClusterNameNodesConfigLoggingContainersConsoleLevel {
+    #[serde(rename = "TRACE")]
+    Trace,
+    #[serde(rename = "DEBUG")]
+    Debug,
+    #[serde(rename = "INFO")]
+    Info,
+    #[serde(rename = "WARN")]
+    Warn,
+    #[serde(rename = "ERROR")]
+    Error,
+    #[serde(rename = "FATAL")]
+    Fatal,
+    #[serde(rename = "NONE")]
+    None,
+}
+
+/// Log configuration provided in a ConfigMap
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterNameNodesConfigLoggingContainersCustom {
+    /// ConfigMap containing the log configuration files
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<String>,
+}
+
+/// Configuration for the file appender
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterNameNodesConfigLoggingContainersFile {
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub level: Option<HdfsClusterNameNodesConfigLoggingContainersFileLevel>,
+}
+
+/// Configuration for the file appender
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum HdfsClusterNameNodesConfigLoggingContainersFileLevel {
+    #[serde(rename = "TRACE")]
+    Trace,
+    #[serde(rename = "DEBUG")]
+    Debug,
+    #[serde(rename = "INFO")]
+    Info,
+    #[serde(rename = "WARN")]
+    Warn,
+    #[serde(rename = "ERROR")]
+    Error,
+    #[serde(rename = "FATAL")]
+    Fatal,
+    #[serde(rename = "NONE")]
+    None,
+}
+
+/// Configuration per logger
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterNameNodesConfigLoggingContainersLoggers {
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub level: Option<HdfsClusterNameNodesConfigLoggingContainersLoggersLevel>,
+}
+
+/// Configuration per logger
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum HdfsClusterNameNodesConfigLoggingContainersLoggersLevel {
+    #[serde(rename = "TRACE")]
+    Trace,
+    #[serde(rename = "DEBUG")]
+    Debug,
+    #[serde(rename = "INFO")]
+    Info,
+    #[serde(rename = "WARN")]
+    Warn,
+    #[serde(rename = "ERROR")]
+    Error,
+    #[serde(rename = "FATAL")]
+    Fatal,
+    #[serde(rename = "NONE")]
+    None,
+}
+
+/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+/// usage, if this role needs any.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterNameNodesConfigResources {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cpu: Option<HdfsClusterNameNodesConfigResourcesCpu>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub memory: Option<HdfsClusterNameNodesConfigResourcesMemory>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub storage: Option<HdfsClusterNameNodesConfigResourcesStorage>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterNameNodesConfigResourcesCpu {
+    /// The maximum amount of CPU cores that can be requested by Pods.
+    /// Equivalent to the `limit` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub max: Option<String>,
+    /// The minimal amount of CPU cores that Pods need to run.
+    /// Equivalent to the `request` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub min: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterNameNodesConfigResourcesMemory {
+    /// The maximum amount of memory that should be available to the Pod.
+    /// Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),>
+    /// which means these suffixes are supported: E, P, T, G, M, k.
+    /// You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki.
+    /// For example, the following represent roughly the same value:
+    /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limit: Option<String>,
+    /// Additional options that can be specified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeLimits")]
+    pub runtime_limits: Option<HdfsClusterNameNodesConfigResourcesMemoryRuntimeLimits>,
+}
+
+/// Additional options that can be specified.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterNameNodesConfigResourcesMemoryRuntimeLimits {
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterNameNodesConfigResourcesStorage {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub data: Option<HdfsClusterNameNodesConfigResourcesStorageData>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterNameNodesConfigResourcesStorageData {
+    /// Quantity is a fixed-point representation of a number. It provides convenient marshaling/unmarshaling in JSON and YAML, in addition to String() and AsInt64() accessors.
+    /// 
+    /// The serialization format is:
+    /// 
+    /// ``` <quantity>        ::= <signedNumber><suffix>
+    /// 
+    /// 	(Note that <suffix> may be empty, from the "" case in <decimalSI>.)
+    /// 
+    /// <digit>           ::= 0 | 1 | ... | 9 <digits>          ::= <digit> | <digit><digits> <number>          ::= <digits> | <digits>.<digits> | <digits>. | .<digits> <sign>            ::= "+" | "-" <signedNumber>    ::= <number> | <sign><number> <suffix>          ::= <binarySI> | <decimalExponent> | <decimalSI> <binarySI>        ::= Ki | Mi | Gi | Ti | Pi | Ei
+    /// 
+    /// 	(International System of units; See: <http://physics.nist.gov/cuu/Units/binary.html)>
+    /// 
+    /// <decimalSI>       ::= m | "" | k | M | G | T | P | E
+    /// 
+    /// 	(Note that 1024 = 1Ki but 1000 = 1k; I didn't choose the capitalization.)
+    /// 
+    /// <decimalExponent> ::= "e" <signedNumber> | "E" <signedNumber> ```
+    /// 
+    /// No matter which of the three exponent forms is used, no quantity may represent a number greater than 2^63-1 in magnitude, nor may it have more than 3 decimal places. Numbers larger or more precise will be capped or rounded up. (E.g.: 0.1m will rounded up to 1m.) This may be extended in the future if we require larger or smaller quantities.
+    /// 
+    /// When a Quantity is parsed from a string, it will remember the type of suffix it had, and will use the same type again when it is serialized.
+    /// 
+    /// Before serializing, Quantity will be put in "canonical form". This means that Exponent/suffix will be adjusted up or down (with a corresponding increase or decrease in Mantissa) such that:
+    /// 
+    /// - No precision is lost - No fractional digits will be emitted - The exponent (or suffix) is as large as possible.
+    /// 
+    /// The sign will be omitted unless the number is negative.
+    /// 
+    /// Examples:
+    /// 
+    /// - 1.5 will be serialized as "1500m" - 1.5Gi will be serialized as "1536Mi"
+    /// 
+    /// Note that the quantity will NEVER be internally represented by a floating point number. That is the whole point of this exercise.
+    /// 
+    /// Non-canonical values will still parse as long as they are well formed, but will be re-emitted in their canonical form. (So always use canonical form, or don't diff.)
+    /// 
+    /// This format is intended to make it difficult to use these numbers without writing some sort of special handling code in the hopes that that will cause implementors to also use a fixed point implementation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub capacity: Option<String>,
+    /// A label selector is a label query over a set of resources. The result of matchLabels and matchExpressions are ANDed. An empty label selector matches all objects. A null label selector matches no objects.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selectors: Option<HdfsClusterNameNodesConfigResourcesStorageDataSelectors>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClass")]
+    pub storage_class: Option<String>,
+}
+
+/// A label selector is a label query over a set of resources. The result of matchLabels and matchExpressions are ANDed. An empty label selector matches all objects. A null label selector matches no objects.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterNameNodesConfigResourcesStorageDataSelectors {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<HdfsClusterNameNodesConfigResourcesStorageDataSelectorsMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterNameNodesConfigResourcesStorageDataSelectorsMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Allows overriding JVM arguments.
+/// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+/// for details on the usage.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterNameNodesJvmArgumentOverrides {
+    /// JVM arguments to be added
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub add: Option<Vec<String>>,
+    /// JVM arguments to be removed by exact match
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub remove: Option<Vec<String>>,
+    /// JVM arguments matching any of this regexes will be removed
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "removeRegex")]
+    pub remove_regex: Option<Vec<String>>,
+}
+
+/// This is a product-agnostic RoleConfig, which is sufficient for most of the products.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterNameNodesRoleConfig {
+    /// This struct is used to configure:
+    /// 
+    /// 1. If PodDisruptionBudgets are created by the operator
+    /// 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
+    /// 
+    /// Learn more in the
+    /// [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podDisruptionBudget")]
+    pub pod_disruption_budget: Option<HdfsClusterNameNodesRoleConfigPodDisruptionBudget>,
+}
+
+/// This struct is used to configure:
+/// 
+/// 1. If PodDisruptionBudgets are created by the operator
+/// 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
+/// 
+/// Learn more in the
+/// [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterNameNodesRoleConfigPodDisruptionBudget {
+    /// Whether a PodDisruptionBudget should be written out for this role.
+    /// Disabling this enables you to specify your own - custom - one.
+    /// Defaults to true.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// The number of Pods that are allowed to be down because of voluntary disruptions.
+    /// If you don't explicitly set this, the operator will use a sane default based
+    /// upon knowledge about the individual product.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
+    pub max_unavailable: Option<u16>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterNameNodesRoleGroups {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cliOverrides")]
+    pub cli_overrides: Option<BTreeMap<String, String>>,
+    /// Configuration options that are available for all roles.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub config: Option<HdfsClusterNameNodesRoleGroupsConfig>,
+    /// The `configOverrides` can be used to configure properties in product config files
+    /// that are not exposed in the CRD. Read the
+    /// [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)>
+    /// and consult the operator specific usage guide documentation for details on the
+    /// available config files and settings for the specific product.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configOverrides")]
+    pub config_overrides: Option<BTreeMap<String, BTreeMap<String, String>>>,
+    /// `envOverrides` configure environment variables to be set in the Pods.
+    /// It is a map from strings to strings - environment variables and the value to set.
+    /// Read the
+    /// [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)>
+    /// for more information and consult the operator specific usage guide to find out about
+    /// the product specific environment variables that are available.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envOverrides")]
+    pub env_overrides: Option<BTreeMap<String, String>>,
+    /// Allows overriding JVM arguments.
+    /// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+    /// for details on the usage.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
+    pub jvm_argument_overrides: Option<HdfsClusterNameNodesRoleGroupsJvmArgumentOverrides>,
+    /// In the `podOverrides` property you can define a
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// to override any property that can be set on a Kubernetes Pod.
+    /// Read the
+    /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
+    /// for more information.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podOverrides")]
+    pub pod_overrides: Option<BTreeMap<String, serde_json::Value>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub replicas: Option<u16>,
+}
+
+/// Configuration options that are available for all roles.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterNameNodesRoleGroupsConfig {
+    /// These configuration settings control
+    /// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub affinity: Option<HdfsClusterNameNodesRoleGroupsConfigAffinity>,
+    /// Time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Consult the operator documentation for details.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracefulShutdownTimeout")]
+    pub graceful_shutdown_timeout: Option<String>,
+    /// This field controls which [ListenerClass](<https://docs.stackable.tech/home/nightly/listener-operator/listenerclass.html)> is used to expose this rolegroup.
+    /// NameNodes should have a stable ListenerClass, such as `cluster-internal` or `external-stable`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenerClass")]
+    pub listener_class: Option<String>,
+    /// Logging configuration, learn more in the [logging concept documentation](<https://docs.stackable.tech/home/nightly/concepts/logging).>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub logging: Option<HdfsClusterNameNodesRoleGroupsConfigLogging>,
+    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`.
+    /// This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestedSecretLifetime")]
+    pub requested_secret_lifetime: Option<String>,
+    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+    /// usage, if this role needs any.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<HdfsClusterNameNodesRoleGroupsConfigResources>,
+}
+
+/// These configuration settings control
+/// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterNameNodesRoleGroupsConfigAffinity {
+    /// Same as the `spec.affinity.nodeAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
+    pub node_affinity: Option<BTreeMap<String, serde_json::Value>>,
+    /// Simple key-value pairs forming a nodeSelector, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<BTreeMap<String, String>>,
+    /// Same as the `spec.affinity.podAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
+    pub pod_affinity: Option<BTreeMap<String, serde_json::Value>>,
+    /// Same as the `spec.affinity.podAntiAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<BTreeMap<String, serde_json::Value>>,
+}
+
+/// Logging configuration, learn more in the [logging concept documentation](<https://docs.stackable.tech/home/nightly/concepts/logging).>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterNameNodesRoleGroupsConfigLogging {
+    /// Log configuration per container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub containers: Option<BTreeMap<String, HdfsClusterNameNodesRoleGroupsConfigLoggingContainers>>,
+    /// Wether or not to deploy a container with the Vector log agent.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableVectorAgent")]
+    pub enable_vector_agent: Option<bool>,
+}
+
+/// Log configuration per container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterNameNodesRoleGroupsConfigLoggingContainers {
+    /// Configuration for the console appender
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub console: Option<HdfsClusterNameNodesRoleGroupsConfigLoggingContainersConsole>,
+    /// Log configuration provided in a ConfigMap
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub custom: Option<HdfsClusterNameNodesRoleGroupsConfigLoggingContainersCustom>,
+    /// Configuration for the file appender
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub file: Option<HdfsClusterNameNodesRoleGroupsConfigLoggingContainersFile>,
+    /// Configuration per logger
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub loggers: Option<BTreeMap<String, HdfsClusterNameNodesRoleGroupsConfigLoggingContainersLoggers>>,
+}
+
+/// Configuration for the console appender
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterNameNodesRoleGroupsConfigLoggingContainersConsole {
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub level: Option<HdfsClusterNameNodesRoleGroupsConfigLoggingContainersConsoleLevel>,
+}
+
+/// Configuration for the console appender
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum HdfsClusterNameNodesRoleGroupsConfigLoggingContainersConsoleLevel {
+    #[serde(rename = "TRACE")]
+    Trace,
+    #[serde(rename = "DEBUG")]
+    Debug,
+    #[serde(rename = "INFO")]
+    Info,
+    #[serde(rename = "WARN")]
+    Warn,
+    #[serde(rename = "ERROR")]
+    Error,
+    #[serde(rename = "FATAL")]
+    Fatal,
+    #[serde(rename = "NONE")]
+    None,
+}
+
+/// Log configuration provided in a ConfigMap
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterNameNodesRoleGroupsConfigLoggingContainersCustom {
+    /// ConfigMap containing the log configuration files
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<String>,
+}
+
+/// Configuration for the file appender
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterNameNodesRoleGroupsConfigLoggingContainersFile {
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub level: Option<HdfsClusterNameNodesRoleGroupsConfigLoggingContainersFileLevel>,
+}
+
+/// Configuration for the file appender
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum HdfsClusterNameNodesRoleGroupsConfigLoggingContainersFileLevel {
+    #[serde(rename = "TRACE")]
+    Trace,
+    #[serde(rename = "DEBUG")]
+    Debug,
+    #[serde(rename = "INFO")]
+    Info,
+    #[serde(rename = "WARN")]
+    Warn,
+    #[serde(rename = "ERROR")]
+    Error,
+    #[serde(rename = "FATAL")]
+    Fatal,
+    #[serde(rename = "NONE")]
+    None,
+}
+
+/// Configuration per logger
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterNameNodesRoleGroupsConfigLoggingContainersLoggers {
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub level: Option<HdfsClusterNameNodesRoleGroupsConfigLoggingContainersLoggersLevel>,
+}
+
+/// Configuration per logger
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum HdfsClusterNameNodesRoleGroupsConfigLoggingContainersLoggersLevel {
+    #[serde(rename = "TRACE")]
+    Trace,
+    #[serde(rename = "DEBUG")]
+    Debug,
+    #[serde(rename = "INFO")]
+    Info,
+    #[serde(rename = "WARN")]
+    Warn,
+    #[serde(rename = "ERROR")]
+    Error,
+    #[serde(rename = "FATAL")]
+    Fatal,
+    #[serde(rename = "NONE")]
+    None,
+}
+
+/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+/// usage, if this role needs any.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterNameNodesRoleGroupsConfigResources {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cpu: Option<HdfsClusterNameNodesRoleGroupsConfigResourcesCpu>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub memory: Option<HdfsClusterNameNodesRoleGroupsConfigResourcesMemory>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub storage: Option<HdfsClusterNameNodesRoleGroupsConfigResourcesStorage>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterNameNodesRoleGroupsConfigResourcesCpu {
+    /// The maximum amount of CPU cores that can be requested by Pods.
+    /// Equivalent to the `limit` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub max: Option<String>,
+    /// The minimal amount of CPU cores that Pods need to run.
+    /// Equivalent to the `request` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub min: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterNameNodesRoleGroupsConfigResourcesMemory {
+    /// The maximum amount of memory that should be available to the Pod.
+    /// Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),>
+    /// which means these suffixes are supported: E, P, T, G, M, k.
+    /// You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki.
+    /// For example, the following represent roughly the same value:
+    /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limit: Option<String>,
+    /// Additional options that can be specified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeLimits")]
+    pub runtime_limits: Option<HdfsClusterNameNodesRoleGroupsConfigResourcesMemoryRuntimeLimits>,
+}
+
+/// Additional options that can be specified.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterNameNodesRoleGroupsConfigResourcesMemoryRuntimeLimits {
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterNameNodesRoleGroupsConfigResourcesStorage {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub data: Option<HdfsClusterNameNodesRoleGroupsConfigResourcesStorageData>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterNameNodesRoleGroupsConfigResourcesStorageData {
+    /// Quantity is a fixed-point representation of a number. It provides convenient marshaling/unmarshaling in JSON and YAML, in addition to String() and AsInt64() accessors.
+    /// 
+    /// The serialization format is:
+    /// 
+    /// ``` <quantity>        ::= <signedNumber><suffix>
+    /// 
+    /// 	(Note that <suffix> may be empty, from the "" case in <decimalSI>.)
+    /// 
+    /// <digit>           ::= 0 | 1 | ... | 9 <digits>          ::= <digit> | <digit><digits> <number>          ::= <digits> | <digits>.<digits> | <digits>. | .<digits> <sign>            ::= "+" | "-" <signedNumber>    ::= <number> | <sign><number> <suffix>          ::= <binarySI> | <decimalExponent> | <decimalSI> <binarySI>        ::= Ki | Mi | Gi | Ti | Pi | Ei
+    /// 
+    /// 	(International System of units; See: <http://physics.nist.gov/cuu/Units/binary.html)>
+    /// 
+    /// <decimalSI>       ::= m | "" | k | M | G | T | P | E
+    /// 
+    /// 	(Note that 1024 = 1Ki but 1000 = 1k; I didn't choose the capitalization.)
+    /// 
+    /// <decimalExponent> ::= "e" <signedNumber> | "E" <signedNumber> ```
+    /// 
+    /// No matter which of the three exponent forms is used, no quantity may represent a number greater than 2^63-1 in magnitude, nor may it have more than 3 decimal places. Numbers larger or more precise will be capped or rounded up. (E.g.: 0.1m will rounded up to 1m.) This may be extended in the future if we require larger or smaller quantities.
+    /// 
+    /// When a Quantity is parsed from a string, it will remember the type of suffix it had, and will use the same type again when it is serialized.
+    /// 
+    /// Before serializing, Quantity will be put in "canonical form". This means that Exponent/suffix will be adjusted up or down (with a corresponding increase or decrease in Mantissa) such that:
+    /// 
+    /// - No precision is lost - No fractional digits will be emitted - The exponent (or suffix) is as large as possible.
+    /// 
+    /// The sign will be omitted unless the number is negative.
+    /// 
+    /// Examples:
+    /// 
+    /// - 1.5 will be serialized as "1500m" - 1.5Gi will be serialized as "1536Mi"
+    /// 
+    /// Note that the quantity will NEVER be internally represented by a floating point number. That is the whole point of this exercise.
+    /// 
+    /// Non-canonical values will still parse as long as they are well formed, but will be re-emitted in their canonical form. (So always use canonical form, or don't diff.)
+    /// 
+    /// This format is intended to make it difficult to use these numbers without writing some sort of special handling code in the hopes that that will cause implementors to also use a fixed point implementation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub capacity: Option<String>,
+    /// A label selector is a label query over a set of resources. The result of matchLabels and matchExpressions are ANDed. An empty label selector matches all objects. A null label selector matches no objects.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selectors: Option<HdfsClusterNameNodesRoleGroupsConfigResourcesStorageDataSelectors>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClass")]
+    pub storage_class: Option<String>,
+}
+
+/// A label selector is a label query over a set of resources. The result of matchLabels and matchExpressions are ANDed. An empty label selector matches all objects. A null label selector matches no objects.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterNameNodesRoleGroupsConfigResourcesStorageDataSelectors {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<HdfsClusterNameNodesRoleGroupsConfigResourcesStorageDataSelectorsMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterNameNodesRoleGroupsConfigResourcesStorageDataSelectorsMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Allows overriding JVM arguments.
+/// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+/// for details on the usage.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterNameNodesRoleGroupsJvmArgumentOverrides {
+    /// JVM arguments to be added
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub add: Option<Vec<String>>,
+    /// JVM arguments to be removed by exact match
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub remove: Option<Vec<String>>,
+    /// JVM arguments matching any of this regexes will be removed
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "removeRegex")]
+    pub remove_regex: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HdfsClusterStatus {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
+    /// The product version that the HDFS cluster is currently running.
+    /// 
+    /// During upgrades, this field contains the *old* version.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deployedProductVersion")]
+    pub deployed_product_version: Option<String>,
+    /// The product version that is currently being upgraded to, otherwise null.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "upgradeTargetProductVersion")]
+    pub upgrade_target_product_version: Option<String>,
+}
+

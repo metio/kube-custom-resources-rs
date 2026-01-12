@@ -67,6 +67,16 @@ pub struct PlanSpec {
     /// <https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "convertorNodeSelector")]
     pub convertor_node_selector: Option<BTreeMap<String, String>>,
+    /// CustomizationScripts references a ConfigMap containing customization scripts
+    /// to run during guest conversion. The ConfigMap must exist in the specified
+    /// namespace and contain script files with keys following these patterns:
+    ///   - Windows: [0-9]+_win_firstboot_[description_text].ps1
+    ///   - Linux: [0-9]+_linux_(run|firstboot)_[description_text].sh
+    /// Scripts are mounted at /mnt/dynamic_scripts in the conversion pod and
+    /// executed by virt-customize. The number at the start of the key determines the
+    /// execution order. If not specified, no custom scripts are injected.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customizationScripts")]
+    pub customization_scripts: Option<ObjectReference>,
     /// DeleteGuestConversionPod determines if the guest conversion pod should be deleted after successful migration.
     /// Note:
     ///   - If this option is enabled and migration succeeds then the pod will get deleted. However the VM could still not boot and the virt-v2v logs, with additional information, will be deleted alongside guest conversion pod.
@@ -172,6 +182,17 @@ pub struct PlanSpec {
     /// Determines if the plan should skip the guest conversion.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipGuestConversion")]
     pub skip_guest_conversion: Option<bool>,
+    /// SkipZoneNodeSelector controls whether to skip adding a zone-based node selector to
+    /// migrated VMs. By default, the migration automatically reads the availability zone from
+    /// the source provider's spec.settings.target-az configuration and adds a node selector
+    /// (topology.kubernetes.io/zone=<target-az>) to the target VM. This ensures VMs are
+    /// scheduled on nodes in the same zone as their EBS volumes, which is required for
+    /// volume attachment by the CSI driver.
+    /// Currently supported for EC2 provider only.
+    /// - false (default): Add zone-based node selector using value from provider's spec.settings.target-az
+    /// - true: Skip adding zone-based node selector
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipZoneNodeSelector")]
+    pub skip_zone_node_selector: Option<bool>,
     /// TargetAffinity allows specifying hard- and soft-affinity for VMs.
     /// it is possible to write matching rules against workloads (VMs and Pods) and Nodes.
     /// Since VMs are a workload type based on Pods, Pod-affinity affects VMs as well.
@@ -936,6 +957,50 @@ pub struct PlanConvertorAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDu
     /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
+}
+
+/// CustomizationScripts references a ConfigMap containing customization scripts
+/// to run during guest conversion. The ConfigMap must exist in the specified
+/// namespace and contain script files with keys following these patterns:
+///   - Windows: [0-9]+_win_firstboot_[description_text].ps1
+///   - Linux: [0-9]+_linux_(run|firstboot)_[description_text].sh
+/// Scripts are mounted at /mnt/dynamic_scripts in the conversion pod and
+/// executed by virt-customize. The number at the start of the key determines the
+/// execution order. If not specified, no custom scripts are injected.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PlanCustomizationScripts {
+    /// API version of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// If referring to a piece of an object instead of an entire object, this string
+    /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
+    /// For example, if the object reference is to a container within a pod, this would take on a value like:
+    /// "spec.containers{name}" (where "name" refers to the name of the container that triggered
+    /// the event) or if no container name is specified "spec.containers[2]" (container with
+    /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
+    /// referencing a part of an object.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
+    pub field_path: Option<String>,
+    /// Kind of the referent.
+    /// More info: <https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
+    /// Name of the referent.
+    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Namespace of the referent.
+    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+    /// Specific resourceVersion to which this reference is made, if any.
+    /// More info: <https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
+    pub resource_version: Option<String>,
+    /// UID of the referent.
+    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uid: Option<String>,
 }
 
 /// Resource mapping.
