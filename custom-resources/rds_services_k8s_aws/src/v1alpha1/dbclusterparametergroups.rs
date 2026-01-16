@@ -80,20 +80,16 @@ pub struct DbClusterParameterGroupSpec {
     /// 
     /// This value is stored as a lowercase string.
     pub name: String,
+    /// Map keys are the parameter name and the values are the parameter value.
+    /// 
+    /// The "apply method" for parameters is automatically determined.
+    /// 
+    /// These are ONLY user-defined parameter overrides for the DB cluster parameter group.
+    /// 
+    /// This does not contain default or system parameters.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "parameterOverrides")]
     pub parameter_overrides: Option<BTreeMap<String, String>>,
-    /// A list of parameters in the DB cluster parameter group to modify.
-    /// 
-    /// Valid Values (for the application method): immediate | pending-reboot
-    /// 
-    /// You can use the immediate value with dynamic parameters only. You can use
-    /// the pending-reboot value for both dynamic and static parameters.
-    /// 
-    /// When the application method is immediate, changes to dynamic parameters are
-    /// applied immediately to the DB clusters associated with the parameter group.
-    /// When the application method is pending-reboot, changes to dynamic and static
-    /// parameters are applied after a reboot without failover to the DB clusters
-    /// associated with the parameter group.
+    /// DEPRECATED - do not use.  Prefer ParameterOverrides instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parameters: Option<Vec<DbClusterParameterGroupParameters>>,
     /// Tags to assign to the DB cluster parameter group.

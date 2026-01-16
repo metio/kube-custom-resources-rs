@@ -2,3 +2,1702 @@
 // kopium command: kopium --docs --derive=Default --derive=PartialEq --smart-derive-elision --filename crd-catalog/stackabletech/kafka-operator/kafka.stackable.tech/v1alpha1/kafkaclusters.yaml
 // kopium version: 0.22.5
 
+#[allow(unused_imports)]
+mod prelude {
+    pub use kube::CustomResource;
+    pub use serde::{Serialize, Deserialize};
+    pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
+}
+use self::prelude::*;
+
+/// A Kafka cluster stacklet. This resource is managed by the Stackable operator for Apache Kafka.
+/// Find more information on how to use it and the resources that the operator generates in the
+/// [operator documentation](<https://docs.stackable.tech/home/nightly/kafka/).>
+#[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[kube(group = "kafka.stackable.tech", version = "v1alpha1", kind = "KafkaCluster", plural = "kafkaclusters")]
+#[kube(namespaced)]
+#[kube(status = "KafkaClusterStatus")]
+#[kube(schema = "disabled")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
+pub struct KafkaClusterSpec {
+    /// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing
+    /// all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable
+    /// at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured
+    /// on role level. There is also a second form of config, which can only be configured
+    /// at role level, the `roleConfig`.
+    /// You can learn more about this in the
+    /// [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub brokers: Option<KafkaClusterBrokers>,
+    /// Kafka settings that affect all roles and role groups.
+    /// 
+    /// The settings in the `clusterConfig` are cluster wide settings that do not need to be configurable at role or role group level.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterConfig")]
+    pub cluster_config: Option<KafkaClusterClusterConfig>,
+    /// [Cluster operations](<https://docs.stackable.tech/home/nightly/concepts/operations/cluster_operations)>
+    /// properties, allow stopping the product instance as well as pausing reconciliation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterOperation")]
+    pub cluster_operation: Option<KafkaClusterClusterOperation>,
+    /// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing
+    /// all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable
+    /// at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured
+    /// on role level. There is also a second form of config, which can only be configured
+    /// at role level, the `roleConfig`.
+    /// You can learn more about this in the
+    /// [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub controllers: Option<KafkaClusterControllers>,
+    /// Specify which image to use, the easiest way is to only configure the `productVersion`.
+    /// You can also configure a custom image registry to pull from, as well as completely custom
+    /// images.
+    /// 
+    /// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)>
+    /// for details.
+    pub image: KafkaClusterImage,
+    /// A list of generic Kubernetes objects, which are merged into the objects that the operator
+    /// creates.
+    /// 
+    /// List entries are arbitrary YAML objects, which need to be valid Kubernetes objects.
+    /// 
+    /// Read the [Object overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#object-overrides)>
+    /// for more information.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectOverrides")]
+    pub object_overrides: Option<Vec<BTreeMap<String, serde_json::Value>>>,
+}
+
+/// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing
+/// all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable
+/// at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured
+/// on role level. There is also a second form of config, which can only be configured
+/// at role level, the `roleConfig`.
+/// You can learn more about this in the
+/// [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterBrokers {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cliOverrides")]
+    pub cli_overrides: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub config: Option<KafkaClusterBrokersConfig>,
+    /// The `configOverrides` can be used to configure properties in product config files
+    /// that are not exposed in the CRD. Read the
+    /// [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)>
+    /// and consult the operator specific usage guide documentation for details on the
+    /// available config files and settings for the specific product.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configOverrides")]
+    pub config_overrides: Option<BTreeMap<String, BTreeMap<String, String>>>,
+    /// `envOverrides` configure environment variables to be set in the Pods.
+    /// It is a map from strings to strings - environment variables and the value to set.
+    /// Read the
+    /// [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)>
+    /// for more information and consult the operator specific usage guide to find out about
+    /// the product specific environment variables that are available.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envOverrides")]
+    pub env_overrides: Option<BTreeMap<String, String>>,
+    /// Allows overriding JVM arguments.
+    /// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+    /// for details on the usage.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
+    pub jvm_argument_overrides: Option<KafkaClusterBrokersJvmArgumentOverrides>,
+    /// In the `podOverrides` property you can define a
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// to override any property that can be set on a Kubernetes Pod.
+    /// Read the
+    /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
+    /// for more information.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podOverrides")]
+    pub pod_overrides: Option<BTreeMap<String, serde_json::Value>>,
+    /// This is a product-agnostic RoleConfig, which is sufficient for most of the products.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleConfig")]
+    pub role_config: Option<KafkaClusterBrokersRoleConfig>,
+    #[serde(rename = "roleGroups")]
+    pub role_groups: BTreeMap<String, KafkaClusterBrokersRoleGroups>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterBrokersConfig {
+    /// These configuration settings control
+    /// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub affinity: Option<KafkaClusterBrokersConfigAffinity>,
+    /// The ListenerClass used for bootstrapping new clients. Should use a stable ListenerClass to avoid unnecessary client restarts (such as `cluster-internal` or `external-stable`).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootstrapListenerClass")]
+    pub bootstrap_listener_class: Option<String>,
+    /// The ListenerClass used for connecting to brokers. Should use a direct connection ListenerClass to minimize cost and minimize performance overhead (such as `cluster-internal` or `external-unstable`).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "brokerListenerClass")]
+    pub broker_listener_class: Option<String>,
+    /// Time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Consult the operator documentation for details.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracefulShutdownTimeout")]
+    pub graceful_shutdown_timeout: Option<String>,
+    /// Logging configuration, learn more in the [logging concept documentation](<https://docs.stackable.tech/home/nightly/concepts/logging).>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub logging: Option<KafkaClusterBrokersConfigLogging>,
+    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`.
+    /// Please note that this can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestedSecretLifetime")]
+    pub requested_secret_lifetime: Option<String>,
+    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+    /// usage, if this role needs any.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<KafkaClusterBrokersConfigResources>,
+}
+
+/// These configuration settings control
+/// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterBrokersConfigAffinity {
+    /// Same as the `spec.affinity.nodeAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
+    pub node_affinity: Option<BTreeMap<String, serde_json::Value>>,
+    /// Simple key-value pairs forming a nodeSelector, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<BTreeMap<String, String>>,
+    /// Same as the `spec.affinity.podAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
+    pub pod_affinity: Option<BTreeMap<String, serde_json::Value>>,
+    /// Same as the `spec.affinity.podAntiAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<BTreeMap<String, serde_json::Value>>,
+}
+
+/// Logging configuration, learn more in the [logging concept documentation](<https://docs.stackable.tech/home/nightly/concepts/logging).>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterBrokersConfigLogging {
+    /// Log configuration per container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub containers: Option<BTreeMap<String, KafkaClusterBrokersConfigLoggingContainers>>,
+    /// Wether or not to deploy a container with the Vector log agent.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableVectorAgent")]
+    pub enable_vector_agent: Option<bool>,
+}
+
+/// Log configuration per container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterBrokersConfigLoggingContainers {
+    /// Configuration for the console appender
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub console: Option<KafkaClusterBrokersConfigLoggingContainersConsole>,
+    /// Log configuration provided in a ConfigMap
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub custom: Option<KafkaClusterBrokersConfigLoggingContainersCustom>,
+    /// Configuration for the file appender
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub file: Option<KafkaClusterBrokersConfigLoggingContainersFile>,
+    /// Configuration per logger
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub loggers: Option<BTreeMap<String, KafkaClusterBrokersConfigLoggingContainersLoggers>>,
+}
+
+/// Configuration for the console appender
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterBrokersConfigLoggingContainersConsole {
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub level: Option<KafkaClusterBrokersConfigLoggingContainersConsoleLevel>,
+}
+
+/// Configuration for the console appender
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaClusterBrokersConfigLoggingContainersConsoleLevel {
+    #[serde(rename = "TRACE")]
+    Trace,
+    #[serde(rename = "DEBUG")]
+    Debug,
+    #[serde(rename = "INFO")]
+    Info,
+    #[serde(rename = "WARN")]
+    Warn,
+    #[serde(rename = "ERROR")]
+    Error,
+    #[serde(rename = "FATAL")]
+    Fatal,
+    #[serde(rename = "NONE")]
+    None,
+}
+
+/// Log configuration provided in a ConfigMap
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterBrokersConfigLoggingContainersCustom {
+    /// ConfigMap containing the log configuration files
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<String>,
+}
+
+/// Configuration for the file appender
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterBrokersConfigLoggingContainersFile {
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub level: Option<KafkaClusterBrokersConfigLoggingContainersFileLevel>,
+}
+
+/// Configuration for the file appender
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaClusterBrokersConfigLoggingContainersFileLevel {
+    #[serde(rename = "TRACE")]
+    Trace,
+    #[serde(rename = "DEBUG")]
+    Debug,
+    #[serde(rename = "INFO")]
+    Info,
+    #[serde(rename = "WARN")]
+    Warn,
+    #[serde(rename = "ERROR")]
+    Error,
+    #[serde(rename = "FATAL")]
+    Fatal,
+    #[serde(rename = "NONE")]
+    None,
+}
+
+/// Configuration per logger
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterBrokersConfigLoggingContainersLoggers {
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub level: Option<KafkaClusterBrokersConfigLoggingContainersLoggersLevel>,
+}
+
+/// Configuration per logger
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaClusterBrokersConfigLoggingContainersLoggersLevel {
+    #[serde(rename = "TRACE")]
+    Trace,
+    #[serde(rename = "DEBUG")]
+    Debug,
+    #[serde(rename = "INFO")]
+    Info,
+    #[serde(rename = "WARN")]
+    Warn,
+    #[serde(rename = "ERROR")]
+    Error,
+    #[serde(rename = "FATAL")]
+    Fatal,
+    #[serde(rename = "NONE")]
+    None,
+}
+
+/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+/// usage, if this role needs any.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterBrokersConfigResources {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cpu: Option<KafkaClusterBrokersConfigResourcesCpu>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub memory: Option<KafkaClusterBrokersConfigResourcesMemory>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub storage: Option<KafkaClusterBrokersConfigResourcesStorage>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterBrokersConfigResourcesCpu {
+    /// The maximum amount of CPU cores that can be requested by Pods.
+    /// Equivalent to the `limit` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub max: Option<String>,
+    /// The minimal amount of CPU cores that Pods need to run.
+    /// Equivalent to the `request` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub min: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterBrokersConfigResourcesMemory {
+    /// The maximum amount of memory that should be available to the Pod.
+    /// Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),>
+    /// which means these suffixes are supported: E, P, T, G, M, k.
+    /// You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki.
+    /// For example, the following represent roughly the same value:
+    /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limit: Option<String>,
+    /// Additional options that can be specified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeLimits")]
+    pub runtime_limits: Option<KafkaClusterBrokersConfigResourcesMemoryRuntimeLimits>,
+}
+
+/// Additional options that can be specified.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterBrokersConfigResourcesMemoryRuntimeLimits {
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterBrokersConfigResourcesStorage {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logDirs")]
+    pub log_dirs: Option<KafkaClusterBrokersConfigResourcesStorageLogDirs>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterBrokersConfigResourcesStorageLogDirs {
+    /// Quantity is a fixed-point representation of a number. It provides convenient marshaling/unmarshaling in JSON and YAML, in addition to String() and AsInt64() accessors.
+    /// 
+    /// The serialization format is:
+    /// 
+    /// ``` <quantity>        ::= <signedNumber><suffix>
+    /// 
+    /// 	(Note that <suffix> may be empty, from the "" case in <decimalSI>.)
+    /// 
+    /// <digit>           ::= 0 | 1 | ... | 9 <digits>          ::= <digit> | <digit><digits> <number>          ::= <digits> | <digits>.<digits> | <digits>. | .<digits> <sign>            ::= "+" | "-" <signedNumber>    ::= <number> | <sign><number> <suffix>          ::= <binarySI> | <decimalExponent> | <decimalSI> <binarySI>        ::= Ki | Mi | Gi | Ti | Pi | Ei
+    /// 
+    /// 	(International System of units; See: <http://physics.nist.gov/cuu/Units/binary.html)>
+    /// 
+    /// <decimalSI>       ::= m | "" | k | M | G | T | P | E
+    /// 
+    /// 	(Note that 1024 = 1Ki but 1000 = 1k; I didn't choose the capitalization.)
+    /// 
+    /// <decimalExponent> ::= "e" <signedNumber> | "E" <signedNumber> ```
+    /// 
+    /// No matter which of the three exponent forms is used, no quantity may represent a number greater than 2^63-1 in magnitude, nor may it have more than 3 decimal places. Numbers larger or more precise will be capped or rounded up. (E.g.: 0.1m will rounded up to 1m.) This may be extended in the future if we require larger or smaller quantities.
+    /// 
+    /// When a Quantity is parsed from a string, it will remember the type of suffix it had, and will use the same type again when it is serialized.
+    /// 
+    /// Before serializing, Quantity will be put in "canonical form". This means that Exponent/suffix will be adjusted up or down (with a corresponding increase or decrease in Mantissa) such that:
+    /// 
+    /// - No precision is lost - No fractional digits will be emitted - The exponent (or suffix) is as large as possible.
+    /// 
+    /// The sign will be omitted unless the number is negative.
+    /// 
+    /// Examples:
+    /// 
+    /// - 1.5 will be serialized as "1500m" - 1.5Gi will be serialized as "1536Mi"
+    /// 
+    /// Note that the quantity will NEVER be internally represented by a floating point number. That is the whole point of this exercise.
+    /// 
+    /// Non-canonical values will still parse as long as they are well formed, but will be re-emitted in their canonical form. (So always use canonical form, or don't diff.)
+    /// 
+    /// This format is intended to make it difficult to use these numbers without writing some sort of special handling code in the hopes that that will cause implementors to also use a fixed point implementation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub capacity: Option<String>,
+    /// A label selector is a label query over a set of resources. The result of matchLabels and matchExpressions are ANDed. An empty label selector matches all objects. A null label selector matches no objects.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selectors: Option<KafkaClusterBrokersConfigResourcesStorageLogDirsSelectors>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClass")]
+    pub storage_class: Option<String>,
+}
+
+/// A label selector is a label query over a set of resources. The result of matchLabels and matchExpressions are ANDed. An empty label selector matches all objects. A null label selector matches no objects.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterBrokersConfigResourcesStorageLogDirsSelectors {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<KafkaClusterBrokersConfigResourcesStorageLogDirsSelectorsMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterBrokersConfigResourcesStorageLogDirsSelectorsMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Allows overriding JVM arguments.
+/// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+/// for details on the usage.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterBrokersJvmArgumentOverrides {
+    /// JVM arguments to be added
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub add: Option<Vec<String>>,
+    /// JVM arguments to be removed by exact match
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub remove: Option<Vec<String>>,
+    /// JVM arguments matching any of this regexes will be removed
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "removeRegex")]
+    pub remove_regex: Option<Vec<String>>,
+}
+
+/// This is a product-agnostic RoleConfig, which is sufficient for most of the products.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterBrokersRoleConfig {
+    /// This struct is used to configure:
+    /// 
+    /// 1. If PodDisruptionBudgets are created by the operator
+    /// 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
+    /// 
+    /// Learn more in the
+    /// [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podDisruptionBudget")]
+    pub pod_disruption_budget: Option<KafkaClusterBrokersRoleConfigPodDisruptionBudget>,
+}
+
+/// This struct is used to configure:
+/// 
+/// 1. If PodDisruptionBudgets are created by the operator
+/// 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
+/// 
+/// Learn more in the
+/// [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterBrokersRoleConfigPodDisruptionBudget {
+    /// Whether a PodDisruptionBudget should be written out for this role.
+    /// Disabling this enables you to specify your own - custom - one.
+    /// Defaults to true.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// The number of Pods that are allowed to be down because of voluntary disruptions.
+    /// If you don't explicitly set this, the operator will use a sane default based
+    /// upon knowledge about the individual product.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
+    pub max_unavailable: Option<u16>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterBrokersRoleGroups {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cliOverrides")]
+    pub cli_overrides: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub config: Option<KafkaClusterBrokersRoleGroupsConfig>,
+    /// The `configOverrides` can be used to configure properties in product config files
+    /// that are not exposed in the CRD. Read the
+    /// [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)>
+    /// and consult the operator specific usage guide documentation for details on the
+    /// available config files and settings for the specific product.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configOverrides")]
+    pub config_overrides: Option<BTreeMap<String, BTreeMap<String, String>>>,
+    /// `envOverrides` configure environment variables to be set in the Pods.
+    /// It is a map from strings to strings - environment variables and the value to set.
+    /// Read the
+    /// [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)>
+    /// for more information and consult the operator specific usage guide to find out about
+    /// the product specific environment variables that are available.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envOverrides")]
+    pub env_overrides: Option<BTreeMap<String, String>>,
+    /// Allows overriding JVM arguments.
+    /// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+    /// for details on the usage.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
+    pub jvm_argument_overrides: Option<KafkaClusterBrokersRoleGroupsJvmArgumentOverrides>,
+    /// In the `podOverrides` property you can define a
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// to override any property that can be set on a Kubernetes Pod.
+    /// Read the
+    /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
+    /// for more information.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podOverrides")]
+    pub pod_overrides: Option<BTreeMap<String, serde_json::Value>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub replicas: Option<u16>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterBrokersRoleGroupsConfig {
+    /// These configuration settings control
+    /// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub affinity: Option<KafkaClusterBrokersRoleGroupsConfigAffinity>,
+    /// The ListenerClass used for bootstrapping new clients. Should use a stable ListenerClass to avoid unnecessary client restarts (such as `cluster-internal` or `external-stable`).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootstrapListenerClass")]
+    pub bootstrap_listener_class: Option<String>,
+    /// The ListenerClass used for connecting to brokers. Should use a direct connection ListenerClass to minimize cost and minimize performance overhead (such as `cluster-internal` or `external-unstable`).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "brokerListenerClass")]
+    pub broker_listener_class: Option<String>,
+    /// Time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Consult the operator documentation for details.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracefulShutdownTimeout")]
+    pub graceful_shutdown_timeout: Option<String>,
+    /// Logging configuration, learn more in the [logging concept documentation](<https://docs.stackable.tech/home/nightly/concepts/logging).>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub logging: Option<KafkaClusterBrokersRoleGroupsConfigLogging>,
+    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`.
+    /// Please note that this can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestedSecretLifetime")]
+    pub requested_secret_lifetime: Option<String>,
+    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+    /// usage, if this role needs any.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<KafkaClusterBrokersRoleGroupsConfigResources>,
+}
+
+/// These configuration settings control
+/// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterBrokersRoleGroupsConfigAffinity {
+    /// Same as the `spec.affinity.nodeAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
+    pub node_affinity: Option<BTreeMap<String, serde_json::Value>>,
+    /// Simple key-value pairs forming a nodeSelector, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<BTreeMap<String, String>>,
+    /// Same as the `spec.affinity.podAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
+    pub pod_affinity: Option<BTreeMap<String, serde_json::Value>>,
+    /// Same as the `spec.affinity.podAntiAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<BTreeMap<String, serde_json::Value>>,
+}
+
+/// Logging configuration, learn more in the [logging concept documentation](<https://docs.stackable.tech/home/nightly/concepts/logging).>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterBrokersRoleGroupsConfigLogging {
+    /// Log configuration per container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub containers: Option<BTreeMap<String, KafkaClusterBrokersRoleGroupsConfigLoggingContainers>>,
+    /// Wether or not to deploy a container with the Vector log agent.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableVectorAgent")]
+    pub enable_vector_agent: Option<bool>,
+}
+
+/// Log configuration per container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterBrokersRoleGroupsConfigLoggingContainers {
+    /// Configuration for the console appender
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub console: Option<KafkaClusterBrokersRoleGroupsConfigLoggingContainersConsole>,
+    /// Log configuration provided in a ConfigMap
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub custom: Option<KafkaClusterBrokersRoleGroupsConfigLoggingContainersCustom>,
+    /// Configuration for the file appender
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub file: Option<KafkaClusterBrokersRoleGroupsConfigLoggingContainersFile>,
+    /// Configuration per logger
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub loggers: Option<BTreeMap<String, KafkaClusterBrokersRoleGroupsConfigLoggingContainersLoggers>>,
+}
+
+/// Configuration for the console appender
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterBrokersRoleGroupsConfigLoggingContainersConsole {
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub level: Option<KafkaClusterBrokersRoleGroupsConfigLoggingContainersConsoleLevel>,
+}
+
+/// Configuration for the console appender
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaClusterBrokersRoleGroupsConfigLoggingContainersConsoleLevel {
+    #[serde(rename = "TRACE")]
+    Trace,
+    #[serde(rename = "DEBUG")]
+    Debug,
+    #[serde(rename = "INFO")]
+    Info,
+    #[serde(rename = "WARN")]
+    Warn,
+    #[serde(rename = "ERROR")]
+    Error,
+    #[serde(rename = "FATAL")]
+    Fatal,
+    #[serde(rename = "NONE")]
+    None,
+}
+
+/// Log configuration provided in a ConfigMap
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterBrokersRoleGroupsConfigLoggingContainersCustom {
+    /// ConfigMap containing the log configuration files
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<String>,
+}
+
+/// Configuration for the file appender
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterBrokersRoleGroupsConfigLoggingContainersFile {
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub level: Option<KafkaClusterBrokersRoleGroupsConfigLoggingContainersFileLevel>,
+}
+
+/// Configuration for the file appender
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaClusterBrokersRoleGroupsConfigLoggingContainersFileLevel {
+    #[serde(rename = "TRACE")]
+    Trace,
+    #[serde(rename = "DEBUG")]
+    Debug,
+    #[serde(rename = "INFO")]
+    Info,
+    #[serde(rename = "WARN")]
+    Warn,
+    #[serde(rename = "ERROR")]
+    Error,
+    #[serde(rename = "FATAL")]
+    Fatal,
+    #[serde(rename = "NONE")]
+    None,
+}
+
+/// Configuration per logger
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterBrokersRoleGroupsConfigLoggingContainersLoggers {
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub level: Option<KafkaClusterBrokersRoleGroupsConfigLoggingContainersLoggersLevel>,
+}
+
+/// Configuration per logger
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaClusterBrokersRoleGroupsConfigLoggingContainersLoggersLevel {
+    #[serde(rename = "TRACE")]
+    Trace,
+    #[serde(rename = "DEBUG")]
+    Debug,
+    #[serde(rename = "INFO")]
+    Info,
+    #[serde(rename = "WARN")]
+    Warn,
+    #[serde(rename = "ERROR")]
+    Error,
+    #[serde(rename = "FATAL")]
+    Fatal,
+    #[serde(rename = "NONE")]
+    None,
+}
+
+/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+/// usage, if this role needs any.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterBrokersRoleGroupsConfigResources {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cpu: Option<KafkaClusterBrokersRoleGroupsConfigResourcesCpu>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub memory: Option<KafkaClusterBrokersRoleGroupsConfigResourcesMemory>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub storage: Option<KafkaClusterBrokersRoleGroupsConfigResourcesStorage>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterBrokersRoleGroupsConfigResourcesCpu {
+    /// The maximum amount of CPU cores that can be requested by Pods.
+    /// Equivalent to the `limit` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub max: Option<String>,
+    /// The minimal amount of CPU cores that Pods need to run.
+    /// Equivalent to the `request` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub min: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterBrokersRoleGroupsConfigResourcesMemory {
+    /// The maximum amount of memory that should be available to the Pod.
+    /// Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),>
+    /// which means these suffixes are supported: E, P, T, G, M, k.
+    /// You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki.
+    /// For example, the following represent roughly the same value:
+    /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limit: Option<String>,
+    /// Additional options that can be specified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeLimits")]
+    pub runtime_limits: Option<KafkaClusterBrokersRoleGroupsConfigResourcesMemoryRuntimeLimits>,
+}
+
+/// Additional options that can be specified.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterBrokersRoleGroupsConfigResourcesMemoryRuntimeLimits {
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterBrokersRoleGroupsConfigResourcesStorage {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logDirs")]
+    pub log_dirs: Option<KafkaClusterBrokersRoleGroupsConfigResourcesStorageLogDirs>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterBrokersRoleGroupsConfigResourcesStorageLogDirs {
+    /// Quantity is a fixed-point representation of a number. It provides convenient marshaling/unmarshaling in JSON and YAML, in addition to String() and AsInt64() accessors.
+    /// 
+    /// The serialization format is:
+    /// 
+    /// ``` <quantity>        ::= <signedNumber><suffix>
+    /// 
+    /// 	(Note that <suffix> may be empty, from the "" case in <decimalSI>.)
+    /// 
+    /// <digit>           ::= 0 | 1 | ... | 9 <digits>          ::= <digit> | <digit><digits> <number>          ::= <digits> | <digits>.<digits> | <digits>. | .<digits> <sign>            ::= "+" | "-" <signedNumber>    ::= <number> | <sign><number> <suffix>          ::= <binarySI> | <decimalExponent> | <decimalSI> <binarySI>        ::= Ki | Mi | Gi | Ti | Pi | Ei
+    /// 
+    /// 	(International System of units; See: <http://physics.nist.gov/cuu/Units/binary.html)>
+    /// 
+    /// <decimalSI>       ::= m | "" | k | M | G | T | P | E
+    /// 
+    /// 	(Note that 1024 = 1Ki but 1000 = 1k; I didn't choose the capitalization.)
+    /// 
+    /// <decimalExponent> ::= "e" <signedNumber> | "E" <signedNumber> ```
+    /// 
+    /// No matter which of the three exponent forms is used, no quantity may represent a number greater than 2^63-1 in magnitude, nor may it have more than 3 decimal places. Numbers larger or more precise will be capped or rounded up. (E.g.: 0.1m will rounded up to 1m.) This may be extended in the future if we require larger or smaller quantities.
+    /// 
+    /// When a Quantity is parsed from a string, it will remember the type of suffix it had, and will use the same type again when it is serialized.
+    /// 
+    /// Before serializing, Quantity will be put in "canonical form". This means that Exponent/suffix will be adjusted up or down (with a corresponding increase or decrease in Mantissa) such that:
+    /// 
+    /// - No precision is lost - No fractional digits will be emitted - The exponent (or suffix) is as large as possible.
+    /// 
+    /// The sign will be omitted unless the number is negative.
+    /// 
+    /// Examples:
+    /// 
+    /// - 1.5 will be serialized as "1500m" - 1.5Gi will be serialized as "1536Mi"
+    /// 
+    /// Note that the quantity will NEVER be internally represented by a floating point number. That is the whole point of this exercise.
+    /// 
+    /// Non-canonical values will still parse as long as they are well formed, but will be re-emitted in their canonical form. (So always use canonical form, or don't diff.)
+    /// 
+    /// This format is intended to make it difficult to use these numbers without writing some sort of special handling code in the hopes that that will cause implementors to also use a fixed point implementation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub capacity: Option<String>,
+    /// A label selector is a label query over a set of resources. The result of matchLabels and matchExpressions are ANDed. An empty label selector matches all objects. A null label selector matches no objects.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selectors: Option<KafkaClusterBrokersRoleGroupsConfigResourcesStorageLogDirsSelectors>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClass")]
+    pub storage_class: Option<String>,
+}
+
+/// A label selector is a label query over a set of resources. The result of matchLabels and matchExpressions are ANDed. An empty label selector matches all objects. A null label selector matches no objects.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterBrokersRoleGroupsConfigResourcesStorageLogDirsSelectors {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<KafkaClusterBrokersRoleGroupsConfigResourcesStorageLogDirsSelectorsMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterBrokersRoleGroupsConfigResourcesStorageLogDirsSelectorsMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Allows overriding JVM arguments.
+/// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+/// for details on the usage.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterBrokersRoleGroupsJvmArgumentOverrides {
+    /// JVM arguments to be added
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub add: Option<Vec<String>>,
+    /// JVM arguments to be removed by exact match
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub remove: Option<Vec<String>>,
+    /// JVM arguments matching any of this regexes will be removed
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "removeRegex")]
+    pub remove_regex: Option<Vec<String>>,
+}
+
+/// Kafka settings that affect all roles and role groups.
+/// 
+/// The settings in the `clusterConfig` are cluster wide settings that do not need to be configurable at role or role group level.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterClusterConfig {
+    /// Authentication class settings for Kafka like mTLS authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub authentication: Option<Vec<KafkaClusterClusterConfigAuthentication>>,
+    /// Authorization settings for Kafka like OPA.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub authorization: Option<KafkaClusterClusterConfigAuthorization>,
+    /// TLS encryption settings for Kafka (server, internal).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tls: Option<KafkaClusterClusterConfigTls>,
+    /// Name of the Vector aggregator [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery).>
+    /// It must contain the key `ADDRESS` with the address of the Vector aggregator.
+    /// Follow the [logging tutorial](<https://docs.stackable.tech/home/nightly/tutorials/logging-vector-aggregator)>
+    /// to learn how to configure log aggregation with Vector.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vectorAggregatorConfigMapName")]
+    pub vector_aggregator_config_map_name: Option<String>,
+    /// Provide the name of the ZooKeeper [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery)>
+    /// here. When using the [Stackable operator for Apache ZooKeeper](<https://docs.stackable.tech/home/nightly/zookeeper/)>
+    /// to deploy a ZooKeeper cluster, this will simply be the name of your ZookeeperCluster resource.
+    /// This can only be used up to Kafka version 3.9.x. Since Kafka 4.0.0, ZooKeeper suppport was dropped.
+    /// Please use the 'controller' role instead.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "zookeeperConfigMapName")]
+    pub zookeeper_config_map_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterClusterConfigAuthentication {
+    /// The AuthenticationClass <<https://docs.stackable.tech/home/nightly/concepts/authenticationclass.html>> to use.
+    /// 
+    /// ## TLS provider
+    /// 
+    /// Only affects client connections. This setting controls:
+    /// - If clients need to authenticate themselves against the broker via TLS
+    /// - Which ca.crt to use when validating the provided client certs
+    /// 
+    /// This will override the server TLS settings (if set) in `spec.clusterConfig.tls.serverSecretClass`.
+    /// 
+    /// ## Kerberos provider
+    /// 
+    /// This affects client connections and also requires TLS for encryption.
+    /// This setting is used to reference an `AuthenticationClass` and in turn, a `SecretClass` that is
+    /// used to create keytabs.
+    #[serde(rename = "authenticationClass")]
+    pub authentication_class: String,
+}
+
+/// Authorization settings for Kafka like OPA.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterClusterConfigAuthorization {
+    /// Configure the OPA stacklet [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery)>
+    /// and the name of the Rego package containing your authorization rules.
+    /// Consult the [OPA authorization documentation](<https://docs.stackable.tech/home/nightly/concepts/opa)>
+    /// to learn how to deploy Rego authorization rules with OPA.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub opa: Option<KafkaClusterClusterConfigAuthorizationOpa>,
+}
+
+/// Configure the OPA stacklet [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery)>
+/// and the name of the Rego package containing your authorization rules.
+/// Consult the [OPA authorization documentation](<https://docs.stackable.tech/home/nightly/concepts/opa)>
+/// to learn how to deploy Rego authorization rules with OPA.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterClusterConfigAuthorizationOpa {
+    /// The [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery)>
+    /// for the OPA stacklet that should be used for authorization requests.
+    #[serde(rename = "configMapName")]
+    pub config_map_name: String,
+    /// The name of the Rego package containing the Rego rules for the product.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub package: Option<String>,
+}
+
+/// TLS encryption settings for Kafka (server, internal).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterClusterConfigTls {
+    /// The [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass.html)> to use for
+    /// internal broker communication. Use mutual verification between brokers (mandatory).
+    /// This setting controls:
+    /// - Which cert the brokers should use to authenticate themselves against other brokers
+    /// - Which ca.crt to use when validating the other brokers
+    /// 
+    /// Defaults to `tls`
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "internalSecretClass")]
+    pub internal_secret_class: Option<String>,
+    /// The [SecretClass](<https://docs.stackable.tech/home/nightly/secret-operator/secretclass.html)> to use for
+    /// client connections. This setting controls:
+    /// - If TLS encryption is used at all
+    /// - Which cert the servers should use to authenticate themselves against the client
+    /// 
+    /// Defaults to `tls`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverSecretClass")]
+    pub server_secret_class: Option<String>,
+}
+
+/// [Cluster operations](<https://docs.stackable.tech/home/nightly/concepts/operations/cluster_operations)>
+/// properties, allow stopping the product instance as well as pausing reconciliation.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterClusterOperation {
+    /// Flag to stop cluster reconciliation by the operator. This means that all changes in the
+    /// custom resource spec are ignored until this flag is set to false or removed. The operator
+    /// will however still watch the deployed resources at the time and update the custom resource
+    /// status field.
+    /// If applied at the same time with `stopped`, `reconciliationPaused` will take precedence over
+    /// `stopped` and stop the reconciliation immediately.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconciliationPaused")]
+    pub reconciliation_paused: Option<bool>,
+    /// Flag to stop the cluster. This means all deployed resources (e.g. Services, StatefulSets,
+    /// ConfigMaps) are kept but all deployed Pods (e.g. replicas from a StatefulSet) are scaled to 0
+    /// and therefore stopped and removed.
+    /// If applied at the same time with `reconciliationPaused`, the latter will pause reconciliation
+    /// and `stopped` will take no effect until `reconciliationPaused` is set to false or removed.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stopped: Option<bool>,
+}
+
+/// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing
+/// all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable
+/// at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured
+/// on role level. There is also a second form of config, which can only be configured
+/// at role level, the `roleConfig`.
+/// You can learn more about this in the
+/// [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterControllers {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cliOverrides")]
+    pub cli_overrides: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub config: Option<KafkaClusterControllersConfig>,
+    /// The `configOverrides` can be used to configure properties in product config files
+    /// that are not exposed in the CRD. Read the
+    /// [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)>
+    /// and consult the operator specific usage guide documentation for details on the
+    /// available config files and settings for the specific product.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configOverrides")]
+    pub config_overrides: Option<BTreeMap<String, BTreeMap<String, String>>>,
+    /// `envOverrides` configure environment variables to be set in the Pods.
+    /// It is a map from strings to strings - environment variables and the value to set.
+    /// Read the
+    /// [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)>
+    /// for more information and consult the operator specific usage guide to find out about
+    /// the product specific environment variables that are available.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envOverrides")]
+    pub env_overrides: Option<BTreeMap<String, String>>,
+    /// Allows overriding JVM arguments.
+    /// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+    /// for details on the usage.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
+    pub jvm_argument_overrides: Option<KafkaClusterControllersJvmArgumentOverrides>,
+    /// In the `podOverrides` property you can define a
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// to override any property that can be set on a Kubernetes Pod.
+    /// Read the
+    /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
+    /// for more information.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podOverrides")]
+    pub pod_overrides: Option<BTreeMap<String, serde_json::Value>>,
+    /// This is a product-agnostic RoleConfig, which is sufficient for most of the products.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleConfig")]
+    pub role_config: Option<KafkaClusterControllersRoleConfig>,
+    #[serde(rename = "roleGroups")]
+    pub role_groups: BTreeMap<String, KafkaClusterControllersRoleGroups>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterControllersConfig {
+    /// These configuration settings control
+    /// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub affinity: Option<KafkaClusterControllersConfigAffinity>,
+    /// Time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Consult the operator documentation for details.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracefulShutdownTimeout")]
+    pub graceful_shutdown_timeout: Option<String>,
+    /// Logging configuration, learn more in the [logging concept documentation](<https://docs.stackable.tech/home/nightly/concepts/logging).>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub logging: Option<KafkaClusterControllersConfigLogging>,
+    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`.
+    /// Please note that this can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestedSecretLifetime")]
+    pub requested_secret_lifetime: Option<String>,
+    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+    /// usage, if this role needs any.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<KafkaClusterControllersConfigResources>,
+}
+
+/// These configuration settings control
+/// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterControllersConfigAffinity {
+    /// Same as the `spec.affinity.nodeAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
+    pub node_affinity: Option<BTreeMap<String, serde_json::Value>>,
+    /// Simple key-value pairs forming a nodeSelector, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<BTreeMap<String, String>>,
+    /// Same as the `spec.affinity.podAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
+    pub pod_affinity: Option<BTreeMap<String, serde_json::Value>>,
+    /// Same as the `spec.affinity.podAntiAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<BTreeMap<String, serde_json::Value>>,
+}
+
+/// Logging configuration, learn more in the [logging concept documentation](<https://docs.stackable.tech/home/nightly/concepts/logging).>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterControllersConfigLogging {
+    /// Log configuration per container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub containers: Option<BTreeMap<String, KafkaClusterControllersConfigLoggingContainers>>,
+    /// Wether or not to deploy a container with the Vector log agent.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableVectorAgent")]
+    pub enable_vector_agent: Option<bool>,
+}
+
+/// Log configuration per container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterControllersConfigLoggingContainers {
+    /// Configuration for the console appender
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub console: Option<KafkaClusterControllersConfigLoggingContainersConsole>,
+    /// Log configuration provided in a ConfigMap
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub custom: Option<KafkaClusterControllersConfigLoggingContainersCustom>,
+    /// Configuration for the file appender
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub file: Option<KafkaClusterControllersConfigLoggingContainersFile>,
+    /// Configuration per logger
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub loggers: Option<BTreeMap<String, KafkaClusterControllersConfigLoggingContainersLoggers>>,
+}
+
+/// Configuration for the console appender
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterControllersConfigLoggingContainersConsole {
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub level: Option<KafkaClusterControllersConfigLoggingContainersConsoleLevel>,
+}
+
+/// Configuration for the console appender
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaClusterControllersConfigLoggingContainersConsoleLevel {
+    #[serde(rename = "TRACE")]
+    Trace,
+    #[serde(rename = "DEBUG")]
+    Debug,
+    #[serde(rename = "INFO")]
+    Info,
+    #[serde(rename = "WARN")]
+    Warn,
+    #[serde(rename = "ERROR")]
+    Error,
+    #[serde(rename = "FATAL")]
+    Fatal,
+    #[serde(rename = "NONE")]
+    None,
+}
+
+/// Log configuration provided in a ConfigMap
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterControllersConfigLoggingContainersCustom {
+    /// ConfigMap containing the log configuration files
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<String>,
+}
+
+/// Configuration for the file appender
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterControllersConfigLoggingContainersFile {
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub level: Option<KafkaClusterControllersConfigLoggingContainersFileLevel>,
+}
+
+/// Configuration for the file appender
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaClusterControllersConfigLoggingContainersFileLevel {
+    #[serde(rename = "TRACE")]
+    Trace,
+    #[serde(rename = "DEBUG")]
+    Debug,
+    #[serde(rename = "INFO")]
+    Info,
+    #[serde(rename = "WARN")]
+    Warn,
+    #[serde(rename = "ERROR")]
+    Error,
+    #[serde(rename = "FATAL")]
+    Fatal,
+    #[serde(rename = "NONE")]
+    None,
+}
+
+/// Configuration per logger
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterControllersConfigLoggingContainersLoggers {
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub level: Option<KafkaClusterControllersConfigLoggingContainersLoggersLevel>,
+}
+
+/// Configuration per logger
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaClusterControllersConfigLoggingContainersLoggersLevel {
+    #[serde(rename = "TRACE")]
+    Trace,
+    #[serde(rename = "DEBUG")]
+    Debug,
+    #[serde(rename = "INFO")]
+    Info,
+    #[serde(rename = "WARN")]
+    Warn,
+    #[serde(rename = "ERROR")]
+    Error,
+    #[serde(rename = "FATAL")]
+    Fatal,
+    #[serde(rename = "NONE")]
+    None,
+}
+
+/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+/// usage, if this role needs any.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterControllersConfigResources {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cpu: Option<KafkaClusterControllersConfigResourcesCpu>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub memory: Option<KafkaClusterControllersConfigResourcesMemory>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub storage: Option<KafkaClusterControllersConfigResourcesStorage>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterControllersConfigResourcesCpu {
+    /// The maximum amount of CPU cores that can be requested by Pods.
+    /// Equivalent to the `limit` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub max: Option<String>,
+    /// The minimal amount of CPU cores that Pods need to run.
+    /// Equivalent to the `request` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub min: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterControllersConfigResourcesMemory {
+    /// The maximum amount of memory that should be available to the Pod.
+    /// Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),>
+    /// which means these suffixes are supported: E, P, T, G, M, k.
+    /// You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki.
+    /// For example, the following represent roughly the same value:
+    /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limit: Option<String>,
+    /// Additional options that can be specified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeLimits")]
+    pub runtime_limits: Option<KafkaClusterControllersConfigResourcesMemoryRuntimeLimits>,
+}
+
+/// Additional options that can be specified.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterControllersConfigResourcesMemoryRuntimeLimits {
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterControllersConfigResourcesStorage {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logDirs")]
+    pub log_dirs: Option<KafkaClusterControllersConfigResourcesStorageLogDirs>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterControllersConfigResourcesStorageLogDirs {
+    /// Quantity is a fixed-point representation of a number. It provides convenient marshaling/unmarshaling in JSON and YAML, in addition to String() and AsInt64() accessors.
+    /// 
+    /// The serialization format is:
+    /// 
+    /// ``` <quantity>        ::= <signedNumber><suffix>
+    /// 
+    /// 	(Note that <suffix> may be empty, from the "" case in <decimalSI>.)
+    /// 
+    /// <digit>           ::= 0 | 1 | ... | 9 <digits>          ::= <digit> | <digit><digits> <number>          ::= <digits> | <digits>.<digits> | <digits>. | .<digits> <sign>            ::= "+" | "-" <signedNumber>    ::= <number> | <sign><number> <suffix>          ::= <binarySI> | <decimalExponent> | <decimalSI> <binarySI>        ::= Ki | Mi | Gi | Ti | Pi | Ei
+    /// 
+    /// 	(International System of units; See: <http://physics.nist.gov/cuu/Units/binary.html)>
+    /// 
+    /// <decimalSI>       ::= m | "" | k | M | G | T | P | E
+    /// 
+    /// 	(Note that 1024 = 1Ki but 1000 = 1k; I didn't choose the capitalization.)
+    /// 
+    /// <decimalExponent> ::= "e" <signedNumber> | "E" <signedNumber> ```
+    /// 
+    /// No matter which of the three exponent forms is used, no quantity may represent a number greater than 2^63-1 in magnitude, nor may it have more than 3 decimal places. Numbers larger or more precise will be capped or rounded up. (E.g.: 0.1m will rounded up to 1m.) This may be extended in the future if we require larger or smaller quantities.
+    /// 
+    /// When a Quantity is parsed from a string, it will remember the type of suffix it had, and will use the same type again when it is serialized.
+    /// 
+    /// Before serializing, Quantity will be put in "canonical form". This means that Exponent/suffix will be adjusted up or down (with a corresponding increase or decrease in Mantissa) such that:
+    /// 
+    /// - No precision is lost - No fractional digits will be emitted - The exponent (or suffix) is as large as possible.
+    /// 
+    /// The sign will be omitted unless the number is negative.
+    /// 
+    /// Examples:
+    /// 
+    /// - 1.5 will be serialized as "1500m" - 1.5Gi will be serialized as "1536Mi"
+    /// 
+    /// Note that the quantity will NEVER be internally represented by a floating point number. That is the whole point of this exercise.
+    /// 
+    /// Non-canonical values will still parse as long as they are well formed, but will be re-emitted in their canonical form. (So always use canonical form, or don't diff.)
+    /// 
+    /// This format is intended to make it difficult to use these numbers without writing some sort of special handling code in the hopes that that will cause implementors to also use a fixed point implementation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub capacity: Option<String>,
+    /// A label selector is a label query over a set of resources. The result of matchLabels and matchExpressions are ANDed. An empty label selector matches all objects. A null label selector matches no objects.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selectors: Option<KafkaClusterControllersConfigResourcesStorageLogDirsSelectors>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClass")]
+    pub storage_class: Option<String>,
+}
+
+/// A label selector is a label query over a set of resources. The result of matchLabels and matchExpressions are ANDed. An empty label selector matches all objects. A null label selector matches no objects.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterControllersConfigResourcesStorageLogDirsSelectors {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<KafkaClusterControllersConfigResourcesStorageLogDirsSelectorsMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterControllersConfigResourcesStorageLogDirsSelectorsMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Allows overriding JVM arguments.
+/// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+/// for details on the usage.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterControllersJvmArgumentOverrides {
+    /// JVM arguments to be added
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub add: Option<Vec<String>>,
+    /// JVM arguments to be removed by exact match
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub remove: Option<Vec<String>>,
+    /// JVM arguments matching any of this regexes will be removed
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "removeRegex")]
+    pub remove_regex: Option<Vec<String>>,
+}
+
+/// This is a product-agnostic RoleConfig, which is sufficient for most of the products.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterControllersRoleConfig {
+    /// This struct is used to configure:
+    /// 
+    /// 1. If PodDisruptionBudgets are created by the operator
+    /// 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
+    /// 
+    /// Learn more in the
+    /// [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podDisruptionBudget")]
+    pub pod_disruption_budget: Option<KafkaClusterControllersRoleConfigPodDisruptionBudget>,
+}
+
+/// This struct is used to configure:
+/// 
+/// 1. If PodDisruptionBudgets are created by the operator
+/// 2. The allowed number of Pods to be unavailable (`maxUnavailable`)
+/// 
+/// Learn more in the
+/// [allowed Pod disruptions documentation](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_disruptions).>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterControllersRoleConfigPodDisruptionBudget {
+    /// Whether a PodDisruptionBudget should be written out for this role.
+    /// Disabling this enables you to specify your own - custom - one.
+    /// Defaults to true.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// The number of Pods that are allowed to be down because of voluntary disruptions.
+    /// If you don't explicitly set this, the operator will use a sane default based
+    /// upon knowledge about the individual product.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
+    pub max_unavailable: Option<u16>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterControllersRoleGroups {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cliOverrides")]
+    pub cli_overrides: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub config: Option<KafkaClusterControllersRoleGroupsConfig>,
+    /// The `configOverrides` can be used to configure properties in product config files
+    /// that are not exposed in the CRD. Read the
+    /// [config overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#config-overrides)>
+    /// and consult the operator specific usage guide documentation for details on the
+    /// available config files and settings for the specific product.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configOverrides")]
+    pub config_overrides: Option<BTreeMap<String, BTreeMap<String, String>>>,
+    /// `envOverrides` configure environment variables to be set in the Pods.
+    /// It is a map from strings to strings - environment variables and the value to set.
+    /// Read the
+    /// [environment variable overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides)>
+    /// for more information and consult the operator specific usage guide to find out about
+    /// the product specific environment variables that are available.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envOverrides")]
+    pub env_overrides: Option<BTreeMap<String, String>>,
+    /// Allows overriding JVM arguments.
+    /// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+    /// for details on the usage.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
+    pub jvm_argument_overrides: Option<KafkaClusterControllersRoleGroupsJvmArgumentOverrides>,
+    /// In the `podOverrides` property you can define a
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// to override any property that can be set on a Kubernetes Pod.
+    /// Read the
+    /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
+    /// for more information.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podOverrides")]
+    pub pod_overrides: Option<BTreeMap<String, serde_json::Value>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub replicas: Option<u16>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterControllersRoleGroupsConfig {
+    /// These configuration settings control
+    /// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub affinity: Option<KafkaClusterControllersRoleGroupsConfigAffinity>,
+    /// Time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Consult the operator documentation for details.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracefulShutdownTimeout")]
+    pub graceful_shutdown_timeout: Option<String>,
+    /// Logging configuration, learn more in the [logging concept documentation](<https://docs.stackable.tech/home/nightly/concepts/logging).>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub logging: Option<KafkaClusterControllersRoleGroupsConfigLogging>,
+    /// Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`.
+    /// Please note that this can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestedSecretLifetime")]
+    pub requested_secret_lifetime: Option<String>,
+    /// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+    /// usage, if this role needs any.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<KafkaClusterControllersRoleGroupsConfigResources>,
+}
+
+/// These configuration settings control
+/// [Pod placement](<https://docs.stackable.tech/home/nightly/concepts/operations/pod_placement).>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterControllersRoleGroupsConfigAffinity {
+    /// Same as the `spec.affinity.nodeAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
+    pub node_affinity: Option<BTreeMap<String, serde_json::Value>>,
+    /// Simple key-value pairs forming a nodeSelector, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<BTreeMap<String, String>>,
+    /// Same as the `spec.affinity.podAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
+    pub pod_affinity: Option<BTreeMap<String, serde_json::Value>>,
+    /// Same as the `spec.affinity.podAntiAffinity` field on the Pod, see the [Kubernetes docs](<https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node)>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<BTreeMap<String, serde_json::Value>>,
+}
+
+/// Logging configuration, learn more in the [logging concept documentation](<https://docs.stackable.tech/home/nightly/concepts/logging).>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterControllersRoleGroupsConfigLogging {
+    /// Log configuration per container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub containers: Option<BTreeMap<String, KafkaClusterControllersRoleGroupsConfigLoggingContainers>>,
+    /// Wether or not to deploy a container with the Vector log agent.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableVectorAgent")]
+    pub enable_vector_agent: Option<bool>,
+}
+
+/// Log configuration per container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterControllersRoleGroupsConfigLoggingContainers {
+    /// Configuration for the console appender
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub console: Option<KafkaClusterControllersRoleGroupsConfigLoggingContainersConsole>,
+    /// Log configuration provided in a ConfigMap
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub custom: Option<KafkaClusterControllersRoleGroupsConfigLoggingContainersCustom>,
+    /// Configuration for the file appender
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub file: Option<KafkaClusterControllersRoleGroupsConfigLoggingContainersFile>,
+    /// Configuration per logger
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub loggers: Option<BTreeMap<String, KafkaClusterControllersRoleGroupsConfigLoggingContainersLoggers>>,
+}
+
+/// Configuration for the console appender
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterControllersRoleGroupsConfigLoggingContainersConsole {
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub level: Option<KafkaClusterControllersRoleGroupsConfigLoggingContainersConsoleLevel>,
+}
+
+/// Configuration for the console appender
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaClusterControllersRoleGroupsConfigLoggingContainersConsoleLevel {
+    #[serde(rename = "TRACE")]
+    Trace,
+    #[serde(rename = "DEBUG")]
+    Debug,
+    #[serde(rename = "INFO")]
+    Info,
+    #[serde(rename = "WARN")]
+    Warn,
+    #[serde(rename = "ERROR")]
+    Error,
+    #[serde(rename = "FATAL")]
+    Fatal,
+    #[serde(rename = "NONE")]
+    None,
+}
+
+/// Log configuration provided in a ConfigMap
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterControllersRoleGroupsConfigLoggingContainersCustom {
+    /// ConfigMap containing the log configuration files
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<String>,
+}
+
+/// Configuration for the file appender
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterControllersRoleGroupsConfigLoggingContainersFile {
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub level: Option<KafkaClusterControllersRoleGroupsConfigLoggingContainersFileLevel>,
+}
+
+/// Configuration for the file appender
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaClusterControllersRoleGroupsConfigLoggingContainersFileLevel {
+    #[serde(rename = "TRACE")]
+    Trace,
+    #[serde(rename = "DEBUG")]
+    Debug,
+    #[serde(rename = "INFO")]
+    Info,
+    #[serde(rename = "WARN")]
+    Warn,
+    #[serde(rename = "ERROR")]
+    Error,
+    #[serde(rename = "FATAL")]
+    Fatal,
+    #[serde(rename = "NONE")]
+    None,
+}
+
+/// Configuration per logger
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterControllersRoleGroupsConfigLoggingContainersLoggers {
+    /// The log level threshold.
+    /// Log events with a lower log level are discarded.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub level: Option<KafkaClusterControllersRoleGroupsConfigLoggingContainersLoggersLevel>,
+}
+
+/// Configuration per logger
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaClusterControllersRoleGroupsConfigLoggingContainersLoggersLevel {
+    #[serde(rename = "TRACE")]
+    Trace,
+    #[serde(rename = "DEBUG")]
+    Debug,
+    #[serde(rename = "INFO")]
+    Info,
+    #[serde(rename = "WARN")]
+    Warn,
+    #[serde(rename = "ERROR")]
+    Error,
+    #[serde(rename = "FATAL")]
+    Fatal,
+    #[serde(rename = "NONE")]
+    None,
+}
+
+/// Resource usage is configured here, this includes CPU usage, memory usage and disk storage
+/// usage, if this role needs any.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterControllersRoleGroupsConfigResources {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cpu: Option<KafkaClusterControllersRoleGroupsConfigResourcesCpu>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub memory: Option<KafkaClusterControllersRoleGroupsConfigResourcesMemory>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub storage: Option<KafkaClusterControllersRoleGroupsConfigResourcesStorage>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterControllersRoleGroupsConfigResourcesCpu {
+    /// The maximum amount of CPU cores that can be requested by Pods.
+    /// Equivalent to the `limit` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub max: Option<String>,
+    /// The minimal amount of CPU cores that Pods need to run.
+    /// Equivalent to the `request` for Pod resource configuration.
+    /// Cores are specified either as a decimal point number or as milli units.
+    /// For example:`1.5` will be 1.5 cores, also written as `1500m`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub min: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterControllersRoleGroupsConfigResourcesMemory {
+    /// The maximum amount of memory that should be available to the Pod.
+    /// Specified as a byte [Quantity](<https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/),>
+    /// which means these suffixes are supported: E, P, T, G, M, k.
+    /// You can also use the power-of-two equivalents: Ei, Pi, Ti, Gi, Mi, Ki.
+    /// For example, the following represent roughly the same value:
+    /// `128974848, 129e6, 129M,  128974848000m, 123Mi`
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limit: Option<String>,
+    /// Additional options that can be specified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeLimits")]
+    pub runtime_limits: Option<KafkaClusterControllersRoleGroupsConfigResourcesMemoryRuntimeLimits>,
+}
+
+/// Additional options that can be specified.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterControllersRoleGroupsConfigResourcesMemoryRuntimeLimits {
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterControllersRoleGroupsConfigResourcesStorage {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logDirs")]
+    pub log_dirs: Option<KafkaClusterControllersRoleGroupsConfigResourcesStorageLogDirs>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterControllersRoleGroupsConfigResourcesStorageLogDirs {
+    /// Quantity is a fixed-point representation of a number. It provides convenient marshaling/unmarshaling in JSON and YAML, in addition to String() and AsInt64() accessors.
+    /// 
+    /// The serialization format is:
+    /// 
+    /// ``` <quantity>        ::= <signedNumber><suffix>
+    /// 
+    /// 	(Note that <suffix> may be empty, from the "" case in <decimalSI>.)
+    /// 
+    /// <digit>           ::= 0 | 1 | ... | 9 <digits>          ::= <digit> | <digit><digits> <number>          ::= <digits> | <digits>.<digits> | <digits>. | .<digits> <sign>            ::= "+" | "-" <signedNumber>    ::= <number> | <sign><number> <suffix>          ::= <binarySI> | <decimalExponent> | <decimalSI> <binarySI>        ::= Ki | Mi | Gi | Ti | Pi | Ei
+    /// 
+    /// 	(International System of units; See: <http://physics.nist.gov/cuu/Units/binary.html)>
+    /// 
+    /// <decimalSI>       ::= m | "" | k | M | G | T | P | E
+    /// 
+    /// 	(Note that 1024 = 1Ki but 1000 = 1k; I didn't choose the capitalization.)
+    /// 
+    /// <decimalExponent> ::= "e" <signedNumber> | "E" <signedNumber> ```
+    /// 
+    /// No matter which of the three exponent forms is used, no quantity may represent a number greater than 2^63-1 in magnitude, nor may it have more than 3 decimal places. Numbers larger or more precise will be capped or rounded up. (E.g.: 0.1m will rounded up to 1m.) This may be extended in the future if we require larger or smaller quantities.
+    /// 
+    /// When a Quantity is parsed from a string, it will remember the type of suffix it had, and will use the same type again when it is serialized.
+    /// 
+    /// Before serializing, Quantity will be put in "canonical form". This means that Exponent/suffix will be adjusted up or down (with a corresponding increase or decrease in Mantissa) such that:
+    /// 
+    /// - No precision is lost - No fractional digits will be emitted - The exponent (or suffix) is as large as possible.
+    /// 
+    /// The sign will be omitted unless the number is negative.
+    /// 
+    /// Examples:
+    /// 
+    /// - 1.5 will be serialized as "1500m" - 1.5Gi will be serialized as "1536Mi"
+    /// 
+    /// Note that the quantity will NEVER be internally represented by a floating point number. That is the whole point of this exercise.
+    /// 
+    /// Non-canonical values will still parse as long as they are well formed, but will be re-emitted in their canonical form. (So always use canonical form, or don't diff.)
+    /// 
+    /// This format is intended to make it difficult to use these numbers without writing some sort of special handling code in the hopes that that will cause implementors to also use a fixed point implementation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub capacity: Option<String>,
+    /// A label selector is a label query over a set of resources. The result of matchLabels and matchExpressions are ANDed. An empty label selector matches all objects. A null label selector matches no objects.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selectors: Option<KafkaClusterControllersRoleGroupsConfigResourcesStorageLogDirsSelectors>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClass")]
+    pub storage_class: Option<String>,
+}
+
+/// A label selector is a label query over a set of resources. The result of matchLabels and matchExpressions are ANDed. An empty label selector matches all objects. A null label selector matches no objects.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterControllersRoleGroupsConfigResourcesStorageLogDirsSelectors {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<KafkaClusterControllersRoleGroupsConfigResourcesStorageLogDirsSelectorsMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterControllersRoleGroupsConfigResourcesStorageLogDirsSelectorsMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Allows overriding JVM arguments.
+/// Please read on the [JVM argument overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides)>
+/// for details on the usage.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterControllersRoleGroupsJvmArgumentOverrides {
+    /// JVM arguments to be added
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub add: Option<Vec<String>>,
+    /// JVM arguments to be removed by exact match
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub remove: Option<Vec<String>>,
+    /// JVM arguments matching any of this regexes will be removed
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "removeRegex")]
+    pub remove_regex: Option<Vec<String>>,
+}
+
+/// Specify which image to use, the easiest way is to only configure the `productVersion`.
+/// You can also configure a custom image registry to pull from, as well as completely custom
+/// images.
+/// 
+/// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)>
+/// for details.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterImage {
+    /// Overwrite the docker image.
+    /// Specify the full docker image name, e.g. `oci.stackable.tech/sdp/superset:1.4.1-stackable2.1.0`
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub custom: Option<String>,
+    /// Version of the product, e.g. `1.4.1`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "productVersion")]
+    pub product_version: Option<String>,
+    /// [Pull policy](<https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy)> used when pulling the image.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
+    pub pull_policy: Option<KafkaClusterImagePullPolicy>,
+    /// [Image pull secrets](<https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod)> to pull images from a private registry.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullSecrets")]
+    pub pull_secrets: Option<Vec<KafkaClusterImagePullSecrets>>,
+    /// Name of the docker repo, e.g. `oci.stackable.tech/sdp`
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub repo: Option<String>,
+    /// Stackable version of the product, e.g. `23.4`, `23.4.1` or `0.0.0-dev`.
+    /// If not specified, the operator will use its own version, e.g. `23.4.1`.
+    /// When using a nightly operator or a pr version, it will use the nightly `0.0.0-dev` image.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stackableVersion")]
+    pub stackable_version: Option<String>,
+}
+
+/// Specify which image to use, the easiest way is to only configure the `productVersion`.
+/// You can also configure a custom image registry to pull from, as well as completely custom
+/// images.
+/// 
+/// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)>
+/// for details.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaClusterImagePullPolicy {
+    IfNotPresent,
+    Always,
+    Never,
+}
+
+/// LocalObjectReference contains enough information to let you locate the referenced object inside the same namespace.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterImagePullSecrets {
+    /// Name of the referent. This field is effectively required, but due to backwards compatibility is allowed to be empty. Instances of this type with an empty value here are almost certainly wrong. More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
+    pub name: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaClusterStatus {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
+}
+

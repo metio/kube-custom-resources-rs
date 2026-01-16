@@ -32,23 +32,27 @@ spec:
               minProperties: 1
               properties:
                 bucketClassName:
-                  description: "bucketClassName selects the BucketClass for provisioning the BucketClaim.\nThis field is used only for BucketClaim dynamic provisioning.\nIf unspecified, existingBucketName must be specified for binding to an existing Bucket."
+                  description: "bucketClassName selects the BucketClass for provisioning the BucketClaim.\nThis field is used only for BucketClaim dynamic provisioning.\nIf unspecified, existingBucketName must be specified for binding to an existing Bucket.\nMust be a valid Kubernetes resource name: at most 253 characters, consisting only of\nlower-case alphanumeric characters, hyphens, and periods, starting and ending with an\nalphanumeric character."
                   maxLength: 253
                   minLength: 1
                   type: "string"
                   x-kubernetes-validations:
+                    - message: "name must be a valid resource name"
+                      rule: "!format.dns1123Subdomain().validate(self).hasValue()"
                     - message: "bucketClassName is immutable"
                       rule: "self == oldSelf"
                 existingBucketName:
-                  description: "existingBucketName selects the name of an existing Bucket resource that this BucketClaim\nshould bind to.\nThis field is used only for BucketClaim static provisioning.\nIf unspecified, bucketClassName must be specified for dynamically provisioning a new bucket."
+                  description: "existingBucketName selects the name of an existing Bucket resource that this BucketClaim\nshould bind to.\nThis field is used only for BucketClaim static provisioning.\nIf unspecified, bucketClassName must be specified for dynamically provisioning a new bucket.\nMust be a valid Kubernetes resource name: at most 253 characters, consisting only of\nlower-case alphanumeric characters, hyphens, and periods, starting and ending with an\nalphanumeric character."
                   maxLength: 253
                   minLength: 1
                   type: "string"
                   x-kubernetes-validations:
+                    - message: "name must be a valid resource name"
+                      rule: "!format.dns1123Subdomain().validate(self).hasValue()"
                     - message: "existingBucketName is immutable"
                       rule: "self == oldSelf"
                 protocols:
-                  description: "protocols lists object storage protocols that the provisioned Bucket must support.\nIf specified, COSI will verify that each item is advertised as supported by the driver."
+                  description: "protocols lists object storage protocols that the provisioned Bucket must support.\nIf specified, COSI will verify that each item is advertised as supported by the driver.\nIt is recommended to specify all protocols that applications will rely on in BucketAccesses\nreferencing this BucketClaim.\nPossible values: 'S3', 'Azure', 'GCS'."
                   items:
                     description: "ObjectProtocol represents an object protocol type."
                     enum:
@@ -56,6 +60,8 @@ spec:
                       - "Azure"
                       - "GCS"
                     type: "string"
+                  maxItems: 3
+                  minItems: 1
                   type: "array"
                   x-kubernetes-list-type: "set"
                   x-kubernetes-validations:
@@ -75,18 +81,23 @@ spec:
               description: "status defines the observed state of BucketClaim"
               properties:
                 boundBucketName:
-                  description: "boundBucketName is the name of the Bucket this BucketClaim is bound to."
+                  description: "boundBucketName is the name of the Bucket this BucketClaim is bound to.\nMust be a valid Kubernetes resource name: at most 253 characters, consisting only of\nlower-case alphanumeric characters, hyphens, and periods, starting and ending with an\nalphanumeric character."
                   maxLength: 253
                   minLength: 1
                   type: "string"
                   x-kubernetes-validations:
+                    - message: "name must be a valid resource name"
+                      rule: "!format.dns1123Subdomain().validate(self).hasValue()"
                     - message: "boundBucketName is immutable once set"
                       rule: "self == oldSelf"
                 error:
                   description: "error holds the most recent error message, with a timestamp.\nThis is cleared when provisioning is successful."
+                  minProperties: 0
                   properties:
                     message:
-                      description: "message is a string detailing the encountered error.\nNOTE: message will be logged, and it should not contain sensitive information."
+                      description: "message is a string detailing the encountered error.\nNOTE: message will be logged, and it should not contain sensitive information.\nMust not exceed 1.5MB."
+                      maxLength: 1572864
+                      minLength: 0
                       type: "string"
                     time:
                       description: "time is the timestamp when the error was encountered."
@@ -94,7 +105,7 @@ spec:
                       type: "string"
                   type: "object"
                 protocols:
-                  description: "protocols is the set of protocols the bound Bucket reports to support. BucketAccesses can\nrequest access to this BucketClaim using any of the protocols reported here."
+                  description: "protocols is the set of protocols the bound Bucket reports to support. BucketAccesses can\nrequest access to this BucketClaim using any of the protocols reported here.\nPossible values: 'S3', 'Azure', 'GCS'."
                   items:
                     description: "ObjectProtocol represents an object protocol type."
                     enum:
@@ -102,6 +113,8 @@ spec:
                       - "Azure"
                       - "GCS"
                     type: "string"
+                  maxItems: 3
+                  minItems: 1
                   type: "array"
                   x-kubernetes-list-type: "set"
                 readyToUse:

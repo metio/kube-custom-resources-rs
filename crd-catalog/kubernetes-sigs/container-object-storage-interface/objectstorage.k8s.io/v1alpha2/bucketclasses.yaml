@@ -37,13 +37,17 @@ spec:
                     - "Delete"
                   type: "string"
                 driverName:
-                  description: "driverName is the name of the driver that fulfills requests for this BucketClass."
+                  description: "driverName is the name of the driver that fulfills requests for this BucketClass.\nSee driver documentation to determine the correct value to set.\nMust be 63 characters or less, beginning and ending with an alphanumeric character\n([a-z0-9A-Z]) with dashes (-), dots (.), and alphanumerics between."
+                  maxLength: 63
                   minLength: 1
+                  pattern: "^[a-zA-Z0-9]([a-zA-Z0-9\\-\\.]{0,61}[a-zA-Z0-9])?$"
                   type: "string"
                 parameters:
                   additionalProperties:
                     type: "string"
-                  description: "parameters is an opaque map of driver-specific configuration items passed to the driver that\nfulfills requests for this BucketClass."
+                  description: "parameters is an opaque map of driver-specific configuration items passed to the driver that\nfulfills requests for this BucketClass.\nSee driver documentation to determine supported parameters and their effects.\nA maximum of 512 parameters are allowed."
+                  maxProperties: 512
+                  minProperties: 1
                   type: "object"
               required:
                 - "deletionPolicy"

@@ -1413,25 +1413,31 @@ pub struct FlowCollectorConsolePlugin {
     /// Enables the console plugin deployment.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
-    /// `imagePullPolicy` is the Kubernetes pull policy for the image defined above
+    /// `imagePullPolicy` is the Kubernetes pull policy for the image defined above.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<FlowCollectorConsolePluginImagePullPolicy>,
-    /// `logLevel` for the console plugin backend
+    /// `logLevel` for the console plugin backend.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<FlowCollectorConsolePluginLogLevel>,
-    /// `portNaming` defines the configuration of the port-to-service name translation
+    /// `portNaming` defines the configuration of the port-to-service name translation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portNaming")]
     pub port_naming: Option<FlowCollectorConsolePluginPortNaming>,
-    /// `quickFilters` configures quick filter presets for the Console plugin
+    /// `quickFilters` configures quick filter presets for the Console plugin.
+    /// Filters for external traffic assume the subnet labels are configured to distinguish internal and external traffic (see `spec.processor.subnetLabels`).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "quickFilters")]
     pub quick_filters: Option<Vec<FlowCollectorConsolePluginQuickFilters>>,
     /// `replicas` defines the number of replicas (pods) to start.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
     /// `resources`, in terms of compute resources, required by this container.
-    /// For more information, see <https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/>
+    /// For more information, see <https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<FlowCollectorConsolePluginResources>,
+    /// Deploy as a standalone console, instead of a plugin of the OpenShift Console.
+    /// This is not recommended when using with OpenShift, as it doesn't provide an integrated experience.
+    /// [Unsupported (*)].
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub standalone: Option<bool>,
     /// If `unmanagedReplicas` is `true`, the operator will not reconcile `replicas`. This is useful when using a pod autoscaler.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "unmanagedReplicas")]
     pub unmanaged_replicas: Option<bool>,
@@ -2455,7 +2461,7 @@ pub enum FlowCollectorConsolePluginLogLevel {
     Panic,
 }
 
-/// `portNaming` defines the configuration of the port-to-service name translation
+/// `portNaming` defines the configuration of the port-to-service name translation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorConsolePluginPortNaming {
     /// Enable the console plugin port-to-service name translation
@@ -2481,7 +2487,7 @@ pub struct FlowCollectorConsolePluginQuickFilters {
 }
 
 /// `resources`, in terms of compute resources, required by this container.
-/// For more information, see <https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/>
+/// For more information, see <https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorConsolePluginResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
@@ -3581,7 +3587,7 @@ pub struct FlowCollectorNetworkPolicy {
 /// enriches them, generates metrics, and forwards them to the Loki persistence layer and/or any available exporter.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorProcessor {
-    /// `addZone` allows availability zone awareness by labelling flows with their source and destination zones.
+    /// `addZone` allows availability zone awareness by labeling flows with their source and destination zones.
     /// This feature requires the "topology.kubernetes.io/zone" label to be set on nodes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "addZone")]
     pub add_zone: Option<bool>,
@@ -3647,7 +3653,7 @@ pub struct FlowCollectorProcessor {
     /// Global configuration managing FlowCollectorSlices custom resources.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "slicesConfig")]
     pub slices_config: Option<FlowCollectorProcessorSlicesConfig>,
-    /// `subnetLabels` allows to define custom labels on subnets and IPs or to enable automatic labelling of recognized subnets in OpenShift, which is used to identify cluster external traffic.
+    /// `subnetLabels` allows to define custom labels on subnets and IPs or to enable automatic labeling of recognized subnets in OpenShift, which is used to identify cluster external traffic.
     /// When a subnet matches the source or destination IP of a flow, a corresponding field is added: `SrcSubnetLabel` or `DstSubnetLabel`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetLabels")]
     pub subnet_labels: Option<FlowCollectorProcessorSubnetLabels>,
@@ -5023,12 +5029,14 @@ pub enum FlowCollectorProcessorSlicesConfigCollectionMode {
     AllowList,
 }
 
-/// `subnetLabels` allows to define custom labels on subnets and IPs or to enable automatic labelling of recognized subnets in OpenShift, which is used to identify cluster external traffic.
+/// `subnetLabels` allows to define custom labels on subnets and IPs or to enable automatic labeling of recognized subnets in OpenShift, which is used to identify cluster external traffic.
 /// When a subnet matches the source or destination IP of a flow, a corresponding field is added: `SrcSubnetLabel` or `DstSubnetLabel`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorProcessorSubnetLabels {
-    /// `customLabels` allows to customize subnets and IPs labelling, such as to identify cluster-external workloads or web services.
-    /// If you enable `openShiftAutoDetect`, `customLabels` can override the detected subnets in case they overlap.
+    /// `customLabels` allows you to customize subnets and IPs labeling, such as to identify cluster external workloads or web services.
+    /// External subnets must be labeled with the prefix `EXT:`, or not labeled at all, in order to work with default quick filters and some metrics examples provided.<br/>
+    /// If `openShiftAutoDetect` is disabled or you are not using OpenShift, it is recommended to manually configure labels for the cluster subnets, to distinguish internal traffic from external traffic.<br/>
+    /// If `openShiftAutoDetect` is enabled, `customLabels` overrides the detected subnets when they overlap.<br/>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "customLabels")]
     pub custom_labels: Option<Vec<FlowCollectorProcessorSubnetLabelsCustomLabels>>,
     /// `openShiftAutoDetect` allows, when set to `true`, to detect automatically the machines, pods and services subnets based on the
@@ -5071,8 +5079,8 @@ pub struct FlowCollectorPrometheusQuerier {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub manual: Option<FlowCollectorPrometheusQuerierManual>,
     /// `mode` must be set according to the type of Prometheus installation that stores NetObserv metrics:<br>
-    /// - Use `Auto` to try configuring automatically. In OpenShift, it uses the Thanos querier from OpenShift Cluster Monitoring<br>
-    /// - Use `Manual` for a manual setup<br>
+    /// - Use `Auto` to try configuring automatically. In OpenShift, it uses the Thanos querier from OpenShift Cluster Monitoring.<br>
+    /// - Use `Manual` for a manual setup.<br>
     pub mode: FlowCollectorPrometheusQuerierMode,
     /// `timeout` is the read timeout for console plugin queries to Prometheus.
     /// A timeout of zero means no timeout.
@@ -5083,6 +5091,11 @@ pub struct FlowCollectorPrometheusQuerier {
 /// Prometheus configuration for `Manual` mode.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorPrometheusQuerierManual {
+    /// AlertManager configuration. This is used in the console to query silenced alerts, for displaying health information.
+    /// When used in OpenShift it can be left empty to use the Console API instead.
+    /// [Unsupported (*)].
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "alertManager")]
+    pub alert_manager: Option<FlowCollectorPrometheusQuerierManualAlertManager>,
     /// Set `true` to forward logged in user token in queries to Prometheus
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forwardUserToken")]
     pub forward_user_token: Option<bool>,
@@ -5092,6 +5105,96 @@ pub struct FlowCollectorPrometheusQuerierManual {
     /// `url` is the address of an existing Prometheus service to use for querying metrics.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
+}
+
+/// AlertManager configuration. This is used in the console to query silenced alerts, for displaying health information.
+/// When used in OpenShift it can be left empty to use the Console API instead.
+/// [Unsupported (*)].
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlowCollectorPrometheusQuerierManualAlertManager {
+    /// TLS client configuration for Prometheus AlertManager URL.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tls: Option<FlowCollectorPrometheusQuerierManualAlertManagerTls>,
+    /// `url` is the address of an existing Prometheus AlertManager service to use for querying alerts.
+    pub url: String,
+}
+
+/// TLS client configuration for Prometheus AlertManager URL.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlowCollectorPrometheusQuerierManualAlertManagerTls {
+    /// `caCert` defines the reference of the certificate for the Certificate Authority.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCert")]
+    pub ca_cert: Option<FlowCollectorPrometheusQuerierManualAlertManagerTlsCaCert>,
+    /// Enable TLS
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enable: Option<bool>,
+    /// `insecureSkipVerify` allows skipping client-side verification of the server certificate.
+    /// If set to `true`, the `caCert` field is ignored.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
+    pub insecure_skip_verify: Option<bool>,
+    /// `userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userCert")]
+    pub user_cert: Option<FlowCollectorPrometheusQuerierManualAlertManagerTlsUserCert>,
+}
+
+/// `caCert` defines the reference of the certificate for the Certificate Authority.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlowCollectorPrometheusQuerierManualAlertManagerTlsCaCert {
+    /// `certFile` defines the path to the certificate file name within the config map or secret.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
+    pub cert_file: Option<String>,
+    /// `certKey` defines the path to the certificate private key file name within the config map or secret. Omit when the key is not necessary.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certKey")]
+    pub cert_key: Option<String>,
+    /// Name of the config map or secret containing certificates.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed.
+    /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+    /// Type for the certificate reference: `configmap` or `secret`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<FlowCollectorPrometheusQuerierManualAlertManagerTlsCaCertType>,
+}
+
+/// `caCert` defines the reference of the certificate for the Certificate Authority.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum FlowCollectorPrometheusQuerierManualAlertManagerTlsCaCertType {
+    #[serde(rename = "configmap")]
+    Configmap,
+    #[serde(rename = "secret")]
+    Secret,
+}
+
+/// `userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlowCollectorPrometheusQuerierManualAlertManagerTlsUserCert {
+    /// `certFile` defines the path to the certificate file name within the config map or secret.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
+    pub cert_file: Option<String>,
+    /// `certKey` defines the path to the certificate private key file name within the config map or secret. Omit when the key is not necessary.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certKey")]
+    pub cert_key: Option<String>,
+    /// Name of the config map or secret containing certificates.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed.
+    /// If the namespace is different, the config map or the secret is copied so that it can be mounted as required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+    /// Type for the certificate reference: `configmap` or `secret`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<FlowCollectorPrometheusQuerierManualAlertManagerTlsUserCertType>,
+}
+
+/// `userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum FlowCollectorPrometheusQuerierManualAlertManagerTlsUserCertType {
+    #[serde(rename = "configmap")]
+    Configmap,
+    #[serde(rename = "secret")]
+    Secret,
 }
 
 /// TLS client configuration for Prometheus URL.

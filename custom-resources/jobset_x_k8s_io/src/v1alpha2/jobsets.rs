@@ -110,7 +110,11 @@ pub struct JobSetCoordinator {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobSetFailurePolicy {
     /// maxRestarts defines the limit on the number of JobSet restarts.
-    /// A restart is achieved by recreating all active child jobs.
+    /// If the restart strategy "InPlaceRestart" is used, this field
+    /// also defines the limit on the number of container restarts of
+    /// any child container. This is required to handle the edge case
+    /// in which a container keeps failing too fast to complete a JobSet
+    /// restart.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRestarts")]
     pub max_restarts: Option<i32>,
     /// restartStrategy defines the strategy to use when restarting the JobSet.
@@ -133,6 +137,7 @@ pub struct JobSetFailurePolicy {
 pub enum JobSetFailurePolicyRestartStrategy {
     Recreate,
     BlockingRecreate,
+    InPlaceRestart,
 }
 
 /// FailurePolicyRule defines a FailurePolicyAction to be executed if a child job
@@ -8334,7 +8339,20 @@ pub struct JobSetStatus {
     /// conditions track status
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// replicatedJobsStatus track the number of JobsReady for each replicatedJob.
+    /// currentInPlaceRestartAttempt tracks the current in-place restart attempt
+    /// of the JobSet. It is read by the agent. If the in-place restart
+    /// attempt of the Pod is equal to currentInPlaceRestartAttempt, the agent
+    /// should lift its barrier to allow the worker container to
+    /// start running.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentInPlaceRestartAttempt")]
+    pub current_in_place_restart_attempt: Option<i32>,
+    /// previousInPlaceRestartAttempt tracks the previous in-place restart attempt
+    /// of the JobSet. It is read by the agent. If the in-place restart
+    /// attempt of the Pod is smaller than or equal to previousInPlaceRestartAttempt,
+    /// the agent should restart its Pod in-place.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "previousInPlaceRestartAttempt")]
+    pub previous_in_place_restart_attempt: Option<i32>,
+    /// replicatedJobsStatus tracks the number of JobsReady for each replicatedJob.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicatedJobsStatus")]
     pub replicated_jobs_status: Option<Vec<JobSetStatusReplicatedJobsStatus>>,
     /// restarts tracks the number of times the JobSet has restarted (i.e. recreated in case of RecreateAll policy).
@@ -8343,7 +8361,7 @@ pub struct JobSetStatus {
     /// restartsCountTowardsMax tracks the number of times the JobSet has restarted that counts towards the maximum allowed number of restarts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartsCountTowardsMax")]
     pub restarts_count_towards_max: Option<i32>,
-    /// terminalState the state of the JobSet when it finishes execution.
+    /// terminalState tracks the state of the JobSet when it finishes execution.
     /// It can be either Completed or Failed. Otherwise, it is empty by default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminalState")]
     pub terminal_state: Option<String>,

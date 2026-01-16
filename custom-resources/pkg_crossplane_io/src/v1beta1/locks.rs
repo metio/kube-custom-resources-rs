@@ -27,6 +27,7 @@ pub struct LockPackages {
     /// Source is the OCI image name without a tag or digest.
     pub source: String,
     /// Type is the type of package.
+    /// 
     /// Deprecated: Specify an apiVersion and kind instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<LockPackagesType>,
@@ -49,6 +50,7 @@ pub struct LockPackagesDependencies {
     /// Package is the OCI image name without a tag or digest.
     pub package: String,
     /// Type is the type of package. Can be either Configuration or Provider.
+    /// 
     /// Deprecated: Specify an apiVersion and kind instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<LockPackagesDependenciesType>,

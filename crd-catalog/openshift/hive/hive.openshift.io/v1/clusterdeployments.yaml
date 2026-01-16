@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.18.0"
+    controller-gen.kubebuilder.io/version: "v0.19.0"
   name: "clusterdeployments.hive.openshift.io"
 spec:
   group: "hive.openshift.io"
@@ -365,6 +365,18 @@ spec:
                             description: "healthCheckInterval defines how long the router waits between two consecutive\nhealth checks on its configured backends.  This value is applied globally as\na default for all routes, but may be overridden per-route by the route annotation\n\"router.openshift.io/haproxy.health.check.interval\".\n\nExpects an unsigned duration string of decimal numbers, each with optional\nfraction and a unit suffix, eg \"300ms\", \"1.5h\" or \"2h45m\".\nValid time units are \"ns\", \"us\" (or \"µs\" U+00B5 or \"μs\" U+03BC), \"ms\", \"s\", \"m\", \"h\".\n\nSetting this to less than 5s can cause excess traffic due to too frequent\nTCP health checks and accompanying SYN packet storms.  Alternatively, setting\nthis too high can result in increased latency, due to backend servers that are no\nlonger available, but haven't yet been detected as such.\n\nAn empty or zero healthCheckInterval means no opinion and IngressController chooses\na default, which is subject to change over time.\nCurrently the default healthCheckInterval value is 5s.\n\nCurrently the minimum allowed value is 1s and the maximum allowed value is\n2147483647ms (24.85 days).  Both are subject to change over time."
                             pattern: "^(0|([0-9]+(\\.[0-9]+)?(ns|us|µs|μs|ms|s|m|h))+)$"
                             type: "string"
+                          httpKeepAliveTimeout:
+                            description: "httpKeepAliveTimeout defines the maximum allowed time to wait for\na new HTTP request to appear on a connection from the client to the router.\n\nThis field expects an unsigned duration string of a decimal number, with optional\nfraction and a unit suffix, e.g. \"300ms\", \"1.5s\" or \"2m45s\".\nValid time units are \"ms\", \"s\", \"m\".\nThe allowed range is from 1 millisecond to 15 minutes.\n\nWhen omitted, this means the user has no opinion and the platform is left\nto choose a reasonable default. This default is subject to change over time.\nThe current default is 300s.\n\nLow values (tens of milliseconds or less) can cause clients to close and reopen connections\nfor each request, leading to reduced connection sharing.\nFor HTTP/2, special care should be taken with low values.\nA few seconds is a reasonable starting point to avoid holding idle connections open\nwhile still allowing subsequent requests to reuse the connection.\n\nHigh values (minutes or more) favor connection reuse but may cause idle\nconnections to linger longer."
+                            maxLength: 16
+                            minLength: 1
+                            type: "string"
+                            x-kubernetes-validations:
+                              - message: "httpKeepAliveTimeout must be a valid duration string composed of an unsigned integer value, optionally followed by a decimal fraction and a unit suffix (ms, s, m)"
+                                rule: "self.matches('^([0-9]+(\\\\.[0-9]+)?(ms|s|m))+$')"
+                              - message: "httpKeepAliveTimeout must be less than or equal to 15 minutes"
+                                rule: "!self.matches('^([0-9]+(\\\\.[0-9]+)?(ms|s|m))+$') || duration(self) <= duration('15m')"
+                              - message: "httpKeepAliveTimeout must be greater than or equal to 1 millisecond"
+                                rule: "!self.matches('^([0-9]+(\\\\.[0-9]+)?(ms|s|m))+$') || duration(self) >= duration('1ms')"
                           maxConnections:
                             description: "maxConnections defines the maximum number of simultaneous\nconnections that can be established per HAProxy process.\nIncreasing this value allows each ingress controller pod to\nhandle more connections but at the cost of additional\nsystem resources being consumed.\n\nPermitted values are: empty, 0, -1, and the range\n2000-2000000.\n\nIf this field is empty or 0, the IngressController will use\nthe default value of 50000, but the default is subject to\nchange in future releases.\n\nIf the value is -1 then HAProxy will dynamically compute a\nmaximum value based on the available ulimits in the running\ncontainer. Selecting -1 (i.e., auto) will result in a large\nvalue being computed (~520000 on OpenShift >=4.10 clusters)\nand therefore each HAProxy process will incur significant\nmemory usage compared to the current default of 50000.\n\nSetting a value that is greater than the current operating\nsystem limit will prevent the HAProxy process from\nstarting.\n\nIf you choose a discrete value (e.g., 750000) and the\nrouter pod is migrated to a new node, there's no guarantee\nthat that new node has identical ulimits configured. In\nsuch a scenario the pod would fail to start. If you have\nnodes with different ulimits configured (e.g., different\ntuned profiles) and you choose a discrete value then the\nguidance is to use -1 and let the value be computed\ndynamically at runtime.\n\nYou can monitor memory usage for router containers with the\nfollowing metric:\n'container_memory_working_set_bytes{container=\"router\",namespace=\"openshift-ingress\"}'.\n\nYou can monitor memory usage of individual HAProxy\nprocesses in router containers with the following metric:\n'container_memory_working_set_bytes{container=\"router\",namespace=\"openshift-ingress\"}/container_processes{container=\"router\",namespace=\"openshift-ingress\"}'."
                             format: "int32"
@@ -400,6 +412,7 @@ spec:
                       - "domain"
                       - "name"
                     type: "object"
+                  maxItems: 16
                   type: "array"
                 installAttemptsLimit:
                   description: "InstallAttemptsLimit is the maximum number of times Hive will attempt to install the cluster."
@@ -876,7 +889,7 @@ spec:
                         description: "EnvVar represents an environment variable present in a Container."
                         properties:
                           name:
-                            description: "Name of the environment variable. Must be a C_IDENTIFIER."
+                            description: "Name of the environment variable.\nMay consist of any printable ASCII characters except '='."
                             type: "string"
                           value:
                             description: "Variable references $(VAR_NAME) are expanded\nusing the previously defined environment variables in the container and\nany service environment variables. If a variable cannot be resolved,\nthe reference in the input string will be unchanged. Double $$ are reduced\nto a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.\n\"$$(VAR_NAME)\" will produce the string literal \"$(VAR_NAME)\".\nEscaped references will never be expanded, regardless of whether the variable\nexists or not.\nDefaults to \"\"."
@@ -912,6 +925,28 @@ spec:
                                     type: "string"
                                 required:
                                   - "fieldPath"
+                                type: "object"
+                                x-kubernetes-map-type: "atomic"
+                              fileKeyRef:
+                                description: "FileKeyRef selects a key of the env file.\nRequires the EnvFiles feature gate to be enabled."
+                                properties:
+                                  key:
+                                    description: "The key within the env file. An invalid key will prevent the pod from starting.\nThe keys defined within a source may consist of any printable ASCII characters except '='.\nDuring Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters."
+                                    type: "string"
+                                  optional:
+                                    default: false
+                                    description: "Specify whether the file or its key must be defined. If the file or key\ndoes not exist, then the env var is not published.\nIf optional is set to true and the specified key does not exist,\nthe environment variable will not be set in the Pod's containers.\n\nIf optional is set to false and the specified key does not exist,\nan error will be returned during Pod creation."
+                                    type: "boolean"
+                                  path:
+                                    description: "The path within the volume from which to select the file.\nMust be relative and may not contain the '..' path or start with '..'."
+                                    type: "string"
+                                  volumeName:
+                                    description: "The name of the volume mount containing the env file."
+                                    type: "string"
+                                required:
+                                  - "key"
+                                  - "path"
+                                  - "volumeName"
                                 type: "object"
                                 x-kubernetes-map-type: "atomic"
                               resourceFieldRef:
@@ -1329,7 +1364,7 @@ spec:
                         description: "UpdateHistory is a single attempted update to the cluster."
                         properties:
                           acceptedRisks:
-                            description: "acceptedRisks records risks which were accepted to initiate the update.\nFor example, it may menition an Upgradeable=False or missing signature\nthat was overriden via desiredUpdate.force, or an update that was\ninitiated despite not being in the availableUpdates set of recommended\nupdate targets."
+                            description: "acceptedRisks records risks which were accepted to initiate the update.\nFor example, it may menition an Upgradeable=False or missing signature\nthat was overridden via desiredUpdate.force, or an update that was\ninitiated despite not being in the availableUpdates set of recommended\nupdate targets."
                             type: "string"
                           completionTime:
                             description: "completionTime, if set, is when the update was fully applied. The update\nthat is currently being applied will have a null completion time.\nCompletion time will always be set for entries that are not the current\nupdate (usually to the started time of the next update)."

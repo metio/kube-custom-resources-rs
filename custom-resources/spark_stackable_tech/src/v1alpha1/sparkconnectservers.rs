@@ -39,6 +39,15 @@ pub struct SparkConnectServerSpec {
     /// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)>
     /// for details.
     pub image: SparkConnectServerImage,
+    /// A list of generic Kubernetes objects, which are merged into the objects that the operator
+    /// creates.
+    /// 
+    /// List entries are arbitrary YAML objects, which need to be valid Kubernetes objects.
+    /// 
+    /// Read the [Object overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#object-overrides)>
+    /// for more information.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectOverrides")]
+    pub object_overrides: Option<Vec<BTreeMap<String, serde_json::Value>>>,
     /// A Spark Connect server definition.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub server: Option<SparkConnectServerServer>,

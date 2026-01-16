@@ -68,7 +68,7 @@ spec:
                   description: "failurePolicy configures when to declare the JobSet as\nfailed.\nThe JobSet is always declared failed if any job in the set\nfinished with status failed."
                   properties:
                     maxRestarts:
-                      description: "maxRestarts defines the limit on the number of JobSet restarts.\nA restart is achieved by recreating all active child jobs."
+                      description: "maxRestarts defines the limit on the number of JobSet restarts.\nIf the restart strategy \"InPlaceRestart\" is used, this field\nalso defines the limit on the number of container restarts of\nany child container. This is required to handle the edge case\nin which a container keeps failing too fast to complete a JobSet\nrestart."
                       format: "int32"
                       type: "integer"
                     restartStrategy:
@@ -77,6 +77,7 @@ spec:
                       enum:
                         - "Recreate"
                         - "BlockingRecreate"
+                        - "InPlaceRestart"
                       type: "string"
                     rules:
                       description: "rules is a list of failure policy rules for this JobSet.\nFor a given Job failure, the rules will be evaluated in order,\nand only the first matching rule will be executed.\nIf no matching rule is found, the RestartJobSet action is applied."
@@ -5713,8 +5714,18 @@ spec:
                   x-kubernetes-list-map-keys:
                     - "type"
                   x-kubernetes-list-type: "map"
+                currentInPlaceRestartAttempt:
+                  description: "currentInPlaceRestartAttempt tracks the current in-place restart attempt\nof the JobSet. It is read by the agent. If the in-place restart\nattempt of the Pod is equal to currentInPlaceRestartAttempt, the agent\nshould lift its barrier to allow the worker container to\nstart running."
+                  format: "int32"
+                  minimum: 0.0
+                  type: "integer"
+                previousInPlaceRestartAttempt:
+                  description: "previousInPlaceRestartAttempt tracks the previous in-place restart attempt\nof the JobSet. It is read by the agent. If the in-place restart\nattempt of the Pod is smaller than or equal to previousInPlaceRestartAttempt,\nthe agent should restart its Pod in-place."
+                  format: "int32"
+                  minimum: 0.0
+                  type: "integer"
                 replicatedJobsStatus:
-                  description: "replicatedJobsStatus track the number of JobsReady for each replicatedJob."
+                  description: "replicatedJobsStatus tracks the number of JobsReady for each replicatedJob."
                   items:
                     description: "ReplicatedJobStatus defines the observed ReplicatedJobs Readiness."
                     properties:
@@ -5762,7 +5773,7 @@ spec:
                   format: "int32"
                   type: "integer"
                 terminalState:
-                  description: "terminalState the state of the JobSet when it finishes execution.\nIt can be either Completed or Failed. Otherwise, it is empty by default."
+                  description: "terminalState tracks the state of the JobSet when it finishes execution.\nIt can be either Completed or Failed. Otherwise, it is empty by default."
                   type: "string"
               type: "object"
           type: "object"

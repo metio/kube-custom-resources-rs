@@ -41,9 +41,10 @@ spec:
                 parameterOverrides:
                   additionalProperties:
                     type: "string"
+                  description: "Map keys are the parameter name and the values are the parameter value.\n\nThe \"apply method\" for parameters is automatically determined.\n\nThese are ONLY user-defined parameter overrides for the DB cluster parameter group.\n\nThis does not contain default or system parameters."
                   type: "object"
                 parameters:
-                  description: "A list of parameters in the DB cluster parameter group to modify.\n\nValid Values (for the application method): immediate | pending-reboot\n\nYou can use the immediate value with dynamic parameters only. You can use\nthe pending-reboot value for both dynamic and static parameters.\n\nWhen the application method is immediate, changes to dynamic parameters are\napplied immediately to the DB clusters associated with the parameter group.\nWhen the application method is pending-reboot, changes to dynamic and static\nparameters are applied after a reboot without failover to the DB clusters\nassociated with the parameter group."
+                  description: "DEPRECATED - do not use.  Prefer ParameterOverrides instead."
                   items:
                     description: "This data type is used as a request parameter in the ModifyDBParameterGroup\nand ResetDBParameterGroup actions.\n\nThis data type is used as a response element in the DescribeEngineDefaultParameters\nand DescribeDBParameters actions."
                     properties:

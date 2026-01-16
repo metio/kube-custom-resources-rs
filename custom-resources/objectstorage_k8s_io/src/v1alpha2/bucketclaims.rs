@@ -21,16 +21,25 @@ pub struct BucketClaimSpec {
     /// bucketClassName selects the BucketClass for provisioning the BucketClaim.
     /// This field is used only for BucketClaim dynamic provisioning.
     /// If unspecified, existingBucketName must be specified for binding to an existing Bucket.
+    /// Must be a valid Kubernetes resource name: at most 253 characters, consisting only of
+    /// lower-case alphanumeric characters, hyphens, and periods, starting and ending with an
+    /// alphanumeric character.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bucketClassName")]
     pub bucket_class_name: Option<String>,
     /// existingBucketName selects the name of an existing Bucket resource that this BucketClaim
     /// should bind to.
     /// This field is used only for BucketClaim static provisioning.
     /// If unspecified, bucketClassName must be specified for dynamically provisioning a new bucket.
+    /// Must be a valid Kubernetes resource name: at most 253 characters, consisting only of
+    /// lower-case alphanumeric characters, hyphens, and periods, starting and ending with an
+    /// alphanumeric character.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "existingBucketName")]
     pub existing_bucket_name: Option<String>,
     /// protocols lists object storage protocols that the provisioned Bucket must support.
     /// If specified, COSI will verify that each item is advertised as supported by the driver.
+    /// It is recommended to specify all protocols that applications will rely on in BucketAccesses
+    /// referencing this BucketClaim.
+    /// Possible values: 'S3', 'Azure', 'GCS'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocols: Option<Vec<String>>,
 }
@@ -39,6 +48,9 @@ pub struct BucketClaimSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketClaimStatus {
     /// boundBucketName is the name of the Bucket this BucketClaim is bound to.
+    /// Must be a valid Kubernetes resource name: at most 253 characters, consisting only of
+    /// lower-case alphanumeric characters, hyphens, and periods, starting and ending with an
+    /// alphanumeric character.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "boundBucketName")]
     pub bound_bucket_name: Option<String>,
     /// error holds the most recent error message, with a timestamp.
@@ -47,6 +59,7 @@ pub struct BucketClaimStatus {
     pub error: Option<BucketClaimStatusError>,
     /// protocols is the set of protocols the bound Bucket reports to support. BucketAccesses can
     /// request access to this BucketClaim using any of the protocols reported here.
+    /// Possible values: 'S3', 'Azure', 'GCS'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocols: Option<Vec<String>>,
     /// readyToUse indicates that the bucket is ready for consumption by workloads.
@@ -60,6 +73,7 @@ pub struct BucketClaimStatus {
 pub struct BucketClaimStatusError {
     /// message is a string detailing the encountered error.
     /// NOTE: message will be logged, and it should not contain sensitive information.
+    /// Must not exceed 1.5MB.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
     /// time is the timestamp when the error was encountered.

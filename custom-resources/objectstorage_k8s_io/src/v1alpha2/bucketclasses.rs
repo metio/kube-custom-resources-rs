@@ -24,10 +24,15 @@ pub struct BucketClassSpec {
     #[serde(rename = "deletionPolicy")]
     pub deletion_policy: BucketClassDeletionPolicy,
     /// driverName is the name of the driver that fulfills requests for this BucketClass.
+    /// See driver documentation to determine the correct value to set.
+    /// Must be 63 characters or less, beginning and ending with an alphanumeric character
+    /// ([a-z0-9A-Z]) with dashes (-), dots (.), and alphanumerics between.
     #[serde(rename = "driverName")]
     pub driver_name: String,
     /// parameters is an opaque map of driver-specific configuration items passed to the driver that
     /// fulfills requests for this BucketClass.
+    /// See driver documentation to determine supported parameters and their effects.
+    /// A maximum of 512 parameters are allowed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parameters: Option<BTreeMap<String, String>>,
 }

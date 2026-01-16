@@ -1322,6 +1322,13 @@ spec:
                       nullable: true
                       type: "string"
                   type: "object"
+                objectOverrides:
+                  default: []
+                  description: "A list of generic Kubernetes objects, which are merged into the objects that the operator\ncreates.\n\nList entries are arbitrary YAML objects, which need to be valid Kubernetes objects.\n\nRead the [Object overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#object-overrides)\nfor more information."
+                  items:
+                    type: "object"
+                    x-kubernetes-preserve-unknown-fields: true
+                  type: "array"
                 workers:
                   description: "This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing\nall the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable\nat the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured\non role level. There is also a second form of config, which can only be configured\nat role level, the `roleConfig`.\nYou can learn more about this in the\n[Roles and role group concept documentation](https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups)."
                   nullable: true

@@ -29,32 +29,42 @@ spec:
             metadata:
               type: "object"
             spec:
-              description: "VSphereDeploymentZoneSpec defines the desired state of VSphereDeploymentZone."
+              description: "spec is the desired state of VSphereDeploymentZone."
               properties:
                 controlPlane:
-                  description: "ControlPlane determines if this failure domain is suitable for use by control plane machines."
+                  description: "controlPlane determines if this failure domain is suitable for use by control plane machines."
                   type: "boolean"
                 failureDomain:
-                  description: "FailureDomain is the name of the VSphereFailureDomain used for this VSphereDeploymentZone"
+                  description: "failureDomain is the name of the VSphereFailureDomain used for this VSphereDeploymentZone"
+                  maxLength: 253
+                  minLength: 1
                   type: "string"
                 placementConstraint:
-                  description: "PlacementConstraint encapsulates the placement constraints\nused within this deployment zone."
+                  description: "placementConstraint encapsulates the placement constraints\nused within this deployment zone."
+                  minProperties: 1
                   properties:
                     folder:
-                      description: "Folder is the name or inventory path of the folder in which the\nvirtual machine is created/located."
+                      description: "folder is the name or inventory path of the folder in which the\nvirtual machine is created/located."
+                      maxLength: 2048
+                      minLength: 1
                       type: "string"
                     resourcePool:
-                      description: "ResourcePool is the name or inventory path of the resource pool in which\nthe virtual machine is created/located."
+                      description: "resourcePool is the name or inventory path of the resource pool in which\nthe virtual machine is created/located."
+                      maxLength: 2048
+                      minLength: 1
                       type: "string"
                   type: "object"
                 server:
-                  description: "Server is the address of the vSphere endpoint."
+                  description: "server is the address of the vSphere endpoint."
+                  maxLength: 1024
+                  minLength: 1
                   type: "string"
               required:
-                - "placementConstraint"
+                - "failureDomain"
               type: "object"
             status:
-              description: "VSphereDeploymentZoneStatus contains the status for a VSphereDeploymentZone."
+              description: "status is the observed state of VSphereDeploymentZone."
+              minProperties: 1
               properties:
                 conditions:
                   description: "conditions represents the observations of a VSphereDeploymentZone's current state.\nKnown condition types are Ready, VCenterAvailable, PlacementConstraintReady, FailureDomainValidated and Paused."
@@ -150,9 +160,11 @@ spec:
                       type: "object"
                   type: "object"
                 ready:
-                  description: "Ready is true when the VSphereDeploymentZone resource is ready.\nIf set to false, it will be ignored by VSphereClusters"
+                  description: "ready is true when the VSphereDeploymentZone resource is ready.\nIf set to false, it will be ignored by VSphereClusters"
                   type: "boolean"
               type: "object"
+          required:
+            - "spec"
           type: "object"
       served: true
       storage: true

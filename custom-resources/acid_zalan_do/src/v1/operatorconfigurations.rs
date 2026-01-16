@@ -42,6 +42,8 @@ pub struct OperatorConfigurationConfiguration {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ignore_instance_limits_annotation_key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ignore_resources_limits_annotation_key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kubernetes: Option<OperatorConfigurationConfigurationKubernetes>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kubernetes_use_configmaps: Option<bool>,

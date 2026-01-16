@@ -113,13 +113,7 @@ pub struct XListenerSetListeners {
     pub name: String,
     /// Port is the network port. Multiple listeners may use the
     /// same port, subject to the Listener compatibility rules.
-    /// 
-    /// If the port is not set or specified as zero, the implementation will assign
-    /// a unique port. If the implementation does not support dynamic port
-    /// assignment, it MUST set `Accepted` condition to `False` with the
-    /// `UnsupportedPort` reason.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub port: Option<i32>,
+    pub port: i32,
     /// Protocol specifies the network protocol this listener expects to receive.
     pub protocol: String,
     /// TLS is the TLS configuration for the Listener. This field is required if
@@ -443,8 +437,6 @@ pub struct XListenerSetStatusListeners {
     pub conditions: Vec<Condition>,
     /// Name is the name of the Listener that this status corresponds to.
     pub name: String,
-    /// Port is the network port the listener is configured to listen on.
-    pub port: i32,
     /// SupportedKinds is the list indicating the Kinds supported by this
     /// listener. This MUST represent the kinds supported by an implementation for
     /// that Listener configuration.

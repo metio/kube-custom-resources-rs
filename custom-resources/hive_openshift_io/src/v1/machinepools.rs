@@ -285,12 +285,23 @@ pub enum MachinePoolPlatformAzureOsDiskDiskType {
 pub struct MachinePoolPlatformAzureOsImage {
     /// Offer is the offer of the image.
     pub offer: String,
+    /// Plan is the purchase plan of the image.
+    /// If omitted, it defaults to "WithPurchasePlan".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub plan: Option<MachinePoolPlatformAzureOsImagePlan>,
     /// Publisher is the publisher of the image.
     pub publisher: String,
     /// SKU is the SKU of the image.
     pub sku: String,
     /// Version is the version of the image.
     pub version: String,
+}
+
+/// OSImage defines the image to use for the OS.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum MachinePoolPlatformAzureOsImagePlan {
+    WithPurchasePlan,
+    NoPurchasePlan,
 }
 
 /// Azure is the configuration used when installing on Azure.
@@ -786,7 +797,6 @@ pub struct MachinePoolTaints {
     /// Required. The taint key to be applied to a node.
     pub key: String,
     /// TimeAdded represents the time at which the taint was added.
-    /// It is only written for NoExecute taints.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeAdded")]
     pub time_added: Option<String>,
     /// The taint value corresponding to the taint key.

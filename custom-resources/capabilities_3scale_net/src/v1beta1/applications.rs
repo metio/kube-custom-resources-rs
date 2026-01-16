@@ -25,6 +25,10 @@ pub struct ApplicationSpec {
     /// ApplicationPlanName name of application plan that the application will use
     #[serde(rename = "applicationPlanName")]
     pub application_plan_name: String,
+    /// AuthSecretRef reference to the API credentials secret. This secret is
+    /// used only once when creating a new application
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authSecretRef")]
+    pub auth_secret_ref: Option<ApplicationAuthSecretRef>,
     /// Description human-readable text of the application
     pub description: String,
     /// Name identifies the application uniquely within the account
@@ -40,6 +44,17 @@ pub struct ApplicationSpec {
 /// AccountCRName name of account custom resource under which the application will be created
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationAccountCr {
+    /// Name of the referent.
+    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// AuthSecretRef reference to the API credentials secret. This secret is
+/// used only once when creating a new application
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ApplicationAuthSecretRef {
     /// Name of the referent.
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     /// TODO: Add other useful fields. apiVersion, kind, uid?

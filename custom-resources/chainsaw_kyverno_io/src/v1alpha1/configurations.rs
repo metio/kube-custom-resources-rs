@@ -40,6 +40,9 @@ pub struct ConfigurationSpec {
     /// FailFast determines whether the test should stop upon encountering the first failure.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failFast")]
     pub fail_fast: Option<bool>,
+    /// FastNamespaceDeletion skips waiting for namespace deletion.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fastNamespaceDeletion")]
+    pub fast_namespace_deletion: Option<bool>,
     /// ForceTerminationGracePeriod forces the termination grace period on pods, statefulsets, daemonsets and deployments.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceTerminationGracePeriod")]
     pub force_termination_grace_period: Option<String>,
@@ -51,7 +54,7 @@ pub struct ConfigurationSpec {
     pub include_test_regex: Option<String>,
     /// Namespace defines the namespace to use for tests.
     /// If not specified, every test will execute in a random ephemeral namespace
-    /// unless the namespace is overridden in a the test spec.
+    /// unless the namespace is overridden in the test spec.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// NamespaceTemplate defines a template to create the test namespace.

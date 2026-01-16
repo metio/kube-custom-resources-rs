@@ -29,19 +29,23 @@ spec:
             metadata:
               type: "object"
             spec:
-              description: "VSphereVMSpec defines the desired state of VSphereVM."
+              description: "spec is the desired state of VSphereVM."
               properties:
                 additionalDisksGiB:
-                  description: "AdditionalDisksGiB holds the sizes of additional disks of the virtual machine, in GiB\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned."
+                  description: "additionalDisksGiB holds the sizes of additional disks of the virtual machine, in GiB\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned."
                   items:
                     format: "int32"
                     type: "integer"
+                  maxItems: 128
                   type: "array"
+                  x-kubernetes-list-type: "atomic"
                 biosUUID:
-                  description: "BiosUUID is the VM's BIOS UUID that is assigned at runtime after\nthe VM has been created.\nThis field is required at runtime for other controllers that read\nthis CRD as unstructured data."
+                  description: "biosUUID is the VM's BIOS UUID that is assigned at runtime after\nthe VM has been created.\nThis field is required at runtime for other controllers that read\nthis CRD as unstructured data."
+                  maxLength: 1024
+                  minLength: 1
                   type: "string"
                 bootstrapRef:
-                  description: "BootstrapRef is a reference to a bootstrap provider-specific resource\nthat holds configuration details.\nThis field is optional in case no bootstrap data is required to create\na VM."
+                  description: "bootstrapRef is a reference to a bootstrap provider-specific resource\nthat holds configuration details.\nThis field is optional in case no bootstrap data is required to create\na VM."
                   properties:
                     apiVersion:
                       description: "API version of the referent."
@@ -67,31 +71,37 @@ spec:
                   type: "object"
                   x-kubernetes-map-type: "atomic"
                 cloneMode:
-                  description: "CloneMode specifies the type of clone operation.\nThe LinkedClone mode is only support for templates that have at least\none snapshot. If the template has no snapshots, then CloneMode defaults\nto FullClone.\nWhen LinkedClone mode is enabled the DiskGiB field is ignored as it is\nnot possible to expand disks of linked clones.\nDefaults to LinkedClone, but fails gracefully to FullClone if the source\nof the clone operation has no snapshots."
+                  description: "cloneMode specifies the type of clone operation.\nThe LinkedClone mode is only support for templates that have at least\none snapshot. If the template has no snapshots, then CloneMode defaults\nto FullClone.\nWhen LinkedClone mode is enabled the DiskGiB field is ignored as it is\nnot possible to expand disks of linked clones.\nDefaults to LinkedClone, but fails gracefully to FullClone if the source\nof the clone operation has no snapshots."
+                  enum:
+                    - "fullClone"
+                    - "linkedClone"
                   type: "string"
                 customVMXKeys:
                   additionalProperties:
                     type: "string"
-                  description: "CustomVMXKeys is a dictionary of advanced VMX options that can be set on VM\nDefaults to empty map"
+                  description: "customVMXKeys is a dictionary of advanced VMX options that can be set on VM\nDefaults to empty map"
                   type: "object"
                 dataDisks:
-                  description: "DataDisks are additional disks to add to the VM that are not part of the VM's OVA template."
+                  description: "dataDisks are additional disks to add to the VM that are not part of the VM's OVA template."
                   items:
                     description: "VSphereDisk is an additional disk to add to the VM that is not part of the VM OVA template."
                     properties:
                       name:
-                        description: "Name is used to identify the disk definition. Name is required and needs to be unique so that it can be used to\nclearly identify purpose of the disk."
+                        description: "name is used to identify the disk definition. Name is required and needs to be unique so that it can be used to\nclearly identify purpose of the disk."
+                        maxLength: 1024
+                        minLength: 1
                         type: "string"
                       provisioningMode:
-                        description: "ProvisioningMode specifies the provisioning type to be used by this vSphere data disk.\nIf not set, the setting will be provided by the default storage policy."
+                        description: "provisioningMode specifies the provisioning type to be used by this vSphere data disk.\nIf not set, the setting will be provided by the default storage policy."
                         enum:
                           - "Thin"
                           - "Thick"
                           - "EagerlyZeroed"
                         type: "string"
                       sizeGiB:
-                        description: "SizeGiB is the size of the disk in GiB."
+                        description: "sizeGiB is the size of the disk in GiB."
                         format: "int32"
+                        minimum: 1.0
                         type: "integer"
                     required:
                       - "name"
@@ -103,38 +113,50 @@ spec:
                     - "name"
                   x-kubernetes-list-type: "map"
                 datacenter:
-                  description: "Datacenter is the name, inventory path, managed object reference or the managed\nobject ID of the datacenter in which the virtual machine is created/located.\nDefaults to * which selects the default datacenter."
+                  description: "datacenter is the name, inventory path, managed object reference or the managed\nobject ID of the datacenter in which the virtual machine is created/located.\nDefaults to * which selects the default datacenter."
+                  maxLength: 2048
+                  minLength: 1
                   type: "string"
                 datastore:
-                  description: "Datastore is the name, inventory path, managed object reference or the managed\nobject ID of the datastore in which the virtual machine is created/located."
+                  description: "datastore is the name, inventory path, managed object reference or the managed\nobject ID of the datastore in which the virtual machine is created/located."
+                  maxLength: 2048
+                  minLength: 1
                   type: "string"
                 diskGiB:
-                  description: "DiskGiB is the size of a virtual machine's disk, in GiB.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned."
+                  description: "diskGiB is the size of a virtual machine's disk, in GiB.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned."
                   format: "int32"
+                  minimum: 1.0
                   type: "integer"
                 folder:
-                  description: "Folder is the name, inventory path, managed object reference or the managed\nobject ID of the folder in which the virtual machine is created/located."
+                  description: "folder is the name, inventory path, managed object reference or the managed\nobject ID of the folder in which the virtual machine is created/located."
+                  maxLength: 2048
+                  minLength: 1
                   type: "string"
-                guestSoftPowerOffTimeout:
-                  description: "GuestSoftPowerOffTimeout sets the wait timeout for shutdown in the VM guest.\nThe VM will be powered off forcibly after the timeout if the VM is still\nup and running when the PowerOffMode is set to trySoft.\n\nThis parameter only applies when the PowerOffMode is set to trySoft.\n\nIf omitted, the timeout defaults to 5 minutes."
-                  type: "string"
+                guestSoftPowerOffTimeoutSeconds:
+                  description: "guestSoftPowerOffTimeoutSeconds sets the wait timeout for shutdown in the VM guest.\nThe VM will be powered off forcibly after the timeout if the VM is still\nup and running when the PowerOffMode is set to trySoft.\n\nThis parameter only applies when the PowerOffMode is set to trySoft.\n\nIf omitted, the timeout defaults to 5 minutes."
+                  format: "int32"
+                  minimum: 1.0
+                  type: "integer"
                 hardwareVersion:
-                  description: "HardwareVersion is the hardware version of the virtual machine.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned.\nCheck the compatibility with the ESXi version before setting the value."
+                  description: "hardwareVersion is the hardware version of the virtual machine.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned.\nCheck the compatibility with the ESXi version before setting the value."
+                  maxLength: 128
+                  minLength: 1
                   type: "string"
                 memoryMiB:
-                  description: "MemoryMiB is the size of a virtual machine's memory, in MiB.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned."
+                  description: "memoryMiB is the size of a virtual machine's memory, in MiB.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned."
                   format: "int64"
+                  minimum: 1.0
                   type: "integer"
                 network:
-                  description: "Network is the network configuration for this machine's VM."
+                  description: "network is the network configuration for this machine's VM."
                   properties:
                     devices:
-                      description: "Devices is the list of network devices used by the virtual machine.\n"
+                      description: "devices is the list of network devices used by the virtual machine.\n"
                       items:
                         description: "NetworkDeviceSpec defines the network configuration for a virtual machine's\nnetwork device."
                         properties:
                           addressesFromPools:
-                            description: "AddressesFromPools is a list of IPAddressPools that should be assigned\nto IPAddressClaims. The machine's cloud-init metadata will be populated\nwith IPAddresses fulfilled by an IPAM provider."
+                            description: "addressesFromPools is a list of IPAddressPools that should be assigned\nto IPAddressClaims. The machine's cloud-init metadata will be populated\nwith IPAddresses fulfilled by an IPAM provider."
                             items:
                               description: "TypedLocalObjectReference contains enough information to let you locate the\ntyped referenced object inside the same namespace."
                               properties:
@@ -152,206 +174,268 @@ spec:
                                 - "name"
                               type: "object"
                               x-kubernetes-map-type: "atomic"
+                            maxItems: 128
                             type: "array"
+                            x-kubernetes-list-type: "atomic"
                           deviceName:
-                            description: "DeviceName may be used to explicitly assign a name to the network device\nas it exists in the guest operating system."
+                            description: "deviceName may be used to explicitly assign a name to the network device\nas it exists in the guest operating system."
+                            maxLength: 1024
+                            minLength: 1
                             type: "string"
                           dhcp4:
-                            description: "DHCP4 is a flag that indicates whether or not to use DHCP for IPv4\non this device.\nIf true then IPAddrs should not contain any IPv4 addresses."
+                            description: "dhcp4 is a flag that indicates whether or not to use DHCP for IPv4\non this device.\nIf true then IPAddrs should not contain any IPv4 addresses."
                             type: "boolean"
                           dhcp4Overrides:
-                            description: "DHCP4Overrides allows for the control over several DHCP behaviors.\nOverrides will only be applied when the corresponding DHCP flag is set.\nOnly configured values will be sent, omitted values will default to\ndistribution defaults.\nDependent on support in the network stack for your distribution.\nFor more information see the netplan reference (https://netplan.io/reference#dhcp-overrides)"
+                            description: "dhcp4Overrides allows for the control over several DHCP behaviors.\nOverrides will only be applied when the corresponding DHCP flag is set.\nOnly configured values will be sent, omitted values will default to\ndistribution defaults.\nDependent on support in the network stack for your distribution.\nFor more information see the netplan reference (https://netplan.io/reference#dhcp-overrides)"
                             properties:
                               hostname:
-                                description: "Hostname is the name which will be sent to the DHCP server instead of\nthe machine's hostname."
+                                description: "hostname is the name which will be sent to the DHCP server instead of\nthe machine's hostname."
+                                maxLength: 1024
                                 type: "string"
                               routeMetric:
-                                description: "RouteMetric is used to prioritize routes for devices. A lower metric for\nan interface will have a higher priority."
+                                description: "routeMetric is used to prioritize routes for devices. A lower metric for\nan interface will have a higher priority."
+                                format: "int32"
+                                minimum: 0.0
                                 type: "integer"
                               sendHostname:
-                                description: "SendHostname when `true`, the hostname of the machine will be sent to the\nDHCP server."
+                                description: "sendHostname when `true`, the hostname of the machine will be sent to the\nDHCP server."
                                 type: "boolean"
                               useDNS:
-                                description: "UseDNS when `true`, the DNS servers in the DHCP server will be used and\ntake precedence."
+                                description: "useDNS when `true`, the DNS servers in the DHCP server will be used and\ntake precedence."
                                 type: "boolean"
                               useDomains:
-                                description: "UseDomains can take the values `true`, `false`, or `route`. When `true`,\nthe domain name from the DHCP server will be used as the DNS search\ndomain for this device. When `route`, the domain name from the DHCP\nresponse will be used for routing DNS only, not for searching."
+                                description: "useDomains can take the values `true`, `false`, or `route`. When `true`,\nthe domain name from the DHCP server will be used as the DNS search\ndomain for this device. When `route`, the domain name from the DHCP\nresponse will be used for routing DNS only, not for searching."
+                                maxLength: 128
                                 type: "string"
                               useHostname:
-                                description: "UseHostname when `true`, the hostname from the DHCP server will be set\nas the transient hostname of the machine."
+                                description: "useHostname when `true`, the hostname from the DHCP server will be set\nas the transient hostname of the machine."
                                 type: "boolean"
                               useMTU:
-                                description: "UseMTU when `true`, the MTU from the DHCP server will be set as the\nMTU of the device."
+                                description: "useMTU when `true`, the MTU from the DHCP server will be set as the\nMTU of the device."
                                 type: "boolean"
                               useNTP:
-                                description: "UseNTP when `true`, the NTP servers from the DHCP server will be used\nby systemd-timesyncd and take precedence."
+                                description: "useNTP when `true`, the NTP servers from the DHCP server will be used\nby systemd-timesyncd and take precedence."
                                 type: "boolean"
                               useRoutes:
-                                description: "UseRoutes when `true`, the routes from the DHCP server will be installed\nin the routing table."
+                                description: "useRoutes when `true`, the routes from the DHCP server will be installed\nin the routing table."
+                                maxLength: 128
                                 type: "string"
                             type: "object"
                           dhcp6:
-                            description: "DHCP6 is a flag that indicates whether or not to use DHCP for IPv6\non this device.\nIf true then IPAddrs should not contain any IPv6 addresses."
+                            description: "dhcp6 is a flag that indicates whether or not to use DHCP for IPv6\non this device.\nIf true then IPAddrs should not contain any IPv6 addresses."
                             type: "boolean"
                           dhcp6Overrides:
-                            description: "DHCP6Overrides allows for the control over several DHCP behaviors.\nOverrides will only be applied when the corresponding DHCP flag is set.\nOnly configured values will be sent, omitted values will default to\ndistribution defaults.\nDependent on support in the network stack for your distribution.\nFor more information see the netplan reference (https://netplan.io/reference#dhcp-overrides)"
+                            description: "dhcp6Overrides allows for the control over several DHCP behaviors.\nOverrides will only be applied when the corresponding DHCP flag is set.\nOnly configured values will be sent, omitted values will default to\ndistribution defaults.\nDependent on support in the network stack for your distribution.\nFor more information see the netplan reference (https://netplan.io/reference#dhcp-overrides)"
                             properties:
                               hostname:
-                                description: "Hostname is the name which will be sent to the DHCP server instead of\nthe machine's hostname."
+                                description: "hostname is the name which will be sent to the DHCP server instead of\nthe machine's hostname."
+                                maxLength: 1024
                                 type: "string"
                               routeMetric:
-                                description: "RouteMetric is used to prioritize routes for devices. A lower metric for\nan interface will have a higher priority."
+                                description: "routeMetric is used to prioritize routes for devices. A lower metric for\nan interface will have a higher priority."
+                                format: "int32"
+                                minimum: 0.0
                                 type: "integer"
                               sendHostname:
-                                description: "SendHostname when `true`, the hostname of the machine will be sent to the\nDHCP server."
+                                description: "sendHostname when `true`, the hostname of the machine will be sent to the\nDHCP server."
                                 type: "boolean"
                               useDNS:
-                                description: "UseDNS when `true`, the DNS servers in the DHCP server will be used and\ntake precedence."
+                                description: "useDNS when `true`, the DNS servers in the DHCP server will be used and\ntake precedence."
                                 type: "boolean"
                               useDomains:
-                                description: "UseDomains can take the values `true`, `false`, or `route`. When `true`,\nthe domain name from the DHCP server will be used as the DNS search\ndomain for this device. When `route`, the domain name from the DHCP\nresponse will be used for routing DNS only, not for searching."
+                                description: "useDomains can take the values `true`, `false`, or `route`. When `true`,\nthe domain name from the DHCP server will be used as the DNS search\ndomain for this device. When `route`, the domain name from the DHCP\nresponse will be used for routing DNS only, not for searching."
+                                maxLength: 128
                                 type: "string"
                               useHostname:
-                                description: "UseHostname when `true`, the hostname from the DHCP server will be set\nas the transient hostname of the machine."
+                                description: "useHostname when `true`, the hostname from the DHCP server will be set\nas the transient hostname of the machine."
                                 type: "boolean"
                               useMTU:
-                                description: "UseMTU when `true`, the MTU from the DHCP server will be set as the\nMTU of the device."
+                                description: "useMTU when `true`, the MTU from the DHCP server will be set as the\nMTU of the device."
                                 type: "boolean"
                               useNTP:
-                                description: "UseNTP when `true`, the NTP servers from the DHCP server will be used\nby systemd-timesyncd and take precedence."
+                                description: "useNTP when `true`, the NTP servers from the DHCP server will be used\nby systemd-timesyncd and take precedence."
                                 type: "boolean"
                               useRoutes:
-                                description: "UseRoutes when `true`, the routes from the DHCP server will be installed\nin the routing table."
+                                description: "useRoutes when `true`, the routes from the DHCP server will be installed\nin the routing table."
+                                maxLength: 128
                                 type: "string"
                             type: "object"
                           gateway4:
-                            description: "Gateway4 is the IPv4 gateway used by this device.\nRequired when DHCP4 is false."
+                            description: "gateway4 is the IPv4 gateway used by this device.\nRequired when DHCP4 is false."
+                            maxLength: 64
+                            minLength: 1
                             type: "string"
                           gateway6:
-                            description: "Gateway4 is the IPv4 gateway used by this device."
+                            description: "gateway6 is the IPv6 gateway used by this device."
+                            maxLength: 64
+                            minLength: 1
                             type: "string"
                           ipAddrs:
-                            description: "IPAddrs is a list of one or more IPv4 and/or IPv6 addresses to assign\nto this device. IP addresses must also specify the segment length in\nCIDR notation.\nRequired when DHCP4, DHCP6 and SkipIPAllocation are false."
+                            description: "ipAddrs is a list of one or more IPv4 and/or IPv6 addresses to assign\nto this device. IP addresses must also specify the segment length in\nCIDR notation.\nRequired when DHCP4, DHCP6 and SkipIPAllocation are false."
                             items:
+                              maxLength: 39
+                              minLength: 1
                               type: "string"
+                            maxItems: 128
                             type: "array"
+                            x-kubernetes-list-type: "atomic"
                           macAddr:
-                            description: "MACAddr is the MAC address used by this device.\nIt is generally a good idea to omit this field and allow a MAC address\nto be generated.\nPlease note that this value must use the VMware OUI to work with the\nin-tree vSphere cloud provider."
+                            description: "macAddr is the MAC address used by this device.\nIt is generally a good idea to omit this field and allow a MAC address\nto be generated.\nPlease note that this value must use the VMware OUI to work with the\nin-tree vSphere cloud provider."
+                            maxLength: 23
+                            minLength: 1
                             type: "string"
                           mtu:
-                            description: "MTU is the device’s Maximum Transmission Unit size in bytes."
+                            description: "mtu is the device’s Maximum Transmission Unit size in bytes."
                             format: "int64"
                             type: "integer"
                           nameservers:
-                            description: "Nameservers is a list of IPv4 and/or IPv6 addresses used as DNS\nnameservers.\nPlease note that Linux allows only three nameservers (https://linux.die.net/man/5/resolv.conf)."
+                            description: "nameservers is a list of IPv4 and/or IPv6 addresses used as DNS\nnameservers.\nPlease note that Linux allows only three nameservers (https://linux.die.net/man/5/resolv.conf)."
                             items:
+                              maxLength: 64
+                              minLength: 1
                               type: "string"
+                            maxItems: 128
                             type: "array"
+                            x-kubernetes-list-type: "atomic"
                           networkName:
-                            description: "NetworkName is the name, managed object reference or the managed\nobject ID of the vSphere network to which the device will be connected."
+                            description: "networkName is the name, managed object reference or the managed\nobject ID of the vSphere network to which the device will be connected."
+                            maxLength: 2048
+                            minLength: 1
                             type: "string"
                           routes:
-                            description: "Routes is a list of optional, static routes applied to the device."
+                            description: "routes is a list of optional, static routes applied to the device."
                             items:
                               description: "NetworkRouteSpec defines a static network route."
                               properties:
                                 metric:
-                                  description: "Metric is the weight/priority of the route."
+                                  description: "metric is the weight/priority of the route."
                                   format: "int32"
+                                  minimum: 0.0
                                   type: "integer"
                                 to:
-                                  description: "To is an IPv4 or IPv6 address."
+                                  description: "to is an IPv4 or IPv6 address."
+                                  maxLength: 39
+                                  minLength: 1
                                   type: "string"
                                 via:
-                                  description: "Via is an IPv4 or IPv6 address."
+                                  description: "via is an IPv4 or IPv6 address."
+                                  maxLength: 39
+                                  minLength: 1
                                   type: "string"
                               required:
                                 - "metric"
                                 - "to"
                                 - "via"
                               type: "object"
+                            maxItems: 512
                             type: "array"
+                            x-kubernetes-list-type: "atomic"
                           searchDomains:
-                            description: "SearchDomains is a list of search domains used when resolving IP\naddresses with DNS."
+                            description: "searchDomains is a list of search domains used when resolving IP\naddresses with DNS."
                             items:
+                              maxLength: 1024
+                              minLength: 1
                               type: "string"
+                            maxItems: 128
                             type: "array"
+                            x-kubernetes-list-type: "atomic"
                           skipIPAllocation:
-                            description: "SkipIPAllocation allows the device to not have IP address or DHCP configured.\nThis is suitable for devices for which IP allocation is handled externally, eg. using Multus CNI.\nIf true, CAPV will not verify IP address allocation."
+                            description: "skipIPAllocation allows the device to not have IP address or DHCP configured.\nThis is suitable for devices for which IP allocation is handled externally, eg. using Multus CNI.\nIf true, CAPV will not verify IP address allocation."
                             type: "boolean"
                         required:
                           - "networkName"
                         type: "object"
+                      maxItems: 128
                       type: "array"
+                      x-kubernetes-list-type: "atomic"
                     preferredAPIServerCidr:
-                      description: "PreferredAPIServeCIDR is the preferred CIDR for the Kubernetes API\nserver endpoint on this machine\n\nDeprecated: This field is going to be removed in a future release."
+                      description: "preferredAPIServerCidr is the preferred CIDR for the Kubernetes API\nserver endpoint on this machine\n\nDeprecated: This field is going to be removed in a future release."
+                      maxLength: 1024
+                      minLength: 1
                       type: "string"
                     routes:
-                      description: "Routes is a list of optional, static routes applied to the virtual\nmachine."
+                      description: "routes is a list of optional, static routes applied to the virtual\nmachine."
                       items:
                         description: "NetworkRouteSpec defines a static network route."
                         properties:
                           metric:
-                            description: "Metric is the weight/priority of the route."
+                            description: "metric is the weight/priority of the route."
                             format: "int32"
+                            minimum: 0.0
                             type: "integer"
                           to:
-                            description: "To is an IPv4 or IPv6 address."
+                            description: "to is an IPv4 or IPv6 address."
+                            maxLength: 39
+                            minLength: 1
                             type: "string"
                           via:
-                            description: "Via is an IPv4 or IPv6 address."
+                            description: "via is an IPv4 or IPv6 address."
+                            maxLength: 39
+                            minLength: 1
                             type: "string"
                         required:
                           - "metric"
                           - "to"
                           - "via"
                         type: "object"
+                      maxItems: 512
                       type: "array"
+                      x-kubernetes-list-type: "atomic"
                   required:
                     - "devices"
                   type: "object"
                 numCPUs:
-                  description: "NumCPUs is the number of virtual processors in a virtual machine.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned."
+                  description: "numCPUs is the number of virtual processors in a virtual machine.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned."
                   format: "int32"
                   type: "integer"
                 numCoresPerSocket:
-                  description: "NumCoresPerSocket is the number of cores among which to distribute CPUs in this\nvirtual machine.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned."
+                  description: "numCoresPerSocket is the number of cores among which to distribute CPUs in this\nvirtual machine.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned."
                   format: "int32"
                   type: "integer"
                 os:
-                  description: "OS is the Operating System of the virtual machine\nDefaults to Linux"
+                  description: "os is the Operating System of the virtual machine\nDefaults to Linux"
+                  maxLength: 128
+                  minLength: 1
                   type: "string"
                 pciDevices:
-                  description: "PciDevices is the list of pci devices used by the virtual machine."
+                  description: "pciDevices is the list of pci devices used by the virtual machine."
                   items:
                     description: "PCIDeviceSpec defines virtual machine's PCI configuration."
                     properties:
                       customLabel:
-                        description: "CustomLabel is the hardware label of a virtual machine's PCI device.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned."
+                        description: "customLabel is the hardware label of a virtual machine's PCI device.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned."
+                        maxLength: 1024
+                        minLength: 1
                         type: "string"
                       deviceId:
-                        description: "DeviceID is the device ID of a virtual machine's PCI, in integer.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned.\nMutually exclusive with VGPUProfile as VGPUProfile and DeviceID + VendorID\nare two independent ways to define PCI devices."
+                        description: "deviceId is the device ID of a virtual machine's PCI, in integer.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned.\nMutually exclusive with VGPUProfile as VGPUProfile and DeviceID + VendorID\nare two independent ways to define PCI devices."
                         format: "int32"
                         type: "integer"
                       vGPUProfile:
-                        description: "VGPUProfile is the profile name of a virtual machine's vGPU, in string.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned.\nMutually exclusive with DeviceID and VendorID as VGPUProfile and DeviceID + VendorID\nare two independent ways to define PCI devices."
+                        description: "vGPUProfile is the profile name of a virtual machine's vGPU, in string.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned.\nMutually exclusive with DeviceID and VendorID as VGPUProfile and DeviceID + VendorID\nare two independent ways to define PCI devices."
+                        maxLength: 1024
+                        minLength: 1
                         type: "string"
                       vendorId:
-                        description: "VendorId is the vendor ID of a virtual machine's PCI, in integer.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned.\nMutually exclusive with VGPUProfile as VGPUProfile and DeviceID + VendorID\nare two independent ways to define PCI devices."
+                        description: "vendorId is the vendor ID of a virtual machine's PCI, in integer.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned.\nMutually exclusive with VGPUProfile as VGPUProfile and DeviceID + VendorID\nare two independent ways to define PCI devices."
                         format: "int32"
                         type: "integer"
                     type: "object"
+                  maxItems: 128
                   type: "array"
+                  x-kubernetes-list-type: "atomic"
                 powerOffMode:
                   default: "hard"
-                  description: "PowerOffMode describes the desired behavior when powering off a VM.\n\nThere are three, supported power off modes: hard, soft, and\ntrySoft. The first mode, hard, is the equivalent of a physical\nsystem's power cord being ripped from the wall. The soft mode\nrequires the VM's guest to have VM Tools installed and attempts to\ngracefully shut down the VM. Its variant, trySoft, first attempts\na graceful shutdown, and if that fails or the VM is not in a powered off\nstate after reaching the GuestSoftPowerOffTimeout, the VM is halted.\n\nIf omitted, the mode defaults to hard."
+                  description: "powerOffMode describes the desired behavior when powering off a VM.\n\nThere are three, supported power off modes: hard, soft, and\ntrySoft. The first mode, hard, is the equivalent of a physical\nsystem's power cord being ripped from the wall. The soft mode\nrequires the VM's guest to have VM Tools installed and attempts to\ngracefully shut down the VM. Its variant, trySoft, first attempts\na graceful shutdown, and if that fails or the VM is not in a powered off\nstate after reaching the GuestSoftPowerOffTimeoutSeconds, the VM is halted.\n\nIf omitted, the mode defaults to hard."
                   enum:
                     - "hard"
                     - "soft"
                     - "trySoft"
                   type: "string"
                 resourcePool:
-                  description: "ResourcePool is the name, inventory path, managed object reference or the managed\nobject ID in which the virtual machine is created/located."
+                  description: "resourcePool is the name, inventory path, managed object reference or the managed\nobject ID in which the virtual machine is created/located."
+                  maxLength: 2048
+                  minLength: 1
                   type: "string"
                 resources:
                   description: "resources is the definition of the VM's cpu and memory\nreservations, limits and shares."
@@ -412,43 +496,64 @@ spec:
                       type: "object"
                   type: "object"
                 server:
-                  description: "Server is the IP address or FQDN of the vSphere server on which\nthe virtual machine is created/located."
+                  description: "server is the IP address or FQDN of the vSphere server on which\nthe virtual machine is created/located."
+                  maxLength: 1024
+                  minLength: 1
                   type: "string"
                 snapshot:
-                  description: "Snapshot is the name of the snapshot from which to create a linked clone.\nThis field is ignored if LinkedClone is not enabled.\nDefaults to the source's current snapshot."
+                  description: "snapshot is the name of the snapshot from which to create a linked clone.\nThis field is ignored if LinkedClone is not enabled.\nDefaults to the source's current snapshot."
+                  maxLength: 1024
+                  minLength: 1
                   type: "string"
                 storagePolicyName:
-                  description: "StoragePolicyName of the storage policy to use with this\nVirtual Machine"
+                  description: "storagePolicyName of the storage policy to use with this\nVirtual Machine"
+                  maxLength: 1024
+                  minLength: 1
                   type: "string"
                 tagIDs:
-                  description: "TagIDs is an optional set of tags to add to an instance. Specified tagIDs\nmust use URN-notation instead of display names."
+                  description: "tagIDs is an optional set of tags to add to an instance. Specified tagIDs\nmust use URN-notation instead of display names."
                   items:
+                    maxLength: 1024
+                    minLength: 1
                     type: "string"
+                  maxItems: 128
                   type: "array"
+                  x-kubernetes-list-type: "atomic"
                 template:
-                  description: "Template is the name, inventory path, managed object reference or the managed\nobject ID of the template used to clone the virtual machine."
+                  description: "template is the name, inventory path, managed object reference or the managed\nobject ID of the template used to clone the virtual machine."
+                  maxLength: 2048
                   minLength: 1
                   type: "string"
                 thumbprint:
-                  description: "Thumbprint is the colon-separated SHA-1 checksum of the given vCenter server's host certificate\nWhen this is set to empty, this VirtualMachine would be created\nwithout TLS certificate validation of the communication between Cluster API Provider vSphere\nand the VMware vCenter server."
+                  description: "thumbprint is the colon-separated SHA-1 checksum of the given vCenter server's host certificate\nWhen this is set to empty, this VirtualMachine would be created\nwithout TLS certificate validation of the communication between Cluster API Provider vSphere\nand the VMware vCenter server."
+                  maxLength: 1024
+                  minLength: 1
                   type: "string"
               required:
                 - "network"
                 - "template"
               type: "object"
             status:
-              description: "VSphereVMStatus defines the observed state of VSphereVM."
+              description: "status is the observed state of VSphereVM."
+              minProperties: 1
               properties:
                 addresses:
-                  description: "Addresses is a list of the VM's IP addresses.\nThis field is required at runtime for other controllers that read\nthis CRD as unstructured data."
+                  description: "addresses is a list of the VM's IP addresses.\nThis field is required at runtime for other controllers that read\nthis CRD as unstructured data."
                   items:
+                    maxLength: 39
+                    minLength: 1
                     type: "string"
+                  maxItems: 128
                   type: "array"
+                  x-kubernetes-list-type: "atomic"
                 cloneMode:
-                  description: "CloneMode is the type of clone operation used to clone this VM. Since\nLinkedMode is the default but fails gracefully if the source of the\nclone has no snapshots, this field may be used to determine the actual\ntype of clone operation used to create this VM."
+                  description: "cloneMode is the type of clone operation used to clone this VM. Since\nLinkedMode is the default but fails gracefully if the source of the\nclone has no snapshots, this field may be used to determine the actual\ntype of clone operation used to create this VM."
+                  enum:
+                    - "fullClone"
+                    - "linkedClone"
                   type: "string"
                 conditions:
-                  description: "Conditions defines current service state of the VSphereVM."
+                  description: "conditions defines current service state of the VSphereVM."
                   items:
                     description: "Condition defines an observation of a Cluster API resource operational state."
                     properties:
@@ -485,52 +590,71 @@ spec:
                     type: "object"
                   type: "array"
                 failureMessage:
-                  description: "FailureMessage will be set in the event that there is a terminal problem\nreconciling the vspherevm and will contain a more verbose string suitable\nfor logging and human consumption.\n\nThis field should not be set for transitive errors that a controller\nfaces that are expected to be fixed automatically over\ntime (like service outages), but instead indicate that something is\nfundamentally wrong with the vm.\n\nAny transient errors that occur during the reconciliation of vspherevms\ncan be added as events to the vspherevm object and/or logged in the\ncontroller's output."
+                  description: "failureMessage will be set in the event that there is a terminal problem\nreconciling the vspherevm and will contain a more verbose string suitable\nfor logging and human consumption.\n\nThis field should not be set for transitive errors that a controller\nfaces that are expected to be fixed automatically over\ntime (like service outages), but instead indicate that something is\nfundamentally wrong with the vm.\n\nAny transient errors that occur during the reconciliation of vspherevms\ncan be added as events to the vspherevm object and/or logged in the\ncontroller's output."
+                  maxLength: 10240
+                  minLength: 1
                   type: "string"
                 failureReason:
-                  description: "FailureReason will be set in the event that there is a terminal problem\nreconciling the vspherevm and will contain a succinct value suitable\nfor vm interpretation.\n\nThis field should not be set for transitive errors that a controller\nfaces that are expected to be fixed automatically over\ntime (like service outages), but instead indicate that something is\nfundamentally wrong with the vm.\n\nAny transient errors that occur during the reconciliation of vspherevms\ncan be added as events to the vspherevm object and/or logged in the\ncontroller's output."
+                  description: "failureReason will be set in the event that there is a terminal problem\nreconciling the vspherevm and will contain a succinct value suitable\nfor vm interpretation.\n\nThis field should not be set for transitive errors that a controller\nfaces that are expected to be fixed automatically over\ntime (like service outages), but instead indicate that something is\nfundamentally wrong with the vm.\n\nAny transient errors that occur during the reconciliation of vspherevms\ncan be added as events to the vspherevm object and/or logged in the\ncontroller's output."
                   type: "string"
                 host:
-                  description: "Host describes the hostname or IP address of the infrastructure host\nthat the VSphereVM is residing on."
+                  description: "host describes the hostname or IP address of the infrastructure host\nthat the VSphereVM is residing on."
+                  maxLength: 1024
+                  minLength: 1
                   type: "string"
                 moduleUUID:
-                  description: "ModuleUUID is the unique identifier for the vCenter cluster module construct\nwhich is used to configure anti-affinity. Objects with the same ModuleUUID\nwill be anti-affined, meaning that the vCenter DRS will best effort schedule\nthe VMs on separate hosts."
+                  description: "moduleUUID is the unique identifier for the vCenter cluster module construct\nwhich is used to configure anti-affinity. Objects with the same ModuleUUID\nwill be anti-affined, meaning that the vCenter DRS will best effort schedule\nthe VMs on separate hosts."
+                  maxLength: 2048
                   type: "string"
                 network:
-                  description: "Network returns the network status for each of the machine's configured\nnetwork interfaces."
+                  description: "network returns the network status for each of the machine's configured\nnetwork interfaces."
                   items:
                     description: "NetworkStatus provides information about one of a VM's networks."
                     properties:
                       connected:
-                        description: "Connected is a flag that indicates whether this network is currently\nconnected to the VM."
+                        description: "connected is a flag that indicates whether this network is currently\nconnected to the VM."
                         type: "boolean"
                       ipAddrs:
-                        description: "IPAddrs is one or more IP addresses reported by vm-tools."
+                        description: "ipAddrs is one or more IP addresses reported by vm-tools."
                         items:
+                          maxLength: 39
+                          minLength: 1
                           type: "string"
+                        maxItems: 128
                         type: "array"
+                        x-kubernetes-list-type: "atomic"
                       macAddr:
-                        description: "MACAddr is the MAC address of the network device."
+                        description: "macAddr is the MAC address of the network device."
+                        maxLength: 17
+                        minLength: 1
                         type: "string"
                       networkName:
-                        description: "NetworkName is the name of the network."
+                        description: "networkName is the name of the network."
+                        maxLength: 1024
+                        minLength: 1
                         type: "string"
                     required:
                       - "macAddr"
                     type: "object"
+                  maxItems: 128
                   type: "array"
+                  x-kubernetes-list-type: "atomic"
                 ready:
-                  description: "Ready is true when the provider resource is ready.\nThis field is required at runtime for other controllers that read\nthis CRD as unstructured data."
+                  description: "ready is true when the provider resource is ready.\nThis field is required at runtime for other controllers that read\nthis CRD as unstructured data."
                   type: "boolean"
                 retryAfter:
-                  description: "RetryAfter tracks the time we can retry queueing a task"
+                  description: "retryAfter tracks the time we can retry queueing a task"
                   format: "date-time"
                   type: "string"
                 snapshot:
-                  description: "Snapshot is the name of the snapshot from which the VM was cloned if\nLinkedMode is enabled."
+                  description: "snapshot is the name of the snapshot from which the VM was cloned if\nLinkedMode is enabled."
+                  maxLength: 1024
+                  minLength: 1
                   type: "string"
                 taskRef:
-                  description: "TaskRef is a managed object reference to a Task related to the machine.\nThis value is set automatically at runtime and should not be set or\nmodified by users."
+                  description: "taskRef is a managed object reference to a Task related to the machine.\nThis value is set automatically at runtime and should not be set or\nmodified by users."
+                  maxLength: 2048
+                  minLength: 1
                   type: "string"
                 v1beta2:
                   description: "v1beta2 groups all the fields that will be added or modified in VSphereVM's status with the V1Beta2 version."
@@ -585,9 +709,13 @@ spec:
                       x-kubernetes-list-type: "map"
                   type: "object"
                 vmRef:
-                  description: "VMRef is the VM's Managed Object Reference on vSphere. It can be used by consumers\nto programatically get this VM representation on vSphere in case of the need to retrieve informations.\nThis field is set once the machine is created and should not be changed"
+                  description: "vmRef is the VM's Managed Object Reference on vSphere. It can be used by consumers\nto programatically get this VM representation on vSphere in case of the need to retrieve informations.\nThis field is set once the machine is created and should not be changed"
+                  maxLength: 2048
+                  minLength: 1
                   type: "string"
               type: "object"
+          required:
+            - "spec"
           type: "object"
       served: true
       storage: true

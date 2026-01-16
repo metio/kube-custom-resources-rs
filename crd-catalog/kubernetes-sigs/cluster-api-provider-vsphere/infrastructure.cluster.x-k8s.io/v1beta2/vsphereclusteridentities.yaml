@@ -29,13 +29,13 @@ spec:
             metadata:
               type: "object"
             spec:
-              description: "VSphereClusterIdentitySpec contains a secret reference and a group of allowed namespaces."
+              description: "spec is the desired state of VSphereClusterIdentity."
               properties:
                 allowedNamespaces:
-                  description: "AllowedNamespaces is used to identify which namespaces are allowed to use this account.\nNamespaces can be selected with a label selector.\nIf this object is nil, no namespaces will be allowed"
+                  description: "allowedNamespaces is used to identify which namespaces are allowed to use this account.\nNamespaces can be selected with a label selector.\nIf this object is nil, no namespaces will be allowed"
                   properties:
                     selector:
-                      description: "Selector is a standard Kubernetes LabelSelector. A label query over a set of resources."
+                      description: "selector is a standard Kubernetes LabelSelector. A label query over a set of resources."
                       properties:
                         matchExpressions:
                           description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
@@ -69,12 +69,16 @@ spec:
                       x-kubernetes-map-type: "atomic"
                   type: "object"
                 secretName:
-                  description: "SecretName references a Secret inside the controller namespace with the credentials to use"
+                  description: "secretName references a Secret inside the controller namespace with the credentials to use"
+                  maxLength: 253
                   minLength: 1
                   type: "string"
+              required:
+                - "secretName"
               type: "object"
             status:
-              description: "VSphereClusterIdentityStatus contains the status of the VSphereClusterIdentity."
+              description: "status is the observed state of VSphereClusterIdentity."
+              minProperties: 1
               properties:
                 conditions:
                   description: "conditions represents the observations of a VSphereClusterIdentity's current state.\nKnown condition types are Available and Paused."
@@ -170,8 +174,11 @@ spec:
                       type: "object"
                   type: "object"
                 ready:
+                  description: "ready is true when the VSphereClusterIdentity is ready."
                   type: "boolean"
               type: "object"
+          required:
+            - "spec"
           type: "object"
       served: true
       storage: true

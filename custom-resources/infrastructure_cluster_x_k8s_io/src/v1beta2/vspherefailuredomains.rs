@@ -9,39 +9,39 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// VSphereFailureDomainSpec defines the desired state of VSphereFailureDomain.
+/// spec is the desired state of VSphereFailureDomain.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[kube(group = "infrastructure.cluster.x-k8s.io", version = "v1beta2", kind = "VSphereFailureDomain", plural = "vspherefailuredomains")]
 #[kube(schema = "disabled")]
 #[kube(derive="PartialEq")]
 pub struct VSphereFailureDomainSpec {
-    /// Region defines the name and type of a region
+    /// region defines the name and type of a region
     pub region: VSphereFailureDomainRegion,
-    /// Topology describes a given failure domain using vSphere constructs
+    /// topology describes a given failure domain using vSphere constructs
     pub topology: VSphereFailureDomainTopology,
-    /// Zone defines the name and type of a zone
+    /// zone defines the name and type of a zone
     pub zone: VSphereFailureDomainZone,
 }
 
-/// Region defines the name and type of a region
+/// region defines the name and type of a region
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct VSphereFailureDomainRegion {
-    /// AutoConfigure tags the Type which is specified in the Topology
+    /// autoConfigure tags the Type which is specified in the Topology
     /// 
     /// Deprecated: This field is going to be removed in a future release.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoConfigure")]
     pub auto_configure: Option<bool>,
-    /// Name is the name of the tag that represents this failure domain
+    /// name is the name of the tag that represents this failure domain
     pub name: String,
-    /// TagCategory is the category used for the tag
+    /// tagCategory is the category used for the tag
     #[serde(rename = "tagCategory")]
     pub tag_category: String,
-    /// Type is the type of failure domain, the current values are "Datacenter", "ComputeCluster" and "HostGroup"
+    /// type is the type of failure domain, the current values are "Datacenter", "ComputeCluster" and "HostGroup"
     #[serde(rename = "type")]
     pub r#type: VSphereFailureDomainRegionType,
 }
 
-/// Region defines the name and type of a region
+/// region defines the name and type of a region
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum VSphereFailureDomainRegionType {
     Datacenter,
@@ -49,36 +49,36 @@ pub enum VSphereFailureDomainRegionType {
     HostGroup,
 }
 
-/// Topology describes a given failure domain using vSphere constructs
+/// topology describes a given failure domain using vSphere constructs
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereFailureDomainTopology {
-    /// ComputeCluster as the failure domain
+    /// computeCluster as the failure domain
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "computeCluster")]
     pub compute_cluster: Option<String>,
-    /// Datacenter as the failure domain.
+    /// datacenter as the failure domain.
     pub datacenter: String,
-    /// Datastore is the name or inventory path of the datastore in which the
+    /// datastore is the name or inventory path of the datastore in which the
     /// virtual machine is created/located.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub datastore: Option<String>,
-    /// Hosts has information required for placement of machines on VSphere hosts.
+    /// hosts has information required for placement of machines on VSphere hosts.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hosts: Option<VSphereFailureDomainTopologyHosts>,
-    /// NetworkConfigurations is a list of network configurations within this failure domain.
+    /// networkConfigurations is a list of network configurations within this failure domain.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkConfigurations")]
     pub network_configurations: Option<Vec<VSphereFailureDomainTopologyNetworkConfigurations>>,
-    /// Networks is the list of networks within this failure domain
+    /// networks is the list of networks within this failure domain
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub networks: Option<Vec<String>>,
 }
 
-/// Hosts has information required for placement of machines on VSphere hosts.
+/// hosts has information required for placement of machines on VSphere hosts.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereFailureDomainTopologyHosts {
-    /// HostGroupName is the name of the Host group
+    /// hostGroupName is the name of the Host group
     #[serde(rename = "hostGroupName")]
     pub host_group_name: String,
-    /// VMGroupName is the name of the VM group
+    /// vmGroupName is the name of the VM group
     #[serde(rename = "vmGroupName")]
     pub vm_group_name: String,
 }
@@ -87,15 +87,15 @@ pub struct VSphereFailureDomainTopologyHosts {
 /// a failure domain.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereFailureDomainTopologyNetworkConfigurations {
-    /// AddressesFromPools is a list of IPAddressPools that should be assigned
+    /// addressesFromPools is a list of IPAddressPools that should be assigned
     /// to IPAddressClaims. The machine's cloud-init metadata will be populated
     /// with IPAddresses fulfilled by an IPAM provider.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "addressesFromPools")]
     pub addresses_from_pools: Option<Vec<VSphereFailureDomainTopologyNetworkConfigurationsAddressesFromPools>>,
-    /// DHCP4 is a flag that indicates whether or not to use DHCP for IPv4.
+    /// dhcp4 is a flag that indicates whether or not to use DHCP for IPv4.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub dhcp4: Option<bool>,
-    /// DHCP4Overrides allows for the control over several DHCP behaviors.
+    /// dhcp4Overrides allows for the control over several DHCP behaviors.
     /// Overrides will only be applied when the corresponding DHCP flag is set.
     /// Only configured values will be sent, omitted values will default to
     /// distribution defaults.
@@ -103,10 +103,10 @@ pub struct VSphereFailureDomainTopologyNetworkConfigurations {
     /// For more information see the netplan reference (<https://netplan.io/reference#dhcp-overrides)>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dhcp4Overrides")]
     pub dhcp4_overrides: Option<VSphereFailureDomainTopologyNetworkConfigurationsDhcp4Overrides>,
-    /// DHCP6 is a flag that indicates whether or not to use DHCP for IPv6.
+    /// dhcp6 is a flag that indicates whether or not to use DHCP for IPv6.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub dhcp6: Option<bool>,
-    /// DHCP6Overrides allows for the control over several DHCP behaviors.
+    /// dhcp6Overrides allows for the control over several DHCP behaviors.
     /// Overrides will only be applied when the corresponding DHCP flag is set.
     /// Only configured values will be sent, omitted values will default to
     /// distribution defaults.
@@ -114,15 +114,15 @@ pub struct VSphereFailureDomainTopologyNetworkConfigurations {
     /// For more information see the netplan reference (<https://netplan.io/reference#dhcp-overrides)>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dhcp6Overrides")]
     pub dhcp6_overrides: Option<VSphereFailureDomainTopologyNetworkConfigurationsDhcp6Overrides>,
-    /// Nameservers is a list of IPv4 and/or IPv6 addresses used as DNS
+    /// nameservers is a list of IPv4 and/or IPv6 addresses used as DNS
     /// nameservers.
     /// Please note that Linux allows only three nameservers (<https://linux.die.net/man/5/resolv.conf).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nameservers: Option<Vec<String>>,
-    /// NetworkName is the network name for this machine's VM.
+    /// networkName is the network name for this machine's VM.
     #[serde(rename = "networkName")]
     pub network_name: String,
-    /// SearchDomains is a list of search domains used when resolving IP
+    /// searchDomains is a list of search domains used when resolving IP
     /// addresses with DNS.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "searchDomains")]
     pub search_domains: Option<Vec<String>>,
@@ -143,7 +143,7 @@ pub struct VSphereFailureDomainTopologyNetworkConfigurationsAddressesFromPools {
     pub name: String,
 }
 
-/// DHCP4Overrides allows for the control over several DHCP behaviors.
+/// dhcp4Overrides allows for the control over several DHCP behaviors.
 /// Overrides will only be applied when the corresponding DHCP flag is set.
 /// Only configured values will be sent, omitted values will default to
 /// distribution defaults.
@@ -151,47 +151,47 @@ pub struct VSphereFailureDomainTopologyNetworkConfigurationsAddressesFromPools {
 /// For more information see the netplan reference (<https://netplan.io/reference#dhcp-overrides)>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereFailureDomainTopologyNetworkConfigurationsDhcp4Overrides {
-    /// Hostname is the name which will be sent to the DHCP server instead of
+    /// hostname is the name which will be sent to the DHCP server instead of
     /// the machine's hostname.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
-    /// RouteMetric is used to prioritize routes for devices. A lower metric for
+    /// routeMetric is used to prioritize routes for devices. A lower metric for
     /// an interface will have a higher priority.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "routeMetric")]
-    pub route_metric: Option<i64>,
-    /// SendHostname when `true`, the hostname of the machine will be sent to the
+    pub route_metric: Option<i32>,
+    /// sendHostname when `true`, the hostname of the machine will be sent to the
     /// DHCP server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sendHostname")]
     pub send_hostname: Option<bool>,
-    /// UseDNS when `true`, the DNS servers in the DHCP server will be used and
+    /// useDNS when `true`, the DNS servers in the DHCP server will be used and
     /// take precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useDNS")]
     pub use_dns: Option<bool>,
-    /// UseDomains can take the values `true`, `false`, or `route`. When `true`,
+    /// useDomains can take the values `true`, `false`, or `route`. When `true`,
     /// the domain name from the DHCP server will be used as the DNS search
     /// domain for this device. When `route`, the domain name from the DHCP
     /// response will be used for routing DNS only, not for searching.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useDomains")]
     pub use_domains: Option<String>,
-    /// UseHostname when `true`, the hostname from the DHCP server will be set
+    /// useHostname when `true`, the hostname from the DHCP server will be set
     /// as the transient hostname of the machine.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useHostname")]
     pub use_hostname: Option<bool>,
-    /// UseMTU when `true`, the MTU from the DHCP server will be set as the
+    /// useMTU when `true`, the MTU from the DHCP server will be set as the
     /// MTU of the device.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useMTU")]
     pub use_mtu: Option<bool>,
-    /// UseNTP when `true`, the NTP servers from the DHCP server will be used
+    /// useNTP when `true`, the NTP servers from the DHCP server will be used
     /// by systemd-timesyncd and take precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useNTP")]
     pub use_ntp: Option<bool>,
-    /// UseRoutes when `true`, the routes from the DHCP server will be installed
+    /// useRoutes when `true`, the routes from the DHCP server will be installed
     /// in the routing table.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useRoutes")]
     pub use_routes: Option<String>,
 }
 
-/// DHCP6Overrides allows for the control over several DHCP behaviors.
+/// dhcp6Overrides allows for the control over several DHCP behaviors.
 /// Overrides will only be applied when the corresponding DHCP flag is set.
 /// Only configured values will be sent, omitted values will default to
 /// distribution defaults.
@@ -199,65 +199,65 @@ pub struct VSphereFailureDomainTopologyNetworkConfigurationsDhcp4Overrides {
 /// For more information see the netplan reference (<https://netplan.io/reference#dhcp-overrides)>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereFailureDomainTopologyNetworkConfigurationsDhcp6Overrides {
-    /// Hostname is the name which will be sent to the DHCP server instead of
+    /// hostname is the name which will be sent to the DHCP server instead of
     /// the machine's hostname.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
-    /// RouteMetric is used to prioritize routes for devices. A lower metric for
+    /// routeMetric is used to prioritize routes for devices. A lower metric for
     /// an interface will have a higher priority.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "routeMetric")]
-    pub route_metric: Option<i64>,
-    /// SendHostname when `true`, the hostname of the machine will be sent to the
+    pub route_metric: Option<i32>,
+    /// sendHostname when `true`, the hostname of the machine will be sent to the
     /// DHCP server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sendHostname")]
     pub send_hostname: Option<bool>,
-    /// UseDNS when `true`, the DNS servers in the DHCP server will be used and
+    /// useDNS when `true`, the DNS servers in the DHCP server will be used and
     /// take precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useDNS")]
     pub use_dns: Option<bool>,
-    /// UseDomains can take the values `true`, `false`, or `route`. When `true`,
+    /// useDomains can take the values `true`, `false`, or `route`. When `true`,
     /// the domain name from the DHCP server will be used as the DNS search
     /// domain for this device. When `route`, the domain name from the DHCP
     /// response will be used for routing DNS only, not for searching.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useDomains")]
     pub use_domains: Option<String>,
-    /// UseHostname when `true`, the hostname from the DHCP server will be set
+    /// useHostname when `true`, the hostname from the DHCP server will be set
     /// as the transient hostname of the machine.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useHostname")]
     pub use_hostname: Option<bool>,
-    /// UseMTU when `true`, the MTU from the DHCP server will be set as the
+    /// useMTU when `true`, the MTU from the DHCP server will be set as the
     /// MTU of the device.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useMTU")]
     pub use_mtu: Option<bool>,
-    /// UseNTP when `true`, the NTP servers from the DHCP server will be used
+    /// useNTP when `true`, the NTP servers from the DHCP server will be used
     /// by systemd-timesyncd and take precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useNTP")]
     pub use_ntp: Option<bool>,
-    /// UseRoutes when `true`, the routes from the DHCP server will be installed
+    /// useRoutes when `true`, the routes from the DHCP server will be installed
     /// in the routing table.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useRoutes")]
     pub use_routes: Option<String>,
 }
 
-/// Zone defines the name and type of a zone
+/// zone defines the name and type of a zone
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct VSphereFailureDomainZone {
-    /// AutoConfigure tags the Type which is specified in the Topology
+    /// autoConfigure tags the Type which is specified in the Topology
     /// 
     /// Deprecated: This field is going to be removed in a future release.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoConfigure")]
     pub auto_configure: Option<bool>,
-    /// Name is the name of the tag that represents this failure domain
+    /// name is the name of the tag that represents this failure domain
     pub name: String,
-    /// TagCategory is the category used for the tag
+    /// tagCategory is the category used for the tag
     #[serde(rename = "tagCategory")]
     pub tag_category: String,
-    /// Type is the type of failure domain, the current values are "Datacenter", "ComputeCluster" and "HostGroup"
+    /// type is the type of failure domain, the current values are "Datacenter", "ComputeCluster" and "HostGroup"
     #[serde(rename = "type")]
     pub r#type: VSphereFailureDomainZoneType,
 }
 
-/// Zone defines the name and type of a zone
+/// zone defines the name and type of a zone
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum VSphereFailureDomainZoneType {
     Datacenter,

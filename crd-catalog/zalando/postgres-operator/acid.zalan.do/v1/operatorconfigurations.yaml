@@ -156,6 +156,8 @@ spec:
                   type: "string"
                 ignore_instance_limits_annotation_key:
                   type: "string"
+                ignore_resources_limits_annotation_key:
+                  type: "string"
                 kubernetes:
                   properties:
                     additional_pod_capabilities:

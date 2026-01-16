@@ -46,6 +46,15 @@ pub struct TrinoClusterSpec {
     /// Consult the [Product image selection documentation](<https://docs.stackable.tech/home/nightly/concepts/product_image_selection)>
     /// for details.
     pub image: TrinoClusterImage,
+    /// A list of generic Kubernetes objects, which are merged into the objects that the operator
+    /// creates.
+    /// 
+    /// List entries are arbitrary YAML objects, which need to be valid Kubernetes objects.
+    /// 
+    /// Read the [Object overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#object-overrides)>
+    /// for more information.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectOverrides")]
+    pub object_overrides: Option<Vec<BTreeMap<String, serde_json::Value>>>,
     /// This struct represents a role - e.g. HDFS datanodes or Trino workers. It has a key-value-map containing
     /// all the roleGroups that are part of this role. Additionally, there is a `config`, which is configurable
     /// at the role *and* roleGroup level. Everything at roleGroup level is merged on top of what is configured

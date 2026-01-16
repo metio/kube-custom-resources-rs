@@ -24,6 +24,9 @@ pub struct IngressRouteTcpSpec {
     /// Default: all.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "entryPoints")]
     pub entry_points: Option<Vec<String>>,
+    /// IngressClassName defines the name of the IngressClass cluster resource.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressClassName")]
+    pub ingress_class_name: Option<String>,
     /// Routes defines the list of routes.
     pub routes: Vec<IngressRouteTcpRoutes>,
     /// TLS defines the TLS configuration on a layer 4 / TCP Route.

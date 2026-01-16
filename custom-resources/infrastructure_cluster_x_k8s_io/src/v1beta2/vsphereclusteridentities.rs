@@ -11,7 +11,7 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// VSphereClusterIdentitySpec contains a secret reference and a group of allowed namespaces.
+/// spec is the desired state of VSphereClusterIdentity.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "infrastructure.cluster.x-k8s.io", version = "v1beta2", kind = "VSphereClusterIdentity", plural = "vsphereclusteridentities")]
 #[kube(status = "VSphereClusterIdentityStatus")]
@@ -19,27 +19,27 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct VSphereClusterIdentitySpec {
-    /// AllowedNamespaces is used to identify which namespaces are allowed to use this account.
+    /// allowedNamespaces is used to identify which namespaces are allowed to use this account.
     /// Namespaces can be selected with a label selector.
     /// If this object is nil, no namespaces will be allowed
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedNamespaces")]
     pub allowed_namespaces: Option<VSphereClusterIdentityAllowedNamespaces>,
-    /// SecretName references a Secret inside the controller namespace with the credentials to use
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
-    pub secret_name: Option<String>,
+    /// secretName references a Secret inside the controller namespace with the credentials to use
+    #[serde(rename = "secretName")]
+    pub secret_name: String,
 }
 
-/// AllowedNamespaces is used to identify which namespaces are allowed to use this account.
+/// allowedNamespaces is used to identify which namespaces are allowed to use this account.
 /// Namespaces can be selected with a label selector.
 /// If this object is nil, no namespaces will be allowed
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereClusterIdentityAllowedNamespaces {
-    /// Selector is a standard Kubernetes LabelSelector. A label query over a set of resources.
+    /// selector is a standard Kubernetes LabelSelector. A label query over a set of resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<VSphereClusterIdentityAllowedNamespacesSelector>,
 }
 
-/// Selector is a standard Kubernetes LabelSelector. A label query over a set of resources.
+/// selector is a standard Kubernetes LabelSelector. A label query over a set of resources.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereClusterIdentityAllowedNamespacesSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -69,7 +69,7 @@ pub struct VSphereClusterIdentityAllowedNamespacesSelectorMatchExpressions {
     pub values: Option<Vec<String>>,
 }
 
-/// VSphereClusterIdentityStatus contains the status of the VSphereClusterIdentity.
+/// status is the observed state of VSphereClusterIdentity.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereClusterIdentityStatus {
     /// conditions represents the observations of a VSphereClusterIdentity's current state.
@@ -79,6 +79,7 @@ pub struct VSphereClusterIdentityStatus {
     /// deprecated groups all the status fields that are deprecated and will be removed when all the nested field are removed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deprecated: Option<VSphereClusterIdentityStatusDeprecated>,
+    /// ready is true when the VSphereClusterIdentity is ready.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ready: Option<bool>,
 }

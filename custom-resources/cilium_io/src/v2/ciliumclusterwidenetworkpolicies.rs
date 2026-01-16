@@ -194,6 +194,9 @@ pub struct CiliumClusterwideNetworkPolicyEgress {
     /// connections to destination port 8080/tcp
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "toPorts")]
     pub to_ports: Option<Vec<CiliumClusterwideNetworkPolicyEgressToPorts>>,
+    /// Deprecated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "toRequires")]
+    pub to_requires: Option<Vec<String>>,
     /// ToServices is a list of services to which the endpoint subject
     /// to the rule is allowed to initiate connections.
     /// Currently Cilium only supports toServices for K8s services.
@@ -1074,6 +1077,9 @@ pub struct CiliumClusterwideNetworkPolicyEgressDeny {
     /// connections to destination port 8080/tcp
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "toPorts")]
     pub to_ports: Option<Vec<CiliumClusterwideNetworkPolicyEgressDenyToPorts>>,
+    /// Deprecated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "toRequires")]
+    pub to_requires: Option<Vec<String>>,
     /// ToServices is a list of services to which the endpoint subject
     /// to the rule is allowed to initiate connections.
     /// Currently Cilium only supports toServices for K8s services.
@@ -1565,6 +1571,9 @@ pub struct CiliumClusterwideNetworkPolicyIngress {
     /// subject to the rule.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromNodes")]
     pub from_nodes: Option<Vec<CiliumClusterwideNetworkPolicyIngressFromNodes>>,
+    /// Deprecated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromRequires")]
+    pub from_requires: Option<Vec<String>>,
     /// ICMPs is a list of ICMP rule identified by type number
     /// which the endpoint subject to the rule is allowed to
     /// receive connections on.
@@ -2342,6 +2351,9 @@ pub struct CiliumClusterwideNetworkPolicyIngressDeny {
     /// subject to the rule.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromNodes")]
     pub from_nodes: Option<Vec<CiliumClusterwideNetworkPolicyIngressDenyFromNodes>>,
+    /// Deprecated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromRequires")]
+    pub from_requires: Option<Vec<String>>,
     /// ICMPs is a list of ICMP rule identified by type number
     /// which the endpoint subject to the rule is not allowed to
     /// receive connections on.
@@ -2873,6 +2885,9 @@ pub struct CiliumClusterwideNetworkPolicysEgress {
     /// connections to destination port 8080/tcp
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "toPorts")]
     pub to_ports: Option<Vec<CiliumClusterwideNetworkPolicysEgressToPorts>>,
+    /// Deprecated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "toRequires")]
+    pub to_requires: Option<Vec<String>>,
     /// ToServices is a list of services to which the endpoint subject
     /// to the rule is allowed to initiate connections.
     /// Currently Cilium only supports toServices for K8s services.
@@ -3753,6 +3768,9 @@ pub struct CiliumClusterwideNetworkPolicysEgressDeny {
     /// connections to destination port 8080/tcp
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "toPorts")]
     pub to_ports: Option<Vec<CiliumClusterwideNetworkPolicysEgressDenyToPorts>>,
+    /// Deprecated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "toRequires")]
+    pub to_requires: Option<Vec<String>>,
     /// ToServices is a list of services to which the endpoint subject
     /// to the rule is allowed to initiate connections.
     /// Currently Cilium only supports toServices for K8s services.
@@ -4244,6 +4262,9 @@ pub struct CiliumClusterwideNetworkPolicysIngress {
     /// subject to the rule.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromNodes")]
     pub from_nodes: Option<Vec<CiliumClusterwideNetworkPolicysIngressFromNodes>>,
+    /// Deprecated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromRequires")]
+    pub from_requires: Option<Vec<String>>,
     /// ICMPs is a list of ICMP rule identified by type number
     /// which the endpoint subject to the rule is allowed to
     /// receive connections on.
@@ -5021,6 +5042,9 @@ pub struct CiliumClusterwideNetworkPolicysIngressDeny {
     /// subject to the rule.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromNodes")]
     pub from_nodes: Option<Vec<CiliumClusterwideNetworkPolicysIngressDenyFromNodes>>,
+    /// Deprecated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromRequires")]
+    pub from_requires: Option<Vec<String>>,
     /// ICMPs is a list of ICMP rule identified by type number
     /// which the endpoint subject to the rule is not allowed to
     /// receive connections on.
