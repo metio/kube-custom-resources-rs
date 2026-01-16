@@ -24,17 +24,20 @@ pub struct BucketAccessSpec {
     /// bucketClaims is a list of BucketClaims the provisioned access must have permissions for,
     /// along with per-BucketClaim access parameters and system output definitions.
     /// At least one BucketClaim must be referenced.
+    /// A maximum of 128 BucketClaims may be referenced.
     /// Multiple references to the same BucketClaim are not permitted.
     #[serde(rename = "bucketClaims")]
     pub bucket_claims: Vec<BucketAccessBucketClaims>,
     /// protocol is the object storage protocol that the provisioned access must use.
+    /// Access can only be granted for BucketClaims that support the requested protocol.
+    /// Each BucketClaim status reports which protocols are supported for the BucketClaim's bucket.
+    /// Possible values: 'S3', 'Azure', 'GCS'.
     pub protocol: BucketAccessProtocol,
     /// serviceAccountName is the name of the Kubernetes ServiceAccount that user application Pods
     /// intend to use for access to referenced BucketClaims.
-    /// This has different behavior based on the BucketAccessClass's defined AuthenticationType:
-    /// - Key: This field is ignored.
-    /// - ServiceAccount: This field is required. The driver should configure the system so that Pods
-    ///   using the ServiceAccount authenticate to the object storage backend automatically.
+    /// Required when the BucketAccessClass is configured to use ServiceAccount authentication type.
+    /// Ignored for all other authentication types.
+    /// It is recommended to specify this for all BucketAccesses to improve portability.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
 }
@@ -45,7 +48,12 @@ pub struct BucketAccessSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct BucketAccessBucketClaims {
     /// accessMode is the Read/Write access mode that the access should have for the bucket.
-    /// Possible values: ReadWrite, ReadOnly, WriteOnly.
+    /// The provisioned access will have the corresponding permissions to read and/or write objects
+    /// the BucketClaim's bucket.
+    /// The provisioned access can also assume to have corresponding permissions to read and/or write
+    /// object metadata and object metadata (e.g., tags) except when metadata changes would change
+    /// object store behaviors or permissions (e.g., changes to object caching behaviors).
+    /// Possible values: 'ReadWrite', 'ReadOnly', 'WriteOnly'.
     #[serde(rename = "accessMode")]
     pub access_mode: BucketAccessBucketClaimsAccessMode,
     /// accessSecretName is the name of a Kubernetes Secret that COSI should create and populate with
@@ -54,10 +62,16 @@ pub struct BucketAccessBucketClaims {
     /// BucketAccess is deleted and deprovisioned.
     /// The Secret name must be unique across all bucketClaimRefs for all BucketAccesses in the same
     /// Namespace.
+    /// Must be a valid Kubernetes resource name: at most 253 characters, consisting only of
+    /// lower-case alphanumeric characters, hyphens, and periods, starting and ending with an
+    /// alphanumeric character.
     #[serde(rename = "accessSecretName")]
     pub access_secret_name: String,
     /// bucketClaimName is the name of a BucketClaim the access should have permissions for.
     /// The BucketClaim must be in the same Namespace as the BucketAccess.
+    /// Must be a valid Kubernetes resource name: at most 253 characters, consisting only of
+    /// lower-case alphanumeric characters, hyphens, and periods, starting and ending with an
+    /// alphanumeric character.
     #[serde(rename = "bucketClaimName")]
     pub bucket_claim_name: String,
 }
@@ -91,14 +105,21 @@ pub struct BucketAccessStatus {
     pub accessed_buckets: Option<Vec<BucketAccessStatusAccessedBuckets>>,
     /// accountID is the unique identifier for the backend access known to the driver.
     /// This field is populated by the COSI Sidecar once access has been successfully granted.
+    /// Must be at most 2048 characters and consist only of alphanumeric characters ([a-z0-9A-Z]),
+    /// dashes (-), dots (.), underscores (_), and forward slash (/).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accountID")]
     pub account_id: Option<String>,
     /// authenticationType holds a copy of the BucketAccessClass authentication type from the time of
     /// BucketAccess provisioning. This field is populated by the COSI Controller.
+    /// Possible values:
+    ///  - Key: clients may use a protocol-appropriate access key to authenticate to the backend object store.
+    ///  - ServiceAccount: Pods using the ServiceAccount given in spec.serviceAccountName may authenticate to the backend object store automatically.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authenticationType")]
     pub authentication_type: Option<BucketAccessStatusAuthenticationType>,
     /// driverName holds a copy of the BucketAccessClass driver name from the time of BucketAccess
     /// provisioning. This field is populated by the COSI Controller.
+    /// Must be 63 characters or less, beginning and ending with an alphanumeric character
+    /// ([a-z0-9A-Z]) with dashes (-), dots (.), and alphanumerics between.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "driverName")]
     pub driver_name: Option<String>,
     /// error holds the most recent error message, with a timestamp.
@@ -118,9 +139,15 @@ pub struct BucketAccessStatus {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketAccessStatusAccessedBuckets {
     /// bucketClaimName must match a BucketClaimAccess's BucketClaimName from the spec.
+    /// Must be a valid Kubernetes resource name: at most 253 characters, consisting only of
+    /// lower-case alphanumeric characters, hyphens, and periods, starting and ending with an
+    /// alphanumeric character.
     #[serde(rename = "bucketClaimName")]
     pub bucket_claim_name: String,
     /// bucketName is the name of a Bucket the access should have permissions for.
+    /// Must be a valid Kubernetes resource name: at most 253 characters, consisting only of
+    /// lower-case alphanumeric characters, hyphens, and periods, starting and ending with an
+    /// alphanumeric character.
     #[serde(rename = "bucketName")]
     pub bucket_name: String,
 }
@@ -138,6 +165,7 @@ pub enum BucketAccessStatusAuthenticationType {
 pub struct BucketAccessStatusError {
     /// message is a string detailing the encountered error.
     /// NOTE: message will be logged, and it should not contain sensitive information.
+    /// Must not exceed 1.5MB.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
     /// time is the timestamp when the error was encountered.

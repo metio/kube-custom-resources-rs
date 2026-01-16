@@ -13,7 +13,7 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// VSphereVMSpec defines the desired state of VSphereVM.
+/// spec is the desired state of VSphereVM.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "infrastructure.cluster.x-k8s.io", version = "v1beta2", kind = "VSphereVM", plural = "vspherevms")]
 #[kube(namespaced)]
@@ -22,24 +22,24 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct VSphereVmSpec {
-    /// AdditionalDisksGiB holds the sizes of additional disks of the virtual machine, in GiB
+    /// additionalDisksGiB holds the sizes of additional disks of the virtual machine, in GiB
     /// Defaults to the eponymous property value in the template from which the
     /// virtual machine is cloned.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalDisksGiB")]
     pub additional_disks_gi_b: Option<Vec<i64>>,
-    /// BiosUUID is the VM's BIOS UUID that is assigned at runtime after
+    /// biosUUID is the VM's BIOS UUID that is assigned at runtime after
     /// the VM has been created.
     /// This field is required at runtime for other controllers that read
     /// this CRD as unstructured data.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "biosUUID")]
     pub bios_uuid: Option<String>,
-    /// BootstrapRef is a reference to a bootstrap provider-specific resource
+    /// bootstrapRef is a reference to a bootstrap provider-specific resource
     /// that holds configuration details.
     /// This field is optional in case no bootstrap data is required to create
     /// a VM.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootstrapRef")]
     pub bootstrap_ref: Option<ObjectReference>,
-    /// CloneMode specifies the type of clone operation.
+    /// cloneMode specifies the type of clone operation.
     /// The LinkedClone mode is only support for templates that have at least
     /// one snapshot. If the template has no snapshots, then CloneMode defaults
     /// to FullClone.
@@ -48,73 +48,73 @@ pub struct VSphereVmSpec {
     /// Defaults to LinkedClone, but fails gracefully to FullClone if the source
     /// of the clone operation has no snapshots.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cloneMode")]
-    pub clone_mode: Option<String>,
-    /// CustomVMXKeys is a dictionary of advanced VMX options that can be set on VM
+    pub clone_mode: Option<VSphereVmCloneMode>,
+    /// customVMXKeys is a dictionary of advanced VMX options that can be set on VM
     /// Defaults to empty map
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "customVMXKeys")]
     pub custom_vmx_keys: Option<BTreeMap<String, String>>,
-    /// DataDisks are additional disks to add to the VM that are not part of the VM's OVA template.
+    /// dataDisks are additional disks to add to the VM that are not part of the VM's OVA template.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataDisks")]
     pub data_disks: Option<Vec<VSphereVmDataDisks>>,
-    /// Datacenter is the name, inventory path, managed object reference or the managed
+    /// datacenter is the name, inventory path, managed object reference or the managed
     /// object ID of the datacenter in which the virtual machine is created/located.
     /// Defaults to * which selects the default datacenter.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub datacenter: Option<String>,
-    /// Datastore is the name, inventory path, managed object reference or the managed
+    /// datastore is the name, inventory path, managed object reference or the managed
     /// object ID of the datastore in which the virtual machine is created/located.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub datastore: Option<String>,
-    /// DiskGiB is the size of a virtual machine's disk, in GiB.
+    /// diskGiB is the size of a virtual machine's disk, in GiB.
     /// Defaults to the eponymous property value in the template from which the
     /// virtual machine is cloned.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskGiB")]
     pub disk_gi_b: Option<i32>,
-    /// Folder is the name, inventory path, managed object reference or the managed
+    /// folder is the name, inventory path, managed object reference or the managed
     /// object ID of the folder in which the virtual machine is created/located.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub folder: Option<String>,
-    /// GuestSoftPowerOffTimeout sets the wait timeout for shutdown in the VM guest.
+    /// guestSoftPowerOffTimeoutSeconds sets the wait timeout for shutdown in the VM guest.
     /// The VM will be powered off forcibly after the timeout if the VM is still
     /// up and running when the PowerOffMode is set to trySoft.
     /// 
     /// This parameter only applies when the PowerOffMode is set to trySoft.
     /// 
     /// If omitted, the timeout defaults to 5 minutes.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "guestSoftPowerOffTimeout")]
-    pub guest_soft_power_off_timeout: Option<String>,
-    /// HardwareVersion is the hardware version of the virtual machine.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "guestSoftPowerOffTimeoutSeconds")]
+    pub guest_soft_power_off_timeout_seconds: Option<i32>,
+    /// hardwareVersion is the hardware version of the virtual machine.
     /// Defaults to the eponymous property value in the template from which the
     /// virtual machine is cloned.
     /// Check the compatibility with the ESXi version before setting the value.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hardwareVersion")]
     pub hardware_version: Option<String>,
-    /// MemoryMiB is the size of a virtual machine's memory, in MiB.
+    /// memoryMiB is the size of a virtual machine's memory, in MiB.
     /// Defaults to the eponymous property value in the template from which the
     /// virtual machine is cloned.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "memoryMiB")]
     pub memory_mi_b: Option<i64>,
-    /// Network is the network configuration for this machine's VM.
+    /// network is the network configuration for this machine's VM.
     pub network: VSphereVmNetwork,
-    /// NumCPUs is the number of virtual processors in a virtual machine.
+    /// numCPUs is the number of virtual processors in a virtual machine.
     /// Defaults to the eponymous property value in the template from which the
     /// virtual machine is cloned.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "numCPUs")]
     pub num_cp_us: Option<i32>,
-    /// NumCoresPerSocket is the number of cores among which to distribute CPUs in this
+    /// numCoresPerSocket is the number of cores among which to distribute CPUs in this
     /// virtual machine.
     /// Defaults to the eponymous property value in the template from which the
     /// virtual machine is cloned.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "numCoresPerSocket")]
     pub num_cores_per_socket: Option<i32>,
-    /// OS is the Operating System of the virtual machine
+    /// os is the Operating System of the virtual machine
     /// Defaults to Linux
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub os: Option<String>,
-    /// PciDevices is the list of pci devices used by the virtual machine.
+    /// pciDevices is the list of pci devices used by the virtual machine.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pciDevices")]
     pub pci_devices: Option<Vec<VSphereVmPciDevices>>,
-    /// PowerOffMode describes the desired behavior when powering off a VM.
+    /// powerOffMode describes the desired behavior when powering off a VM.
     /// 
     /// There are three, supported power off modes: hard, soft, and
     /// trySoft. The first mode, hard, is the equivalent of a physical
@@ -122,12 +122,12 @@ pub struct VSphereVmSpec {
     /// requires the VM's guest to have VM Tools installed and attempts to
     /// gracefully shut down the VM. Its variant, trySoft, first attempts
     /// a graceful shutdown, and if that fails or the VM is not in a powered off
-    /// state after reaching the GuestSoftPowerOffTimeout, the VM is halted.
+    /// state after reaching the GuestSoftPowerOffTimeoutSeconds, the VM is halted.
     /// 
     /// If omitted, the mode defaults to hard.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "powerOffMode")]
     pub power_off_mode: Option<VSphereVmPowerOffMode>,
-    /// ResourcePool is the name, inventory path, managed object reference or the managed
+    /// resourcePool is the name, inventory path, managed object reference or the managed
     /// object ID in which the virtual machine is created/located.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourcePool")]
     pub resource_pool: Option<String>,
@@ -135,27 +135,27 @@ pub struct VSphereVmSpec {
     /// reservations, limits and shares.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<VSphereVmResources>,
-    /// Server is the IP address or FQDN of the vSphere server on which
+    /// server is the IP address or FQDN of the vSphere server on which
     /// the virtual machine is created/located.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub server: Option<String>,
-    /// Snapshot is the name of the snapshot from which to create a linked clone.
+    /// snapshot is the name of the snapshot from which to create a linked clone.
     /// This field is ignored if LinkedClone is not enabled.
     /// Defaults to the source's current snapshot.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub snapshot: Option<String>,
-    /// StoragePolicyName of the storage policy to use with this
+    /// storagePolicyName of the storage policy to use with this
     /// Virtual Machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyName")]
     pub storage_policy_name: Option<String>,
-    /// TagIDs is an optional set of tags to add to an instance. Specified tagIDs
+    /// tagIDs is an optional set of tags to add to an instance. Specified tagIDs
     /// must use URN-notation instead of display names.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tagIDs")]
     pub tag_i_ds: Option<Vec<String>>,
-    /// Template is the name, inventory path, managed object reference or the managed
+    /// template is the name, inventory path, managed object reference or the managed
     /// object ID of the template used to clone the virtual machine.
     pub template: String,
-    /// Thumbprint is the colon-separated SHA-1 checksum of the given vCenter server's host certificate
+    /// thumbprint is the colon-separated SHA-1 checksum of the given vCenter server's host certificate
     /// When this is set to empty, this VirtualMachine would be created
     /// without TLS certificate validation of the communication between Cluster API Provider vSphere
     /// and the VMware vCenter server.
@@ -163,7 +163,7 @@ pub struct VSphereVmSpec {
     pub thumbprint: Option<String>,
 }
 
-/// BootstrapRef is a reference to a bootstrap provider-specific resource
+/// bootstrapRef is a reference to a bootstrap provider-specific resource
 /// that holds configuration details.
 /// This field is optional in case no bootstrap data is required to create
 /// a VM.
@@ -203,17 +203,26 @@ pub struct VSphereVmBootstrapRef {
     pub uid: Option<String>,
 }
 
+/// spec is the desired state of VSphereVM.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum VSphereVmCloneMode {
+    #[serde(rename = "fullClone")]
+    FullClone,
+    #[serde(rename = "linkedClone")]
+    LinkedClone,
+}
+
 /// VSphereDisk is an additional disk to add to the VM that is not part of the VM OVA template.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereVmDataDisks {
-    /// Name is used to identify the disk definition. Name is required and needs to be unique so that it can be used to
+    /// name is used to identify the disk definition. Name is required and needs to be unique so that it can be used to
     /// clearly identify purpose of the disk.
     pub name: String,
-    /// ProvisioningMode specifies the provisioning type to be used by this vSphere data disk.
+    /// provisioningMode specifies the provisioning type to be used by this vSphere data disk.
     /// If not set, the setting will be provided by the default storage policy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "provisioningMode")]
     pub provisioning_mode: Option<VSphereVmDataDisksProvisioningMode>,
-    /// SizeGiB is the size of the disk in GiB.
+    /// sizeGiB is the size of the disk in GiB.
     #[serde(rename = "sizeGiB")]
     pub size_gi_b: i32,
 }
@@ -226,19 +235,19 @@ pub enum VSphereVmDataDisksProvisioningMode {
     EagerlyZeroed,
 }
 
-/// Network is the network configuration for this machine's VM.
+/// network is the network configuration for this machine's VM.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereVmNetwork {
-    /// Devices is the list of network devices used by the virtual machine.
+    /// devices is the list of network devices used by the virtual machine.
     /// 
     pub devices: Vec<VSphereVmNetworkDevices>,
-    /// PreferredAPIServeCIDR is the preferred CIDR for the Kubernetes API
+    /// preferredAPIServerCidr is the preferred CIDR for the Kubernetes API
     /// server endpoint on this machine
     /// 
     /// Deprecated: This field is going to be removed in a future release.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredAPIServerCidr")]
     pub preferred_api_server_cidr: Option<String>,
-    /// Routes is a list of optional, static routes applied to the virtual
+    /// routes is a list of optional, static routes applied to the virtual
     /// machine.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub routes: Option<Vec<VSphereVmNetworkRoutes>>,
@@ -248,21 +257,21 @@ pub struct VSphereVmNetwork {
 /// network device.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereVmNetworkDevices {
-    /// AddressesFromPools is a list of IPAddressPools that should be assigned
+    /// addressesFromPools is a list of IPAddressPools that should be assigned
     /// to IPAddressClaims. The machine's cloud-init metadata will be populated
     /// with IPAddresses fulfilled by an IPAM provider.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "addressesFromPools")]
     pub addresses_from_pools: Option<Vec<VSphereVmNetworkDevicesAddressesFromPools>>,
-    /// DeviceName may be used to explicitly assign a name to the network device
+    /// deviceName may be used to explicitly assign a name to the network device
     /// as it exists in the guest operating system.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deviceName")]
     pub device_name: Option<String>,
-    /// DHCP4 is a flag that indicates whether or not to use DHCP for IPv4
+    /// dhcp4 is a flag that indicates whether or not to use DHCP for IPv4
     /// on this device.
     /// If true then IPAddrs should not contain any IPv4 addresses.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub dhcp4: Option<bool>,
-    /// DHCP4Overrides allows for the control over several DHCP behaviors.
+    /// dhcp4Overrides allows for the control over several DHCP behaviors.
     /// Overrides will only be applied when the corresponding DHCP flag is set.
     /// Only configured values will be sent, omitted values will default to
     /// distribution defaults.
@@ -270,12 +279,12 @@ pub struct VSphereVmNetworkDevices {
     /// For more information see the netplan reference (<https://netplan.io/reference#dhcp-overrides)>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dhcp4Overrides")]
     pub dhcp4_overrides: Option<VSphereVmNetworkDevicesDhcp4Overrides>,
-    /// DHCP6 is a flag that indicates whether or not to use DHCP for IPv6
+    /// dhcp6 is a flag that indicates whether or not to use DHCP for IPv6
     /// on this device.
     /// If true then IPAddrs should not contain any IPv6 addresses.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub dhcp6: Option<bool>,
-    /// DHCP6Overrides allows for the control over several DHCP behaviors.
+    /// dhcp6Overrides allows for the control over several DHCP behaviors.
     /// Overrides will only be applied when the corresponding DHCP flag is set.
     /// Only configured values will be sent, omitted values will default to
     /// distribution defaults.
@@ -283,46 +292,46 @@ pub struct VSphereVmNetworkDevices {
     /// For more information see the netplan reference (<https://netplan.io/reference#dhcp-overrides)>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dhcp6Overrides")]
     pub dhcp6_overrides: Option<VSphereVmNetworkDevicesDhcp6Overrides>,
-    /// Gateway4 is the IPv4 gateway used by this device.
+    /// gateway4 is the IPv4 gateway used by this device.
     /// Required when DHCP4 is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gateway4: Option<String>,
-    /// Gateway4 is the IPv4 gateway used by this device.
+    /// gateway6 is the IPv6 gateway used by this device.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gateway6: Option<String>,
-    /// IPAddrs is a list of one or more IPv4 and/or IPv6 addresses to assign
+    /// ipAddrs is a list of one or more IPv4 and/or IPv6 addresses to assign
     /// to this device. IP addresses must also specify the segment length in
     /// CIDR notation.
     /// Required when DHCP4, DHCP6 and SkipIPAllocation are false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipAddrs")]
     pub ip_addrs: Option<Vec<String>>,
-    /// MACAddr is the MAC address used by this device.
+    /// macAddr is the MAC address used by this device.
     /// It is generally a good idea to omit this field and allow a MAC address
     /// to be generated.
     /// Please note that this value must use the VMware OUI to work with the
     /// in-tree vSphere cloud provider.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "macAddr")]
     pub mac_addr: Option<String>,
-    /// MTU is the device’s Maximum Transmission Unit size in bytes.
+    /// mtu is the device’s Maximum Transmission Unit size in bytes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mtu: Option<i64>,
-    /// Nameservers is a list of IPv4 and/or IPv6 addresses used as DNS
+    /// nameservers is a list of IPv4 and/or IPv6 addresses used as DNS
     /// nameservers.
     /// Please note that Linux allows only three nameservers (<https://linux.die.net/man/5/resolv.conf).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nameservers: Option<Vec<String>>,
-    /// NetworkName is the name, managed object reference or the managed
+    /// networkName is the name, managed object reference or the managed
     /// object ID of the vSphere network to which the device will be connected.
     #[serde(rename = "networkName")]
     pub network_name: String,
-    /// Routes is a list of optional, static routes applied to the device.
+    /// routes is a list of optional, static routes applied to the device.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub routes: Option<Vec<VSphereVmNetworkDevicesRoutes>>,
-    /// SearchDomains is a list of search domains used when resolving IP
+    /// searchDomains is a list of search domains used when resolving IP
     /// addresses with DNS.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "searchDomains")]
     pub search_domains: Option<Vec<String>>,
-    /// SkipIPAllocation allows the device to not have IP address or DHCP configured.
+    /// skipIPAllocation allows the device to not have IP address or DHCP configured.
     /// This is suitable for devices for which IP allocation is handled externally, eg. using Multus CNI.
     /// If true, CAPV will not verify IP address allocation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipIPAllocation")]
@@ -344,7 +353,7 @@ pub struct VSphereVmNetworkDevicesAddressesFromPools {
     pub name: String,
 }
 
-/// DHCP4Overrides allows for the control over several DHCP behaviors.
+/// dhcp4Overrides allows for the control over several DHCP behaviors.
 /// Overrides will only be applied when the corresponding DHCP flag is set.
 /// Only configured values will be sent, omitted values will default to
 /// distribution defaults.
@@ -352,47 +361,47 @@ pub struct VSphereVmNetworkDevicesAddressesFromPools {
 /// For more information see the netplan reference (<https://netplan.io/reference#dhcp-overrides)>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereVmNetworkDevicesDhcp4Overrides {
-    /// Hostname is the name which will be sent to the DHCP server instead of
+    /// hostname is the name which will be sent to the DHCP server instead of
     /// the machine's hostname.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
-    /// RouteMetric is used to prioritize routes for devices. A lower metric for
+    /// routeMetric is used to prioritize routes for devices. A lower metric for
     /// an interface will have a higher priority.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "routeMetric")]
-    pub route_metric: Option<i64>,
-    /// SendHostname when `true`, the hostname of the machine will be sent to the
+    pub route_metric: Option<i32>,
+    /// sendHostname when `true`, the hostname of the machine will be sent to the
     /// DHCP server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sendHostname")]
     pub send_hostname: Option<bool>,
-    /// UseDNS when `true`, the DNS servers in the DHCP server will be used and
+    /// useDNS when `true`, the DNS servers in the DHCP server will be used and
     /// take precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useDNS")]
     pub use_dns: Option<bool>,
-    /// UseDomains can take the values `true`, `false`, or `route`. When `true`,
+    /// useDomains can take the values `true`, `false`, or `route`. When `true`,
     /// the domain name from the DHCP server will be used as the DNS search
     /// domain for this device. When `route`, the domain name from the DHCP
     /// response will be used for routing DNS only, not for searching.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useDomains")]
     pub use_domains: Option<String>,
-    /// UseHostname when `true`, the hostname from the DHCP server will be set
+    /// useHostname when `true`, the hostname from the DHCP server will be set
     /// as the transient hostname of the machine.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useHostname")]
     pub use_hostname: Option<bool>,
-    /// UseMTU when `true`, the MTU from the DHCP server will be set as the
+    /// useMTU when `true`, the MTU from the DHCP server will be set as the
     /// MTU of the device.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useMTU")]
     pub use_mtu: Option<bool>,
-    /// UseNTP when `true`, the NTP servers from the DHCP server will be used
+    /// useNTP when `true`, the NTP servers from the DHCP server will be used
     /// by systemd-timesyncd and take precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useNTP")]
     pub use_ntp: Option<bool>,
-    /// UseRoutes when `true`, the routes from the DHCP server will be installed
+    /// useRoutes when `true`, the routes from the DHCP server will be installed
     /// in the routing table.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useRoutes")]
     pub use_routes: Option<String>,
 }
 
-/// DHCP6Overrides allows for the control over several DHCP behaviors.
+/// dhcp6Overrides allows for the control over several DHCP behaviors.
 /// Overrides will only be applied when the corresponding DHCP flag is set.
 /// Only configured values will be sent, omitted values will default to
 /// distribution defaults.
@@ -400,41 +409,41 @@ pub struct VSphereVmNetworkDevicesDhcp4Overrides {
 /// For more information see the netplan reference (<https://netplan.io/reference#dhcp-overrides)>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereVmNetworkDevicesDhcp6Overrides {
-    /// Hostname is the name which will be sent to the DHCP server instead of
+    /// hostname is the name which will be sent to the DHCP server instead of
     /// the machine's hostname.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
-    /// RouteMetric is used to prioritize routes for devices. A lower metric for
+    /// routeMetric is used to prioritize routes for devices. A lower metric for
     /// an interface will have a higher priority.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "routeMetric")]
-    pub route_metric: Option<i64>,
-    /// SendHostname when `true`, the hostname of the machine will be sent to the
+    pub route_metric: Option<i32>,
+    /// sendHostname when `true`, the hostname of the machine will be sent to the
     /// DHCP server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sendHostname")]
     pub send_hostname: Option<bool>,
-    /// UseDNS when `true`, the DNS servers in the DHCP server will be used and
+    /// useDNS when `true`, the DNS servers in the DHCP server will be used and
     /// take precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useDNS")]
     pub use_dns: Option<bool>,
-    /// UseDomains can take the values `true`, `false`, or `route`. When `true`,
+    /// useDomains can take the values `true`, `false`, or `route`. When `true`,
     /// the domain name from the DHCP server will be used as the DNS search
     /// domain for this device. When `route`, the domain name from the DHCP
     /// response will be used for routing DNS only, not for searching.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useDomains")]
     pub use_domains: Option<String>,
-    /// UseHostname when `true`, the hostname from the DHCP server will be set
+    /// useHostname when `true`, the hostname from the DHCP server will be set
     /// as the transient hostname of the machine.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useHostname")]
     pub use_hostname: Option<bool>,
-    /// UseMTU when `true`, the MTU from the DHCP server will be set as the
+    /// useMTU when `true`, the MTU from the DHCP server will be set as the
     /// MTU of the device.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useMTU")]
     pub use_mtu: Option<bool>,
-    /// UseNTP when `true`, the NTP servers from the DHCP server will be used
+    /// useNTP when `true`, the NTP servers from the DHCP server will be used
     /// by systemd-timesyncd and take precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useNTP")]
     pub use_ntp: Option<bool>,
-    /// UseRoutes when `true`, the routes from the DHCP server will be installed
+    /// useRoutes when `true`, the routes from the DHCP server will be installed
     /// in the routing table.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useRoutes")]
     pub use_routes: Option<String>,
@@ -443,48 +452,48 @@ pub struct VSphereVmNetworkDevicesDhcp6Overrides {
 /// NetworkRouteSpec defines a static network route.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereVmNetworkDevicesRoutes {
-    /// Metric is the weight/priority of the route.
+    /// metric is the weight/priority of the route.
     pub metric: i32,
-    /// To is an IPv4 or IPv6 address.
+    /// to is an IPv4 or IPv6 address.
     pub to: String,
-    /// Via is an IPv4 or IPv6 address.
+    /// via is an IPv4 or IPv6 address.
     pub via: String,
 }
 
 /// NetworkRouteSpec defines a static network route.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereVmNetworkRoutes {
-    /// Metric is the weight/priority of the route.
+    /// metric is the weight/priority of the route.
     pub metric: i32,
-    /// To is an IPv4 or IPv6 address.
+    /// to is an IPv4 or IPv6 address.
     pub to: String,
-    /// Via is an IPv4 or IPv6 address.
+    /// via is an IPv4 or IPv6 address.
     pub via: String,
 }
 
 /// PCIDeviceSpec defines virtual machine's PCI configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereVmPciDevices {
-    /// CustomLabel is the hardware label of a virtual machine's PCI device.
+    /// customLabel is the hardware label of a virtual machine's PCI device.
     /// Defaults to the eponymous property value in the template from which the
     /// virtual machine is cloned.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "customLabel")]
     pub custom_label: Option<String>,
-    /// DeviceID is the device ID of a virtual machine's PCI, in integer.
+    /// deviceId is the device ID of a virtual machine's PCI, in integer.
     /// Defaults to the eponymous property value in the template from which the
     /// virtual machine is cloned.
     /// Mutually exclusive with VGPUProfile as VGPUProfile and DeviceID + VendorID
     /// are two independent ways to define PCI devices.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deviceId")]
     pub device_id: Option<i32>,
-    /// VGPUProfile is the profile name of a virtual machine's vGPU, in string.
+    /// vGPUProfile is the profile name of a virtual machine's vGPU, in string.
     /// Defaults to the eponymous property value in the template from which the
     /// virtual machine is cloned.
     /// Mutually exclusive with DeviceID and VendorID as VGPUProfile and DeviceID + VendorID
     /// are two independent ways to define PCI devices.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vGPUProfile")]
     pub v_gpu_profile: Option<String>,
-    /// VendorId is the vendor ID of a virtual machine's PCI, in integer.
+    /// vendorId is the vendor ID of a virtual machine's PCI, in integer.
     /// Defaults to the eponymous property value in the template from which the
     /// virtual machine is cloned.
     /// Mutually exclusive with VGPUProfile as VGPUProfile and DeviceID + VendorID
@@ -493,7 +502,7 @@ pub struct VSphereVmPciDevices {
     pub vendor_id: Option<i32>,
 }
 
-/// VSphereVMSpec defines the desired state of VSphereVM.
+/// spec is the desired state of VSphereVM.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum VSphereVmPowerOffMode {
     #[serde(rename = "hard")]
@@ -556,24 +565,24 @@ pub struct VSphereVmResourcesShares {
     pub memory: Option<i32>,
 }
 
-/// VSphereVMStatus defines the observed state of VSphereVM.
+/// status is the observed state of VSphereVM.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereVmStatus {
-    /// Addresses is a list of the VM's IP addresses.
+    /// addresses is a list of the VM's IP addresses.
     /// This field is required at runtime for other controllers that read
     /// this CRD as unstructured data.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub addresses: Option<Vec<String>>,
-    /// CloneMode is the type of clone operation used to clone this VM. Since
+    /// cloneMode is the type of clone operation used to clone this VM. Since
     /// LinkedMode is the default but fails gracefully if the source of the
     /// clone has no snapshots, this field may be used to determine the actual
     /// type of clone operation used to create this VM.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cloneMode")]
-    pub clone_mode: Option<String>,
-    /// Conditions defines current service state of the VSphereVM.
+    pub clone_mode: Option<VSphereVmStatusCloneMode>,
+    /// conditions defines current service state of the VSphereVM.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// FailureMessage will be set in the event that there is a terminal problem
+    /// failureMessage will be set in the event that there is a terminal problem
     /// reconciling the vspherevm and will contain a more verbose string suitable
     /// for logging and human consumption.
     /// 
@@ -587,7 +596,7 @@ pub struct VSphereVmStatus {
     /// controller's output.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureMessage")]
     pub failure_message: Option<String>,
-    /// FailureReason will be set in the event that there is a terminal problem
+    /// failureReason will be set in the event that there is a terminal problem
     /// reconciling the vspherevm and will contain a succinct value suitable
     /// for vm interpretation.
     /// 
@@ -601,33 +610,33 @@ pub struct VSphereVmStatus {
     /// controller's output.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
     pub failure_reason: Option<String>,
-    /// Host describes the hostname or IP address of the infrastructure host
+    /// host describes the hostname or IP address of the infrastructure host
     /// that the VSphereVM is residing on.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// ModuleUUID is the unique identifier for the vCenter cluster module construct
+    /// moduleUUID is the unique identifier for the vCenter cluster module construct
     /// which is used to configure anti-affinity. Objects with the same ModuleUUID
     /// will be anti-affined, meaning that the vCenter DRS will best effort schedule
     /// the VMs on separate hosts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "moduleUUID")]
     pub module_uuid: Option<String>,
-    /// Network returns the network status for each of the machine's configured
+    /// network returns the network status for each of the machine's configured
     /// network interfaces.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub network: Option<Vec<VSphereVmStatusNetwork>>,
-    /// Ready is true when the provider resource is ready.
+    /// ready is true when the provider resource is ready.
     /// This field is required at runtime for other controllers that read
     /// this CRD as unstructured data.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ready: Option<bool>,
-    /// RetryAfter tracks the time we can retry queueing a task
+    /// retryAfter tracks the time we can retry queueing a task
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryAfter")]
     pub retry_after: Option<String>,
-    /// Snapshot is the name of the snapshot from which the VM was cloned if
+    /// snapshot is the name of the snapshot from which the VM was cloned if
     /// LinkedMode is enabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub snapshot: Option<String>,
-    /// TaskRef is a managed object reference to a Task related to the machine.
+    /// taskRef is a managed object reference to a Task related to the machine.
     /// This value is set automatically at runtime and should not be set or
     /// modified by users.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "taskRef")]
@@ -635,27 +644,36 @@ pub struct VSphereVmStatus {
     /// v1beta2 groups all the fields that will be added or modified in VSphereVM's status with the V1Beta2 version.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub v1beta2: Option<VSphereVmStatusV1beta2>,
-    /// VMRef is the VM's Managed Object Reference on vSphere. It can be used by consumers
+    /// vmRef is the VM's Managed Object Reference on vSphere. It can be used by consumers
     /// to programatically get this VM representation on vSphere in case of the need to retrieve informations.
     /// This field is set once the machine is created and should not be changed
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vmRef")]
     pub vm_ref: Option<String>,
 }
 
+/// status is the observed state of VSphereVM.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum VSphereVmStatusCloneMode {
+    #[serde(rename = "fullClone")]
+    FullClone,
+    #[serde(rename = "linkedClone")]
+    LinkedClone,
+}
+
 /// NetworkStatus provides information about one of a VM's networks.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereVmStatusNetwork {
-    /// Connected is a flag that indicates whether this network is currently
+    /// connected is a flag that indicates whether this network is currently
     /// connected to the VM.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub connected: Option<bool>,
-    /// IPAddrs is one or more IP addresses reported by vm-tools.
+    /// ipAddrs is one or more IP addresses reported by vm-tools.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipAddrs")]
     pub ip_addrs: Option<Vec<String>>,
-    /// MACAddr is the MAC address of the network device.
+    /// macAddr is the MAC address of the network device.
     #[serde(rename = "macAddr")]
     pub mac_addr: String,
-    /// NetworkName is the name of the network.
+    /// networkName is the name of the network.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkName")]
     pub network_name: Option<String>,
 }

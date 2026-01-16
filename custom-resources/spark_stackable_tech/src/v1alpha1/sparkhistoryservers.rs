@@ -32,6 +32,15 @@ pub struct SparkHistoryServerSpec {
     pub log_file_directory: SparkHistoryServerLogFileDirectory,
     /// A history server node role definition.
     pub nodes: SparkHistoryServerNodes,
+    /// A list of generic Kubernetes objects, which are merged into the objects that the operator
+    /// creates.
+    /// 
+    /// List entries are arbitrary YAML objects, which need to be valid Kubernetes objects.
+    /// 
+    /// Read the [Object overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#object-overrides)>
+    /// for more information.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectOverrides")]
+    pub object_overrides: Option<Vec<BTreeMap<String, serde_json::Value>>>,
     /// A map of key/value strings that will be passed directly to Spark when deploying the history server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sparkConf")]
     pub spark_conf: Option<BTreeMap<String, String>>,

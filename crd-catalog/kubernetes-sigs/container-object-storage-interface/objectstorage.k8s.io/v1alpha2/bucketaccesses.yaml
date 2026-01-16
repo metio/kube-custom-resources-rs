@@ -39,32 +39,39 @@ spec:
                     - message: "bucketAccessClassName is immutable"
                       rule: "self == oldSelf"
                 bucketClaims:
-                  description: "bucketClaims is a list of BucketClaims the provisioned access must have permissions for,\nalong with per-BucketClaim access parameters and system output definitions.\nAt least one BucketClaim must be referenced.\nMultiple references to the same BucketClaim are not permitted."
+                  description: "bucketClaims is a list of BucketClaims the provisioned access must have permissions for,\nalong with per-BucketClaim access parameters and system output definitions.\nAt least one BucketClaim must be referenced.\nA maximum of 128 BucketClaims may be referenced.\nMultiple references to the same BucketClaim are not permitted."
                   items:
                     description: "BucketClaimAccess selects a BucketClaim for access, defines access parameters for the\ncorresponding bucket, and specifies where user-consumable bucket information and access\ncredentials for the accessed bucket will be stored."
                     properties:
                       accessMode:
-                        description: "accessMode is the Read/Write access mode that the access should have for the bucket.\nPossible values: ReadWrite, ReadOnly, WriteOnly."
+                        description: "accessMode is the Read/Write access mode that the access should have for the bucket.\nThe provisioned access will have the corresponding permissions to read and/or write objects\nthe BucketClaim's bucket.\nThe provisioned access can also assume to have corresponding permissions to read and/or write\nobject metadata and object metadata (e.g., tags) except when metadata changes would change\nobject store behaviors or permissions (e.g., changes to object caching behaviors).\nPossible values: 'ReadWrite', 'ReadOnly', 'WriteOnly'."
                         enum:
                           - "ReadWrite"
                           - "ReadOnly"
                           - "WriteOnly"
                         type: "string"
                       accessSecretName:
-                        description: "accessSecretName is the name of a Kubernetes Secret that COSI should create and populate with\nbucket info and access credentials for the bucket.\nThe Secret is created in the same Namespace as the BucketAccess and is deleted when the\nBucketAccess is deleted and deprovisioned.\nThe Secret name must be unique across all bucketClaimRefs for all BucketAccesses in the same\nNamespace."
+                        description: "accessSecretName is the name of a Kubernetes Secret that COSI should create and populate with\nbucket info and access credentials for the bucket.\nThe Secret is created in the same Namespace as the BucketAccess and is deleted when the\nBucketAccess is deleted and deprovisioned.\nThe Secret name must be unique across all bucketClaimRefs for all BucketAccesses in the same\nNamespace.\nMust be a valid Kubernetes resource name: at most 253 characters, consisting only of\nlower-case alphanumeric characters, hyphens, and periods, starting and ending with an\nalphanumeric character."
                         maxLength: 253
                         minLength: 1
                         type: "string"
+                        x-kubernetes-validations:
+                          - message: "name must be a valid resource name"
+                            rule: "!format.dns1123Subdomain().validate(self).hasValue()"
                       bucketClaimName:
-                        description: "bucketClaimName is the name of a BucketClaim the access should have permissions for.\nThe BucketClaim must be in the same Namespace as the BucketAccess."
+                        description: "bucketClaimName is the name of a BucketClaim the access should have permissions for.\nThe BucketClaim must be in the same Namespace as the BucketAccess.\nMust be a valid Kubernetes resource name: at most 253 characters, consisting only of\nlower-case alphanumeric characters, hyphens, and periods, starting and ending with an\nalphanumeric character."
                         maxLength: 253
                         minLength: 1
                         type: "string"
+                        x-kubernetes-validations:
+                          - message: "name must be a valid resource name"
+                            rule: "!format.dns1123Subdomain().validate(self).hasValue()"
                     required:
                       - "accessMode"
                       - "accessSecretName"
                       - "bucketClaimName"
                     type: "object"
+                  maxItems: 128
                   minItems: 1
                   type: "array"
                   x-kubernetes-list-map-keys:
@@ -74,7 +81,7 @@ spec:
                     - message: "bucketClaims list is immutable"
                       rule: "self == oldSelf"
                 protocol:
-                  description: "protocol is the object storage protocol that the provisioned access must use."
+                  description: "protocol is the object storage protocol that the provisioned access must use.\nAccess can only be granted for BucketClaims that support the requested protocol.\nEach BucketClaim status reports which protocols are supported for the BucketClaim's bucket.\nPossible values: 'S3', 'Azure', 'GCS'."
                   enum:
                     - "S3"
                     - "Azure"
@@ -84,7 +91,7 @@ spec:
                     - message: "protocol is immutable"
                       rule: "self == oldSelf"
                 serviceAccountName:
-                  description: "serviceAccountName is the name of the Kubernetes ServiceAccount that user application Pods\nintend to use for access to referenced BucketClaims.\nThis has different behavior based on the BucketAccessClass's defined AuthenticationType:\n- Key: This field is ignored.\n- ServiceAccount: This field is required. The driver should configure the system so that Pods\n  using the ServiceAccount authenticate to the object storage backend automatically."
+                  description: "serviceAccountName is the name of the Kubernetes ServiceAccount that user application Pods\nintend to use for access to referenced BucketClaims.\nRequired when the BucketAccessClass is configured to use ServiceAccount authentication type.\nIgnored for all other authentication types.\nIt is recommended to specify this for all BucketAccesses to improve portability."
                   maxLength: 253
                   minLength: 1
                   type: "string"
@@ -108,19 +115,26 @@ spec:
                     description: "AccessedBucket identifies a Bucket and correlates it to a BucketClaimAccess from the spec."
                     properties:
                       bucketClaimName:
-                        description: "bucketClaimName must match a BucketClaimAccess's BucketClaimName from the spec."
+                        description: "bucketClaimName must match a BucketClaimAccess's BucketClaimName from the spec.\nMust be a valid Kubernetes resource name: at most 253 characters, consisting only of\nlower-case alphanumeric characters, hyphens, and periods, starting and ending with an\nalphanumeric character."
                         maxLength: 253
                         minLength: 1
                         type: "string"
+                        x-kubernetes-validations:
+                          - message: "name must be a valid resource name"
+                            rule: "!format.dns1123Subdomain().validate(self).hasValue()"
                       bucketName:
-                        description: "bucketName is the name of a Bucket the access should have permissions for."
+                        description: "bucketName is the name of a Bucket the access should have permissions for.\nMust be a valid Kubernetes resource name: at most 253 characters, consisting only of\nlower-case alphanumeric characters, hyphens, and periods, starting and ending with an\nalphanumeric character."
                         maxLength: 253
                         minLength: 1
                         type: "string"
+                        x-kubernetes-validations:
+                          - message: "name must be a valid resource name"
+                            rule: "!format.dns1123Subdomain().validate(self).hasValue()"
                     required:
                       - "bucketClaimName"
                       - "bucketName"
                     type: "object"
+                  maxItems: 128
                   minItems: 1
                   type: "array"
                   x-kubernetes-list-map-keys:
@@ -130,14 +144,16 @@ spec:
                     - message: "accessedBuckets is immutable once set"
                       rule: "self == oldSelf"
                 accountID:
-                  description: "accountID is the unique identifier for the backend access known to the driver.\nThis field is populated by the COSI Sidecar once access has been successfully granted."
+                  description: "accountID is the unique identifier for the backend access known to the driver.\nThis field is populated by the COSI Sidecar once access has been successfully granted.\nMust be at most 2048 characters and consist only of alphanumeric characters ([a-z0-9A-Z]),\ndashes (-), dots (.), underscores (_), and forward slash (/)."
+                  maxLength: 2048
                   minLength: 1
+                  pattern: "^[a-zA-Z0-9/._-]+$"
                   type: "string"
                   x-kubernetes-validations:
                     - message: "accountId is immutable once set"
                       rule: "self == oldSelf"
                 authenticationType:
-                  description: "authenticationType holds a copy of the BucketAccessClass authentication type from the time of\nBucketAccess provisioning. This field is populated by the COSI Controller."
+                  description: "authenticationType holds a copy of the BucketAccessClass authentication type from the time of\nBucketAccess provisioning. This field is populated by the COSI Controller.\nPossible values:\n - Key: clients may use a protocol-appropriate access key to authenticate to the backend object store.\n - ServiceAccount: Pods using the ServiceAccount given in spec.serviceAccountName may authenticate to the backend object store automatically."
                   enum:
                     - "Key"
                     - "ServiceAccount"
@@ -146,17 +162,22 @@ spec:
                     - message: "authenticationType is immutable once set"
                       rule: "self == oldSelf"
                 driverName:
-                  description: "driverName holds a copy of the BucketAccessClass driver name from the time of BucketAccess\nprovisioning. This field is populated by the COSI Controller."
+                  description: "driverName holds a copy of the BucketAccessClass driver name from the time of BucketAccess\nprovisioning. This field is populated by the COSI Controller.\nMust be 63 characters or less, beginning and ending with an alphanumeric character\n([a-z0-9A-Z]) with dashes (-), dots (.), and alphanumerics between."
+                  maxLength: 63
                   minLength: 1
+                  pattern: "^[a-zA-Z0-9]([a-zA-Z0-9\\-\\.]{0,61}[a-zA-Z0-9])?$"
                   type: "string"
                   x-kubernetes-validations:
                     - message: "driverName is immutable once set"
                       rule: "self == oldSelf"
                 error:
                   description: "error holds the most recent error message, with a timestamp.\nThis is cleared when provisioning is successful."
+                  minProperties: 0
                   properties:
                     message:
-                      description: "message is a string detailing the encountered error.\nNOTE: message will be logged, and it should not contain sensitive information."
+                      description: "message is a string detailing the encountered error.\nNOTE: message will be logged, and it should not contain sensitive information.\nMust not exceed 1.5MB."
+                      maxLength: 1572864
+                      minLength: 0
                       type: "string"
                     time:
                       description: "time is the timestamp when the error was encountered."
@@ -167,6 +188,8 @@ spec:
                   additionalProperties:
                     type: "string"
                   description: "parameters holds a copy of the BucketAccessClass parameters from the time of BucketAccess\nprovisioning. This field is populated by the COSI Controller."
+                  maxProperties: 512
+                  minProperties: 1
                   type: "object"
                   x-kubernetes-validations:
                     - message: "accessedBuckets is immutable once set"

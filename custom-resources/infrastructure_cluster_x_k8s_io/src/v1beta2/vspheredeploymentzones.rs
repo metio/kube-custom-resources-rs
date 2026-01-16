@@ -10,7 +10,7 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// VSphereDeploymentZoneSpec defines the desired state of VSphereDeploymentZone.
+/// spec is the desired state of VSphereDeploymentZone.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "infrastructure.cluster.x-k8s.io", version = "v1beta2", kind = "VSphereDeploymentZone", plural = "vspheredeploymentzones")]
 #[kube(status = "VSphereDeploymentZoneStatus")]
@@ -18,36 +18,36 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct VSphereDeploymentZoneSpec {
-    /// ControlPlane determines if this failure domain is suitable for use by control plane machines.
+    /// controlPlane determines if this failure domain is suitable for use by control plane machines.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlane")]
     pub control_plane: Option<bool>,
-    /// FailureDomain is the name of the VSphereFailureDomain used for this VSphereDeploymentZone
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomain")]
-    pub failure_domain: Option<String>,
-    /// PlacementConstraint encapsulates the placement constraints
+    /// failureDomain is the name of the VSphereFailureDomain used for this VSphereDeploymentZone
+    #[serde(rename = "failureDomain")]
+    pub failure_domain: String,
+    /// placementConstraint encapsulates the placement constraints
     /// used within this deployment zone.
-    #[serde(rename = "placementConstraint")]
-    pub placement_constraint: VSphereDeploymentZonePlacementConstraint,
-    /// Server is the address of the vSphere endpoint.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "placementConstraint")]
+    pub placement_constraint: Option<VSphereDeploymentZonePlacementConstraint>,
+    /// server is the address of the vSphere endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub server: Option<String>,
 }
 
-/// PlacementConstraint encapsulates the placement constraints
+/// placementConstraint encapsulates the placement constraints
 /// used within this deployment zone.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereDeploymentZonePlacementConstraint {
-    /// Folder is the name or inventory path of the folder in which the
+    /// folder is the name or inventory path of the folder in which the
     /// virtual machine is created/located.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub folder: Option<String>,
-    /// ResourcePool is the name or inventory path of the resource pool in which
+    /// resourcePool is the name or inventory path of the resource pool in which
     /// the virtual machine is created/located.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourcePool")]
     pub resource_pool: Option<String>,
 }
 
-/// VSphereDeploymentZoneStatus contains the status for a VSphereDeploymentZone.
+/// status is the observed state of VSphereDeploymentZone.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereDeploymentZoneStatus {
     /// conditions represents the observations of a VSphereDeploymentZone's current state.
@@ -57,7 +57,7 @@ pub struct VSphereDeploymentZoneStatus {
     /// deprecated groups all the status fields that are deprecated and will be removed when all the nested field are removed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deprecated: Option<VSphereDeploymentZoneStatusDeprecated>,
-    /// Ready is true when the VSphereDeploymentZone resource is ready.
+    /// ready is true when the VSphereDeploymentZone resource is ready.
     /// If set to false, it will be ignored by VSphereClusters
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ready: Option<bool>,

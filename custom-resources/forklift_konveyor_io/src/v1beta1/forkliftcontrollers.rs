@@ -67,9 +67,6 @@ pub struct ForkliftControllerSpec {
     /// Controller memory request (default: 350Mi)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub controller_container_requests_memory: Option<String>,
-    /// DataVolume status check retries (default: 10)
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub controller_dv_status_check_retries: Option<IntOrString>,
     /// Filesystem overhead percentage (default: 10)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub controller_filesystem_overhead: Option<IntOrString>,

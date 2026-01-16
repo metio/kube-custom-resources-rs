@@ -629,6 +629,12 @@ spec:
                               type: "object"
                           type: "object"
                         type: "array"
+                      toRequires:
+                        description: "Deprecated."
+                        items:
+                          type: "string"
+                        maxItems: 0
+                        type: "array"
                       toServices:
                         description: "ToServices is a list of services to which the endpoint subject\nto the rule is allowed to initiate connections.\nCurrently Cilium only supports toServices for K8s services."
                         items:
@@ -980,6 +986,12 @@ spec:
                               type: "array"
                           type: "object"
                         type: "array"
+                      toRequires:
+                        description: "Deprecated."
+                        items:
+                          type: "string"
+                        maxItems: 0
+                        type: "array"
                       toServices:
                         description: "ToServices is a list of services to which the endpoint subject\nto the rule is allowed to initiate connections.\nCurrently Cilium only supports toServices for K8s services."
                         items:
@@ -1329,6 +1341,12 @@ spec:
                               type: "object"
                           type: "object"
                           x-kubernetes-map-type: "atomic"
+                        type: "array"
+                      fromRequires:
+                        description: "Deprecated."
+                        items:
+                          type: "string"
+                        maxItems: 0
                         type: "array"
                       icmps:
                         description: "ICMPs is a list of ICMP rule identified by type number\nwhich the endpoint subject to the rule is allowed to\nreceive connections on.\n\nExample:\nAny endpoint with the label \"app=httpd\" can only accept incoming\ntype 8 ICMP connections."
@@ -1855,6 +1873,12 @@ spec:
                               type: "object"
                           type: "object"
                           x-kubernetes-map-type: "atomic"
+                        type: "array"
+                      fromRequires:
+                        description: "Deprecated."
+                        items:
+                          type: "string"
+                        maxItems: 0
                         type: "array"
                       icmps:
                         description: "ICMPs is a list of ICMP rule identified by type number\nwhich the endpoint subject to the rule is not allowed to\nreceive connections on.\n\nExample:\nAny endpoint with the label \"app=httpd\" can not accept incoming\ntype 8 ICMP connections."
@@ -2586,6 +2610,12 @@ spec:
                                 type: "object"
                             type: "object"
                           type: "array"
+                        toRequires:
+                          description: "Deprecated."
+                          items:
+                            type: "string"
+                          maxItems: 0
+                          type: "array"
                         toServices:
                           description: "ToServices is a list of services to which the endpoint subject\nto the rule is allowed to initiate connections.\nCurrently Cilium only supports toServices for K8s services."
                           items:
@@ -2937,6 +2967,12 @@ spec:
                                 type: "array"
                             type: "object"
                           type: "array"
+                        toRequires:
+                          description: "Deprecated."
+                          items:
+                            type: "string"
+                          maxItems: 0
+                          type: "array"
                         toServices:
                           description: "ToServices is a list of services to which the endpoint subject\nto the rule is allowed to initiate connections.\nCurrently Cilium only supports toServices for K8s services."
                           items:
@@ -3286,6 +3322,12 @@ spec:
                                 type: "object"
                             type: "object"
                             x-kubernetes-map-type: "atomic"
+                          type: "array"
+                        fromRequires:
+                          description: "Deprecated."
+                          items:
+                            type: "string"
+                          maxItems: 0
                           type: "array"
                         icmps:
                           description: "ICMPs is a list of ICMP rule identified by type number\nwhich the endpoint subject to the rule is allowed to\nreceive connections on.\n\nExample:\nAny endpoint with the label \"app=httpd\" can only accept incoming\ntype 8 ICMP connections."
@@ -3812,6 +3854,12 @@ spec:
                                 type: "object"
                             type: "object"
                             x-kubernetes-map-type: "atomic"
+                          type: "array"
+                        fromRequires:
+                          description: "Deprecated."
+                          items:
+                            type: "string"
+                          maxItems: 0
                           type: "array"
                         icmps:
                           description: "ICMPs is a list of ICMP rule identified by type number\nwhich the endpoint subject to the rule is not allowed to\nreceive connections on.\n\nExample:\nAny endpoint with the label \"app=httpd\" can not accept incoming\ntype 8 ICMP connections."

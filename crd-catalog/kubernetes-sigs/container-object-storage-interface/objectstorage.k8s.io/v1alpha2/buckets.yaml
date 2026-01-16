@@ -30,27 +30,34 @@ spec:
             spec:
               description: "spec defines the desired state of Bucket"
               properties:
-                bucketClaim:
-                  description: "bucketClaim references the BucketClaim that resulted in the creation of this Bucket.\nFor statically-provisioned buckets, set the namespace and name of the BucketClaim that is\nallowed to bind to this Bucket."
+                bucketClaimRef:
+                  description: "bucketClaimRef references the BucketClaim that resulted in the creation of this Bucket.\nFor statically-provisioned buckets, set the namespace and name of the BucketClaim that is\nallowed to bind to this Bucket; UID may be left unset if desired and will be updated by COSI."
                   properties:
                     name:
-                      description: "name is the name of the BucketClaim being referenced."
+                      description: "name is the name of the BucketClaim being referenced.\nMust be a valid Kubernetes resource name: at most 253 characters, consisting only of\nlower-case alphanumeric characters, hyphens, and periods, starting and ending with an\nalphanumeric character."
                       maxLength: 253
                       minLength: 1
                       type: "string"
                       x-kubernetes-validations:
+                        - message: "name must be a valid resource name"
+                          rule: "!format.dns1123Subdomain().validate(self).hasValue()"
                         - message: "name is immutable"
                           rule: "self == oldSelf"
                     namespace:
-                      description: "namespace is the namespace of the BucketClaim being referenced."
-                      maxLength: 253
+                      description: "namespace is the namespace of the BucketClaim being referenced.\nMust be a valid Kubernetes Namespace name: at most 63 characters, consisting only of\nlower-case alphanumeric characters and hyphens, starting and ending with alphanumerics."
+                      maxLength: 63
                       minLength: 1
                       type: "string"
                       x-kubernetes-validations:
+                        - message: "namespace must be a valid namespace name"
+                          rule: "!format.dns1123Label().validate(self).hasValue()"
                         - message: "namespace is immutable"
                           rule: "self == oldSelf"
                     uid:
-                      description: "uid is the UID of the BucketClaim being referenced."
+                      description: "uid is the UID of the BucketClaim being referenced.\nMust be a valid Kubernetes UID: RFC 4122 form with lowercase hexadecimal characters\n(xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)."
+                      maxLength: 36
+                      minLength: 36
+                      pattern: "^[0-9a-f]{8}-([0-9a-f]{4}\\-){3}[0-9a-f]{12}$"
                       type: "string"
                       x-kubernetes-validations:
                         - message: "uid is immutable once set"
@@ -71,15 +78,19 @@ spec:
                     - "Delete"
                   type: "string"
                 driverName:
-                  description: "driverName is the name of the driver that fulfills requests for this Bucket."
+                  description: "driverName is the name of the driver that fulfills requests for this Bucket.\nSee driver documentation to determine the correct value to set.\nMust be 63 characters or less, beginning and ending with an alphanumeric character\n([a-z0-9A-Z]) with dashes (-), dots (.), and alphanumerics between."
+                  maxLength: 63
                   minLength: 1
+                  pattern: "^[a-zA-Z0-9]([a-zA-Z0-9\\-\\.]{0,61}[a-zA-Z0-9])?$"
                   type: "string"
                   x-kubernetes-validations:
                     - message: "driverName is immutable"
                       rule: "self == oldSelf"
                 existingBucketID:
-                  description: "existingBucketID is the unique identifier for an existing backend bucket known to the driver.\nUse driver documentation to determine how to set this value.\nThis field is used only for Bucket static provisioning.\nThis field will be empty when the Bucket is dynamically provisioned from a BucketClaim."
+                  description: "existingBucketID is the unique identifier for an existing backend bucket known to the driver.\nUse driver documentation to determine the correct value to set.\nThis field is used only for static Bucket provisioning.\nThis field will be empty when the Bucket is dynamically provisioned from a BucketClaim.\nMust be at most 2048 characters and consist only of alphanumeric characters ([a-z0-9A-Z]),\ndashes (-), dots (.), underscores (_), and forward slash (/)."
+                  maxLength: 2048
                   minLength: 1
+                  pattern: "^[a-zA-Z0-9/._-]+$"
                   type: "string"
                   x-kubernetes-validations:
                     - message: "existingBucketID is immutable"
@@ -87,13 +98,15 @@ spec:
                 parameters:
                   additionalProperties:
                     type: "string"
-                  description: "parameters is an opaque map of driver-specific configuration items passed to the driver that\nfulfills requests for this Bucket."
+                  description: "parameters is an opaque map of driver-specific configuration items passed to the driver that\nfulfills requests for this Bucket.\nSee driver documentation to determine supported parameters and their effects.\nA maximum of 512 parameters are allowed."
+                  maxProperties: 512
+                  minProperties: 1
                   type: "object"
                   x-kubernetes-validations:
                     - message: "parameters map is immutable"
                       rule: "self == oldSelf"
                 protocols:
-                  description: "protocols lists object store protocols that the provisioned Bucket must support.\nIf specified, COSI will verify that each item is advertised as supported by the driver."
+                  description: "protocols lists object store protocols that the provisioned Bucket must support.\nIf specified, COSI will verify that each item is advertised as supported by the driver.\nSee driver documentation to determine supported protocols.\nPossible values: 'S3', 'Azure', 'GCS'."
                   items:
                     description: "ObjectProtocol represents an object protocol type."
                     enum:
@@ -101,13 +114,15 @@ spec:
                       - "Azure"
                       - "GCS"
                     type: "string"
+                  maxItems: 3
+                  minItems: 1
                   type: "array"
                   x-kubernetes-list-type: "set"
                   x-kubernetes-validations:
                     - message: "protocols list is immutable"
                       rule: "self == oldSelf"
               required:
-                - "bucketClaim"
+                - "bucketClaimRef"
                 - "deletionPolicy"
                 - "driverName"
               type: "object"
@@ -122,8 +137,10 @@ spec:
               description: "status defines the observed state of Bucket"
               properties:
                 bucketID:
-                  description: "bucketID is the unique identifier for the backend bucket known to the driver."
+                  description: "bucketID is the unique identifier for the backend bucket known to the driver.\nMust be at most 2048 characters and consist only of alphanumeric characters ([a-z0-9A-Z]),\ndashes (-), dots (.), underscores (_), and forward slash (/)."
+                  maxLength: 2048
                   minLength: 1
+                  pattern: "^[a-zA-Z0-9/._-]+$"
                   type: "string"
                   x-kubernetes-validations:
                     - message: "boundBucketName is immutable once set"
@@ -132,12 +149,17 @@ spec:
                   additionalProperties:
                     type: "string"
                   description: "bucketInfo contains info about the bucket reported by the driver, rendered in the same\nCOSI_<PROTOCOL>_<KEY> format used for the BucketAccess Secret.\ne.g., COSI_S3_ENDPOINT, COSI_AZURE_STORAGE_ACCOUNT.\nThis should not contain any sensitive information."
+                  maxProperties: 128
+                  minProperties: 1
                   type: "object"
                 error:
                   description: "error holds the most recent error message, with a timestamp.\nThis is cleared when provisioning is successful."
+                  minProperties: 0
                   properties:
                     message:
-                      description: "message is a string detailing the encountered error.\nNOTE: message will be logged, and it should not contain sensitive information."
+                      description: "message is a string detailing the encountered error.\nNOTE: message will be logged, and it should not contain sensitive information.\nMust not exceed 1.5MB."
+                      maxLength: 1572864
+                      minLength: 0
                       type: "string"
                     time:
                       description: "time is the timestamp when the error was encountered."
@@ -145,7 +167,7 @@ spec:
                       type: "string"
                   type: "object"
                 protocols:
-                  description: "protocols is the set of protocols the Bucket reports to support. BucketAccesses can request\naccess to this BucketClaim using any of the protocols reported here."
+                  description: "protocols is the set of protocols the Bucket reports to support. BucketAccesses can request\naccess to this Bucket using any of the protocols reported here.\nPossible values: 'S3', 'Azure', 'GCS'."
                   items:
                     description: "ObjectProtocol represents an object protocol type."
                     enum:
@@ -153,6 +175,8 @@ spec:
                       - "Azure"
                       - "GCS"
                     type: "string"
+                  maxItems: 3
+                  minItems: 1
                   type: "array"
                   x-kubernetes-list-type: "set"
                 readyToUse:

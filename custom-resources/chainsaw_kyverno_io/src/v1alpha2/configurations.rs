@@ -807,6 +807,9 @@ pub struct ConfigurationNamespace {
     /// Compiler defines the default compiler to use when evaluating expressions.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub compiler: Option<ConfigurationNamespaceCompiler>,
+    /// FastDelete skips waiting for namespace deletion.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fastDelete")]
+    pub fast_delete: Option<bool>,
     /// Name defines the namespace to use for tests.
     /// If not specified, every test will execute in a random ephemeral namespace
     /// unless the namespace is overridden in a the test spec.

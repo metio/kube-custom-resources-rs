@@ -518,6 +518,28 @@ pub struct ClusterDeploymentIngressTuningOptions {
     /// 2147483647ms (24.85 days).  Both are subject to change over time.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheckInterval")]
     pub health_check_interval: Option<String>,
+    /// httpKeepAliveTimeout defines the maximum allowed time to wait for
+    /// a new HTTP request to appear on a connection from the client to the router.
+    /// 
+    /// This field expects an unsigned duration string of a decimal number, with optional
+    /// fraction and a unit suffix, e.g. "300ms", "1.5s" or "2m45s".
+    /// Valid time units are "ms", "s", "m".
+    /// The allowed range is from 1 millisecond to 15 minutes.
+    /// 
+    /// When omitted, this means the user has no opinion and the platform is left
+    /// to choose a reasonable default. This default is subject to change over time.
+    /// The current default is 300s.
+    /// 
+    /// Low values (tens of milliseconds or less) can cause clients to close and reopen connections
+    /// for each request, leading to reduced connection sharing.
+    /// For HTTP/2, special care should be taken with low values.
+    /// A few seconds is a reasonable starting point to avoid holding idle connections open
+    /// while still allowing subsequent requests to reuse the connection.
+    /// 
+    /// High values (minutes or more) favor connection reuse but may cause idle
+    /// connections to linger longer.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpKeepAliveTimeout")]
+    pub http_keep_alive_timeout: Option<String>,
     /// maxConnections defines the maximum number of simultaneous
     /// connections that can be established per HAProxy process.
     /// Increasing this value allows each ingress controller pod to
@@ -1343,7 +1365,8 @@ pub struct ClusterDeploymentProvisioningInstallConfigSecretRef {
 /// EnvVar represents an environment variable present in a Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDeploymentProvisioningInstallerEnv {
-    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    /// Name of the environment variable.
+    /// May consist of any printable ASCII characters except '='.
     pub name: String,
     /// Variable references $(VAR_NAME) are expanded
     /// using the previously defined environment variables in the container and
@@ -1371,6 +1394,10 @@ pub struct ClusterDeploymentProvisioningInstallerEnvValueFrom {
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<ClusterDeploymentProvisioningInstallerEnvValueFromFieldRef>,
+    /// FileKeyRef selects a key of the env file.
+    /// Requires the EnvFiles feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileKeyRef")]
+    pub file_key_ref: Option<ClusterDeploymentProvisioningInstallerEnvValueFromFileKeyRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
@@ -1407,6 +1434,31 @@ pub struct ClusterDeploymentProvisioningInstallerEnvValueFromFieldRef {
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
     pub field_path: String,
+}
+
+/// FileKeyRef selects a key of the env file.
+/// Requires the EnvFiles feature gate to be enabled.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterDeploymentProvisioningInstallerEnvValueFromFileKeyRef {
+    /// The key within the env file. An invalid key will prevent the pod from starting.
+    /// The keys defined within a source may consist of any printable ASCII characters except '='.
+    /// During Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters.
+    pub key: String,
+    /// Specify whether the file or its key must be defined. If the file or key
+    /// does not exist, then the env var is not published.
+    /// If optional is set to true and the specified key does not exist,
+    /// the environment variable will not be set in the Pod's containers.
+    /// 
+    /// If optional is set to false and the specified key does not exist,
+    /// an error will be returned during Pod creation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    /// The path within the volume from which to select the file.
+    /// Must be relative and may not contain the '..' path or start with '..'.
+    pub path: String,
+    /// The name of the volume mount containing the env file.
+    #[serde(rename = "volumeName")]
+    pub volume_name: String,
 }
 
 /// Selects a resource of the container: only resources limits and requests
@@ -1832,7 +1884,7 @@ pub enum ClusterDeploymentStatusClusterVersionStatusDesiredArchitecture {
 pub struct ClusterDeploymentStatusClusterVersionStatusHistory {
     /// acceptedRisks records risks which were accepted to initiate the update.
     /// For example, it may menition an Upgradeable=False or missing signature
-    /// that was overriden via desiredUpdate.force, or an update that was
+    /// that was overridden via desiredUpdate.force, or an update that was
     /// initiated despite not being in the availableUpdates set of recommended
     /// update targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "acceptedRisks")]

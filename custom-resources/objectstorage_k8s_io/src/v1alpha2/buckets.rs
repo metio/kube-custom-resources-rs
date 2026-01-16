@@ -17,11 +17,11 @@ use self::prelude::*;
 #[kube(schema = "disabled")]
 #[kube(derive="PartialEq")]
 pub struct BucketSpec {
-    /// bucketClaim references the BucketClaim that resulted in the creation of this Bucket.
+    /// bucketClaimRef references the BucketClaim that resulted in the creation of this Bucket.
     /// For statically-provisioned buckets, set the namespace and name of the BucketClaim that is
-    /// allowed to bind to this Bucket.
-    #[serde(rename = "bucketClaim")]
-    pub bucket_claim: BucketBucketClaim,
+    /// allowed to bind to this Bucket; UID may be left unset if desired and will be updated by COSI.
+    #[serde(rename = "bucketClaimRef")]
+    pub bucket_claim_ref: BucketBucketClaimRef,
     /// deletionPolicy determines whether a Bucket should be deleted when its bound BucketClaim is
     /// deleted. This is mutable to allow Admins to change the policy after creation.
     /// Possible values:
@@ -30,34 +30,50 @@ pub struct BucketSpec {
     #[serde(rename = "deletionPolicy")]
     pub deletion_policy: BucketDeletionPolicy,
     /// driverName is the name of the driver that fulfills requests for this Bucket.
+    /// See driver documentation to determine the correct value to set.
+    /// Must be 63 characters or less, beginning and ending with an alphanumeric character
+    /// ([a-z0-9A-Z]) with dashes (-), dots (.), and alphanumerics between.
     #[serde(rename = "driverName")]
     pub driver_name: String,
     /// existingBucketID is the unique identifier for an existing backend bucket known to the driver.
-    /// Use driver documentation to determine how to set this value.
-    /// This field is used only for Bucket static provisioning.
+    /// Use driver documentation to determine the correct value to set.
+    /// This field is used only for static Bucket provisioning.
     /// This field will be empty when the Bucket is dynamically provisioned from a BucketClaim.
+    /// Must be at most 2048 characters and consist only of alphanumeric characters ([a-z0-9A-Z]),
+    /// dashes (-), dots (.), underscores (_), and forward slash (/).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "existingBucketID")]
     pub existing_bucket_id: Option<String>,
     /// parameters is an opaque map of driver-specific configuration items passed to the driver that
     /// fulfills requests for this Bucket.
+    /// See driver documentation to determine supported parameters and their effects.
+    /// A maximum of 512 parameters are allowed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parameters: Option<BTreeMap<String, String>>,
     /// protocols lists object store protocols that the provisioned Bucket must support.
     /// If specified, COSI will verify that each item is advertised as supported by the driver.
+    /// See driver documentation to determine supported protocols.
+    /// Possible values: 'S3', 'Azure', 'GCS'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocols: Option<Vec<String>>,
 }
 
-/// bucketClaim references the BucketClaim that resulted in the creation of this Bucket.
+/// bucketClaimRef references the BucketClaim that resulted in the creation of this Bucket.
 /// For statically-provisioned buckets, set the namespace and name of the BucketClaim that is
-/// allowed to bind to this Bucket.
+/// allowed to bind to this Bucket; UID may be left unset if desired and will be updated by COSI.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct BucketBucketClaim {
+pub struct BucketBucketClaimRef {
     /// name is the name of the BucketClaim being referenced.
+    /// Must be a valid Kubernetes resource name: at most 253 characters, consisting only of
+    /// lower-case alphanumeric characters, hyphens, and periods, starting and ending with an
+    /// alphanumeric character.
     pub name: String,
     /// namespace is the namespace of the BucketClaim being referenced.
+    /// Must be a valid Kubernetes Namespace name: at most 63 characters, consisting only of
+    /// lower-case alphanumeric characters and hyphens, starting and ending with alphanumerics.
     pub namespace: String,
     /// uid is the UID of the BucketClaim being referenced.
+    /// Must be a valid Kubernetes UID: RFC 4122 form with lowercase hexadecimal characters
+    /// (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
 }
@@ -73,6 +89,8 @@ pub enum BucketDeletionPolicy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketStatus {
     /// bucketID is the unique identifier for the backend bucket known to the driver.
+    /// Must be at most 2048 characters and consist only of alphanumeric characters ([a-z0-9A-Z]),
+    /// dashes (-), dots (.), underscores (_), and forward slash (/).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bucketID")]
     pub bucket_id: Option<String>,
     /// bucketInfo contains info about the bucket reported by the driver, rendered in the same
@@ -86,7 +104,8 @@ pub struct BucketStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub error: Option<BucketStatusError>,
     /// protocols is the set of protocols the Bucket reports to support. BucketAccesses can request
-    /// access to this BucketClaim using any of the protocols reported here.
+    /// access to this Bucket using any of the protocols reported here.
+    /// Possible values: 'S3', 'Azure', 'GCS'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocols: Option<Vec<String>>,
     /// readyToUse indicates that the bucket is ready for consumption by workloads.
@@ -100,6 +119,7 @@ pub struct BucketStatus {
 pub struct BucketStatusError {
     /// message is a string detailing the encountered error.
     /// NOTE: message will be logged, and it should not contain sensitive information.
+    /// Must not exceed 1.5MB.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
     /// time is the timestamp when the error was encountered.

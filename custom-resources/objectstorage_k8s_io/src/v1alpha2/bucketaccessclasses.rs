@@ -17,6 +17,7 @@ use self::prelude::*;
 #[kube(derive="PartialEq")]
 pub struct BucketAccessClassSpec {
     /// authenticationType specifies which authentication mechanism is used bucket access.
+    /// See driver documentation to determine which values are supported.
     /// Possible values:
     ///  - Key: The driver should generate a protocol-appropriate access key that clients can use to
     ///    authenticate to the backend object store.
@@ -25,6 +26,9 @@ pub struct BucketAccessClassSpec {
     #[serde(rename = "authenticationType")]
     pub authentication_type: BucketAccessClassAuthenticationType,
     /// driverName is the name of the driver that fulfills requests for this BucketAccessClass.
+    /// See driver documentation to determine the correct value to set.
+    /// Must be 63 characters or less, beginning and ending with an alphanumeric character
+    /// ([a-z0-9A-Z]) with dashes (-), dots (.), and alphanumerics between.
     #[serde(rename = "driverName")]
     pub driver_name: String,
     /// featureOptions can be used to adjust various COSI access provisioning behaviors.
@@ -33,6 +37,8 @@ pub struct BucketAccessClassSpec {
     pub feature_options: Option<BucketAccessClassFeatureOptions>,
     /// parameters is an opaque map of driver-specific configuration items passed to the driver that
     /// fulfills requests for this BucketAccessClass.
+    /// See driver documentation to determine supported parameters and their effects.
+    /// A maximum of 512 parameters are allowed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parameters: Option<BTreeMap<String, String>>,
 }
@@ -55,6 +61,9 @@ pub struct BucketAccessClassFeatureOptions {
     /// disallowedBucketAccessModes is a list of disallowed Read/Write access modes. A BucketAccess
     /// using this class will not be allowed to request access to a BucketClaim with any access mode
     /// listed here.
+    /// This is particularly useful for administrators to restrict access to a statically-provisioned
+    /// bucket that is managed outside the BucketAccess Namespace or Kubernetes cluster.
+    /// Possible values: 'ReadWrite', 'ReadOnly', 'WriteOnly'.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disallowedBucketAccessModes")]
     pub disallowed_bucket_access_modes: Option<Vec<String>>,
 }

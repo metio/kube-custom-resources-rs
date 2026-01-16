@@ -869,6 +869,7 @@ pub struct PerconaPgUpgradeInitContainers {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<PerconaPgUpgradeInitContainersReadinessProbe>,
     /// Resources resize policy for the container.
+    /// This field cannot be set on ephemeral containers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
     pub resize_policy: Option<Vec<PerconaPgUpgradeInitContainersResizePolicy>>,
     /// Compute Resources required by this container.
@@ -2145,9 +2146,10 @@ pub struct PerconaPgUpgradeTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// Operator represents a key's relationship to the value.
-    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Valid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.
     /// Exists is equivalent to wildcard for value, so that a pod can
     /// tolerate all taints of a particular category.
+    /// Lt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
     /// TolerationSeconds represents the period of time the toleration (which must be

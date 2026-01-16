@@ -6,6 +6,7 @@
 mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
+    pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
@@ -31,6 +32,15 @@ pub struct ZookeeperZnodeSpec {
     /// The reference to the ZookeeperCluster that this ZNode belongs to.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterRef")]
     pub cluster_ref: Option<ZookeeperZnodeClusterRef>,
+    /// A list of generic Kubernetes objects, which are merged into the objects that the operator
+    /// creates.
+    /// 
+    /// List entries are arbitrary YAML objects, which need to be valid Kubernetes objects.
+    /// 
+    /// Read the [Object overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#object-overrides)>
+    /// for more information.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectOverrides")]
+    pub object_overrides: Option<Vec<BTreeMap<String, serde_json::Value>>>,
 }
 
 /// The reference to the ZookeeperCluster that this ZNode belongs to.

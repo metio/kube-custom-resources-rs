@@ -384,8 +384,6 @@ pub enum InputManifestProvidersProviderType {
     Cloudflare,
     #[serde(rename = "hetznerdns")]
     Hetznerdns,
-    #[serde(rename = "genesiscloud")]
-    Genesiscloud,
     #[serde(rename = "openstack")]
     Openstack,
 }

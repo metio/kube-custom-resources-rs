@@ -5410,7 +5410,7 @@ spec:
                   description: "nominatedClusterNames specifies the list of cluster names that have been nominated for scheduling.\nThis field is mutually exclusive with the `.status.clusterName` field, and is reset when\n`status.clusterName` is set.\nThis field is optional."
                   items:
                     type: "string"
-                  maxItems: 10
+                  maxItems: 20
                   type: "array"
                   x-kubernetes-list-type: "atomic"
                 reclaimablePods:

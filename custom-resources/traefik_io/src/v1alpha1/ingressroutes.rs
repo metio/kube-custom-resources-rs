@@ -25,6 +25,9 @@ pub struct IngressRouteSpec {
     /// Default: all.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "entryPoints")]
     pub entry_points: Option<Vec<String>>,
+    /// IngressClassName defines the name of the IngressClass cluster resource.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressClassName")]
+    pub ingress_class_name: Option<String>,
     /// ParentRefs defines references to parent IngressRoute resources for multi-layer routing.
     /// When set, this IngressRoute's routers will be children of the referenced parent IngressRoute's routers.
     /// More info: <https://doc.traefik.io/traefik/v3.6/routing/routers/#parentrefs>

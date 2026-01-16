@@ -33,6 +33,15 @@ pub struct ListenerSpec {
     /// Extra labels that the Pods must match in order to be exposed. They must _also_ still have a Volume referring to the Listener.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraPodSelectorLabels")]
     pub extra_pod_selector_labels: Option<BTreeMap<String, String>>,
+    /// A list of generic Kubernetes objects, which are merged into the objects that the operator
+    /// creates.
+    /// 
+    /// List entries are arbitrary YAML objects, which need to be valid Kubernetes objects.
+    /// 
+    /// Read the [Object overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#object-overrides)>
+    /// for more information.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectOverrides")]
+    pub object_overrides: Option<Vec<BTreeMap<String, serde_json::Value>>>,
     /// Ports that should be exposed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<ListenerPorts>>,

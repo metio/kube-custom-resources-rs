@@ -88,6 +88,11 @@ pub struct DbParameterGroupSpec {
     /// 
     /// This value is stored as a lowercase string.
     pub name: String,
+    /// Map keys are the parameter name and the values are the parameter value.
+    /// 
+    /// These are ONLY user-defined parameter overrides for the DB parameter group.
+    /// 
+    /// This does not contain default or system parameters.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "parameterOverrides")]
     pub parameter_overrides: Option<BTreeMap<String, String>>,
     /// Tags to assign to the DB parameter group.

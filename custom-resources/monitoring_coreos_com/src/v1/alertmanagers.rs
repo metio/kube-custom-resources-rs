@@ -144,6 +144,16 @@ pub struct AlertmanagerSpec {
     /// hostAliases Pods configuration
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
     pub host_aliases: Option<Vec<AlertmanagerHostAliases>>,
+    /// hostNetwork controls whether the pod may use the node network namespace.
+    /// 
+    /// Make sure to understand the security implications if you want to enable
+    /// it (<https://kubernetes.io/docs/concepts/configuration/overview/).>
+    /// 
+    /// When hostNetwork is enabled, this will set the DNS policy to
+    /// `ClusterFirstWithHostNet` automatically (unless `.spec.dnsPolicy` is set
+    /// to a different value).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetwork")]
+    pub host_network: Option<bool>,
     /// hostUsers supports the user space in Kubernetes.
     /// 
     /// More info: <https://kubernetes.io/docs/tasks/configure-pod-container/user-namespaces/>

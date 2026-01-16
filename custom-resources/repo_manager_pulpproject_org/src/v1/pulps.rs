@@ -156,10 +156,16 @@ pub struct PulpSpec {
     /// Job to run django migrations
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub migration_job: Option<PulpMigrationJob>,
-    /// Define if the operator should or should not mount the custom CA certificates added to the cluster via cluster-wide proxy config.
+    /// Enable mounting of custom CA certificates. On OpenShift, mounts CA certificates added to the cluster via cluster-wide proxy config. On vanilla Kubernetes with cert-manager's trust-manager, requires mount_trusted_ca_configmap_key to specify the ConfigMap and key containing the CA bundle.
     /// Default: false
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mount_trusted_ca: Option<bool>,
+    /// Specifies the ConfigMap and key containing the CA bundle for vanilla Kubernetes clusters.
+    /// The ConfigMap can be managed manually or kept up to date using cert-manager's trust-manager.
+    /// Format: "configmap-name:key" (e.g., "vault-ca-defaults-bundle:ca.crt")
+    /// Required on vanilla Kubernetes when mount_trusted_ca is true. Optional on OpenShift.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mount_trusted_ca_configmap_key: Option<String>,
     /// The client max body size for Nginx Ingress.
     /// Default: "10m"
     #[serde(default, skip_serializing_if = "Option::is_none")]

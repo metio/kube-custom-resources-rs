@@ -45,6 +45,15 @@ pub struct HiveClusterSpec {
     /// [Roles and role group concept documentation](<https://docs.stackable.tech/home/nightly/concepts/roles-and-role-groups).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metastore: Option<HiveClusterMetastore>,
+    /// A list of generic Kubernetes objects, which are merged into the objects that the operator
+    /// creates.
+    /// 
+    /// List entries are arbitrary YAML objects, which need to be valid Kubernetes objects.
+    /// 
+    /// Read the [Object overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#object-overrides)>
+    /// for more information.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectOverrides")]
+    pub object_overrides: Option<Vec<BTreeMap<String, serde_json::Value>>>,
 }
 
 /// Hive metastore settings that affect all roles and role groups.

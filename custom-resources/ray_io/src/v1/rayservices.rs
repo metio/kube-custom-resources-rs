@@ -721,6 +721,8 @@ pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpec {
     pub topology_spread_constraints: Option<Vec<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecTopologySpreadConstraints>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecVolumes>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workloadRef")]
+    pub workload_ref: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecWorkloadRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3599,6 +3601,8 @@ pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecVolumesProjectedSo
     pub max_expiration_seconds: Option<i32>,
     #[serde(rename = "signerName")]
     pub signer_name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userAnnotations")]
+    pub user_annotations: Option<BTreeMap<String, String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3744,6 +3748,15 @@ pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecVolumesVsphereVolu
     pub storage_policy_name: Option<String>,
     #[serde(rename = "volumePath")]
     pub volume_path: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecWorkloadRef {
+    pub name: String,
+    #[serde(rename = "podGroup")]
+    pub pod_group: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podGroupReplicaKey")]
+    pub pod_group_replica_key: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3896,6 +3909,8 @@ pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpec {
     pub topology_spread_constraints: Option<Vec<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecTopologySpreadConstraints>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecVolumes>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workloadRef")]
+    pub workload_ref: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecWorkloadRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6774,6 +6789,8 @@ pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecVolumesProjecte
     pub max_expiration_seconds: Option<i32>,
     #[serde(rename = "signerName")]
     pub signer_name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userAnnotations")]
+    pub user_annotations: Option<BTreeMap<String, String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6919,6 +6936,15 @@ pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecVolumesVsphereV
     pub storage_policy_name: Option<String>,
     #[serde(rename = "volumePath")]
     pub volume_path: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecWorkloadRef {
+    pub name: String,
+    #[serde(rename = "podGroup")]
+    pub pod_group: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podGroupReplicaKey")]
+    pub pod_group_replica_key: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

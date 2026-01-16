@@ -755,6 +755,9 @@ spec:
                 failFast:
                   description: "FailFast determines whether the test should stop upon encountering the first failure."
                   type: "boolean"
+                fastNamespaceDeletion:
+                  description: "FastNamespaceDeletion skips waiting for namespace deletion."
+                  type: "boolean"
                 forceTerminationGracePeriod:
                   description: "ForceTerminationGracePeriod forces the termination grace period on pods, statefulsets, daemonsets and deployments."
                   type: "string"
