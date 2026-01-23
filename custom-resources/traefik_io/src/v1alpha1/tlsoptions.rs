@@ -47,6 +47,7 @@ pub struct TlsOptionSpec {
     pub min_version: Option<String>,
     /// PreferServerCipherSuites defines whether the server chooses a cipher suite among his own instead of among the client's.
     /// It is enabled automatically when minVersion or maxVersion is set.
+    /// 
     /// Deprecated: <https://github.com/golang/go/issues/45430>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferServerCipherSuites")]
     pub prefer_server_cipher_suites: Option<bool>,

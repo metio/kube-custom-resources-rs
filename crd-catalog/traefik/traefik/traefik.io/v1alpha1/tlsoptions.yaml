@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.16.1"
+    controller-gen.kubebuilder.io/version: "v0.19.0"
   name: "tlsoptions.traefik.io"
 spec:
   group: "traefik.io"
@@ -72,7 +72,7 @@ spec:
                   description: "MinVersion defines the minimum TLS version that Traefik will accept.\nPossible values: VersionTLS10, VersionTLS11, VersionTLS12, VersionTLS13.\nDefault: VersionTLS10."
                   type: "string"
                 preferServerCipherSuites:
-                  description: "PreferServerCipherSuites defines whether the server chooses a cipher suite among his own instead of among the client's.\nIt is enabled automatically when minVersion or maxVersion is set.\nDeprecated: https://github.com/golang/go/issues/45430"
+                  description: "PreferServerCipherSuites defines whether the server chooses a cipher suite among his own instead of among the client's.\nIt is enabled automatically when minVersion or maxVersion is set.\n\nDeprecated: https://github.com/golang/go/issues/45430"
                   type: "boolean"
                 sniStrict:
                   description: "SniStrict defines whether Traefik allows connections from clients connections that do not specify a server_name extension."

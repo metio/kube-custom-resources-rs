@@ -445,13 +445,17 @@ spec:
                 spiloRunAsUser:
                   type: "integer"
                 standby:
-                  oneOf:
+                  anyOf:
                     - required:
                         - "s3_wal_path"
                     - required:
                         - "gs_wal_path"
                     - required:
                         - "standby_host"
+                  not:
+                    required:
+                      - "s3_wal_path"
+                      - "gs_wal_path"
                   properties:
                     gs_wal_path:
                       type: "string"
@@ -460,6 +464,8 @@ spec:
                     standby_host:
                       type: "string"
                     standby_port:
+                      type: "string"
+                    standby_primary_slot_name:
                       type: "string"
                   type: "object"
                 streams:

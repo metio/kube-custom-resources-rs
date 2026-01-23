@@ -2558,6 +2558,11 @@ pub struct FlowCollectorExporters {
 /// IPFIX configuration, such as the IP address and port to send enriched IPFIX flows to.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorExportersIpfix {
+    /// EnterpriseID, or Private Enterprise Number (PEN). To date, NetObserv does not own an assigned number,
+    /// so it is left open for configuration. The PEN is needed to collect non standard data, such as Kubernetes names,
+    /// RTT, etc.
+    #[serde(rename = "enterpriseID")]
+    pub enterprise_id: i64,
     /// Address of the IPFIX external receiver.
     #[serde(rename = "targetHost")]
     pub target_host: String,
@@ -3478,6 +3483,10 @@ pub enum FlowCollectorLokiMode {
 /// It is ignored for other modes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorLokiMonolithic {
+    /// Set `installDemoLoki` to `true` to automatically create Loki deployment, service and storage.
+    /// This is useful for development and demo purposes. Do not use it in production.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "installDemoLoki")]
+    pub install_demo_loki: Option<bool>,
     /// `tenantID` is the Loki `X-Scope-OrgID` header that identifies the tenant for each request.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tenantID")]
     pub tenant_id: Option<String>,
@@ -4771,16 +4780,17 @@ pub enum FlowCollectorProcessorLogTypes {
 /// `Metrics` define the processor configuration regarding metrics
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorProcessorMetrics {
-    /// `alerts` is a list of alerts to be created for Prometheus AlertManager, organized by templates and variants.
-    /// More information on alerts: <https://github.com/netobserv/network-observability-operator/blob/main/docs/Alerts.md>
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub alerts: Option<Vec<FlowCollectorProcessorMetricsAlerts>>,
     /// `disableAlerts` is a list of alert groups that should be disabled from the default set of alerts.
     /// Possible values are: `NetObservNoFlows`, `NetObservLokiError`, `PacketDropsByKernel`, `PacketDropsByDevice`, `IPsecErrors`, `NetpolDenied`,
     /// `LatencyHighTrend`, `DNSErrors`, `DNSNxDomain`, `ExternalEgressHighTrend`, `ExternalIngressHighTrend`.
     /// More information on alerts: <https://github.com/netobserv/network-observability-operator/blob/main/docs/Alerts.md>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableAlerts")]
     pub disable_alerts: Option<Vec<String>>,
+    /// `healthRules` is a list of health rules to be created for Prometheus, organized by templates and variants.
+    /// Each health rule can be configured to generate either alerts or recording rules based on the mode field.
+    /// More information on health rules: <https://github.com/netobserv/network-observability-operator/blob/main/docs/Alerts.md>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthRules")]
+    pub health_rules: Option<Vec<FlowCollectorProcessorMetricsHealthRules>>,
     /// `includeList` is a list of metric names to specify which ones to generate.
     /// The names correspond to the names in Prometheus without the prefix. For example,
     /// `namespace_egress_packets_total` shows up as `netobserv_namespace_egress_packets_total` in Prometheus.
@@ -4799,18 +4809,32 @@ pub struct FlowCollectorProcessorMetrics {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct FlowCollectorProcessorMetricsAlerts {
-    /// Alert template name.
+pub struct FlowCollectorProcessorMetricsHealthRules {
+    /// Mode defines whether this health rule should be generated as an alert or a recording rule.
+    /// Possible values are: `Alert` (default), `Recording`.
+    /// Recording rules violations are visible in the Network Health dashboard without generating any Prometheus alert.
+    /// This provides an alternative way of getting Health information for SRE and cluster admins who may find
+    /// many new alerts burdensome.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<FlowCollectorProcessorMetricsHealthRulesMode>,
+    /// Health rule template name.
     /// Possible values are: `PacketDropsByKernel`, `PacketDropsByDevice`, `IPsecErrors`, `NetpolDenied`,
     /// `LatencyHighTrend`, `DNSErrors`, `DNSNxDomain`, `ExternalEgressHighTrend`, `ExternalIngressHighTrend`.
-    /// More information on alerts: <https://github.com/netobserv/network-observability-operator/blob/main/docs/Alerts.md>
-    pub template: FlowCollectorProcessorMetricsAlertsTemplate,
+    /// Note: `NetObservNoFlows` and `NetObservLokiError` are alert-only and cannot be used as health rules.
+    /// More information on health rules: <https://github.com/netobserv/network-observability-operator/blob/main/docs/Alerts.md>
+    pub template: FlowCollectorProcessorMetricsHealthRulesTemplate,
     /// A list of variants for this template
-    pub variants: Vec<FlowCollectorProcessorMetricsAlertsVariants>,
+    pub variants: Vec<FlowCollectorProcessorMetricsHealthRulesVariants>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum FlowCollectorProcessorMetricsAlertsTemplate {
+pub enum FlowCollectorProcessorMetricsHealthRulesMode {
+    Alert,
+    Recording,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum FlowCollectorProcessorMetricsHealthRulesTemplate {
     PacketDropsByKernel,
     PacketDropsByDevice,
     IPsecErrors,
@@ -4825,28 +4849,29 @@ pub enum FlowCollectorProcessorMetricsAlertsTemplate {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowCollectorProcessorMetricsAlertsVariants {
+pub struct FlowCollectorProcessorMetricsHealthRulesVariants {
     /// Optional grouping criteria, possible values are: `Node`, `Namespace`, `Workload`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupBy")]
-    pub group_by: Option<FlowCollectorProcessorMetricsAlertsVariantsGroupBy>,
+    pub group_by: Option<FlowCollectorProcessorMetricsHealthRulesVariantsGroupBy>,
     /// The low volume threshold allows to ignore metrics with a too low volume of traffic, in order to improve signal-to-noise.
     /// It is provided as an absolute rate (bytes per second or packets per second, depending on the context).
     /// When provided, it must be parsable as a float.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lowVolumeThreshold")]
     pub low_volume_threshold: Option<String>,
-    /// Thresholds of the alert per severity.
+    /// Thresholds of the health rule per severity.
     /// They are expressed as a percentage of errors above which the alert is triggered. They must be parsable as floats.
-    pub thresholds: FlowCollectorProcessorMetricsAlertsVariantsThresholds,
-    /// For trending alerts, the duration interval for baseline comparison. For example, "2h" means comparing against a 2-hours average. Defaults to 2h.
+    /// Required for both alert and recording modes
+    pub thresholds: FlowCollectorProcessorMetricsHealthRulesVariantsThresholds,
+    /// For trending health rules, the duration interval for baseline comparison. For example, "2h" means comparing against a 2-hours average. Defaults to 2h.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "trendDuration")]
     pub trend_duration: Option<String>,
-    /// For trending alerts, the time offset for baseline comparison. For example, "1d" means comparing against yesterday. Defaults to 1d.
+    /// For trending health rules, the time offset for baseline comparison. For example, "1d" means comparing against yesterday. Defaults to 1d.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "trendOffset")]
     pub trend_offset: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum FlowCollectorProcessorMetricsAlertsVariantsGroupBy {
+pub enum FlowCollectorProcessorMetricsHealthRulesVariantsGroupBy {
     #[serde(rename = "")]
     KopiumEmpty,
     Node,
@@ -4854,10 +4879,11 @@ pub enum FlowCollectorProcessorMetricsAlertsVariantsGroupBy {
     Workload,
 }
 
-/// Thresholds of the alert per severity.
+/// Thresholds of the health rule per severity.
 /// They are expressed as a percentage of errors above which the alert is triggered. They must be parsable as floats.
+/// Required for both alert and recording modes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowCollectorProcessorMetricsAlertsVariantsThresholds {
+pub struct FlowCollectorProcessorMetricsHealthRulesVariantsThresholds {
     /// Threshold for severity `critical`. Leave empty to not generate a Critical alert.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub critical: Option<String>,
@@ -5116,7 +5142,8 @@ pub struct FlowCollectorPrometheusQuerierManualAlertManager {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<FlowCollectorPrometheusQuerierManualAlertManagerTls>,
     /// `url` is the address of an existing Prometheus AlertManager service to use for querying alerts.
-    pub url: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
 }
 
 /// TLS client configuration for Prometheus AlertManager URL.

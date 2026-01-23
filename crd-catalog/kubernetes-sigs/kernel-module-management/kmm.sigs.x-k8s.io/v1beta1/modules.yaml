@@ -1428,6 +1428,9 @@ spec:
                   required:
                     - "container"
                   type: "object"
+                imageRebuildTriggerGeneration:
+                  description: "ImageRebuildTriggerGeneration is an optional counter that can be incremented to trigger a rebuild of the module images.\nWhen this value changes (compared to the value stored in status), KMM will re-verify and potentially rebuild\nall module images."
+                  type: "integer"
                 imageRepoSecret:
                   description: "ImageRepoSecret is an optional secret that is used to pull both the module loader and the device plugin, and\nto push the resulting image from the module loader build, if enabled."
                   properties:
@@ -1835,6 +1838,9 @@ spec:
                       format: "int32"
                       type: "integer"
                   type: "object"
+                imageRebuildTriggerGeneration:
+                  description: "ImageRebuildTriggerGeneration contains the last value of spec.imageRebuildTriggerGeneration that was applied.\nWhen this differs from spec.imageRebuildTriggerGeneration, all module images will be re-verified and potentially rebuilt."
+                  type: "integer"
                 moduleLoader:
                   description: "ModuleLoader contains the status of the ModuleLoader daemonset"
                   properties:

@@ -158,11 +158,6 @@ pub struct VerticalPodAutoscalerTargetRef {
 /// default values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VerticalPodAutoscalerUpdatePolicy {
-    /// EvictAfterOOMThreshold specifies the time to wait after an OOM event before
-    /// considering the pod for eviction. Pods that have OOMed in less than this threshold
-    /// since start will be evicted.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "evictAfterOOMThreshold")]
-    pub evict_after_oom_threshold: Option<String>,
     /// EvictionRequirements is a list of EvictionRequirements that need to
     /// evaluate to true in order for a Pod to be evicted. If more than one
     /// EvictionRequirement is specified, all of them need to be fulfilled to allow eviction.

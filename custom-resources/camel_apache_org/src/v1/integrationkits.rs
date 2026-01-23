@@ -24,6 +24,7 @@ pub struct IntegrationKitSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<Vec<String>>,
     /// Deprecated:
+    /// 
     /// Use camel trait (camel.properties) to manage properties
     /// Use mount trait (mount.configs) to manage configs
     /// Use mount trait (mount.resources) to manage resources
@@ -83,7 +84,8 @@ pub struct IntegrationKitSources {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "from-kamelet")]
     pub from_kamelet: Option<bool>,
     /// Interceptors are optional identifiers the org.apache.camel.k.RoutesLoader
-    /// uses to pre/post process sources
+    /// uses to pre/post process sources.
+    /// 
     /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interceptors: Option<Vec<String>>,
@@ -129,6 +131,7 @@ pub struct IntegrationKitTraits {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub quarkus: Option<IntegrationKitTraitsQuarkus>,
     /// The Registry trait sets up Maven to use the Image registry as a Maven repository (support removed since version 2.5.0).
+    /// 
     /// Deprecated: use jvm trait or read documentation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub registry: Option<IntegrationKitTraitsRegistry>,
@@ -145,6 +148,7 @@ pub struct IntegrationKitTraitsBuilder {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseImage")]
     pub base_image: Option<String>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -155,10 +159,12 @@ pub struct IntegrationKitTraitsBuilder {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "incrementalImageBuild")]
     pub incremental_image_build: Option<bool>,
     /// When using `pod` strategy, the maximum amount of CPU required by the pod builder.
+    /// 
     /// Deprecated: use TasksRequestCPU instead with task name `builder`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitCPU")]
     pub limit_cpu: Option<String>,
     /// When using `pod` strategy, the maximum amount of memory required by the pod builder.
+    /// 
     /// Deprecated: use TasksRequestCPU instead with task name `builder`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitMemory")]
     pub limit_memory: Option<String>,
@@ -181,10 +187,12 @@ pub struct IntegrationKitTraitsBuilder {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub properties: Option<Vec<String>>,
     /// When using `pod` strategy, the minimum amount of CPU required by the pod builder.
+    /// 
     /// Deprecated: use TasksRequestCPU instead with task name `builder`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestCPU")]
     pub request_cpu: Option<String>,
     /// When using `pod` strategy, the minimum amount of memory required by the pod builder.
+    /// 
     /// Deprecated: use TasksRequestCPU instead with task name `builder`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestMemory")]
     pub request_memory: Option<String>,
@@ -212,7 +220,8 @@ pub struct IntegrationKitTraitsBuilder {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tasksRequestMemory")]
     pub tasks_request_memory: Option<Vec<String>>,
     /// Enable verbose logging on build components that support it (e.g. Kaniko build pod).
-    /// Deprecated no longer in use
+    /// 
+    /// Deprecated: no longer in use
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub verbose: Option<bool>,
 }
@@ -241,6 +250,7 @@ pub enum IntegrationKitTraitsBuilderStrategy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationKitTraitsCamel {
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -280,6 +290,7 @@ pub struct IntegrationKitTraitsQuarkus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "buildMode")]
     pub build_mode: Option<Vec<String>>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -298,16 +309,19 @@ pub struct IntegrationKitTraitsQuarkus {
     /// The order influences the resolution of the current kit for the integration.
     /// The kit corresponding to the first package type will be assigned to the
     /// integration in case no existing kit that matches the integration exists.
+    /// 
     /// Deprecated: use `build-mode` instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "packageTypes")]
     pub package_types: Option<Vec<String>>,
 }
 
 /// The Registry trait sets up Maven to use the Image registry as a Maven repository (support removed since version 2.5.0).
+/// 
 /// Deprecated: use jvm trait or read documentation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationKitTraitsRegistry {
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,

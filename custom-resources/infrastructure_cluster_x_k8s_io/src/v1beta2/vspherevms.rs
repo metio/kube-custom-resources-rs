@@ -9,7 +9,6 @@ mod prelude {
     pub use std::collections::BTreeMap;
     pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::api::core::v1::ObjectReference;
 }
 use self::prelude::*;
 
@@ -38,7 +37,7 @@ pub struct VSphereVmSpec {
     /// This field is optional in case no bootstrap data is required to create
     /// a VM.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootstrapRef")]
-    pub bootstrap_ref: Option<ObjectReference>,
+    pub bootstrap_ref: Option<VSphereVmBootstrapRef>,
     /// cloneMode specifies the type of clone operation.
     /// The LinkedClone mode is only support for templates that have at least
     /// one snapshot. If the template has no snapshots, then CloneMode defaults
@@ -169,38 +168,8 @@ pub struct VSphereVmSpec {
 /// a VM.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereVmBootstrapRef {
-    /// API version of the referent.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
-    pub api_version: Option<String>,
-    /// If referring to a piece of an object instead of an entire object, this string
-    /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
-    /// For example, if the object reference is to a container within a pod, this would take on a value like:
-    /// "spec.containers{name}" (where "name" refers to the name of the container that triggered
-    /// the event) or if no container name is specified "spec.containers[2]" (container with
-    /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
-    /// referencing a part of an object.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
-    pub field_path: Option<String>,
-    /// Kind of the referent.
-    /// More info: <https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds>
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<String>,
-    /// Name of the referent.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Namespace of the referent.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/>
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
-    /// Specific resourceVersion to which this reference is made, if any.
-    /// More info: <https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency>
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
-    pub resource_version: Option<String>,
-    /// UID of the referent.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids>
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub uid: Option<String>,
+    /// name of the Secret being referenced.
+    pub name: String,
 }
 
 /// spec is the desired state of VSphereVM.
@@ -241,12 +210,6 @@ pub struct VSphereVmNetwork {
     /// devices is the list of network devices used by the virtual machine.
     /// 
     pub devices: Vec<VSphereVmNetworkDevices>,
-    /// preferredAPIServerCidr is the preferred CIDR for the Kubernetes API
-    /// server endpoint on this machine
-    /// 
-    /// Deprecated: This field is going to be removed in a future release.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredAPIServerCidr")]
-    pub preferred_api_server_cidr: Option<String>,
     /// routes is a list of optional, static routes applied to the virtual
     /// machine.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -338,18 +301,18 @@ pub struct VSphereVmNetworkDevices {
     pub skip_ip_allocation: Option<bool>,
 }
 
-/// TypedLocalObjectReference contains enough information to let you locate the
-/// typed referenced object inside the same namespace.
+/// IPPoolReference is a reference to an IPPool.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereVmNetworkDevicesAddressesFromPools {
-    /// APIGroup is the group for the resource being referenced.
-    /// If APIGroup is not specified, the specified Kind must be in the core API group.
-    /// For any other third-party types, APIGroup is required.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
-    pub api_group: Option<String>,
-    /// Kind is the type of resource being referenced
+    /// apiGroup of the IPPool.
+    /// apiGroup must be fully qualified domain name.
+    #[serde(rename = "apiGroup")]
+    pub api_group: String,
+    /// kind of the IPPool.
+    /// kind must consist of alphanumeric characters or '-', start with an alphabetic character, and end with an alphanumeric character.
     pub kind: String,
-    /// Name is the name of resource being referenced
+    /// name of the IPPool.
+    /// name must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character.
     pub name: String,
 }
 
@@ -579,37 +542,14 @@ pub struct VSphereVmStatus {
     /// type of clone operation used to create this VM.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cloneMode")]
     pub clone_mode: Option<VSphereVmStatusCloneMode>,
-    /// conditions defines current service state of the VSphereVM.
+    /// conditions represents the observations of a VSphereVM's current state.
+    /// Known condition types are Ready, VirtualMachineProvisioned, VCenterAvailable and IPAddressClaimsFulfilled,
+    /// GuestSoftPowerOffSucceeded, PCIDevicesDetached and Paused.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// failureMessage will be set in the event that there is a terminal problem
-    /// reconciling the vspherevm and will contain a more verbose string suitable
-    /// for logging and human consumption.
-    /// 
-    /// This field should not be set for transitive errors that a controller
-    /// faces that are expected to be fixed automatically over
-    /// time (like service outages), but instead indicate that something is
-    /// fundamentally wrong with the vm.
-    /// 
-    /// Any transient errors that occur during the reconciliation of vspherevms
-    /// can be added as events to the vspherevm object and/or logged in the
-    /// controller's output.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureMessage")]
-    pub failure_message: Option<String>,
-    /// failureReason will be set in the event that there is a terminal problem
-    /// reconciling the vspherevm and will contain a succinct value suitable
-    /// for vm interpretation.
-    /// 
-    /// This field should not be set for transitive errors that a controller
-    /// faces that are expected to be fixed automatically over
-    /// time (like service outages), but instead indicate that something is
-    /// fundamentally wrong with the vm.
-    /// 
-    /// Any transient errors that occur during the reconciliation of vspherevms
-    /// can be added as events to the vspherevm object and/or logged in the
-    /// controller's output.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
-    pub failure_reason: Option<String>,
+    /// deprecated groups all the status fields that are deprecated and will be removed when all the nested field are removed.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deprecated: Option<VSphereVmStatusDeprecated>,
     /// host describes the hostname or IP address of the infrastructure host
     /// that the VSphereVM is residing on.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -641,9 +581,6 @@ pub struct VSphereVmStatus {
     /// modified by users.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "taskRef")]
     pub task_ref: Option<String>,
-    /// v1beta2 groups all the fields that will be added or modified in VSphereVM's status with the V1Beta2 version.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub v1beta2: Option<VSphereVmStatusV1beta2>,
     /// vmRef is the VM's Managed Object Reference on vSphere. It can be used by consumers
     /// to programatically get this VM representation on vSphere in case of the need to retrieve informations.
     /// This field is set once the machine is created and should not be changed
@@ -658,6 +595,56 @@ pub enum VSphereVmStatusCloneMode {
     FullClone,
     #[serde(rename = "linkedClone")]
     LinkedClone,
+}
+
+/// deprecated groups all the status fields that are deprecated and will be removed when all the nested field are removed.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VSphereVmStatusDeprecated {
+    /// v1beta1 groups all the status fields that are deprecated and will be removed when support for v1beta1 will be dropped.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub v1beta1: Option<VSphereVmStatusDeprecatedV1beta1>,
+}
+
+/// v1beta1 groups all the status fields that are deprecated and will be removed when support for v1beta1 will be dropped.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VSphereVmStatusDeprecatedV1beta1 {
+    /// conditions defines current service state of the VSphereVM.
+    /// 
+    /// Deprecated: This field is deprecated and is going to be removed when support for v1beta1 will be dropped. Please see <https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md> for more details.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
+    /// failureMessage will be set in the event that there is a terminal problem
+    /// reconciling the vspherevm and will contain a more verbose string suitable
+    /// for logging and human consumption.
+    /// 
+    /// This field should not be set for transitive errors that a controller
+    /// faces that are expected to be fixed automatically over
+    /// time (like service outages), but instead indicate that something is
+    /// fundamentally wrong with the vm.
+    /// 
+    /// Any transient errors that occur during the reconciliation of vspherevms
+    /// can be added as events to the vspherevm object and/or logged in the
+    /// controller's output.
+    /// 
+    /// Deprecated: This field is deprecated and is going to be removed when support for v1beta1 will be dropped. Please see <https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md> for more details.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureMessage")]
+    pub failure_message: Option<String>,
+    /// failureReason will be set in the event that there is a terminal problem
+    /// reconciling the vspherevm and will contain a succinct value suitable
+    /// for vm interpretation.
+    /// 
+    /// This field should not be set for transitive errors that a controller
+    /// faces that are expected to be fixed automatically over
+    /// time (like service outages), but instead indicate that something is
+    /// fundamentally wrong with the vm.
+    /// 
+    /// Any transient errors that occur during the reconciliation of vspherevms
+    /// can be added as events to the vspherevm object and/or logged in the
+    /// controller's output.
+    /// 
+    /// Deprecated: This field is deprecated and is going to be removed when support for v1beta1 will be dropped. Please see <https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md> for more details.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
+    pub failure_reason: Option<String>,
 }
 
 /// NetworkStatus provides information about one of a VM's networks.
@@ -676,15 +663,5 @@ pub struct VSphereVmStatusNetwork {
     /// networkName is the name of the network.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkName")]
     pub network_name: Option<String>,
-}
-
-/// v1beta2 groups all the fields that will be added or modified in VSphereVM's status with the V1Beta2 version.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct VSphereVmStatusV1beta2 {
-    /// conditions represents the observations of a VSphereVM's current state.
-    /// Known condition types are Ready, VirtualMachineProvisioned, VCenterAvailable and IPAddressClaimsFulfilled,
-    /// GuestSoftPowerOffSucceeded, PCIDevicesDetached and Paused.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub conditions: Option<Vec<Condition>>,
 }
 

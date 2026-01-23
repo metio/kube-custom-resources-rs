@@ -156,7 +156,7 @@ pub struct VSphereMachineTemplateTemplateSpec {
     /// If omitted, the mode defaults to hard.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "powerOffMode")]
     pub power_off_mode: Option<VSphereMachineTemplateTemplateSpecPowerOffMode>,
-    /// providerID is the virtual machine's BIOS UUID formated as
+    /// providerID is the virtual machine's BIOS UUID formatted as
     /// vsphere://12345678-1234-1234-1234-123456789abc
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerID")]
     pub provider_id: Option<String>,
@@ -255,12 +255,6 @@ pub struct VSphereMachineTemplateTemplateSpecNetwork {
     /// devices is the list of network devices used by the virtual machine.
     /// 
     pub devices: Vec<VSphereMachineTemplateTemplateSpecNetworkDevices>,
-    /// preferredAPIServerCidr is the preferred CIDR for the Kubernetes API
-    /// server endpoint on this machine
-    /// 
-    /// Deprecated: This field is going to be removed in a future release.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredAPIServerCidr")]
-    pub preferred_api_server_cidr: Option<String>,
     /// routes is a list of optional, static routes applied to the virtual
     /// machine.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -352,18 +346,18 @@ pub struct VSphereMachineTemplateTemplateSpecNetworkDevices {
     pub skip_ip_allocation: Option<bool>,
 }
 
-/// TypedLocalObjectReference contains enough information to let you locate the
-/// typed referenced object inside the same namespace.
+/// IPPoolReference is a reference to an IPPool.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereMachineTemplateTemplateSpecNetworkDevicesAddressesFromPools {
-    /// APIGroup is the group for the resource being referenced.
-    /// If APIGroup is not specified, the specified Kind must be in the core API group.
-    /// For any other third-party types, APIGroup is required.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
-    pub api_group: Option<String>,
-    /// Kind is the type of resource being referenced
+    /// apiGroup of the IPPool.
+    /// apiGroup must be fully qualified domain name.
+    #[serde(rename = "apiGroup")]
+    pub api_group: String,
+    /// kind of the IPPool.
+    /// kind must consist of alphanumeric characters or '-', start with an alphabetic character, and end with an alphanumeric character.
     pub kind: String,
-    /// Name is the name of resource being referenced
+    /// name of the IPPool.
+    /// name must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character.
     pub name: String,
 }
 

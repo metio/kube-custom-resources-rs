@@ -1118,9 +1118,10 @@ pub struct ScyllaClusterDatacenterRacksPlacementTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// Operator represents a key's relationship to the value.
-    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Valid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.
     /// Exists is equivalent to wildcard for value, so that a pod can
     /// tolerate all taints of a particular category.
+    /// Lt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
     /// TolerationSeconds represents the period of time the toleration (which must be
@@ -1909,7 +1910,7 @@ pub struct ScyllaClusterDatacenterRacksVolumesEphemeralVolumeClaimTemplateSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
     pub data_source_ref: Option<ScyllaClusterDatacenterRacksVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
     /// resources represents the minimum resources the volume should have.
-    /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+    /// Users are allowed to specify resource requirements
     /// that are lower than previous value but must still be higher than capacity recorded in the
     /// status field of the claim.
     /// More info: <https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources>
@@ -2006,7 +2007,7 @@ pub struct ScyllaClusterDatacenterRacksVolumesEphemeralVolumeClaimTemplateSpecDa
 }
 
 /// resources represents the minimum resources the volume should have.
-/// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+/// Users are allowed to specify resource requirements
 /// that are lower than previous value but must still be higher than capacity recorded in the
 /// status field of the claim.
 /// More info: <https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources>
@@ -2729,6 +2730,21 @@ pub struct ScyllaClusterDatacenterRacksVolumesProjectedSourcesPodCertificate {
     /// Kubelet's generated CSRs will be addressed to this signer.
     #[serde(rename = "signerName")]
     pub signer_name: String,
+    /// userAnnotations allow pod authors to pass additional information to
+    /// the signer implementation.  Kubernetes does not restrict or validate this
+    /// metadata in any way.
+    /// 
+    /// These values are copied verbatim into the `spec.unverifiedUserAnnotations` field of
+    /// the PodCertificateRequest objects that Kubelet creates.
+    /// 
+    /// Entries are subject to the same validation as object metadata annotations,
+    /// with the addition that all keys must be domain-prefixed. No restrictions
+    /// are placed on values, except an overall size limitation on the entire field.
+    /// 
+    /// Signers should document the keys and values they support. Signers should
+    /// deny requests that contain keys they do not recognize.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userAnnotations")]
+    pub user_annotations: Option<BTreeMap<String, String>>,
 }
 
 /// secret information about the secret data to project

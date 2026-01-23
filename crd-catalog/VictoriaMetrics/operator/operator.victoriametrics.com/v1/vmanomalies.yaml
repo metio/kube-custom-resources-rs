@@ -1132,6 +1132,9 @@ spec:
                     port:
                       description: "Port defines port to listen on"
                       type: "string"
+                    uiDefaultState:
+                      description: "UIDefaultState defines default query state for anomaly UI"
+                      type: "string"
                   type: "object"
                 serviceAccountName:
                   description: "ServiceAccountName is the name of the ServiceAccount to use to run the pods"

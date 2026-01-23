@@ -1087,6 +1087,9 @@ pub struct SecretStoreProviderBeyondtrustServer {
     /// Timeout specifies a time limit for requests made by this Client. The timeout includes connection time, any redirects, and reading the response body. Defaults to 45 seconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientTimeOutSeconds")]
     pub client_time_out_seconds: Option<i64>,
+    /// When true, the response includes the decrypted password. When false, the password field is omitted. This option only applies to the SECRET retrieval type. Default: true.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub decrypt: Option<bool>,
     /// The secret retrieval type. SECRET = Secrets Safe (credential, text, file). MANAGED_ACCOUNT = Password Safe account associated with a system.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retrievalType")]
     pub retrieval_type: Option<String>,

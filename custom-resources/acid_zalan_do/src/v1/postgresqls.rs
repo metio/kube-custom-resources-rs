@@ -379,6 +379,8 @@ pub struct PostgresqlStandby {
     pub standby_host: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub standby_port: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub standby_primary_slot_name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

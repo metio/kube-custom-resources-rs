@@ -67,6 +67,8 @@ pub struct PerconaServerMongoDbSpec {
     pub secrets: Option<PerconaServerMongoDbSecrets>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sharding: Option<PerconaServerMongoDbSharding>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageAutoscaling")]
+    pub storage_autoscaling: Option<PerconaServerMongoDbStorageAutoscaling>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<PerconaServerMongoDbTls>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -422,6 +424,8 @@ pub struct PerconaServerMongoDbBackupStoragesGcsRetryer {
 pub struct PerconaServerMongoDbBackupStoragesMinio {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bucket: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
+    pub ca_bundle: Option<PerconaServerMongoDbBackupStoragesMinioCaBundle>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsSecret")]
     pub credentials_secret: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "debugTrace")]
@@ -442,6 +446,15 @@ pub struct PerconaServerMongoDbBackupStoragesMinio {
     pub retryer: Option<PerconaServerMongoDbBackupStoragesMinioRetryer>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secure: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMongoDbBackupStoragesMinioCaBundle {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -21089,6 +21102,18 @@ pub struct PerconaServerMongoDbShardingMongosTopologySpreadConstraintsLabelSelec
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMongoDbStorageAutoscaling {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "growthStep")]
+    pub growth_step: Option<IntOrString>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSize")]
+    pub max_size: Option<IntOrString>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "triggerThresholdPercent")]
+    pub trigger_threshold_percent: Option<i64>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PerconaServerMongoDbTls {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowInvalidCertificates")]
     pub allow_invalid_certificates: Option<bool>,
@@ -21212,6 +21237,8 @@ pub struct PerconaServerMongoDbStatus {
     pub size: i32,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageAutoscaling")]
+    pub storage_autoscaling: Option<BTreeMap<String, PerconaServerMongoDbStatusStorageAutoscaling>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -21252,5 +21279,17 @@ pub struct PerconaServerMongoDbStatusReplsetsMembers {
     pub state: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stateStr")]
     pub state_str: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMongoDbStatusStorageAutoscaling {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentSize")]
+    pub current_size: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastError")]
+    pub last_error: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastResizeTime")]
+    pub last_resize_time: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizeCount")]
+    pub resize_count: Option<i32>,
 }
 

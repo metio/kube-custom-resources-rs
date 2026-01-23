@@ -33,7 +33,7 @@ pub struct KafkaUserSpec {
     /// Authorization rules for this Kafka user.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<KafkaUserAuthorization>,
-    /// Quotas on requests to control the broker resources used by clients. Network bandwidth and request rate quotas can be enforced.Kafka documentation for Kafka User quotas can be found at <http://kafka.apache.org/documentation/#design_quotas.>
+    /// Quotas on requests to control the broker resources used by clients. Network bandwidth and request rate quotas can be enforced. For more information, see the Apache Kafka design documentation about quotas.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub quotas: Option<KafkaUserQuotas>,
     /// Template to specify how Kafka User `Secrets` are generated.
@@ -198,7 +198,7 @@ pub enum KafkaUserAuthorizationType {
     Simple,
 }
 
-/// Quotas on requests to control the broker resources used by clients. Network bandwidth and request rate quotas can be enforced.Kafka documentation for Kafka User quotas can be found at <http://kafka.apache.org/documentation/#design_quotas.>
+/// Quotas on requests to control the broker resources used by clients. Network bandwidth and request rate quotas can be enforced. For more information, see the Apache Kafka design documentation about quotas.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaUserQuotas {
     /// A quota on the maximum bytes per-second that each client group can fetch from a broker before the clients in the group are throttled. Defined on a per-broker basis.

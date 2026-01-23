@@ -122,6 +122,8 @@ pub struct PerconaServerMongoDbRestoreBackupSourceGcsRetryer {
 pub struct PerconaServerMongoDbRestoreBackupSourceMinio {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bucket: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
+    pub ca_bundle: Option<PerconaServerMongoDbRestoreBackupSourceMinioCaBundle>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsSecret")]
     pub credentials_secret: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "debugTrace")]
@@ -142,6 +144,15 @@ pub struct PerconaServerMongoDbRestoreBackupSourceMinio {
     pub retryer: Option<PerconaServerMongoDbRestoreBackupSourceMinioRetryer>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secure: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMongoDbRestoreBackupSourceMinioCaBundle {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

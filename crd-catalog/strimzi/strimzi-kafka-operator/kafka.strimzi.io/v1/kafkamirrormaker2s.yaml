@@ -221,7 +221,7 @@ spec:
                                 type: "integer"
                             type: "object"
                           config:
-                            description: "The Kafka Connector configuration. The following properties cannot be set: name, connector.class, tasks.max."
+                            description: "The Kafka Connector configuration. The following properties cannot be set: name, connector.class, tasks.max, connector.plugin.version."
                             type: "object"
                             x-kubernetes-preserve-unknown-fields: true
                           listOffsets:
@@ -386,7 +386,7 @@ spec:
                                 type: "integer"
                             type: "object"
                           config:
-                            description: "The Kafka Connector configuration. The following properties cannot be set: name, connector.class, tasks.max."
+                            description: "The Kafka Connector configuration. The following properties cannot be set: name, connector.class, tasks.max, connector.plugin.version."
                             type: "object"
                             x-kubernetes-preserve-unknown-fields: true
                           listOffsets:
@@ -1187,6 +1187,9 @@ spec:
                                 type: "string"
                             type: "object"
                           type: "array"
+                        hostUsers:
+                          description: "Use the host user namespace. Optional. Defaults to `true`. When `true` or not set, the pod runs in the host user namespace. This is required when the pod needs features available only in the host namespace, such as loading kernel modules with `CAP_SYS_MODULE`.When set to `false`, the pod runs in a new user namespace. Setting `false` helps mitigate container breakout vulnerabilities and allows containers to run as `root` without granting `root` privileges on the host. This property is alpha-level in Kubernetes and is supported only by Kubernetes clusters that enable the `UserNamespacesSupport` feature."
+                          type: "boolean"
                         imagePullSecrets:
                           description: "List of references to secrets in the same namespace to use for pulling any of the images used by this Pod. When the `STRIMZI_IMAGE_PULL_SECRETS` environment variable in Cluster Operator and the `imagePullSecrets` option are specified, only the `imagePullSecrets` variable is used and the `STRIMZI_IMAGE_PULL_SECRETS` variable is ignored."
                           items:
@@ -2205,6 +2208,9 @@ spec:
                                 type: "string"
                             type: "object"
                           type: "array"
+                        hostUsers:
+                          description: "Use the host user namespace. Optional. Defaults to `true`. When `true` or not set, the pod runs in the host user namespace. This is required when the pod needs features available only in the host namespace, such as loading kernel modules with `CAP_SYS_MODULE`.When set to `false`, the pod runs in a new user namespace. Setting `false` helps mitigate container breakout vulnerabilities and allows containers to run as `root` without granting `root` privileges on the host. This property is alpha-level in Kubernetes and is supported only by Kubernetes clusters that enable the `UserNamespacesSupport` feature."
+                          type: "boolean"
                         imagePullSecrets:
                           description: "List of references to secrets in the same namespace to use for pulling any of the images used by this Pod. When the `STRIMZI_IMAGE_PULL_SECRETS` environment variable in Cluster Operator and the `imagePullSecrets` option are specified, only the `imagePullSecrets` variable is used and the `STRIMZI_IMAGE_PULL_SECRETS` variable is ignored."
                           items:

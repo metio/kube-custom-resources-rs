@@ -24,6 +24,11 @@ pub struct ModuleSpec {
     /// Name is ignored and is set automatically by the KMM Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "devicePlugin")]
     pub device_plugin: Option<ModuleDevicePlugin>,
+    /// ImageRebuildTriggerGeneration is an optional counter that can be incremented to trigger a rebuild of the module images.
+    /// When this value changes (compared to the value stored in status), KMM will re-verify and potentially rebuild
+    /// all module images.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRebuildTriggerGeneration")]
+    pub image_rebuild_trigger_generation: Option<i64>,
     /// ImageRepoSecret is an optional secret that is used to pull both the module loader and the device plugin, and
     /// to push the resulting image from the module loader build, if enabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRepoSecret")]
@@ -2696,6 +2701,10 @@ pub struct ModuleStatus {
     /// if it was deployed during reconciliation
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "devicePlugin")]
     pub device_plugin: Option<ModuleStatusDevicePlugin>,
+    /// ImageRebuildTriggerGeneration contains the last value of spec.imageRebuildTriggerGeneration that was applied.
+    /// When this differs from spec.imageRebuildTriggerGeneration, all module images will be re-verified and potentially rebuilt.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRebuildTriggerGeneration")]
+    pub image_rebuild_trigger_generation: Option<i64>,
     /// ModuleLoader contains the status of the ModuleLoader daemonset
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "moduleLoader")]
     pub module_loader: Option<ModuleStatusModuleLoader>,

@@ -16,13 +16,13 @@ spec:
   scope: "Namespaced"
   versions:
     - additionalPrinterColumns:
-        - description: "Cluster to which this VSphereMachine belongs"
-          jsonPath: ".metadata.labels.cluster\\.x-k8s\\.io/cluster-name"
+        - description: "Cluster"
+          jsonPath: ".metadata.labels['cluster\\.x-k8s\\.io/cluster-name']"
           name: "Cluster"
           type: "string"
-        - description: "Machine ready status"
-          jsonPath: ".status.ready"
-          name: "Ready"
+        - description: "VSphereMachine is provisioned"
+          jsonPath: ".status.initialization.provisioned"
+          name: "Provisioned"
           type: "string"
         - description: "VSphereMachine instance ID"
           jsonPath: ".spec.providerID"
@@ -33,7 +33,7 @@ spec:
           name: "Machine"
           priority: 1
           type: "string"
-        - description: "Time duration since creation of Machine"
+        - description: "Time duration since creation of VSphereMachine"
           jsonPath: ".metadata.creationTimestamp"
           name: "Age"
           type: "date"
@@ -145,6 +145,7 @@ spec:
                   type: "integer"
                 namingStrategy:
                   description: "namingStrategy allows configuring the naming strategy used when calculating the name of the VSphereVM."
+                  minProperties: 1
                   properties:
                     template:
                       description: "template defines the template to use for generating the name of the VSphereVM object.\nIf not defined, it will fall back to `{{ .machine.name }}`.\nThe templating has the following data available:\n* `.machine.name`: The name of the Machine object.\nThe templating also has the following funcs available:\n* `trimSuffix`: same as strings.TrimSuffix\n* `trunc`: truncates a string, e.g. `trunc 2 \"hello\"` or `trunc -2 \"hello\"`\nNotes:\n* While the template offers some flexibility, we would like the name to link to the Machine name\n  to ensure better user experience when troubleshooting\n* Generated names must be valid Kubernetes names as they are used to create a VSphereVM object\n  and usually also as the name of the Node object.\n* Names are automatically truncated at 63 characters. Please note that this can lead to name conflicts,\n  so we highly recommend to use a template which leads to a name shorter than 63 characters."
@@ -163,22 +164,31 @@ spec:
                           addressesFromPools:
                             description: "addressesFromPools is a list of IPAddressPools that should be assigned\nto IPAddressClaims. The machine's cloud-init metadata will be populated\nwith IPAddresses fulfilled by an IPAM provider."
                             items:
-                              description: "TypedLocalObjectReference contains enough information to let you locate the\ntyped referenced object inside the same namespace."
+                              description: "IPPoolReference is a reference to an IPPool."
                               properties:
                                 apiGroup:
-                                  description: "APIGroup is the group for the resource being referenced.\nIf APIGroup is not specified, the specified Kind must be in the core API group.\nFor any other third-party types, APIGroup is required."
+                                  description: "apiGroup of the IPPool.\napiGroup must be fully qualified domain name."
+                                  maxLength: 253
+                                  minLength: 1
+                                  pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
                                   type: "string"
                                 kind:
-                                  description: "Kind is the type of resource being referenced"
+                                  description: "kind of the IPPool.\nkind must consist of alphanumeric characters or '-', start with an alphabetic character, and end with an alphanumeric character."
+                                  maxLength: 63
+                                  minLength: 1
+                                  pattern: "^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$"
                                   type: "string"
                                 name:
-                                  description: "Name is the name of resource being referenced"
+                                  description: "name of the IPPool.\nname must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character."
+                                  maxLength: 253
+                                  minLength: 1
+                                  pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
                                   type: "string"
                               required:
+                                - "apiGroup"
                                 - "kind"
                                 - "name"
                               type: "object"
-                              x-kubernetes-map-type: "atomic"
                             maxItems: 128
                             type: "array"
                             x-kubernetes-list-type: "atomic"
@@ -353,11 +363,6 @@ spec:
                       maxItems: 128
                       type: "array"
                       x-kubernetes-list-type: "atomic"
-                    preferredAPIServerCidr:
-                      description: "preferredAPIServerCidr is the preferred CIDR for the Kubernetes API\nserver endpoint on this machine\n\nDeprecated: This field is going to be removed in a future release."
-                      maxLength: 1024
-                      minLength: 1
-                      type: "string"
                     routes:
                       description: "routes is a list of optional, static routes applied to the virtual\nmachine."
                       items:
@@ -430,7 +435,6 @@ spec:
                   type: "array"
                   x-kubernetes-list-type: "atomic"
                 powerOffMode:
-                  default: "hard"
                   description: "powerOffMode describes the desired behavior when powering off a VM.\n\nThere are three, supported power off modes: hard, soft, and\ntrySoft. The first mode, hard, is the equivalent of a physical\nsystem's power cord being ripped from the wall. The soft mode\nrequires the VM's guest to have VM Tools installed and attempts to\ngracefully shut down the VM. Its variant, trySoft, first attempts\na graceful shutdown, and if that fails or the VM is not in a powered off\nstate after reaching the GuestSoftPowerOffTimeoutSeconds, the VM is halted.\n\nIf omitted, the mode defaults to hard."
                   enum:
                     - "hard"
@@ -438,7 +442,7 @@ spec:
                     - "trySoft"
                   type: "string"
                 providerID:
-                  description: "providerID is the virtual machine's BIOS UUID formated as\nvsphere://12345678-1234-1234-1234-123456789abc"
+                  description: "providerID is the virtual machine's BIOS UUID formatted as\nvsphere://12345678-1234-1234-1234-123456789abc"
                   maxLength: 512
                   minLength: 1
                   type: "string"
@@ -574,48 +578,96 @@ spec:
                   type: "array"
                   x-kubernetes-list-type: "atomic"
                 conditions:
-                  description: "conditions defines current service state of the VSphereMachine."
+                  description: "conditions represents the observations of a VSphereMachine's current state.\nKnown condition types are Ready, VirtualMachineProvisioned and Paused."
                   items:
-                    description: "Condition defines an observation of a Cluster API resource operational state."
+                    description: "Condition contains details for one aspect of the current state of this API Resource."
                     properties:
                       lastTransitionTime:
-                        description: "lastTransitionTime is the last time the condition transitioned from one status to another.\nThis should be when the underlying condition changed. If that is not known, then using the time when\nthe API field changed is acceptable."
+                        description: "lastTransitionTime is the last time the condition transitioned from one status to another.\nThis should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable."
                         format: "date-time"
                         type: "string"
                       message:
-                        description: "message is a human readable message indicating details about the transition.\nThis field may be empty."
-                        maxLength: 10240
-                        minLength: 1
+                        description: "message is a human readable message indicating details about the transition.\nThis may be an empty string."
+                        maxLength: 32768
                         type: "string"
+                      observedGeneration:
+                        description: "observedGeneration represents the .metadata.generation that the condition was set based upon.\nFor instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date\nwith respect to the current state of the instance."
+                        format: "int64"
+                        minimum: 0.0
+                        type: "integer"
                       reason:
-                        description: "reason is the reason for the condition's last transition in CamelCase.\nThe specific API may choose whether or not this field is considered a guaranteed API.\nThis field may be empty."
-                        maxLength: 256
+                        description: "reason contains a programmatic identifier indicating the reason for the condition's last transition.\nProducers of specific condition types may define expected values and meanings for this field,\nand whether the values are considered a guaranteed API.\nThe value should be a CamelCase string.\nThis field may not be empty."
+                        maxLength: 1024
                         minLength: 1
-                        type: "string"
-                      severity:
-                        description: "severity provides an explicit classification of Reason code, so the users or machines can immediately\nunderstand the current situation and act accordingly.\nThe Severity field MUST be set only when Status=False."
-                        maxLength: 32
+                        pattern: "^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$"
                         type: "string"
                       status:
                         description: "status of the condition, one of True, False, Unknown."
+                        enum:
+                          - "True"
+                          - "False"
+                          - "Unknown"
                         type: "string"
                       type:
-                        description: "type of condition in CamelCase or in foo.example.com/CamelCase.\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions\ncan be useful (see .node.status.conditions), the ability to deconflict is important."
-                        maxLength: 256
-                        minLength: 1
+                        description: "type of condition in CamelCase or in foo.example.com/CamelCase."
+                        maxLength: 316
+                        pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$"
                         type: "string"
                     required:
                       - "lastTransitionTime"
+                      - "message"
+                      - "reason"
                       - "status"
                       - "type"
                     type: "object"
+                  maxItems: 32
                   type: "array"
+                  x-kubernetes-list-map-keys:
+                    - "type"
+                  x-kubernetes-list-type: "map"
                 deprecated:
                   description: "deprecated groups all the status fields that are deprecated and will be removed when all the nested field are removed."
                   properties:
                     v1beta1:
                       description: "v1beta1 groups all the status fields that are deprecated and will be removed when support for v1beta1 will be dropped.\n\nDeprecated: This field is deprecated and is going to be removed when support for v1beta1 will be dropped. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details."
                       properties:
+                        conditions:
+                          description: "conditions defines current service state of the VSphereMachine.\n\nDeprecated: This field is deprecated and is going to be removed when support for v1beta1 will be dropped. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details."
+                          items:
+                            description: "Condition defines an observation of a Cluster API resource operational state.\n\nDeprecated: This type is deprecated and is going to be removed when support for v1beta1 will be dropped. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details."
+                            properties:
+                              lastTransitionTime:
+                                description: "lastTransitionTime is the last time the condition transitioned from one status to another.\nThis should be when the underlying condition changed. If that is not known, then using the time when\nthe API field changed is acceptable."
+                                format: "date-time"
+                                type: "string"
+                              message:
+                                description: "message is a human readable message indicating details about the transition.\nThis field may be empty."
+                                maxLength: 10240
+                                minLength: 1
+                                type: "string"
+                              reason:
+                                description: "reason is the reason for the condition's last transition in CamelCase.\nThe specific API may choose whether or not this field is considered a guaranteed API.\nThis field may be empty."
+                                maxLength: 256
+                                minLength: 1
+                                type: "string"
+                              severity:
+                                description: "severity provides an explicit classification of Reason code, so the users or machines can immediately\nunderstand the current situation and act accordingly.\nThe Severity field MUST be set only when Status=False."
+                                maxLength: 32
+                                type: "string"
+                              status:
+                                description: "status of the condition, one of True, False, Unknown."
+                                type: "string"
+                              type:
+                                description: "type of condition in CamelCase or in foo.example.com/CamelCase.\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions\ncan be useful (see .node.status.conditions), the ability to deconflict is important."
+                                maxLength: 256
+                                minLength: 1
+                                type: "string"
+                            required:
+                              - "lastTransitionTime"
+                              - "status"
+                              - "type"
+                            type: "object"
+                          type: "array"
                         failureMessage:
                           description: "failureMessage will be set in the event that there is a terminal problem\nreconciling the Machine and will contain a more verbose string suitable\nfor logging and human consumption.\n\nThis field should not be set for transitive errors that a controller\nfaces that are expected to be fixed automatically over\ntime (like service outages), but instead indicate that something is\nfundamentally wrong with the Machine's spec or the configuration of\nthe controller, and that manual intervention is required. Examples\nof terminal errors would be invalid combinations of settings in the\nspec, values that are unsupported by the controller, or the\nresponsible controller itself being critically misconfigured.\n\nAny transient errors that occur during the reconciliation of Machines\ncan be added as events to the Machine object and/or logged in the\ncontroller's output.\n\nDeprecated: This field is deprecated and is going to be removed when support for v1beta1 will be dropped. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details."
                           maxLength: 10240
@@ -667,58 +719,6 @@ spec:
                   maxItems: 128
                   type: "array"
                   x-kubernetes-list-type: "atomic"
-                v1beta2:
-                  description: "v1beta2 groups all the fields that will be added or modified in VSphereMachine's status with the V1Beta2 version."
-                  properties:
-                    conditions:
-                      description: "conditions represents the observations of a VSphereMachine's current state.\nKnown condition types are Ready, VirtualMachineProvisioned and Paused."
-                      items:
-                        description: "Condition contains details for one aspect of the current state of this API Resource."
-                        properties:
-                          lastTransitionTime:
-                            description: "lastTransitionTime is the last time the condition transitioned from one status to another.\nThis should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable."
-                            format: "date-time"
-                            type: "string"
-                          message:
-                            description: "message is a human readable message indicating details about the transition.\nThis may be an empty string."
-                            maxLength: 32768
-                            type: "string"
-                          observedGeneration:
-                            description: "observedGeneration represents the .metadata.generation that the condition was set based upon.\nFor instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date\nwith respect to the current state of the instance."
-                            format: "int64"
-                            minimum: 0.0
-                            type: "integer"
-                          reason:
-                            description: "reason contains a programmatic identifier indicating the reason for the condition's last transition.\nProducers of specific condition types may define expected values and meanings for this field,\nand whether the values are considered a guaranteed API.\nThe value should be a CamelCase string.\nThis field may not be empty."
-                            maxLength: 1024
-                            minLength: 1
-                            pattern: "^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$"
-                            type: "string"
-                          status:
-                            description: "status of the condition, one of True, False, Unknown."
-                            enum:
-                              - "True"
-                              - "False"
-                              - "Unknown"
-                            type: "string"
-                          type:
-                            description: "type of condition in CamelCase or in foo.example.com/CamelCase."
-                            maxLength: 316
-                            pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$"
-                            type: "string"
-                        required:
-                          - "lastTransitionTime"
-                          - "message"
-                          - "reason"
-                          - "status"
-                          - "type"
-                        type: "object"
-                      maxItems: 32
-                      type: "array"
-                      x-kubernetes-list-map-keys:
-                        - "type"
-                      x-kubernetes-list-type: "map"
-                  type: "object"
               type: "object"
           required:
             - "spec"

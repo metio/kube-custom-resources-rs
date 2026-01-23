@@ -26,13 +26,17 @@ spec:
           jsonPath: ".status.conditions[?(@.type==\"Ready\")].status"
           name: "Ready"
           type: "string"
-        - description: "The state of the cluster metadata"
-          jsonPath: ".status.kafkaMetadataState"
-          name: "Metadata State"
-          type: "string"
         - description: "Warnings related to the custom resource"
           jsonPath: ".status.conditions[?(@.type==\"Warning\")].status"
           name: "Warnings"
+          type: "string"
+        - description: "The Kafka version used by the cluster"
+          jsonPath: ".status.kafkaVersion"
+          name: "Kafka version"
+          type: "string"
+        - description: "The Kafka metadata version used by the cluster"
+          jsonPath: ".status.kafkaMetadataVersion"
+          name: "Metadata version"
           type: "string"
       name: "v1"
       schema:
@@ -863,6 +867,8 @@ spec:
                                     type: "string"
                                 type: "object"
                               type: "array"
+                            hostUsers:
+                              type: "boolean"
                             imagePullSecrets:
                               items:
                                 properties:
@@ -1551,6 +1557,8 @@ spec:
                                     type: "string"
                                 type: "object"
                               type: "array"
+                            hostUsers:
+                              type: "boolean"
                             imagePullSecrets:
                               items:
                                 properties:
@@ -3652,6 +3660,8 @@ spec:
                                     type: "string"
                                 type: "object"
                               type: "array"
+                            hostUsers:
+                              type: "boolean"
                             imagePullSecrets:
                               items:
                                 properties:
@@ -4574,6 +4584,8 @@ spec:
                                     type: "string"
                                 type: "object"
                               type: "array"
+                            hostUsers:
+                              type: "boolean"
                             imagePullSecrets:
                               items:
                                 properties:

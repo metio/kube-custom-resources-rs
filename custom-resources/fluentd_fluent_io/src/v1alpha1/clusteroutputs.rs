@@ -2137,39 +2137,207 @@ pub struct ClusterOutputOutputsNullPlugin {
 /// out_opensearch plugin
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOutputsOpensearch {
+    /// Optional, Specify the application name for the rollover index to be created (default: default)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "applicationName")]
+    pub application_name: Option<String>,
+    /// Optional, Configure bulk_message request splitting threshold size (default: -1 unlimited)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bulkMessageRequestThreshold")]
+    pub bulk_message_request_threshold: Option<i32>,
+    /// Optional, Absolute path to CA certificate file
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caFile")]
+    pub ca_file: Option<String>,
+    /// Optional, Absolute path to client Certificate file
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCert")]
+    pub client_cert: Option<String>,
+    /// Optional, Absolute path to client private Key file
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientKey")]
+    pub client_key: Option<String>,
+    /// Optional, password for ClientKey file
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientKeyPassword")]
+    pub client_key_password: Option<ClusterOutputOutputsOpensearchClientKeyPassword>,
+    /// Optional, You can specify the compression level (default: no_compression). Options: no_compression, best_compression, best_speed, default_compression
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionLevel")]
+    pub compression_level: Option<String>,
+    /// Optional, With content_type application/x-ndjson, plugin adds application/x-ndjson as Content-Type (default: application/json)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentType")]
+    pub content_type: Option<String>,
+    /// Optional, Custom headers in Hash format
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customHeaders")]
+    pub custom_headers: Option<String>,
+    /// Optional, Default OpenSearch version (default: 1)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultOpensearchVersion")]
+    pub default_opensearch_version: Option<i32>,
+    /// Optional, When write_operation is not index, setting this true will cause plugin to emit_error_event of records which do not include _id field (default: false)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emitErrorForMissingId")]
+    pub emit_error_for_missing_id: Option<bool>,
+    /// Optional, Backup chunk when ignore exception occurs (default: true)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exceptionBackup")]
+    pub exception_backup: Option<bool>,
+    /// Optional, Indicates whether to fail when max_retry_get_os_version is exceeded (default: true)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failOnDetectingOsVersionRetryExceed")]
+    pub fail_on_detecting_os_version_retry_exceed: Option<bool>,
+    /// Optional, Indicates whether to fail when max_retry_putting_template is exceeded (default: true)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failOnPuttingTemplateRetryExceed")]
+    pub fail_on_putting_template_retry_exceed: Option<bool>,
     /// The hostname of your Opensearch node (default: localhost).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Hosts defines a list of hosts if you want to connect to more than one Openearch nodes
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hosts: Option<String>,
+    /// Optional, You can specify HTTP backend (default: excon). Options: excon, typhoeus
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpBackend")]
+    pub http_backend: Option<String>,
+    /// Optional, With http_backend_excon_nonblock false, plugin uses excon with nonblock=false (default: true)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpBackendExconNonblock")]
+    pub http_backend_excon_nonblock: Option<bool>,
+    /// Optional, Record accessor syntax to specify the field to use as _id in OpenSearch
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "idKey")]
+    pub id_key: Option<String>,
+    /// Optional, List of exception classes to ignore
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreExceptions")]
+    pub ignore_exceptions: Option<String>,
+    /// Optional, Include tag key in record (default: false)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeTagKey")]
+    pub include_tag_key: Option<bool>,
+    /// Optional, Specify the index date pattern for creating a rollover index (default: now/d)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "indexDatePattern")]
+    pub index_date_pattern: Option<String>,
     /// IndexName defines the placeholder syntax of Fluentd plugin API. See <https://docs.fluentd.org/configuration/buffer-section.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "indexName")]
     pub index_name: Option<String>,
+    /// Optional, Enable logging of 400 reason without enabling debug log level (default: false)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logOs400Reason")]
+    pub log_os400_reason: Option<bool>,
     /// If true, Fluentd uses the conventional index name format logstash-%Y.%m.%d (default: false). This option supersedes the index_name option.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logstashFormat")]
     pub logstash_format: Option<bool>,
     /// LogstashPrefix defines the logstash prefix index name to write events when logstash_format is true (default: logstash).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logstashPrefix")]
     pub logstash_prefix: Option<String>,
+    /// Optional, You can specify times of retry obtaining OpenSearch version (default: 15)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetryGetOsVersion")]
+    pub max_retry_get_os_version: Option<i32>,
+    /// Optional, You can specify times of retry putting template (default: 10)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetryPuttingTemplate")]
+    pub max_retry_putting_template: Option<i32>,
     /// Optional, The login credentials to connect to Opensearch
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<ClusterOutputOutputsOpensearchPassword>,
     /// Path defines the REST API endpoint of Opensearch to post write requests (default: nil).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
+    /// Optional, Pipeline name
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pipeline: Option<String>,
     /// The port number of your Opensearch node (default: 9200).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
+    /// Optional, With default behavior, plugin uses Yajl as JSON encoder/decoder. Set to true to use Oj (default: false)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferOjSerializer")]
+    pub prefer_oj_serializer: Option<bool>,
+    /// Optional, Indicates that the plugin should reset connection on any error (reconnect on next send) (default: false)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconnectOnError")]
+    pub reconnect_on_error: Option<bool>,
+    /// Optional, When ReloadConnections true, this is the integer number of operations after which the plugin will reload the connections (default: 10000)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reloadAfter")]
+    pub reload_after: Option<i32>,
+    /// Optional, Automatically reload connection after 10000 documents (default: true)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reloadConnections")]
+    pub reload_connections: Option<bool>,
+    /// Optional, Indicates that the opensearch-transport will try to reload the nodes addresses if there is a failure while making the request (default: false)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reloadOnFailure")]
+    pub reload_on_failure: Option<bool>,
+    /// Optional, Remove specified keys from the event record
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "removeKeys")]
+    pub remove_keys: Option<String>,
+    /// Optional, Remove keys when record is being updated
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "removeKeysOnUpdate")]
+    pub remove_keys_on_update: Option<String>,
+    /// Optional, HTTP request timeout in seconds (default: 5s)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestTimeout")]
+    pub request_timeout: Option<String>,
     /// Specify https if your Opensearch endpoint supports SSL (default: http).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
+    /// Optional, Provide a selector class name
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "selectorClassName")]
+    pub selector_class_name: Option<String>,
+    /// Optional, Provide a different sniffer class name
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snifferClassName")]
+    pub sniffer_class_name: Option<String>,
+    /// Optional, Maximum SSL/TLS version
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslMaxVersion")]
+    pub ssl_max_version: Option<String>,
+    /// Optional, Minimum SSL/TLS version
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslMinVersion")]
+    pub ssl_min_version: Option<String>,
     /// Optional, Force certificate validation
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslVerify")]
     pub ssl_verify: Option<bool>,
+    /// Optional, You can specify SSL/TLS version (default: TLSv1_2)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslVersion")]
+    pub ssl_version: Option<String>,
+    /// Optional, Suppress doc_wrap (default: false)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "suppressDocWrap")]
+    pub suppress_doc_wrap: Option<bool>,
+    /// Optional, Suppress '[types removal]' warnings on OpenSearch 2.x (default: true for OS2+)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "suppressTypeName")]
+    pub suppress_type_name: Option<bool>,
+    /// Optional, Tag key name when include_tag_key is true (default: tag)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tagKey")]
+    pub tag_key: Option<String>,
+    /// Optional, Always update the template, even if it already exists (default: false)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateOverwrite")]
+    pub template_overwrite: Option<bool>,
+    /// Optional, Use legacy template or not (default: false for composable templates)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useLegacyTemplate")]
+    pub use_legacy_template: Option<bool>,
     /// Optional, The login credentials to connect to Opensearch
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<ClusterOutputOutputsOpensearchUser>,
+    /// Optional, UTC index (default: false for local time)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "utcIndex")]
+    pub utc_index: Option<bool>,
+    /// Optional, Validate OpenSearch version at startup (default: true)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "verifyOsVersionAtStartup")]
+    pub verify_os_version_at_startup: Option<bool>,
+    /// Optional, The write operation (default: index). Options: index, create, update, upsert
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeOperation")]
+    pub write_operation: Option<String>,
+}
+
+/// Optional, password for ClientKey file
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterOutputOutputsOpensearchClientKeyPassword {
+    /// ValueSource defines how to find a value's key.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<ClusterOutputOutputsOpensearchClientKeyPasswordValueFrom>,
+}
+
+/// ValueSource defines how to find a value's key.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterOutputOutputsOpensearchClientKeyPasswordValueFrom {
+    /// Selects a key of a secret in the pod's namespace
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterOutputOutputsOpensearchClientKeyPasswordValueFromSecretKeyRef>,
+}
+
+/// Selects a key of a secret in the pod's namespace
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterOutputOutputsOpensearchClientKeyPasswordValueFromSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 /// Optional, The login credentials to connect to Opensearch

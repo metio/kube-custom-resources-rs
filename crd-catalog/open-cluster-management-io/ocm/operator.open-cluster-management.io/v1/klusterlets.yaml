@@ -117,6 +117,24 @@ spec:
                 registrationConfiguration:
                   description: "RegistrationConfiguration contains the configuration of registration"
                   properties:
+                    addOnKubeClientRegistrationDriver:
+                      description: "This provides driver details required to register add-ons with hub for kubeClient type"
+                      properties:
+                        authType:
+                          description: "AuthType is the authentication driver used for add-on registration.\nPossible values are csr and token.\nCurrently, this field only affects kubeClient type add-on registration. The csr type add-on registration always uses csr driver.\nIn the future, this may be extended to customize authentication for csr type add-on registration as well."
+                          enum:
+                            - "csr"
+                            - "token"
+                          type: "string"
+                        token:
+                          description: "Token contains the configuration for token-based registration."
+                          properties:
+                            expirationSeconds:
+                              description: "ExpirationSeconds represents the seconds of a token to expire.\nIf it is not set or 0, the default duration will be used, which is\nthe same as the certificate expiration set by the hub cluster's\nkube-controller-manager (typically 1 year).\nThe minimum valid value for production use is 3600 (1 hour), though smaller values are allowed for testing."
+                              format: "int64"
+                              type: "integer"
+                          type: "object"
+                      type: "object"
                     bootstrapKubeConfigs:
                       description: "BootstrapKubeConfigs defines the ordered list of bootstrap kubeconfigs. The order decides which bootstrap kubeconfig to use first when rebootstrap.\n\nWhen the agent loses the connection to the current hub over HubConnectionTimeoutSeconds, or the managedcluster CR\nis set `hubAcceptsClient=false` on the hub, the controller marks the related bootstrap kubeconfig as \"failed\".\n\nA failed bootstrapkubeconfig won't be used for the duration specified by SkipFailedBootstrapKubeConfigSeconds.\nBut if the user updates the content of a failed bootstrapkubeconfig, the \"failed\" mark will be cleared."
                       properties:
@@ -215,7 +233,7 @@ spec:
                       format: "int32"
                       type: "integer"
                     registrationDriver:
-                      description: "This provides driver details required to register with hub"
+                      description: "This provides driver details required to register klusterlet agent with hub"
                       properties:
                         authType:
                           default: "csr"

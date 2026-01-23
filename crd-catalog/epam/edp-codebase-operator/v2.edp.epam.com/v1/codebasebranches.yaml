@@ -71,6 +71,7 @@ spec:
                   example:
                     build: "build-pipeline"
                     review: "review-pipeline"
+                    security: "security-pipeline"
                   nullable: true
                   type: "object"
                 release:

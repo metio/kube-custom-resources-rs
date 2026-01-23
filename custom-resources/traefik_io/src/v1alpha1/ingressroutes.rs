@@ -81,6 +81,7 @@ pub struct IngressRouteRoutes {
     pub services: Option<Vec<IngressRouteRoutesServices>>,
     /// Syntax defines the router's rule syntax.
     /// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/http/routing/rules-and-priority/#rulesyntax>
+    /// 
     /// Deprecated: Please do not use this field and rewrite the router rules to use the v3 syntax.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub syntax: Option<String>,

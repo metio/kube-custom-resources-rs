@@ -159,6 +159,9 @@ pub struct KlusterletNodePlacementTolerations {
 /// RegistrationConfiguration contains the configuration of registration
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KlusterletRegistrationConfiguration {
+    /// This provides driver details required to register add-ons with hub for kubeClient type
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "addOnKubeClientRegistrationDriver")]
+    pub add_on_kube_client_registration_driver: Option<KlusterletRegistrationConfigurationAddOnKubeClientRegistrationDriver>,
     /// BootstrapKubeConfigs defines the ordered list of bootstrap kubeconfigs. The order decides which bootstrap kubeconfig to use first when rebootstrap.
     /// 
     /// When the agent loses the connection to the current hub over HubConnectionTimeoutSeconds, or the managedcluster CR
@@ -201,9 +204,44 @@ pub struct KlusterletRegistrationConfiguration {
     /// If it is set empty, use the default value: 50
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeAPIQPS")]
     pub kube_apiqps: Option<i32>,
-    /// This provides driver details required to register with hub
+    /// This provides driver details required to register klusterlet agent with hub
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "registrationDriver")]
     pub registration_driver: Option<KlusterletRegistrationConfigurationRegistrationDriver>,
+}
+
+/// This provides driver details required to register add-ons with hub for kubeClient type
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KlusterletRegistrationConfigurationAddOnKubeClientRegistrationDriver {
+    /// AuthType is the authentication driver used for add-on registration.
+    /// Possible values are csr and token.
+    /// Currently, this field only affects kubeClient type add-on registration. The csr type add-on registration always uses csr driver.
+    /// In the future, this may be extended to customize authentication for csr type add-on registration as well.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authType")]
+    pub auth_type: Option<KlusterletRegistrationConfigurationAddOnKubeClientRegistrationDriverAuthType>,
+    /// Token contains the configuration for token-based registration.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub token: Option<KlusterletRegistrationConfigurationAddOnKubeClientRegistrationDriverToken>,
+}
+
+/// This provides driver details required to register add-ons with hub for kubeClient type
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KlusterletRegistrationConfigurationAddOnKubeClientRegistrationDriverAuthType {
+    #[serde(rename = "csr")]
+    Csr,
+    #[serde(rename = "token")]
+    Token,
+}
+
+/// Token contains the configuration for token-based registration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KlusterletRegistrationConfigurationAddOnKubeClientRegistrationDriverToken {
+    /// ExpirationSeconds represents the seconds of a token to expire.
+    /// If it is not set or 0, the default duration will be used, which is
+    /// the same as the certificate expiration set by the hub cluster's
+    /// kube-controller-manager (typically 1 year).
+    /// The minimum valid value for production use is 3600 (1 hour), though smaller values are allowed for testing.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
+    pub expiration_seconds: Option<i64>,
 }
 
 /// BootstrapKubeConfigs defines the ordered list of bootstrap kubeconfigs. The order decides which bootstrap kubeconfig to use first when rebootstrap.
@@ -287,7 +325,7 @@ pub enum KlusterletRegistrationConfigurationFeatureGatesMode {
     Disable,
 }
 
-/// This provides driver details required to register with hub
+/// This provides driver details required to register klusterlet agent with hub
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KlusterletRegistrationConfigurationRegistrationDriver {
     /// Type of the authentication used by managedcluster to register as well as pull work from hub. Possible values are csr and awsirsa.
@@ -299,7 +337,7 @@ pub struct KlusterletRegistrationConfigurationRegistrationDriver {
     pub aws_irsa: Option<KlusterletRegistrationConfigurationRegistrationDriverAwsIrsa>,
 }
 
-/// This provides driver details required to register with hub
+/// This provides driver details required to register klusterlet agent with hub
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KlusterletRegistrationConfigurationRegistrationDriverAuthType {
     #[serde(rename = "csr")]

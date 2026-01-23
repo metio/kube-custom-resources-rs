@@ -239,7 +239,7 @@ spec:
                       type: "object"
                     podOverrides:
                       default: {}
-                      description: "In the `podOverrides` property you can define a\n[PodTemplateSpec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)\nto override any property that can be set on a Kubernetes Pod.\nRead the\n[Pod overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)\nfor more information."
+                      description: "In the `podOverrides` property you can define a\n[PodTemplateSpec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#podtemplatespec-v1-core)\nto override any property that can be set on a Kubernetes Pod.\nRead the\n[Pod overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)\nfor more information."
                       type: "object"
                       x-kubernetes-preserve-unknown-fields: true
                     roleConfig:
@@ -487,7 +487,7 @@ spec:
                             type: "object"
                           podOverrides:
                             default: {}
-                            description: "In the `podOverrides` property you can define a\n[PodTemplateSpec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)\nto override any property that can be set on a Kubernetes Pod.\nRead the\n[Pod overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)\nfor more information."
+                            description: "In the `podOverrides` property you can define a\n[PodTemplateSpec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#podtemplatespec-v1-core)\nto override any property that can be set on a Kubernetes Pod.\nRead the\n[Pod overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)\nfor more information."
                             type: "object"
                             x-kubernetes-preserve-unknown-fields: true
                           replicas:
@@ -1145,7 +1145,7 @@ spec:
                       type: "object"
                     podOverrides:
                       default: {}
-                      description: "In the `podOverrides` property you can define a\n[PodTemplateSpec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)\nto override any property that can be set on a Kubernetes Pod.\nRead the\n[Pod overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)\nfor more information."
+                      description: "In the `podOverrides` property you can define a\n[PodTemplateSpec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#podtemplatespec-v1-core)\nto override any property that can be set on a Kubernetes Pod.\nRead the\n[Pod overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)\nfor more information."
                       type: "object"
                       x-kubernetes-preserve-unknown-fields: true
                     roleConfig:
@@ -1393,7 +1393,7 @@ spec:
                             type: "object"
                           podOverrides:
                             default: {}
-                            description: "In the `podOverrides` property you can define a\n[PodTemplateSpec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)\nto override any property that can be set on a Kubernetes Pod.\nRead the\n[Pod overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)\nfor more information."
+                            description: "In the `podOverrides` property you can define a\n[PodTemplateSpec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#podtemplatespec-v1-core)\nto override any property that can be set on a Kubernetes Pod.\nRead the\n[Pod overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)\nfor more information."
                             type: "object"
                             x-kubernetes-preserve-unknown-fields: true
                           replicas:
@@ -1654,7 +1654,7 @@ spec:
                       type: "object"
                     podOverrides:
                       default: {}
-                      description: "In the `podOverrides` property you can define a\n[PodTemplateSpec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)\nto override any property that can be set on a Kubernetes Pod.\nRead the\n[Pod overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)\nfor more information."
+                      description: "In the `podOverrides` property you can define a\n[PodTemplateSpec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#podtemplatespec-v1-core)\nto override any property that can be set on a Kubernetes Pod.\nRead the\n[Pod overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)\nfor more information."
                       type: "object"
                       x-kubernetes-preserve-unknown-fields: true
                     roleConfig:
@@ -1930,7 +1930,7 @@ spec:
                             type: "object"
                           podOverrides:
                             default: {}
-                            description: "In the `podOverrides` property you can define a\n[PodTemplateSpec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)\nto override any property that can be set on a Kubernetes Pod.\nRead the\n[Pod overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)\nfor more information."
+                            description: "In the `podOverrides` property you can define a\n[PodTemplateSpec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#podtemplatespec-v1-core)\nto override any property that can be set on a Kubernetes Pod.\nRead the\n[Pod overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)\nfor more information."
                             type: "object"
                             x-kubernetes-preserve-unknown-fields: true
                           replicas:
@@ -2204,7 +2204,7 @@ spec:
                       type: "object"
                     podOverrides:
                       default: {}
-                      description: "In the `podOverrides` property you can define a\n[PodTemplateSpec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)\nto override any property that can be set on a Kubernetes Pod.\nRead the\n[Pod overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)\nfor more information."
+                      description: "In the `podOverrides` property you can define a\n[PodTemplateSpec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#podtemplatespec-v1-core)\nto override any property that can be set on a Kubernetes Pod.\nRead the\n[Pod overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)\nfor more information."
                       type: "object"
                       x-kubernetes-preserve-unknown-fields: true
                     roleConfig:
@@ -2448,7 +2448,7 @@ spec:
                             type: "object"
                           podOverrides:
                             default: {}
-                            description: "In the `podOverrides` property you can define a\n[PodTemplateSpec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)\nto override any property that can be set on a Kubernetes Pod.\nRead the\n[Pod overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)\nfor more information."
+                            description: "In the `podOverrides` property you can define a\n[PodTemplateSpec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#podtemplatespec-v1-core)\nto override any property that can be set on a Kubernetes Pod.\nRead the\n[Pod overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)\nfor more information."
                             type: "object"
                             x-kubernetes-preserve-unknown-fields: true
                           replicas:
@@ -2684,7 +2684,7 @@ spec:
                       type: "object"
                     podOverrides:
                       default: {}
-                      description: "In the `podOverrides` property you can define a\n[PodTemplateSpec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)\nto override any property that can be set on a Kubernetes Pod.\nRead the\n[Pod overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)\nfor more information."
+                      description: "In the `podOverrides` property you can define a\n[PodTemplateSpec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#podtemplatespec-v1-core)\nto override any property that can be set on a Kubernetes Pod.\nRead the\n[Pod overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)\nfor more information."
                       type: "object"
                       x-kubernetes-preserve-unknown-fields: true
                     roleConfig:
@@ -2932,7 +2932,7 @@ spec:
                             type: "object"
                           podOverrides:
                             default: {}
-                            description: "In the `podOverrides` property you can define a\n[PodTemplateSpec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)\nto override any property that can be set on a Kubernetes Pod.\nRead the\n[Pod overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)\nfor more information."
+                            description: "In the `podOverrides` property you can define a\n[PodTemplateSpec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#podtemplatespec-v1-core)\nto override any property that can be set on a Kubernetes Pod.\nRead the\n[Pod overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)\nfor more information."
                             type: "object"
                             x-kubernetes-preserve-unknown-fields: true
                           replicas:

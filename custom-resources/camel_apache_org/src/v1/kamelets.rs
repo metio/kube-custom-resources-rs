@@ -380,7 +380,8 @@ pub struct KameletSources {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "from-kamelet")]
     pub from_kamelet: Option<bool>,
     /// Interceptors are optional identifiers the org.apache.camel.k.RoutesLoader
-    /// uses to pre/post process sources
+    /// uses to pre/post process sources.
+    /// 
     /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interceptors: Option<Vec<String>>,
@@ -901,7 +902,8 @@ pub struct KameletVersionsSources {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "from-kamelet")]
     pub from_kamelet: Option<bool>,
     /// Interceptors are optional identifiers the org.apache.camel.k.RoutesLoader
-    /// uses to pre/post process sources
+    /// uses to pre/post process sources.
+    /// 
     /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interceptors: Option<Vec<String>>,

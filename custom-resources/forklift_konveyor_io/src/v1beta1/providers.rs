@@ -89,6 +89,10 @@ pub struct ProviderStatus {
     /// Current life cycle phase of the provider.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
+    /// The ResourceVersion of the secret referenced by this provider.
+    /// Used to detect when credentials have been rotated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretResourceVersion")]
+    pub secret_resource_version: Option<String>,
     /// Provider service reference
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<ObjectReference>,

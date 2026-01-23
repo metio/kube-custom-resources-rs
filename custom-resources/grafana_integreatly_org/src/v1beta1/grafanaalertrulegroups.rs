@@ -85,6 +85,9 @@ pub struct GrafanaAlertRuleGroupRules {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     pub condition: String,
+    /// Deprecated: The field is not used, use rules[].annotations.__dashboardUid__
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dashboardUid")]
+    pub dashboard_uid: Option<String>,
     pub data: Vec<GrafanaAlertRuleGroupRulesData>,
     #[serde(rename = "execErrState")]
     pub exec_err_state: GrafanaAlertRuleGroupRulesExecErrState,
@@ -103,6 +106,9 @@ pub struct GrafanaAlertRuleGroupRules {
     pub no_data_state: GrafanaAlertRuleGroupRulesNoDataState,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "notificationSettings")]
     pub notification_settings: Option<GrafanaAlertRuleGroupRulesNotificationSettings>,
+    /// Deprecated: The field is not used, use rules[].annotations.__panelId__
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "panelId")]
+    pub panel_id: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub record: Option<GrafanaAlertRuleGroupRulesRecord>,
     pub title: String,

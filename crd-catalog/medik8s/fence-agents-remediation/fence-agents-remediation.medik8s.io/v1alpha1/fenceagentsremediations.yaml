@@ -64,8 +64,7 @@ spec:
                   pattern: "^([0-9]+(\\.[0-9]+)?(ns|us|µs|ms|s|m|h))+$"
                   type: "string"
                 sharedSecretName:
-                  default: "fence-agents-credentials-shared"
-                  description: "SharedSecretName is the name of the Secret which will contain params needed for FAR in order to remediate any node.\nUsing this Secret is optional."
+                  description: "SharedSecretName is the name of the Secret which contains shared fence agent parameters.\n\nHeads up: in an earlier version this had a default value of \"fence-agents-credentials-shared\".\nWe removed that default to be able to differentiate during CR validation between using a Secret or not.\n\nAs a temporary workaround this field will be set with the old default value in case a Secret with the\nold default of \"fence-agents-credentials-shared\" is found. Also, in case the field contains the old default\nvalue, but the Secret does not exist, the value will be deleted. This workaround will be removed in a future version."
                   type: "string"
                 sharedparameters:
                   additionalProperties:

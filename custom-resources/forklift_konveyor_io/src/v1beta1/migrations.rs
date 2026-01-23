@@ -173,9 +173,14 @@ pub struct MigrationStatusVms {
     ///   - .NetworkType: type of the network ("Multus" or "Pod")
     ///   - .NetworkIndex: sequential index of the network interface (0-based)
     /// The template can be used to customize network interface names based on target network configuration.
+    /// 
+    /// Provider support:
+    ///   - VMware (vSphere): Supported. Network interface names can be customized.
+    ///   - OpenShift: Not supported. Network interface names are preserved from the source VM.
+    /// 
     /// Note:
     ///   - This template will override at the plan level template
-    ///   - If not specified on VM level and on Plan leverl, default naming conventions will be used
+    ///   - If not specified on VM level and on Plan level, default naming conventions will be used
     /// Examples:
     ///   "net-{{.NetworkIndex}}"
     ///   "{{if eq .NetworkType "Pod"}}pod{{else}}multus-{{.NetworkIndex}}{{end}}"
@@ -193,21 +198,30 @@ pub struct MigrationStatusVms {
     pub pipeline: Vec<MigrationStatusVmsPipeline>,
     /// PVCNameTemplate is a template for generating PVC names for VM disks.
     /// Generated names must be valid DNS-1123 labels (lowercase alphanumerics, '-' allowed, max 63 chars).
-    /// It follows Go template syntax and has access to the following variables:
+    /// It follows Go template syntax and has access to provider-specific variables.
+    /// 
+    /// Common variables (all providers):
     ///   - .VmName: name of the VM in the source cluster (original source name)
     ///   - .TargetVmName: final VM name in the target cluster (may equal .VmName if no rename/normalization)
     ///   - .PlanName: name of the migration plan
     ///   - .DiskIndex: initial volume index of the disk
+    /// 
+    /// VMware (vSphere) specific variables:
     ///   - .WinDriveLetter: Windows drive letter (lowercase, if applicable, e.g. "c", requires guest agent)
     ///   - .RootDiskIndex: index of the root disk
     ///   - .Shared: true if the volume is shared by multiple VMs, false otherwise
-    ///   - .FileName: name of the file in the source provider (VMware only, filename includes the .vmdk suffix)
+    ///   - .FileName: name of the file in the source provider (filename includes the .vmdk suffix)
+    /// 
+    /// OpenShift specific variables:
+    ///   - .SourcePVCName: name of the PVC in the source cluster
+    ///   - .SourcePVCNamespace: namespace of the PVC in the source cluster
+    /// 
     /// Note:
     ///   This template overrides the plan level template.
     /// Examples:
     ///   "{{.TargetVmName}}-disk-{{.DiskIndex}}"
-    ///   "{{if eq .DiskIndex .RootDiskIndex}}root{{else}}data{{end}}-{{.DiskIndex}}"
-    ///   "{{if .Shared}}shared-{{end}}{{.VmName | lower}}-{{.DiskIndex}}"
+    ///   "{{if eq .DiskIndex .RootDiskIndex}}root{{else}}data{{end}}-{{.DiskIndex}}" (VMware)
+    ///   "{{.TargetVmName}}-{{.SourcePVCName}}" (OpenShift)
     /// See:
     /// 	 <https://github.com/kubev2v/forklift/tree/main/pkg/templateutil> for template functions.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pvcNameTemplate")]
@@ -239,9 +253,14 @@ pub struct MigrationStatusVms {
     /// It follows Go template syntax and has access to the following variables:
     ///   - .PVCName: name of the PVC mounted to the VM using this volume
     ///   - .VolumeIndex: sequential index of the volume interface (0-based)
+    /// 
+    /// Provider support:
+    ///   - VMware (vSphere): Supported. Default naming is "vol-{index}".
+    ///   - OpenShift: Not supported. Volume names are preserved from the source VM.
+    /// 
     /// Note:
     ///   - This template will override at the plan level template
-    ///   - If not specified on VM level and on Plan leverl, default naming conventions will be used
+    ///   - If not specified on VM level and on Plan level, default naming conventions will be used
     /// Examples:
     ///   "disk-{{.VolumeIndex}}"
     ///   "pvc-{{.PVCName}}"

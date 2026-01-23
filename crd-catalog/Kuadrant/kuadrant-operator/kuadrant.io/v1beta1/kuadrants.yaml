@@ -99,7 +99,7 @@ spec:
                       description: "Tracing configures distributed tracing for request flows through the system."
                       properties:
                         defaultEndpoint:
-                          description: "DefaultEndpoint is the default URL of the tracing collector backend where spans should be sent.\nCan be overridden per-gateway in future versions."
+                          description: "DefaultEndpoint is the default URL of the tracing collector backend where spans should be sent.\nThis endpoint is used by Auth (Authorino), RateLimiting (Limitador) and WASM services for exporting trace data.\nIf tracing endpoints have been configured directly in Authorino or Limitador CRs, those take precedence\nover this default value.\nNote: Per-gateway overrides are not currently supported."
                           type: "string"
                         insecure:
                           description: "Insecure controls whether to skip TLS certificate verification."

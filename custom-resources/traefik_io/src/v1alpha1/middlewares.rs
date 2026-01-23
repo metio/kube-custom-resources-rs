@@ -56,6 +56,9 @@ pub struct MiddlewareSpec {
     /// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/http/middlewares/digestauth/>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "digestAuth")]
     pub digest_auth: Option<MiddlewareDigestAuth>,
+    /// EncodedCharacters configures which encoded characters are allowed in the request path.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "encodedCharacters")]
+    pub encoded_characters: Option<MiddlewareEncodedCharacters>,
     /// ErrorPage holds the custom error middleware configuration.
     /// This middleware returns a custom page in lieu of the default, according to configured ranges of HTTP Status codes.
     /// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/http/middlewares/errorpages/>
@@ -273,6 +276,7 @@ pub struct MiddlewareCompress {
 pub struct MiddlewareContentType {
     /// AutoDetect specifies whether to let the `Content-Type` header, if it has not been set by the backend,
     /// be automatically set to a value derived from the contents of the response.
+    /// 
     /// Deprecated: AutoDetect option is deprecated, Content-Type middleware is only meant to be used to enable the content-type detection, please remove any usage of this option.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoDetect")]
     pub auto_detect: Option<bool>,
@@ -297,6 +301,32 @@ pub struct MiddlewareDigestAuth {
     /// Secret is the name of the referenced Kubernetes Secret containing user credentials.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<String>,
+}
+
+/// EncodedCharacters configures which encoded characters are allowed in the request path.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MiddlewareEncodedCharacters {
+    /// AllowEncodedBackSlash defines whether requests with encoded back slash characters in the path are allowed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowEncodedBackSlash")]
+    pub allow_encoded_back_slash: Option<bool>,
+    /// AllowEncodedHash defines whether requests with encoded hash characters in the path are allowed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowEncodedHash")]
+    pub allow_encoded_hash: Option<bool>,
+    /// AllowEncodedNullCharacter defines whether requests with encoded null characters in the path are allowed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowEncodedNullCharacter")]
+    pub allow_encoded_null_character: Option<bool>,
+    /// AllowEncodedPercent defines whether requests with encoded percent characters in the path are allowed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowEncodedPercent")]
+    pub allow_encoded_percent: Option<bool>,
+    /// AllowEncodedQuestionMark defines whether requests with encoded question mark characters in the path are allowed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowEncodedQuestionMark")]
+    pub allow_encoded_question_mark: Option<bool>,
+    /// AllowEncodedSemicolon defines whether requests with encoded semicolon characters in the path are allowed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowEncodedSemicolon")]
+    pub allow_encoded_semicolon: Option<bool>,
+    /// AllowEncodedSlash defines whether requests with encoded slash characters in the path are allowed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowEncodedSlash")]
+    pub allow_encoded_slash: Option<bool>,
 }
 
 /// ErrorPage holds the custom error middleware configuration.

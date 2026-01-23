@@ -145,6 +145,7 @@ spec:
                           type: "integer"
                         namingStrategy:
                           description: "namingStrategy allows configuring the naming strategy used when calculating the name of the VSphereVM."
+                          minProperties: 1
                           properties:
                             template:
                               description: "template defines the template to use for generating the name of the VSphereVM object.\nIf not defined, it will fall back to `{{ .machine.name }}`.\nThe templating has the following data available:\n* `.machine.name`: The name of the Machine object.\nThe templating also has the following funcs available:\n* `trimSuffix`: same as strings.TrimSuffix\n* `trunc`: truncates a string, e.g. `trunc 2 \"hello\"` or `trunc -2 \"hello\"`\nNotes:\n* While the template offers some flexibility, we would like the name to link to the Machine name\n  to ensure better user experience when troubleshooting\n* Generated names must be valid Kubernetes names as they are used to create a VSphereVM object\n  and usually also as the name of the Node object.\n* Names are automatically truncated at 63 characters. Please note that this can lead to name conflicts,\n  so we highly recommend to use a template which leads to a name shorter than 63 characters."
@@ -163,22 +164,31 @@ spec:
                                   addressesFromPools:
                                     description: "addressesFromPools is a list of IPAddressPools that should be assigned\nto IPAddressClaims. The machine's cloud-init metadata will be populated\nwith IPAddresses fulfilled by an IPAM provider."
                                     items:
-                                      description: "TypedLocalObjectReference contains enough information to let you locate the\ntyped referenced object inside the same namespace."
+                                      description: "IPPoolReference is a reference to an IPPool."
                                       properties:
                                         apiGroup:
-                                          description: "APIGroup is the group for the resource being referenced.\nIf APIGroup is not specified, the specified Kind must be in the core API group.\nFor any other third-party types, APIGroup is required."
+                                          description: "apiGroup of the IPPool.\napiGroup must be fully qualified domain name."
+                                          maxLength: 253
+                                          minLength: 1
+                                          pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
                                           type: "string"
                                         kind:
-                                          description: "Kind is the type of resource being referenced"
+                                          description: "kind of the IPPool.\nkind must consist of alphanumeric characters or '-', start with an alphabetic character, and end with an alphanumeric character."
+                                          maxLength: 63
+                                          minLength: 1
+                                          pattern: "^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$"
                                           type: "string"
                                         name:
-                                          description: "Name is the name of resource being referenced"
+                                          description: "name of the IPPool.\nname must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character."
+                                          maxLength: 253
+                                          minLength: 1
+                                          pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
                                           type: "string"
                                       required:
+                                        - "apiGroup"
                                         - "kind"
                                         - "name"
                                       type: "object"
-                                      x-kubernetes-map-type: "atomic"
                                     maxItems: 128
                                     type: "array"
                                     x-kubernetes-list-type: "atomic"
@@ -353,11 +363,6 @@ spec:
                               maxItems: 128
                               type: "array"
                               x-kubernetes-list-type: "atomic"
-                            preferredAPIServerCidr:
-                              description: "preferredAPIServerCidr is the preferred CIDR for the Kubernetes API\nserver endpoint on this machine\n\nDeprecated: This field is going to be removed in a future release."
-                              maxLength: 1024
-                              minLength: 1
-                              type: "string"
                             routes:
                               description: "routes is a list of optional, static routes applied to the virtual\nmachine."
                               items:
@@ -430,7 +435,6 @@ spec:
                           type: "array"
                           x-kubernetes-list-type: "atomic"
                         powerOffMode:
-                          default: "hard"
                           description: "powerOffMode describes the desired behavior when powering off a VM.\n\nThere are three, supported power off modes: hard, soft, and\ntrySoft. The first mode, hard, is the equivalent of a physical\nsystem's power cord being ripped from the wall. The soft mode\nrequires the VM's guest to have VM Tools installed and attempts to\ngracefully shut down the VM. Its variant, trySoft, first attempts\na graceful shutdown, and if that fails or the VM is not in a powered off\nstate after reaching the GuestSoftPowerOffTimeoutSeconds, the VM is halted.\n\nIf omitted, the mode defaults to hard."
                           enum:
                             - "hard"
@@ -438,7 +442,7 @@ spec:
                             - "trySoft"
                           type: "string"
                         providerID:
-                          description: "providerID is the virtual machine's BIOS UUID formated as\nvsphere://12345678-1234-1234-1234-123456789abc"
+                          description: "providerID is the virtual machine's BIOS UUID formatted as\nvsphere://12345678-1234-1234-1234-123456789abc"
                           maxLength: 512
                           minLength: 1
                           type: "string"
