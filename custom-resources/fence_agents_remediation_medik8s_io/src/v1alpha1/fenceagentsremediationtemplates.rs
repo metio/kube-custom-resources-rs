@@ -7,6 +7,8 @@ mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
@@ -14,10 +16,15 @@ use self::prelude::*;
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "fence-agents-remediation.medik8s.io", version = "v1alpha1", kind = "FenceAgentsRemediationTemplate", plural = "fenceagentsremediationtemplates")]
 #[kube(namespaced)]
+#[kube(status = "FenceAgentsRemediationTemplateStatus")]
 #[kube(schema = "disabled")]
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct FenceAgentsRemediationTemplateSpec {
+    /// StatusValidationSample configures how many nodes the fence agent status validation should run for.
+    /// Accepts an absolute number (e.g., 3) or a percentage string (e.g., "60%").
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusValidationSample")]
+    pub status_validation_sample: Option<IntOrString>,
     /// Template defines the desired state of FenceAgentsRemediationTemplate
     pub template: FenceAgentsRemediationTemplateTemplate,
 }
@@ -54,8 +61,14 @@ pub struct FenceAgentsRemediationTemplateTemplateSpec {
     /// RetryInterval is the interval between each fencing agent execution
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retryinterval: Option<String>,
-    /// SharedSecretName is the name of the Secret which will contain params needed for FAR in order to remediate any node.
-    /// Using this Secret is optional.
+    /// SharedSecretName is the name of the Secret which contains shared fence agent parameters.
+    /// 
+    /// Heads up: in an earlier version this had a default value of "fence-agents-credentials-shared".
+    /// We removed that default to be able to differentiate during CR validation between using a Secret or not.
+    /// 
+    /// As a temporary workaround this field will be set with the old default value in case a Secret with the
+    /// old default of "fence-agents-credentials-shared" is found. Also, in case the field contains the old default
+    /// value, but the Secret does not exist, the value will be deleted. This workaround will be removed in a future version.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sharedSecretName")]
     pub shared_secret_name: Option<String>,
     /// SharedParameters are parameters common to all nodes
@@ -76,5 +89,15 @@ pub enum FenceAgentsRemediationTemplateTemplateSpecRemediationStrategy {
 /// FenceAgentsRemediationTemplateStatus defines the observed state of FenceAgentsRemediationTemplate
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FenceAgentsRemediationTemplateStatus {
+    /// Represents the observations of a FenceAgentsRemediationTemplate's current state.
+    /// Known .status.conditions.type: "FenceAgentStatusValidationSucceeded".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
+    /// ValidationFailed maps node name to the validation failure message.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationFailed")]
+    pub validation_failed: Option<BTreeMap<String, String>>,
+    /// ValidationPassed marks nodes that have passed validation in the current round.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationPassed")]
+    pub validation_passed: Option<BTreeMap<String, String>>,
 }
 

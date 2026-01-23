@@ -121,7 +121,7 @@ pub struct DruidClusterBrokers {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
     pub jvm_argument_overrides: Option<DruidClusterBrokersJvmArgumentOverrides>,
     /// In the `podOverrides` property you can define a
-    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#podtemplatespec-v1-core)>
     /// to override any property that can be set on a Kubernetes Pod.
     /// Read the
     /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
@@ -433,7 +433,7 @@ pub struct DruidClusterBrokersRoleGroups {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
     pub jvm_argument_overrides: Option<DruidClusterBrokersRoleGroupsJvmArgumentOverrides>,
     /// In the `podOverrides` property you can define a
-    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#podtemplatespec-v1-core)>
     /// to override any property that can be set on a Kubernetes Pod.
     /// Read the
     /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
@@ -1261,7 +1261,7 @@ pub struct DruidClusterCoordinators {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
     pub jvm_argument_overrides: Option<DruidClusterCoordinatorsJvmArgumentOverrides>,
     /// In the `podOverrides` property you can define a
-    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#podtemplatespec-v1-core)>
     /// to override any property that can be set on a Kubernetes Pod.
     /// Read the
     /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
@@ -1573,7 +1573,7 @@ pub struct DruidClusterCoordinatorsRoleGroups {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
     pub jvm_argument_overrides: Option<DruidClusterCoordinatorsRoleGroupsJvmArgumentOverrides>,
     /// In the `podOverrides` property you can define a
-    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#podtemplatespec-v1-core)>
     /// to override any property that can be set on a Kubernetes Pod.
     /// Read the
     /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
@@ -1852,7 +1852,7 @@ pub struct DruidClusterHistoricals {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
     pub jvm_argument_overrides: Option<DruidClusterHistoricalsJvmArgumentOverrides>,
     /// In the `podOverrides` property you can define a
-    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#podtemplatespec-v1-core)>
     /// to override any property that can be set on a Kubernetes Pod.
     /// Read the
     /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
@@ -2198,7 +2198,7 @@ pub struct DruidClusterHistoricalsRoleGroups {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
     pub jvm_argument_overrides: Option<DruidClusterHistoricalsRoleGroupsJvmArgumentOverrides>,
     /// In the `podOverrides` property you can define a
-    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#podtemplatespec-v1-core)>
     /// to override any property that can be set on a Kubernetes Pod.
     /// Read the
     /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
@@ -2564,7 +2564,7 @@ pub struct DruidClusterMiddleManagers {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
     pub jvm_argument_overrides: Option<DruidClusterMiddleManagersJvmArgumentOverrides>,
     /// In the `podOverrides` property you can define a
-    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#podtemplatespec-v1-core)>
     /// to override any property that can be set on a Kubernetes Pod.
     /// Read the
     /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
@@ -2874,7 +2874,7 @@ pub struct DruidClusterMiddleManagersRoleGroups {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
     pub jvm_argument_overrides: Option<DruidClusterMiddleManagersRoleGroupsJvmArgumentOverrides>,
     /// In the `podOverrides` property you can define a
-    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#podtemplatespec-v1-core)>
     /// to override any property that can be set on a Kubernetes Pod.
     /// Read the
     /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
@@ -3153,7 +3153,7 @@ pub struct DruidClusterRouters {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
     pub jvm_argument_overrides: Option<DruidClusterRoutersJvmArgumentOverrides>,
     /// In the `podOverrides` property you can define a
-    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#podtemplatespec-v1-core)>
     /// to override any property that can be set on a Kubernetes Pod.
     /// Read the
     /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>
@@ -3465,7 +3465,7 @@ pub struct DruidClusterRoutersRoleGroups {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmArgumentOverrides")]
     pub jvm_argument_overrides: Option<DruidClusterRoutersRoleGroupsJvmArgumentOverrides>,
     /// In the `podOverrides` property you can define a
-    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core)>
+    /// [PodTemplateSpec](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#podtemplatespec-v1-core)>
     /// to override any property that can be set on a Kubernetes Pod.
     /// Read the
     /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides)>

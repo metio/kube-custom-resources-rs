@@ -60,6 +60,7 @@ pub struct ServersTransportTcpTls {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rootCAs")]
     pub root_c_as: Option<Vec<ServersTransportTcpTlsRootCAs>>,
     /// RootCAsSecrets defines a list of CA secret used to validate self-signed certificate.
+    /// 
     /// Deprecated: RootCAsSecrets is deprecated, please use the RootCAs option instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rootCAsSecrets")]
     pub root_c_as_secrets: Option<Vec<String>>,

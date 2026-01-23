@@ -34,9 +34,6 @@ spec:
                 region:
                   description: "region defines the name and type of a region"
                   properties:
-                    autoConfigure:
-                      description: "autoConfigure tags the Type which is specified in the Topology\n\nDeprecated: This field is going to be removed in a future release."
-                      type: "boolean"
                     name:
                       description: "name is the name of the tag that represents this failure domain"
                       maxLength: 1024
@@ -102,22 +99,31 @@ spec:
                           addressesFromPools:
                             description: "addressesFromPools is a list of IPAddressPools that should be assigned\nto IPAddressClaims. The machine's cloud-init metadata will be populated\nwith IPAddresses fulfilled by an IPAM provider."
                             items:
-                              description: "TypedLocalObjectReference contains enough information to let you locate the\ntyped referenced object inside the same namespace."
+                              description: "IPPoolReference is a reference to an IPPool."
                               properties:
                                 apiGroup:
-                                  description: "APIGroup is the group for the resource being referenced.\nIf APIGroup is not specified, the specified Kind must be in the core API group.\nFor any other third-party types, APIGroup is required."
+                                  description: "apiGroup of the IPPool.\napiGroup must be fully qualified domain name."
+                                  maxLength: 253
+                                  minLength: 1
+                                  pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
                                   type: "string"
                                 kind:
-                                  description: "Kind is the type of resource being referenced"
+                                  description: "kind of the IPPool.\nkind must consist of alphanumeric characters or '-', start with an alphabetic character, and end with an alphanumeric character."
+                                  maxLength: 63
+                                  minLength: 1
+                                  pattern: "^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$"
                                   type: "string"
                                 name:
-                                  description: "Name is the name of resource being referenced"
+                                  description: "name of the IPPool.\nname must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character."
+                                  maxLength: 253
+                                  minLength: 1
+                                  pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
                                   type: "string"
                               required:
+                                - "apiGroup"
                                 - "kind"
                                 - "name"
                               type: "object"
-                              x-kubernetes-map-type: "atomic"
                             maxItems: 128
                             type: "array"
                             x-kubernetes-list-type: "atomic"
@@ -245,9 +251,6 @@ spec:
                 zone:
                   description: "zone defines the name and type of a zone"
                   properties:
-                    autoConfigure:
-                      description: "autoConfigure tags the Type which is specified in the Topology\n\nDeprecated: This field is going to be removed in a future release."
-                      type: "boolean"
                     name:
                       description: "name is the name of the tag that represents this failure domain"
                       maxLength: 1024

@@ -2734,6 +2734,413 @@ spec:
                             type: "array"
                           enabled:
                             type: "boolean"
+                          groups:
+                            items:
+                              properties:
+                                access:
+                                  additionalProperties:
+                                    type: "boolean"
+                                  type: "object"
+                                attributes:
+                                  additionalProperties:
+                                    items:
+                                      type: "string"
+                                    type: "array"
+                                  type: "object"
+                                clientRoles:
+                                  additionalProperties:
+                                    items:
+                                      type: "string"
+                                    type: "array"
+                                  type: "object"
+                                description:
+                                  type: "string"
+                                id:
+                                  type: "string"
+                                name:
+                                  type: "string"
+                                parentId:
+                                  type: "string"
+                                path:
+                                  type: "string"
+                                realmRoles:
+                                  items:
+                                    type: "string"
+                                  type: "array"
+                                subGroupCount:
+                                  type: "integer"
+                                subGroups:
+                                  items:
+                                    properties:
+                                      access:
+                                        additionalProperties:
+                                          type: "boolean"
+                                        type: "object"
+                                      attributes:
+                                        additionalProperties:
+                                          items:
+                                            type: "string"
+                                          type: "array"
+                                        type: "object"
+                                      clientRoles:
+                                        additionalProperties:
+                                          items:
+                                            type: "string"
+                                          type: "array"
+                                        type: "object"
+                                      description:
+                                        type: "string"
+                                      id:
+                                        type: "string"
+                                      name:
+                                        type: "string"
+                                      parentId:
+                                        type: "string"
+                                      path:
+                                        type: "string"
+                                      realmRoles:
+                                        items:
+                                          type: "string"
+                                        type: "array"
+                                      subGroupCount:
+                                        type: "integer"
+                                      subGroups:
+                                        items:
+                                          properties:
+                                            access:
+                                              additionalProperties:
+                                                type: "boolean"
+                                              type: "object"
+                                            attributes:
+                                              additionalProperties:
+                                                items:
+                                                  type: "string"
+                                                type: "array"
+                                              type: "object"
+                                            clientRoles:
+                                              additionalProperties:
+                                                items:
+                                                  type: "string"
+                                                type: "array"
+                                              type: "object"
+                                            description:
+                                              type: "string"
+                                            id:
+                                              type: "string"
+                                            name:
+                                              type: "string"
+                                            parentId:
+                                              type: "string"
+                                            path:
+                                              type: "string"
+                                            realmRoles:
+                                              items:
+                                                type: "string"
+                                              type: "array"
+                                            subGroupCount:
+                                              type: "integer"
+                                            subGroups:
+                                              items:
+                                                properties:
+                                                  access:
+                                                    additionalProperties:
+                                                      type: "boolean"
+                                                    type: "object"
+                                                  attributes:
+                                                    additionalProperties:
+                                                      items:
+                                                        type: "string"
+                                                      type: "array"
+                                                    type: "object"
+                                                  clientRoles:
+                                                    additionalProperties:
+                                                      items:
+                                                        type: "string"
+                                                      type: "array"
+                                                    type: "object"
+                                                  description:
+                                                    type: "string"
+                                                  id:
+                                                    type: "string"
+                                                  name:
+                                                    type: "string"
+                                                  parentId:
+                                                    type: "string"
+                                                  path:
+                                                    type: "string"
+                                                  realmRoles:
+                                                    items:
+                                                      type: "string"
+                                                    type: "array"
+                                                  subGroupCount:
+                                                    type: "integer"
+                                                  subGroups:
+                                                    items:
+                                                      properties:
+                                                        access:
+                                                          additionalProperties:
+                                                            type: "boolean"
+                                                          type: "object"
+                                                        attributes:
+                                                          additionalProperties:
+                                                            items:
+                                                              type: "string"
+                                                            type: "array"
+                                                          type: "object"
+                                                        clientRoles:
+                                                          additionalProperties:
+                                                            items:
+                                                              type: "string"
+                                                            type: "array"
+                                                          type: "object"
+                                                        description:
+                                                          type: "string"
+                                                        id:
+                                                          type: "string"
+                                                        name:
+                                                          type: "string"
+                                                        parentId:
+                                                          type: "string"
+                                                        path:
+                                                          type: "string"
+                                                        realmRoles:
+                                                          items:
+                                                            type: "string"
+                                                          type: "array"
+                                                        subGroupCount:
+                                                          type: "integer"
+                                                        subGroups:
+                                                          items:
+                                                            properties:
+                                                              access:
+                                                                additionalProperties:
+                                                                  type: "boolean"
+                                                                type: "object"
+                                                              attributes:
+                                                                additionalProperties:
+                                                                  items:
+                                                                    type: "string"
+                                                                  type: "array"
+                                                                type: "object"
+                                                              clientRoles:
+                                                                additionalProperties:
+                                                                  items:
+                                                                    type: "string"
+                                                                  type: "array"
+                                                                type: "object"
+                                                              description:
+                                                                type: "string"
+                                                              id:
+                                                                type: "string"
+                                                              name:
+                                                                type: "string"
+                                                              parentId:
+                                                                type: "string"
+                                                              path:
+                                                                type: "string"
+                                                              realmRoles:
+                                                                items:
+                                                                  type: "string"
+                                                                type: "array"
+                                                              subGroupCount:
+                                                                type: "integer"
+                                                              subGroups:
+                                                                items:
+                                                                  properties:
+                                                                    access:
+                                                                      additionalProperties:
+                                                                        type: "boolean"
+                                                                      type: "object"
+                                                                    attributes:
+                                                                      additionalProperties:
+                                                                        items:
+                                                                          type: "string"
+                                                                        type: "array"
+                                                                      type: "object"
+                                                                    clientRoles:
+                                                                      additionalProperties:
+                                                                        items:
+                                                                          type: "string"
+                                                                        type: "array"
+                                                                      type: "object"
+                                                                    description:
+                                                                      type: "string"
+                                                                    id:
+                                                                      type: "string"
+                                                                    name:
+                                                                      type: "string"
+                                                                    parentId:
+                                                                      type: "string"
+                                                                    path:
+                                                                      type: "string"
+                                                                    realmRoles:
+                                                                      items:
+                                                                        type: "string"
+                                                                      type: "array"
+                                                                    subGroupCount:
+                                                                      type: "integer"
+                                                                    subGroups:
+                                                                      items:
+                                                                        properties:
+                                                                          access:
+                                                                            additionalProperties:
+                                                                              type: "boolean"
+                                                                            type: "object"
+                                                                          attributes:
+                                                                            additionalProperties:
+                                                                              items:
+                                                                                type: "string"
+                                                                              type: "array"
+                                                                            type: "object"
+                                                                          clientRoles:
+                                                                            additionalProperties:
+                                                                              items:
+                                                                                type: "string"
+                                                                              type: "array"
+                                                                            type: "object"
+                                                                          description:
+                                                                            type: "string"
+                                                                          id:
+                                                                            type: "string"
+                                                                          name:
+                                                                            type: "string"
+                                                                          parentId:
+                                                                            type: "string"
+                                                                          path:
+                                                                            type: "string"
+                                                                          realmRoles:
+                                                                            items:
+                                                                              type: "string"
+                                                                            type: "array"
+                                                                          subGroupCount:
+                                                                            type: "integer"
+                                                                          subGroups:
+                                                                            items:
+                                                                              properties:
+                                                                                access:
+                                                                                  additionalProperties:
+                                                                                    type: "boolean"
+                                                                                  type: "object"
+                                                                                attributes:
+                                                                                  additionalProperties:
+                                                                                    items:
+                                                                                      type: "string"
+                                                                                    type: "array"
+                                                                                  type: "object"
+                                                                                clientRoles:
+                                                                                  additionalProperties:
+                                                                                    items:
+                                                                                      type: "string"
+                                                                                    type: "array"
+                                                                                  type: "object"
+                                                                                description:
+                                                                                  type: "string"
+                                                                                id:
+                                                                                  type: "string"
+                                                                                name:
+                                                                                  type: "string"
+                                                                                parentId:
+                                                                                  type: "string"
+                                                                                path:
+                                                                                  type: "string"
+                                                                                realmRoles:
+                                                                                  items:
+                                                                                    type: "string"
+                                                                                  type: "array"
+                                                                                subGroupCount:
+                                                                                  type: "integer"
+                                                                                subGroups:
+                                                                                  items:
+                                                                                    properties:
+                                                                                      access:
+                                                                                        additionalProperties:
+                                                                                          type: "boolean"
+                                                                                        type: "object"
+                                                                                      attributes:
+                                                                                        additionalProperties:
+                                                                                          items:
+                                                                                            type: "string"
+                                                                                          type: "array"
+                                                                                        type: "object"
+                                                                                      clientRoles:
+                                                                                        additionalProperties:
+                                                                                          items:
+                                                                                            type: "string"
+                                                                                          type: "array"
+                                                                                        type: "object"
+                                                                                      description:
+                                                                                        type: "string"
+                                                                                      id:
+                                                                                        type: "string"
+                                                                                      name:
+                                                                                        type: "string"
+                                                                                      parentId:
+                                                                                        type: "string"
+                                                                                      path:
+                                                                                        type: "string"
+                                                                                      realmRoles:
+                                                                                        items:
+                                                                                          type: "string"
+                                                                                        type: "array"
+                                                                                      subGroupCount:
+                                                                                        type: "integer"
+                                                                                      subGroups:
+                                                                                        items:
+                                                                                          properties:
+                                                                                            access:
+                                                                                              additionalProperties:
+                                                                                                type: "boolean"
+                                                                                              type: "object"
+                                                                                            attributes:
+                                                                                              additionalProperties:
+                                                                                                items:
+                                                                                                  type: "string"
+                                                                                                type: "array"
+                                                                                              type: "object"
+                                                                                            clientRoles:
+                                                                                              additionalProperties:
+                                                                                                items:
+                                                                                                  type: "string"
+                                                                                                type: "array"
+                                                                                              type: "object"
+                                                                                            description:
+                                                                                              type: "string"
+                                                                                            id:
+                                                                                              type: "string"
+                                                                                            name:
+                                                                                              type: "string"
+                                                                                            parentId:
+                                                                                              type: "string"
+                                                                                            path:
+                                                                                              type: "string"
+                                                                                            realmRoles:
+                                                                                              items:
+                                                                                                type: "string"
+                                                                                              type: "array"
+                                                                                            subGroupCount:
+                                                                                              type: "integer"
+                                                                                          type: "object"
+                                                                                        type: "array"
+                                                                                    type: "object"
+                                                                                  type: "array"
+                                                                              type: "object"
+                                                                            type: "array"
+                                                                        type: "object"
+                                                                      type: "array"
+                                                                  type: "object"
+                                                                type: "array"
+                                                            type: "object"
+                                                          type: "array"
+                                                      type: "object"
+                                                    type: "array"
+                                                type: "object"
+                                              type: "array"
+                                          type: "object"
+                                        type: "array"
+                                    type: "object"
+                                  type: "array"
+                              type: "object"
+                            type: "array"
                           id:
                             type: "string"
                           identityProviders:

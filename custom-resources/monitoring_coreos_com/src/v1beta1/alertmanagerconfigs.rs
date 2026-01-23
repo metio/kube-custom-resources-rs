@@ -121,7 +121,7 @@ pub enum AlertmanagerConfigInhibitRulesTargetMatchMatchType {
 /// Receiver defines one or more notification integrations.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlertmanagerConfigReceivers {
-    /// discordConfigs defines the list of Slack configurations.
+    /// discordConfigs defines the list of Discord configurations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "discordConfigs")]
     pub discord_configs: Option<Vec<AlertmanagerConfigReceiversDiscordConfigs>>,
     /// emailConfigs defines the list of Email configurations.

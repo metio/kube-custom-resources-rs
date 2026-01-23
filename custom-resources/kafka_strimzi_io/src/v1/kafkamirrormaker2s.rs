@@ -266,7 +266,7 @@ pub struct KafkaMirrorMaker2MirrorsCheckpointConnector {
     /// Automatic restart of connector and tasks configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoRestart")]
     pub auto_restart: Option<KafkaMirrorMaker2MirrorsCheckpointConnectorAutoRestart>,
-    /// The Kafka Connector configuration. The following properties cannot be set: name, connector.class, tasks.max.
+    /// The Kafka Connector configuration. The following properties cannot be set: name, connector.class, tasks.max, connector.plugin.version.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<BTreeMap<String, serde_json::Value>>,
     /// Configuration for listing offsets.
@@ -444,7 +444,7 @@ pub struct KafkaMirrorMaker2MirrorsSourceConnector {
     /// Automatic restart of connector and tasks configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoRestart")]
     pub auto_restart: Option<KafkaMirrorMaker2MirrorsSourceConnectorAutoRestart>,
-    /// The Kafka Connector configuration. The following properties cannot be set: name, connector.class, tasks.max.
+    /// The Kafka Connector configuration. The following properties cannot be set: name, connector.class, tasks.max, connector.plugin.version.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<BTreeMap<String, serde_json::Value>>,
     /// Configuration for listing offsets.
@@ -947,6 +947,9 @@ pub struct KafkaMirrorMaker2TemplateBuildPod {
     /// The pod's HostAliases. HostAliases is an optional list of hosts and IPs that will be injected into the Pod's hosts file if specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
     pub host_aliases: Option<Vec<KafkaMirrorMaker2TemplateBuildPodHostAliases>>,
+    /// Use the host user namespace. Optional. Defaults to `true`. When `true` or not set, the pod runs in the host user namespace. This is required when the pod needs features available only in the host namespace, such as loading kernel modules with `CAP_SYS_MODULE`.When set to `false`, the pod runs in a new user namespace. Setting `false` helps mitigate container breakout vulnerabilities and allows containers to run as `root` without granting `root` privileges on the host. This property is alpha-level in Kubernetes and is supported only by Kubernetes clusters that enable the `UserNamespacesSupport` feature.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostUsers")]
+    pub host_users: Option<bool>,
     /// List of references to secrets in the same namespace to use for pulling any of the images used by this Pod. When the `STRIMZI_IMAGE_PULL_SECRETS` environment variable in Cluster Operator and the `imagePullSecrets` option are specified, only the `imagePullSecrets` variable is used and the `STRIMZI_IMAGE_PULL_SECRETS` variable is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<KafkaMirrorMaker2TemplateBuildPodImagePullSecrets>>,
@@ -2037,6 +2040,9 @@ pub struct KafkaMirrorMaker2TemplatePod {
     /// The pod's HostAliases. HostAliases is an optional list of hosts and IPs that will be injected into the Pod's hosts file if specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
     pub host_aliases: Option<Vec<KafkaMirrorMaker2TemplatePodHostAliases>>,
+    /// Use the host user namespace. Optional. Defaults to `true`. When `true` or not set, the pod runs in the host user namespace. This is required when the pod needs features available only in the host namespace, such as loading kernel modules with `CAP_SYS_MODULE`.When set to `false`, the pod runs in a new user namespace. Setting `false` helps mitigate container breakout vulnerabilities and allows containers to run as `root` without granting `root` privileges on the host. This property is alpha-level in Kubernetes and is supported only by Kubernetes clusters that enable the `UserNamespacesSupport` feature.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostUsers")]
+    pub host_users: Option<bool>,
     /// List of references to secrets in the same namespace to use for pulling any of the images used by this Pod. When the `STRIMZI_IMAGE_PULL_SECRETS` environment variable in Cluster Operator and the `imagePullSecrets` option are specified, only the `imagePullSecrets` variable is used and the `STRIMZI_IMAGE_PULL_SECRETS` variable is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<KafkaMirrorMaker2TemplatePodImagePullSecrets>>,

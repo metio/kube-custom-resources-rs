@@ -321,6 +321,12 @@ pub struct BackupStatusInstanceId {
     /// The pod name
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podName")]
     pub pod_name: Option<String>,
+    /// The instance manager session ID. This is a unique identifier generated at instance manager
+    /// startup and changes on every restart (including container reboots). Used to detect if
+    /// the instance manager was restarted during long-running operations like backups, which
+    /// would terminate any running backup process.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionID")]
+    pub session_id: Option<String>,
 }
 
 /// The credentials to use to upload data to S3

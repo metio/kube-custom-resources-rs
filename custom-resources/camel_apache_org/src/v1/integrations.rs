@@ -23,6 +23,7 @@ use self::prelude::*;
 #[kube(derive="PartialEq")]
 pub struct IntegrationSpec {
     /// Deprecated:
+    /// 
     /// Use camel trait (camel.properties) to manage properties
     /// Use mount trait (mount.configs) to manage configs
     /// Use mount trait (mount.resources) to manage resources
@@ -56,9 +57,9 @@ pub struct IntegrationSpec {
     /// the sources which contain the Camel routes to run
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sources: Option<Vec<IntegrationSources>>,
-    /// Pod template customization
-    /// Deprecated:
-    /// Use container, init-containers or owner traits instead
+    /// Pod template customization.
+    /// 
+    /// Deprecated: use container, init-containers or owner traits instead
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub template: Option<IntegrationTemplate>,
     /// the traits needed to run this Integration
@@ -155,7 +156,8 @@ pub struct IntegrationSources {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "from-kamelet")]
     pub from_kamelet: Option<bool>,
     /// Interceptors are optional identifiers the org.apache.camel.k.RoutesLoader
-    /// uses to pre/post process sources
+    /// uses to pre/post process sources.
+    /// 
     /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interceptors: Option<Vec<String>>,
@@ -183,9 +185,9 @@ pub struct IntegrationSources {
     pub r#type: Option<String>,
 }
 
-/// Pod template customization
-/// Deprecated:
-/// Use container, init-containers or owner traits instead
+/// Pod template customization.
+/// 
+/// Deprecated: use container, init-containers or owner traits instead
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationTemplate {
     /// the specification
@@ -311,6 +313,7 @@ pub struct IntegrationTemplateSpecContainers {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<IntegrationTemplateSpecContainersReadinessProbe>,
     /// Resources resize policy for the container.
+    /// This field cannot be set on ephemeral containers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
     pub resize_policy: Option<Vec<IntegrationTemplateSpecContainersResizePolicy>>,
     /// Compute Resources required by this container.
@@ -2855,6 +2858,7 @@ pub struct IntegrationTemplateSpecInitContainers {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<IntegrationTemplateSpecInitContainersReadinessProbe>,
     /// Resources resize policy for the container.
+    /// This field cannot be set on ephemeral containers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
     pub resize_policy: Option<Vec<IntegrationTemplateSpecInitContainersResizePolicy>>,
     /// Compute Resources required by this container.
@@ -5088,7 +5092,7 @@ pub struct IntegrationTemplateSpecVolumesEphemeralVolumeClaimTemplateSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
     pub data_source_ref: Option<IntegrationTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
     /// resources represents the minimum resources the volume should have.
-    /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+    /// Users are allowed to specify resource requirements
     /// that are lower than previous value but must still be higher than capacity recorded in the
     /// status field of the claim.
     /// More info: <https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources>
@@ -5185,7 +5189,7 @@ pub struct IntegrationTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecDataSou
 }
 
 /// resources represents the minimum resources the volume should have.
-/// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+/// Users are allowed to specify resource requirements
 /// that are lower than previous value but must still be higher than capacity recorded in the
 /// status field of the claim.
 /// More info: <https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources>
@@ -5908,6 +5912,21 @@ pub struct IntegrationTemplateSpecVolumesProjectedSourcesPodCertificate {
     /// Kubelet's generated CSRs will be addressed to this signer.
     #[serde(rename = "signerName")]
     pub signer_name: String,
+    /// userAnnotations allow pod authors to pass additional information to
+    /// the signer implementation.  Kubernetes does not restrict or validate this
+    /// metadata in any way.
+    /// 
+    /// These values are copied verbatim into the `spec.unverifiedUserAnnotations` field of
+    /// the PodCertificateRequest objects that Kubelet creates.
+    /// 
+    /// Entries are subject to the same validation as object metadata annotations,
+    /// with the addition that all keys must be domain-prefixed. No restrictions
+    /// are placed on values, except an overall size limitation on the entire field.
+    /// 
+    /// Signers should document the keys and values they support. Signers should
+    /// deny requests that contain keys they do not recognize.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userAnnotations")]
+    pub user_annotations: Option<BTreeMap<String, String>>,
 }
 
 /// secret information about the secret data to project
@@ -6269,7 +6288,8 @@ pub struct IntegrationTraits {
     /// The configuration of Environment trait
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub environment: Option<IntegrationTraitsEnvironment>,
-    /// The configuration of Error Handler trait
+    /// The configuration of Error Handler trait.
+    /// 
     /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "error-handler")]
     pub error_handler: Option<IntegrationTraitsErrorHandler>,
@@ -6291,7 +6311,8 @@ pub struct IntegrationTraits {
     /// The configuration of Istio trait
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub istio: Option<IntegrationTraitsIstio>,
-    /// The configuration of Jolokia trait
+    /// The configuration of Jolokia trait.
+    /// 
     /// Deprecated: use jvm.agent instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub jolokia: Option<IntegrationTraitsJolokia>,
@@ -6319,7 +6340,8 @@ pub struct IntegrationTraits {
     /// The configuration of Mount trait
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mount: Option<IntegrationTraitsMount>,
-    /// The configuration of OpenAPI trait
+    /// The configuration of OpenAPI trait.
+    /// 
     /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub openapi: Option<IntegrationTraitsOpenapi>,
@@ -6332,7 +6354,8 @@ pub struct IntegrationTraits {
     /// The configuration of Platform trait
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub platform: Option<IntegrationTraitsPlatform>,
-    /// The configuration of Pod trait
+    /// The configuration of Pod trait.
+    /// 
     /// Deprecated: use init-containers instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pod: Option<IntegrationTraitsPod>,
@@ -6346,10 +6369,12 @@ pub struct IntegrationTraits {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub quarkus: Option<IntegrationTraitsQuarkus>,
     /// The configuration of Registry trait (support removed since version 2.5.0).
+    /// 
     /// Deprecated: use jvm trait or read documentation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub registry: Option<IntegrationTraitsRegistry>,
-    /// The configuration of Route trait
+    /// The configuration of Route trait.
+    /// 
     /// Deprecated: use ingress instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub route: Option<IntegrationTraitsRoute>,
@@ -6359,7 +6384,8 @@ pub struct IntegrationTraits {
     /// The configuration of Service trait
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<IntegrationTraitsService>,
-    /// The configuration of Service Binding trait
+    /// The configuration of Service Binding trait.
+    /// 
     /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "service-binding")]
     pub service_binding: Option<IntegrationTraitsServiceBinding>,
@@ -6388,6 +6414,7 @@ pub struct IntegrationTraits3scale {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationTraitsAffinity {
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -6424,6 +6451,7 @@ pub struct IntegrationTraitsBuilder {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseImage")]
     pub base_image: Option<String>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -6434,10 +6462,12 @@ pub struct IntegrationTraitsBuilder {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "incrementalImageBuild")]
     pub incremental_image_build: Option<bool>,
     /// When using `pod` strategy, the maximum amount of CPU required by the pod builder.
+    /// 
     /// Deprecated: use TasksRequestCPU instead with task name `builder`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitCPU")]
     pub limit_cpu: Option<String>,
     /// When using `pod` strategy, the maximum amount of memory required by the pod builder.
+    /// 
     /// Deprecated: use TasksRequestCPU instead with task name `builder`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitMemory")]
     pub limit_memory: Option<String>,
@@ -6460,10 +6490,12 @@ pub struct IntegrationTraitsBuilder {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub properties: Option<Vec<String>>,
     /// When using `pod` strategy, the minimum amount of CPU required by the pod builder.
+    /// 
     /// Deprecated: use TasksRequestCPU instead with task name `builder`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestCPU")]
     pub request_cpu: Option<String>,
     /// When using `pod` strategy, the minimum amount of memory required by the pod builder.
+    /// 
     /// Deprecated: use TasksRequestCPU instead with task name `builder`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestMemory")]
     pub request_memory: Option<String>,
@@ -6491,7 +6523,8 @@ pub struct IntegrationTraitsBuilder {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tasksRequestMemory")]
     pub tasks_request_memory: Option<Vec<String>>,
     /// Enable verbose logging on build components that support it (e.g. Kaniko build pod).
-    /// Deprecated no longer in use
+    /// 
+    /// Deprecated: no longer in use
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub verbose: Option<bool>,
 }
@@ -6520,6 +6553,7 @@ pub enum IntegrationTraitsBuilderStrategy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationTraitsCamel {
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -6564,6 +6598,7 @@ pub struct IntegrationTraitsContainer {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "capabilitiesDrop")]
     pub capabilities_drop: Option<Vec<String>>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -6672,6 +6707,7 @@ pub struct IntegrationTraitsCron {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "concurrencyPolicy")]
     pub concurrency_policy: Option<IntegrationTraitsCronConcurrencyPolicy>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -6707,6 +6743,7 @@ pub enum IntegrationTraitsCronConcurrencyPolicy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationTraitsDependencies {
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -6719,15 +6756,17 @@ pub struct IntegrationTraitsDependencies {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationTraitsDeployer {
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
     /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    /// Deprecated: this feature will be removed in future releases.
     /// Allows to explicitly select the desired deployment kind between `deployment`, `cron-job` or `knative-service`
     /// when creating the resources for running the integration.
+    /// 
+    /// Deprecated: this feature will be removed in future releases.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<IntegrationTraitsDeployerKind>,
     /// Deprecated: no longer in use.
@@ -6750,6 +6789,7 @@ pub enum IntegrationTraitsDeployerKind {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationTraitsDeployment {
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -6791,6 +6831,7 @@ pub enum IntegrationTraitsDeploymentStrategy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationTraitsEnvironment {
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -6811,11 +6852,13 @@ pub struct IntegrationTraitsEnvironment {
     pub vars: Option<Vec<String>>,
 }
 
-/// The configuration of Error Handler trait
+/// The configuration of Error Handler trait.
+/// 
 /// Deprecated: no longer in use.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationTraitsErrorHandler {
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -6831,10 +6874,12 @@ pub struct IntegrationTraitsErrorHandler {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationTraitsGc {
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
     /// Discovery client cache to be used, either `disabled`, `disk` or `memory` (default `memory`).
+    /// 
     /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "discoveryCache")]
     pub discovery_cache: Option<IntegrationTraitsGcDiscoveryCache>,
@@ -6873,6 +6918,7 @@ pub struct IntegrationTraitsGitops {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "committerName")]
     pub committer_name: Option<String>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -6903,6 +6949,7 @@ pub struct IntegrationTraitsGitops {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationTraitsHealth {
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -7004,6 +7051,7 @@ pub struct IntegrationTraitsIngress {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auto: Option<bool>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -7018,6 +7066,7 @@ pub struct IntegrationTraitsIngress {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressClassName")]
     pub ingress_class_name: Option<String>,
     /// To configure the path exposed by the ingress (default `/`).
+    /// 
     /// Deprecated: In favor of `paths` - left for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -7048,6 +7097,7 @@ pub enum IntegrationTraitsIngressPathType {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationTraitsInitContainers {
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -7069,6 +7119,7 @@ pub struct IntegrationTraitsIstio {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub allow: Option<String>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -7080,7 +7131,8 @@ pub struct IntegrationTraitsIstio {
     pub inject: Option<bool>,
 }
 
-/// The configuration of Jolokia trait
+/// The configuration of Jolokia trait.
+/// 
 /// Deprecated: use jvm.agent instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationTraitsJolokia {
@@ -7095,6 +7147,7 @@ pub struct IntegrationTraitsJolokia {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientPrincipal")]
     pub client_principal: Option<Vec<String>>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -7140,22 +7193,26 @@ pub struct IntegrationTraitsJvm {
     /// A list of JVM agents to download and execute with format `<agent-name>;<agent-url>[;<jvm-agent-options>]`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub agents: Option<Vec<String>>,
-    /// Path to a PEM-encoded CA certificate file.
-    /// Example: "/etc/camel/conf.d/_secrets/my-ca/ca.crt"
+    /// Optional base truststore to use as the starting point for adding certificates.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseTruststore")]
+    pub base_truststore: Option<IntegrationTraitsJvmBaseTruststore>,
+    /// Deprecated: Use CACertificates instead. Path to a PEM-encoded CA certificate file.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCert")]
     pub ca_cert: Option<String>,
-    /// The path where the generated truststore will be mounted.
-    /// Default: "/etc/camel/conf.d/_truststore"
+    /// The path where the generated truststore will be mounted (default `/etc/camel/conf.d/_truststore`).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertMountPath")]
     pub ca_cert_mount_path: Option<String>,
-    /// Required when caCert is set. Path to a file containing the truststore password.
-    /// Example: "/etc/camel/conf.d/_secrets/truststore-pass/password"
+    /// Deprecated: Use CACertificates instead. Path to a file containing the truststore password.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertPassword")]
     pub ca_cert_password: Option<String>,
+    /// A list of CA certificates to import into the truststore. Certificates must be mounted via the mount trait.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificates")]
+    pub ca_certificates: Option<Vec<IntegrationTraitsJvmCaCertificates>>,
     /// Additional JVM classpath (use `Linux` classpath separator)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub classpath: Option<String>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -7177,10 +7234,33 @@ pub struct IntegrationTraitsJvm {
     /// A list of JVM options
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub options: Option<Vec<String>>,
-    /// Prints the command used the start the JVM in the container logs (default `true`)
+    /// Prints the command used the start the JVM in the container logs (default `true`).
+    /// 
     /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "printCommand")]
     pub print_command: Option<bool>,
+    /// Path to a file containing the password for the generated truststore. Required when using ca-certificates without base-truststore.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "truststorePasswordPath")]
+    pub truststore_password_path: Option<String>,
+}
+
+/// Optional base truststore to use as the starting point for adding certificates.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IntegrationTraitsJvmBaseTruststore {
+    /// Path to a file containing the password for the base truststore.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordPath")]
+    pub password_path: Option<String>,
+    /// Path to the base truststore file.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "truststorePath")]
+    pub truststore_path: Option<String>,
+}
+
+/// CACertConfig specifies a CA certificate to import into the truststore.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IntegrationTraitsJvmCaCertificates {
+    /// Path to the PEM-encoded CA certificate file to import.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certPath")]
+    pub cert_path: Option<String>,
 }
 
 /// The configuration of Kamelets trait
@@ -7190,6 +7270,7 @@ pub struct IntegrationTraitsKamelets {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auto: Option<bool>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -7215,6 +7296,7 @@ pub struct IntegrationTraitsKeda {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoMetadata")]
     pub auto_metadata: Option<BTreeMap<String, BTreeMap<String, String>>>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -7284,6 +7366,7 @@ pub struct IntegrationTraitsKnative {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<String>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -7362,6 +7445,7 @@ pub struct IntegrationTraitsKnativeService {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub class: Option<IntegrationTraitsKnativeServiceClass>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -7422,6 +7506,7 @@ pub struct IntegrationTraitsLogging {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub color: Option<bool>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -7464,6 +7549,7 @@ pub struct IntegrationTraitsMaster {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auto: Option<bool>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -7500,6 +7586,7 @@ pub struct IntegrationTraitsMount {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configs: Option<Vec<String>>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -7531,7 +7618,8 @@ pub struct IntegrationTraitsMount {
     pub volumes: Option<Vec<String>>,
 }
 
-/// The configuration of OpenAPI trait
+/// The configuration of OpenAPI trait.
+/// 
 /// Deprecated: no longer in use.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationTraitsOpenapi {
@@ -7539,6 +7627,7 @@ pub struct IntegrationTraitsOpenapi {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configmaps: Option<Vec<String>>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -7551,6 +7640,7 @@ pub struct IntegrationTraitsOpenapi {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationTraitsOwner {
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -7569,6 +7659,7 @@ pub struct IntegrationTraitsOwner {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationTraitsPdb {
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -7594,6 +7685,7 @@ pub struct IntegrationTraitsPlatform {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auto: Option<bool>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -7608,11 +7700,13 @@ pub struct IntegrationTraitsPlatform {
     pub global: Option<bool>,
 }
 
-/// The configuration of Pod trait
+/// The configuration of Pod trait.
+/// 
 /// Deprecated: use init-containers instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationTraitsPod {
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -7625,6 +7719,7 @@ pub struct IntegrationTraitsPod {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationTraitsPrometheus {
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -7646,6 +7741,7 @@ pub struct IntegrationTraitsPullSecret {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auto: Option<bool>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -7669,6 +7765,7 @@ pub struct IntegrationTraitsQuarkus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "buildMode")]
     pub build_mode: Option<Vec<String>>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -7687,16 +7784,19 @@ pub struct IntegrationTraitsQuarkus {
     /// The order influences the resolution of the current kit for the integration.
     /// The kit corresponding to the first package type will be assigned to the
     /// integration in case no existing kit that matches the integration exists.
+    /// 
     /// Deprecated: use `build-mode` instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "packageTypes")]
     pub package_types: Option<Vec<String>>,
 }
 
 /// The configuration of Registry trait (support removed since version 2.5.0).
+/// 
 /// Deprecated: use jvm trait or read documentation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationTraitsRegistry {
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -7705,7 +7805,8 @@ pub struct IntegrationTraitsRegistry {
     pub enabled: Option<bool>,
 }
 
-/// The configuration of Route trait
+/// The configuration of Route trait.
+/// 
 /// Deprecated: use ingress instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationTraitsRoute {
@@ -7716,6 +7817,7 @@ pub struct IntegrationTraitsRoute {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -7781,7 +7883,8 @@ pub struct IntegrationTraitsRoute {
     pub tls_termination: Option<IntegrationTraitsRouteTlsTermination>,
 }
 
-/// The configuration of Route trait
+/// The configuration of Route trait.
+/// 
 /// Deprecated: use ingress instead.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum IntegrationTraitsRouteTlsInsecureEdgeTerminationPolicy {
@@ -7790,7 +7893,8 @@ pub enum IntegrationTraitsRouteTlsInsecureEdgeTerminationPolicy {
     Redirect,
 }
 
-/// The configuration of Route trait
+/// The configuration of Route trait.
+/// 
 /// Deprecated: use ingress instead.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum IntegrationTraitsRouteTlsTermination {
@@ -7806,6 +7910,7 @@ pub enum IntegrationTraitsRouteTlsTermination {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationTraitsSecurityContext {
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -7840,6 +7945,7 @@ pub struct IntegrationTraitsService {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auto: Option<bool>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -7850,6 +7956,7 @@ pub struct IntegrationTraitsService {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// Enable Service to be exposed as NodePort (default `false`).
+    /// 
     /// Deprecated: Use service type instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePort")]
     pub node_port: Option<bool>,
@@ -7874,11 +7981,13 @@ pub enum IntegrationTraitsServiceType {
     LoadBalancer,
 }
 
-/// The configuration of Service Binding trait
+/// The configuration of Service Binding trait.
+/// 
 /// Deprecated: no longer in use.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationTraitsServiceBinding {
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -7904,6 +8013,7 @@ pub struct IntegrationTraitsTelemetry {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auto: Option<bool>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -7931,6 +8041,7 @@ pub struct IntegrationTraitsTelemetry {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationTraitsToleration {
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -7961,8 +8072,9 @@ pub struct IntegrationStatus {
     /// a list of events happened for the Integration
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// Deprecated:
-    /// a list of configuration specification
+    /// a list of configuration specification.
+    /// 
+    /// Deprecated: use properties instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<Vec<IntegrationStatusConfiguration>>,
     /// a list of dependencies needed by the application
@@ -8063,7 +8175,8 @@ pub struct IntegrationStatusGeneratedSources {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "from-kamelet")]
     pub from_kamelet: Option<bool>,
     /// Interceptors are optional identifiers the org.apache.camel.k.RoutesLoader
-    /// uses to pre/post process sources
+    /// uses to pre/post process sources.
+    /// 
     /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interceptors: Option<Vec<String>>,
@@ -8164,7 +8277,8 @@ pub struct IntegrationStatusTraits {
     /// The configuration of Environment trait
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub environment: Option<IntegrationStatusTraitsEnvironment>,
-    /// The configuration of Error Handler trait
+    /// The configuration of Error Handler trait.
+    /// 
     /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "error-handler")]
     pub error_handler: Option<IntegrationStatusTraitsErrorHandler>,
@@ -8186,7 +8300,8 @@ pub struct IntegrationStatusTraits {
     /// The configuration of Istio trait
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub istio: Option<IntegrationStatusTraitsIstio>,
-    /// The configuration of Jolokia trait
+    /// The configuration of Jolokia trait.
+    /// 
     /// Deprecated: use jvm.agent instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub jolokia: Option<IntegrationStatusTraitsJolokia>,
@@ -8214,7 +8329,8 @@ pub struct IntegrationStatusTraits {
     /// The configuration of Mount trait
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mount: Option<IntegrationStatusTraitsMount>,
-    /// The configuration of OpenAPI trait
+    /// The configuration of OpenAPI trait.
+    /// 
     /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub openapi: Option<IntegrationStatusTraitsOpenapi>,
@@ -8227,7 +8343,8 @@ pub struct IntegrationStatusTraits {
     /// The configuration of Platform trait
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub platform: Option<IntegrationStatusTraitsPlatform>,
-    /// The configuration of Pod trait
+    /// The configuration of Pod trait.
+    /// 
     /// Deprecated: use init-containers instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pod: Option<IntegrationStatusTraitsPod>,
@@ -8241,10 +8358,12 @@ pub struct IntegrationStatusTraits {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub quarkus: Option<IntegrationStatusTraitsQuarkus>,
     /// The configuration of Registry trait (support removed since version 2.5.0).
+    /// 
     /// Deprecated: use jvm trait or read documentation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub registry: Option<IntegrationStatusTraitsRegistry>,
-    /// The configuration of Route trait
+    /// The configuration of Route trait.
+    /// 
     /// Deprecated: use ingress instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub route: Option<IntegrationStatusTraitsRoute>,
@@ -8254,7 +8373,8 @@ pub struct IntegrationStatusTraits {
     /// The configuration of Service trait
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<IntegrationStatusTraitsService>,
-    /// The configuration of Service Binding trait
+    /// The configuration of Service Binding trait.
+    /// 
     /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "service-binding")]
     pub service_binding: Option<IntegrationStatusTraitsServiceBinding>,
@@ -8283,6 +8403,7 @@ pub struct IntegrationStatusTraits3scale {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationStatusTraitsAffinity {
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -8319,6 +8440,7 @@ pub struct IntegrationStatusTraitsBuilder {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseImage")]
     pub base_image: Option<String>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -8329,10 +8451,12 @@ pub struct IntegrationStatusTraitsBuilder {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "incrementalImageBuild")]
     pub incremental_image_build: Option<bool>,
     /// When using `pod` strategy, the maximum amount of CPU required by the pod builder.
+    /// 
     /// Deprecated: use TasksRequestCPU instead with task name `builder`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitCPU")]
     pub limit_cpu: Option<String>,
     /// When using `pod` strategy, the maximum amount of memory required by the pod builder.
+    /// 
     /// Deprecated: use TasksRequestCPU instead with task name `builder`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitMemory")]
     pub limit_memory: Option<String>,
@@ -8355,10 +8479,12 @@ pub struct IntegrationStatusTraitsBuilder {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub properties: Option<Vec<String>>,
     /// When using `pod` strategy, the minimum amount of CPU required by the pod builder.
+    /// 
     /// Deprecated: use TasksRequestCPU instead with task name `builder`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestCPU")]
     pub request_cpu: Option<String>,
     /// When using `pod` strategy, the minimum amount of memory required by the pod builder.
+    /// 
     /// Deprecated: use TasksRequestCPU instead with task name `builder`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestMemory")]
     pub request_memory: Option<String>,
@@ -8386,7 +8512,8 @@ pub struct IntegrationStatusTraitsBuilder {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tasksRequestMemory")]
     pub tasks_request_memory: Option<Vec<String>>,
     /// Enable verbose logging on build components that support it (e.g. Kaniko build pod).
-    /// Deprecated no longer in use
+    /// 
+    /// Deprecated: no longer in use
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub verbose: Option<bool>,
 }
@@ -8415,6 +8542,7 @@ pub enum IntegrationStatusTraitsBuilderStrategy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationStatusTraitsCamel {
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -8459,6 +8587,7 @@ pub struct IntegrationStatusTraitsContainer {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "capabilitiesDrop")]
     pub capabilities_drop: Option<Vec<String>>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -8567,6 +8696,7 @@ pub struct IntegrationStatusTraitsCron {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "concurrencyPolicy")]
     pub concurrency_policy: Option<IntegrationStatusTraitsCronConcurrencyPolicy>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -8602,6 +8732,7 @@ pub enum IntegrationStatusTraitsCronConcurrencyPolicy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationStatusTraitsDependencies {
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -8614,15 +8745,17 @@ pub struct IntegrationStatusTraitsDependencies {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationStatusTraitsDeployer {
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
     /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    /// Deprecated: this feature will be removed in future releases.
     /// Allows to explicitly select the desired deployment kind between `deployment`, `cron-job` or `knative-service`
     /// when creating the resources for running the integration.
+    /// 
+    /// Deprecated: this feature will be removed in future releases.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<IntegrationStatusTraitsDeployerKind>,
     /// Deprecated: no longer in use.
@@ -8645,6 +8778,7 @@ pub enum IntegrationStatusTraitsDeployerKind {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationStatusTraitsDeployment {
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -8686,6 +8820,7 @@ pub enum IntegrationStatusTraitsDeploymentStrategy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationStatusTraitsEnvironment {
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -8706,11 +8841,13 @@ pub struct IntegrationStatusTraitsEnvironment {
     pub vars: Option<Vec<String>>,
 }
 
-/// The configuration of Error Handler trait
+/// The configuration of Error Handler trait.
+/// 
 /// Deprecated: no longer in use.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationStatusTraitsErrorHandler {
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -8726,10 +8863,12 @@ pub struct IntegrationStatusTraitsErrorHandler {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationStatusTraitsGc {
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
     /// Discovery client cache to be used, either `disabled`, `disk` or `memory` (default `memory`).
+    /// 
     /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "discoveryCache")]
     pub discovery_cache: Option<IntegrationStatusTraitsGcDiscoveryCache>,
@@ -8768,6 +8907,7 @@ pub struct IntegrationStatusTraitsGitops {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "committerName")]
     pub committer_name: Option<String>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -8798,6 +8938,7 @@ pub struct IntegrationStatusTraitsGitops {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationStatusTraitsHealth {
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -8899,6 +9040,7 @@ pub struct IntegrationStatusTraitsIngress {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auto: Option<bool>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -8913,6 +9055,7 @@ pub struct IntegrationStatusTraitsIngress {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressClassName")]
     pub ingress_class_name: Option<String>,
     /// To configure the path exposed by the ingress (default `/`).
+    /// 
     /// Deprecated: In favor of `paths` - left for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -8943,6 +9086,7 @@ pub enum IntegrationStatusTraitsIngressPathType {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationStatusTraitsInitContainers {
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -8964,6 +9108,7 @@ pub struct IntegrationStatusTraitsIstio {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub allow: Option<String>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -8975,7 +9120,8 @@ pub struct IntegrationStatusTraitsIstio {
     pub inject: Option<bool>,
 }
 
-/// The configuration of Jolokia trait
+/// The configuration of Jolokia trait.
+/// 
 /// Deprecated: use jvm.agent instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationStatusTraitsJolokia {
@@ -8990,6 +9136,7 @@ pub struct IntegrationStatusTraitsJolokia {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientPrincipal")]
     pub client_principal: Option<Vec<String>>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -9035,22 +9182,26 @@ pub struct IntegrationStatusTraitsJvm {
     /// A list of JVM agents to download and execute with format `<agent-name>;<agent-url>[;<jvm-agent-options>]`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub agents: Option<Vec<String>>,
-    /// Path to a PEM-encoded CA certificate file.
-    /// Example: "/etc/camel/conf.d/_secrets/my-ca/ca.crt"
+    /// Optional base truststore to use as the starting point for adding certificates.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseTruststore")]
+    pub base_truststore: Option<IntegrationStatusTraitsJvmBaseTruststore>,
+    /// Deprecated: Use CACertificates instead. Path to a PEM-encoded CA certificate file.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCert")]
     pub ca_cert: Option<String>,
-    /// The path where the generated truststore will be mounted.
-    /// Default: "/etc/camel/conf.d/_truststore"
+    /// The path where the generated truststore will be mounted (default `/etc/camel/conf.d/_truststore`).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertMountPath")]
     pub ca_cert_mount_path: Option<String>,
-    /// Required when caCert is set. Path to a file containing the truststore password.
-    /// Example: "/etc/camel/conf.d/_secrets/truststore-pass/password"
+    /// Deprecated: Use CACertificates instead. Path to a file containing the truststore password.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertPassword")]
     pub ca_cert_password: Option<String>,
+    /// A list of CA certificates to import into the truststore. Certificates must be mounted via the mount trait.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificates")]
+    pub ca_certificates: Option<Vec<IntegrationStatusTraitsJvmCaCertificates>>,
     /// Additional JVM classpath (use `Linux` classpath separator)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub classpath: Option<String>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -9072,10 +9223,33 @@ pub struct IntegrationStatusTraitsJvm {
     /// A list of JVM options
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub options: Option<Vec<String>>,
-    /// Prints the command used the start the JVM in the container logs (default `true`)
+    /// Prints the command used the start the JVM in the container logs (default `true`).
+    /// 
     /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "printCommand")]
     pub print_command: Option<bool>,
+    /// Path to a file containing the password for the generated truststore. Required when using ca-certificates without base-truststore.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "truststorePasswordPath")]
+    pub truststore_password_path: Option<String>,
+}
+
+/// Optional base truststore to use as the starting point for adding certificates.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IntegrationStatusTraitsJvmBaseTruststore {
+    /// Path to a file containing the password for the base truststore.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordPath")]
+    pub password_path: Option<String>,
+    /// Path to the base truststore file.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "truststorePath")]
+    pub truststore_path: Option<String>,
+}
+
+/// CACertConfig specifies a CA certificate to import into the truststore.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IntegrationStatusTraitsJvmCaCertificates {
+    /// Path to the PEM-encoded CA certificate file to import.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certPath")]
+    pub cert_path: Option<String>,
 }
 
 /// The configuration of Kamelets trait
@@ -9085,6 +9259,7 @@ pub struct IntegrationStatusTraitsKamelets {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auto: Option<bool>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -9110,6 +9285,7 @@ pub struct IntegrationStatusTraitsKeda {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoMetadata")]
     pub auto_metadata: Option<BTreeMap<String, BTreeMap<String, String>>>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -9179,6 +9355,7 @@ pub struct IntegrationStatusTraitsKnative {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<String>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -9257,6 +9434,7 @@ pub struct IntegrationStatusTraitsKnativeService {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub class: Option<IntegrationStatusTraitsKnativeServiceClass>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -9317,6 +9495,7 @@ pub struct IntegrationStatusTraitsLogging {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub color: Option<bool>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -9359,6 +9538,7 @@ pub struct IntegrationStatusTraitsMaster {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auto: Option<bool>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -9395,6 +9575,7 @@ pub struct IntegrationStatusTraitsMount {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configs: Option<Vec<String>>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -9426,7 +9607,8 @@ pub struct IntegrationStatusTraitsMount {
     pub volumes: Option<Vec<String>>,
 }
 
-/// The configuration of OpenAPI trait
+/// The configuration of OpenAPI trait.
+/// 
 /// Deprecated: no longer in use.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationStatusTraitsOpenapi {
@@ -9434,6 +9616,7 @@ pub struct IntegrationStatusTraitsOpenapi {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configmaps: Option<Vec<String>>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -9446,6 +9629,7 @@ pub struct IntegrationStatusTraitsOpenapi {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationStatusTraitsOwner {
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -9464,6 +9648,7 @@ pub struct IntegrationStatusTraitsOwner {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationStatusTraitsPdb {
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -9489,6 +9674,7 @@ pub struct IntegrationStatusTraitsPlatform {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auto: Option<bool>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -9503,11 +9689,13 @@ pub struct IntegrationStatusTraitsPlatform {
     pub global: Option<bool>,
 }
 
-/// The configuration of Pod trait
+/// The configuration of Pod trait.
+/// 
 /// Deprecated: use init-containers instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationStatusTraitsPod {
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -9520,6 +9708,7 @@ pub struct IntegrationStatusTraitsPod {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationStatusTraitsPrometheus {
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -9541,6 +9730,7 @@ pub struct IntegrationStatusTraitsPullSecret {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auto: Option<bool>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -9564,6 +9754,7 @@ pub struct IntegrationStatusTraitsQuarkus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "buildMode")]
     pub build_mode: Option<Vec<String>>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -9582,16 +9773,19 @@ pub struct IntegrationStatusTraitsQuarkus {
     /// The order influences the resolution of the current kit for the integration.
     /// The kit corresponding to the first package type will be assigned to the
     /// integration in case no existing kit that matches the integration exists.
+    /// 
     /// Deprecated: use `build-mode` instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "packageTypes")]
     pub package_types: Option<Vec<String>>,
 }
 
 /// The configuration of Registry trait (support removed since version 2.5.0).
+/// 
 /// Deprecated: use jvm trait or read documentation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationStatusTraitsRegistry {
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -9600,7 +9794,8 @@ pub struct IntegrationStatusTraitsRegistry {
     pub enabled: Option<bool>,
 }
 
-/// The configuration of Route trait
+/// The configuration of Route trait.
+/// 
 /// Deprecated: use ingress instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationStatusTraitsRoute {
@@ -9611,6 +9806,7 @@ pub struct IntegrationStatusTraitsRoute {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -9676,7 +9872,8 @@ pub struct IntegrationStatusTraitsRoute {
     pub tls_termination: Option<IntegrationStatusTraitsRouteTlsTermination>,
 }
 
-/// The configuration of Route trait
+/// The configuration of Route trait.
+/// 
 /// Deprecated: use ingress instead.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum IntegrationStatusTraitsRouteTlsInsecureEdgeTerminationPolicy {
@@ -9685,7 +9882,8 @@ pub enum IntegrationStatusTraitsRouteTlsInsecureEdgeTerminationPolicy {
     Redirect,
 }
 
-/// The configuration of Route trait
+/// The configuration of Route trait.
+/// 
 /// Deprecated: use ingress instead.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum IntegrationStatusTraitsRouteTlsTermination {
@@ -9701,6 +9899,7 @@ pub enum IntegrationStatusTraitsRouteTlsTermination {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationStatusTraitsSecurityContext {
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -9735,6 +9934,7 @@ pub struct IntegrationStatusTraitsService {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auto: Option<bool>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -9745,6 +9945,7 @@ pub struct IntegrationStatusTraitsService {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// Enable Service to be exposed as NodePort (default `false`).
+    /// 
     /// Deprecated: Use service type instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePort")]
     pub node_port: Option<bool>,
@@ -9769,11 +9970,13 @@ pub enum IntegrationStatusTraitsServiceType {
     LoadBalancer,
 }
 
-/// The configuration of Service Binding trait
+/// The configuration of Service Binding trait.
+/// 
 /// Deprecated: no longer in use.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationStatusTraitsServiceBinding {
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -9799,6 +10002,7 @@ pub struct IntegrationStatusTraitsTelemetry {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auto: Option<bool>,
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
@@ -9826,6 +10030,7 @@ pub struct IntegrationStatusTraitsTelemetry {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IntegrationStatusTraitsToleration {
     /// Legacy trait configuration parameters.
+    /// 
     /// Deprecated: for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,

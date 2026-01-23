@@ -195,8 +195,8 @@ pub struct BackendTlsPolicyValidation {
     /// Support: Extended
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectAltNames")]
     pub subject_alt_names: Option<Vec<BackendTlsPolicyValidationSubjectAltNames>>,
-    /// WellKnownCACertificates specifies whether system CA certificates may be used in
-    /// the TLS handshake between the gateway and backend pod.
+    /// WellKnownCACertificates specifies whether a well-known set of CA certificates
+    /// may be used in the TLS handshake between the gateway and backend pod.
     /// 
     /// If WellKnownCACertificates is unspecified or empty (""), then CACertificateRefs
     /// must be specified with at least one entry for a valid configuration. Only one of
@@ -206,9 +206,16 @@ pub struct BackendTlsPolicyValidation {
     /// `Accepted` Condition on the BackendTLSPolicy is set to `status: False`, with
     /// a Reason `Invalid`.
     /// 
+    /// Valid values include:
+    /// * "System" - indicates that well-known system CA certificates should be used.
+    /// 
+    /// Implementations MAY define their own sets of CA certificates. Such definitions
+    /// MUST use an implementation-specific, prefixed name, such as
+    /// `mycompany.com/my-custom-ca-certifcates`.
+    /// 
     /// Support: Implementation-specific
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "wellKnownCACertificates")]
-    pub well_known_ca_certificates: Option<BackendTlsPolicyValidationWellKnownCaCertificates>,
+    pub well_known_ca_certificates: Option<String>,
 }
 
 /// LocalObjectReference identifies an API object within the namespace of the
@@ -260,12 +267,6 @@ pub enum BackendTlsPolicyValidationSubjectAltNamesType {
     Hostname,
     #[serde(rename = "URI")]
     Uri,
-}
-
-/// Validation contains backend TLS validation configuration.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum BackendTlsPolicyValidationWellKnownCaCertificates {
-    System,
 }
 
 /// Status defines the current state of BackendTLSPolicy.

@@ -1279,6 +1279,24 @@ spec:
                     periodSeconds:
                       type: "integer"
                   type: "object"
+                telemetry:
+                  description: "In this section you can configure general shared OpenTelemetry settings for Keycloak."
+                  properties:
+                    endpoint:
+                      description: "OpenTelemetry endpoint to connect to."
+                      type: "string"
+                    protocol:
+                      description: "OpenTelemetry protocol used for the telemetry data (default 'grpc'). For more information, check the OpenTelemetry guide."
+                      type: "string"
+                    resourceAttributes:
+                      additionalProperties:
+                        type: "string"
+                      description: "OpenTelemetry resource attributes present in the exported telemetry data to characterize the telemetry producer."
+                      type: "object"
+                    serviceName:
+                      description: "OpenTelemetry service name. Takes precedence over 'service.name' defined in the 'resourceAttributes' map."
+                      type: "string"
+                  type: "object"
                 tracing:
                   description: "In this section you can configure OpenTelemetry Tracing for Keycloak."
                   properties:
@@ -1297,7 +1315,7 @@ spec:
                     resourceAttributes:
                       additionalProperties:
                         type: "string"
-                      description: "OpenTelemetry resource attributes present in the exported trace to characterize the telemetry producer."
+                      description: "DEPRECATED - use the 'telemetry.resourceAttributes' instead. OpenTelemetry resource attributes present in the exported trace to characterize the telemetry producer."
                       type: "object"
                     samplerRatio:
                       description: "OpenTelemetry sampler ratio. Probability that a span will be sampled. Expected double value in interval [0,1]."
@@ -1306,7 +1324,7 @@ spec:
                       description: "OpenTelemetry sampler to use for tracing (default 'traceidratio'). For more information, check the Tracing guide."
                       type: "string"
                     serviceName:
-                      description: "OpenTelemetry service name. Takes precedence over 'service.name' defined in the 'resourceAttributes' map."
+                      description: "DEPRECATED - use the 'telemetry.serviceName' instead. OpenTelemetry service name. Takes precedence over 'service.name' defined in the 'resourceAttributes' map."
                       type: "string"
                   type: "object"
                 transaction:

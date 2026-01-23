@@ -2146,6 +2146,10 @@ spec:
                       ipfix:
                         description: "IPFIX configuration, such as the IP address and port to send enriched IPFIX flows to."
                         properties:
+                          enterpriseID:
+                            default: 2
+                            description: "EnterpriseID, or Private Enterprise Number (PEN). To date, NetObserv does not own an assigned number,\nso it is left open for configuration. The PEN is needed to collect non standard data, such as Kubernetes names,\nRTT, etc."
+                            type: "integer"
                           targetHost:
                             default: ""
                             description: "Address of the IPFIX external receiver."
@@ -2161,6 +2165,7 @@ spec:
                               - "UDP"
                             type: "string"
                         required:
+                          - "enterpriseID"
                           - "targetHost"
                           - "targetPort"
                         type: "object"
@@ -2820,6 +2825,10 @@ spec:
                     monolithic:
                       description: "Loki configuration for `Monolithic` mode.\nUse this option when Loki is installed using the monolithic deployment mode (https://grafana.com/docs/loki/latest/fundamentals/architecture/deployment-modes/#monolithic-mode).\nIt is ignored for other modes."
                       properties:
+                        installDemoLoki:
+                          default: false
+                          description: "Set `installDemoLoki` to `true` to automatically create Loki deployment, service and storage.\nThis is useful for development and demo purposes. Do not use it in production."
+                          type: "boolean"
                         tenantID:
                           default: "netobserv"
                           description: "`tenantID` is the Loki `X-Scope-OrgID` header that identifies the tenant for each request."
@@ -3979,12 +3988,24 @@ spec:
                     metrics:
                       description: "`Metrics` define the processor configuration regarding metrics"
                       properties:
-                        alerts:
-                          description: "`alerts` is a list of alerts to be created for Prometheus AlertManager, organized by templates and variants.\nMore information on alerts: https://github.com/netobserv/network-observability-operator/blob/main/docs/Alerts.md"
+                        disableAlerts:
+                          description: "`disableAlerts` is a list of alert groups that should be disabled from the default set of alerts.\nPossible values are: `NetObservNoFlows`, `NetObservLokiError`, `PacketDropsByKernel`, `PacketDropsByDevice`, `IPsecErrors`, `NetpolDenied`,\n`LatencyHighTrend`, `DNSErrors`, `DNSNxDomain`, `ExternalEgressHighTrend`, `ExternalIngressHighTrend`.\nMore information on alerts: https://github.com/netobserv/network-observability-operator/blob/main/docs/Alerts.md"
+                          items:
+                            type: "string"
+                          type: "array"
+                        healthRules:
+                          description: "`healthRules` is a list of health rules to be created for Prometheus, organized by templates and variants.\nEach health rule can be configured to generate either alerts or recording rules based on the mode field.\nMore information on health rules: https://github.com/netobserv/network-observability-operator/blob/main/docs/Alerts.md"
                           items:
                             properties:
+                              mode:
+                                default: "Alert"
+                                description: "Mode defines whether this health rule should be generated as an alert or a recording rule.\nPossible values are: `Alert` (default), `Recording`.\nRecording rules violations are visible in the Network Health dashboard without generating any Prometheus alert.\nThis provides an alternative way of getting Health information for SRE and cluster admins who may find\nmany new alerts burdensome."
+                                enum:
+                                  - "Alert"
+                                  - "Recording"
+                                type: "string"
                               template:
-                                description: "Alert template name.\nPossible values are: `PacketDropsByKernel`, `PacketDropsByDevice`, `IPsecErrors`, `NetpolDenied`,\n`LatencyHighTrend`, `DNSErrors`, `DNSNxDomain`, `ExternalEgressHighTrend`, `ExternalIngressHighTrend`.\nMore information on alerts: https://github.com/netobserv/network-observability-operator/blob/main/docs/Alerts.md"
+                                description: "Health rule template name.\nPossible values are: `PacketDropsByKernel`, `PacketDropsByDevice`, `IPsecErrors`, `NetpolDenied`,\n`LatencyHighTrend`, `DNSErrors`, `DNSNxDomain`, `ExternalEgressHighTrend`, `ExternalIngressHighTrend`.\nNote: `NetObservNoFlows` and `NetObservLokiError` are alert-only and cannot be used as health rules.\nMore information on health rules: https://github.com/netobserv/network-observability-operator/blob/main/docs/Alerts.md"
                                 enum:
                                   - "PacketDropsByKernel"
                                   - "PacketDropsByDevice"
@@ -4012,7 +4033,7 @@ spec:
                                       description: "The low volume threshold allows to ignore metrics with a too low volume of traffic, in order to improve signal-to-noise.\nIt is provided as an absolute rate (bytes per second or packets per second, depending on the context).\nWhen provided, it must be parsable as a float."
                                       type: "string"
                                     thresholds:
-                                      description: "Thresholds of the alert per severity.\nThey are expressed as a percentage of errors above which the alert is triggered. They must be parsable as floats."
+                                      description: "Thresholds of the health rule per severity.\nThey are expressed as a percentage of errors above which the alert is triggered. They must be parsable as floats.\nRequired for both alert and recording modes"
                                       properties:
                                         critical:
                                           description: "Threshold for severity `critical`. Leave empty to not generate a Critical alert."
@@ -4025,10 +4046,10 @@ spec:
                                           type: "string"
                                       type: "object"
                                     trendDuration:
-                                      description: "For trending alerts, the duration interval for baseline comparison. For example, \"2h\" means comparing against a 2-hours average. Defaults to 2h."
+                                      description: "For trending health rules, the duration interval for baseline comparison. For example, \"2h\" means comparing against a 2-hours average. Defaults to 2h."
                                       type: "string"
                                     trendOffset:
-                                      description: "For trending alerts, the time offset for baseline comparison. For example, \"1d\" means comparing against yesterday. Defaults to 1d."
+                                      description: "For trending health rules, the time offset for baseline comparison. For example, \"1d\" means comparing against yesterday. Defaults to 1d."
                                       type: "string"
                                   required:
                                     - "thresholds"
@@ -4038,11 +4059,6 @@ spec:
                               - "template"
                               - "variants"
                             type: "object"
-                          type: "array"
-                        disableAlerts:
-                          description: "`disableAlerts` is a list of alert groups that should be disabled from the default set of alerts.\nPossible values are: `NetObservNoFlows`, `NetObservLokiError`, `PacketDropsByKernel`, `PacketDropsByDevice`, `IPsecErrors`, `NetpolDenied`,\n`LatencyHighTrend`, `DNSErrors`, `DNSNxDomain`, `ExternalEgressHighTrend`, `ExternalIngressHighTrend`.\nMore information on alerts: https://github.com/netobserv/network-observability-operator/blob/main/docs/Alerts.md"
-                          items:
-                            type: "string"
                           type: "array"
                         includeList:
                           description: "`includeList` is a list of metric names to specify which ones to generate.\nThe names correspond to the names in Prometheus without the prefix. For example,\n`namespace_egress_packets_total` shows up as `netobserv_namespace_egress_packets_total` in Prometheus.\nNote that the more metrics you add, the bigger is the impact on Prometheus workload resources.\nMetrics enabled by default are:\n`namespace_flows_total`, `node_ingress_bytes_total`, `node_egress_bytes_total`, `workload_ingress_bytes_total`,\n`workload_egress_bytes_total`, `namespace_drop_packets_total` (when `PacketDrop` feature is enabled),\n`namespace_rtt_seconds` (when `FlowRTT` feature is enabled), `namespace_dns_latency_seconds` (when `DNSTracking` feature is enabled),\n`namespace_network_policy_events_total` (when `NetworkEvents` feature is enabled).\nMore information, with full list of available metrics: https://github.com/netobserv/network-observability-operator/blob/main/docs/Metrics.md"
@@ -4333,8 +4349,6 @@ spec:
                                 url:
                                   description: "`url` is the address of an existing Prometheus AlertManager service to use for querying alerts."
                                   type: "string"
-                              required:
-                                - "url"
                               type: "object"
                             forwardUserToken:
                               description: "Set `true` to forward logged in user token in queries to Prometheus"

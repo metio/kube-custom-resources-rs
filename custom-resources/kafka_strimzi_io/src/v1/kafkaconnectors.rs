@@ -29,7 +29,7 @@ pub struct KafkaConnectorSpec {
     /// The Class for the Kafka Connector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub class: Option<String>,
-    /// The Kafka Connector configuration. The following properties cannot be set: name, connector.class, tasks.max.
+    /// The Kafka Connector configuration. The following properties cannot be set: name, connector.class, tasks.max, connector.plugin.version.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<BTreeMap<String, serde_json::Value>>,
     /// Configuration for listing offsets.

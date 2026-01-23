@@ -121,7 +121,7 @@ pub struct VSphereMachineSpec {
     /// If omitted, the mode defaults to hard.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "powerOffMode")]
     pub power_off_mode: Option<VSphereMachinePowerOffMode>,
-    /// providerID is the virtual machine's BIOS UUID formated as
+    /// providerID is the virtual machine's BIOS UUID formatted as
     /// vsphere://12345678-1234-1234-1234-123456789abc
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerID")]
     pub provider_id: Option<String>,
@@ -220,12 +220,6 @@ pub struct VSphereMachineNetwork {
     /// devices is the list of network devices used by the virtual machine.
     /// 
     pub devices: Vec<VSphereMachineNetworkDevices>,
-    /// preferredAPIServerCidr is the preferred CIDR for the Kubernetes API
-    /// server endpoint on this machine
-    /// 
-    /// Deprecated: This field is going to be removed in a future release.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredAPIServerCidr")]
-    pub preferred_api_server_cidr: Option<String>,
     /// routes is a list of optional, static routes applied to the virtual
     /// machine.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -317,18 +311,18 @@ pub struct VSphereMachineNetworkDevices {
     pub skip_ip_allocation: Option<bool>,
 }
 
-/// TypedLocalObjectReference contains enough information to let you locate the
-/// typed referenced object inside the same namespace.
+/// IPPoolReference is a reference to an IPPool.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereMachineNetworkDevicesAddressesFromPools {
-    /// APIGroup is the group for the resource being referenced.
-    /// If APIGroup is not specified, the specified Kind must be in the core API group.
-    /// For any other third-party types, APIGroup is required.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
-    pub api_group: Option<String>,
-    /// Kind is the type of resource being referenced
+    /// apiGroup of the IPPool.
+    /// apiGroup must be fully qualified domain name.
+    #[serde(rename = "apiGroup")]
+    pub api_group: String,
+    /// kind of the IPPool.
+    /// kind must consist of alphanumeric characters or '-', start with an alphabetic character, and end with an alphanumeric character.
     pub kind: String,
-    /// Name is the name of resource being referenced
+    /// name of the IPPool.
+    /// name must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character.
     pub name: String,
 }
 
@@ -550,7 +544,8 @@ pub struct VSphereMachineStatus {
     /// addresses contains the VSphere instance associated addresses.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub addresses: Option<Vec<VSphereMachineStatusAddresses>>,
-    /// conditions defines current service state of the VSphereMachine.
+    /// conditions represents the observations of a VSphereMachine's current state.
+    /// Known condition types are Ready, VirtualMachineProvisioned and Paused.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// deprecated groups all the status fields that are deprecated and will be removed when all the nested field are removed.
@@ -564,9 +559,6 @@ pub struct VSphereMachineStatus {
     /// network interfaces.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub network: Option<Vec<VSphereMachineStatusNetwork>>,
-    /// v1beta2 groups all the fields that will be added or modified in VSphereMachine's status with the V1Beta2 version.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub v1beta2: Option<VSphereMachineStatusV1beta2>,
 }
 
 /// MachineAddress contains information for the node's address.
@@ -608,6 +600,11 @@ pub struct VSphereMachineStatusDeprecated {
 /// Deprecated: This field is deprecated and is going to be removed when support for v1beta1 will be dropped. Please see <https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md> for more details.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereMachineStatusDeprecatedV1beta1 {
+    /// conditions defines current service state of the VSphereMachine.
+    /// 
+    /// Deprecated: This field is deprecated and is going to be removed when support for v1beta1 will be dropped. Please see <https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md> for more details.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
     /// failureMessage will be set in the event that there is a terminal problem
     /// reconciling the Machine and will contain a more verbose string suitable
     /// for logging and human consumption.
@@ -676,14 +673,5 @@ pub struct VSphereMachineStatusNetwork {
     /// networkName is the name of the network.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkName")]
     pub network_name: Option<String>,
-}
-
-/// v1beta2 groups all the fields that will be added or modified in VSphereMachine's status with the V1Beta2 version.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct VSphereMachineStatusV1beta2 {
-    /// conditions represents the observations of a VSphereMachine's current state.
-    /// Known condition types are Ready, VirtualMachineProvisioned and Paused.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub conditions: Option<Vec<Condition>>,
 }
 

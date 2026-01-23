@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.19.0"
+    controller-gen.kubebuilder.io/version: "v0.20.0"
   name: "integrations.camel.apache.org"
 spec:
   group: "camel.apache.org"
@@ -64,7 +64,7 @@ spec:
               description: "the desired Integration specification"
               properties:
                 configuration:
-                  description: "Deprecated:\nUse camel trait (camel.properties) to manage properties\nUse mount trait (mount.configs) to manage configs\nUse mount trait (mount.resources) to manage resources\nUse mount trait (mount.volumes) to manage volumes"
+                  description: "Deprecated:\n\nUse camel trait (camel.properties) to manage properties\nUse mount trait (mount.configs) to manage configs\nUse mount trait (mount.resources) to manage resources\nUse mount trait (mount.volumes) to manage volumes"
                   items:
                     description: "ConfigurationSpec represents a generic configuration specification."
                     properties:
@@ -176,7 +176,7 @@ spec:
                         description: "True if the spec is generated from a Kamelet"
                         type: "boolean"
                       interceptors:
-                        description: "Interceptors are optional identifiers the org.apache.camel.k.RoutesLoader\nuses to pre/post process sources\nDeprecated: no longer in use."
+                        description: "Interceptors are optional identifiers the org.apache.camel.k.RoutesLoader\nuses to pre/post process sources.\n\nDeprecated: no longer in use."
                         items:
                           type: "string"
                         type: "array"
@@ -207,7 +207,7 @@ spec:
                     type: "object"
                   type: "array"
                 template:
-                  description: "Pod template customization\nDeprecated:\nUse container, init-containers or owner traits instead"
+                  description: "Pod template customization.\n\nDeprecated: use container, init-containers or owner traits instead"
                   properties:
                     spec:
                       description: "the specification"
@@ -794,7 +794,7 @@ spec:
                                     type: "integer"
                                 type: "object"
                               resizePolicy:
-                                description: "Resources resize policy for the container."
+                                description: "Resources resize policy for the container.\nThis field cannot be set on ephemeral containers."
                                 items:
                                   description: "ContainerResizePolicy represents resource resize policy for the container."
                                   properties:
@@ -2688,7 +2688,7 @@ spec:
                                     type: "integer"
                                 type: "object"
                               resizePolicy:
-                                description: "Resources resize policy for the container."
+                                description: "Resources resize policy for the container.\nThis field cannot be set on ephemeral containers."
                                 items:
                                   description: "ContainerResizePolicy represents resource resize policy for the container."
                                   properties:
@@ -3564,7 +3564,7 @@ spec:
                                               - "name"
                                             type: "object"
                                           resources:
-                                            description: "resources represents the minimum resources the volume should have.\nIf RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements\nthat are lower than previous value but must still be higher than capacity recorded in the\nstatus field of the claim.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources"
+                                            description: "resources represents the minimum resources the volume should have.\nUsers are allowed to specify resource requirements\nthat are lower than previous value but must still be higher than capacity recorded in the\nstatus field of the claim.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources"
                                             properties:
                                               limits:
                                                 additionalProperties:
@@ -4054,6 +4054,11 @@ spec:
                                             signerName:
                                               description: "Kubelet's generated CSRs will be addressed to this signer."
                                               type: "string"
+                                            userAnnotations:
+                                              additionalProperties:
+                                                type: "string"
+                                              description: "userAnnotations allow pod authors to pass additional information to\nthe signer implementation.  Kubernetes does not restrict or validate this\nmetadata in any way.\n\nThese values are copied verbatim into the `spec.unverifiedUserAnnotations` field of\nthe PodCertificateRequest objects that Kubelet creates.\n\nEntries are subject to the same validation as object metadata annotations,\nwith the addition that all keys must be domain-prefixed. No restrictions\nare placed on values, except an overall size limitation on the entire field.\n\nSigners should document the keys and values they support. Signers should\ndeny requests that contain keys they do not recognize."
+                                              type: "object"
                                           required:
                                             - "keyType"
                                             - "signerName"
@@ -4335,7 +4340,7 @@ spec:
                       description: "The configuration of Affinity trait"
                       properties:
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -4375,7 +4380,7 @@ spec:
                           description: "Specify a base image. In order to have the application working properly it must be a container image which has a Java JDK\ninstalled and ready to use on path (ie `/usr/bin/java`)."
                           type: "string"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -4385,10 +4390,10 @@ spec:
                           description: "Use the incremental image build option, to reuse existing containers (default `true`)"
                           type: "boolean"
                         limitCPU:
-                          description: "When using `pod` strategy, the maximum amount of CPU required by the pod builder.\nDeprecated: use TasksRequestCPU instead with task name `builder`."
+                          description: "When using `pod` strategy, the maximum amount of CPU required by the pod builder.\n\nDeprecated: use TasksRequestCPU instead with task name `builder`."
                           type: "string"
                         limitMemory:
-                          description: "When using `pod` strategy, the maximum amount of memory required by the pod builder.\nDeprecated: use TasksRequestCPU instead with task name `builder`."
+                          description: "When using `pod` strategy, the maximum amount of memory required by the pod builder.\n\nDeprecated: use TasksRequestCPU instead with task name `builder`."
                           type: "string"
                         mavenProfiles:
                           description: "A list of references pointing to configmaps/secrets that contains a maven profile.\nThis configmap/secret is a resource of the IntegrationKit created, therefore it needs to be present in the namespace where the operator is going to create the IntegrationKit.\nThe content of the maven profile is expected to be a text containing a valid maven profile starting with `<profile>` and ending with `</profile>` that will be integrated as an inline profile in the POM.\nSyntax: [configmap|secret]:name[/key], where name represents the resource name, key optionally represents the resource key to be filtered (default key value = profile.xml)."
@@ -4418,10 +4423,10 @@ spec:
                             type: "string"
                           type: "array"
                         requestCPU:
-                          description: "When using `pod` strategy, the minimum amount of CPU required by the pod builder.\nDeprecated: use TasksRequestCPU instead with task name `builder`."
+                          description: "When using `pod` strategy, the minimum amount of CPU required by the pod builder.\n\nDeprecated: use TasksRequestCPU instead with task name `builder`."
                           type: "string"
                         requestMemory:
-                          description: "When using `pod` strategy, the minimum amount of memory required by the pod builder.\nDeprecated: use TasksRequestCPU instead with task name `builder`."
+                          description: "When using `pod` strategy, the minimum amount of memory required by the pod builder.\n\nDeprecated: use TasksRequestCPU instead with task name `builder`."
                           type: "string"
                         strategy:
                           description: "The strategy to use, either `pod` or `routine` (default `routine`)"
@@ -4458,14 +4463,14 @@ spec:
                             type: "string"
                           type: "array"
                         verbose:
-                          description: "Enable verbose logging on build components that support it (e.g. Kaniko build pod).\nDeprecated no longer in use"
+                          description: "Enable verbose logging on build components that support it (e.g. Kaniko build pod).\n\nDeprecated: no longer in use"
                           type: "boolean"
                       type: "object"
                     camel:
                       description: "The configuration of Camel trait"
                       properties:
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -4508,7 +4513,7 @@ spec:
                             type: "string"
                           type: "array"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -4600,7 +4605,7 @@ spec:
                             - "Replace"
                           type: "string"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -4624,7 +4629,7 @@ spec:
                       description: "The configuration of Dependencies trait"
                       properties:
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -4635,14 +4640,14 @@ spec:
                       description: "The configuration of Deployer trait"
                       properties:
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
                           description: "Deprecated: no longer in use."
                           type: "boolean"
                         kind:
-                          description: "Deprecated: this feature will be removed in future releases.\nAllows to explicitly select the desired deployment kind between `deployment`, `cron-job` or `knative-service`\nwhen creating the resources for running the integration."
+                          description: "Allows to explicitly select the desired deployment kind between `deployment`, `cron-job` or `knative-service`\nwhen creating the resources for running the integration.\n\nDeprecated: this feature will be removed in future releases."
                           enum:
                             - "deployment"
                             - "cron-job"
@@ -4656,7 +4661,7 @@ spec:
                       description: "The configuration of Deployment trait"
                       properties:
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -4689,7 +4694,7 @@ spec:
                       description: "The configuration of Environment trait"
                       properties:
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         containerMeta:
@@ -4708,10 +4713,10 @@ spec:
                           type: "array"
                       type: "object"
                     error-handler:
-                      description: "The configuration of Error Handler trait\nDeprecated: no longer in use."
+                      description: "The configuration of Error Handler trait.\n\nDeprecated: no longer in use."
                       properties:
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -4725,11 +4730,11 @@ spec:
                       description: "The configuration of GC trait"
                       properties:
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         discoveryCache:
-                          description: "Discovery client cache to be used, either `disabled`, `disk` or `memory` (default `memory`).\nDeprecated: no longer in use."
+                          description: "Discovery client cache to be used, either `disabled`, `disk` or `memory` (default `memory`).\n\nDeprecated: no longer in use."
                           enum:
                             - "disabled"
                             - "disk"
@@ -4760,7 +4765,7 @@ spec:
                           description: "The name used to commit the GitOps changes (default `Camel K Operator`)."
                           type: "string"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -4797,7 +4802,7 @@ spec:
                       description: "The configuration of Health trait"
                       properties:
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -4915,7 +4920,7 @@ spec:
                           description: "To automatically add an ingress whenever the integration uses an HTTP endpoint consumer."
                           type: "boolean"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -4928,7 +4933,7 @@ spec:
                           description: "The Ingress class name as defined by the Ingress spec\nSee https://kubernetes.io/docs/concepts/services-networking/ingress/"
                           type: "string"
                         path:
-                          description: "To configure the path exposed by the ingress (default `/`).\nDeprecated: In favor of `paths` - left for backward compatibility."
+                          description: "To configure the path exposed by the ingress (default `/`).\n\nDeprecated: In favor of `paths` - left for backward compatibility."
                           type: "string"
                         pathType:
                           description: "To configure the path type exposed by the ingress.\nOne of `Exact`, `Prefix`, `ImplementationSpecific` (default to `Prefix`)."
@@ -4955,7 +4960,7 @@ spec:
                       description: "The configuration of Init Containers trait"
                       properties:
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -4979,7 +4984,7 @@ spec:
                           description: "Configures a (comma-separated) list of CIDR subnets that should not be intercepted by the Istio proxy (`10.0.0.0/8,172.16.0.0/12,192.168.0.0/16` by default)."
                           type: "string"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -4990,7 +4995,7 @@ spec:
                           type: "boolean"
                       type: "object"
                     jolokia:
-                      description: "The configuration of Jolokia trait\nDeprecated: use jvm.agent instead."
+                      description: "The configuration of Jolokia trait.\n\nDeprecated: use jvm.agent instead."
                       properties:
                         CACert:
                           description: "The PEM encoded CA certification file path, used to verify client certificates,\napplicable when `protocol` is `https` and `use-ssl-client-authentication` is `true`\n(default `/var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt` for OpenShift)."
@@ -5001,7 +5006,7 @@ spec:
                             type: "string"
                           type: "array"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         discoveryEnabled:
@@ -5046,20 +5051,40 @@ spec:
                           items:
                             type: "string"
                           type: "array"
+                        baseTruststore:
+                          description: "Optional base truststore to use as the starting point for adding certificates."
+                          properties:
+                            passwordPath:
+                              description: "Path to a file containing the password for the base truststore."
+                              type: "string"
+                            truststorePath:
+                              description: "Path to the base truststore file."
+                              type: "string"
+                          type: "object"
                         caCert:
-                          description: "Path to a PEM-encoded CA certificate file.\nExample: \"/etc/camel/conf.d/_secrets/my-ca/ca.crt\""
+                          description: "Deprecated: Use CACertificates instead. Path to a PEM-encoded CA certificate file."
                           type: "string"
                         caCertMountPath:
-                          description: "The path where the generated truststore will be mounted.\nDefault: \"/etc/camel/conf.d/_truststore\""
+                          description: "The path where the generated truststore will be mounted (default `/etc/camel/conf.d/_truststore`)."
                           type: "string"
                         caCertPassword:
-                          description: "Required when caCert is set. Path to a file containing the truststore password.\nExample: \"/etc/camel/conf.d/_secrets/truststore-pass/password\""
+                          description: "Deprecated: Use CACertificates instead. Path to a file containing the truststore password."
                           type: "string"
+                        caCertificates:
+                          description: "A list of CA certificates to import into the truststore. Certificates must be mounted via the mount trait."
+                          items:
+                            description: "CACertConfig specifies a CA certificate to import into the truststore."
+                            properties:
+                              certPath:
+                                description: "Path to the PEM-encoded CA certificate file to import."
+                                type: "string"
+                            type: "object"
+                          type: "array"
                         classpath:
                           description: "Additional JVM classpath (use `Linux` classpath separator)"
                           type: "string"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         debug:
@@ -5083,8 +5108,11 @@ spec:
                             type: "string"
                           type: "array"
                         printCommand:
-                          description: "Prints the command used the start the JVM in the container logs (default `true`)\nDeprecated: no longer in use."
+                          description: "Prints the command used the start the JVM in the container logs (default `true`).\n\nDeprecated: no longer in use."
                           type: "boolean"
+                        truststorePasswordPath:
+                          description: "Path to a file containing the password for the generated truststore. Required when using ca-certificates without base-truststore."
+                          type: "string"
                       type: "object"
                     kamelets:
                       description: "The configuration of Kamelets trait"
@@ -5093,7 +5121,7 @@ spec:
                           description: "Automatically inject all referenced Kamelets and their default configuration (enabled by default)"
                           type: "boolean"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -5120,7 +5148,7 @@ spec:
                           description: "Additional metadata to merge into auto-discovered triggers. Keys are trigger types (e.g., \"kafka\"),\nvalues are maps of metadata key-value pairs to merge (e.g., {\"lagThreshold\": \"10\"})."
                           type: "object"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         cooldownPeriod:
@@ -5195,7 +5223,7 @@ spec:
                           description: "Can be used to inject a Knative complete configuration in JSON format."
                           type: "string"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -5263,7 +5291,7 @@ spec:
                             - "hpa.autoscaling.knative.dev"
                           type: "string"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -5295,7 +5323,7 @@ spec:
                           description: "Colorize the log output"
                           type: "boolean"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -5327,7 +5355,7 @@ spec:
                           description: "Enables automatic configuration of the trait."
                           type: "boolean"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -5358,7 +5386,7 @@ spec:
                             type: "string"
                           type: "array"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         emptyDirs:
@@ -5387,7 +5415,7 @@ spec:
                           type: "array"
                       type: "object"
                     openapi:
-                      description: "The configuration of OpenAPI trait\nDeprecated: no longer in use."
+                      description: "The configuration of OpenAPI trait.\n\nDeprecated: no longer in use."
                       properties:
                         configmaps:
                           description: "The configmaps holding the spec of the OpenAPI (compatible with > 3.0 spec only)."
@@ -5395,7 +5423,7 @@ spec:
                             type: "string"
                           type: "array"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -5406,7 +5434,7 @@ spec:
                       description: "The configuration of Owner trait"
                       properties:
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -5427,7 +5455,7 @@ spec:
                       description: "The configuration of PDB trait"
                       properties:
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -5447,7 +5475,7 @@ spec:
                           description: "Deprecated: no longer in use."
                           type: "boolean"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         createDefault:
@@ -5461,10 +5489,10 @@ spec:
                           type: "boolean"
                       type: "object"
                     pod:
-                      description: "The configuration of Pod trait\nDeprecated: use init-containers instead."
+                      description: "The configuration of Pod trait.\n\nDeprecated: use init-containers instead."
                       properties:
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -5475,7 +5503,7 @@ spec:
                       description: "The configuration of Prometheus trait"
                       properties:
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -5497,7 +5525,7 @@ spec:
                           description: "Automatically configures the platform registry secret on the pod if it is of type `kubernetes.io/dockerconfigjson`."
                           type: "boolean"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -5523,7 +5551,7 @@ spec:
                             type: "string"
                           type: "array"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -5536,9 +5564,9 @@ spec:
                           description: "The image containing the tooling required for a native build (by default it will use the one provided in the runtime catalog)"
                           type: "string"
                         packageTypes:
-                          description: "The Quarkus package types, `fast-jar` or `native` (default `fast-jar`).\nIn case both `fast-jar` and `native` are specified, two `IntegrationKit` resources are created,\nwith the native kit having precedence over the `fast-jar` one once ready.\nThe order influences the resolution of the current kit for the integration.\nThe kit corresponding to the first package type will be assigned to the\nintegration in case no existing kit that matches the integration exists.\nDeprecated: use `build-mode` instead."
+                          description: "The Quarkus package types, `fast-jar` or `native` (default `fast-jar`).\nIn case both `fast-jar` and `native` are specified, two `IntegrationKit` resources are created,\nwith the native kit having precedence over the `fast-jar` one once ready.\nThe order influences the resolution of the current kit for the integration.\nThe kit corresponding to the first package type will be assigned to the\nintegration in case no existing kit that matches the integration exists.\n\nDeprecated: use `build-mode` instead."
                           items:
-                            description: "QuarkusPackageType is the type of Quarkus build packaging.\nDeprecated: use `QuarkusMode` instead."
+                            description: "QuarkusPackageType is the type of Quarkus build packaging.\n\nDeprecated: use `QuarkusMode` instead."
                             enum:
                               - "fast-jar"
                               - "native"
@@ -5546,10 +5574,10 @@ spec:
                           type: "array"
                       type: "object"
                     registry:
-                      description: "The configuration of Registry trait (support removed since version 2.5.0).\nDeprecated: use jvm trait or read documentation."
+                      description: "The configuration of Registry trait (support removed since version 2.5.0).\n\nDeprecated: use jvm trait or read documentation."
                       properties:
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -5557,7 +5585,7 @@ spec:
                           type: "boolean"
                       type: "object"
                     route:
-                      description: "The configuration of Route trait\nDeprecated: use ingress instead."
+                      description: "The configuration of Route trait.\n\nDeprecated: use ingress instead."
                       properties:
                         annotations:
                           additionalProperties:
@@ -5565,7 +5593,7 @@ spec:
                           description: "The annotations added to route.\nThis can be used to set route specific annotations\nFor annotations options see https://docs.openshift.com/container-platform/3.11/architecture/networking/routes.html#route-specific-annotations\nCLI usage example: -t \"route.annotations.'haproxy.router.openshift.io/balance'=true\""
                           type: "object"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -5617,7 +5645,7 @@ spec:
                       description: "The configuration of Security Context trait"
                       properties:
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -5649,7 +5677,7 @@ spec:
                           description: "To automatically detect from the code if a Service needs to be created."
                           type: "boolean"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -5661,7 +5689,7 @@ spec:
                           description: "The labels added to the Service object."
                           type: "object"
                         nodePort:
-                          description: "Enable Service to be exposed as NodePort (default `false`).\nDeprecated: Use service type instead."
+                          description: "Enable Service to be exposed as NodePort (default `false`).\n\nDeprecated: Use service type instead."
                           type: "boolean"
                         ports:
                           description: "List of container ports available in the container to expose\n(syntax: <port-name>;<port-number>;<container-port-number>[;<port-protocol]).\nWhen omitted, `port-protocol` (admitted values `TCP`, `UDP` or `SCTP`) is `TCP`.\nDon't use this for the primary http managed port (which is managed by container trait).\nDon't use in Knative based environments."
@@ -5677,10 +5705,10 @@ spec:
                           type: "string"
                       type: "object"
                     service-binding:
-                      description: "The configuration of Service Binding trait\nDeprecated: no longer in use."
+                      description: "The configuration of Service Binding trait.\n\nDeprecated: no longer in use."
                       properties:
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -5709,7 +5737,7 @@ spec:
                           description: "Enables automatic configuration of the trait, including automatic discovery of the telemetry endpoint."
                           type: "boolean"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -5735,7 +5763,7 @@ spec:
                       description: "The configuration of Toleration trait"
                       properties:
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -5815,7 +5843,7 @@ spec:
                                   description: "Human-readable message indicating details about last transition."
                                   type: "string"
                                 observedGeneration:
-                                  description: "If set, this represents the .metadata.generation that the pod condition was set based upon.\nThis is an alpha field. Enable PodObservedGenerationTracking to be able to use this field."
+                                  description: "If set, this represents the .metadata.generation that the pod condition was set based upon.\nThe PodObservedGenerationTracking feature gate must be enabled to use this field."
                                   format: "int64"
                                   type: "integer"
                                 reason:
@@ -5864,7 +5892,7 @@ spec:
                     type: "object"
                   type: "array"
                 configuration:
-                  description: "Deprecated:\na list of configuration specification"
+                  description: "a list of configuration specification.\n\nDeprecated: use properties instead."
                   items:
                     description: "ConfigurationSpec represents a generic configuration specification."
                     properties:
@@ -5911,7 +5939,7 @@ spec:
                         description: "True if the spec is generated from a Kamelet"
                         type: "boolean"
                       interceptors:
-                        description: "Interceptors are optional identifiers the org.apache.camel.k.RoutesLoader\nuses to pre/post process sources\nDeprecated: no longer in use."
+                        description: "Interceptors are optional identifiers the org.apache.camel.k.RoutesLoader\nuses to pre/post process sources.\n\nDeprecated: no longer in use."
                         items:
                           type: "string"
                         type: "array"
@@ -6031,7 +6059,7 @@ spec:
                       description: "The configuration of Affinity trait"
                       properties:
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -6071,7 +6099,7 @@ spec:
                           description: "Specify a base image. In order to have the application working properly it must be a container image which has a Java JDK\ninstalled and ready to use on path (ie `/usr/bin/java`)."
                           type: "string"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -6081,10 +6109,10 @@ spec:
                           description: "Use the incremental image build option, to reuse existing containers (default `true`)"
                           type: "boolean"
                         limitCPU:
-                          description: "When using `pod` strategy, the maximum amount of CPU required by the pod builder.\nDeprecated: use TasksRequestCPU instead with task name `builder`."
+                          description: "When using `pod` strategy, the maximum amount of CPU required by the pod builder.\n\nDeprecated: use TasksRequestCPU instead with task name `builder`."
                           type: "string"
                         limitMemory:
-                          description: "When using `pod` strategy, the maximum amount of memory required by the pod builder.\nDeprecated: use TasksRequestCPU instead with task name `builder`."
+                          description: "When using `pod` strategy, the maximum amount of memory required by the pod builder.\n\nDeprecated: use TasksRequestCPU instead with task name `builder`."
                           type: "string"
                         mavenProfiles:
                           description: "A list of references pointing to configmaps/secrets that contains a maven profile.\nThis configmap/secret is a resource of the IntegrationKit created, therefore it needs to be present in the namespace where the operator is going to create the IntegrationKit.\nThe content of the maven profile is expected to be a text containing a valid maven profile starting with `<profile>` and ending with `</profile>` that will be integrated as an inline profile in the POM.\nSyntax: [configmap|secret]:name[/key], where name represents the resource name, key optionally represents the resource key to be filtered (default key value = profile.xml)."
@@ -6114,10 +6142,10 @@ spec:
                             type: "string"
                           type: "array"
                         requestCPU:
-                          description: "When using `pod` strategy, the minimum amount of CPU required by the pod builder.\nDeprecated: use TasksRequestCPU instead with task name `builder`."
+                          description: "When using `pod` strategy, the minimum amount of CPU required by the pod builder.\n\nDeprecated: use TasksRequestCPU instead with task name `builder`."
                           type: "string"
                         requestMemory:
-                          description: "When using `pod` strategy, the minimum amount of memory required by the pod builder.\nDeprecated: use TasksRequestCPU instead with task name `builder`."
+                          description: "When using `pod` strategy, the minimum amount of memory required by the pod builder.\n\nDeprecated: use TasksRequestCPU instead with task name `builder`."
                           type: "string"
                         strategy:
                           description: "The strategy to use, either `pod` or `routine` (default `routine`)"
@@ -6154,14 +6182,14 @@ spec:
                             type: "string"
                           type: "array"
                         verbose:
-                          description: "Enable verbose logging on build components that support it (e.g. Kaniko build pod).\nDeprecated no longer in use"
+                          description: "Enable verbose logging on build components that support it (e.g. Kaniko build pod).\n\nDeprecated: no longer in use"
                           type: "boolean"
                       type: "object"
                     camel:
                       description: "The configuration of Camel trait"
                       properties:
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -6204,7 +6232,7 @@ spec:
                             type: "string"
                           type: "array"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -6296,7 +6324,7 @@ spec:
                             - "Replace"
                           type: "string"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -6320,7 +6348,7 @@ spec:
                       description: "The configuration of Dependencies trait"
                       properties:
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -6331,14 +6359,14 @@ spec:
                       description: "The configuration of Deployer trait"
                       properties:
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
                           description: "Deprecated: no longer in use."
                           type: "boolean"
                         kind:
-                          description: "Deprecated: this feature will be removed in future releases.\nAllows to explicitly select the desired deployment kind between `deployment`, `cron-job` or `knative-service`\nwhen creating the resources for running the integration."
+                          description: "Allows to explicitly select the desired deployment kind between `deployment`, `cron-job` or `knative-service`\nwhen creating the resources for running the integration.\n\nDeprecated: this feature will be removed in future releases."
                           enum:
                             - "deployment"
                             - "cron-job"
@@ -6352,7 +6380,7 @@ spec:
                       description: "The configuration of Deployment trait"
                       properties:
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -6385,7 +6413,7 @@ spec:
                       description: "The configuration of Environment trait"
                       properties:
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         containerMeta:
@@ -6404,10 +6432,10 @@ spec:
                           type: "array"
                       type: "object"
                     error-handler:
-                      description: "The configuration of Error Handler trait\nDeprecated: no longer in use."
+                      description: "The configuration of Error Handler trait.\n\nDeprecated: no longer in use."
                       properties:
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -6421,11 +6449,11 @@ spec:
                       description: "The configuration of GC trait"
                       properties:
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         discoveryCache:
-                          description: "Discovery client cache to be used, either `disabled`, `disk` or `memory` (default `memory`).\nDeprecated: no longer in use."
+                          description: "Discovery client cache to be used, either `disabled`, `disk` or `memory` (default `memory`).\n\nDeprecated: no longer in use."
                           enum:
                             - "disabled"
                             - "disk"
@@ -6456,7 +6484,7 @@ spec:
                           description: "The name used to commit the GitOps changes (default `Camel K Operator`)."
                           type: "string"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -6493,7 +6521,7 @@ spec:
                       description: "The configuration of Health trait"
                       properties:
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -6611,7 +6639,7 @@ spec:
                           description: "To automatically add an ingress whenever the integration uses an HTTP endpoint consumer."
                           type: "boolean"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -6624,7 +6652,7 @@ spec:
                           description: "The Ingress class name as defined by the Ingress spec\nSee https://kubernetes.io/docs/concepts/services-networking/ingress/"
                           type: "string"
                         path:
-                          description: "To configure the path exposed by the ingress (default `/`).\nDeprecated: In favor of `paths` - left for backward compatibility."
+                          description: "To configure the path exposed by the ingress (default `/`).\n\nDeprecated: In favor of `paths` - left for backward compatibility."
                           type: "string"
                         pathType:
                           description: "To configure the path type exposed by the ingress.\nOne of `Exact`, `Prefix`, `ImplementationSpecific` (default to `Prefix`)."
@@ -6651,7 +6679,7 @@ spec:
                       description: "The configuration of Init Containers trait"
                       properties:
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -6675,7 +6703,7 @@ spec:
                           description: "Configures a (comma-separated) list of CIDR subnets that should not be intercepted by the Istio proxy (`10.0.0.0/8,172.16.0.0/12,192.168.0.0/16` by default)."
                           type: "string"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -6686,7 +6714,7 @@ spec:
                           type: "boolean"
                       type: "object"
                     jolokia:
-                      description: "The configuration of Jolokia trait\nDeprecated: use jvm.agent instead."
+                      description: "The configuration of Jolokia trait.\n\nDeprecated: use jvm.agent instead."
                       properties:
                         CACert:
                           description: "The PEM encoded CA certification file path, used to verify client certificates,\napplicable when `protocol` is `https` and `use-ssl-client-authentication` is `true`\n(default `/var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt` for OpenShift)."
@@ -6697,7 +6725,7 @@ spec:
                             type: "string"
                           type: "array"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         discoveryEnabled:
@@ -6742,20 +6770,40 @@ spec:
                           items:
                             type: "string"
                           type: "array"
+                        baseTruststore:
+                          description: "Optional base truststore to use as the starting point for adding certificates."
+                          properties:
+                            passwordPath:
+                              description: "Path to a file containing the password for the base truststore."
+                              type: "string"
+                            truststorePath:
+                              description: "Path to the base truststore file."
+                              type: "string"
+                          type: "object"
                         caCert:
-                          description: "Path to a PEM-encoded CA certificate file.\nExample: \"/etc/camel/conf.d/_secrets/my-ca/ca.crt\""
+                          description: "Deprecated: Use CACertificates instead. Path to a PEM-encoded CA certificate file."
                           type: "string"
                         caCertMountPath:
-                          description: "The path where the generated truststore will be mounted.\nDefault: \"/etc/camel/conf.d/_truststore\""
+                          description: "The path where the generated truststore will be mounted (default `/etc/camel/conf.d/_truststore`)."
                           type: "string"
                         caCertPassword:
-                          description: "Required when caCert is set. Path to a file containing the truststore password.\nExample: \"/etc/camel/conf.d/_secrets/truststore-pass/password\""
+                          description: "Deprecated: Use CACertificates instead. Path to a file containing the truststore password."
                           type: "string"
+                        caCertificates:
+                          description: "A list of CA certificates to import into the truststore. Certificates must be mounted via the mount trait."
+                          items:
+                            description: "CACertConfig specifies a CA certificate to import into the truststore."
+                            properties:
+                              certPath:
+                                description: "Path to the PEM-encoded CA certificate file to import."
+                                type: "string"
+                            type: "object"
+                          type: "array"
                         classpath:
                           description: "Additional JVM classpath (use `Linux` classpath separator)"
                           type: "string"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         debug:
@@ -6779,8 +6827,11 @@ spec:
                             type: "string"
                           type: "array"
                         printCommand:
-                          description: "Prints the command used the start the JVM in the container logs (default `true`)\nDeprecated: no longer in use."
+                          description: "Prints the command used the start the JVM in the container logs (default `true`).\n\nDeprecated: no longer in use."
                           type: "boolean"
+                        truststorePasswordPath:
+                          description: "Path to a file containing the password for the generated truststore. Required when using ca-certificates without base-truststore."
+                          type: "string"
                       type: "object"
                     kamelets:
                       description: "The configuration of Kamelets trait"
@@ -6789,7 +6840,7 @@ spec:
                           description: "Automatically inject all referenced Kamelets and their default configuration (enabled by default)"
                           type: "boolean"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -6816,7 +6867,7 @@ spec:
                           description: "Additional metadata to merge into auto-discovered triggers. Keys are trigger types (e.g., \"kafka\"),\nvalues are maps of metadata key-value pairs to merge (e.g., {\"lagThreshold\": \"10\"})."
                           type: "object"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         cooldownPeriod:
@@ -6891,7 +6942,7 @@ spec:
                           description: "Can be used to inject a Knative complete configuration in JSON format."
                           type: "string"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -6959,7 +7010,7 @@ spec:
                             - "hpa.autoscaling.knative.dev"
                           type: "string"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -6991,7 +7042,7 @@ spec:
                           description: "Colorize the log output"
                           type: "boolean"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -7023,7 +7074,7 @@ spec:
                           description: "Enables automatic configuration of the trait."
                           type: "boolean"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -7054,7 +7105,7 @@ spec:
                             type: "string"
                           type: "array"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         emptyDirs:
@@ -7083,7 +7134,7 @@ spec:
                           type: "array"
                       type: "object"
                     openapi:
-                      description: "The configuration of OpenAPI trait\nDeprecated: no longer in use."
+                      description: "The configuration of OpenAPI trait.\n\nDeprecated: no longer in use."
                       properties:
                         configmaps:
                           description: "The configmaps holding the spec of the OpenAPI (compatible with > 3.0 spec only)."
@@ -7091,7 +7142,7 @@ spec:
                             type: "string"
                           type: "array"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -7102,7 +7153,7 @@ spec:
                       description: "The configuration of Owner trait"
                       properties:
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -7123,7 +7174,7 @@ spec:
                       description: "The configuration of PDB trait"
                       properties:
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -7143,7 +7194,7 @@ spec:
                           description: "Deprecated: no longer in use."
                           type: "boolean"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         createDefault:
@@ -7157,10 +7208,10 @@ spec:
                           type: "boolean"
                       type: "object"
                     pod:
-                      description: "The configuration of Pod trait\nDeprecated: use init-containers instead."
+                      description: "The configuration of Pod trait.\n\nDeprecated: use init-containers instead."
                       properties:
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -7171,7 +7222,7 @@ spec:
                       description: "The configuration of Prometheus trait"
                       properties:
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -7193,7 +7244,7 @@ spec:
                           description: "Automatically configures the platform registry secret on the pod if it is of type `kubernetes.io/dockerconfigjson`."
                           type: "boolean"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -7219,7 +7270,7 @@ spec:
                             type: "string"
                           type: "array"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -7232,9 +7283,9 @@ spec:
                           description: "The image containing the tooling required for a native build (by default it will use the one provided in the runtime catalog)"
                           type: "string"
                         packageTypes:
-                          description: "The Quarkus package types, `fast-jar` or `native` (default `fast-jar`).\nIn case both `fast-jar` and `native` are specified, two `IntegrationKit` resources are created,\nwith the native kit having precedence over the `fast-jar` one once ready.\nThe order influences the resolution of the current kit for the integration.\nThe kit corresponding to the first package type will be assigned to the\nintegration in case no existing kit that matches the integration exists.\nDeprecated: use `build-mode` instead."
+                          description: "The Quarkus package types, `fast-jar` or `native` (default `fast-jar`).\nIn case both `fast-jar` and `native` are specified, two `IntegrationKit` resources are created,\nwith the native kit having precedence over the `fast-jar` one once ready.\nThe order influences the resolution of the current kit for the integration.\nThe kit corresponding to the first package type will be assigned to the\nintegration in case no existing kit that matches the integration exists.\n\nDeprecated: use `build-mode` instead."
                           items:
-                            description: "QuarkusPackageType is the type of Quarkus build packaging.\nDeprecated: use `QuarkusMode` instead."
+                            description: "QuarkusPackageType is the type of Quarkus build packaging.\n\nDeprecated: use `QuarkusMode` instead."
                             enum:
                               - "fast-jar"
                               - "native"
@@ -7242,10 +7293,10 @@ spec:
                           type: "array"
                       type: "object"
                     registry:
-                      description: "The configuration of Registry trait (support removed since version 2.5.0).\nDeprecated: use jvm trait or read documentation."
+                      description: "The configuration of Registry trait (support removed since version 2.5.0).\n\nDeprecated: use jvm trait or read documentation."
                       properties:
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -7253,7 +7304,7 @@ spec:
                           type: "boolean"
                       type: "object"
                     route:
-                      description: "The configuration of Route trait\nDeprecated: use ingress instead."
+                      description: "The configuration of Route trait.\n\nDeprecated: use ingress instead."
                       properties:
                         annotations:
                           additionalProperties:
@@ -7261,7 +7312,7 @@ spec:
                           description: "The annotations added to route.\nThis can be used to set route specific annotations\nFor annotations options see https://docs.openshift.com/container-platform/3.11/architecture/networking/routes.html#route-specific-annotations\nCLI usage example: -t \"route.annotations.'haproxy.router.openshift.io/balance'=true\""
                           type: "object"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -7313,7 +7364,7 @@ spec:
                       description: "The configuration of Security Context trait"
                       properties:
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -7345,7 +7396,7 @@ spec:
                           description: "To automatically detect from the code if a Service needs to be created."
                           type: "boolean"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -7357,7 +7408,7 @@ spec:
                           description: "The labels added to the Service object."
                           type: "object"
                         nodePort:
-                          description: "Enable Service to be exposed as NodePort (default `false`).\nDeprecated: Use service type instead."
+                          description: "Enable Service to be exposed as NodePort (default `false`).\n\nDeprecated: Use service type instead."
                           type: "boolean"
                         ports:
                           description: "List of container ports available in the container to expose\n(syntax: <port-name>;<port-number>;<container-port-number>[;<port-protocol]).\nWhen omitted, `port-protocol` (admitted values `TCP`, `UDP` or `SCTP`) is `TCP`.\nDon't use this for the primary http managed port (which is managed by container trait).\nDon't use in Knative based environments."
@@ -7373,10 +7424,10 @@ spec:
                           type: "string"
                       type: "object"
                     service-binding:
-                      description: "The configuration of Service Binding trait\nDeprecated: no longer in use."
+                      description: "The configuration of Service Binding trait.\n\nDeprecated: no longer in use."
                       properties:
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -7405,7 +7456,7 @@ spec:
                           description: "Enables automatic configuration of the trait, including automatic discovery of the telemetry endpoint."
                           type: "boolean"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -7431,7 +7482,7 @@ spec:
                       description: "The configuration of Toleration trait"
                       properties:
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:

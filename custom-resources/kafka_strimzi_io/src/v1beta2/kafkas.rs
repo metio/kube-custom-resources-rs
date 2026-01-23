@@ -552,6 +552,8 @@ pub struct KafkaCruiseControlTemplatePod {
     pub enable_service_links: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
     pub host_aliases: Option<Vec<KafkaCruiseControlTemplatePodHostAliases>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostUsers")]
+    pub host_users: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<KafkaCruiseControlTemplatePodImagePullSecrets>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1527,6 +1529,8 @@ pub struct KafkaEntityOperatorTemplatePod {
     pub enable_service_links: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
     pub host_aliases: Option<Vec<KafkaEntityOperatorTemplatePodHostAliases>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostUsers")]
+    pub host_users: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<KafkaEntityOperatorTemplatePodImagePullSecrets>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3247,6 +3251,8 @@ pub struct KafkaJmxTransTemplatePod {
     pub enable_service_links: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
     pub host_aliases: Option<Vec<KafkaJmxTransTemplatePodHostAliases>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostUsers")]
+    pub host_users: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<KafkaJmxTransTemplatePodImagePullSecrets>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5161,6 +5167,8 @@ pub struct KafkaKafkaTemplatePod {
     pub enable_service_links: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
     pub host_aliases: Option<Vec<KafkaKafkaTemplatePodHostAliases>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostUsers")]
+    pub host_users: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<KafkaKafkaTemplatePodImagePullSecrets>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6156,6 +6164,8 @@ pub struct KafkaKafkaExporterTemplatePod {
     pub enable_service_links: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
     pub host_aliases: Option<Vec<KafkaKafkaExporterTemplatePodHostAliases>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostUsers")]
+    pub host_users: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<KafkaKafkaExporterTemplatePodImagePullSecrets>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7185,6 +7195,8 @@ pub struct KafkaZookeeperTemplatePod {
     pub enable_service_links: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
     pub host_aliases: Option<Vec<KafkaZookeeperTemplatePodHostAliases>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostUsers")]
+    pub host_users: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<KafkaZookeeperTemplatePodImagePullSecrets>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

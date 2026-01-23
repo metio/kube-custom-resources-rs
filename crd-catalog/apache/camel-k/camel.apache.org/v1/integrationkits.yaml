@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.19.0"
+    controller-gen.kubebuilder.io/version: "v0.20.0"
   name: "integrationkits.camel.apache.org"
 spec:
   group: "camel.apache.org"
@@ -65,7 +65,7 @@ spec:
                     type: "string"
                   type: "array"
                 configuration:
-                  description: "Deprecated:\nUse camel trait (camel.properties) to manage properties\nUse mount trait (mount.configs) to manage configs\nUse mount trait (mount.resources) to manage resources\nUse mount trait (mount.volumes) to manage volumes\nconfiguration used by the kit"
+                  description: "Deprecated:\n\nUse camel trait (camel.properties) to manage properties\nUse mount trait (mount.configs) to manage configs\nUse mount trait (mount.resources) to manage resources\nUse mount trait (mount.volumes) to manage volumes\nconfiguration used by the kit"
                   items:
                     description: "ConfigurationSpec represents a generic configuration specification."
                     properties:
@@ -120,7 +120,7 @@ spec:
                         description: "True if the spec is generated from a Kamelet"
                         type: "boolean"
                       interceptors:
-                        description: "Interceptors are optional identifiers the org.apache.camel.k.RoutesLoader\nuses to pre/post process sources\nDeprecated: no longer in use."
+                        description: "Interceptors are optional identifiers the org.apache.camel.k.RoutesLoader\nuses to pre/post process sources.\n\nDeprecated: no longer in use."
                         items:
                           type: "string"
                         type: "array"
@@ -172,7 +172,7 @@ spec:
                           description: "Specify a base image. In order to have the application working properly it must be a container image which has a Java JDK\ninstalled and ready to use on path (ie `/usr/bin/java`)."
                           type: "string"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -182,10 +182,10 @@ spec:
                           description: "Use the incremental image build option, to reuse existing containers (default `true`)"
                           type: "boolean"
                         limitCPU:
-                          description: "When using `pod` strategy, the maximum amount of CPU required by the pod builder.\nDeprecated: use TasksRequestCPU instead with task name `builder`."
+                          description: "When using `pod` strategy, the maximum amount of CPU required by the pod builder.\n\nDeprecated: use TasksRequestCPU instead with task name `builder`."
                           type: "string"
                         limitMemory:
-                          description: "When using `pod` strategy, the maximum amount of memory required by the pod builder.\nDeprecated: use TasksRequestCPU instead with task name `builder`."
+                          description: "When using `pod` strategy, the maximum amount of memory required by the pod builder.\n\nDeprecated: use TasksRequestCPU instead with task name `builder`."
                           type: "string"
                         mavenProfiles:
                           description: "A list of references pointing to configmaps/secrets that contains a maven profile.\nThis configmap/secret is a resource of the IntegrationKit created, therefore it needs to be present in the namespace where the operator is going to create the IntegrationKit.\nThe content of the maven profile is expected to be a text containing a valid maven profile starting with `<profile>` and ending with `</profile>` that will be integrated as an inline profile in the POM.\nSyntax: [configmap|secret]:name[/key], where name represents the resource name, key optionally represents the resource key to be filtered (default key value = profile.xml)."
@@ -215,10 +215,10 @@ spec:
                             type: "string"
                           type: "array"
                         requestCPU:
-                          description: "When using `pod` strategy, the minimum amount of CPU required by the pod builder.\nDeprecated: use TasksRequestCPU instead with task name `builder`."
+                          description: "When using `pod` strategy, the minimum amount of CPU required by the pod builder.\n\nDeprecated: use TasksRequestCPU instead with task name `builder`."
                           type: "string"
                         requestMemory:
-                          description: "When using `pod` strategy, the minimum amount of memory required by the pod builder.\nDeprecated: use TasksRequestCPU instead with task name `builder`."
+                          description: "When using `pod` strategy, the minimum amount of memory required by the pod builder.\n\nDeprecated: use TasksRequestCPU instead with task name `builder`."
                           type: "string"
                         strategy:
                           description: "The strategy to use, either `pod` or `routine` (default `routine`)"
@@ -255,14 +255,14 @@ spec:
                             type: "string"
                           type: "array"
                         verbose:
-                          description: "Enable verbose logging on build components that support it (e.g. Kaniko build pod).\nDeprecated no longer in use"
+                          description: "Enable verbose logging on build components that support it (e.g. Kaniko build pod).\n\nDeprecated: no longer in use"
                           type: "boolean"
                       type: "object"
                     camel:
                       description: "The Camel trait sets up Camel configuration."
                       properties:
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -296,7 +296,7 @@ spec:
                             type: "string"
                           type: "array"
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:
@@ -309,9 +309,9 @@ spec:
                           description: "The image containing the tooling required for a native build (by default it will use the one provided in the runtime catalog)"
                           type: "string"
                         packageTypes:
-                          description: "The Quarkus package types, `fast-jar` or `native` (default `fast-jar`).\nIn case both `fast-jar` and `native` are specified, two `IntegrationKit` resources are created,\nwith the native kit having precedence over the `fast-jar` one once ready.\nThe order influences the resolution of the current kit for the integration.\nThe kit corresponding to the first package type will be assigned to the\nintegration in case no existing kit that matches the integration exists.\nDeprecated: use `build-mode` instead."
+                          description: "The Quarkus package types, `fast-jar` or `native` (default `fast-jar`).\nIn case both `fast-jar` and `native` are specified, two `IntegrationKit` resources are created,\nwith the native kit having precedence over the `fast-jar` one once ready.\nThe order influences the resolution of the current kit for the integration.\nThe kit corresponding to the first package type will be assigned to the\nintegration in case no existing kit that matches the integration exists.\n\nDeprecated: use `build-mode` instead."
                           items:
-                            description: "QuarkusPackageType is the type of Quarkus build packaging.\nDeprecated: use `QuarkusMode` instead."
+                            description: "QuarkusPackageType is the type of Quarkus build packaging.\n\nDeprecated: use `QuarkusMode` instead."
                             enum:
                               - "fast-jar"
                               - "native"
@@ -319,10 +319,10 @@ spec:
                           type: "array"
                       type: "object"
                     registry:
-                      description: "The Registry trait sets up Maven to use the Image registry as a Maven repository (support removed since version 2.5.0).\nDeprecated: use jvm trait or read documentation."
+                      description: "The Registry trait sets up Maven to use the Image registry as a Maven repository (support removed since version 2.5.0).\n\nDeprecated: use jvm trait or read documentation."
                       properties:
                         configuration:
-                          description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                         enabled:

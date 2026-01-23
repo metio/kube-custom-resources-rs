@@ -113,6 +113,7 @@ pub enum Ec2NodeClassAmiFamily {
     Custom,
     Windows2019,
     Windows2022,
+    Windows2025,
 }
 
 /// AMISelectorTerm defines selection logic for an ami used by Karpenter to launch nodes.
@@ -121,7 +122,7 @@ pub enum Ec2NodeClassAmiFamily {
 pub struct Ec2NodeClassAmiSelectorTerms {
     /// Alias specifies which EKS optimized AMI to select.
     /// Each alias consists of a family and an AMI version, specified as "family@version".
-    /// Valid families include: al2, al2023, bottlerocket, windows2019, and windows2022.
+    /// Valid families include: al2, al2023, bottlerocket, windows2019, windows2022, windows2025.
     /// The version can either be pinned to a specific AMI release, with that AMIs version format (ex: "al2023@v20240625" or "bottlerocket@v1.10.0").
     /// The version can also be set to "latest" for any family. Setting the version to latest will result in drift when a new AMI is released. This is **not** recommended for production environments.
     /// Note: The Windows families do **not** support version pinning, and only latest may be used.

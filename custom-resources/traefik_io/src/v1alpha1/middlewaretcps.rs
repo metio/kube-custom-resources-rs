@@ -27,8 +27,9 @@ pub struct MiddlewareTcpSpec {
     pub ip_allow_list: Option<MiddlewareTcpIpAllowList>,
     /// IPWhiteList defines the IPWhiteList middleware configuration.
     /// This middleware accepts/refuses connections based on the client IP.
-    /// Deprecated: please use IPAllowList instead.
     /// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/tcp/middlewares/ipwhitelist/>
+    /// 
+    /// Deprecated: please use IPAllowList instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipWhiteList")]
     pub ip_white_list: Option<MiddlewareTcpIpWhiteList>,
 }
@@ -54,8 +55,9 @@ pub struct MiddlewareTcpIpAllowList {
 
 /// IPWhiteList defines the IPWhiteList middleware configuration.
 /// This middleware accepts/refuses connections based on the client IP.
-/// Deprecated: please use IPAllowList instead.
 /// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/tcp/middlewares/ipwhitelist/>
+/// 
+/// Deprecated: please use IPAllowList instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MiddlewareTcpIpWhiteList {
     /// SourceRange defines the allowed IPs (or ranges of allowed IPs by using CIDR notation).

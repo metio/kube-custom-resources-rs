@@ -25,9 +25,31 @@ pub struct VSphereClusterTemplateSpec {
 /// template defines the desired state of VSphereClusterTemplate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereClusterTemplateTemplate {
+    /// metadata is the standard object's metadata.
+    /// More info: <https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<VSphereClusterTemplateTemplateMetadata>,
     /// spec is the desired state of VSphereClusterTemplateResource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub spec: Option<VSphereClusterTemplateTemplateSpec>,
+}
+
+/// metadata is the standard object's metadata.
+/// More info: <https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VSphereClusterTemplateTemplateMetadata {
+    /// annotations is an unstructured key value map stored with a resource that may be
+    /// set by external tools to store and retrieve arbitrary metadata. They are not
+    /// queryable and should be preserved when modifying objects.
+    /// More info: <http://kubernetes.io/docs/user-guide/annotations>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// labels is a map of string keys and values that can be used to organize and categorize
+    /// (scope and select) objects. May match selectors of replication controllers
+    /// and services.
+    /// More info: <http://kubernetes.io/docs/user-guide/labels>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
 }
 
 /// spec is the desired state of VSphereClusterTemplateResource.

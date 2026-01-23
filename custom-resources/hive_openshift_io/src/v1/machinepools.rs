@@ -338,6 +338,10 @@ pub struct MachinePoolPlatformGcp {
     /// provided in the install-config.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
+    /// Tags defines a set of network tags which will be added to instances in the machineset.
+    /// Not to be confused with UserTags.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tags: Option<Vec<String>>,
     /// InstanceType defines the GCP instance type.
     /// eg. n1-standard-4
     #[serde(rename = "type")]

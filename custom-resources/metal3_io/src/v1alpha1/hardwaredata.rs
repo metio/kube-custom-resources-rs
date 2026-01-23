@@ -31,6 +31,7 @@ pub struct HardwareDataHardware {
     /// System firmware information.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub firmware: Option<HardwareDataHardwareFirmware>,
+    /// Name of the host at the inspection time.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
     /// List of network interfaces for the host.

@@ -25,16 +25,6 @@ pub struct InstanceSetSpec {
     /// Describe the configs to be reconfigured.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configs: Option<Vec<InstanceSetConfigs>>,
-    /// Specifies the desired Ordinals of the default template.
-    /// The Ordinals used to specify the ordinal of the instance (pod) names to be generated under the default template.
-    /// If Ordinals are defined, their number must be equal to or more than the corresponding replicas.
-    /// 
-    /// 
-    /// For example, if Ordinals is {ranges: [{start: 0, end: 1}], discrete: [7]},
-    /// then the instance names generated under the default template would be
-    /// $(cluster.name)-$(component.name)-0、$(cluster.name)-$(component.name)-1 and $(cluster.name)-$(component.name)-7
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultTemplateOrdinals")]
-    pub default_template_ordinals: Option<InstanceSetDefaultTemplateOrdinals>,
     /// Specifies whether to create the default headless service.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableDefaultHeadlessService")]
     pub disable_default_headless_service: Option<bool>,
@@ -122,6 +112,11 @@ pub struct InstanceSetSpec {
     /// The cluster administrator must manually manage the cleanup and removal of these resources when they are no longer needed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "offlineInstances")]
     pub offline_instances: Option<Vec<String>>,
+    /// Specifies the desired Ordinals.
+    /// The Ordinals used to specify the ordinal of the instance (pod) names to be generated under the InstanceSet.
+    /// If Ordinals are defined, their number must be equal to or more than the corresponding replicas.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ordinals: Option<InstanceSetOrdinals>,
     /// Controls the concurrency of pods during initial scale up, when replacing pods on nodes,
     /// or when scaling down. It only used when `PodManagementPolicy` is set to `Parallel`.
     /// The default Concurrency is 100%.
@@ -170,6 +165,10 @@ pub struct InstanceSetSpec {
     /// It must match the labels defined in the pod template.
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors>
     pub selector: InstanceSetSelector,
+    /// Stop the InstanceSet.
+    /// If set, all the computing resources will be released.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stop: Option<bool>,
     /// PodTemplateSpec describes the data a pod should have when created from a template
     pub template: InstanceSetTemplate,
     /// Specifies a list of PersistentVolumeClaim templates that define the storage requirements for each replica.
@@ -183,8 +182,12 @@ pub struct InstanceSetSpec {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstanceSetConfigs {
-    /// The generation of the config.
-    pub generation: i64,
+    /// Represents a checksum or hash of the config content.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configHash")]
+    pub config_hash: Option<String>,
+    /// The generation of the config content.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub generation: Option<i64>,
     /// The name of the config.
     pub name: String,
     /// The parameters to call the reconfigure action.
@@ -624,30 +627,6 @@ pub enum InstanceSetConfigsReconfigureTargetPodSelector {
     All,
     Role,
     Ordinal,
-}
-
-/// Specifies the desired Ordinals of the default template.
-/// The Ordinals used to specify the ordinal of the instance (pod) names to be generated under the default template.
-/// If Ordinals are defined, their number must be equal to or more than the corresponding replicas.
-/// 
-/// 
-/// For example, if Ordinals is {ranges: [{start: 0, end: 1}], discrete: [7]},
-/// then the instance names generated under the default template would be
-/// $(cluster.name)-$(component.name)-0、$(cluster.name)-$(component.name)-1 and $(cluster.name)-$(component.name)-7
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstanceSetDefaultTemplateOrdinals {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub discrete: Option<Vec<i64>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ranges: Option<Vec<InstanceSetDefaultTemplateOrdinalsRanges>>,
-}
-
-/// Range represents a range with a start and an end value. Both start and end are included.
-/// It is used to define a continuous segment.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstanceSetDefaultTemplateOrdinalsRanges {
-    pub end: i32,
-    pub start: i32,
 }
 
 /// Provides fine-grained control over the spec update process of all instances.
@@ -2178,7 +2157,7 @@ pub struct InstanceSetInstancesVolumeClaimTemplatesStatusModifyVolumeStatus {
 /// Defines a set of hooks that customize the behavior of an Instance throughout its lifecycle.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstanceSetLifecycleActions {
-    /// Defines the procedure that update a replica with new configuration.
+    /// Defines the procedure that update replicas with new configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reconfigure: Option<InstanceSetLifecycleActionsReconfigure>,
     /// Defines the procedure for a controlled transition of a role to a new replica.
@@ -2189,7 +2168,7 @@ pub struct InstanceSetLifecycleActions {
     pub template_vars: Option<BTreeMap<String, String>>,
 }
 
-/// Defines the procedure that update a replica with new configuration.
+/// Defines the procedure that update replicas with new configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstanceSetLifecycleActionsReconfigure {
     /// Defines the command to run.
@@ -2605,7 +2584,7 @@ pub struct InstanceSetLifecycleActionsReconfigureRetryPolicy {
     pub retry_interval: Option<i64>,
 }
 
-/// Defines the procedure that update a replica with new configuration.
+/// Defines the procedure that update replicas with new configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum InstanceSetLifecycleActionsReconfigureTargetPodSelector {
     Any,
@@ -3045,6 +3024,25 @@ pub enum InstanceSetMemberUpdateStrategy {
     Serial,
     Parallel,
     BestEffortParallel,
+}
+
+/// Specifies the desired Ordinals.
+/// The Ordinals used to specify the ordinal of the instance (pod) names to be generated under the InstanceSet.
+/// If Ordinals are defined, their number must be equal to or more than the corresponding replicas.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstanceSetOrdinals {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub discrete: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ranges: Option<Vec<InstanceSetOrdinalsRanges>>,
+}
+
+/// Range represents a range with a start and an end value. Both start and end are included.
+/// It is used to define a continuous segment.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstanceSetOrdinalsRanges {
+    pub end: i32,
+    pub start: i32,
 }
 
 /// persistentVolumeClaimRetentionPolicy describes the lifecycle of persistent
@@ -10085,6 +10083,17 @@ pub struct InstanceSetVolumeClaimTemplatesStatusModifyVolumeStatus {
 /// Represents the current information about the state machine. This data may be out of date.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstanceSetStatus {
+    /// AssignedOrdinals is the ordinals assigned to the workload instances.
+    /// 
+    /// 
+    /// This field represents the authoritative set of ordinal identifiers currently in use by the workload.
+    /// It enables support for non-contiguous ordinals, allowing any instance to be terminated without affecting others.
+    /// 
+    /// 
+    /// The controller uses this to maintain identity consistency and to decide which specific ordinal
+    /// to allocate next during scaling up, or which identity is preserved during a restart.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "assignedOrdinals")]
+    pub assigned_ordinals: Option<BTreeMap<String, InstanceSetStatusAssignedOrdinals>>,
     /// Total number of available instances (ready for at least minReadySeconds) targeted by this InstanceSet.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableReplicas")]
     pub available_replicas: Option<i32>,
@@ -10115,9 +10124,6 @@ pub struct InstanceSetStatus {
     /// InstanceSet's generation, which is updated on mutation by the API Server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
-    /// Ordinals is the ordinals used by the instances of the InstanceSet except the template instances.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ordinals: Option<Vec<i64>>,
     /// Represents the number of instances that have already reached the InstanceStatus during the cluster initialization stage.
     /// This value remains constant once it equals InitReplicas.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyInitReplicas")]
@@ -10127,7 +10133,7 @@ pub struct InstanceSetStatus {
     pub ready_replicas: Option<i32>,
     /// replicas is the number of instances created by the InstanceSet controller.
     pub replicas: i32,
-    /// TemplatesStatus represents status of each instance generated by InstanceTemplates
+    /// TemplatesStatus represents status of each instance generated by InstanceTemplates.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "templatesStatus")]
     pub templates_status: Option<Vec<InstanceSetStatusTemplatesStatus>>,
     /// updateRevision, if not empty, indicates the version of the InstanceSet used to generate instances in the sequence
@@ -10142,6 +10148,31 @@ pub struct InstanceSetStatus {
     /// indicated by UpdateRevisions.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatedReplicas")]
     pub updated_replicas: Option<i32>,
+}
+
+/// AssignedOrdinals is the ordinals assigned to the workload instances.
+/// 
+/// 
+/// This field represents the authoritative set of ordinal identifiers currently in use by the workload.
+/// It enables support for non-contiguous ordinals, allowing any instance to be terminated without affecting others.
+/// 
+/// 
+/// The controller uses this to maintain identity consistency and to decide which specific ordinal
+/// to allocate next during scaling up, or which identity is preserved during a restart.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstanceSetStatusAssignedOrdinals {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub discrete: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ranges: Option<Vec<InstanceSetStatusAssignedOrdinalsRanges>>,
+}
+
+/// Range represents a range with a start and an end value. Both start and end are included.
+/// It is used to define a continuous segment.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstanceSetStatusAssignedOrdinalsRanges {
+    pub end: i32,
+    pub start: i32,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -10162,8 +10193,12 @@ pub struct InstanceSetStatusInstanceStatus {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstanceSetStatusInstanceStatusConfigs {
+    /// Represents a checksum or hash of the config content.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configHash")]
+    pub config_hash: Option<String>,
     /// The generation of the config.
-    pub generation: i64,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub generation: Option<i64>,
     /// The name of the config.
     pub name: String,
 }
@@ -10180,9 +10215,6 @@ pub struct InstanceSetStatusTemplatesStatus {
     pub current_replicas: Option<i32>,
     /// Name, the name of the InstanceTemplate.
     pub name: String,
-    /// Ordinals is the ordinals used by the instances of the InstanceTemplate.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ordinals: Option<Vec<i64>>,
     /// ReadyReplicas is the number of Pods that have a Ready Condition.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyReplicas")]
     pub ready_replicas: Option<i32>,

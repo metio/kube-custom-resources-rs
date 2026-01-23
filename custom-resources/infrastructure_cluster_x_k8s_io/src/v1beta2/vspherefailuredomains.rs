@@ -26,11 +26,6 @@ pub struct VSphereFailureDomainSpec {
 /// region defines the name and type of a region
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct VSphereFailureDomainRegion {
-    /// autoConfigure tags the Type which is specified in the Topology
-    /// 
-    /// Deprecated: This field is going to be removed in a future release.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoConfigure")]
-    pub auto_configure: Option<bool>,
     /// name is the name of the tag that represents this failure domain
     pub name: String,
     /// tagCategory is the category used for the tag
@@ -128,18 +123,18 @@ pub struct VSphereFailureDomainTopologyNetworkConfigurations {
     pub search_domains: Option<Vec<String>>,
 }
 
-/// TypedLocalObjectReference contains enough information to let you locate the
-/// typed referenced object inside the same namespace.
+/// IPPoolReference is a reference to an IPPool.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereFailureDomainTopologyNetworkConfigurationsAddressesFromPools {
-    /// APIGroup is the group for the resource being referenced.
-    /// If APIGroup is not specified, the specified Kind must be in the core API group.
-    /// For any other third-party types, APIGroup is required.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
-    pub api_group: Option<String>,
-    /// Kind is the type of resource being referenced
+    /// apiGroup of the IPPool.
+    /// apiGroup must be fully qualified domain name.
+    #[serde(rename = "apiGroup")]
+    pub api_group: String,
+    /// kind of the IPPool.
+    /// kind must consist of alphanumeric characters or '-', start with an alphabetic character, and end with an alphanumeric character.
     pub kind: String,
-    /// Name is the name of resource being referenced
+    /// name of the IPPool.
+    /// name must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character.
     pub name: String,
 }
 
@@ -242,11 +237,6 @@ pub struct VSphereFailureDomainTopologyNetworkConfigurationsDhcp6Overrides {
 /// zone defines the name and type of a zone
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct VSphereFailureDomainZone {
-    /// autoConfigure tags the Type which is specified in the Topology
-    /// 
-    /// Deprecated: This field is going to be removed in a future release.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoConfigure")]
-    pub auto_configure: Option<bool>,
     /// name is the name of the tag that represents this failure domain
     pub name: String,
     /// tagCategory is the category used for the tag

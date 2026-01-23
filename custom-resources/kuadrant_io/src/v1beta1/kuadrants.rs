@@ -116,7 +116,10 @@ pub struct KuadrantObservabilityDataPlaneDefaultLevels {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KuadrantObservabilityTracing {
     /// DefaultEndpoint is the default URL of the tracing collector backend where spans should be sent.
-    /// Can be overridden per-gateway in future versions.
+    /// This endpoint is used by Auth (Authorino), RateLimiting (Limitador) and WASM services for exporting trace data.
+    /// If tracing endpoints have been configured directly in Authorino or Limitador CRs, those take precedence
+    /// over this default value.
+    /// Note: Per-gateway overrides are not currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultEndpoint")]
     pub default_endpoint: Option<String>,
     /// Insecure controls whether to skip TLS certificate verification.

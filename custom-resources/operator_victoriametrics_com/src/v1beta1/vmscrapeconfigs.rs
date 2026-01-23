@@ -1624,7 +1624,7 @@ pub struct VmScrapeConfigHttpSdConfigsTlsConfigKeySecret {
 
 /// KubernetesSDConfig allows retrieving scrape targets from Kubernetes' REST API.
 /// See [here](<https://docs.victoriametrics.com/victoriametrics/sd_configs/#kubernetes_sd_configs)>
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct VmScrapeConfigKubernetesSdConfigs {
     /// The API server address consisting of a hostname or IP address followed
     /// by an optional port number.
@@ -1659,7 +1659,7 @@ pub struct VmScrapeConfigKubernetesSdConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy_client_config: Option<VmScrapeConfigKubernetesSdConfigsProxyClientConfig>,
     /// Role of the Kubernetes entities that should be discovered.
-    pub role: String,
+    pub role: VmScrapeConfigKubernetesSdConfigsRole,
     /// Selector to select objects.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selectors: Option<Vec<VmScrapeConfigKubernetesSdConfigsSelectors>>,
@@ -1956,14 +1956,49 @@ pub struct VmScrapeConfigKubernetesSdConfigsProxyClientConfigBearerToken {
     pub optional: Option<bool>,
 }
 
+/// KubernetesSDConfig allows retrieving scrape targets from Kubernetes' REST API.
+/// See [here](<https://docs.victoriametrics.com/victoriametrics/sd_configs/#kubernetes_sd_configs)>
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum VmScrapeConfigKubernetesSdConfigsRole {
+    #[serde(rename = "node")]
+    Node,
+    #[serde(rename = "pod")]
+    Pod,
+    #[serde(rename = "service")]
+    Service,
+    #[serde(rename = "endpoints")]
+    Endpoints,
+    #[serde(rename = "endpointslice")]
+    Endpointslice,
+    #[serde(rename = "ingress")]
+    Ingress,
+}
+
 /// K8SSelectorConfig is Kubernetes Selector Config
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct VmScrapeConfigKubernetesSdConfigsSelectors {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub field: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub label: Option<String>,
-    pub role: String,
+    pub role: VmScrapeConfigKubernetesSdConfigsSelectorsRole,
+}
+
+/// K8SSelectorConfig is Kubernetes Selector Config
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum VmScrapeConfigKubernetesSdConfigsSelectorsRole {
+    #[serde(rename = "node")]
+    Node,
+    #[serde(rename = "pod")]
+    Pod,
+    #[serde(rename = "service")]
+    Service,
+    #[serde(rename = "endpoints")]
+    Endpoints,
+    #[serde(rename = "endpointslice")]
+    Endpointslice,
+    #[serde(rename = "ingress")]
+    Ingress,
 }
 
 /// TLS configuration to use on every scrape request

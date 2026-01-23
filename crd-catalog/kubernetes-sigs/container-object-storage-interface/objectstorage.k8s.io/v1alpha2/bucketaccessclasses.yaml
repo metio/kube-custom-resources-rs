@@ -36,33 +36,31 @@ spec:
                     - "Key"
                     - "ServiceAccount"
                   type: "string"
+                disallowedBucketAccessModes:
+                  description: "disallowedBucketAccessModes is a list of disallowed Read/Write access modes. A BucketAccess\nusing this class will not be allowed to request access to a BucketClaim with any access mode\nlisted here.\nThis is particularly useful for administrators to restrict access to a statically-provisioned\nbucket that is managed outside the BucketAccess Namespace or Kubernetes cluster.\nPossible values: 'ReadWrite', 'ReadOnly', 'WriteOnly'."
+                  items:
+                    description: "BucketAccessMode describes the Read/Write mode an access should have for a bucket."
+                    enum:
+                      - "ReadWrite"
+                      - "ReadOnly"
+                      - "WriteOnly"
+                    type: "string"
+                  maxItems: 3
+                  minItems: 1
+                  type: "array"
+                  x-kubernetes-list-type: "set"
                 driverName:
                   description: "driverName is the name of the driver that fulfills requests for this BucketAccessClass.\nSee driver documentation to determine the correct value to set.\nMust be 63 characters or less, beginning and ending with an alphanumeric character\n([a-z0-9A-Z]) with dashes (-), dots (.), and alphanumerics between."
                   maxLength: 63
                   minLength: 1
                   pattern: "^[a-zA-Z0-9]([a-zA-Z0-9\\-\\.]{0,61}[a-zA-Z0-9])?$"
                   type: "string"
-                featureOptions:
-                  description: "featureOptions can be used to adjust various COSI access provisioning behaviors.\nIf specified, at least one option must be set."
-                  minProperties: 1
-                  properties:
-                    disallowMultiBucketAccess:
-                      description: "disallowMultiBucketAccess disables the ability for a BucketAccess to reference multiple\nBucketClaims when set."
-                      type: "boolean"
-                    disallowedBucketAccessModes:
-                      description: "disallowedBucketAccessModes is a list of disallowed Read/Write access modes. A BucketAccess\nusing this class will not be allowed to request access to a BucketClaim with any access mode\nlisted here.\nThis is particularly useful for administrators to restrict access to a statically-provisioned\nbucket that is managed outside the BucketAccess Namespace or Kubernetes cluster.\nPossible values: 'ReadWrite', 'ReadOnly', 'WriteOnly'."
-                      items:
-                        description: "BucketAccessMode describes the Read/Write mode an access should have for a bucket."
-                        enum:
-                          - "ReadWrite"
-                          - "ReadOnly"
-                          - "WriteOnly"
-                        type: "string"
-                      maxItems: 3
-                      minItems: 1
-                      type: "array"
-                      x-kubernetes-list-type: "set"
-                  type: "object"
+                multiBucketAccess:
+                  description: "multiBucketAccess specifies whether a BucketAccess using this class can reference multiple\nBucketClaims. When omitted, this means no opinion, and COSI will choose a reasonable default,\nwhich is subject to change over time.\nPossible values:\n - SingleBucket: (default) A BucketAccess may reference only a single BucketClaim.\n - MultipleBuckets: A BucketAccess may reference multiple (1 or more) BucketClaims."
+                  enum:
+                    - "SingleBucket"
+                    - "MultipleBuckets"
+                  type: "string"
                 parameters:
                   additionalProperties:
                     type: "string"

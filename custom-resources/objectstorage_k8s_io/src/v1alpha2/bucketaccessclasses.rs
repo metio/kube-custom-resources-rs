@@ -25,16 +25,28 @@ pub struct BucketAccessClassSpec {
     ///    ServiceAccount authenticate to the backend object store automatically.
     #[serde(rename = "authenticationType")]
     pub authentication_type: BucketAccessClassAuthenticationType,
+    /// disallowedBucketAccessModes is a list of disallowed Read/Write access modes. A BucketAccess
+    /// using this class will not be allowed to request access to a BucketClaim with any access mode
+    /// listed here.
+    /// This is particularly useful for administrators to restrict access to a statically-provisioned
+    /// bucket that is managed outside the BucketAccess Namespace or Kubernetes cluster.
+    /// Possible values: 'ReadWrite', 'ReadOnly', 'WriteOnly'.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disallowedBucketAccessModes")]
+    pub disallowed_bucket_access_modes: Option<Vec<String>>,
     /// driverName is the name of the driver that fulfills requests for this BucketAccessClass.
     /// See driver documentation to determine the correct value to set.
     /// Must be 63 characters or less, beginning and ending with an alphanumeric character
     /// ([a-z0-9A-Z]) with dashes (-), dots (.), and alphanumerics between.
     #[serde(rename = "driverName")]
     pub driver_name: String,
-    /// featureOptions can be used to adjust various COSI access provisioning behaviors.
-    /// If specified, at least one option must be set.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "featureOptions")]
-    pub feature_options: Option<BucketAccessClassFeatureOptions>,
+    /// multiBucketAccess specifies whether a BucketAccess using this class can reference multiple
+    /// BucketClaims. When omitted, this means no opinion, and COSI will choose a reasonable default,
+    /// which is subject to change over time.
+    /// Possible values:
+    ///  - SingleBucket: (default) A BucketAccess may reference only a single BucketClaim.
+    ///  - MultipleBuckets: A BucketAccess may reference multiple (1 or more) BucketClaims.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "multiBucketAccess")]
+    pub multi_bucket_access: Option<BucketAccessClassMultiBucketAccess>,
     /// parameters is an opaque map of driver-specific configuration items passed to the driver that
     /// fulfills requests for this BucketAccessClass.
     /// See driver documentation to determine supported parameters and their effects.
@@ -50,21 +62,10 @@ pub enum BucketAccessClassAuthenticationType {
     ServiceAccount,
 }
 
-/// featureOptions can be used to adjust various COSI access provisioning behaviors.
-/// If specified, at least one option must be set.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct BucketAccessClassFeatureOptions {
-    /// disallowMultiBucketAccess disables the ability for a BucketAccess to reference multiple
-    /// BucketClaims when set.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disallowMultiBucketAccess")]
-    pub disallow_multi_bucket_access: Option<bool>,
-    /// disallowedBucketAccessModes is a list of disallowed Read/Write access modes. A BucketAccess
-    /// using this class will not be allowed to request access to a BucketClaim with any access mode
-    /// listed here.
-    /// This is particularly useful for administrators to restrict access to a statically-provisioned
-    /// bucket that is managed outside the BucketAccess Namespace or Kubernetes cluster.
-    /// Possible values: 'ReadWrite', 'ReadOnly', 'WriteOnly'.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disallowedBucketAccessModes")]
-    pub disallowed_bucket_access_modes: Option<Vec<String>>,
+/// spec defines the desired state of BucketAccessClass
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum BucketAccessClassMultiBucketAccess {
+    SingleBucket,
+    MultipleBuckets,
 }
 

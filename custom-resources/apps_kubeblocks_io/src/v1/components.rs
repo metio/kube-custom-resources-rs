@@ -247,18 +247,32 @@ pub struct ComponentSpec {
 /// ClusterComponentConfig represents a configuration for a component.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentConfigs {
+    /// Represents a checksum or hash of the configuration content.
+    /// 
+    /// 
+    /// The controller uses this value to detect changes and determine if a reconfiguration or restart
+    /// is necessary to apply updates.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configHash")]
+    pub config_hash: Option<String>,
     /// ConfigMap source for the config.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<ComponentConfigsConfigMap>,
-    /// ExternalManaged indicates whether the configuration is managed by an external system.
-    /// When set to true, the controller will use the user-provided template and reconfigure action,
-    /// ignoring the default template and update behavior.
+    /// ExternalManaged specifies whether the configuration management is delegated to an external system
+    /// or manual user control.
+    /// 
+    /// 
+    /// When set to true, the controller will exclusively utilize the user-provided configuration source
+    /// and the 'reconfigure' action defined in this config, bypassing the default templates and
+    /// update behaviors specified in the ComponentDefinition.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalManaged")]
     pub external_managed: Option<bool>,
     /// The name of the config.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The custom reconfigure action to reload the service configuration whenever changes to this config are detected.
+    /// The custom reconfigure action to reload the updated configuration.
+    /// 
+    /// 
+    /// When @restartOnConfigChange is set to true, this action will be ignored.
     /// 
     /// 
     /// The container executing this action has access to following variables:
@@ -267,11 +281,11 @@ pub struct ComponentConfigs {
     /// - KB_CONFIG_FILES_CREATED: file1,file2...
     /// - KB_CONFIG_FILES_REMOVED: file1,file2...
     /// - KB_CONFIG_FILES_UPDATED: file1:checksum1,file2:checksum2...
-    /// 
-    /// 
-    /// Note: This field is immutable once it has been set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reconfigure: Option<ComponentConfigsReconfigure>,
+    /// Specifies whether to restart the component to reload the updated configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartOnConfigChange")]
+    pub restart_on_config_change: Option<bool>,
     /// Variables are key-value pairs for dynamic configuration values that can be provided by the user.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub variables: Option<BTreeMap<String, String>>,
@@ -328,7 +342,10 @@ pub struct ComponentConfigsConfigMapItems {
     pub path: String,
 }
 
-/// The custom reconfigure action to reload the service configuration whenever changes to this config are detected.
+/// The custom reconfigure action to reload the updated configuration.
+/// 
+/// 
+/// When @restartOnConfigChange is set to true, this action will be ignored.
 /// 
 /// 
 /// The container executing this action has access to following variables:
@@ -337,9 +354,6 @@ pub struct ComponentConfigsConfigMapItems {
 /// - KB_CONFIG_FILES_CREATED: file1,file2...
 /// - KB_CONFIG_FILES_REMOVED: file1,file2...
 /// - KB_CONFIG_FILES_UPDATED: file1:checksum1,file2:checksum2...
-/// 
-/// 
-/// Note: This field is immutable once it has been set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentConfigsReconfigure {
     /// Defines the command to run.
@@ -755,7 +769,10 @@ pub struct ComponentConfigsReconfigureRetryPolicy {
     pub retry_interval: Option<i64>,
 }
 
-/// The custom reconfigure action to reload the service configuration whenever changes to this config are detected.
+/// The custom reconfigure action to reload the updated configuration.
+/// 
+/// 
+/// When @restartOnConfigChange is set to true, this action will be ignored.
 /// 
 /// 
 /// The container executing this action has access to following variables:
@@ -764,9 +781,6 @@ pub struct ComponentConfigsReconfigureRetryPolicy {
 /// - KB_CONFIG_FILES_CREATED: file1,file2...
 /// - KB_CONFIG_FILES_REMOVED: file1,file2...
 /// - KB_CONFIG_FILES_UPDATED: file1:checksum1,file2:checksum2...
-/// 
-/// 
-/// Note: This field is immutable once it has been set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ComponentConfigsReconfigureTargetPodSelector {
     Any,

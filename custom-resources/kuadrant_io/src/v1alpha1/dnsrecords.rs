@@ -127,6 +127,9 @@ pub struct DnsRecordProviderRef {
 /// DNSRecordStatus defines the observed state of DNSRecord
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DnsRecordStatus {
+    /// ActiveGroups displays the last read list of active groups
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeGroups")]
+    pub active_groups: Option<String>,
     /// conditions are any conditions associated with the record in the dns provider.
     /// 
     /// If publishing the record fails, the "Failed" condition will be set with a

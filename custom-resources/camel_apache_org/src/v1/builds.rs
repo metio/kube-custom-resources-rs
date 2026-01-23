@@ -22,14 +22,17 @@ use self::prelude::*;
 #[kube(derive="PartialEq")]
 pub struct BuildSpec {
     /// The configuration that should be used to perform the Build.
+    /// 
     /// Deprecated: no longer in use in Camel K 2 - maintained for backward compatibility
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BuildConfiguration>,
-    /// the maximum amount of parallel running builds started by this operator instance
+    /// the maximum amount of parallel running builds started by this operator instance.
+    /// 
     /// Deprecated: no longer in use in Camel K 2 - maintained for backward compatibility
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRunningBuilds")]
     pub max_running_builds: Option<i32>,
     /// The namespace where to run the builder Pod (must be the same of the operator in charge of this Build reconciliation).
+    /// 
     /// Deprecated: no longer in use in Camel K 2 - maintained for backward compatibility
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatorNamespace")]
     pub operator_namespace: Option<String>,
@@ -43,12 +46,14 @@ pub struct BuildSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
     /// The container image to be used to run the build.
+    /// 
     /// Deprecated: no longer in use in Camel K 2 - maintained for backward compatibility
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "toolImage")]
     pub tool_image: Option<String>,
 }
 
 /// The configuration that should be used to perform the Build.
+/// 
 /// Deprecated: no longer in use in Camel K 2 - maintained for backward compatibility
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildConfiguration {
@@ -88,6 +93,7 @@ pub struct BuildConfiguration {
 }
 
 /// The configuration that should be used to perform the Build.
+/// 
 /// Deprecated: no longer in use in Camel K 2 - maintained for backward compatibility
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum BuildConfigurationOrderStrategy {
@@ -100,6 +106,7 @@ pub enum BuildConfigurationOrderStrategy {
 }
 
 /// The configuration that should be used to perform the Build.
+/// 
 /// Deprecated: no longer in use in Camel K 2 - maintained for backward compatibility
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum BuildConfigurationStrategy {
@@ -112,7 +119,8 @@ pub enum BuildConfigurationStrategy {
 /// Task represents the abstract task. Only one of the task should be configured to represent the specific task chosen.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasks {
-    /// a BuildahTask, for Buildah strategy
+    /// a BuildahTask, for Buildah strategy.
+    /// 
     /// Deprecated: use jib or a custom publishing strategy instead
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub buildah: Option<BuildTasksBuildah>,
@@ -125,7 +133,8 @@ pub struct BuildTasks {
     /// a JibTask, for Jib strategy
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub jib: Option<BuildTasksJib>,
-    /// a KanikoTask, for Kaniko strategy
+    /// a KanikoTask, for Kaniko strategy.
+    /// 
     /// Deprecated: use jib or a custom publishing strategy instead
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kaniko: Option<BuildTasksKaniko>,
@@ -133,17 +142,20 @@ pub struct BuildTasks {
     /// a PackageTask, used to package the project
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub package: Option<BuildTasksPackage>,
-    /// a S2iTask, for S2I strategy
+    /// a S2iTask, for S2I strategy.
+    /// 
     /// Deprecated: use jib or a custom publishing strategy instead
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub s2i: Option<BuildTasksS2i>,
-    /// a SpectrumTask, for Spectrum strategy
+    /// a SpectrumTask, for Spectrum strategy.
+    /// 
     /// Deprecated: use jib or a custom publishing strategy instead
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub spectrum: Option<BuildTasksSpectrum>,
 }
 
-/// a BuildahTask, for Buildah strategy
+/// a BuildahTask, for Buildah strategy.
+/// 
 /// Deprecated: use jib or a custom publishing strategy instead
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksBuildah {
@@ -766,7 +778,8 @@ pub struct BuildTasksBuilderSources {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "from-kamelet")]
     pub from_kamelet: Option<bool>,
     /// Interceptors are optional identifiers the org.apache.camel.k.RoutesLoader
-    /// uses to pre/post process sources
+    /// uses to pre/post process sources.
+    /// 
     /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interceptors: Option<Vec<String>>,
@@ -797,7 +810,8 @@ pub struct BuildTasksBuilderSources {
 /// User customizable task execution. These are executed after the build and before the package task.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksCustom {
-    /// the command to execute
+    /// the command to execute.
+    /// 
     /// Deprecated: use ContainerCommands
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<String>,
@@ -980,7 +994,8 @@ pub struct BuildTasksJibRegistry {
     pub secret: Option<String>,
 }
 
-/// a KanikoTask, for Kaniko strategy
+/// a KanikoTask, for Kaniko strategy.
+/// 
 /// Deprecated: use jib or a custom publishing strategy instead
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksKaniko {
@@ -1615,7 +1630,8 @@ pub struct BuildTasksPackageSources {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "from-kamelet")]
     pub from_kamelet: Option<bool>,
     /// Interceptors are optional identifiers the org.apache.camel.k.RoutesLoader
-    /// uses to pre/post process sources
+    /// uses to pre/post process sources.
+    /// 
     /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interceptors: Option<Vec<String>>,
@@ -1643,7 +1659,8 @@ pub struct BuildTasksPackageSources {
     pub r#type: Option<String>,
 }
 
-/// a S2iTask, for S2I strategy
+/// a S2iTask, for S2I strategy.
+/// 
 /// Deprecated: use jib or a custom publishing strategy instead
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksS2i {
@@ -1748,7 +1765,8 @@ pub struct BuildTasksS2iRegistry {
     pub secret: Option<String>,
 }
 
-/// a SpectrumTask, for Spectrum strategy
+/// a SpectrumTask, for Spectrum strategy.
+/// 
 /// Deprecated: use jib or a custom publishing strategy instead
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildTasksSpectrum {

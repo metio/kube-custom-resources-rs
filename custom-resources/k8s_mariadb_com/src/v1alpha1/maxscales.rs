@@ -746,6 +746,9 @@ pub struct MaxScaleGuiKubernetesService {
     /// ExternalTrafficPolicy Service field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTrafficPolicy")]
     pub external_traffic_policy: Option<String>,
+    /// LoadBalancerClass Service field.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerClass")]
+    pub load_balancer_class: Option<String>,
     /// LoadBalancerIP Service field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
     pub load_balancer_ip: Option<String>,
@@ -818,6 +821,9 @@ pub struct MaxScaleKubernetesService {
     /// ExternalTrafficPolicy Service field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTrafficPolicy")]
     pub external_traffic_policy: Option<String>,
+    /// LoadBalancerClass Service field.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerClass")]
+    pub load_balancer_class: Option<String>,
     /// LoadBalancerIP Service field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
     pub load_balancer_ip: Option<String>,

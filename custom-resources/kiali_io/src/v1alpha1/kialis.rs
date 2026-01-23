@@ -578,6 +578,9 @@ pub struct KialiDeployment {
     /// The Kiali service type. Kubernetes determines what values are valid. Common values are 'NodePort', 'ClusterIP', and 'LoadBalancer'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service_type: Option<String>,
+    /// TLS policy configuration. When source is 'auto' on OpenShift, the APIServer TLSSecurityProfile is used. Otherwise, the explicit config values are enforced.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tls_config: Option<KialiDeploymentTlsConfig>,
     /// A list of tolerations which declare which node taints Kiali can tolerate. See the Kubernetes documentation on Taints and Tolerations for more details.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<BTreeMap<String, serde_json::Value>>>,
@@ -951,6 +954,32 @@ pub struct KialiDeploymentProbesStartup {
     pub initial_delay_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub period_seconds: Option<i64>,
+}
+
+/// TLS policy configuration. When source is 'auto' on OpenShift, the APIServer TLSSecurityProfile is used. Otherwise, the explicit config values are enforced.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KialiDeploymentTlsConfig {
+    /// Explicit TLS cipher suites (OpenSSL names). Ignored for TLS 1.3.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cipher_suites: Option<Vec<String>>,
+    /// Maximum TLS version (e.g., TLSv1.3, TLSv1.2).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub max_version: Option<String>,
+    /// Minimum TLS version (e.g., TLSv1.3, TLSv1.2).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub min_version: Option<String>,
+    /// TLS policy source: 'auto' to use OpenShift TLSSecurityProfile; 'config' to use explicit settings.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub source: Option<KialiDeploymentTlsConfigSource>,
+}
+
+/// TLS policy configuration. When source is 'auto' on OpenShift, the APIServer TLSSecurityProfile is used. Otherwise, the explicit config values are enforced.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KialiDeploymentTlsConfigSource {
+    #[serde(rename = "auto")]
+    Auto,
+    #[serde(rename = "config")]
+    Config,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

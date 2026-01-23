@@ -94,6 +94,9 @@ pub struct KeycloakSpec {
     /// Configuration for startup probe, by default it is 1 for periodSeconds and 600 for failureThreshold
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
     pub startup_probe: Option<KeycloakStartupProbe>,
+    /// In this section you can configure general shared OpenTelemetry settings for Keycloak.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub telemetry: Option<KeycloakTelemetry>,
     /// In this section you can configure OpenTelemetry Tracing for Keycloak.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tracing: Option<KeycloakTracing>,
@@ -1387,6 +1390,23 @@ pub struct KeycloakStartupProbe {
     pub period_seconds: Option<i64>,
 }
 
+/// In this section you can configure general shared OpenTelemetry settings for Keycloak.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakTelemetry {
+    /// OpenTelemetry endpoint to connect to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub endpoint: Option<String>,
+    /// OpenTelemetry protocol used for the telemetry data (default 'grpc'). For more information, check the OpenTelemetry guide.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub protocol: Option<String>,
+    /// OpenTelemetry resource attributes present in the exported telemetry data to characterize the telemetry producer.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceAttributes")]
+    pub resource_attributes: Option<BTreeMap<String, String>>,
+    /// OpenTelemetry service name. Takes precedence over 'service.name' defined in the 'resourceAttributes' map.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
+    pub service_name: Option<String>,
+}
+
 /// In this section you can configure OpenTelemetry Tracing for Keycloak.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KeycloakTracing {
@@ -1402,7 +1422,7 @@ pub struct KeycloakTracing {
     /// OpenTelemetry protocol used for the telemetry data (default 'grpc'). For more information, check the Tracing guide.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
-    /// OpenTelemetry resource attributes present in the exported trace to characterize the telemetry producer.
+    /// DEPRECATED - use the 'telemetry.resourceAttributes' instead. OpenTelemetry resource attributes present in the exported trace to characterize the telemetry producer.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceAttributes")]
     pub resource_attributes: Option<BTreeMap<String, String>>,
     /// OpenTelemetry sampler ratio. Probability that a span will be sampled. Expected double value in interval [0,1].
@@ -1411,7 +1431,7 @@ pub struct KeycloakTracing {
     /// OpenTelemetry sampler to use for tracing (default 'traceidratio'). For more information, check the Tracing guide.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "samplerType")]
     pub sampler_type: Option<String>,
-    /// OpenTelemetry service name. Takes precedence over 'service.name' defined in the 'resourceAttributes' map.
+    /// DEPRECATED - use the 'telemetry.serviceName' instead. OpenTelemetry service name. Takes precedence over 'service.name' defined in the 'resourceAttributes' map.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
     pub service_name: Option<String>,
 }

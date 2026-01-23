@@ -42,8 +42,14 @@ pub struct FenceAgentsRemediationSpec {
     /// RetryInterval is the interval between each fencing agent execution
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retryinterval: Option<String>,
-    /// SharedSecretName is the name of the Secret which will contain params needed for FAR in order to remediate any node.
-    /// Using this Secret is optional.
+    /// SharedSecretName is the name of the Secret which contains shared fence agent parameters.
+    /// 
+    /// Heads up: in an earlier version this had a default value of "fence-agents-credentials-shared".
+    /// We removed that default to be able to differentiate during CR validation between using a Secret or not.
+    /// 
+    /// As a temporary workaround this field will be set with the old default value in case a Secret with the
+    /// old default of "fence-agents-credentials-shared" is found. Also, in case the field contains the old default
+    /// value, but the Secret does not exist, the value will be deleted. This workaround will be removed in a future version.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sharedSecretName")]
     pub shared_secret_name: Option<String>,
     /// SharedParameters are parameters common to all nodes

@@ -189,6 +189,9 @@ spec:
             status:
               description: "DNSRecordStatus defines the observed state of DNSRecord"
               properties:
+                activeGroups:
+                  description: "ActiveGroups displays the last read list of active groups"
+                  type: "string"
                 conditions:
                   description: "conditions are any conditions associated with the record in the dns provider.\n\nIf publishing the record fails, the \"Failed\" condition will be set with a\nreason and message describing the cause of the failure."
                   items:

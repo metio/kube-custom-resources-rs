@@ -262,6 +262,12 @@ pub struct ClusterFluentBitConfigService {
     /// backward compatible
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "parsersFiles")]
     pub parsers_files: Option<Vec<String>>,
+    /// Set a base for exponential backoff in the scheduler. Supported in Fluent Bit >= 1.8.7
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerBase")]
+    pub scheduler_base: Option<i32>,
+    /// Set a maximum retry time in seconds for the scheduler. Supported in Fluent Bit >= 1.8.7
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerCap")]
+    pub scheduler_cap: Option<i32>,
     /// Configure a global environment for the storage layer in Service. It is recommended to configure the volume and volumeMount separately for this storage. The hostPath type should be used for that Volume in Fluentbit daemon set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage: Option<ClusterFluentBitConfigServiceStorage>,

@@ -122,6 +122,15 @@ pub struct TeleportRoleAllow {
     /// KubeUsers is an optional kubernetes users to impersonate
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kubernetes_users: Option<Vec<String>>,
+    /// LinuxDesktopLabels are used in the RBAC system to allow/deny access to Linux desktops.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub linux_desktop_labels: Option<BTreeMap<String, serde_json::Value>>,
+    /// LinuxDesktopLabelsExpression is a predicate expression used to allow/deny access to Linux desktops.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub linux_desktop_labels_expression: Option<String>,
+    /// LinuxDesktopLogins is a list of desktop login names allowed/denied for Linux desktops.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub linux_desktop_logins: Option<Vec<String>>,
     /// Logins is a list of *nix system logins.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logins: Option<Vec<String>>,
@@ -498,6 +507,15 @@ pub struct TeleportRoleDeny {
     /// KubeUsers is an optional kubernetes users to impersonate
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kubernetes_users: Option<Vec<String>>,
+    /// LinuxDesktopLabels are used in the RBAC system to allow/deny access to Linux desktops.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub linux_desktop_labels: Option<BTreeMap<String, serde_json::Value>>,
+    /// LinuxDesktopLabelsExpression is a predicate expression used to allow/deny access to Linux desktops.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub linux_desktop_labels_expression: Option<String>,
+    /// LinuxDesktopLogins is a list of desktop login names allowed/denied for Linux desktops.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub linux_desktop_logins: Option<Vec<String>>,
     /// Logins is a list of *nix system logins.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logins: Option<Vec<String>>,

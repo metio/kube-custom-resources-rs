@@ -9,6 +9,7 @@ pub mod cephfilesystemmirrors;
 pub mod cephfilesystems;
 pub mod cephfilesystemsubvolumegroups;
 pub mod cephnfses;
+pub mod cephnvmeofgateways;
 pub mod cephobjectrealms;
 pub mod cephobjectstores;
 pub mod cephobjectstoreusers;

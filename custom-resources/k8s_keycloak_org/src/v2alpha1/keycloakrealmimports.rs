@@ -2655,6 +2655,8 @@ pub struct KeycloakRealmImportRealmOrganizations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub groups: Option<Vec<KeycloakRealmImportRealmOrganizationsGroups>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityProviders")]
     pub identity_providers: Option<Vec<KeycloakRealmImportRealmOrganizationsIdentityProviders>>,
@@ -2672,6 +2674,290 @@ pub struct KeycloakRealmImportRealmOrganizationsDomains {
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub verified: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakRealmImportRealmOrganizationsGroups {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub access: Option<BTreeMap<String, bool>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub attributes: Option<BTreeMap<String, Vec<String>>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientRoles")]
+    pub client_roles: Option<BTreeMap<String, Vec<String>>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parentId")]
+    pub parent_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "realmRoles")]
+    pub realm_roles: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subGroupCount")]
+    pub sub_group_count: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subGroups")]
+    pub sub_groups: Option<Vec<KeycloakRealmImportRealmOrganizationsGroupsSubGroups>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakRealmImportRealmOrganizationsGroupsSubGroups {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub access: Option<BTreeMap<String, bool>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub attributes: Option<BTreeMap<String, Vec<String>>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientRoles")]
+    pub client_roles: Option<BTreeMap<String, Vec<String>>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parentId")]
+    pub parent_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "realmRoles")]
+    pub realm_roles: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subGroupCount")]
+    pub sub_group_count: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subGroups")]
+    pub sub_groups: Option<Vec<KeycloakRealmImportRealmOrganizationsGroupsSubGroupsSubGroups>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakRealmImportRealmOrganizationsGroupsSubGroupsSubGroups {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub access: Option<BTreeMap<String, bool>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub attributes: Option<BTreeMap<String, Vec<String>>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientRoles")]
+    pub client_roles: Option<BTreeMap<String, Vec<String>>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parentId")]
+    pub parent_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "realmRoles")]
+    pub realm_roles: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subGroupCount")]
+    pub sub_group_count: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subGroups")]
+    pub sub_groups: Option<Vec<KeycloakRealmImportRealmOrganizationsGroupsSubGroupsSubGroupsSubGroups>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakRealmImportRealmOrganizationsGroupsSubGroupsSubGroupsSubGroups {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub access: Option<BTreeMap<String, bool>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub attributes: Option<BTreeMap<String, Vec<String>>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientRoles")]
+    pub client_roles: Option<BTreeMap<String, Vec<String>>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parentId")]
+    pub parent_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "realmRoles")]
+    pub realm_roles: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subGroupCount")]
+    pub sub_group_count: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subGroups")]
+    pub sub_groups: Option<Vec<KeycloakRealmImportRealmOrganizationsGroupsSubGroupsSubGroupsSubGroupsSubGroups>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakRealmImportRealmOrganizationsGroupsSubGroupsSubGroupsSubGroupsSubGroups {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub access: Option<BTreeMap<String, bool>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub attributes: Option<BTreeMap<String, Vec<String>>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientRoles")]
+    pub client_roles: Option<BTreeMap<String, Vec<String>>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parentId")]
+    pub parent_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "realmRoles")]
+    pub realm_roles: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subGroupCount")]
+    pub sub_group_count: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subGroups")]
+    pub sub_groups: Option<Vec<KeycloakRealmImportRealmOrganizationsGroupsSubGroupsSubGroupsSubGroupsSubGroupsSubGroups>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakRealmImportRealmOrganizationsGroupsSubGroupsSubGroupsSubGroupsSubGroupsSubGroups {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub access: Option<BTreeMap<String, bool>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub attributes: Option<BTreeMap<String, Vec<String>>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientRoles")]
+    pub client_roles: Option<BTreeMap<String, Vec<String>>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parentId")]
+    pub parent_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "realmRoles")]
+    pub realm_roles: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subGroupCount")]
+    pub sub_group_count: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subGroups")]
+    pub sub_groups: Option<Vec<KeycloakRealmImportRealmOrganizationsGroupsSubGroupsSubGroupsSubGroupsSubGroupsSubGroupsSubGroups>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakRealmImportRealmOrganizationsGroupsSubGroupsSubGroupsSubGroupsSubGroupsSubGroupsSubGroups {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub access: Option<BTreeMap<String, bool>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub attributes: Option<BTreeMap<String, Vec<String>>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientRoles")]
+    pub client_roles: Option<BTreeMap<String, Vec<String>>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parentId")]
+    pub parent_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "realmRoles")]
+    pub realm_roles: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subGroupCount")]
+    pub sub_group_count: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subGroups")]
+    pub sub_groups: Option<Vec<KeycloakRealmImportRealmOrganizationsGroupsSubGroupsSubGroupsSubGroupsSubGroupsSubGroupsSubGroupsSubGroups>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakRealmImportRealmOrganizationsGroupsSubGroupsSubGroupsSubGroupsSubGroupsSubGroupsSubGroupsSubGroups {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub access: Option<BTreeMap<String, bool>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub attributes: Option<BTreeMap<String, Vec<String>>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientRoles")]
+    pub client_roles: Option<BTreeMap<String, Vec<String>>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parentId")]
+    pub parent_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "realmRoles")]
+    pub realm_roles: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subGroupCount")]
+    pub sub_group_count: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subGroups")]
+    pub sub_groups: Option<Vec<KeycloakRealmImportRealmOrganizationsGroupsSubGroupsSubGroupsSubGroupsSubGroupsSubGroupsSubGroupsSubGroupsSubGroups>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakRealmImportRealmOrganizationsGroupsSubGroupsSubGroupsSubGroupsSubGroupsSubGroupsSubGroupsSubGroupsSubGroups {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub access: Option<BTreeMap<String, bool>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub attributes: Option<BTreeMap<String, Vec<String>>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientRoles")]
+    pub client_roles: Option<BTreeMap<String, Vec<String>>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parentId")]
+    pub parent_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "realmRoles")]
+    pub realm_roles: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subGroupCount")]
+    pub sub_group_count: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subGroups")]
+    pub sub_groups: Option<Vec<KeycloakRealmImportRealmOrganizationsGroupsSubGroupsSubGroupsSubGroupsSubGroupsSubGroupsSubGroupsSubGroupsSubGroupsSubGroups>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakRealmImportRealmOrganizationsGroupsSubGroupsSubGroupsSubGroupsSubGroupsSubGroupsSubGroupsSubGroupsSubGroupsSubGroups {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub access: Option<BTreeMap<String, bool>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub attributes: Option<BTreeMap<String, Vec<String>>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientRoles")]
+    pub client_roles: Option<BTreeMap<String, Vec<String>>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parentId")]
+    pub parent_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "realmRoles")]
+    pub realm_roles: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subGroupCount")]
+    pub sub_group_count: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subGroups")]
+    pub sub_groups: Option<Vec<KeycloakRealmImportRealmOrganizationsGroupsSubGroupsSubGroupsSubGroupsSubGroupsSubGroupsSubGroupsSubGroupsSubGroupsSubGroupsSubGroups>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakRealmImportRealmOrganizationsGroupsSubGroupsSubGroupsSubGroupsSubGroupsSubGroupsSubGroupsSubGroupsSubGroupsSubGroupsSubGroups {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub access: Option<BTreeMap<String, bool>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub attributes: Option<BTreeMap<String, Vec<String>>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientRoles")]
+    pub client_roles: Option<BTreeMap<String, Vec<String>>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parentId")]
+    pub parent_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "realmRoles")]
+    pub realm_roles: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subGroupCount")]
+    pub sub_group_count: Option<i64>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

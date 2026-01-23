@@ -62,6 +62,14 @@ pub struct ListenerClassSpec {
     /// [k8s-docs]: <https://kubernetes.io/docs/concepts/services-networking/service-traffic-policy/>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceExternalTrafficPolicy")]
     pub service_external_traffic_policy: Option<ListenerClassServiceExternalTrafficPolicy>,
+    /// In the `serviceOverrides` property you can define a
+    /// [Service](<https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#service-v1-core)>
+    /// to override any property that can be set on a Kubernetes Service.
+    /// 
+    /// This mechanism is similar to the `podOverrides`, which are documented in the
+    /// [Pod overrides documentation](<https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides).>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceOverrides")]
+    pub service_overrides: Option<BTreeMap<String, serde_json::Value>>,
     /// The method used to access the services.
     #[serde(rename = "serviceType")]
     pub service_type: ListenerClassServiceType,

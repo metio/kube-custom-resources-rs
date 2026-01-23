@@ -297,6 +297,11 @@ spec:
                         serviceAccount:
                           description: "ServiceAccount is the email of a gcp service account to be attached to worker nodes\nin order to provide the permissions required by the cloud provider. For the default\nworker MachinePool, it is the user's responsibility to match this to the value\nprovided in the install-config."
                           type: "string"
+                        tags:
+                          description: "Tags defines a set of network tags which will be added to instances in the machineset.\nNot to be confused with UserTags."
+                          items:
+                            type: "string"
+                          type: "array"
                         type:
                           description: "InstanceType defines the GCP instance type.\neg. n1-standard-4"
                           type: "string"

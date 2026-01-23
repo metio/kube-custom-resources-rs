@@ -54,6 +54,7 @@ pub struct IngressRouteTcpRoutes {
     pub services: Option<Vec<IngressRouteTcpRoutesServices>>,
     /// Syntax defines the router's rule syntax.
     /// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/tcp/routing/rules-and-priority/#rulesyntax>
+    /// 
     /// Deprecated: Please do not use this field and rewrite the router rules to use the v3 syntax.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub syntax: Option<IngressRouteTcpRoutesSyntax>,
@@ -94,6 +95,7 @@ pub struct IngressRouteTcpRoutesServices {
     pub port: IntOrString,
     /// ProxyProtocol defines the PROXY protocol configuration.
     /// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/tcp/service/#proxy-protocol>
+    /// 
     /// Deprecated: ProxyProtocol will not be supported in future APIVersions, please use ServersTransport to configure ProxyProtocol instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyProtocol")]
     pub proxy_protocol: Option<IngressRouteTcpRoutesServicesProxyProtocol>,
@@ -107,6 +109,7 @@ pub struct IngressRouteTcpRoutesServices {
     /// hence fully terminating the connection.
     /// It is a duration in milliseconds, defaulting to 100.
     /// A negative value means an infinite deadline (i.e. the reading capability is never closed).
+    /// 
     /// Deprecated: TerminationDelay will not be supported in future APIVersions, please use ServersTransport to configure the TerminationDelay instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationDelay")]
     pub termination_delay: Option<i64>,
@@ -120,6 +123,7 @@ pub struct IngressRouteTcpRoutesServices {
 
 /// ProxyProtocol defines the PROXY protocol configuration.
 /// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/tcp/service/#proxy-protocol>
+/// 
 /// Deprecated: ProxyProtocol will not be supported in future APIVersions, please use ServersTransport to configure ProxyProtocol instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IngressRouteTcpRoutesServicesProxyProtocol {

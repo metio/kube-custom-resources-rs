@@ -15,6 +15,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `CephFilesystem`
 - `CephFilesystemSubVolumeGroup`
 - `CephNFS`
+- `CephNVMeOFGateway`
 - `CephObjectRealm`
 - `CephObjectStore`
 - `CephObjectStoreUser`
