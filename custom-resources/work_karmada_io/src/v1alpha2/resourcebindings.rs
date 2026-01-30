@@ -107,6 +107,12 @@ pub struct ResourceBindingSpec {
     /// nil means no suspension. no default values.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub suspension: Option<ResourceBindingSuspension>,
+    /// WorkloadAffinityGroups represents instantiated grouping results from .spec.placement.workloadAffinity,
+    /// used to keep workloads with the same affinity group co-located or those with the same
+    /// anti-affinity group separated across clusters. Populated by controllers, the scheduler
+    /// consumes it for decisions.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workloadAffinityGroups")]
+    pub workload_affinity_groups: Option<ResourceBindingWorkloadAffinityGroups>,
 }
 
 /// TargetCluster represents the identifier of a member cluster.
@@ -609,6 +615,10 @@ pub struct ResourceBindingPlacement {
     /// SpreadConstraints represents a list of the scheduling constraints.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "spreadConstraints")]
     pub spread_constraints: Option<Vec<ResourceBindingPlacementSpreadConstraints>>,
+    /// WorkloadAffinity represents inter-workload affinity and anti-affinity
+    /// scheduling policies.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workloadAffinity")]
+    pub workload_affinity: Option<ResourceBindingPlacementWorkloadAffinity>,
 }
 
 /// ClusterAffinityTerm selects a set of cluster.
@@ -1000,6 +1010,86 @@ pub enum ResourceBindingPlacementSpreadConstraintsSpreadByField {
     Provider,
 }
 
+/// WorkloadAffinity represents inter-workload affinity and anti-affinity
+/// scheduling policies.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ResourceBindingPlacementWorkloadAffinity {
+    /// Affinity represents inter-workload affinity scheduling rules.
+    /// These are hard requirements: workloads will only be scheduled to clusters
+    /// that satisfy the affinity term if it is specified.
+    /// 
+    /// For the first workload of an affinity group (when no workloads with a
+    /// matching label value exist in the system), the scheduler will not block
+    /// scheduling. This allows bootstrapping new workload groups without
+    /// encountering scheduling deadlocks, providing a better user experience.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub affinity: Option<ResourceBindingPlacementWorkloadAffinityAffinity>,
+    /// AntiAffinity represents inter-workload anti-affinity scheduling rules.
+    /// These are hard requirements: workloads will be scheduled to avoid clusters
+    /// where matching workloads are already scheduled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "antiAffinity")]
+    pub anti_affinity: Option<ResourceBindingPlacementWorkloadAffinityAntiAffinity>,
+}
+
+/// Affinity represents inter-workload affinity scheduling rules.
+/// These are hard requirements: workloads will only be scheduled to clusters
+/// that satisfy the affinity term if it is specified.
+/// 
+/// For the first workload of an affinity group (when no workloads with a
+/// matching label value exist in the system), the scheduler will not block
+/// scheduling. This allows bootstrapping new workload groups without
+/// encountering scheduling deadlocks, providing a better user experience.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ResourceBindingPlacementWorkloadAffinityAffinity {
+    /// GroupByLabelKey declares the label key on the workload resource template that
+    /// determines the affinity group. Workloads with the same label value under
+    /// this key belong to the same affinity group.
+    /// 
+    /// The scheduler maintains a global index of affinity groups in memory for
+    /// efficient lookup. Each affinity group is identified by a serialized
+    /// key-value pair and contains all workload resource templates that belong
+    /// to the group.
+    /// 
+    /// Note: Affinity groups are scoped to the namespace. Workloads that use the
+    /// same affinity label but reside in different namespaces are not treated
+    /// as part of the same group.
+    /// 
+    /// The key must be a valid Kubernetes label key.
+    /// 
+    /// Example: If GroupByLabelKey is "app.group", workloads with the label
+    /// "app.group=frontend" will form one affinity group, while those with
+    /// "app.group=backend" will form another.
+    #[serde(rename = "groupByLabelKey")]
+    pub group_by_label_key: String,
+}
+
+/// AntiAffinity represents inter-workload anti-affinity scheduling rules.
+/// These are hard requirements: workloads will be scheduled to avoid clusters
+/// where matching workloads are already scheduled.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ResourceBindingPlacementWorkloadAffinityAntiAffinity {
+    /// GroupByLabelKey declares the label key on the workload resource template that
+    /// determines the anti-affinity group. Workloads with the same label value under
+    /// this key belong to the same anti-affinity group and will be separated.
+    /// 
+    /// The scheduler maintains a global index of affinity groups in memory for
+    /// efficient lookup. Each affinity group is identified by a serialized
+    /// key-value pair and contains all workload resource templates that belong
+    /// to the group.
+    /// 
+    /// Note: Affinity groups are scoped to the namespace. Workloads that use the
+    /// same anti-affinity label but reside in different namespaces are not treated
+    /// as part of the same group.
+    /// 
+    /// The key must be a valid Kubernetes label key.
+    /// 
+    /// Example: If GroupByLabelKey is "app.group", workloads with the label
+    /// "app.group=frontend" will avoid clusters where other
+    /// "app.group=frontend" workloads already exist.
+    #[serde(rename = "groupByLabelKey")]
+    pub group_by_label_key: String,
+}
+
 /// ReplicaRequirements represents the resource and scheduling requirements for each replica.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceBindingReplicaRequirements {
@@ -1219,6 +1309,20 @@ pub struct ResourceBindingSuspensionDispatchingOnClusters {
     /// ClusterNames is the list of clusters to be selected.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterNames")]
     pub cluster_names: Option<Vec<String>>,
+}
+
+/// WorkloadAffinityGroups represents instantiated grouping results from .spec.placement.workloadAffinity,
+/// used to keep workloads with the same affinity group co-located or those with the same
+/// anti-affinity group separated across clusters. Populated by controllers, the scheduler
+/// consumes it for decisions.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ResourceBindingWorkloadAffinityGroups {
+    /// AffinityGroup is the instantiated group name derived from affinity rules.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "affinityGroup")]
+    pub affinity_group: Option<String>,
+    /// AntiAffinityGroup is the instantiated group name derived from anti-affinity rules.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "antiAffinityGroup")]
+    pub anti_affinity_group: Option<String>,
 }
 
 /// Status represents the most recently observed status of the ResourceBinding.

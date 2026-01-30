@@ -67,8 +67,8 @@ pub struct PerconaServerMongoDbSpec {
     pub secrets: Option<PerconaServerMongoDbSecrets>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sharding: Option<PerconaServerMongoDbSharding>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageAutoscaling")]
-    pub storage_autoscaling: Option<PerconaServerMongoDbStorageAutoscaling>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageScaling")]
+    pub storage_scaling: Option<PerconaServerMongoDbStorageScaling>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<PerconaServerMongoDbTls>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -21102,7 +21102,17 @@ pub struct PerconaServerMongoDbShardingMongosTopologySpreadConstraintsLabelSelec
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMongoDbStorageAutoscaling {
+pub struct PerconaServerMongoDbStorageScaling {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub autoscaling: Option<PerconaServerMongoDbStorageScalingAutoscaling>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableExternalAutoscaling")]
+    pub enable_external_autoscaling: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableVolumeScaling")]
+    pub enable_volume_scaling: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMongoDbStorageScalingAutoscaling {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "growthStep")]

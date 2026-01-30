@@ -58,14 +58,20 @@ spec:
                     authorization:
                       description: "Authorization options for Trino.\nLearn more in the [Trino authorization usage guide](https://docs.stackable.tech/home/nightly/trino/usage-guide/security#authorization)."
                       nullable: true
+                      oneOf:
+                        - required:
+                            - "opa"
                       properties:
                         opa:
                           description: "Configure the OPA stacklet [discovery ConfigMap](https://docs.stackable.tech/home/nightly/concepts/service_discovery)\nand the name of the Rego package containing your authorization rules.\nConsult the [OPA authorization documentation](https://docs.stackable.tech/home/nightly/concepts/opa)\nto learn how to deploy Rego authorization rules with OPA."
-                          nullable: true
                           properties:
                             configMapName:
                               description: "The [discovery ConfigMap](https://docs.stackable.tech/home/nightly/concepts/service_discovery)\nfor the OPA stacklet that should be used for authorization requests."
                               type: "string"
+                            enableColumnMasking:
+                              default: true
+                              description: "Whether to set the OPA batched column masking URI for Trino queries; defaults to true"
+                              type: "boolean"
                             package:
                               description: "The name of the Rego package containing the Rego rules for the product."
                               nullable: true

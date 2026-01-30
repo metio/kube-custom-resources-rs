@@ -144,6 +144,9 @@ pub struct TrinoClusterClusterConfigAuthorizationOpa {
     /// for the OPA stacklet that should be used for authorization requests.
     #[serde(rename = "configMapName")]
     pub config_map_name: String,
+    /// Whether to set the OPA batched column masking URI for Trino queries; defaults to true
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableColumnMasking")]
+    pub enable_column_masking: Option<bool>,
     /// The name of the Rego package containing the Rego rules for the product.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub package: Option<String>,

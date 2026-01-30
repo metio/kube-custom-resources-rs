@@ -170,7 +170,7 @@ pub struct SopsSecretSecretTemplates {
     /// information: <https://kubernetes.io/docs/concepts/configuration/secret/#overview-of-secrets)>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stringData")]
     pub string_data: Option<BTreeMap<String, String>>,
-    /// Kubernetes secret type. Default: Opauqe. Possible values: Opauqe,
+    /// Kubernetes secret type. Default: Opaque. Possible values: Opaque,
     /// kubernetes.io/service-account-token, kubernetes.io/dockercfg,
     /// kubernetes.io/dockerconfigjson, kubernetes.io/basic-auth,
     /// kubernetes.io/ssh-auth, kubernetes.io/tls, bootstrap.kubernetes.io/token

@@ -48,10 +48,122 @@ spec:
                       - "name"
                     type: "object"
                   type: "array"
+                admission:
+                  description: "Configuration for dynamic Validating and Mutating Admission webhooks managed by Capsule."
+                  properties:
+                    mutating:
+                      description: "Configure dynamic Mutating Admission for Capsule"
+                      properties:
+                        annotations:
+                          additionalProperties:
+                            type: "string"
+                          description: "Annotations added to the Admission Webhook"
+                          type: "object"
+                        client:
+                          description: "From the upstram struct"
+                          properties:
+                            caBundle:
+                              description: "`caBundle` is a PEM encoded CA bundle which will be used to validate the webhook's server certificate.\nIf unspecified, system trust roots on the apiserver are used."
+                              format: "byte"
+                              type: "string"
+                            service:
+                              description: "`service` is a reference to the service for this webhook. Either\n`service` or `url` must be specified.\n\nIf the webhook is running within the cluster, then you should use `service`."
+                              properties:
+                                name:
+                                  description: "`name` is the name of the service.\nRequired"
+                                  type: "string"
+                                namespace:
+                                  description: "`namespace` is the namespace of the service.\nRequired"
+                                  type: "string"
+                                path:
+                                  description: "`path` is an optional URL path which will be sent in any request to\nthis service."
+                                  type: "string"
+                                port:
+                                  description: "If specified, the port on the service that hosting webhook.\nDefault to 443 for backward compatibility.\n`port` should be a valid port number (1-65535, inclusive)."
+                                  format: "int32"
+                                  type: "integer"
+                              required:
+                                - "name"
+                                - "namespace"
+                              type: "object"
+                            url:
+                              description: "`url` gives the location of the webhook, in standard URL form\n(`scheme://host:port/path`). Exactly one of `url` or `service`\nmust be specified.\n\nThe `host` should not refer to a service running in the cluster; use\nthe `service` field instead. The host might be resolved via external\nDNS in some apiservers (e.g., `kube-apiserver` cannot resolve\nin-cluster DNS as that would be a layering violation). `host` may\nalso be an IP address.\n\nPlease note that using `localhost` or `127.0.0.1` as a `host` is\nrisky unless you take great care to run this webhook on all hosts\nwhich run an apiserver which might need to make calls to this\nwebhook. Such installs are likely to be non-portable, i.e., not easy\nto turn up in a new cluster.\n\nThe scheme must be \"https\"; the URL must begin with \"https://\".\n\nA path is optional, and if present may be any string permissible in\na URL. You may use the path to pass an arbitrary string to the\nwebhook, for example, a cluster identifier.\n\nAttempting to use a user or basic auth e.g. \"user:password@\" is not\nallowed. Fragments (\"#...\") and query parameters (\"?...\") are not\nallowed, either."
+                              type: "string"
+                          type: "object"
+                        labels:
+                          additionalProperties:
+                            type: "string"
+                          description: "Labels added to the Admission Webhook"
+                          type: "object"
+                        name:
+                          description: "Name the Admission Webhook"
+                          maxLength: 253
+                          pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
+                          type: "string"
+                      required:
+                        - "client"
+                      type: "object"
+                    validating:
+                      description: "Configure dynamic Validating Admission for Capsule"
+                      properties:
+                        annotations:
+                          additionalProperties:
+                            type: "string"
+                          description: "Annotations added to the Admission Webhook"
+                          type: "object"
+                        client:
+                          description: "From the upstram struct"
+                          properties:
+                            caBundle:
+                              description: "`caBundle` is a PEM encoded CA bundle which will be used to validate the webhook's server certificate.\nIf unspecified, system trust roots on the apiserver are used."
+                              format: "byte"
+                              type: "string"
+                            service:
+                              description: "`service` is a reference to the service for this webhook. Either\n`service` or `url` must be specified.\n\nIf the webhook is running within the cluster, then you should use `service`."
+                              properties:
+                                name:
+                                  description: "`name` is the name of the service.\nRequired"
+                                  type: "string"
+                                namespace:
+                                  description: "`namespace` is the namespace of the service.\nRequired"
+                                  type: "string"
+                                path:
+                                  description: "`path` is an optional URL path which will be sent in any request to\nthis service."
+                                  type: "string"
+                                port:
+                                  description: "If specified, the port on the service that hosting webhook.\nDefault to 443 for backward compatibility.\n`port` should be a valid port number (1-65535, inclusive)."
+                                  format: "int32"
+                                  type: "integer"
+                              required:
+                                - "name"
+                                - "namespace"
+                              type: "object"
+                            url:
+                              description: "`url` gives the location of the webhook, in standard URL form\n(`scheme://host:port/path`). Exactly one of `url` or `service`\nmust be specified.\n\nThe `host` should not refer to a service running in the cluster; use\nthe `service` field instead. The host might be resolved via external\nDNS in some apiservers (e.g., `kube-apiserver` cannot resolve\nin-cluster DNS as that would be a layering violation). `host` may\nalso be an IP address.\n\nPlease note that using `localhost` or `127.0.0.1` as a `host` is\nrisky unless you take great care to run this webhook on all hosts\nwhich run an apiserver which might need to make calls to this\nwebhook. Such installs are likely to be non-portable, i.e., not easy\nto turn up in a new cluster.\n\nThe scheme must be \"https\"; the URL must begin with \"https://\".\n\nA path is optional, and if present may be any string permissible in\na URL. You may use the path to pass an arbitrary string to the\nwebhook, for example, a cluster identifier.\n\nAttempting to use a user or basic auth e.g. \"user:password@\" is not\nallowed. Fragments (\"#...\") and query parameters (\"?...\") are not\nallowed, either."
+                              type: "string"
+                          type: "object"
+                        labels:
+                          additionalProperties:
+                            type: "string"
+                          description: "Labels added to the Admission Webhook"
+                          type: "object"
+                        name:
+                          description: "Name the Admission Webhook"
+                          maxLength: 253
+                          pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
+                          type: "string"
+                      required:
+                        - "client"
+                      type: "object"
+                  type: "object"
                 allowServiceAccountPromotion:
                   default: false
                   description: "ServiceAccounts within tenant namespaces can be promoted to owners of the given tenant\nthis can be achieved by labeling the serviceaccount and then they are considered owners. This can only be done by other owners of the tenant.\nHowever ServiceAccounts which have been promoted to owner can not promote further serviceAccounts."
                   type: "boolean"
+                cacheInvalidation:
+                  default: "24h"
+                  description: "Define the period of time upon a cache invalidation is executed for all caches."
+                  type: "string"
                 enableTLSReconciler:
                   default: false
                   description: "Toggles the TLS reconciler, the controller that is able to generate CA and certificates for the webhooks\nwhen not using an already provided CA and certificate, or when these are managed externally with Vault, or cert-manager."
@@ -116,6 +228,34 @@ spec:
                 protectedNamespaceRegex:
                   description: "Disallow creation of namespaces, whose name matches this regexp"
                   type: "string"
+                rbac:
+                  default: {}
+                  description: "Define Properties for managed ClusterRoles by Capsule"
+                  properties:
+                    administrationClusterRoles:
+                      default:
+                        - "capsule-namespace-deleter"
+                      description: "The ClusterRoles applied for Administrators"
+                      items:
+                        type: "string"
+                      type: "array"
+                    deleter:
+                      default: "capsule-namespace-deleter"
+                      description: "Name for the ClusterRole required to grant Namespace Deletion permissions."
+                      type: "string"
+                    promotionClusterRoles:
+                      default:
+                        - "capsule-namespace-provisioner"
+                        - "capsule-namespace-deleter"
+                      description: "The ClusterRoles applied for ServiceAccounts which had owner Promotion"
+                      items:
+                        type: "string"
+                      type: "array"
+                    provisioner:
+                      default: "capsule-namespace-provisioner"
+                      description: "Name for the ClusterRole required to grant Namespace Provision permissions."
+                      type: "string"
+                  type: "object"
                 userGroups:
                   description: "Deprecated: use users property instead (https://projectcapsule.dev/docs/operating/setup/configuration/#users)\n\nNames of the groups considered as Capsule users."
                   items:
@@ -146,11 +286,17 @@ spec:
                     type: "object"
                   type: "array"
               required:
+                - "cacheInvalidation"
                 - "enableTLSReconciler"
+                - "rbac"
               type: "object"
             status:
               description: "CapsuleConfigurationStatus defines the Capsule configuration status."
               properties:
+                lastCacheInvalidation:
+                  description: "Last time all caches were invalided"
+                  format: "date-time"
+                  type: "string"
                 users:
                   description: "Users which are considered Capsule Users and are bound to the Capsule Tenant construct."
                   items:

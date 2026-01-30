@@ -37,6 +37,9 @@ pub struct TempoStackSpec {
     /// Default is managed.
     #[serde(rename = "managementState")]
     pub management_state: TempoStackManagementState,
+    /// NetworkPolicySpec defines how network policies are handled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkPolicy")]
+    pub network_policy: Option<TempoStackNetworkPolicy>,
     /// ObservabilitySpec defines how telemetry data gets handled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub observability: Option<TempoStackObservability>,
@@ -56,6 +59,12 @@ pub struct TempoStackSpec {
     /// ServiceAccount defines the service account to use for all tempo components.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
+    /// Size defines a predefined deployment size profile for this TempoStack.
+    /// The operator will apply pre-tested resource configurations based on the selected size.
+    /// When not set, resources are determined by spec.resources.total or component-level overrides.
+    /// Size also sets a default replication factor (1 for demo, 2 for others) if not explicitly specified.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub size: Option<TempoStackSize>,
     /// Storage defines the spec for the object storage endpoint to store traces.
     /// User is required to create secret and supply it.
     pub storage: TempoStackStorage,
@@ -249,6 +258,14 @@ pub enum TempoStackManagementState {
     Unmanaged,
 }
 
+/// NetworkPolicySpec defines how network policies are handled.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TempoStackNetworkPolicy {
+    /// Enabled determines whether network policies are generated for the operands.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+
 /// ObservabilitySpec defines how telemetry data gets handled.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackObservability {
@@ -438,6 +455,21 @@ pub struct TempoStackSearch {
     /// The default value of 0 disables this limit.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxResultLimit")]
     pub max_result_limit: Option<i64>,
+}
+
+/// TempoStackSpec defines the desired state of TempoStack.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum TempoStackSize {
+    #[serde(rename = "1x.demo")]
+    r#_1xDemo,
+    #[serde(rename = "1x.pico")]
+    r#_1xPico,
+    #[serde(rename = "1x.extra-small")]
+    r#_1xExtraSmall,
+    #[serde(rename = "1x.small")]
+    r#_1xSmall,
+    #[serde(rename = "1x.medium")]
+    r#_1xMedium,
 }
 
 /// Storage defines the spec for the object storage endpoint to store traces.

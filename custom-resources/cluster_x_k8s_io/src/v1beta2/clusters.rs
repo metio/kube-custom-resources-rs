@@ -46,8 +46,7 @@ pub struct ClusterSpec {
     pub paused: Option<bool>,
     /// topology encapsulates the topology for the cluster.
     /// NOTE: It is required to enable the ClusterTopology
-    /// feature gate flag to activate managed topologies support;
-    /// this feature is highly experimental, and parts of it might still be not implemented.
+    /// feature gate flag to activate managed topologies support.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub topology: Option<ClusterTopology>,
 }
@@ -159,8 +158,7 @@ pub struct ClusterInfrastructureRef {
 
 /// topology encapsulates the topology for the cluster.
 /// NOTE: It is required to enable the ClusterTopology
-/// feature gate flag to activate managed topologies support;
-/// this feature is highly experimental, and parts of it might still be not implemented.
+/// feature gate flag to activate managed topologies support.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopology {
     /// classRef is the ref to the ClusterClass that should be used for the topology.

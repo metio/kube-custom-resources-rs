@@ -3251,6 +3251,7 @@ pub struct InstanaAgentK8sSensor {
     /// ETCD configuration for secure scraping
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub etcd: Option<InstanaAgentK8sSensorEtcd>,
+    /// K8sFeatureFlagsSpec is DEPRECATED so do not use! Kept for backwards compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "featureFlags")]
     pub feature_flags: Option<InstanaAgentK8sSensorFeatureFlags>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4085,6 +4086,7 @@ pub struct InstanaAgentK8sSensorEtcdCa {
     pub secret_name: Option<String>,
 }
 
+/// K8sFeatureFlagsSpec is DEPRECATED so do not use! Kept for backwards compatibility.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstanaAgentK8sSensorFeatureFlags {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "crdMonitoring")]

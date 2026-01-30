@@ -170,6 +170,14 @@ spec:
                     - "Managed"
                     - "Unmanaged"
                   type: "string"
+                networkPolicy:
+                  description: "NetworkPolicySpec defines how network policies are handled."
+                  properties:
+                    enabled:
+                      default: true
+                      description: "Enabled determines whether network policies are generated for the operands."
+                      type: "boolean"
+                  type: "object"
                 observability:
                   description: "ObservabilitySpec defines how telemetry data gets handled."
                   properties:
@@ -241,7 +249,6 @@ spec:
                           description: "JaegerAgentEndpoint defines the jaeger endpoint data gets send to.\nDeprecated: in favor of OTLPHttpEndpoint."
                           type: "string"
                         otlp_http_endpoint:
-                          default: "http://localhost:4320"
                           description: "OTLPHttpEndpoint defines the OTLP/http endpoint data gets send to.\nFor example, \"http://localhost:4320\".\nThe default OTLP/http port 4318 collides with the distributor ports, therefore it is recommended to use a different port\non the sidecar injected to the Tempo (e.g. 4320)."
                           type: "string"
                         sampling_fraction:
@@ -332,6 +339,15 @@ spec:
                   type: "object"
                 serviceAccount:
                   description: "ServiceAccount defines the service account to use for all tempo components."
+                  type: "string"
+                size:
+                  description: "Size defines a predefined deployment size profile for this TempoStack.\nThe operator will apply pre-tested resource configurations based on the selected size.\nWhen not set, resources are determined by spec.resources.total or component-level overrides.\nSize also sets a default replication factor (1 for demo, 2 for others) if not explicitly specified."
+                  enum:
+                    - "1x.demo"
+                    - "1x.pico"
+                    - "1x.extra-small"
+                    - "1x.small"
+                    - "1x.medium"
                   type: "string"
                 storage:
                   description: "Storage defines the spec for the object storage endpoint to store traces.\nUser is required to create secret and supply it."

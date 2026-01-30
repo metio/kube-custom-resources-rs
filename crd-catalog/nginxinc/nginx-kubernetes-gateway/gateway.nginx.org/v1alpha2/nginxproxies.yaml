@@ -305,12 +305,19 @@ spec:
                             readinessProbe:
                               description: "ReadinessProbe defines the readiness probe for the NGINX container."
                               properties:
+                                expose:
+                                  description: "Expose toggles whether the endpoint should be exposed through\nthe Gateway Service object. This allows an external LoadBalancer\nto perform healthchecks. Default is false."
+                                  type: "boolean"
                                 initialDelaySeconds:
                                   description: "InitialDelaySeconds is the number of seconds after the container has\nstarted before the readiness probe is initiated.\nIf not specified, the default is 3 seconds."
                                   format: "int32"
                                   maximum: 3600.0
                                   minimum: 0.0
                                   type: "integer"
+                                path:
+                                  description: "Path is the path on which the readiness endpoint is exposed.\nIf not specified, the default path is /readyz.\nMust start with a forward slash and contain only valid URL path characters."
+                                  pattern: "^/[a-zA-Z0-9/_\\-\\.~]*$"
+                                  type: "string"
                                 port:
                                   description: "Port is the port on which the readiness endpoint is exposed.\nIf not specified, the default port is 8081."
                                   format: "int32"
@@ -2803,12 +2810,19 @@ spec:
                             readinessProbe:
                               description: "ReadinessProbe defines the readiness probe for the NGINX container."
                               properties:
+                                expose:
+                                  description: "Expose toggles whether the endpoint should be exposed through\nthe Gateway Service object. This allows an external LoadBalancer\nto perform healthchecks. Default is false."
+                                  type: "boolean"
                                 initialDelaySeconds:
                                   description: "InitialDelaySeconds is the number of seconds after the container has\nstarted before the readiness probe is initiated.\nIf not specified, the default is 3 seconds."
                                   format: "int32"
                                   maximum: 3600.0
                                   minimum: 0.0
                                   type: "integer"
+                                path:
+                                  description: "Path is the path on which the readiness endpoint is exposed.\nIf not specified, the default path is /readyz.\nMust start with a forward slash and contain only valid URL path characters."
+                                  pattern: "^/[a-zA-Z0-9/_\\-\\.~]*$"
+                                  type: "string"
                                 port:
                                   description: "Port is the port on which the readiness endpoint is exposed.\nIf not specified, the default port is 8081."
                                   format: "int32"

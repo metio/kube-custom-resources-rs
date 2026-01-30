@@ -418,11 +418,21 @@ pub struct NginxProxyKubernetesDaemonSetContainerLifecyclePreStopTcpSocket {
 /// ReadinessProbe defines the readiness probe for the NGINX container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NginxProxyKubernetesDaemonSetContainerReadinessProbe {
+    /// Expose toggles whether the endpoint should be exposed through
+    /// the Gateway Service object. This allows an external LoadBalancer
+    /// to perform healthchecks. Default is false.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expose: Option<bool>,
     /// InitialDelaySeconds is the number of seconds after the container has
     /// started before the readiness probe is initiated.
     /// If not specified, the default is 3 seconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
+    /// Path is the path on which the readiness endpoint is exposed.
+    /// If not specified, the default path is /readyz.
+    /// Must start with a forward slash and contain only valid URL path characters.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
     /// Port is the port on which the readiness endpoint is exposed.
     /// If not specified, the default port is 8081.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4061,11 +4071,21 @@ pub struct NginxProxyKubernetesDeploymentContainerLifecyclePreStopTcpSocket {
 /// ReadinessProbe defines the readiness probe for the NGINX container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NginxProxyKubernetesDeploymentContainerReadinessProbe {
+    /// Expose toggles whether the endpoint should be exposed through
+    /// the Gateway Service object. This allows an external LoadBalancer
+    /// to perform healthchecks. Default is false.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expose: Option<bool>,
     /// InitialDelaySeconds is the number of seconds after the container has
     /// started before the readiness probe is initiated.
     /// If not specified, the default is 3 seconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
+    /// Path is the path on which the readiness endpoint is exposed.
+    /// If not specified, the default path is /readyz.
+    /// Must start with a forward slash and contain only valid URL path characters.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
     /// Port is the port on which the readiness endpoint is exposed.
     /// If not specified, the default port is 8081.
     #[serde(default, skip_serializing_if = "Option::is_none")]

@@ -11,7 +11,6 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// VMScrapeConfigSpec defines the desired state of VMScrapeConfig
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "operator.victoriametrics.com", version = "v1beta1", kind = "VMScrapeConfig", plural = "vmscrapeconfigs")]
 #[kube(namespaced)]
@@ -20,526 +19,312 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct VmScrapeConfigSpec {
-    /// Authorization with http header Authorization
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<VmScrapeConfigAuthorization>,
-    /// AzureSDConfigs defines a list of Azure service discovery configurations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureSDConfigs")]
     pub azure_sd_configs: Option<Vec<VmScrapeConfigAzureSdConfigs>>,
-    /// BasicAuth allow an endpoint to authenticate over basic authentication
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<VmScrapeConfigBasicAuth>,
-    /// File to read bearer token for scraping targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenFile")]
     pub bearer_token_file: Option<String>,
-    /// Secret to mount to read bearer token for scraping targets. The secret
-    /// needs to be in the same namespace as the scrape object and accessible by
-    /// the victoria-metrics operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
     pub bearer_token_secret: Option<VmScrapeConfigBearerTokenSecret>,
-    /// ConsulSDConfigs defines a list of Consul service discovery configurations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "consulSDConfigs")]
     pub consul_sd_configs: Option<Vec<VmScrapeConfigConsulSdConfigs>>,
-    /// DigitalOceanSDConfigs defines a list of DigitalOcean service discovery configurations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "digitalOceanSDConfigs")]
     pub digital_ocean_sd_configs: Option<Vec<VmScrapeConfigDigitalOceanSdConfigs>>,
-    /// DNSSDConfigs defines a list of DNS service discovery configurations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsSDConfigs")]
     pub dns_sd_configs: Option<Vec<VmScrapeConfigDnsSdConfigs>>,
-    /// EC2SDConfigs defines a list of EC2 service discovery configurations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ec2SDConfigs")]
     pub ec2_sd_configs: Option<Vec<VmScrapeConfigEc2SdConfigs>>,
-    /// FileSDConfigs defines a list of file service discovery configurations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSDConfigs")]
     pub file_sd_configs: Option<Vec<VmScrapeConfigFileSdConfigs>>,
-    /// FollowRedirects controls redirects for scraping.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub follow_redirects: Option<bool>,
-    /// GCESDConfigs defines a list of GCE service discovery configurations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gceSDConfigs")]
     pub gce_sd_configs: Option<Vec<VmScrapeConfigGceSdConfigs>>,
-    /// HonorLabels chooses the metric's labels on collisions with target labels.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "honorLabels")]
     pub honor_labels: Option<bool>,
-    /// HonorTimestamps controls whether vmagent respects the timestamps present in scraped data.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "honorTimestamps")]
     pub honor_timestamps: Option<bool>,
-    /// HTTPSDConfigs defines a list of HTTP service discovery configurations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpSDConfigs")]
     pub http_sd_configs: Option<Vec<VmScrapeConfigHttpSdConfigs>>,
-    /// Interval at which metrics should be scraped
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<String>,
-    /// KubernetesSDConfigs defines a list of Kubernetes service discovery configurations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesSDConfigs")]
     pub kubernetes_sd_configs: Option<Vec<VmScrapeConfigKubernetesSdConfigs>>,
-    /// MaxScrapeSize defines a maximum size of scraped data for a job
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max_scrape_size: Option<String>,
-    /// MetricRelabelConfigs to apply to samples after scrapping.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricRelabelConfigs")]
     pub metric_relabel_configs: Option<Vec<VmScrapeConfigMetricRelabelConfigs>>,
-    /// OAuth2 defines auth configuration
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oauth2: Option<VmScrapeConfigOauth2>,
-    /// OpenStackSDConfigs defines a list of OpenStack service discovery configurations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "openstackSDConfigs")]
     pub openstack_sd_configs: Option<Vec<VmScrapeConfigOpenstackSdConfigs>>,
-    /// Optional HTTP URL parameters
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub params: Option<BTreeMap<String, Vec<String>>>,
-    /// HTTP path to scrape for metrics.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// ProxyURL eg <http://proxyserver:2195> Directs scrapes to proxy through this endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyURL")]
     pub proxy_url: Option<String>,
-    /// RelabelConfigs to apply to samples during service discovery.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "relabelConfigs")]
     pub relabel_configs: Option<Vec<VmScrapeConfigRelabelConfigs>>,
-    /// SampleLimit defines per-scrape limit on number of scraped samples that will be accepted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sampleLimit")]
     pub sample_limit: Option<i64>,
-    /// HTTP scheme to use for scraping.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<VmScrapeConfigScheme>,
-    /// ScrapeClass defined scrape class to apply
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeClass")]
     pub scrape_class: Option<String>,
-    /// Timeout after which the scrape is ended
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeTimeout")]
     pub scrape_timeout: Option<String>,
-    /// ScrapeInterval is the same as Interval and has priority over it.
-    /// one of scrape_interval or interval can be used
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scrape_interval: Option<String>,
-    /// SeriesLimit defines per-scrape limit on number of unique time series
-    /// a single target can expose during all the scrapes on the time window of 24h.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seriesLimit")]
     pub series_limit: Option<i64>,
-    /// StaticConfigs defines a list of static targets with a common label set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "staticConfigs")]
     pub static_configs: Option<Vec<VmScrapeConfigStaticConfigs>>,
-    /// TLSConfig configuration to use when scraping the endpoint
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
     pub tls_config: Option<VmScrapeConfigTlsConfig>,
-    /// VMScrapeParams defines VictoriaMetrics specific scrape parameters
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub vm_scrape_params: Option<VmScrapeConfigVmScrapeParams>,
 }
 
-/// Authorization with http header Authorization
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigAuthorization {
-    /// Reference to the secret with value for authorization
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<VmScrapeConfigAuthorizationCredentials>,
-    /// File with value for authorization
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsFile")]
     pub credentials_file: Option<String>,
-    /// Type of authorization, default to bearer
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
 
-/// Reference to the secret with value for authorization
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigAuthorizationCredentials {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// AzureSDConfig allow retrieving scrape targets from Azure VMs.
-/// See [here](<https://docs.victoriametrics.com/victoriametrics/sd_configs/#azure_sd_configs)>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigAzureSdConfigs {
-    /// # The authentication method, either OAuth or ManagedIdentity.
-    /// See <https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authenticationMethod")]
     pub authentication_method: Option<VmScrapeConfigAzureSdConfigsAuthenticationMethod>,
-    /// Optional client ID. Only required with the OAuth authentication method.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientID")]
     pub client_id: Option<String>,
-    /// Optional client secret. Only required with the OAuth authentication method.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientSecret")]
     pub client_secret: Option<VmScrapeConfigAzureSdConfigsClientSecret>,
-    /// The Azure environment.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub environment: Option<String>,
-    /// The port to scrape metrics from. If using the public IP address, this must
-    /// instead be specified in the relabeling rule.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
-    /// Optional resource group name. Limits discovery to this resource group.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceGroup")]
     pub resource_group: Option<String>,
-    /// The subscription ID. Always required.
     #[serde(rename = "subscriptionID")]
     pub subscription_id: String,
-    /// Optional tenant ID. Only required with the OAuth authentication method.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tenantID")]
     pub tenant_id: Option<String>,
 }
 
-/// AzureSDConfig allow retrieving scrape targets from Azure VMs.
-/// See [here](<https://docs.victoriametrics.com/victoriametrics/sd_configs/#azure_sd_configs)>
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum VmScrapeConfigAzureSdConfigsAuthenticationMethod {
     OAuth,
     ManagedIdentity,
 }
 
-/// Optional client secret. Only required with the OAuth authentication method.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigAzureSdConfigsClientSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// BasicAuth allow an endpoint to authenticate over basic authentication
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigBasicAuth {
-    /// Password defines reference for secret with password value
-    /// The secret needs to be in the same namespace as scrape object
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<VmScrapeConfigBasicAuthPassword>,
-    /// PasswordFile defines path to password file at disk
-    /// must be pre-mounted
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password_file: Option<String>,
-    /// Username defines reference for secret with username value
-    /// The secret needs to be in the same namespace as scrape object
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<VmScrapeConfigBasicAuthUsername>,
 }
 
-/// Password defines reference for secret with password value
-/// The secret needs to be in the same namespace as scrape object
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigBasicAuthPassword {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Username defines reference for secret with username value
-/// The secret needs to be in the same namespace as scrape object
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigBasicAuthUsername {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret to mount to read bearer token for scraping targets. The secret
-/// needs to be in the same namespace as the scrape object and accessible by
-/// the victoria-metrics operator.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigBearerTokenSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// ConsulSDConfig defines a Consul service discovery configuration.
-/// See [here](<https://docs.victoriametrics.com/victoriametrics/sd_configs/#consul_sd_configs)>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigConsulSdConfigs {
-    /// Allow stale Consul results (see <https://developer.hashicorp.com/consul/api-docs/features/consistency> ). Will reduce load on Consul.
-    /// If unset, use its default value.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowStale")]
     pub allow_stale: Option<bool>,
-    /// Authorization header to use on every scrape request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<VmScrapeConfigConsulSdConfigsAuthorization>,
-    /// BasicAuth information to use on every scrape request.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<VmScrapeConfigConsulSdConfigsBasicAuth>,
-    /// Consul Datacenter name, if not provided it will use the local Consul Agent Datacenter.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub datacenter: Option<String>,
-    /// Filter defines filter for /v1/catalog/services requests
-    /// See <https://developer.hashicorp.com/consul/api-docs/features/filtering>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub filter: Option<String>,
-    /// Configure whether HTTP requests follow HTTP 3xx redirects.
-    /// If unset, use its default value.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
-    /// Namespaces are only supported in Consul Enterprise.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Node metadata key/value pairs to filter nodes for a given service.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeMeta")]
     pub node_meta: Option<BTreeMap<String, String>>,
-    /// OAuth2 defines auth configuration
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oauth2: Option<VmScrapeConfigConsulSdConfigsOauth2>,
-    /// Admin Partitions are only supported in Consul Enterprise.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub partition: Option<String>,
-    /// ProxyURL eg <http://proxyserver:2195> Directs scrapes to proxy through this endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyURL")]
     pub proxy_url: Option<String>,
-    /// ProxyClientConfig configures proxy auth settings for scraping
-    /// See [feature description](<https://docs.victoriametrics.com/victoriametrics/vmagent/#scraping-targets-via-a-proxy)>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy_client_config: Option<VmScrapeConfigConsulSdConfigsProxyClientConfig>,
-    /// HTTP Scheme default "http"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<VmScrapeConfigConsulSdConfigsScheme>,
-    /// A valid string consisting of a hostname or IP followed by an optional port number.
     pub server: String,
-    /// A list of services for which targets are retrieved. If omitted, all services are scraped.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<String>>,
-    /// The string by which Consul tags are joined into the tag label.
-    /// If unset, use its default value.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tagSeparator")]
     pub tag_separator: Option<String>,
-    /// An optional list of tags used to filter nodes for a given service. Services must contain all tags in the list.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<String>>,
-    /// TLS configuration to use on every scrape request
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
     pub tls_config: Option<VmScrapeConfigConsulSdConfigsTlsConfig>,
-    /// Consul ACL TokenRef, if not provided it will use the ACL from the local Consul Agent.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenRef")]
     pub token_ref: Option<VmScrapeConfigConsulSdConfigsTokenRef>,
 }
 
-/// Authorization header to use on every scrape request.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigConsulSdConfigsAuthorization {
-    /// Reference to the secret with value for authorization
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<VmScrapeConfigConsulSdConfigsAuthorizationCredentials>,
-    /// File with value for authorization
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsFile")]
     pub credentials_file: Option<String>,
-    /// Type of authorization, default to bearer
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
 
-/// Reference to the secret with value for authorization
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigConsulSdConfigsAuthorizationCredentials {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// BasicAuth information to use on every scrape request.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigConsulSdConfigsBasicAuth {
-    /// Password defines reference for secret with password value
-    /// The secret needs to be in the same namespace as scrape object
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<VmScrapeConfigConsulSdConfigsBasicAuthPassword>,
-    /// PasswordFile defines path to password file at disk
-    /// must be pre-mounted
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password_file: Option<String>,
-    /// Username defines reference for secret with username value
-    /// The secret needs to be in the same namespace as scrape object
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<VmScrapeConfigConsulSdConfigsBasicAuthUsername>,
 }
 
-/// Password defines reference for secret with password value
-/// The secret needs to be in the same namespace as scrape object
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigConsulSdConfigsBasicAuthPassword {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Username defines reference for secret with username value
-/// The secret needs to be in the same namespace as scrape object
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigConsulSdConfigsBasicAuthUsername {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// OAuth2 defines auth configuration
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigConsulSdConfigsOauth2 {
-    /// The secret or configmap containing the OAuth2 client id
     pub client_id: VmScrapeConfigConsulSdConfigsOauth2ClientId,
-    /// The secret containing the OAuth2 client secret
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client_secret: Option<VmScrapeConfigConsulSdConfigsOauth2ClientSecret>,
-    /// ClientSecretFile defines path for client secret file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client_secret_file: Option<String>,
-    /// Parameters to append to the token URL
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
-    /// The proxy URL for token_url connection
-    /// ( available from v0.55.0).
-    /// Is only supported by Scrape objects family
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy_url: Option<String>,
-    /// OAuth2 scopes used for the token request
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scopes: Option<Vec<String>>,
-    /// TLSConfig for token_url connection
-    /// ( available from v0.55.0).
-    /// Is only supported by Scrape objects family
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls_config: Option<serde_json::Value>,
-    /// The URL to fetch the token from
     pub token_url: String,
 }
 
-/// The secret or configmap containing the OAuth2 client id
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigConsulSdConfigsOauth2ClientId {
-    /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<VmScrapeConfigConsulSdConfigsOauth2ClientIdConfigMap>,
-    /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VmScrapeConfigConsulSdConfigsOauth2ClientIdSecret>,
 }
 
-/// ConfigMap containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigConsulSdConfigsOauth2ClientIdConfigMap {
-    /// The key to select.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigConsulSdConfigsOauth2ClientIdSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// The secret containing the OAuth2 client secret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigConsulSdConfigsOauth2ClientSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// ProxyClientConfig configures proxy auth settings for scraping
-/// See [feature description](<https://docs.victoriametrics.com/victoriametrics/vmagent/#scraping-targets-via-a-proxy)>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigConsulSdConfigsProxyClientConfig {
-    /// BasicAuth allow an endpoint to authenticate over basic authentication
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub basic_auth: Option<VmScrapeConfigConsulSdConfigsProxyClientConfigBasicAuth>,
-    /// SecretKeySelector selects a key of a Secret.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bearer_token: Option<VmScrapeConfigConsulSdConfigsProxyClientConfigBearerToken>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -548,78 +333,43 @@ pub struct VmScrapeConfigConsulSdConfigsProxyClientConfig {
     pub tls_config: Option<serde_json::Value>,
 }
 
-/// BasicAuth allow an endpoint to authenticate over basic authentication
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigConsulSdConfigsProxyClientConfigBasicAuth {
-    /// Password defines reference for secret with password value
-    /// The secret needs to be in the same namespace as scrape object
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<VmScrapeConfigConsulSdConfigsProxyClientConfigBasicAuthPassword>,
-    /// PasswordFile defines path to password file at disk
-    /// must be pre-mounted
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password_file: Option<String>,
-    /// Username defines reference for secret with username value
-    /// The secret needs to be in the same namespace as scrape object
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<VmScrapeConfigConsulSdConfigsProxyClientConfigBasicAuthUsername>,
 }
 
-/// Password defines reference for secret with password value
-/// The secret needs to be in the same namespace as scrape object
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigConsulSdConfigsProxyClientConfigBasicAuthPassword {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Username defines reference for secret with username value
-/// The secret needs to be in the same namespace as scrape object
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigConsulSdConfigsProxyClientConfigBasicAuthUsername {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// SecretKeySelector selects a key of a Secret.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigConsulSdConfigsProxyClientConfigBearerToken {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// ConsulSDConfig defines a Consul service discovery configuration.
-/// See [here](<https://docs.victoriametrics.com/victoriametrics/sd_configs/#consul_sd_configs)>
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum VmScrapeConfigConsulSdConfigsScheme {
     #[serde(rename = "HTTP")]
@@ -628,320 +378,190 @@ pub enum VmScrapeConfigConsulSdConfigsScheme {
     Https,
 }
 
-/// TLS configuration to use on every scrape request
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigConsulSdConfigsTlsConfig {
-    /// Struct containing the CA cert to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ca: Option<VmScrapeConfigConsulSdConfigsTlsConfigCa>,
-    /// Path to the CA cert in the container to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caFile")]
     pub ca_file: Option<String>,
-    /// Struct containing the client cert file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<VmScrapeConfigConsulSdConfigsTlsConfigCert>,
-    /// Path to the client cert file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
-    /// Disable target certificate validation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
-    /// Path to the client key file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
     pub key_file: Option<String>,
-    /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<VmScrapeConfigConsulSdConfigsTlsConfigKeySecret>,
-    /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
-/// Struct containing the CA cert to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigConsulSdConfigsTlsConfigCa {
-    /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<VmScrapeConfigConsulSdConfigsTlsConfigCaConfigMap>,
-    /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VmScrapeConfigConsulSdConfigsTlsConfigCaSecret>,
 }
 
-/// ConfigMap containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigConsulSdConfigsTlsConfigCaConfigMap {
-    /// The key to select.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigConsulSdConfigsTlsConfigCaSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Struct containing the client cert file for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigConsulSdConfigsTlsConfigCert {
-    /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<VmScrapeConfigConsulSdConfigsTlsConfigCertConfigMap>,
-    /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VmScrapeConfigConsulSdConfigsTlsConfigCertSecret>,
 }
 
-/// ConfigMap containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigConsulSdConfigsTlsConfigCertConfigMap {
-    /// The key to select.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigConsulSdConfigsTlsConfigCertSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing the client key file for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigConsulSdConfigsTlsConfigKeySecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Consul ACL TokenRef, if not provided it will use the ACL from the local Consul Agent.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigConsulSdConfigsTokenRef {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// DigitalOceanSDConfig allow retrieving scrape targets from DigitalOcean's Droplets API.
-/// This service discovery uses the public IPv4 address by default, by that can be changed with relabeling.
-/// See [here](<https://docs.victoriametrics.com/victoriametrics/sd_configs/#digitalocean_sd_configs)>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigDigitalOceanSdConfigs {
-    /// Authorization header to use on every scrape request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<VmScrapeConfigDigitalOceanSdConfigsAuthorization>,
-    /// Configure whether HTTP requests follow HTTP 3xx redirects.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
-    /// OAuth2 defines auth configuration
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oauth2: Option<VmScrapeConfigDigitalOceanSdConfigsOauth2>,
-    /// The port to scrape metrics from.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
-    /// ProxyURL eg <http://proxyserver:2195> Directs scrapes to proxy through this endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyURL")]
     pub proxy_url: Option<String>,
-    /// ProxyClientConfig configures proxy auth settings for scraping
-    /// See [feature description](<https://docs.victoriametrics.com/victoriametrics/vmagent/#scraping-targets-via-a-proxy)>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy_client_config: Option<VmScrapeConfigDigitalOceanSdConfigsProxyClientConfig>,
-    /// TLS configuration to use on every scrape request
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
     pub tls_config: Option<VmScrapeConfigDigitalOceanSdConfigsTlsConfig>,
 }
 
-/// Authorization header to use on every scrape request.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigDigitalOceanSdConfigsAuthorization {
-    /// Reference to the secret with value for authorization
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<VmScrapeConfigDigitalOceanSdConfigsAuthorizationCredentials>,
-    /// File with value for authorization
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsFile")]
     pub credentials_file: Option<String>,
-    /// Type of authorization, default to bearer
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
 
-/// Reference to the secret with value for authorization
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigDigitalOceanSdConfigsAuthorizationCredentials {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// OAuth2 defines auth configuration
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigDigitalOceanSdConfigsOauth2 {
-    /// The secret or configmap containing the OAuth2 client id
     pub client_id: VmScrapeConfigDigitalOceanSdConfigsOauth2ClientId,
-    /// The secret containing the OAuth2 client secret
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client_secret: Option<VmScrapeConfigDigitalOceanSdConfigsOauth2ClientSecret>,
-    /// ClientSecretFile defines path for client secret file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client_secret_file: Option<String>,
-    /// Parameters to append to the token URL
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
-    /// The proxy URL for token_url connection
-    /// ( available from v0.55.0).
-    /// Is only supported by Scrape objects family
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy_url: Option<String>,
-    /// OAuth2 scopes used for the token request
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scopes: Option<Vec<String>>,
-    /// TLSConfig for token_url connection
-    /// ( available from v0.55.0).
-    /// Is only supported by Scrape objects family
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls_config: Option<serde_json::Value>,
-    /// The URL to fetch the token from
     pub token_url: String,
 }
 
-/// The secret or configmap containing the OAuth2 client id
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigDigitalOceanSdConfigsOauth2ClientId {
-    /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<VmScrapeConfigDigitalOceanSdConfigsOauth2ClientIdConfigMap>,
-    /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VmScrapeConfigDigitalOceanSdConfigsOauth2ClientIdSecret>,
 }
 
-/// ConfigMap containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigDigitalOceanSdConfigsOauth2ClientIdConfigMap {
-    /// The key to select.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigDigitalOceanSdConfigsOauth2ClientIdSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// The secret containing the OAuth2 client secret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigDigitalOceanSdConfigsOauth2ClientSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// ProxyClientConfig configures proxy auth settings for scraping
-/// See [feature description](<https://docs.victoriametrics.com/victoriametrics/vmagent/#scraping-targets-via-a-proxy)>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigDigitalOceanSdConfigsProxyClientConfig {
-    /// BasicAuth allow an endpoint to authenticate over basic authentication
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub basic_auth: Option<VmScrapeConfigDigitalOceanSdConfigsProxyClientConfigBasicAuth>,
-    /// SecretKeySelector selects a key of a Secret.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bearer_token: Option<VmScrapeConfigDigitalOceanSdConfigsProxyClientConfigBearerToken>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -950,230 +570,133 @@ pub struct VmScrapeConfigDigitalOceanSdConfigsProxyClientConfig {
     pub tls_config: Option<serde_json::Value>,
 }
 
-/// BasicAuth allow an endpoint to authenticate over basic authentication
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigDigitalOceanSdConfigsProxyClientConfigBasicAuth {
-    /// Password defines reference for secret with password value
-    /// The secret needs to be in the same namespace as scrape object
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<VmScrapeConfigDigitalOceanSdConfigsProxyClientConfigBasicAuthPassword>,
-    /// PasswordFile defines path to password file at disk
-    /// must be pre-mounted
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password_file: Option<String>,
-    /// Username defines reference for secret with username value
-    /// The secret needs to be in the same namespace as scrape object
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<VmScrapeConfigDigitalOceanSdConfigsProxyClientConfigBasicAuthUsername>,
 }
 
-/// Password defines reference for secret with password value
-/// The secret needs to be in the same namespace as scrape object
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigDigitalOceanSdConfigsProxyClientConfigBasicAuthPassword {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Username defines reference for secret with username value
-/// The secret needs to be in the same namespace as scrape object
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigDigitalOceanSdConfigsProxyClientConfigBasicAuthUsername {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// SecretKeySelector selects a key of a Secret.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigDigitalOceanSdConfigsProxyClientConfigBearerToken {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// TLS configuration to use on every scrape request
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigDigitalOceanSdConfigsTlsConfig {
-    /// Struct containing the CA cert to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ca: Option<VmScrapeConfigDigitalOceanSdConfigsTlsConfigCa>,
-    /// Path to the CA cert in the container to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caFile")]
     pub ca_file: Option<String>,
-    /// Struct containing the client cert file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<VmScrapeConfigDigitalOceanSdConfigsTlsConfigCert>,
-    /// Path to the client cert file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
-    /// Disable target certificate validation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
-    /// Path to the client key file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
     pub key_file: Option<String>,
-    /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<VmScrapeConfigDigitalOceanSdConfigsTlsConfigKeySecret>,
-    /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
-/// Struct containing the CA cert to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigDigitalOceanSdConfigsTlsConfigCa {
-    /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<VmScrapeConfigDigitalOceanSdConfigsTlsConfigCaConfigMap>,
-    /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VmScrapeConfigDigitalOceanSdConfigsTlsConfigCaSecret>,
 }
 
-/// ConfigMap containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigDigitalOceanSdConfigsTlsConfigCaConfigMap {
-    /// The key to select.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigDigitalOceanSdConfigsTlsConfigCaSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Struct containing the client cert file for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigDigitalOceanSdConfigsTlsConfigCert {
-    /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<VmScrapeConfigDigitalOceanSdConfigsTlsConfigCertConfigMap>,
-    /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VmScrapeConfigDigitalOceanSdConfigsTlsConfigCertSecret>,
 }
 
-/// ConfigMap containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigDigitalOceanSdConfigsTlsConfigCertConfigMap {
-    /// The key to select.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigDigitalOceanSdConfigsTlsConfigCertSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing the client key file for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigDigitalOceanSdConfigsTlsConfigKeySecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// DNSSDConfig allows specifying a set of DNS domain names which are periodically queried to discover a list of targets.
-/// The DNS servers to be contacted are read from /etc/resolv.conf.
-/// See [here](<https://docs.victoriametrics.com/victoriametrics/sd_configs/#dns_sd_configs)>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigDnsSdConfigs {
-    /// A list of DNS domain names to be queried.
     pub names: Vec<String>,
-    /// The port number used if the query type is not SRV
-    /// Ignored for SRV records
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<VmScrapeConfigDnsSdConfigsType>,
 }
 
-/// DNSSDConfig allows specifying a set of DNS domain names which are periodically queried to discover a list of targets.
-/// The DNS servers to be contacted are read from /etc/resolv.conf.
-/// See [here](<https://docs.victoriametrics.com/victoriametrics/sd_configs/#dns_sd_configs)>
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum VmScrapeConfigDnsSdConfigsType {
     #[serde(rename = "SRV")]
@@ -1185,229 +708,129 @@ pub enum VmScrapeConfigDnsSdConfigsType {
     Mx,
 }
 
-/// EC2SDConfig allow retrieving scrape targets from AWS EC2 instances.
-/// The private IP address is used by default, but may be changed to the public IP address with relabeling.
-/// The IAM credentials used must have the ec2:DescribeInstances permission to discover scrape targets.
-/// See [here](<https://docs.victoriametrics.com/victoriametrics/sd_configs/#ec2_sd_configs)>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigEc2SdConfigs {
-    /// AccessKey is the AWS API key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKey")]
     pub access_key: Option<VmScrapeConfigEc2SdConfigsAccessKey>,
-    /// Filters can be used optionally to filter the instance list by other criteria.
-    /// Available filter criteria can be found here:
-    /// <https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeInstances.html>
-    /// Filter API documentation: <https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_Filter.html>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub filters: Option<Vec<VmScrapeConfigEc2SdConfigsFilters>>,
-    /// The port to scrape metrics from. If using the public IP address, this must
-    /// instead be specified in the relabeling rule.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
-    /// The AWS region
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    /// AWS Role ARN, an alternative to using AWS API keys.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleARN")]
     pub role_arn: Option<String>,
-    /// SecretKey is the AWS API secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKey")]
     pub secret_key: Option<VmScrapeConfigEc2SdConfigsSecretKey>,
 }
 
-/// AccessKey is the AWS API key.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigEc2SdConfigsAccessKey {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// EC2Filter is the configuration for filtering EC2 instances.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigEc2SdConfigsFilters {
     pub name: String,
     pub values: Vec<String>,
 }
 
-/// SecretKey is the AWS API secret.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigEc2SdConfigsSecretKey {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// FileSDConfig defines a file service discovery configuration.
-/// See [here](<https://docs.victoriametrics.com/victoriametrics/sd_configs/#file_sd_configs)>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigFileSdConfigs {
-    /// List of files to be used for file discovery.
     pub files: Vec<String>,
 }
 
-/// GCESDConfig configures scrape targets from GCP GCE instances.
-/// The private IP address is used by default, but may be changed to
-/// the public IP address with relabeling.
-/// See [here](<https://docs.victoriametrics.com/victoriametrics/sd_configs/#gce_sd_configs)>
-/// 
-/// The GCE service discovery will load the Google Cloud credentials
-/// from the file specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable.
-/// See <https://cloud.google.com/kubernetes-engine/docs/tutorials/authenticating-to-cloud-platform>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigGceSdConfigs {
-    /// Filter can be used optionally to filter the instance list by other criteria
-    /// Syntax of this filter is described in the filter query parameter section:
-    /// <https://cloud.google.com/compute/docs/reference/latest/instances/list>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub filter: Option<String>,
-    /// The port to scrape metrics from. If using the public IP address, this must
-    /// instead be specified in the relabeling rule.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
-    /// The Google Cloud Project ID
     pub project: String,
-    /// The tag separator is used to separate the tags on concatenation
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tagSeparator")]
     pub tag_separator: Option<String>,
-    /// The zone of the scrape targets. If you need multiple zones use multiple GCESDConfigs.
     pub zone: serde_json::Value,
 }
 
-/// HTTPSDConfig defines a HTTP service discovery configuration.
-/// See [here](<https://docs.victoriametrics.com/victoriametrics/sd_configs/#http_sd_configs)>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigHttpSdConfigs {
-    /// Authorization header to use on every scrape request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<VmScrapeConfigHttpSdConfigsAuthorization>,
-    /// BasicAuth information to use on every scrape request.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<VmScrapeConfigHttpSdConfigsBasicAuth>,
-    /// ProxyURL eg <http://proxyserver:2195> Directs scrapes to proxy through this endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyURL")]
     pub proxy_url: Option<String>,
-    /// ProxyClientConfig configures proxy auth settings for scraping
-    /// See [feature description](<https://docs.victoriametrics.com/victoriametrics/vmagent/#scraping-targets-via-a-proxy)>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy_client_config: Option<VmScrapeConfigHttpSdConfigsProxyClientConfig>,
-    /// TLS configuration to use on every scrape request
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
     pub tls_config: Option<VmScrapeConfigHttpSdConfigsTlsConfig>,
-    /// URL from which the targets are fetched.
     pub url: String,
 }
 
-/// Authorization header to use on every scrape request.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigHttpSdConfigsAuthorization {
-    /// Reference to the secret with value for authorization
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<VmScrapeConfigHttpSdConfigsAuthorizationCredentials>,
-    /// File with value for authorization
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsFile")]
     pub credentials_file: Option<String>,
-    /// Type of authorization, default to bearer
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
 
-/// Reference to the secret with value for authorization
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigHttpSdConfigsAuthorizationCredentials {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// BasicAuth information to use on every scrape request.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigHttpSdConfigsBasicAuth {
-    /// Password defines reference for secret with password value
-    /// The secret needs to be in the same namespace as scrape object
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<VmScrapeConfigHttpSdConfigsBasicAuthPassword>,
-    /// PasswordFile defines path to password file at disk
-    /// must be pre-mounted
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password_file: Option<String>,
-    /// Username defines reference for secret with username value
-    /// The secret needs to be in the same namespace as scrape object
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<VmScrapeConfigHttpSdConfigsBasicAuthUsername>,
 }
 
-/// Password defines reference for secret with password value
-/// The secret needs to be in the same namespace as scrape object
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigHttpSdConfigsBasicAuthPassword {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Username defines reference for secret with username value
-/// The secret needs to be in the same namespace as scrape object
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigHttpSdConfigsBasicAuthUsername {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// ProxyClientConfig configures proxy auth settings for scraping
-/// See [feature description](<https://docs.victoriametrics.com/victoriametrics/vmagent/#scraping-targets-via-a-proxy)>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigHttpSdConfigsProxyClientConfig {
-    /// BasicAuth allow an endpoint to authenticate over basic authentication
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub basic_auth: Option<VmScrapeConfigHttpSdConfigsProxyClientConfigBasicAuth>,
-    /// SecretKeySelector selects a key of a Secret.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bearer_token: Option<VmScrapeConfigHttpSdConfigsProxyClientConfigBearerToken>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1416,468 +839,271 @@ pub struct VmScrapeConfigHttpSdConfigsProxyClientConfig {
     pub tls_config: Option<serde_json::Value>,
 }
 
-/// BasicAuth allow an endpoint to authenticate over basic authentication
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigHttpSdConfigsProxyClientConfigBasicAuth {
-    /// Password defines reference for secret with password value
-    /// The secret needs to be in the same namespace as scrape object
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<VmScrapeConfigHttpSdConfigsProxyClientConfigBasicAuthPassword>,
-    /// PasswordFile defines path to password file at disk
-    /// must be pre-mounted
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password_file: Option<String>,
-    /// Username defines reference for secret with username value
-    /// The secret needs to be in the same namespace as scrape object
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<VmScrapeConfigHttpSdConfigsProxyClientConfigBasicAuthUsername>,
 }
 
-/// Password defines reference for secret with password value
-/// The secret needs to be in the same namespace as scrape object
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigHttpSdConfigsProxyClientConfigBasicAuthPassword {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Username defines reference for secret with username value
-/// The secret needs to be in the same namespace as scrape object
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigHttpSdConfigsProxyClientConfigBasicAuthUsername {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// SecretKeySelector selects a key of a Secret.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigHttpSdConfigsProxyClientConfigBearerToken {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// TLS configuration to use on every scrape request
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigHttpSdConfigsTlsConfig {
-    /// Struct containing the CA cert to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ca: Option<VmScrapeConfigHttpSdConfigsTlsConfigCa>,
-    /// Path to the CA cert in the container to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caFile")]
     pub ca_file: Option<String>,
-    /// Struct containing the client cert file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<VmScrapeConfigHttpSdConfigsTlsConfigCert>,
-    /// Path to the client cert file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
-    /// Disable target certificate validation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
-    /// Path to the client key file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
     pub key_file: Option<String>,
-    /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<VmScrapeConfigHttpSdConfigsTlsConfigKeySecret>,
-    /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
-/// Struct containing the CA cert to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigHttpSdConfigsTlsConfigCa {
-    /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<VmScrapeConfigHttpSdConfigsTlsConfigCaConfigMap>,
-    /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VmScrapeConfigHttpSdConfigsTlsConfigCaSecret>,
 }
 
-/// ConfigMap containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigHttpSdConfigsTlsConfigCaConfigMap {
-    /// The key to select.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigHttpSdConfigsTlsConfigCaSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Struct containing the client cert file for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigHttpSdConfigsTlsConfigCert {
-    /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<VmScrapeConfigHttpSdConfigsTlsConfigCertConfigMap>,
-    /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VmScrapeConfigHttpSdConfigsTlsConfigCertSecret>,
 }
 
-/// ConfigMap containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigHttpSdConfigsTlsConfigCertConfigMap {
-    /// The key to select.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigHttpSdConfigsTlsConfigCertSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing the client key file for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigHttpSdConfigsTlsConfigKeySecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// KubernetesSDConfig allows retrieving scrape targets from Kubernetes' REST API.
-/// See [here](<https://docs.victoriametrics.com/victoriametrics/sd_configs/#kubernetes_sd_configs)>
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct VmScrapeConfigKubernetesSdConfigs {
-    /// The API server address consisting of a hostname or IP address followed
-    /// by an optional port number.
-    /// If left empty, assuming process is running inside
-    /// of the cluster. It will discover API servers automatically and use the pod's
-    /// CA certificate and bearer token file at /var/run/secrets/kubernetes.io/serviceaccount/.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiServer")]
     pub api_server: Option<String>,
-    /// AttachMetadata configures metadata attaching from service discovery
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attach_metadata: Option<VmScrapeConfigKubernetesSdConfigsAttachMetadata>,
-    /// Authorization header to use on every scrape request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<VmScrapeConfigKubernetesSdConfigsAuthorization>,
-    /// BasicAuth information to use on every scrape request.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<VmScrapeConfigKubernetesSdConfigsBasicAuth>,
-    /// Configure whether HTTP requests follow HTTP 3xx redirects.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
-    /// Optional namespace discovery. If omitted, discover targets across all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<VmScrapeConfigKubernetesSdConfigsNamespaces>,
-    /// OAuth2 defines auth configuration
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oauth2: Option<VmScrapeConfigKubernetesSdConfigsOauth2>,
-    /// ProxyURL eg <http://proxyserver:2195> Directs scrapes to proxy through this endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyURL")]
     pub proxy_url: Option<String>,
-    /// ProxyClientConfig configures proxy auth settings for scraping
-    /// See [feature description](<https://docs.victoriametrics.com/victoriametrics/vmagent/#scraping-targets-via-a-proxy)>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy_client_config: Option<VmScrapeConfigKubernetesSdConfigsProxyClientConfig>,
-    /// Role of the Kubernetes entities that should be discovered.
     pub role: VmScrapeConfigKubernetesSdConfigsRole,
-    /// Selector to select objects.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selectors: Option<Vec<VmScrapeConfigKubernetesSdConfigsSelectors>>,
-    /// TLS configuration to use on every scrape request
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
     pub tls_config: Option<VmScrapeConfigKubernetesSdConfigsTlsConfig>,
 }
 
-/// AttachMetadata configures metadata attaching from service discovery
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigKubernetesSdConfigsAttachMetadata {
-    /// Namespace instructs vmagent to add namespace specific metadata from service discovery
-    /// Valid for roles: pod, service, endpoints, endpointslice, ingress.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<bool>,
-    /// Node instructs vmagent to add node specific metadata from service discovery
-    /// Valid for roles: pod, endpoints, endpointslice.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub node: Option<bool>,
 }
 
-/// Authorization header to use on every scrape request.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigKubernetesSdConfigsAuthorization {
-    /// Reference to the secret with value for authorization
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<VmScrapeConfigKubernetesSdConfigsAuthorizationCredentials>,
-    /// File with value for authorization
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsFile")]
     pub credentials_file: Option<String>,
-    /// Type of authorization, default to bearer
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
 
-/// Reference to the secret with value for authorization
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigKubernetesSdConfigsAuthorizationCredentials {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// BasicAuth information to use on every scrape request.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigKubernetesSdConfigsBasicAuth {
-    /// Password defines reference for secret with password value
-    /// The secret needs to be in the same namespace as scrape object
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<VmScrapeConfigKubernetesSdConfigsBasicAuthPassword>,
-    /// PasswordFile defines path to password file at disk
-    /// must be pre-mounted
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password_file: Option<String>,
-    /// Username defines reference for secret with username value
-    /// The secret needs to be in the same namespace as scrape object
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<VmScrapeConfigKubernetesSdConfigsBasicAuthUsername>,
 }
 
-/// Password defines reference for secret with password value
-/// The secret needs to be in the same namespace as scrape object
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigKubernetesSdConfigsBasicAuthPassword {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Username defines reference for secret with username value
-/// The secret needs to be in the same namespace as scrape object
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigKubernetesSdConfigsBasicAuthUsername {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Optional namespace discovery. If omitted, discover targets across all namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigKubernetesSdConfigsNamespaces {
-    /// List of namespaces where to watch for resources.
-    /// If empty and `ownNamespace` isn't true, watch for resources in all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub names: Option<Vec<String>>,
-    /// Includes the namespace in which the pod exists to the list of watched namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownNamespace")]
     pub own_namespace: Option<bool>,
 }
 
-/// OAuth2 defines auth configuration
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigKubernetesSdConfigsOauth2 {
-    /// The secret or configmap containing the OAuth2 client id
     pub client_id: VmScrapeConfigKubernetesSdConfigsOauth2ClientId,
-    /// The secret containing the OAuth2 client secret
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client_secret: Option<VmScrapeConfigKubernetesSdConfigsOauth2ClientSecret>,
-    /// ClientSecretFile defines path for client secret file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client_secret_file: Option<String>,
-    /// Parameters to append to the token URL
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
-    /// The proxy URL for token_url connection
-    /// ( available from v0.55.0).
-    /// Is only supported by Scrape objects family
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy_url: Option<String>,
-    /// OAuth2 scopes used for the token request
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scopes: Option<Vec<String>>,
-    /// TLSConfig for token_url connection
-    /// ( available from v0.55.0).
-    /// Is only supported by Scrape objects family
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls_config: Option<serde_json::Value>,
-    /// The URL to fetch the token from
     pub token_url: String,
 }
 
-/// The secret or configmap containing the OAuth2 client id
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigKubernetesSdConfigsOauth2ClientId {
-    /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<VmScrapeConfigKubernetesSdConfigsOauth2ClientIdConfigMap>,
-    /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VmScrapeConfigKubernetesSdConfigsOauth2ClientIdSecret>,
 }
 
-/// ConfigMap containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigKubernetesSdConfigsOauth2ClientIdConfigMap {
-    /// The key to select.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigKubernetesSdConfigsOauth2ClientIdSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// The secret containing the OAuth2 client secret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigKubernetesSdConfigsOauth2ClientSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// ProxyClientConfig configures proxy auth settings for scraping
-/// See [feature description](<https://docs.victoriametrics.com/victoriametrics/vmagent/#scraping-targets-via-a-proxy)>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigKubernetesSdConfigsProxyClientConfig {
-    /// BasicAuth allow an endpoint to authenticate over basic authentication
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub basic_auth: Option<VmScrapeConfigKubernetesSdConfigsProxyClientConfigBasicAuth>,
-    /// SecretKeySelector selects a key of a Secret.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bearer_token: Option<VmScrapeConfigKubernetesSdConfigsProxyClientConfigBearerToken>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1886,78 +1112,43 @@ pub struct VmScrapeConfigKubernetesSdConfigsProxyClientConfig {
     pub tls_config: Option<serde_json::Value>,
 }
 
-/// BasicAuth allow an endpoint to authenticate over basic authentication
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigKubernetesSdConfigsProxyClientConfigBasicAuth {
-    /// Password defines reference for secret with password value
-    /// The secret needs to be in the same namespace as scrape object
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<VmScrapeConfigKubernetesSdConfigsProxyClientConfigBasicAuthPassword>,
-    /// PasswordFile defines path to password file at disk
-    /// must be pre-mounted
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password_file: Option<String>,
-    /// Username defines reference for secret with username value
-    /// The secret needs to be in the same namespace as scrape object
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<VmScrapeConfigKubernetesSdConfigsProxyClientConfigBasicAuthUsername>,
 }
 
-/// Password defines reference for secret with password value
-/// The secret needs to be in the same namespace as scrape object
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigKubernetesSdConfigsProxyClientConfigBasicAuthPassword {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Username defines reference for secret with username value
-/// The secret needs to be in the same namespace as scrape object
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigKubernetesSdConfigsProxyClientConfigBasicAuthUsername {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// SecretKeySelector selects a key of a Secret.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigKubernetesSdConfigsProxyClientConfigBearerToken {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// KubernetesSDConfig allows retrieving scrape targets from Kubernetes' REST API.
-/// See [here](<https://docs.victoriametrics.com/victoriametrics/sd_configs/#kubernetes_sd_configs)>
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum VmScrapeConfigKubernetesSdConfigsRole {
     #[serde(rename = "node")]
@@ -1974,7 +1165,6 @@ pub enum VmScrapeConfigKubernetesSdConfigsRole {
     Ingress,
 }
 
-/// K8SSelectorConfig is Kubernetes Selector Config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct VmScrapeConfigKubernetesSdConfigsSelectors {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1984,7 +1174,6 @@ pub struct VmScrapeConfigKubernetesSdConfigsSelectors {
     pub role: VmScrapeConfigKubernetesSdConfigsSelectorsRole,
 }
 
-/// K8SSelectorConfig is Kubernetes Selector Config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum VmScrapeConfigKubernetesSdConfigsSelectorsRole {
     #[serde(rename = "node")]
@@ -2001,379 +1190,213 @@ pub enum VmScrapeConfigKubernetesSdConfigsSelectorsRole {
     Ingress,
 }
 
-/// TLS configuration to use on every scrape request
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigKubernetesSdConfigsTlsConfig {
-    /// Struct containing the CA cert to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ca: Option<VmScrapeConfigKubernetesSdConfigsTlsConfigCa>,
-    /// Path to the CA cert in the container to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caFile")]
     pub ca_file: Option<String>,
-    /// Struct containing the client cert file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<VmScrapeConfigKubernetesSdConfigsTlsConfigCert>,
-    /// Path to the client cert file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
-    /// Disable target certificate validation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
-    /// Path to the client key file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
     pub key_file: Option<String>,
-    /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<VmScrapeConfigKubernetesSdConfigsTlsConfigKeySecret>,
-    /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
-/// Struct containing the CA cert to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigKubernetesSdConfigsTlsConfigCa {
-    /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<VmScrapeConfigKubernetesSdConfigsTlsConfigCaConfigMap>,
-    /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VmScrapeConfigKubernetesSdConfigsTlsConfigCaSecret>,
 }
 
-/// ConfigMap containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigKubernetesSdConfigsTlsConfigCaConfigMap {
-    /// The key to select.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigKubernetesSdConfigsTlsConfigCaSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Struct containing the client cert file for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigKubernetesSdConfigsTlsConfigCert {
-    /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<VmScrapeConfigKubernetesSdConfigsTlsConfigCertConfigMap>,
-    /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VmScrapeConfigKubernetesSdConfigsTlsConfigCertSecret>,
 }
 
-/// ConfigMap containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigKubernetesSdConfigsTlsConfigCertConfigMap {
-    /// The key to select.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigKubernetesSdConfigsTlsConfigCertSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing the client key file for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigKubernetesSdConfigsTlsConfigKeySecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// RelabelConfig allows dynamic rewriting of the label set
-/// More info: <https://docs.victoriametrics.com/victoriametrics/#relabeling>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigMetricRelabelConfigs {
-    /// Action to perform based on regex matching. Default is 'replace'
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<String>,
-    /// If represents metricsQL match expression (or list of expressions): '{__name__=~"foo_.*"}'
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "if")]
     pub r#if: Option<serde_json::Value>,
-    /// Labels is used together with Match for `action: graphite`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    /// Match is used together with Labels for `action: graphite`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "match")]
     pub r#match: Option<String>,
-    /// Modulus to take of the hash of the source label values.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub modulus: Option<i64>,
-    /// Regular expression against which the extracted value is matched. Default is '(.*)'
-    /// victoriaMetrics supports multiline regex joined with |
-    /// <https://docs.victoriametrics.com/victoriametrics/vmagent/#relabeling-enhancements>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<serde_json::Value>,
-    /// Replacement value against which a regex replace is performed if the
-    /// regular expression matches. Regex capture groups are available. Default is '$1'
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replacement: Option<String>,
-    /// Separator placed between concatenated source label values. default is ';'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub separator: Option<String>,
-    /// The source labels select values from existing labels. Their content is concatenated
-    /// using the configured separator and matched against the configured regular expression
-    /// for the replace, keep, and drop actions.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceLabels")]
     pub source_labels: Option<Vec<String>>,
-    /// UnderScoreSourceLabels - additional form of source labels source_labels
-    /// for compatibility with original relabel config.
-    /// if set both sourceLabels and source_labels, sourceLabels has priority.
-    /// for details <https://github.com/VictoriaMetrics/operator/issues/131>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "source_labels")]
     pub source_labels_x: Option<Vec<String>>,
-    /// Label to which the resulting value is written in a replace action.
-    /// It is mandatory for replace actions. Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
     pub target_label: Option<String>,
-    /// UnderScoreTargetLabel - additional form of target label - target_label
-    /// for compatibility with original relabel config.
-    /// if set both targetLabel and target_label, targetLabel has priority.
-    /// for details <https://github.com/VictoriaMetrics/operator/issues/131>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "target_label")]
     pub target_label_x: Option<String>,
 }
 
-/// OAuth2 defines auth configuration
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigOauth2 {
-    /// The secret or configmap containing the OAuth2 client id
     pub client_id: VmScrapeConfigOauth2ClientId,
-    /// The secret containing the OAuth2 client secret
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client_secret: Option<VmScrapeConfigOauth2ClientSecret>,
-    /// ClientSecretFile defines path for client secret file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client_secret_file: Option<String>,
-    /// Parameters to append to the token URL
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
-    /// The proxy URL for token_url connection
-    /// ( available from v0.55.0).
-    /// Is only supported by Scrape objects family
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy_url: Option<String>,
-    /// OAuth2 scopes used for the token request
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scopes: Option<Vec<String>>,
-    /// TLSConfig for token_url connection
-    /// ( available from v0.55.0).
-    /// Is only supported by Scrape objects family
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls_config: Option<serde_json::Value>,
-    /// The URL to fetch the token from
     pub token_url: String,
 }
 
-/// The secret or configmap containing the OAuth2 client id
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigOauth2ClientId {
-    /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<VmScrapeConfigOauth2ClientIdConfigMap>,
-    /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VmScrapeConfigOauth2ClientIdSecret>,
 }
 
-/// ConfigMap containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigOauth2ClientIdConfigMap {
-    /// The key to select.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigOauth2ClientIdSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// The secret containing the OAuth2 client secret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigOauth2ClientSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// OpenStackSDConfig allow retrieving scrape targets from OpenStack Nova instances.
-/// See [here](<https://docs.victoriametrics.com/victoriametrics/sd_configs/#openstack_sd_configs)>
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct VmScrapeConfigOpenstackSdConfigs {
-    /// Whether the service discovery should list all instances for all projects.
-    /// It is only relevant for the 'instance' role and usually requires admin permissions.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allTenants")]
     pub all_tenants: Option<bool>,
-    /// ApplicationCredentialID
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "applicationCredentialId")]
     pub application_credential_id: Option<String>,
-    /// The ApplicationCredentialID or ApplicationCredentialName fields are
-    /// required if using an application credential to authenticate. Some providers
-    /// allow you to create an application credential to authenticate rather than a
-    /// password.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "applicationCredentialName")]
     pub application_credential_name: Option<String>,
-    /// The applicationCredentialSecret field is required if using an application
-    /// credential to authenticate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "applicationCredentialSecret")]
     pub application_credential_secret: Option<VmScrapeConfigOpenstackSdConfigsApplicationCredentialSecret>,
-    /// Availability of the endpoint to connect to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub availability: Option<VmScrapeConfigOpenstackSdConfigsAvailability>,
-    /// DomainID
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "domainID")]
     pub domain_id: Option<String>,
-    /// At most one of domainId and domainName must be provided if using username
-    /// with Identity V3. Otherwise, either are optional.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "domainName")]
     pub domain_name: Option<String>,
-    /// IdentityEndpoint specifies the HTTP endpoint that is required to work with
-    /// the Identity API of the appropriate version.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityEndpoint")]
     pub identity_endpoint: Option<String>,
-    /// Password for the Identity V2 and V3 APIs. Consult with your provider's
-    /// control panel to discover your account's preferred method of authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<VmScrapeConfigOpenstackSdConfigsPassword>,
-    /// The port to scrape metrics from. If using the public IP address, this must
-    /// instead be specified in the relabeling rule.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
-    ///  ProjectID
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "projectID")]
     pub project_id: Option<String>,
-    /// The ProjectId and ProjectName fields are optional for the Identity V2 API.
-    /// Some providers allow you to specify a ProjectName instead of the ProjectId.
-    /// Some require both. Your provider's authentication policies will determine
-    /// how these fields influence authentication.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "projectName")]
     pub project_name: Option<String>,
-    /// The OpenStack Region.
     pub region: String,
-    /// The OpenStack role of entities that should be discovered.
     pub role: VmScrapeConfigOpenstackSdConfigsRole,
-    /// TLS configuration to use on every scrape request
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
     pub tls_config: Option<VmScrapeConfigOpenstackSdConfigsTlsConfig>,
-    /// UserID
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub userid: Option<String>,
-    /// Username is required if using Identity V2 API. Consult with your provider's
-    /// control panel to discover your account's username.
-    /// In Identity V3, either userid or a combination of username
-    /// and domainId or domainName are needed
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
 }
 
-/// The applicationCredentialSecret field is required if using an application
-/// credential to authenticate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigOpenstackSdConfigsApplicationCredentialSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// OpenStackSDConfig allow retrieving scrape targets from OpenStack Nova instances.
-/// See [here](<https://docs.victoriametrics.com/victoriametrics/sd_configs/#openstack_sd_configs)>
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum VmScrapeConfigOpenstackSdConfigsAvailability {
     Public,
@@ -2387,26 +1410,15 @@ pub enum VmScrapeConfigOpenstackSdConfigsAvailability {
     InternalX,
 }
 
-/// Password for the Identity V2 and V3 APIs. Consult with your provider's
-/// control panel to discover your account's preferred method of authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigOpenstackSdConfigsPassword {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// OpenStackSDConfig allow retrieving scrape targets from OpenStack Nova instances.
-/// See [here](<https://docs.victoriametrics.com/victoriametrics/sd_configs/#openstack_sd_configs)>
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum VmScrapeConfigOpenstackSdConfigsRole {
     Instance,
@@ -2417,197 +1429,115 @@ pub enum VmScrapeConfigOpenstackSdConfigsRole {
     HypervisorX,
 }
 
-/// TLS configuration to use on every scrape request
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigOpenstackSdConfigsTlsConfig {
-    /// Struct containing the CA cert to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ca: Option<VmScrapeConfigOpenstackSdConfigsTlsConfigCa>,
-    /// Path to the CA cert in the container to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caFile")]
     pub ca_file: Option<String>,
-    /// Struct containing the client cert file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<VmScrapeConfigOpenstackSdConfigsTlsConfigCert>,
-    /// Path to the client cert file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
-    /// Disable target certificate validation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
-    /// Path to the client key file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
     pub key_file: Option<String>,
-    /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<VmScrapeConfigOpenstackSdConfigsTlsConfigKeySecret>,
-    /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
-/// Struct containing the CA cert to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigOpenstackSdConfigsTlsConfigCa {
-    /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<VmScrapeConfigOpenstackSdConfigsTlsConfigCaConfigMap>,
-    /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VmScrapeConfigOpenstackSdConfigsTlsConfigCaSecret>,
 }
 
-/// ConfigMap containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigOpenstackSdConfigsTlsConfigCaConfigMap {
-    /// The key to select.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigOpenstackSdConfigsTlsConfigCaSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Struct containing the client cert file for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigOpenstackSdConfigsTlsConfigCert {
-    /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<VmScrapeConfigOpenstackSdConfigsTlsConfigCertConfigMap>,
-    /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VmScrapeConfigOpenstackSdConfigsTlsConfigCertSecret>,
 }
 
-/// ConfigMap containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigOpenstackSdConfigsTlsConfigCertConfigMap {
-    /// The key to select.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigOpenstackSdConfigsTlsConfigCertSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing the client key file for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigOpenstackSdConfigsTlsConfigKeySecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// RelabelConfig allows dynamic rewriting of the label set
-/// More info: <https://docs.victoriametrics.com/victoriametrics/#relabeling>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigRelabelConfigs {
-    /// Action to perform based on regex matching. Default is 'replace'
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<String>,
-    /// If represents metricsQL match expression (or list of expressions): '{__name__=~"foo_.*"}'
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "if")]
     pub r#if: Option<serde_json::Value>,
-    /// Labels is used together with Match for `action: graphite`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    /// Match is used together with Labels for `action: graphite`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "match")]
     pub r#match: Option<String>,
-    /// Modulus to take of the hash of the source label values.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub modulus: Option<i64>,
-    /// Regular expression against which the extracted value is matched. Default is '(.*)'
-    /// victoriaMetrics supports multiline regex joined with |
-    /// <https://docs.victoriametrics.com/victoriametrics/vmagent/#relabeling-enhancements>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<serde_json::Value>,
-    /// Replacement value against which a regex replace is performed if the
-    /// regular expression matches. Regex capture groups are available. Default is '$1'
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replacement: Option<String>,
-    /// Separator placed between concatenated source label values. default is ';'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub separator: Option<String>,
-    /// The source labels select values from existing labels. Their content is concatenated
-    /// using the configured separator and matched against the configured regular expression
-    /// for the replace, keep, and drop actions.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceLabels")]
     pub source_labels: Option<Vec<String>>,
-    /// UnderScoreSourceLabels - additional form of source labels source_labels
-    /// for compatibility with original relabel config.
-    /// if set both sourceLabels and source_labels, sourceLabels has priority.
-    /// for details <https://github.com/VictoriaMetrics/operator/issues/131>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "source_labels")]
     pub source_labels_x: Option<Vec<String>>,
-    /// Label to which the resulting value is written in a replace action.
-    /// It is mandatory for replace actions. Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
     pub target_label: Option<String>,
-    /// UnderScoreTargetLabel - additional form of target label - target_label
-    /// for compatibility with original relabel config.
-    /// if set both targetLabel and target_label, targetLabel has priority.
-    /// for details <https://github.com/VictoriaMetrics/operator/issues/131>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "target_label")]
     pub target_label_x: Option<String>,
 }
 
-/// VMScrapeConfigSpec defines the desired state of VMScrapeConfig
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum VmScrapeConfigScheme {
     #[serde(rename = "http")]
@@ -2620,177 +1550,105 @@ pub enum VmScrapeConfigScheme {
     HttpX,
 }
 
-/// StaticConfig defines a static configuration.
-/// See [here](<https://docs.victoriametrics.com/victoriametrics/sd_configs/#static_configs)>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigStaticConfigs {
-    /// Labels assigned to all metrics scraped from the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    /// List of targets for this static configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub targets: Option<Vec<String>>,
 }
 
-/// TLSConfig configuration to use when scraping the endpoint
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigTlsConfig {
-    /// Struct containing the CA cert to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ca: Option<VmScrapeConfigTlsConfigCa>,
-    /// Path to the CA cert in the container to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caFile")]
     pub ca_file: Option<String>,
-    /// Struct containing the client cert file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<VmScrapeConfigTlsConfigCert>,
-    /// Path to the client cert file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
-    /// Disable target certificate validation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
-    /// Path to the client key file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
     pub key_file: Option<String>,
-    /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<VmScrapeConfigTlsConfigKeySecret>,
-    /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
-/// Struct containing the CA cert to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigTlsConfigCa {
-    /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<VmScrapeConfigTlsConfigCaConfigMap>,
-    /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VmScrapeConfigTlsConfigCaSecret>,
 }
 
-/// ConfigMap containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigTlsConfigCaConfigMap {
-    /// The key to select.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigTlsConfigCaSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Struct containing the client cert file for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigTlsConfigCert {
-    /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<VmScrapeConfigTlsConfigCertConfigMap>,
-    /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VmScrapeConfigTlsConfigCertSecret>,
 }
 
-/// ConfigMap containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigTlsConfigCertConfigMap {
-    /// The key to select.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigTlsConfigCertSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing the client key file for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigTlsConfigKeySecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// VMScrapeParams defines VictoriaMetrics specific scrape parameters
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigVmScrapeParams {
-    /// DisableCompression
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disable_compression: Option<bool>,
-    /// disable_keepalive allows disabling HTTP keep-alive when scraping targets.
-    /// By default, HTTP keep-alive is enabled, so TCP connections to scrape targets
-    /// could be reused.
-    /// See <https://docs.victoriametrics.com/victoriametrics/vmagent/#scrape_config-enhancements>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disable_keep_alive: Option<bool>,
-    /// Headers allows sending custom headers to scrape targets
-    /// must be in of semicolon separated header with it's value
-    /// eg:
-    /// headerName: headerValue
-    /// vmagent supports since 1.79.0 version
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub no_stale_markers: Option<bool>,
-    /// ProxyClientConfig configures proxy auth settings for scraping
-    /// See feature description <https://docs.victoriametrics.com/victoriametrics/vmagent/#scraping-targets-via-a-proxy>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy_client_config: Option<VmScrapeConfigVmScrapeParamsProxyClientConfig>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2801,14 +1659,10 @@ pub struct VmScrapeConfigVmScrapeParams {
     pub stream_parse: Option<bool>,
 }
 
-/// ProxyClientConfig configures proxy auth settings for scraping
-/// See feature description <https://docs.victoriametrics.com/victoriametrics/vmagent/#scraping-targets-via-a-proxy>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigVmScrapeParamsProxyClientConfig {
-    /// BasicAuth allow an endpoint to authenticate over basic authentication
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub basic_auth: Option<VmScrapeConfigVmScrapeParamsProxyClientConfigBasicAuth>,
-    /// SecretKeySelector selects a key of a Secret.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bearer_token: Option<VmScrapeConfigVmScrapeParamsProxyClientConfigBearerToken>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2817,90 +1671,51 @@ pub struct VmScrapeConfigVmScrapeParamsProxyClientConfig {
     pub tls_config: Option<serde_json::Value>,
 }
 
-/// BasicAuth allow an endpoint to authenticate over basic authentication
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigVmScrapeParamsProxyClientConfigBasicAuth {
-    /// Password defines reference for secret with password value
-    /// The secret needs to be in the same namespace as scrape object
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<VmScrapeConfigVmScrapeParamsProxyClientConfigBasicAuthPassword>,
-    /// PasswordFile defines path to password file at disk
-    /// must be pre-mounted
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password_file: Option<String>,
-    /// Username defines reference for secret with username value
-    /// The secret needs to be in the same namespace as scrape object
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<VmScrapeConfigVmScrapeParamsProxyClientConfigBasicAuthUsername>,
 }
 
-/// Password defines reference for secret with password value
-/// The secret needs to be in the same namespace as scrape object
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigVmScrapeParamsProxyClientConfigBasicAuthPassword {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Username defines reference for secret with username value
-/// The secret needs to be in the same namespace as scrape object
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigVmScrapeParamsProxyClientConfigBasicAuthUsername {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// SecretKeySelector selects a key of a Secret.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigVmScrapeParamsProxyClientConfigBearerToken {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// ScrapeObjectStatus defines the observed state of ScrapeObjects
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmScrapeConfigStatus {
-    /// Known .status.conditions.type are: "Available", "Progressing", and "Degraded"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// ObservedGeneration defines current generation picked by operator for the
-    /// reconcile
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
-    /// Reason defines human readable error reason
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
-    /// UpdateStatus defines a status for update rollout
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateStatus")]
     pub update_status: Option<String>,
 }

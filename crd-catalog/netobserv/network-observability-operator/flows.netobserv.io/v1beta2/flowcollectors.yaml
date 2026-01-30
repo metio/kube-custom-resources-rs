@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.16.2"
+    controller-gen.kubebuilder.io/version: "v0.20.0"
   name: "flowcollectors.flows.netobserv.io"
 spec:
   group: "flows.netobserv.io"
@@ -642,7 +642,7 @@ spec:
                                         description: "Key is the taint key that the toleration applies to. Empty means match all taint keys.\nIf the key is empty, operator must be Exists; this combination means to match all values and all keys."
                                         type: "string"
                                       operator:
-                                        description: "Operator represents a key's relationship to the value.\nValid operators are Exists and Equal. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category."
+                                        description: "Operator represents a key's relationship to the value.\nValid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category.\nLt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators)."
                                         type: "string"
                                       tolerationSeconds:
                                         description: "TolerationSeconds represents the period of time the toleration (which must be\nof effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,\nit is not set, which means tolerate the taint forever (do not evict). Zero and\nnegative values will be treated as 0 (evict immediately) by the system."
@@ -1687,7 +1687,7 @@ spec:
                                     description: "Key is the taint key that the toleration applies to. Empty means match all taint keys.\nIf the key is empty, operator must be Exists; this combination means to match all values and all keys."
                                     type: "string"
                                   operator:
-                                    description: "Operator represents a key's relationship to the value.\nValid operators are Exists and Equal. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category."
+                                    description: "Operator represents a key's relationship to the value.\nValid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category.\nLt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators)."
                                     type: "string"
                                   tolerationSeconds:
                                     description: "TolerationSeconds represents the period of time the toleration (which must be\nof effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,\nit is not set, which means tolerate the taint forever (do not evict). Zero and\nnegative values will be treated as 0 (evict immediately) by the system."
@@ -3568,7 +3568,7 @@ spec:
                                     description: "Key is the taint key that the toleration applies to. Empty means match all taint keys.\nIf the key is empty, operator must be Exists; this combination means to match all values and all keys."
                                     type: "string"
                                   operator:
-                                    description: "Operator represents a key's relationship to the value.\nValid operators are Exists and Equal. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category."
+                                    description: "Operator represents a key's relationship to the value.\nValid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category.\nLt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators)."
                                     type: "string"
                                   tolerationSeconds:
                                     description: "TolerationSeconds represents the period of time the toleration (which must be\nof effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,\nit is not set, which means tolerate the taint forever (do not evict). Zero and\nnegative values will be treated as 0 (evict immediately) by the system."
@@ -4005,7 +4005,7 @@ spec:
                                   - "Recording"
                                 type: "string"
                               template:
-                                description: "Health rule template name.\nPossible values are: `PacketDropsByKernel`, `PacketDropsByDevice`, `IPsecErrors`, `NetpolDenied`,\n`LatencyHighTrend`, `DNSErrors`, `DNSNxDomain`, `ExternalEgressHighTrend`, `ExternalIngressHighTrend`.\nNote: `NetObservNoFlows` and `NetObservLokiError` are alert-only and cannot be used as health rules.\nMore information on health rules: https://github.com/netobserv/network-observability-operator/blob/main/docs/Alerts.md"
+                                description: "Health rule template name.\nPossible values are: `PacketDropsByKernel`, `PacketDropsByDevice`, `IPsecErrors`, `NetpolDenied`,\n`LatencyHighTrend`, `DNSErrors`, `DNSNxDomain`, `ExternalEgressHighTrend`, `ExternalIngressHighTrend`, `Ingress5xxErrors`, `IngressLatencyTrend`.\nNote: `NetObservNoFlows` and `NetObservLokiError` are alert-only and cannot be used as health rules.\nMore information on health rules: https://github.com/netobserv/network-observability-operator/blob/main/docs/Alerts.md"
                                 enum:
                                   - "PacketDropsByKernel"
                                   - "PacketDropsByDevice"
@@ -4016,6 +4016,8 @@ spec:
                                   - "DNSNxDomain"
                                   - "ExternalEgressHighTrend"
                                   - "ExternalIngressHighTrend"
+                                  - "Ingress5xxErrors"
+                                  - "IngressLatencyTrend"
                                 type: "string"
                               variants:
                                 description: "A list of variants for this template"
@@ -4031,6 +4033,12 @@ spec:
                                       type: "string"
                                     lowVolumeThreshold:
                                       description: "The low volume threshold allows to ignore metrics with a too low volume of traffic, in order to improve signal-to-noise.\nIt is provided as an absolute rate (bytes per second or packets per second, depending on the context).\nWhen provided, it must be parsable as a float."
+                                      type: "string"
+                                    mode:
+                                      description: "Mode overrides the health rule mode for this specific variant.\nIf not specified, inherits from the parent health rule's mode.\nPossible values are: `Alert`, `Recording`."
+                                      enum:
+                                        - "Alert"
+                                        - "Recording"
                                       type: "string"
                                     thresholds:
                                       description: "Thresholds of the health rule per severity.\nThey are expressed as a percentage of errors above which the alert is triggered. They must be parsable as floats.\nRequired for both alert and recording modes"
@@ -4480,7 +4488,7 @@ spec:
                     type: "object"
                   type: "array"
                 namespace:
-                  description: "Namespace where console plugin and flowlogs-pipeline have been deployed.\nDeprecated: annotations are used instead"
+                  description: "Namespace where console plugin and flowlogs-pipeline have been deployed.\n\nDeprecated: annotations are used instead"
                   type: "string"
               required:
                 - "conditions"

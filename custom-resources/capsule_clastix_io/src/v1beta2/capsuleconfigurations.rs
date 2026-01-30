@@ -6,6 +6,7 @@
 mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
+    pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
@@ -23,11 +24,17 @@ pub struct CapsuleConfigurationSpec {
     /// be ignored by capsule.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub administrators: Option<Vec<CapsuleConfigurationAdministrators>>,
+    /// Configuration for dynamic Validating and Mutating Admission webhooks managed by Capsule.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub admission: Option<CapsuleConfigurationAdmission>,
     /// ServiceAccounts within tenant namespaces can be promoted to owners of the given tenant
     /// this can be achieved by labeling the serviceaccount and then they are considered owners. This can only be done by other owners of the tenant.
     /// However ServiceAccounts which have been promoted to owner can not promote further serviceAccounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowServiceAccountPromotion")]
     pub allow_service_account_promotion: Option<bool>,
+    /// Define the period of time upon a cache invalidation is executed for all caches.
+    #[serde(rename = "cacheInvalidation")]
+    pub cache_invalidation: String,
     /// Toggles the TLS reconciler, the controller that is able to generate CA and certificates for the webhooks
     /// when not using an already provided CA and certificate, or when these are managed externally with Vault, or cert-manager.
     #[serde(rename = "enableTLSReconciler")]
@@ -51,6 +58,8 @@ pub struct CapsuleConfigurationSpec {
     /// Disallow creation of namespaces, whose name matches this regexp
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectedNamespaceRegex")]
     pub protected_namespace_regex: Option<String>,
+    /// Define Properties for managed ClusterRoles by Capsule
+    pub rbac: CapsuleConfigurationRbac,
     /// Deprecated: use users property instead (<https://projectcapsule.dev/docs/operating/setup/configuration/#users)>
     /// 
     /// Names of the groups considered as Capsule users.
@@ -80,6 +89,179 @@ pub enum CapsuleConfigurationAdministratorsKind {
     User,
     Group,
     ServiceAccount,
+}
+
+/// Configuration for dynamic Validating and Mutating Admission webhooks managed by Capsule.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CapsuleConfigurationAdmission {
+    /// Configure dynamic Mutating Admission for Capsule
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mutating: Option<CapsuleConfigurationAdmissionMutating>,
+    /// Configure dynamic Validating Admission for Capsule
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub validating: Option<CapsuleConfigurationAdmissionValidating>,
+}
+
+/// Configure dynamic Mutating Admission for Capsule
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CapsuleConfigurationAdmissionMutating {
+    /// Annotations added to the Admission Webhook
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// From the upstram struct
+    pub client: CapsuleConfigurationAdmissionMutatingClient,
+    /// Labels added to the Admission Webhook
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+    /// Name the Admission Webhook
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// From the upstram struct
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CapsuleConfigurationAdmissionMutatingClient {
+    /// `caBundle` is a PEM encoded CA bundle which will be used to validate the webhook's server certificate.
+    /// If unspecified, system trust roots on the apiserver are used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
+    pub ca_bundle: Option<String>,
+    /// `service` is a reference to the service for this webhook. Either
+    /// `service` or `url` must be specified.
+    /// 
+    /// If the webhook is running within the cluster, then you should use `service`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub service: Option<CapsuleConfigurationAdmissionMutatingClientService>,
+    /// `url` gives the location of the webhook, in standard URL form
+    /// (`scheme://host:port/path`). Exactly one of `url` or `service`
+    /// must be specified.
+    /// 
+    /// The `host` should not refer to a service running in the cluster; use
+    /// the `service` field instead. The host might be resolved via external
+    /// DNS in some apiservers (e.g., `kube-apiserver` cannot resolve
+    /// in-cluster DNS as that would be a layering violation). `host` may
+    /// also be an IP address.
+    /// 
+    /// Please note that using `localhost` or `127.0.0.1` as a `host` is
+    /// risky unless you take great care to run this webhook on all hosts
+    /// which run an apiserver which might need to make calls to this
+    /// webhook. Such installs are likely to be non-portable, i.e., not easy
+    /// to turn up in a new cluster.
+    /// 
+    /// The scheme must be "https"; the URL must begin with "<https://".>
+    /// 
+    /// A path is optional, and if present may be any string permissible in
+    /// a URL. You may use the path to pass an arbitrary string to the
+    /// webhook, for example, a cluster identifier.
+    /// 
+    /// Attempting to use a user or basic auth e.g. "user:password@" is not
+    /// allowed. Fragments ("#...") and query parameters ("?...") are not
+    /// allowed, either.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
+}
+
+/// `service` is a reference to the service for this webhook. Either
+/// `service` or `url` must be specified.
+/// 
+/// If the webhook is running within the cluster, then you should use `service`.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CapsuleConfigurationAdmissionMutatingClientService {
+    /// `name` is the name of the service.
+    /// Required
+    pub name: String,
+    /// `namespace` is the namespace of the service.
+    /// Required
+    pub namespace: String,
+    /// `path` is an optional URL path which will be sent in any request to
+    /// this service.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// If specified, the port on the service that hosting webhook.
+    /// Default to 443 for backward compatibility.
+    /// `port` should be a valid port number (1-65535, inclusive).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i32>,
+}
+
+/// Configure dynamic Validating Admission for Capsule
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CapsuleConfigurationAdmissionValidating {
+    /// Annotations added to the Admission Webhook
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// From the upstram struct
+    pub client: CapsuleConfigurationAdmissionValidatingClient,
+    /// Labels added to the Admission Webhook
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+    /// Name the Admission Webhook
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// From the upstram struct
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CapsuleConfigurationAdmissionValidatingClient {
+    /// `caBundle` is a PEM encoded CA bundle which will be used to validate the webhook's server certificate.
+    /// If unspecified, system trust roots on the apiserver are used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
+    pub ca_bundle: Option<String>,
+    /// `service` is a reference to the service for this webhook. Either
+    /// `service` or `url` must be specified.
+    /// 
+    /// If the webhook is running within the cluster, then you should use `service`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub service: Option<CapsuleConfigurationAdmissionValidatingClientService>,
+    /// `url` gives the location of the webhook, in standard URL form
+    /// (`scheme://host:port/path`). Exactly one of `url` or `service`
+    /// must be specified.
+    /// 
+    /// The `host` should not refer to a service running in the cluster; use
+    /// the `service` field instead. The host might be resolved via external
+    /// DNS in some apiservers (e.g., `kube-apiserver` cannot resolve
+    /// in-cluster DNS as that would be a layering violation). `host` may
+    /// also be an IP address.
+    /// 
+    /// Please note that using `localhost` or `127.0.0.1` as a `host` is
+    /// risky unless you take great care to run this webhook on all hosts
+    /// which run an apiserver which might need to make calls to this
+    /// webhook. Such installs are likely to be non-portable, i.e., not easy
+    /// to turn up in a new cluster.
+    /// 
+    /// The scheme must be "https"; the URL must begin with "<https://".>
+    /// 
+    /// A path is optional, and if present may be any string permissible in
+    /// a URL. You may use the path to pass an arbitrary string to the
+    /// webhook, for example, a cluster identifier.
+    /// 
+    /// Attempting to use a user or basic auth e.g. "user:password@" is not
+    /// allowed. Fragments ("#...") and query parameters ("?...") are not
+    /// allowed, either.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
+}
+
+/// `service` is a reference to the service for this webhook. Either
+/// `service` or `url` must be specified.
+/// 
+/// If the webhook is running within the cluster, then you should use `service`.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CapsuleConfigurationAdmissionValidatingClientService {
+    /// `name` is the name of the service.
+    /// Required
+    pub name: String,
+    /// `namespace` is the namespace of the service.
+    /// Required
+    pub namespace: String,
+    /// `path` is an optional URL path which will be sent in any request to
+    /// this service.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// If specified, the port on the service that hosting webhook.
+    /// Default to 443 for backward compatibility.
+    /// `port` should be a valid port number (1-65535, inclusive).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i32>,
 }
 
 /// Allows to set the forbidden metadata for the worker nodes that could be patched by a Tenant.
@@ -128,6 +310,23 @@ pub struct CapsuleConfigurationOverrides {
     pub validating_webhook_configuration_name: String,
 }
 
+/// Define Properties for managed ClusterRoles by Capsule
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CapsuleConfigurationRbac {
+    /// The ClusterRoles applied for Administrators
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "administrationClusterRoles")]
+    pub administration_cluster_roles: Option<Vec<String>>,
+    /// Name for the ClusterRole required to grant Namespace Deletion permissions.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deleter: Option<String>,
+    /// The ClusterRoles applied for ServiceAccounts which had owner Promotion
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "promotionClusterRoles")]
+    pub promotion_cluster_roles: Option<Vec<String>>,
+    /// Name for the ClusterRole required to grant Namespace Provision permissions.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub provisioner: Option<String>,
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CapsuleConfigurationUsers {
     /// Kind of entity. Possible values are "User", "Group", and "ServiceAccount"
@@ -146,6 +345,9 @@ pub enum CapsuleConfigurationUsersKind {
 /// CapsuleConfigurationStatus defines the Capsule configuration status.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CapsuleConfigurationStatus {
+    /// Last time all caches were invalided
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastCacheInvalidation")]
+    pub last_cache_invalidation: Option<String>,
     /// Users which are considered Capsule Users and are bound to the Capsule Tenant construct.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub users: Option<Vec<CapsuleConfigurationStatusUsers>>,

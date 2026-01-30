@@ -185,7 +185,7 @@ spec:
                   description: "paused can be used to prevent controllers from processing the Cluster and all its associated objects."
                   type: "boolean"
                 topology:
-                  description: "topology encapsulates the topology for the cluster.\nNOTE: It is required to enable the ClusterTopology\nfeature gate flag to activate managed topologies support;\nthis feature is highly experimental, and parts of it might still be not implemented."
+                  description: "topology encapsulates the topology for the cluster.\nNOTE: It is required to enable the ClusterTopology\nfeature gate flag to activate managed topologies support."
                   properties:
                     class:
                       description: "class is the name of the ClusterClass object to create the topology."

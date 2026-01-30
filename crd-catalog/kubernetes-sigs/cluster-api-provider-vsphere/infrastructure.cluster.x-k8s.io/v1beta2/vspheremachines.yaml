@@ -20,18 +20,24 @@ spec:
           jsonPath: ".metadata.labels['cluster\\.x-k8s\\.io/cluster-name']"
           name: "Cluster"
           type: "string"
+        - description: "Provider ID"
+          jsonPath: ".spec.providerID"
+          name: "Provider ID"
+          priority: 10
+          type: "string"
+        - description: "Template is the name, inventory path, managed object reference or the managed object ID of the template used to clone the VM"
+          jsonPath: ".spec.template"
+          name: "Template"
+          priority: 10
+          type: "string"
+        - description: "Reconciliation paused"
+          jsonPath: ".status.conditions[?(@.type==\"Paused\")].status"
+          name: "Paused"
+          priority: 10
+          type: "string"
         - description: "VSphereMachine is provisioned"
           jsonPath: ".status.initialization.provisioned"
           name: "Provisioned"
-          type: "string"
-        - description: "VSphereMachine instance ID"
-          jsonPath: ".spec.providerID"
-          name: "ProviderID"
-          type: "string"
-        - description: "Machine object which owns with this VSphereMachine"
-          jsonPath: ".metadata.ownerReferences[?(@.kind==\"Machine\")].name"
-          name: "Machine"
-          priority: 1
           type: "string"
         - description: "Time duration since creation of VSphereMachine"
           jsonPath: ".metadata.creationTimestamp"
@@ -118,11 +124,6 @@ spec:
                   format: "int32"
                   minimum: 1.0
                   type: "integer"
-                failureDomain:
-                  description: "failureDomain is the failure domain unique identifier this Machine should be attached to, as defined in Cluster API.\nFor this infrastructure provider, the name is equivalent to the name of the VSphereDeploymentZone."
-                  maxLength: 253
-                  minLength: 1
-                  type: "string"
                 folder:
                   description: "folder is the name, inventory path, managed object reference or the managed\nobject ID of the folder in which the virtual machine is created/located."
                   maxLength: 2048
@@ -143,8 +144,8 @@ spec:
                   format: "int64"
                   minimum: 1.0
                   type: "integer"
-                namingStrategy:
-                  description: "namingStrategy allows configuring the naming strategy used when calculating the name of the VSphereVM."
+                naming:
+                  description: "naming allows configuring the naming strategy used when calculating the name of the VSphereVM."
                   minProperties: 1
                   properties:
                     template:
@@ -397,10 +398,12 @@ spec:
                 numCPUs:
                   description: "numCPUs is the number of virtual processors in a virtual machine.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned."
                   format: "int32"
+                  minimum: 2.0
                   type: "integer"
                 numCoresPerSocket:
-                  description: "numCoresPerSocket is the number of cores among which to distribute CPUs in this\nvirtual machine.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned."
+                  description: "numCoresPerSocket is the number of cores among which to distribute CPUs in this\nvirtual machine.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned.\nNote: Starting with vSphere 8 numCoresPerSocket can be set to 0 to enable \"Assigned at power on\"."
                   format: "int32"
+                  minimum: 0.0
                   type: "integer"
                 os:
                   description: "os is the Operating System of the virtual machine\nDefaults to Linux"

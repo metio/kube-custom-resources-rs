@@ -40,6 +40,43 @@ spec:
                   description: "PtpDevice represents a PTP device available in the cluster node.\nThis struct contains information about the device, including its name and profile."
                   items:
                     properties:
+                      hardwareInfo:
+                        description: "HardwareInfo contains detailed hardware identification information for the device."
+                        properties:
+                          deviceID:
+                            description: "DeviceID is the PCI device identifier"
+                            type: "string"
+                          driverVersion:
+                            description: "DriverVersion is the version of the kernel driver in use"
+                            type: "string"
+                          firmwareVersion:
+                            description: "FirmwareVersion is the version of the device firmware"
+                            type: "string"
+                          pciAddress:
+                            description: "PCIAddress is the PCI bus address (e.g., \"0000:01:00.0\")"
+                            type: "string"
+                          subsystemDeviceID:
+                            description: "SubsystemDeviceID is the PCI subsystem device identifier"
+                            type: "string"
+                          subsystemVendorID:
+                            description: "SubsystemVendorID is the PCI subsystem vendor identifier"
+                            type: "string"
+                          vendorID:
+                            description: "VendorID is the PCI vendor identifier (e.g., \"8086\" for Intel)"
+                            type: "string"
+                          vpdManufacturerID:
+                            description: "VPDManufacturerID is the manufacturer identifier from VPD"
+                            type: "string"
+                          vpdPartNumber:
+                            description: "VPDPartNumber is the manufacturer's part number from VPD"
+                            type: "string"
+                          vpdProductName:
+                            description: "VPDProductName is the product name from VPD"
+                            type: "string"
+                          vpdSerialNumber:
+                            description: "VPDSerialNumber is the unique serial number from VPD"
+                            type: "string"
+                        type: "object"
                       name:
                         description: "Name is the name of the PTP device.\nIt is a unique identifier for the device."
                         type: "string"

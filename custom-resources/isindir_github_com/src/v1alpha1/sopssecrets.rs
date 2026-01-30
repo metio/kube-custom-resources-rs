@@ -122,7 +122,7 @@ pub struct SopsSecretSecretTemplates {
     pub labels: Option<BTreeMap<String, String>>,
     /// Name of the Kubernetes secret to create
     pub name: String,
-    /// Kubernetes secret type. Default: Opauqe. Possible values: Opauqe,
+    /// Kubernetes secret type. Default: Opaque. Possible values: Opaque,
     /// kubernetes.io/service-account-token, kubernetes.io/dockercfg,
     /// kubernetes.io/dockerconfigjson, kubernetes.io/basic-auth,
     /// kubernetes.io/ssh-auth, kubernetes.io/tls, bootstrap.kubernetes.io/token

@@ -654,7 +654,7 @@ pub struct FelixConfigurationSpec {
     /// [Default: 0xffff0000]
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nftablesMarkMask")]
     pub nftables_mark_mask: Option<i32>,
-    /// NFTablesMode configures nftables support in Felix. [Default: Disabled]
+    /// NFTablesMode configures nftables support in Felix. [Default: Auto]
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nftablesMode")]
     pub nftables_mode: Option<FelixConfigurationNftablesMode>,
     /// NftablesRefreshInterval controls the interval at which Felix periodically refreshes the nftables rules. [Default: 90s]
@@ -1040,6 +1040,7 @@ pub enum FelixConfigurationNatOutgoingExclusions {
 pub enum FelixConfigurationNftablesMode {
     Disabled,
     Enabled,
+    Auto,
 }
 
 /// FelixConfigurationSpec contains the values of the Felix configuration.

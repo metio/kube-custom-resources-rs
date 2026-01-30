@@ -663,6 +663,28 @@ spec:
                             type: "string"
                         type: "object"
                       type: "array"
+                    workloadAffinity:
+                      description: "WorkloadAffinity represents inter-workload affinity and anti-affinity\nscheduling policies."
+                      properties:
+                        affinity:
+                          description: "Affinity represents inter-workload affinity scheduling rules.\nThese are hard requirements: workloads will only be scheduled to clusters\nthat satisfy the affinity term if it is specified.\n\nFor the first workload of an affinity group (when no workloads with a\nmatching label value exist in the system), the scheduler will not block\nscheduling. This allows bootstrapping new workload groups without\nencountering scheduling deadlocks, providing a better user experience."
+                          properties:
+                            groupByLabelKey:
+                              description: "GroupByLabelKey declares the label key on the workload resource template that\ndetermines the affinity group. Workloads with the same label value under\nthis key belong to the same affinity group.\n\nThe scheduler maintains a global index of affinity groups in memory for\nefficient lookup. Each affinity group is identified by a serialized\nkey-value pair and contains all workload resource templates that belong\nto the group.\n\nNote: Affinity groups are scoped to the namespace. Workloads that use the\nsame affinity label but reside in different namespaces are not treated\nas part of the same group.\n\nThe key must be a valid Kubernetes label key.\n\nExample: If GroupByLabelKey is \"app.group\", workloads with the label\n\"app.group=frontend\" will form one affinity group, while those with\n\"app.group=backend\" will form another."
+                              type: "string"
+                          required:
+                            - "groupByLabelKey"
+                          type: "object"
+                        antiAffinity:
+                          description: "AntiAffinity represents inter-workload anti-affinity scheduling rules.\nThese are hard requirements: workloads will be scheduled to avoid clusters\nwhere matching workloads are already scheduled."
+                          properties:
+                            groupByLabelKey:
+                              description: "GroupByLabelKey declares the label key on the workload resource template that\ndetermines the anti-affinity group. Workloads with the same label value under\nthis key belong to the same anti-affinity group and will be separated.\n\nThe scheduler maintains a global index of affinity groups in memory for\nefficient lookup. Each affinity group is identified by a serialized\nkey-value pair and contains all workload resource templates that belong\nto the group.\n\nNote: Affinity groups are scoped to the namespace. Workloads that use the\nsame anti-affinity label but reside in different namespaces are not treated\nas part of the same group.\n\nThe key must be a valid Kubernetes label key.\n\nExample: If GroupByLabelKey is \"app.group\", workloads with the label\n\"app.group=frontend\" will avoid clusters where other\n\"app.group=frontend\" workloads already exist."
+                              type: "string"
+                          required:
+                            - "groupByLabelKey"
+                          type: "object"
+                      type: "object"
                   type: "object"
                 preserveResourcesOnDeletion:
                   description: "PreserveResourcesOnDeletion controls whether resources should be preserved on the\nmember clusters when the binding object is deleted.\nIf set to true, resources will be preserved on the member clusters.\nDefault is false, which means resources will be deleted along with the binding object.\nThis setting applies to all Work objects created under this binding object."
@@ -878,6 +900,16 @@ spec:
                     scheduling:
                       description: "Scheduling controls whether scheduling should be suspended, the scheduler will pause scheduling and not\nprocess resource binding when the value is true and resume scheduling when it's false or nil.\nThis is designed for third-party systems to temporarily pause the scheduling of applications, which enabling\nmanage resource allocation, prioritize critical workloads, etc.\nIt is expected that third-party systems use an admission webhook to suspend scheduling at the time of\nResourceBinding creation. Once a ResourceBinding has been scheduled, it cannot be paused afterward, as it may\nlead to ineffective suspension."
                       type: "boolean"
+                  type: "object"
+                workloadAffinityGroups:
+                  description: "WorkloadAffinityGroups represents instantiated grouping results from .spec.placement.workloadAffinity,\nused to keep workloads with the same affinity group co-located or those with the same\nanti-affinity group separated across clusters. Populated by controllers, the scheduler\nconsumes it for decisions."
+                  properties:
+                    affinityGroup:
+                      description: "AffinityGroup is the instantiated group name derived from affinity rules."
+                      type: "string"
+                    antiAffinityGroup:
+                      description: "AntiAffinityGroup is the instantiated group name derived from anti-affinity rules."
+                      type: "string"
                   type: "object"
               required:
                 - "resource"

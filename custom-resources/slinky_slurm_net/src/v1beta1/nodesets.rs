@@ -111,7 +111,7 @@ pub struct NodeSetControllerRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeSetPartition {
     /// Config is added to the NodeSet's partition line.
-    /// Ref: <https://slurm.schedmd.com/slurmd.html#OPT_conf-%3Cnode-parameters%3E>
+    /// Ref: <https://slurm.schedmd.com/slurm.conf.html#SECTION_PARTITION-CONFIGURATION>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<String>,
     /// Enabled will create a partition for this NodeSet.

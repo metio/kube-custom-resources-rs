@@ -367,6 +367,9 @@ pub struct MiddlewareErrorsService {
     /// Kind defines the kind of the Service.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<MiddlewareErrorsServiceKind>,
+    /// Middlewares defines the list of references to Middleware resources to apply to the service.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub middlewares: Option<Vec<MiddlewareErrorsServiceMiddlewares>>,
     /// Name defines the name of the referenced Kubernetes Service or TraefikService.
     /// The differentiation between the two is specified in the Kind field.
     pub name: String,
@@ -477,6 +480,16 @@ pub struct MiddlewareErrorsServiceHealthCheck {
 pub enum MiddlewareErrorsServiceKind {
     Service,
     TraefikService,
+}
+
+/// MiddlewareRef is a reference to a Middleware resource.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MiddlewareErrorsServiceMiddlewares {
+    /// Name defines the name of the referenced Middleware resource.
+    pub name: String,
+    /// Namespace defines the namespace of the referenced Middleware resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// PassiveHealthCheck defines passive health checks for ExternalName services.
@@ -591,6 +604,9 @@ pub struct MiddlewareForwardAuth {
     /// More info: <https://doc.traefik.io/traefik/v3.6/reference/routing-configuration/http/middlewares/forwardauth/#authresponseheadersregex>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authResponseHeadersRegex")]
     pub auth_response_headers_regex: Option<String>,
+    /// AuthSigninURL specifies the URL to redirect to when the authentication server returns 401 Unauthorized.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authSigninURL")]
+    pub auth_signin_url: Option<String>,
     /// ForwardBody defines whether to send the request body to the authentication server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forwardBody")]
     pub forward_body: Option<bool>,

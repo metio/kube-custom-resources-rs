@@ -92,10 +92,6 @@ pub struct VSphereMachineTemplateTemplateSpec {
     /// virtual machine is cloned.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskGiB")]
     pub disk_gi_b: Option<i32>,
-    /// failureDomain is the failure domain unique identifier this Machine should be attached to, as defined in Cluster API.
-    /// For this infrastructure provider, the name is equivalent to the name of the VSphereDeploymentZone.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomain")]
-    pub failure_domain: Option<String>,
     /// folder is the name, inventory path, managed object reference or the managed
     /// object ID of the folder in which the virtual machine is created/located.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -120,9 +116,9 @@ pub struct VSphereMachineTemplateTemplateSpec {
     /// virtual machine is cloned.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "memoryMiB")]
     pub memory_mi_b: Option<i64>,
-    /// namingStrategy allows configuring the naming strategy used when calculating the name of the VSphereVM.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namingStrategy")]
-    pub naming_strategy: Option<VSphereMachineTemplateTemplateSpecNamingStrategy>,
+    /// naming allows configuring the naming strategy used when calculating the name of the VSphereVM.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub naming: Option<VSphereMachineTemplateTemplateSpecNaming>,
     /// network is the network configuration for this machine's VM.
     pub network: VSphereMachineTemplateTemplateSpecNetwork,
     /// numCPUs is the number of virtual processors in a virtual machine.
@@ -134,6 +130,7 @@ pub struct VSphereMachineTemplateTemplateSpec {
     /// virtual machine.
     /// Defaults to the eponymous property value in the template from which the
     /// virtual machine is cloned.
+    /// Note: Starting with vSphere 8 numCoresPerSocket can be set to 0 to enable "Assigned at power on".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "numCoresPerSocket")]
     pub num_cores_per_socket: Option<i32>,
     /// os is the Operating System of the virtual machine
@@ -228,9 +225,9 @@ pub enum VSphereMachineTemplateTemplateSpecDataDisksProvisioningMode {
     EagerlyZeroed,
 }
 
-/// namingStrategy allows configuring the naming strategy used when calculating the name of the VSphereVM.
+/// naming allows configuring the naming strategy used when calculating the name of the VSphereVM.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct VSphereMachineTemplateTemplateSpecNamingStrategy {
+pub struct VSphereMachineTemplateTemplateSpecNaming {
     /// template defines the template to use for generating the name of the VSphereVM object.
     /// If not defined, it will fall back to `{{ .machine.name }}`.
     /// The templating has the following data available:

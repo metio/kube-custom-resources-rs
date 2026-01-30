@@ -175,7 +175,7 @@ spec:
                     - "false"
                   type: "string"
                 feature_copy_offload:
-                  description: "Enable copy offload plugins (default: false)"
+                  description: "Enable copy offload plugins (default: true)"
                   enum:
                     - "true"
                     - "false"

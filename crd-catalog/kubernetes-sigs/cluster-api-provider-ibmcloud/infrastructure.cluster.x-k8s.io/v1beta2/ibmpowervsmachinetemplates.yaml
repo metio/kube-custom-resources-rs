@@ -13,7 +13,8 @@ spec:
     singular: "ibmpowervsmachinetemplate"
   scope: "Namespaced"
   versions:
-    - name: "v1beta2"
+    - deprecated: true
+      name: "v1beta2"
       schema:
         openAPIV3Schema:
           description: "IBMPowerVSMachineTemplate is the Schema for the ibmpowervsmachinetemplates API."
@@ -154,6 +155,6 @@ spec:
               type: "object"
           type: "object"
       served: true
-      storage: true
+      storage: false
       subresources:
         status: {}
