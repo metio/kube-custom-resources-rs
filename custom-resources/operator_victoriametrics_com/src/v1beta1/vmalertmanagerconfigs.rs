@@ -11,8 +11,6 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// VMAlertmanagerConfigSpec defines configuration for VMAlertmanagerConfig
-/// it must reference only locally defined objects
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "operator.victoriametrics.com", version = "v1beta1", kind = "VMAlertmanagerConfig", plural = "vmalertmanagerconfigs")]
 #[kube(namespaced)]
@@ -21,46 +19,28 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct VmAlertmanagerConfigSpec {
-    /// InhibitRules will only apply for alerts matching
-    /// the resource's namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub inhibit_rules: Option<Vec<VmAlertmanagerConfigInhibitRules>>,
-    /// Receivers defines alert receivers
     pub receivers: Vec<VmAlertmanagerConfigReceivers>,
-    /// Route definition for alertmanager, may include nested routes.
     pub route: VmAlertmanagerConfigRoute,
-    /// TimeIntervals defines named interval for active/mute notifications interval
-    /// See <https://prometheus.io/docs/alerting/latest/configuration/#time_interval>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub time_intervals: Option<Vec<VmAlertmanagerConfigTimeIntervals>>,
 }
 
-/// InhibitRule defines an inhibition rule that allows to mute alerts when other
-/// alerts are already firing.
-/// Note, it doesn't support deprecated alertmanager config options.
-/// See <https://prometheus.io/docs/alerting/latest/configuration/#inhibit_rule>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigInhibitRules {
-    /// Labels that must have an equal value in the source and target alert for
-    /// the inhibition to take effect.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub equal: Option<Vec<String>>,
-    /// SourceMatchers defines a list of matchers for which one or more alerts have
-    /// to exist for the inhibition to take effect.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source_matchers: Option<Vec<String>>,
-    /// TargetMatchers defines a list of matchers that have to be fulfilled by the target
-    /// alerts to be muted.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub target_matchers: Option<Vec<String>>,
 }
 
-/// Receiver defines one or more notification integrations.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceivers {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub discord_configs: Option<Vec<VmAlertmanagerConfigReceiversDiscordConfigs>>,
-    /// EmailConfigs defines email notification configurations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub email_configs: Option<Vec<VmAlertmanagerConfigReceiversEmailConfigs>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -71,1379 +51,803 @@ pub struct VmAlertmanagerConfigReceivers {
     pub msteams_configs: Option<Vec<VmAlertmanagerConfigReceiversMsteamsConfigs>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub msteamsv2_configs: Option<Vec<VmAlertmanagerConfigReceiversMsteamsv2Configs>>,
-    /// Name of the receiver. Must be unique across all items from the list.
     pub name: String,
-    /// OpsGenieConfigs defines ops genie notification configurations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub opsgenie_configs: Option<Vec<VmAlertmanagerConfigReceiversOpsgenieConfigs>>,
-    /// PagerDutyConfigs defines pager duty notification configurations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pagerduty_configs: Option<Vec<VmAlertmanagerConfigReceiversPagerdutyConfigs>>,
-    /// PushoverConfigs defines push over notification configurations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pushover_configs: Option<Vec<VmAlertmanagerConfigReceiversPushoverConfigs>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rocketchat_configs: Option<Vec<VmAlertmanagerConfigReceiversRocketchatConfigs>>,
-    /// SlackConfigs defines slack notification configurations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub slack_configs: Option<Vec<VmAlertmanagerConfigReceiversSlackConfigs>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sns_configs: Option<Vec<VmAlertmanagerConfigReceiversSnsConfigs>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub telegram_configs: Option<Vec<VmAlertmanagerConfigReceiversTelegramConfigs>>,
-    /// VictorOpsConfigs defines victor ops notification configurations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub victorops_configs: Option<Vec<VmAlertmanagerConfigReceiversVictoropsConfigs>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub webex_configs: Option<Vec<VmAlertmanagerConfigReceiversWebexConfigs>>,
-    /// WebhookConfigs defines webhook notification configurations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub webhook_configs: Option<Vec<VmAlertmanagerConfigReceiversWebhookConfigs>>,
-    /// WeChatConfigs defines wechat notification configurations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub wechat_configs: Option<Vec<VmAlertmanagerConfigReceiversWechatConfigs>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversDiscordConfigs {
-    /// AvatarURL defines message avatar URL
-    /// Available from operator v0.55.0 and alertmanager v0.28.0
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub avatar_url: Option<String>,
-    /// Content defines message content template
-    /// Available from operator v0.55.0 and alertmanager v0.28.0
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub content: Option<String>,
-    /// HTTP client configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http_config: Option<VmAlertmanagerConfigReceiversDiscordConfigsHttpConfig>,
-    /// The message body template
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// SendResolved controls notify about resolved alerts.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub send_resolved: Option<bool>,
-    /// The message title template
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
-    /// Username defines message username
-    /// Available from operator v0.55.0 and alertmanager v0.28.0
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
-    /// The discord webhook URL
-    /// one of `urlSecret` and `url` must be defined.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub webhook_url: Option<String>,
-    /// URLSecret defines secret name and key at the CRD namespace.
-    /// It must contain the webhook URL.
-    /// one of `urlSecret` and `url` must be defined.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub webhook_url_secret: Option<VmAlertmanagerConfigReceiversDiscordConfigsWebhookUrlSecret>,
 }
 
-/// HTTP client configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversDiscordConfigsHttpConfig {
-    /// Authorization header configuration for the client.
-    /// This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<VmAlertmanagerConfigReceiversDiscordConfigsHttpConfigAuthorization>,
-    /// BasicAuth for the client.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub basic_auth: Option<VmAlertmanagerConfigReceiversDiscordConfigsHttpConfigBasicAuth>,
-    /// BearerTokenFile defines filename for bearer token, it must be mounted to pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bearer_token_file: Option<String>,
-    /// The secret's key that contains the bearer token
-    /// It must be at them same namespace as CRD
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bearer_token_secret: Option<VmAlertmanagerConfigReceiversDiscordConfigsHttpConfigBearerTokenSecret>,
-    /// OAuth2 client credentials used to fetch a token for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oauth2: Option<VmAlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2>,
-    /// Optional proxy URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyURL")]
     pub proxy_url: Option<String>,
-    /// TLS configuration for the client.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls_config: Option<VmAlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfig>,
 }
 
-/// Authorization header configuration for the client.
-/// This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversDiscordConfigsHttpConfigAuthorization {
-    /// Reference to the secret with value for authorization
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<VmAlertmanagerConfigReceiversDiscordConfigsHttpConfigAuthorizationCredentials>,
-    /// File with value for authorization
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsFile")]
     pub credentials_file: Option<String>,
-    /// Type of authorization, default to bearer
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
 
-/// Reference to the secret with value for authorization
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversDiscordConfigsHttpConfigAuthorizationCredentials {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// BasicAuth for the client.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversDiscordConfigsHttpConfigBasicAuth {
-    /// Password defines reference for secret with password value
-    /// The secret needs to be in the same namespace as scrape object
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<VmAlertmanagerConfigReceiversDiscordConfigsHttpConfigBasicAuthPassword>,
-    /// PasswordFile defines path to password file at disk
-    /// must be pre-mounted
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password_file: Option<String>,
-    /// Username defines reference for secret with username value
-    /// The secret needs to be in the same namespace as scrape object
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<VmAlertmanagerConfigReceiversDiscordConfigsHttpConfigBasicAuthUsername>,
 }
 
-/// Password defines reference for secret with password value
-/// The secret needs to be in the same namespace as scrape object
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversDiscordConfigsHttpConfigBasicAuthPassword {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Username defines reference for secret with username value
-/// The secret needs to be in the same namespace as scrape object
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversDiscordConfigsHttpConfigBasicAuthUsername {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// The secret's key that contains the bearer token
-/// It must be at them same namespace as CRD
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversDiscordConfigsHttpConfigBearerTokenSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// OAuth2 client credentials used to fetch a token for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2 {
-    /// The secret or configmap containing the OAuth2 client id
     pub client_id: VmAlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2ClientId,
-    /// The secret containing the OAuth2 client secret
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client_secret: Option<VmAlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2ClientSecret>,
-    /// ClientSecretFile defines path for client secret file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client_secret_file: Option<String>,
-    /// Parameters to append to the token URL
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
-    /// The proxy URL for token_url connection
-    /// ( available from v0.55.0).
-    /// Is only supported by Scrape objects family
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy_url: Option<String>,
-    /// OAuth2 scopes used for the token request
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scopes: Option<Vec<String>>,
-    /// TLSConfig for token_url connection
-    /// ( available from v0.55.0).
-    /// Is only supported by Scrape objects family
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls_config: Option<serde_json::Value>,
-    /// The URL to fetch the token from
     pub token_url: String,
 }
 
-/// The secret or configmap containing the OAuth2 client id
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2ClientId {
-    /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<VmAlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2ClientIdConfigMap>,
-    /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VmAlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2ClientIdSecret>,
 }
 
-/// ConfigMap containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2ClientIdConfigMap {
-    /// The key to select.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2ClientIdSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// The secret containing the OAuth2 client secret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2ClientSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// TLS configuration for the client.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfig {
-    /// Struct containing the CA cert to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ca: Option<VmAlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigCa>,
-    /// Path to the CA cert in the container to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caFile")]
     pub ca_file: Option<String>,
-    /// Struct containing the client cert file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<VmAlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigCert>,
-    /// Path to the client cert file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
-    /// Disable target certificate validation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
-    /// Path to the client key file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
     pub key_file: Option<String>,
-    /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<VmAlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigKeySecret>,
-    /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
-/// Struct containing the CA cert to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigCa {
-    /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<VmAlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigCaConfigMap>,
-    /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VmAlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigCaSecret>,
 }
 
-/// ConfigMap containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigCaConfigMap {
-    /// The key to select.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigCaSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Struct containing the client cert file for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigCert {
-    /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<VmAlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigCertConfigMap>,
-    /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VmAlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigCertSecret>,
 }
 
-/// ConfigMap containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigCertConfigMap {
-    /// The key to select.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigCertSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing the client key file for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigKeySecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// URLSecret defines secret name and key at the CRD namespace.
-/// It must contain the webhook URL.
-/// one of `urlSecret` and `url` must be defined.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversDiscordConfigsWebhookUrlSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// EmailConfig configures notifications via Email.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversEmailConfigs {
-    /// The identity to use for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auth_identity: Option<String>,
-    /// AuthPassword defines secret name and key at CRD namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auth_password: Option<VmAlertmanagerConfigReceiversEmailConfigsAuthPassword>,
-    /// AuthSecret defines secret name and key at CRD namespace.
-    /// It must contain the CRAM-MD5 secret.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auth_secret: Option<VmAlertmanagerConfigReceiversEmailConfigsAuthSecret>,
-    /// The username to use for authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auth_username: Option<String>,
-    /// The sender address.
-    /// fallback to global setting if empty
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub from: Option<String>,
-    /// Further headers email header key/value pairs. Overrides any headers
-    /// previously set by the notification implementation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<BTreeMap<String, String>>,
-    /// The hostname to identify to the SMTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hello: Option<String>,
-    /// The HTML body of the email notification.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub html: Option<String>,
-    /// The SMTP TLS requirement.
-    /// Note that Go does not support unencrypted connections to remote SMTP endpoints.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub require_tls: Option<bool>,
-    /// SendResolved controls notify about resolved alerts.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub send_resolved: Option<bool>,
-    /// The SMTP host through which emails are sent.
-    /// fallback to global setting if empty
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub smarthost: Option<String>,
-    /// The text body of the email notification.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub text: Option<String>,
-    /// TLS configuration
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls_config: Option<VmAlertmanagerConfigReceiversEmailConfigsTlsConfig>,
-    /// The email address to send notifications to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub to: Option<String>,
 }
 
-/// AuthPassword defines secret name and key at CRD namespace.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversEmailConfigsAuthPassword {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// AuthSecret defines secret name and key at CRD namespace.
-/// It must contain the CRAM-MD5 secret.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversEmailConfigsAuthSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// TLS configuration
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversEmailConfigsTlsConfig {
-    /// Struct containing the CA cert to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ca: Option<VmAlertmanagerConfigReceiversEmailConfigsTlsConfigCa>,
-    /// Path to the CA cert in the container to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caFile")]
     pub ca_file: Option<String>,
-    /// Struct containing the client cert file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<VmAlertmanagerConfigReceiversEmailConfigsTlsConfigCert>,
-    /// Path to the client cert file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
-    /// Disable target certificate validation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
-    /// Path to the client key file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
     pub key_file: Option<String>,
-    /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<VmAlertmanagerConfigReceiversEmailConfigsTlsConfigKeySecret>,
-    /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
-/// Struct containing the CA cert to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversEmailConfigsTlsConfigCa {
-    /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<VmAlertmanagerConfigReceiversEmailConfigsTlsConfigCaConfigMap>,
-    /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VmAlertmanagerConfigReceiversEmailConfigsTlsConfigCaSecret>,
 }
 
-/// ConfigMap containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversEmailConfigsTlsConfigCaConfigMap {
-    /// The key to select.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversEmailConfigsTlsConfigCaSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Struct containing the client cert file for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversEmailConfigsTlsConfigCert {
-    /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<VmAlertmanagerConfigReceiversEmailConfigsTlsConfigCertConfigMap>,
-    /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VmAlertmanagerConfigReceiversEmailConfigsTlsConfigCertSecret>,
 }
 
-/// ConfigMap containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversEmailConfigsTlsConfigCertConfigMap {
-    /// The key to select.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversEmailConfigsTlsConfigCertSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing the client key file for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversEmailConfigsTlsConfigKeySecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// IncidentIOConfig configures notifications via incident.io.
-/// <https://prometheus.io/docs/alerting/latest/configuration/#incidentio_config>
-/// available from v0.66.0 operator version
-/// and v0.29.0 alertmanager version
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversIncidentioConfigs {
-    /// AlertSourceToken is used to authenticate with incident.io
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub alert_source_token: Option<VmAlertmanagerConfigReceiversIncidentioConfigsAlertSourceToken>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http_config: Option<serde_json::Value>,
-    /// MaxAlerts defines maximum number of alerts to be sent per incident.io message.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max_alerts: Option<i64>,
-    /// SendResolved controls notify about resolved alerts.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub send_resolved: Option<bool>,
-    /// Timeout is the maximum time allowed to invoke incident.io
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
-    /// The URL to send the incident.io alert. This would typically be provided by the
-    /// incident.io team when setting up an alert source.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
 }
 
-/// AlertSourceToken is used to authenticate with incident.io
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversIncidentioConfigsAlertSourceToken {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// JiraConfig represent alertmanager's jira_config entry
-/// <https://prometheus.io/docs/alerting/latest/configuration/#jira_config>
-/// available from v0.55.0 operator version
-/// and v0.28.0 alertmanager version
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversJiraConfigs {
-    /// The URL to send API requests to. The full API path must be included.
-    /// Example: <https://company.atlassian.net/rest/api/2/>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub api_url: Option<String>,
-    /// Other issue and custom fields.
-    /// Jira issue field can have multiple types.
-    /// Depends on the field type, the values must be provided differently.
-    /// See <https://developer.atlassian.com/server/jira/platform/jira-rest-api-examples/#setting-custom-field-data-for-other-field-types> for further examples.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom_fields: Option<BTreeMap<String, serde_json::Value>>,
-    /// Issue description template.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    /// The HTTP client's configuration. You must use this configuration to supply the personal access token (PAT) as part of the HTTP `Authorization` header.
-    /// For Jira Cloud, use basic_auth with the email address as the username and the PAT as the password.
-    /// For Jira Data Center, use the 'authorization' field with 'credentials: <PAT value>'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http_config: Option<serde_json::Value>,
-    /// Type of the issue (e.g. Bug)
     pub issue_type: String,
-    /// Labels to be added to the issue
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<String>>,
-    /// Priority of the issue
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub priority: Option<String>,
-    /// The project key where issues are created
     pub project: String,
-    /// If reopen_transition is defined, reopen the issue when it is not older than this value (rounded down to the nearest minute).
-    /// The resolutiondate field is used to determine the age of the issue.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reopen_duration: Option<String>,
-    /// Name of the workflow transition to resolve an issue.
-    /// The target status must have the category "done".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reopen_transition: Option<String>,
-    /// Name of the workflow transition to reopen an issue.
-    /// The target status should not have the category "done".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resolve_transition: Option<String>,
-    /// SendResolved controls notify about resolved alerts.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub send_resolved: Option<bool>,
-    /// Issue summary template
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub summary: Option<String>,
-    /// If reopen_transition is defined, ignore issues with that resolution.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub wont_fix_resolution: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversMsteamsConfigs {
-    /// HTTP client configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http_config: Option<VmAlertmanagerConfigReceiversMsteamsConfigsHttpConfig>,
-    /// SendResolved controls notify about resolved alerts.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub send_resolved: Option<bool>,
-    /// The text body of the teams notification.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub text: Option<String>,
-    /// The title of the teams notification.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
-    /// The incoming webhook URL
-    /// one of `urlSecret` and `url` must be defined.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub webhook_url: Option<String>,
-    /// URLSecret defines secret name and key at the CRD namespace.
-    /// It must contain the webhook URL.
-    /// one of `urlSecret` and `url` must be defined.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub webhook_url_secret: Option<VmAlertmanagerConfigReceiversMsteamsConfigsWebhookUrlSecret>,
 }
 
-/// HTTP client configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversMsteamsConfigsHttpConfig {
-    /// Authorization header configuration for the client.
-    /// This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<VmAlertmanagerConfigReceiversMsteamsConfigsHttpConfigAuthorization>,
-    /// BasicAuth for the client.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub basic_auth: Option<VmAlertmanagerConfigReceiversMsteamsConfigsHttpConfigBasicAuth>,
-    /// BearerTokenFile defines filename for bearer token, it must be mounted to pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bearer_token_file: Option<String>,
-    /// The secret's key that contains the bearer token
-    /// It must be at them same namespace as CRD
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bearer_token_secret: Option<VmAlertmanagerConfigReceiversMsteamsConfigsHttpConfigBearerTokenSecret>,
-    /// OAuth2 client credentials used to fetch a token for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oauth2: Option<VmAlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2>,
-    /// Optional proxy URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyURL")]
     pub proxy_url: Option<String>,
-    /// TLS configuration for the client.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls_config: Option<VmAlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfig>,
 }
 
-/// Authorization header configuration for the client.
-/// This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversMsteamsConfigsHttpConfigAuthorization {
-    /// Reference to the secret with value for authorization
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<VmAlertmanagerConfigReceiversMsteamsConfigsHttpConfigAuthorizationCredentials>,
-    /// File with value for authorization
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsFile")]
     pub credentials_file: Option<String>,
-    /// Type of authorization, default to bearer
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
 
-/// Reference to the secret with value for authorization
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversMsteamsConfigsHttpConfigAuthorizationCredentials {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// BasicAuth for the client.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversMsteamsConfigsHttpConfigBasicAuth {
-    /// Password defines reference for secret with password value
-    /// The secret needs to be in the same namespace as scrape object
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<VmAlertmanagerConfigReceiversMsteamsConfigsHttpConfigBasicAuthPassword>,
-    /// PasswordFile defines path to password file at disk
-    /// must be pre-mounted
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password_file: Option<String>,
-    /// Username defines reference for secret with username value
-    /// The secret needs to be in the same namespace as scrape object
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<VmAlertmanagerConfigReceiversMsteamsConfigsHttpConfigBasicAuthUsername>,
 }
 
-/// Password defines reference for secret with password value
-/// The secret needs to be in the same namespace as scrape object
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversMsteamsConfigsHttpConfigBasicAuthPassword {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Username defines reference for secret with username value
-/// The secret needs to be in the same namespace as scrape object
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversMsteamsConfigsHttpConfigBasicAuthUsername {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// The secret's key that contains the bearer token
-/// It must be at them same namespace as CRD
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversMsteamsConfigsHttpConfigBearerTokenSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// OAuth2 client credentials used to fetch a token for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2 {
-    /// The secret or configmap containing the OAuth2 client id
     pub client_id: VmAlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2ClientId,
-    /// The secret containing the OAuth2 client secret
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client_secret: Option<VmAlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2ClientSecret>,
-    /// ClientSecretFile defines path for client secret file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client_secret_file: Option<String>,
-    /// Parameters to append to the token URL
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
-    /// The proxy URL for token_url connection
-    /// ( available from v0.55.0).
-    /// Is only supported by Scrape objects family
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy_url: Option<String>,
-    /// OAuth2 scopes used for the token request
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scopes: Option<Vec<String>>,
-    /// TLSConfig for token_url connection
-    /// ( available from v0.55.0).
-    /// Is only supported by Scrape objects family
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls_config: Option<serde_json::Value>,
-    /// The URL to fetch the token from
     pub token_url: String,
 }
 
-/// The secret or configmap containing the OAuth2 client id
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2ClientId {
-    /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<VmAlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2ClientIdConfigMap>,
-    /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VmAlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2ClientIdSecret>,
 }
 
-/// ConfigMap containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2ClientIdConfigMap {
-    /// The key to select.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2ClientIdSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// The secret containing the OAuth2 client secret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2ClientSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// TLS configuration for the client.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfig {
-    /// Struct containing the CA cert to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ca: Option<VmAlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigCa>,
-    /// Path to the CA cert in the container to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caFile")]
     pub ca_file: Option<String>,
-    /// Struct containing the client cert file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<VmAlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigCert>,
-    /// Path to the client cert file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
-    /// Disable target certificate validation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
-    /// Path to the client key file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
     pub key_file: Option<String>,
-    /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<VmAlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigKeySecret>,
-    /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
-/// Struct containing the CA cert to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigCa {
-    /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<VmAlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigCaConfigMap>,
-    /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VmAlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigCaSecret>,
 }
 
-/// ConfigMap containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigCaConfigMap {
-    /// The key to select.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigCaSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Struct containing the client cert file for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigCert {
-    /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<VmAlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigCertConfigMap>,
-    /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VmAlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigCertSecret>,
 }
 
-/// ConfigMap containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigCertConfigMap {
-    /// The key to select.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigCertSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing the client key file for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigKeySecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// URLSecret defines secret name and key at the CRD namespace.
-/// It must contain the webhook URL.
-/// one of `urlSecret` and `url` must be defined.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversMsteamsConfigsWebhookUrlSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// MSTeamsV2Config sends notifications using the new message format with adaptive cards as required by flows.
-/// <https://support.microsoft.com/en-gb/office/create-incoming-webhooks-with-workflows-for-microsoft-teams-8ae491c7-0394-4861-ba59-055e33f75498>
-/// available from v0.55.0 operator version
-/// and v0.28.0 alertmanager version
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversMsteamsv2Configs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http_config: Option<serde_json::Value>,
-    /// SendResolved controls notify about resolved alerts.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub send_resolved: Option<bool>,
-    /// Message body template.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub text: Option<String>,
-    /// Message title template.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
-    /// The incoming webhook URL
-    /// one of `urlSecret` and `url` must be defined.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub webhook_url: Option<String>,
-    /// URLSecret defines secret name and key at the CRD namespace.
-    /// It must contain the webhook URL.
-    /// one of `webhook_url` or `webhook_url_secret` must be defined.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub webhook_url_secret: Option<VmAlertmanagerConfigReceiversMsteamsv2ConfigsWebhookUrlSecret>,
 }
 
-/// URLSecret defines secret name and key at the CRD namespace.
-/// It must contain the webhook URL.
-/// one of `webhook_url` or `webhook_url_secret` must be defined.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversMsteamsv2ConfigsWebhookUrlSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// OpsGenieConfig configures notifications via OpsGenie.
-/// See <https://prometheus.io/docs/alerting/latest/configuration/#opsgenie_config>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversOpsgenieConfigs {
-    /// Comma separated list of actions that will be available for the alert.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub actions: Option<String>,
-    /// The URL to send OpsGenie API requests to.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiURL")]
     pub api_url: Option<String>,
-    /// The secret's key that contains the OpsGenie API key.
-    /// It must be at them same namespace as CRD
-    /// fallback to global setting if empty
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub api_key: Option<VmAlertmanagerConfigReceiversOpsgenieConfigsApiKey>,
-    /// Description of the incident.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    /// A set of arbitrary key/value pairs that provide further detail about the incident.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub details: Option<BTreeMap<String, String>>,
-    /// Optional field that can be used to specify which domain alert is related to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub entity: Option<String>,
-    /// HTTP client configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http_config: Option<BTreeMap<String, serde_json::Value>>,
-    /// Alert text limited to 130 characters.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// Additional alert note.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub note: Option<String>,
-    /// Priority level of alert. Possible values are P1, P2, P3, P4, and P5.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub priority: Option<String>,
-    /// List of responders responsible for notifications.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub responders: Option<Vec<VmAlertmanagerConfigReceiversOpsgenieConfigsResponders>>,
-    /// SendResolved controls notify about resolved alerts.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub send_resolved: Option<bool>,
-    /// Backlink to the sender of the notification.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source: Option<String>,
-    /// Comma separated list of tags attached to the notifications.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<String>,
-    /// Whether to update message and description of the alert in OpsGenie if it already exists
-    /// By default, the alert is never updated in OpsGenie, the new message only appears in activity log.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub update_alerts: Option<bool>,
 }
 
-/// The secret's key that contains the OpsGenie API key.
-/// It must be at them same namespace as CRD
-/// fallback to global setting if empty
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversOpsgenieConfigsApiKey {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// OpsGenieConfigResponder defines a responder to an incident.
-/// One of `id`, `name` or `username` has to be defined.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversOpsgenieConfigsResponders {
-    /// ID of the responder.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
-    /// Name of the responder.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Type of responder.
     #[serde(rename = "type")]
     pub r#type: String,
-    /// Username of the responder.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
 }
 
-/// PagerDutyConfig configures notifications via PagerDuty.
-/// See <https://prometheus.io/docs/alerting/latest/configuration/#pagerduty_config>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversPagerdutyConfigs {
-    /// The class/type of the event.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub class: Option<String>,
-    /// Client identification.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client: Option<String>,
-    /// Backlink to the sender of notification.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client_url: Option<String>,
-    /// The part or component of the affected system that is broken.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub component: Option<String>,
-    /// Description of the incident.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    /// Arbitrary key/value pairs that provide further detail about the incident.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub details: Option<BTreeMap<String, String>>,
-    /// A cluster or grouping of sources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group: Option<String>,
-    /// HTTP client configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http_config: Option<BTreeMap<String, serde_json::Value>>,
-    /// Images to attach to the incident.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<VmAlertmanagerConfigReceiversPagerdutyConfigsImages>>,
-    /// Links to attach to the incident.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub links: Option<Vec<VmAlertmanagerConfigReceiversPagerdutyConfigsLinks>>,
-    /// The secret's key that contains the PagerDuty integration key (when using
-    /// Events API v2). Either this field or `serviceKey` needs to be defined.
-    /// It must be at them same namespace as CRD
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub routing_key: Option<VmAlertmanagerConfigReceiversPagerdutyConfigsRoutingKey>,
-    /// SendResolved controls notify about resolved alerts.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub send_resolved: Option<bool>,
-    /// The secret's key that contains the PagerDuty service key (when using
-    /// integration type "Prometheus"). Either this field or `routingKey` needs to
-    /// be defined.
-    /// It must be at them same namespace as CRD
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service_key: Option<VmAlertmanagerConfigReceiversPagerdutyConfigsServiceKey>,
-    /// Severity of the incident.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub severity: Option<String>,
-    /// The URL to send requests to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
 }
 
-/// ImageConfig is used to attach images to the incident.
-/// See <https://developer.pagerduty.com/docs/ZG9jOjExMDI5NTgx-send-an-alert-event#the-images-property>
-/// for more information.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversPagerdutyConfigsImages {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1453,9 +857,6 @@ pub struct VmAlertmanagerConfigReceiversPagerdutyConfigsImages {
     pub source: String,
 }
 
-/// LinkConfig is used to attach text links to the incident.
-/// See <https://developer.pagerduty.com/docs/ZG9jOjExMDI5NTgx-send-an-alert-event#the-links-property>
-/// for more information.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversPagerdutyConfigsLinks {
     pub href: String,
@@ -1463,141 +864,78 @@ pub struct VmAlertmanagerConfigReceiversPagerdutyConfigsLinks {
     pub text: Option<String>,
 }
 
-/// The secret's key that contains the PagerDuty integration key (when using
-/// Events API v2). Either this field or `serviceKey` needs to be defined.
-/// It must be at them same namespace as CRD
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversPagerdutyConfigsRoutingKey {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// The secret's key that contains the PagerDuty service key (when using
-/// integration type "Prometheus"). Either this field or `routingKey` needs to
-/// be defined.
-/// It must be at them same namespace as CRD
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversPagerdutyConfigsServiceKey {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// PushoverConfig configures notifications via Pushover.
-/// See <https://prometheus.io/docs/alerting/latest/configuration/#pushover_config>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversPushoverConfigs {
-    /// How long your notification will continue to be retried for, unless the user
-    /// acknowledges the notification.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expire: Option<String>,
-    /// Whether notification message is HTML or plain text.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub html: Option<bool>,
-    /// HTTP client configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http_config: Option<BTreeMap<String, serde_json::Value>>,
-    /// Notification message.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// Priority, see <https://pushover.net/api#priority>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub priority: Option<String>,
-    /// How often the Pushover servers will send the same notification to the user.
-    /// Must be at least 30 seconds.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retry: Option<String>,
-    /// SendResolved controls notify about resolved alerts.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub send_resolved: Option<bool>,
-    /// The name of one of the sounds supported by device clients to override the user's default sound choice
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sound: Option<String>,
-    /// Notification title.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
-    /// The secret's key that contains the registered application’s API token, see <https://pushover.net/apps.>
-    /// It must be at them same namespace as CRD
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub token: Option<VmAlertmanagerConfigReceiversPushoverConfigsToken>,
-    /// A supplementary URL shown alongside the message.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
-    /// A title for supplementary URL, otherwise just the URL is shown
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url_title: Option<String>,
-    /// The secret's key that contains the recipient user’s user key.
-    /// It must be at them same namespace as CRD
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user_key: Option<VmAlertmanagerConfigReceiversPushoverConfigsUserKey>,
 }
 
-/// The secret's key that contains the registered application’s API token, see <https://pushover.net/apps.>
-/// It must be at them same namespace as CRD
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversPushoverConfigsToken {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// The secret's key that contains the recipient user’s user key.
-/// It must be at them same namespace as CRD
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversPushoverConfigsUserKey {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// RocketchatConfig configures notifications via Rocketchat.
-/// <https://prometheus.io/docs/alerting/latest/configuration/#rocketchat_config>
-/// available from v0.55.0 operator version
-/// and v0.28.0 alertmanager version
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversRocketchatConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub actions: Option<Vec<VmAlertmanagerConfigReceiversRocketchatConfigsActions>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub api_url: Option<String>,
-    /// RocketChat channel override, (like #other-channel or @username).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub channel: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1614,7 +952,6 @@ pub struct VmAlertmanagerConfigReceiversRocketchatConfigs {
     pub image_url: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub link_names: Option<bool>,
-    /// SendResolved controls notify about resolved alerts.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub send_resolved: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1627,17 +964,12 @@ pub struct VmAlertmanagerConfigReceiversRocketchatConfigs {
     pub title: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub title_link: Option<String>,
-    /// SecretKeySelector selects a key of a Secret.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub token: Option<VmAlertmanagerConfigReceiversRocketchatConfigsToken>,
-    /// The sender token and token_id
-    /// See <https://docs.rocket.chat/use-rocket.chat/user-guides/user-panel/my-account#personal-access-tokens>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub token_id: Option<VmAlertmanagerConfigReceiversRocketchatConfigsTokenId>,
 }
 
-/// RocketchatAttachmentAction defines message attachments
-/// <https://github.com/RocketChat/Rocket.Chat.Go.SDK/blob/master/models/message.go>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversRocketchatConfigsActions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1650,8 +982,6 @@ pub struct VmAlertmanagerConfigReceiversRocketchatConfigsActions {
     pub url: Option<String>,
 }
 
-/// RocketchatAttachmentField defines API fields
-/// <https://developer.rocket.chat/reference/api/rest-api/endpoints/messaging/chat-endpoints/postmessage#attachment-field-objects>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversRocketchatConfigsFields {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1662,68 +992,42 @@ pub struct VmAlertmanagerConfigReceiversRocketchatConfigsFields {
     pub value: Option<String>,
 }
 
-/// SecretKeySelector selects a key of a Secret.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversRocketchatConfigsToken {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// The sender token and token_id
-/// See <https://docs.rocket.chat/use-rocket.chat/user-guides/user-panel/my-account#personal-access-tokens>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversRocketchatConfigsTokenId {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// SlackConfig configures notifications via Slack.
-/// See <https://prometheus.io/docs/alerting/latest/configuration/#slack_config>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversSlackConfigs {
-    /// A list of Slack actions that are sent with each notification.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub actions: Option<Vec<VmAlertmanagerConfigReceiversSlackConfigsActions>>,
-    /// The secret's key that contains the Slack webhook URL.
-    /// It must be at them same namespace as CRD
-    /// fallback to global setting if empty
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub api_url: Option<VmAlertmanagerConfigReceiversSlackConfigsApiUrl>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub callback_id: Option<String>,
-    /// The channel or user to send notifications to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub channel: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub color: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fallback: Option<String>,
-    /// A list of Slack fields that are sent with each notification.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fields: Option<Vec<VmAlertmanagerConfigReceiversSlackConfigsFields>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub footer: Option<String>,
-    /// HTTP client configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http_config: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1738,7 +1042,6 @@ pub struct VmAlertmanagerConfigReceiversSlackConfigs {
     pub mrkdwn_in: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pretext: Option<String>,
-    /// SendResolved controls notify about resolved alerts.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub send_resolved: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1755,17 +1058,8 @@ pub struct VmAlertmanagerConfigReceiversSlackConfigs {
     pub username: Option<String>,
 }
 
-/// SlackAction configures a single Slack action that is sent with each
-/// notification.
-/// See <https://api.slack.com/docs/message-attachments#action_fields> and
-/// <https://api.slack.com/docs/message-buttons> for more information.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversSlackConfigsActions {
-    /// SlackConfirmationField protect users from destructive actions or
-    /// particularly distinguished decisions by asking them to confirm their button
-    /// click one more time.
-    /// See <https://api.slack.com/docs/interactive-message-field-guide#confirmation_fields>
-    /// for more information.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub confirm: Option<VmAlertmanagerConfigReceiversSlackConfigsActionsConfirm>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1781,11 +1075,6 @@ pub struct VmAlertmanagerConfigReceiversSlackConfigsActions {
     pub value: Option<String>,
 }
 
-/// SlackConfirmationField protect users from destructive actions or
-/// particularly distinguished decisions by asking them to confirm their button
-/// click one more time.
-/// See <https://api.slack.com/docs/interactive-message-field-guide#confirmation_fields>
-/// for more information.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversSlackConfigsActionsConfirm {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1797,27 +1086,15 @@ pub struct VmAlertmanagerConfigReceiversSlackConfigsActionsConfirm {
     pub title: Option<String>,
 }
 
-/// The secret's key that contains the Slack webhook URL.
-/// It must be at them same namespace as CRD
-/// fallback to global setting if empty
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversSlackConfigsApiUrl {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// SlackField configures a single Slack field that is sent with each notification.
-/// See <https://api.slack.com/docs/message-attachments#fields> for more information.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversSlackConfigsFields {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1828,1379 +1105,801 @@ pub struct VmAlertmanagerConfigReceiversSlackConfigsFields {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversSnsConfigs {
-    /// The api URL
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub api_url: Option<String>,
-    /// SNS message attributes
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attributes: Option<BTreeMap<String, String>>,
-    /// HTTP client configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http_config: Option<VmAlertmanagerConfigReceiversSnsConfigsHttpConfig>,
-    /// The message content of the SNS notification.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// Phone number if message is delivered via SMS
-    /// Specify this, topic_arn or target_arn
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phone_number: Option<String>,
-    /// SendResolved controls notify about resolved alerts.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub send_resolved: Option<bool>,
-    /// Configure the AWS Signature Verification 4 signing process
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sigv4: Option<VmAlertmanagerConfigReceiversSnsConfigsSigv4>,
-    /// The subject line if message is delivered to an email endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subject: Option<String>,
-    /// Mobile platform endpoint ARN if message is delivered via mobile notifications
-    /// Specify this, topic_arn or phone_number
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub target_arn: Option<String>,
-    /// SNS topic ARN, either specify this, phone_number or target_arn
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub topic_arn: Option<String>,
 }
 
-/// HTTP client configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversSnsConfigsHttpConfig {
-    /// Authorization header configuration for the client.
-    /// This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<VmAlertmanagerConfigReceiversSnsConfigsHttpConfigAuthorization>,
-    /// BasicAuth for the client.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub basic_auth: Option<VmAlertmanagerConfigReceiversSnsConfigsHttpConfigBasicAuth>,
-    /// BearerTokenFile defines filename for bearer token, it must be mounted to pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bearer_token_file: Option<String>,
-    /// The secret's key that contains the bearer token
-    /// It must be at them same namespace as CRD
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bearer_token_secret: Option<VmAlertmanagerConfigReceiversSnsConfigsHttpConfigBearerTokenSecret>,
-    /// OAuth2 client credentials used to fetch a token for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oauth2: Option<VmAlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2>,
-    /// Optional proxy URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyURL")]
     pub proxy_url: Option<String>,
-    /// TLS configuration for the client.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls_config: Option<VmAlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfig>,
 }
 
-/// Authorization header configuration for the client.
-/// This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversSnsConfigsHttpConfigAuthorization {
-    /// Reference to the secret with value for authorization
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<VmAlertmanagerConfigReceiversSnsConfigsHttpConfigAuthorizationCredentials>,
-    /// File with value for authorization
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsFile")]
     pub credentials_file: Option<String>,
-    /// Type of authorization, default to bearer
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
 
-/// Reference to the secret with value for authorization
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversSnsConfigsHttpConfigAuthorizationCredentials {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// BasicAuth for the client.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversSnsConfigsHttpConfigBasicAuth {
-    /// Password defines reference for secret with password value
-    /// The secret needs to be in the same namespace as scrape object
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<VmAlertmanagerConfigReceiversSnsConfigsHttpConfigBasicAuthPassword>,
-    /// PasswordFile defines path to password file at disk
-    /// must be pre-mounted
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password_file: Option<String>,
-    /// Username defines reference for secret with username value
-    /// The secret needs to be in the same namespace as scrape object
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<VmAlertmanagerConfigReceiversSnsConfigsHttpConfigBasicAuthUsername>,
 }
 
-/// Password defines reference for secret with password value
-/// The secret needs to be in the same namespace as scrape object
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversSnsConfigsHttpConfigBasicAuthPassword {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Username defines reference for secret with username value
-/// The secret needs to be in the same namespace as scrape object
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversSnsConfigsHttpConfigBasicAuthUsername {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// The secret's key that contains the bearer token
-/// It must be at them same namespace as CRD
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversSnsConfigsHttpConfigBearerTokenSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// OAuth2 client credentials used to fetch a token for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2 {
-    /// The secret or configmap containing the OAuth2 client id
     pub client_id: VmAlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2ClientId,
-    /// The secret containing the OAuth2 client secret
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client_secret: Option<VmAlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2ClientSecret>,
-    /// ClientSecretFile defines path for client secret file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client_secret_file: Option<String>,
-    /// Parameters to append to the token URL
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
-    /// The proxy URL for token_url connection
-    /// ( available from v0.55.0).
-    /// Is only supported by Scrape objects family
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy_url: Option<String>,
-    /// OAuth2 scopes used for the token request
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scopes: Option<Vec<String>>,
-    /// TLSConfig for token_url connection
-    /// ( available from v0.55.0).
-    /// Is only supported by Scrape objects family
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls_config: Option<serde_json::Value>,
-    /// The URL to fetch the token from
     pub token_url: String,
 }
 
-/// The secret or configmap containing the OAuth2 client id
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2ClientId {
-    /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<VmAlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2ClientIdConfigMap>,
-    /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VmAlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2ClientIdSecret>,
 }
 
-/// ConfigMap containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2ClientIdConfigMap {
-    /// The key to select.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2ClientIdSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// The secret containing the OAuth2 client secret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2ClientSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// TLS configuration for the client.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfig {
-    /// Struct containing the CA cert to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ca: Option<VmAlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfigCa>,
-    /// Path to the CA cert in the container to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caFile")]
     pub ca_file: Option<String>,
-    /// Struct containing the client cert file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<VmAlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfigCert>,
-    /// Path to the client cert file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
-    /// Disable target certificate validation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
-    /// Path to the client key file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
     pub key_file: Option<String>,
-    /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<VmAlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfigKeySecret>,
-    /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
-/// Struct containing the CA cert to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfigCa {
-    /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<VmAlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfigCaConfigMap>,
-    /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VmAlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfigCaSecret>,
 }
 
-/// ConfigMap containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfigCaConfigMap {
-    /// The key to select.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfigCaSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Struct containing the client cert file for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfigCert {
-    /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<VmAlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfigCertConfigMap>,
-    /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VmAlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfigCertSecret>,
 }
 
-/// ConfigMap containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfigCertConfigMap {
-    /// The key to select.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfigCertSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing the client key file for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfigKeySecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Configure the AWS Signature Verification 4 signing process
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversSnsConfigsSigv4 {
-    /// The AWS API keys. Both access_key and secret_key must be supplied or both must be blank.
-    /// If blank the environment variables `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` are used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub access_key: Option<String>,
-    /// secret key selector to get the keys from a Kubernetes Secret
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub access_key_selector: Option<VmAlertmanagerConfigReceiversSnsConfigsSigv4AccessKeySelector>,
-    /// Named AWS profile used to authenticate
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub profile: Option<String>,
-    /// AWS region, if blank the region from the default credentials chain is used
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    /// AWS Role ARN, an alternative to using AWS API keys
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub role_arn: Option<String>,
-    /// secret key selector to get the keys from a Kubernetes Secret
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret_key_selector: Option<VmAlertmanagerConfigReceiversSnsConfigsSigv4SecretKeySelector>,
 }
 
-/// secret key selector to get the keys from a Kubernetes Secret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversSnsConfigsSigv4AccessKeySelector {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// secret key selector to get the keys from a Kubernetes Secret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversSnsConfigsSigv4SecretKeySelector {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// TelegramConfig configures notification via telegram
-/// <https://prometheus.io/docs/alerting/latest/configuration/#telegram_config>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversTelegramConfigs {
-    /// APIUrl the Telegram API URL i.e. <https://api.telegram.org.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub api_url: Option<String>,
-    /// BotToken token for the bot
-    /// <https://core.telegram.org/bots/api>
     pub bot_token: VmAlertmanagerConfigReceiversTelegramConfigsBotToken,
-    /// ChatID is ID of the chat where to send the messages.
     pub chat_id: i64,
-    /// DisableNotifications
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disable_notifications: Option<bool>,
-    /// HTTP client configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http_config: Option<BTreeMap<String, serde_json::Value>>,
-    /// Message is templated message
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// MessageThreadID defines ID of the message thread where to send the messages.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message_thread_id: Option<i64>,
-    /// ParseMode for telegram message,
-    /// supported values are MarkdownV2, Markdown, Markdown and empty string for plain text.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<String>,
-    /// SendResolved controls notify about resolved alerts.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub send_resolved: Option<bool>,
 }
 
-/// BotToken token for the bot
-/// <https://core.telegram.org/bots/api>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversTelegramConfigsBotToken {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// VictorOpsConfig configures notifications via VictorOps.
-/// See <https://prometheus.io/docs/alerting/latest/configuration/#victorops_config>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversVictoropsConfigs {
-    /// The secret's key that contains the API key to use when talking to the VictorOps API.
-    /// It must be at them same namespace as CRD
-    /// fallback to global setting if empty
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub api_key: Option<VmAlertmanagerConfigReceiversVictoropsConfigsApiKey>,
-    /// The VictorOps API URL.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub api_url: Option<String>,
-    /// Adds optional custom fields
-    /// <https://github.com/prometheus/alertmanager/blob/v0.24.0/config/notifiers.go#L537>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom_fields: Option<BTreeMap<String, String>>,
-    /// Contains summary of the alerted problem.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub entity_display_name: Option<String>,
-    /// The HTTP client's configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http_config: Option<VmAlertmanagerConfigReceiversVictoropsConfigsHttpConfig>,
-    /// Describes the behavior of the alert (CRITICAL, WARNING, INFO).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message_type: Option<String>,
-    /// The monitoring tool the state message is from.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub monitoring_tool: Option<String>,
-    /// A key used to map the alert to a team.
     pub routing_key: String,
-    /// SendResolved controls notify about resolved alerts.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub send_resolved: Option<bool>,
-    /// Contains long explanation of the alerted problem.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state_message: Option<String>,
 }
 
-/// The secret's key that contains the API key to use when talking to the VictorOps API.
-/// It must be at them same namespace as CRD
-/// fallback to global setting if empty
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversVictoropsConfigsApiKey {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// The HTTP client's configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversVictoropsConfigsHttpConfig {
-    /// Authorization header configuration for the client.
-    /// This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<VmAlertmanagerConfigReceiversVictoropsConfigsHttpConfigAuthorization>,
-    /// BasicAuth for the client.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub basic_auth: Option<VmAlertmanagerConfigReceiversVictoropsConfigsHttpConfigBasicAuth>,
-    /// BearerTokenFile defines filename for bearer token, it must be mounted to pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bearer_token_file: Option<String>,
-    /// The secret's key that contains the bearer token
-    /// It must be at them same namespace as CRD
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bearer_token_secret: Option<VmAlertmanagerConfigReceiversVictoropsConfigsHttpConfigBearerTokenSecret>,
-    /// OAuth2 client credentials used to fetch a token for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oauth2: Option<VmAlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2>,
-    /// Optional proxy URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyURL")]
     pub proxy_url: Option<String>,
-    /// TLS configuration for the client.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls_config: Option<VmAlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfig>,
 }
 
-/// Authorization header configuration for the client.
-/// This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversVictoropsConfigsHttpConfigAuthorization {
-    /// Reference to the secret with value for authorization
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<VmAlertmanagerConfigReceiversVictoropsConfigsHttpConfigAuthorizationCredentials>,
-    /// File with value for authorization
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsFile")]
     pub credentials_file: Option<String>,
-    /// Type of authorization, default to bearer
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
 
-/// Reference to the secret with value for authorization
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversVictoropsConfigsHttpConfigAuthorizationCredentials {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// BasicAuth for the client.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversVictoropsConfigsHttpConfigBasicAuth {
-    /// Password defines reference for secret with password value
-    /// The secret needs to be in the same namespace as scrape object
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<VmAlertmanagerConfigReceiversVictoropsConfigsHttpConfigBasicAuthPassword>,
-    /// PasswordFile defines path to password file at disk
-    /// must be pre-mounted
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password_file: Option<String>,
-    /// Username defines reference for secret with username value
-    /// The secret needs to be in the same namespace as scrape object
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<VmAlertmanagerConfigReceiversVictoropsConfigsHttpConfigBasicAuthUsername>,
 }
 
-/// Password defines reference for secret with password value
-/// The secret needs to be in the same namespace as scrape object
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversVictoropsConfigsHttpConfigBasicAuthPassword {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Username defines reference for secret with username value
-/// The secret needs to be in the same namespace as scrape object
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversVictoropsConfigsHttpConfigBasicAuthUsername {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// The secret's key that contains the bearer token
-/// It must be at them same namespace as CRD
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversVictoropsConfigsHttpConfigBearerTokenSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// OAuth2 client credentials used to fetch a token for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2 {
-    /// The secret or configmap containing the OAuth2 client id
     pub client_id: VmAlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2ClientId,
-    /// The secret containing the OAuth2 client secret
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client_secret: Option<VmAlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2ClientSecret>,
-    /// ClientSecretFile defines path for client secret file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client_secret_file: Option<String>,
-    /// Parameters to append to the token URL
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
-    /// The proxy URL for token_url connection
-    /// ( available from v0.55.0).
-    /// Is only supported by Scrape objects family
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy_url: Option<String>,
-    /// OAuth2 scopes used for the token request
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scopes: Option<Vec<String>>,
-    /// TLSConfig for token_url connection
-    /// ( available from v0.55.0).
-    /// Is only supported by Scrape objects family
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls_config: Option<serde_json::Value>,
-    /// The URL to fetch the token from
     pub token_url: String,
 }
 
-/// The secret or configmap containing the OAuth2 client id
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2ClientId {
-    /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<VmAlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2ClientIdConfigMap>,
-    /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VmAlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2ClientIdSecret>,
 }
 
-/// ConfigMap containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2ClientIdConfigMap {
-    /// The key to select.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2ClientIdSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// The secret containing the OAuth2 client secret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2ClientSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// TLS configuration for the client.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfig {
-    /// Struct containing the CA cert to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ca: Option<VmAlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigCa>,
-    /// Path to the CA cert in the container to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caFile")]
     pub ca_file: Option<String>,
-    /// Struct containing the client cert file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<VmAlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigCert>,
-    /// Path to the client cert file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
-    /// Disable target certificate validation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
-    /// Path to the client key file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
     pub key_file: Option<String>,
-    /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<VmAlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigKeySecret>,
-    /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
-/// Struct containing the CA cert to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigCa {
-    /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<VmAlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigCaConfigMap>,
-    /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VmAlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigCaSecret>,
 }
 
-/// ConfigMap containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigCaConfigMap {
-    /// The key to select.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigCaSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Struct containing the client cert file for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigCert {
-    /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<VmAlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigCertConfigMap>,
-    /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VmAlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigCertSecret>,
 }
 
-/// ConfigMap containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigCertConfigMap {
-    /// The key to select.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigCertSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing the client key file for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigKeySecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWebexConfigs {
-    /// The Webex Teams API URL, i.e. <https://webexapis.com/v1/messages>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub api_url: Option<String>,
-    /// HTTP client configuration. You must use this configuration to supply the bot token as part of the HTTP `Authorization` header.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http_config: Option<VmAlertmanagerConfigReceiversWebexConfigsHttpConfig>,
-    /// The message body template
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// The ID of the Webex Teams room where to send the messages
     pub room_id: String,
-    /// SendResolved controls notify about resolved alerts.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub send_resolved: Option<bool>,
 }
 
-/// HTTP client configuration. You must use this configuration to supply the bot token as part of the HTTP `Authorization` header.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWebexConfigsHttpConfig {
-    /// Authorization header configuration for the client.
-    /// This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<VmAlertmanagerConfigReceiversWebexConfigsHttpConfigAuthorization>,
-    /// BasicAuth for the client.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub basic_auth: Option<VmAlertmanagerConfigReceiversWebexConfigsHttpConfigBasicAuth>,
-    /// BearerTokenFile defines filename for bearer token, it must be mounted to pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bearer_token_file: Option<String>,
-    /// The secret's key that contains the bearer token
-    /// It must be at them same namespace as CRD
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bearer_token_secret: Option<VmAlertmanagerConfigReceiversWebexConfigsHttpConfigBearerTokenSecret>,
-    /// OAuth2 client credentials used to fetch a token for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oauth2: Option<VmAlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2>,
-    /// Optional proxy URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyURL")]
     pub proxy_url: Option<String>,
-    /// TLS configuration for the client.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls_config: Option<VmAlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfig>,
 }
 
-/// Authorization header configuration for the client.
-/// This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWebexConfigsHttpConfigAuthorization {
-    /// Reference to the secret with value for authorization
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<VmAlertmanagerConfigReceiversWebexConfigsHttpConfigAuthorizationCredentials>,
-    /// File with value for authorization
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsFile")]
     pub credentials_file: Option<String>,
-    /// Type of authorization, default to bearer
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
 
-/// Reference to the secret with value for authorization
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWebexConfigsHttpConfigAuthorizationCredentials {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// BasicAuth for the client.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWebexConfigsHttpConfigBasicAuth {
-    /// Password defines reference for secret with password value
-    /// The secret needs to be in the same namespace as scrape object
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<VmAlertmanagerConfigReceiversWebexConfigsHttpConfigBasicAuthPassword>,
-    /// PasswordFile defines path to password file at disk
-    /// must be pre-mounted
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password_file: Option<String>,
-    /// Username defines reference for secret with username value
-    /// The secret needs to be in the same namespace as scrape object
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<VmAlertmanagerConfigReceiversWebexConfigsHttpConfigBasicAuthUsername>,
 }
 
-/// Password defines reference for secret with password value
-/// The secret needs to be in the same namespace as scrape object
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWebexConfigsHttpConfigBasicAuthPassword {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Username defines reference for secret with username value
-/// The secret needs to be in the same namespace as scrape object
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWebexConfigsHttpConfigBasicAuthUsername {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// The secret's key that contains the bearer token
-/// It must be at them same namespace as CRD
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWebexConfigsHttpConfigBearerTokenSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// OAuth2 client credentials used to fetch a token for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2 {
-    /// The secret or configmap containing the OAuth2 client id
     pub client_id: VmAlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2ClientId,
-    /// The secret containing the OAuth2 client secret
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client_secret: Option<VmAlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2ClientSecret>,
-    /// ClientSecretFile defines path for client secret file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client_secret_file: Option<String>,
-    /// Parameters to append to the token URL
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
-    /// The proxy URL for token_url connection
-    /// ( available from v0.55.0).
-    /// Is only supported by Scrape objects family
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy_url: Option<String>,
-    /// OAuth2 scopes used for the token request
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scopes: Option<Vec<String>>,
-    /// TLSConfig for token_url connection
-    /// ( available from v0.55.0).
-    /// Is only supported by Scrape objects family
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls_config: Option<serde_json::Value>,
-    /// The URL to fetch the token from
     pub token_url: String,
 }
 
-/// The secret or configmap containing the OAuth2 client id
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2ClientId {
-    /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<VmAlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2ClientIdConfigMap>,
-    /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VmAlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2ClientIdSecret>,
 }
 
-/// ConfigMap containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2ClientIdConfigMap {
-    /// The key to select.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2ClientIdSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// The secret containing the OAuth2 client secret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2ClientSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// TLS configuration for the client.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfig {
-    /// Struct containing the CA cert to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ca: Option<VmAlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfigCa>,
-    /// Path to the CA cert in the container to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caFile")]
     pub ca_file: Option<String>,
-    /// Struct containing the client cert file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<VmAlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfigCert>,
-    /// Path to the client cert file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
-    /// Disable target certificate validation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
-    /// Path to the client key file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
     pub key_file: Option<String>,
-    /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<VmAlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfigKeySecret>,
-    /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
-/// Struct containing the CA cert to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfigCa {
-    /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<VmAlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfigCaConfigMap>,
-    /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VmAlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfigCaSecret>,
 }
 
-/// ConfigMap containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfigCaConfigMap {
-    /// The key to select.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfigCaSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Struct containing the client cert file for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfigCert {
-    /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<VmAlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfigCertConfigMap>,
-    /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VmAlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfigCertSecret>,
 }
 
-/// ConfigMap containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfigCertConfigMap {
-    /// The key to select.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfigCertSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing the client key file for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfigKeySecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// WebhookConfig configures notifications via a generic receiver supporting the webhook payload.
-/// See <https://prometheus.io/docs/alerting/latest/configuration/#webhook_config>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWebhookConfigs {
-    /// HTTP client configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http_config: Option<BTreeMap<String, serde_json::Value>>,
-    /// Maximum number of alerts to be sent per webhook message. When 0, all alerts are included.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max_alerts: Option<i32>,
-    /// SendResolved controls notify about resolved alerts.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub send_resolved: Option<bool>,
-    /// Timeout is the maximum time allowed to invoke the webhook
-    /// available since v0.28.0 alertmanager version
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
-    /// URL to send requests to,
-    /// one of `urlSecret` and `url` must be defined.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
-    /// URLSecret defines secret name and key at the CRD namespace.
-    /// It must contain the webhook URL.
-    /// one of `urlSecret` and `url` must be defined.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url_secret: Option<VmAlertmanagerConfigReceiversWebhookConfigsUrlSecret>,
 }
 
-/// URLSecret defines secret name and key at the CRD namespace.
-/// It must contain the webhook URL.
-/// one of `urlSecret` and `url` must be defined.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWebhookConfigsUrlSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// WeChatConfig configures notifications via WeChat.
-/// See <https://prometheus.io/docs/alerting/latest/configuration/#wechat_config>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWechatConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub agent_id: Option<String>,
-    /// The secret's key that contains the WeChat API key.
-    /// The secret needs to be in the same namespace as the AlertmanagerConfig
-    /// fallback to global alertmanager setting if empty
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub api_secret: Option<VmAlertmanagerConfigReceiversWechatConfigsApiSecret>,
-    /// The WeChat API URL.
-    /// fallback to global alertmanager setting if empty
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub api_url: Option<String>,
-    /// The corp id for authentication.
-    /// fallback to global alertmanager setting if empty
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub corp_id: Option<String>,
-    /// HTTP client configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http_config: Option<VmAlertmanagerConfigReceiversWechatConfigsHttpConfig>,
-    /// API request data as defined by the WeChat API.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message_type: Option<String>,
-    /// SendResolved controls notify about resolved alerts.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub send_resolved: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3211,484 +1910,284 @@ pub struct VmAlertmanagerConfigReceiversWechatConfigs {
     pub to_user: Option<String>,
 }
 
-/// The secret's key that contains the WeChat API key.
-/// The secret needs to be in the same namespace as the AlertmanagerConfig
-/// fallback to global alertmanager setting if empty
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWechatConfigsApiSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// HTTP client configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWechatConfigsHttpConfig {
-    /// Authorization header configuration for the client.
-    /// This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<VmAlertmanagerConfigReceiversWechatConfigsHttpConfigAuthorization>,
-    /// BasicAuth for the client.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub basic_auth: Option<VmAlertmanagerConfigReceiversWechatConfigsHttpConfigBasicAuth>,
-    /// BearerTokenFile defines filename for bearer token, it must be mounted to pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bearer_token_file: Option<String>,
-    /// The secret's key that contains the bearer token
-    /// It must be at them same namespace as CRD
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bearer_token_secret: Option<VmAlertmanagerConfigReceiversWechatConfigsHttpConfigBearerTokenSecret>,
-    /// OAuth2 client credentials used to fetch a token for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oauth2: Option<VmAlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2>,
-    /// Optional proxy URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyURL")]
     pub proxy_url: Option<String>,
-    /// TLS configuration for the client.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls_config: Option<VmAlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfig>,
 }
 
-/// Authorization header configuration for the client.
-/// This is mutually exclusive with BasicAuth and is only available starting from Alertmanager v0.22+.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWechatConfigsHttpConfigAuthorization {
-    /// Reference to the secret with value for authorization
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<VmAlertmanagerConfigReceiversWechatConfigsHttpConfigAuthorizationCredentials>,
-    /// File with value for authorization
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsFile")]
     pub credentials_file: Option<String>,
-    /// Type of authorization, default to bearer
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
 
-/// Reference to the secret with value for authorization
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWechatConfigsHttpConfigAuthorizationCredentials {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// BasicAuth for the client.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWechatConfigsHttpConfigBasicAuth {
-    /// Password defines reference for secret with password value
-    /// The secret needs to be in the same namespace as scrape object
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<VmAlertmanagerConfigReceiversWechatConfigsHttpConfigBasicAuthPassword>,
-    /// PasswordFile defines path to password file at disk
-    /// must be pre-mounted
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password_file: Option<String>,
-    /// Username defines reference for secret with username value
-    /// The secret needs to be in the same namespace as scrape object
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<VmAlertmanagerConfigReceiversWechatConfigsHttpConfigBasicAuthUsername>,
 }
 
-/// Password defines reference for secret with password value
-/// The secret needs to be in the same namespace as scrape object
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWechatConfigsHttpConfigBasicAuthPassword {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Username defines reference for secret with username value
-/// The secret needs to be in the same namespace as scrape object
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWechatConfigsHttpConfigBasicAuthUsername {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// The secret's key that contains the bearer token
-/// It must be at them same namespace as CRD
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWechatConfigsHttpConfigBearerTokenSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// OAuth2 client credentials used to fetch a token for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2 {
-    /// The secret or configmap containing the OAuth2 client id
     pub client_id: VmAlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2ClientId,
-    /// The secret containing the OAuth2 client secret
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client_secret: Option<VmAlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2ClientSecret>,
-    /// ClientSecretFile defines path for client secret file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client_secret_file: Option<String>,
-    /// Parameters to append to the token URL
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
-    /// The proxy URL for token_url connection
-    /// ( available from v0.55.0).
-    /// Is only supported by Scrape objects family
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy_url: Option<String>,
-    /// OAuth2 scopes used for the token request
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scopes: Option<Vec<String>>,
-    /// TLSConfig for token_url connection
-    /// ( available from v0.55.0).
-    /// Is only supported by Scrape objects family
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls_config: Option<serde_json::Value>,
-    /// The URL to fetch the token from
     pub token_url: String,
 }
 
-/// The secret or configmap containing the OAuth2 client id
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2ClientId {
-    /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<VmAlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2ClientIdConfigMap>,
-    /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VmAlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2ClientIdSecret>,
 }
 
-/// ConfigMap containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2ClientIdConfigMap {
-    /// The key to select.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2ClientIdSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// The secret containing the OAuth2 client secret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2ClientSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// TLS configuration for the client.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfig {
-    /// Struct containing the CA cert to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ca: Option<VmAlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigCa>,
-    /// Path to the CA cert in the container to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caFile")]
     pub ca_file: Option<String>,
-    /// Struct containing the client cert file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<VmAlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigCert>,
-    /// Path to the client cert file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
-    /// Disable target certificate validation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
-    /// Path to the client key file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
     pub key_file: Option<String>,
-    /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<VmAlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigKeySecret>,
-    /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
-/// Struct containing the CA cert to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigCa {
-    /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<VmAlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigCaConfigMap>,
-    /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VmAlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigCaSecret>,
 }
 
-/// ConfigMap containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigCaConfigMap {
-    /// The key to select.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigCaSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Struct containing the client cert file for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigCert {
-    /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<VmAlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigCertConfigMap>,
-    /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VmAlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigCertSecret>,
 }
 
-/// ConfigMap containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigCertConfigMap {
-    /// The key to select.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigCertSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing the client key file for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigKeySecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Route definition for alertmanager, may include nested routes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigRoute {
-    /// ActiveTimeIntervals Times when the route should be active
-    /// These must match the name at time_intervals
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub active_time_intervals: Option<Vec<String>>,
-    /// Continue indicating whether an alert should continue matching subsequent
-    /// sibling nodes. It will always be true for the first-level route if disableRouteContinueEnforce for vmalertmanager not set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "continue")]
     pub r#continue: Option<bool>,
-    /// List of labels to group by.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group_by: Option<Vec<String>>,
-    /// How long to wait before sending an updated notification.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group_interval: Option<String>,
-    /// How long to wait before sending the initial notification.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group_wait: Option<String>,
-    /// List of matchers that the alert’s labels should match. For the first
-    /// level route, the operator adds a namespace: "CRD_NS" matcher.
-    /// <https://prometheus.io/docs/alerting/latest/configuration/#matcher>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub matchers: Option<Vec<String>>,
-    /// MuteTimeIntervals is a list of interval names that will mute matched alert
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mute_time_intervals: Option<Vec<String>>,
-    /// Name of the receiver for this route.
     pub receiver: String,
-    /// How long to wait before repeating the last notification.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repeat_interval: Option<String>,
-    /// Child routes.
-    /// <https://prometheus.io/docs/alerting/latest/configuration/#route>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub routes: Option<Vec<serde_json::Value>>,
 }
 
-/// TimeIntervals for alerts
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigTimeIntervals {
-    /// Name of interval
     pub name: String,
-    /// TimeIntervals interval configuration
     pub time_intervals: Vec<VmAlertmanagerConfigTimeIntervalsTimeIntervals>,
 }
 
-/// TimeInterval defines intervals of time
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigTimeIntervalsTimeIntervals {
-    /// DayOfMonth defines list of numerical days in the month. Days begin at 1. Negative values are also accepted.
-    /// for example, ['1:5', '-3:-1']
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub days_of_month: Option<Vec<String>>,
-    /// Location in golang time location form, e.g. UTC
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub location: Option<String>,
-    /// Months  defines list of calendar months identified by a case-insensitive name (e.g. ‘January’) or numeric 1.
-    /// For example, ['1:3', 'may:august', 'december']
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub months: Option<Vec<String>>,
-    /// Times defines time range for mute
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub times: Option<Vec<VmAlertmanagerConfigTimeIntervalsTimeIntervalsTimes>>,
-    /// Weekdays defines list of days of the week, where the week begins on Sunday and ends on Saturday.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub weekdays: Option<Vec<String>>,
-    /// Years defines numerical list of years, ranges are accepted.
-    /// For example, ['2020:2022', '2030']
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub years: Option<Vec<String>>,
 }
 
-/// TimeRange  ranges inclusive of the starting time and exclusive of the end time
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigTimeIntervalsTimeIntervalsTimes {
-    /// EndTime for example HH:MM
     pub end_time: String,
-    /// StartTime for example  HH:MM
     pub start_time: String,
 }
 
-/// VMAlertmanagerConfigStatus defines the observed state of VMAlertmanagerConfig
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigStatus {
-    /// Known .status.conditions.type are: "Available", "Progressing", and "Degraded"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastErrorParentAlertmanagerName")]
     pub last_error_parent_alertmanager_name: Option<String>,
-    /// ObservedGeneration defines current generation picked by operator for the
-    /// reconcile
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
-    /// Reason defines human readable error reason
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
-    /// UpdateStatus defines a status for update rollout
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateStatus")]
     pub update_status: Option<String>,
 }

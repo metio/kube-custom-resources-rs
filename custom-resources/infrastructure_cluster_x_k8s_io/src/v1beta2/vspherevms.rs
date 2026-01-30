@@ -104,6 +104,7 @@ pub struct VSphereVmSpec {
     /// virtual machine.
     /// Defaults to the eponymous property value in the template from which the
     /// virtual machine is cloned.
+    /// Note: Starting with vSphere 8 numCoresPerSocket can be set to 0 to enable "Assigned at power on".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "numCoresPerSocket")]
     pub num_cores_per_socket: Option<i32>,
     /// os is the Operating System of the virtual machine

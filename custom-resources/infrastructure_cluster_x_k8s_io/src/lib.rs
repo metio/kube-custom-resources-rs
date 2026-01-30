@@ -62,6 +62,12 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `VSphereMachine`
 - `VSphereMachineTemplate`
 - `VSphereVM`
+## infrastructure.cluster.x-k8s.io/v1beta3
+- `IBMPowerVSCluster`
+- `IBMPowerVSClusterTemplate`
+- `IBMPowerVSImage`
+- `IBMPowerVSMachine`
+- `IBMPowerVSMachineTemplate`
 */
 #[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;
@@ -73,3 +79,5 @@ pub mod v1alpha4;
 pub mod v1beta1;
 #[cfg(feature = "v1beta2")]
 pub mod v1beta2;
+#[cfg(feature = "v1beta3")]
+pub mod v1beta3;

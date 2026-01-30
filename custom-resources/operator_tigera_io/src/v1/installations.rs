@@ -3180,11 +3180,12 @@ pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAnti
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecContainers {
     /// Name is an enum which identifies the calico-node-windows DaemonSet container by name.
-    /// Supported values are: calico-node-windows
+    /// Supported values are: node, felix, confd
+    /// calico-node-windows is allowed because it was previously allowed.
     pub name: InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
-    /// If specified, this overrides the named calico-node-windows DaemonSet container's resources.
-    /// If omitted, the calico-node-windows DaemonSet will use its default value for this container's resources.
+    /// If specified, this overrides the named DaemonSet container's resources.
+    /// If omitted, the DaemonSet will use its default value for this container's resources.
     /// If used in conjunction with the deprecated ComponentResources, then this value takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecContainersResources>,
@@ -3195,11 +3196,17 @@ pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecContainers {
 pub enum InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecContainersName {
     #[serde(rename = "calico-node-windows")]
     CalicoNodeWindows,
+    #[serde(rename = "node")]
+    Node,
+    #[serde(rename = "felix")]
+    Felix,
+    #[serde(rename = "confd")]
+    Confd,
 }
 
 /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
-/// If specified, this overrides the named calico-node-windows DaemonSet container's resources.
-/// If omitted, the calico-node-windows DaemonSet will use its default value for this container's resources.
+/// If specified, this overrides the named DaemonSet container's resources.
+/// If omitted, the DaemonSet will use its default value for this container's resources.
 /// If used in conjunction with the deprecated ComponentResources, then this value takes precedence.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecContainersResources {
@@ -4379,6 +4386,9 @@ pub enum InstallationComponentResourcesComponentName {
     Node,
     Typha,
     KubeControllers,
+    NodeWindows,
+    FelixWindows,
+    ConfdWindows,
 }
 
 /// ResourceRequirements allows customization of limits and requests for compute resources such as cpu and memory.
@@ -10052,11 +10062,12 @@ pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecA
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecContainers {
     /// Name is an enum which identifies the calico-node-windows DaemonSet container by name.
-    /// Supported values are: calico-node-windows
+    /// Supported values are: node, felix, confd
+    /// calico-node-windows is allowed because it was previously allowed.
     pub name: InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
-    /// If specified, this overrides the named calico-node-windows DaemonSet container's resources.
-    /// If omitted, the calico-node-windows DaemonSet will use its default value for this container's resources.
+    /// If specified, this overrides the named DaemonSet container's resources.
+    /// If omitted, the DaemonSet will use its default value for this container's resources.
     /// If used in conjunction with the deprecated ComponentResources, then this value takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecContainersResources>,
@@ -10067,11 +10078,17 @@ pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecC
 pub enum InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecContainersName {
     #[serde(rename = "calico-node-windows")]
     CalicoNodeWindows,
+    #[serde(rename = "node")]
+    Node,
+    #[serde(rename = "felix")]
+    Felix,
+    #[serde(rename = "confd")]
+    Confd,
 }
 
 /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
-/// If specified, this overrides the named calico-node-windows DaemonSet container's resources.
-/// If omitted, the calico-node-windows DaemonSet will use its default value for this container's resources.
+/// If specified, this overrides the named DaemonSet container's resources.
+/// If omitted, the DaemonSet will use its default value for this container's resources.
 /// If used in conjunction with the deprecated ComponentResources, then this value takes precedence.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecContainersResources {
@@ -11251,6 +11268,9 @@ pub enum InstallationStatusComputedComponentResourcesComponentName {
     Node,
     Typha,
     KubeControllers,
+    NodeWindows,
+    FelixWindows,
+    ConfdWindows,
 }
 
 /// ResourceRequirements allows customization of limits and requests for compute resources such as cpu and memory.

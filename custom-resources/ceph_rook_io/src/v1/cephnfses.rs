@@ -1146,6 +1146,19 @@ pub struct CephNfsServer {
     /// Whether host networking is enabled for the Ganesha server. If not set, the network settings from the cluster CR will be applied.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetwork")]
     pub host_network: Option<bool>,
+    /// Image is the container image used to launch the Ceph NFS (Ganesha) daemon(s).
+    /// The image must include the NFS Ganesha binaries, such as are included with the official Ceph releases. E.g.: quay.io/ceph/ceph:<tag>
+    /// If not specified, the Ceph image defined in the CephCluster is used.
+    /// Overriding the CephCluster defined image is not normally necessary when using the official Ceph images.
+    /// The image must contain the NFS Ganesha and dbus packages.
+    /// If the SSSD sidecar is enabled, the image must also contain the sssd-client package.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<String>,
+    /// ImagePullPolicy describes a policy for if/when to pull a container image
+    /// One of Always, Never, IfNotPresent.
+    /// This field only has effect if an image is specified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
+    pub image_pull_policy: Option<CephNfsServerImagePullPolicy>,
     /// The labels-related configuration to add/set on each Pod related object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
@@ -1164,6 +1177,16 @@ pub struct CephNfsServer {
     /// Resources set resource requests and limits
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<CephNfsServerResources>,
+}
+
+/// Server is the Ganesha Server specification
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum CephNfsServerImagePullPolicy {
+    IfNotPresent,
+    Always,
+    Never,
+    #[serde(rename = "")]
+    KopiumEmpty,
 }
 
 /// A liveness-probe to verify that Ganesha server has valid run-time state.

@@ -130,7 +130,7 @@ pub struct ForkliftControllerSpec {
     /// Enable CLI download service (default: true)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub feature_cli_download: Option<ForkliftControllerFeatureCliDownload>,
-    /// Enable copy offload plugins (default: false)
+    /// Enable copy offload plugins (default: true)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub feature_copy_offload: Option<ForkliftControllerFeatureCopyOffload>,
     /// Enable OCP live migration (default: false)

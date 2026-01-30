@@ -574,10 +574,12 @@ spec:
                   format: "int32"
                   type: "integer"
                 nftablesMode:
-                  description: "NFTablesMode configures nftables support in Felix. [Default: Disabled]"
+                  default: "Auto"
+                  description: "NFTablesMode configures nftables support in Felix. [Default: Auto]"
                   enum:
                     - "Disabled"
                     - "Enabled"
+                    - "Auto"
                   type: "string"
                 nftablesRefreshInterval:
                   description: "NftablesRefreshInterval controls the interval at which Felix periodically refreshes the nftables rules. [Default: 90s]"

@@ -3389,6 +3389,10 @@ pub struct ContourDeploymentRuntimeSettingsRateLimitServiceExtensionService {
 /// Tracing defines properties for exporting trace data to OpenTelemetry.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ContourDeploymentRuntimeSettingsTracing {
+    /// ClientSampling defines the sampling rate when x-client-trace-id header is set.
+    /// contour's default is 100.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientSampling")]
+    pub client_sampling: Option<String>,
     /// CustomTags defines a list of custom tags with unique tag name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "customTags")]
     pub custom_tags: Option<Vec<ContourDeploymentRuntimeSettingsTracingCustomTags>>,
@@ -3410,6 +3414,10 @@ pub struct ContourDeploymentRuntimeSettingsTracing {
     /// contour's default is 100.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "overallSampling")]
     pub overall_sampling: Option<String>,
+    /// RandomSampling defines the random sampling rate for all requests.
+    /// contour's default is 100.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "randomSampling")]
+    pub random_sampling: Option<String>,
     /// ServiceName defines the name for the service.
     /// contour's default is contour.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]

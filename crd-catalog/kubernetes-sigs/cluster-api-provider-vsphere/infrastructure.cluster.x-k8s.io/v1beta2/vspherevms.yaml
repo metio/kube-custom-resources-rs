@@ -376,10 +376,12 @@ spec:
                 numCPUs:
                   description: "numCPUs is the number of virtual processors in a virtual machine.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned."
                   format: "int32"
+                  minimum: 2.0
                   type: "integer"
                 numCoresPerSocket:
-                  description: "numCoresPerSocket is the number of cores among which to distribute CPUs in this\nvirtual machine.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned."
+                  description: "numCoresPerSocket is the number of cores among which to distribute CPUs in this\nvirtual machine.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned.\nNote: Starting with vSphere 8 numCoresPerSocket can be set to 0 to enable \"Assigned at power on\"."
                   format: "int32"
+                  minimum: 0.0
                   type: "integer"
                 os:
                   description: "os is the Operating System of the virtual machine\nDefaults to Linux"

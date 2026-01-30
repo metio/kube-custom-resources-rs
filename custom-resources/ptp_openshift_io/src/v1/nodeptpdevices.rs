@@ -36,6 +36,9 @@ pub struct NodePtpDeviceStatus {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodePtpDeviceStatusDevices {
+    /// HardwareInfo contains detailed hardware identification information for the device.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hardwareInfo")]
+    pub hardware_info: Option<NodePtpDeviceStatusDevicesHardwareInfo>,
     /// Name is the name of the PTP device.
     /// It is a unique identifier for the device.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -44,6 +47,44 @@ pub struct NodePtpDeviceStatusDevices {
     /// This profile defines the PTP configuration settings for the device.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub profile: Option<String>,
+}
+
+/// HardwareInfo contains detailed hardware identification information for the device.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NodePtpDeviceStatusDevicesHardwareInfo {
+    /// DeviceID is the PCI device identifier
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deviceID")]
+    pub device_id: Option<String>,
+    /// DriverVersion is the version of the kernel driver in use
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "driverVersion")]
+    pub driver_version: Option<String>,
+    /// FirmwareVersion is the version of the device firmware
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "firmwareVersion")]
+    pub firmware_version: Option<String>,
+    /// PCIAddress is the PCI bus address (e.g., "0000:01:00.0")
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pciAddress")]
+    pub pci_address: Option<String>,
+    /// SubsystemDeviceID is the PCI subsystem device identifier
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subsystemDeviceID")]
+    pub subsystem_device_id: Option<String>,
+    /// SubsystemVendorID is the PCI subsystem vendor identifier
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subsystemVendorID")]
+    pub subsystem_vendor_id: Option<String>,
+    /// VendorID is the PCI vendor identifier (e.g., "8086" for Intel)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vendorID")]
+    pub vendor_id: Option<String>,
+    /// VPDManufacturerID is the manufacturer identifier from VPD
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpdManufacturerID")]
+    pub vpd_manufacturer_id: Option<String>,
+    /// VPDPartNumber is the manufacturer's part number from VPD
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpdPartNumber")]
+    pub vpd_part_number: Option<String>,
+    /// VPDProductName is the product name from VPD
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpdProductName")]
+    pub vpd_product_name: Option<String>,
+    /// VPDSerialNumber is the unique serial number from VPD
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpdSerialNumber")]
+    pub vpd_serial_number: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

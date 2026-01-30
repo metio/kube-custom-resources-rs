@@ -1962,9 +1962,10 @@ pub struct PulpApiTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// Operator represents a key's relationship to the value.
-    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Valid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.
     /// Exists is equivalent to wildcard for value, so that a pod can
     /// tolerate all taints of a particular category.
+    /// Lt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
     /// TolerationSeconds represents the period of time the toleration (which must be
@@ -3207,9 +3208,10 @@ pub struct PulpCacheTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// Operator represents a key's relationship to the value.
-    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Valid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.
     /// Exists is equivalent to wildcard for value, so that a pod can
     /// tolerate all taints of a particular category.
+    /// Lt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
     /// TolerationSeconds represents the period of time the toleration (which must be
@@ -4734,9 +4736,10 @@ pub struct PulpContentTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// Operator represents a key's relationship to the value.
-    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Valid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.
     /// Exists is equivalent to wildcard for value, so that a pod can
     /// tolerate all taints of a particular category.
+    /// Lt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
     /// TolerationSeconds represents the period of time the toleration (which must be
@@ -5954,9 +5957,10 @@ pub struct PulpDatabaseTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// Operator represents a key's relationship to the value.
-    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Valid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.
     /// Exists is equivalent to wildcard for value, so that a pod can
     /// tolerate all taints of a particular category.
+    /// Lt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
     /// TolerationSeconds represents the period of time the toleration (which must be
@@ -8585,9 +8589,10 @@ pub struct PulpWorkerTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// Operator represents a key's relationship to the value.
-    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Valid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.
     /// Exists is equivalent to wildcard for value, so that a pod can
     /// tolerate all taints of a particular category.
+    /// Lt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
     /// TolerationSeconds represents the period of time the toleration (which must be

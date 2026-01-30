@@ -140,6 +140,9 @@ pub struct IngressRouteRoutesServices {
     /// Kind defines the kind of the Service.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<IngressRouteRoutesServicesKind>,
+    /// Middlewares defines the list of references to Middleware resources to apply to the service.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub middlewares: Option<Vec<IngressRouteRoutesServicesMiddlewares>>,
     /// Name defines the name of the referenced Kubernetes Service or TraefikService.
     /// The differentiation between the two is specified in the Kind field.
     pub name: String,
@@ -249,6 +252,16 @@ pub struct IngressRouteRoutesServicesHealthCheck {
 pub enum IngressRouteRoutesServicesKind {
     Service,
     TraefikService,
+}
+
+/// MiddlewareRef is a reference to a Middleware resource.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IngressRouteRoutesServicesMiddlewares {
+    /// Name defines the name of the referenced Middleware resource.
+    pub name: String,
+    /// Namespace defines the namespace of the referenced Middleware resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// PassiveHealthCheck defines passive health checks for ExternalName services.

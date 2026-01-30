@@ -47,6 +47,9 @@ pub struct TraefikServiceHighestRandomWeightServices {
     /// Kind defines the kind of the Service.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<TraefikServiceHighestRandomWeightServicesKind>,
+    /// Middlewares defines the list of references to Middleware resources to apply to the service.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub middlewares: Option<Vec<TraefikServiceHighestRandomWeightServicesMiddlewares>>,
     /// Name defines the name of the referenced Kubernetes Service or TraefikService.
     /// The differentiation between the two is specified in the Kind field.
     pub name: String,
@@ -158,6 +161,16 @@ pub enum TraefikServiceHighestRandomWeightServicesKind {
     TraefikService,
 }
 
+/// MiddlewareRef is a reference to a Middleware resource.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TraefikServiceHighestRandomWeightServicesMiddlewares {
+    /// Name defines the name of the referenced Middleware resource.
+    pub name: String,
+    /// Namespace defines the namespace of the referenced Middleware resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
 /// PassiveHealthCheck defines passive health checks for ExternalName services.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TraefikServiceHighestRandomWeightServicesPassiveHealthCheck {
@@ -261,6 +274,9 @@ pub struct TraefikServiceMirroring {
     /// Default value is -1, which means unlimited size.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxBodySize")]
     pub max_body_size: Option<i64>,
+    /// Middlewares defines the list of references to Middleware resources to apply to the service.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub middlewares: Option<Vec<TraefikServiceMirroringMiddlewares>>,
     /// MirrorBody defines whether the body of the request should be mirrored.
     /// Default value is true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mirrorBody")]
@@ -379,6 +395,16 @@ pub enum TraefikServiceMirroringKind {
     TraefikService,
 }
 
+/// MiddlewareRef is a reference to a Middleware resource.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TraefikServiceMirroringMiddlewares {
+    /// Name defines the name of the referenced Middleware resource.
+    pub name: String,
+    /// Namespace defines the namespace of the referenced Middleware resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
 /// MirrorService holds the mirror configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TraefikServiceMirroringMirrors {
@@ -388,6 +414,9 @@ pub struct TraefikServiceMirroringMirrors {
     /// Kind defines the kind of the Service.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<TraefikServiceMirroringMirrorsKind>,
+    /// Middlewares defines the list of references to Middleware resources to apply to the service.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub middlewares: Option<Vec<TraefikServiceMirroringMirrorsMiddlewares>>,
     /// Name defines the name of the referenced Kubernetes Service or TraefikService.
     /// The differentiation between the two is specified in the Kind field.
     pub name: String,
@@ -501,6 +530,16 @@ pub struct TraefikServiceMirroringMirrorsHealthCheck {
 pub enum TraefikServiceMirroringMirrorsKind {
     Service,
     TraefikService,
+}
+
+/// MiddlewareRef is a reference to a Middleware resource.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TraefikServiceMirroringMirrorsMiddlewares {
+    /// Name defines the name of the referenced Middleware resource.
+    pub name: String,
+    /// Namespace defines the namespace of the referenced Middleware resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// PassiveHealthCheck defines passive health checks for ExternalName services.
@@ -702,6 +741,9 @@ pub struct TraefikServiceWeightedServices {
     /// Kind defines the kind of the Service.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<TraefikServiceWeightedServicesKind>,
+    /// Middlewares defines the list of references to Middleware resources to apply to the service.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub middlewares: Option<Vec<TraefikServiceWeightedServicesMiddlewares>>,
     /// Name defines the name of the referenced Kubernetes Service or TraefikService.
     /// The differentiation between the two is specified in the Kind field.
     pub name: String,
@@ -811,6 +853,16 @@ pub struct TraefikServiceWeightedServicesHealthCheck {
 pub enum TraefikServiceWeightedServicesKind {
     Service,
     TraefikService,
+}
+
+/// MiddlewareRef is a reference to a Middleware resource.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TraefikServiceWeightedServicesMiddlewares {
+    /// Name defines the name of the referenced Middleware resource.
+    pub name: String,
+    /// Namespace defines the namespace of the referenced Middleware resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// PassiveHealthCheck defines passive health checks for ExternalName services.

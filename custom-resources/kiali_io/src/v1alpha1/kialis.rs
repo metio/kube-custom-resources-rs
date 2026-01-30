@@ -35,6 +35,8 @@ pub struct KialiSpec {
     pub api: Option<KialiApi>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auth: Option<KialiAuth>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub chat_ai: Option<KialiChatAi>,
     /// Multi-cluster related features.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub clustering: Option<KialiClustering>,
@@ -304,6 +306,89 @@ pub enum KialiAuthStrategy {
     Openid,
     #[serde(rename = "header")]
     Header,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KialiChatAi {
+    /// The default provider to use for the ChatAI feature. This is the provider that will be used if no provider is specified in the request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub default_provider: Option<String>,
+    /// Enable or disable the ChatAI feature.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// A list of providers that can be used for the ChatAI feature. This is the list of providers that will be available to the user to choose from.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub providers: Option<Vec<KialiChatAiProviders>>,
+    /// Configuration for the ChatAI store.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub store_config: Option<KialiChatAiStoreConfig>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KialiChatAiProviders {
+    /// The type of the config needed by the AI models provider. Available values are `default`, `gemini`, and `azure`. Default value is `default`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub config: Option<String>,
+    /// The default model of the provider.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub default_model: Option<String>,
+    /// The description of the provider.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    /// Enable or disable the provider.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// The key of the provider. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the token is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// A list of models that can be used for the ChatAI feature. This is the list of models that will be available to the user to choose from.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub models: Option<Vec<KialiChatAiProvidersModels>>,
+    /// The name of the provider.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// The type of the AI models provider. Available values are `openai`. Default value is `openai`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KialiChatAiProvidersModels {
+    /// The description of the model.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    /// Enable or disable the model.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// The endpoint of the model.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub endpoint: Option<String>,
+    /// The key of the model. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the token is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The model of the model.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub model: Option<String>,
+    /// The name of the model.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// Configuration for the ChatAI store.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KialiChatAiStoreConfig {
+    /// Enable or disable the ChatAI store.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// The maximum cache memory for the ChatAI store.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub max_cache_memory_mb: Option<i64>,
+    /// The threshold for the ChatAI store reduction with AI. This is the number of messages in a conversation before the conversation is reduced.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reduce_threshold: Option<i64>,
+    /// Enable or disable the ChatAI store reduction with AI.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reduce_with_ai: Option<bool>,
 }
 
 /// Multi-cluster related features.

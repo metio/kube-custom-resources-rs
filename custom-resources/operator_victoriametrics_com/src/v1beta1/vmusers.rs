@@ -11,7 +11,6 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// VMUserSpec defines the desired state of VMUser
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "operator.victoriametrics.com", version = "v1beta1", kind = "VMUser", plural = "vmusers")]
 #[kube(namespaced)]
@@ -20,98 +19,52 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct VmUserSpec {
-    /// BearerToken Authorization header value for accessing protected endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerToken")]
     pub bearer_token: Option<String>,
-    /// DefaultURLs backend url for non-matching paths filter
-    /// usually used for default backend with error message
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub default_url: Option<Vec<String>>,
-    /// DisableSecretCreation skips related secret creation for vmuser
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disable_secret_creation: Option<bool>,
-    /// DiscoverBackendIPs instructs discovering URLPrefix backend IPs via DNS.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub discover_backend_ips: Option<bool>,
-    /// DropSrcPathPrefixParts is the number of `/`-delimited request path prefix parts to drop before proxying the request to backend.
-    /// See [here](<https://docs.victoriametrics.com/victoriametrics/vmauth/#dropping-request-path-prefix)> for more details.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub drop_src_path_prefix_parts: Option<i64>,
-    /// DumpRequestOnErrors instructs vmauth to return detailed request params to the client
-    /// if routing rules don't allow to forward request to the backends.
-    /// Useful for debugging `src_hosts` and `src_headers` based routing rules
-    /// 
-    /// available since v1.107.0 vmauth version
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub dump_request_on_errors: Option<bool>,
-    /// GeneratePassword instructs operator to generate password for user
-    /// if spec.password if empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "generatePassword")]
     pub generate_password: Option<bool>,
-    /// Headers represent additional http headers, that vmauth uses
-    /// in form of ["header_key: header_value"]
-    /// multiple values for header key:
-    /// ["header_key: value1,value2"]
-    /// it's available since 1.68.0 version of vmauth
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<Vec<String>>,
-    /// IPFilters defines per target src ip filters
-    /// supported only with enterprise version of [vmauth](<https://docs.victoriametrics.com/victoriametrics/vmauth/#ip-filters)>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ip_filters: Option<VmUserIpFilters>,
-    /// LoadBalancingPolicy defines load balancing policy to use for backend urls.
-    /// Supported policies: least_loaded, first_available.
-    /// See [here](<https://docs.victoriametrics.com/victoriametrics/vmauth/#load-balancing)> for more details (default "least_loaded")
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub load_balancing_policy: Option<VmUserLoadBalancingPolicy>,
-    /// ManagedMetadata defines metadata that will be added to the all objects
-    /// created by operator for the given CustomResource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "managedMetadata")]
     pub managed_metadata: Option<VmUserManagedMetadata>,
-    /// MaxConcurrentRequests defines max concurrent requests per user
-    /// 300 is default value for vmauth
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max_concurrent_requests: Option<i64>,
-    /// MetricLabels - additional labels for metrics exported by vmauth for given user.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metric_labels: Option<BTreeMap<String, String>>,
-    /// Name of the VMUser object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Password basic auth password for accessing protected endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<String>,
-    /// PasswordRef allows fetching password from user-create secret by its name and key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordRef")]
     pub password_ref: Option<VmUserPasswordRef>,
-    /// ResponseHeaders represent additional http headers, that vmauth adds for request response
-    /// in form of ["header_key: header_value"]
-    /// multiple values for header key:
-    /// ["header_key: value1,value2"]
-    /// it's available since 1.93.0 version of vmauth
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub response_headers: Option<Vec<String>>,
-    /// RetryStatusCodes defines http status codes in numeric format for request retries
-    /// e.g. [429,503]
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retry_status_codes: Option<Vec<i64>>,
-    /// TargetRefs - reference to endpoints, which user may access.
     #[serde(rename = "targetRefs")]
     pub target_refs: Vec<VmUserTargetRefs>,
-    /// TLSConfig defines tls configuration for the backend connection
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
     pub tls_config: Option<VmUserTlsConfig>,
-    /// TokenRef allows fetching token from user-created secrets by its name and key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenRef")]
     pub token_ref: Option<VmUserTokenRef>,
-    /// Username basic auth user name for accessing protected endpoint,
-    /// will be replaced with metadata.name of VMUser if omitted.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
 }
 
-/// IPFilters defines per target src ip filters
-/// supported only with enterprise version of [vmauth](<https://docs.victoriametrics.com/victoriametrics/vmauth/#ip-filters)>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmUserIpFilters {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -120,7 +73,6 @@ pub struct VmUserIpFilters {
     pub deny_list: Option<Vec<String>>,
 }
 
-/// VMUserSpec defines the desired state of VMUser
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum VmUserLoadBalancingPolicy {
     #[serde(rename = "least_loaded")]
@@ -129,124 +81,64 @@ pub enum VmUserLoadBalancingPolicy {
     FirstAvailable,
 }
 
-/// ManagedMetadata defines metadata that will be added to the all objects
-/// created by operator for the given CustomResource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmUserManagedMetadata {
-    /// Annotations is an unstructured key value map stored with a resource that may be
-    /// set by external tools to store and retrieve arbitrary metadata. They are not
-    /// queryable and should be preserved when modifying objects.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels Map of string keys and values that can be used to organize and categorize
-    /// (scope and select) objects.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/labels>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// PasswordRef allows fetching password from user-create secret by its name and key.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmUserPasswordRef {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// TargetRef describes target for user traffic forwarding.
-/// one of target types can be chosen:
-/// crd or static per targetRef.
-/// user can define multiple targetRefs with different ref Types.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmUserTargetRefs {
-    /// CRD describes exist operator's CRD object,
-    /// operator generates access url based on CRD params.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub crd: Option<VmUserTargetRefsCrd>,
-    /// DiscoverBackendIPs instructs discovering URLPrefix backend IPs via DNS.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub discover_backend_ips: Option<bool>,
-    /// DropSrcPathPrefixParts is the number of `/`-delimited request path prefix parts to drop before proxying the request to backend.
-    /// See [here](<https://docs.victoriametrics.com/victoriametrics/vmauth/#dropping-request-path-prefix)> for more details.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub drop_src_path_prefix_parts: Option<i64>,
-    /// RequestHeaders represent additional http headers, that vmauth uses
-    /// in form of ["header_key: header_value"]
-    /// multiple values for header key:
-    /// ["header_key: value1,value2"]
-    /// it's available since 1.68.0 version of vmauth
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hosts: Option<Vec<String>>,
-    /// LoadBalancingPolicy defines load balancing policy to use for backend urls.
-    /// Supported policies: least_loaded, first_available.
-    /// See [here](<https://docs.victoriametrics.com/victoriametrics/vmauth/#load-balancing)> for more details (default "least_loaded")
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub load_balancing_policy: Option<VmUserTargetRefsLoadBalancingPolicy>,
-    /// Paths - matched path to route.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub paths: Option<Vec<String>>,
-    /// QueryArgs appends list of query arguments to generated URL
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub query_args: Option<Vec<VmUserTargetRefsQueryArgs>>,
-    /// ResponseHeaders represent additional http headers, that vmauth adds for request response
-    /// in form of ["header_key: header_value"]
-    /// multiple values for header key:
-    /// ["header_key: value1,value2"]
-    /// it's available since 1.93.0 version of vmauth
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub response_headers: Option<Vec<String>>,
-    /// RetryStatusCodes defines http status codes in numeric format for request retries
-    /// Can be defined per target or at VMUser.spec level
-    /// e.g. [429,503]
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retry_status_codes: Option<Vec<i64>>,
-    /// SrcHeaders is an optional list of headers, which must match request headers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub src_headers: Option<Vec<String>>,
-    /// SrcQueryArgs is an optional list of query args, which must match request URL query args.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub src_query_args: Option<Vec<String>>,
-    /// Static - user defined url for traffic forward,
-    /// for instance <http://vmsingle:8428>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "static")]
     pub r#static: Option<VmUserTargetRefsStatic>,
-    /// TargetRefBasicAuth allow an target endpoint to authenticate over basic authentication
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRefBasicAuth")]
     pub target_ref_basic_auth: Option<VmUserTargetRefsTargetRefBasicAuth>,
-    /// TargetPathSuffix allows to add some suffix to the target path
-    /// It allows to hide tenant configuration from user with crd as ref.
-    /// it also may contain any url encoded params.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub target_path_suffix: Option<String>,
 }
 
-/// CRD describes exist operator's CRD object,
-/// operator generates access url based on CRD params.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct VmUserTargetRefsCrd {
-    /// Kind one of:
-    /// VMAgent,VMAlert, VMSingle, VMCluster/vmselect, VMCluster/vmstorage,VMCluster/vminsert,VMAlertManager, VLSingle, VLCluster/vlinsert, VLCluster/vlselect, VLCluster/vlstorage, VTSingle, VTCluster/vtinsert, VTCluster/vtselect, VTCluster/vtstorage and VLAgent
     pub kind: VmUserTargetRefsCrdKind,
-    /// Name target CRD object name
     pub name: String,
-    /// Namespace target CRD object namespace.
     pub namespace: String,
 }
 
-/// CRD describes exist operator's CRD object,
-/// operator generates access url based on CRD params.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum VmUserTargetRefsCrdKind {
     #[serde(rename = "VMAgent")]
@@ -286,10 +178,6 @@ pub enum VmUserTargetRefsCrdKind {
     VtSingle,
 }
 
-/// TargetRef describes target for user traffic forwarding.
-/// one of target types can be chosen:
-/// crd or static per targetRef.
-/// user can define multiple targetRefs with different ref Types.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum VmUserTargetRefsLoadBalancingPolicy {
     #[serde(rename = "least_loaded")]
@@ -298,245 +186,142 @@ pub enum VmUserTargetRefsLoadBalancingPolicy {
     FirstAvailable,
 }
 
-/// QueryArg defines item for query arguments
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmUserTargetRefsQueryArgs {
-    /// Name of query argument
     pub name: String,
-    /// Values of query argument
     pub values: Vec<String>,
 }
 
-/// Static - user defined url for traffic forward,
-/// for instance <http://vmsingle:8428>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmUserTargetRefsStatic {
-    /// URL http url for given staticRef.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
-    /// URLs allows setting multiple urls for load-balancing at vmauth-side.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub urls: Option<Vec<String>>,
 }
 
-/// TargetRefBasicAuth allow an target endpoint to authenticate over basic authentication
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmUserTargetRefsTargetRefBasicAuth {
-    /// The secret in the service scrape namespace that contains the password
-    /// for authentication.
-    /// It must be at them same namespace as CRD
     pub password: VmUserTargetRefsTargetRefBasicAuthPassword,
-    /// The secret in the service scrape namespace that contains the username
-    /// for authentication.
-    /// It must be at them same namespace as CRD
     pub username: VmUserTargetRefsTargetRefBasicAuthUsername,
 }
 
-/// The secret in the service scrape namespace that contains the password
-/// for authentication.
-/// It must be at them same namespace as CRD
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmUserTargetRefsTargetRefBasicAuthPassword {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// The secret in the service scrape namespace that contains the username
-/// for authentication.
-/// It must be at them same namespace as CRD
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmUserTargetRefsTargetRefBasicAuthUsername {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// TLSConfig defines tls configuration for the backend connection
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmUserTlsConfig {
-    /// Struct containing the CA cert to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ca: Option<VmUserTlsConfigCa>,
-    /// Path to the CA cert in the container to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caFile")]
     pub ca_file: Option<String>,
-    /// Struct containing the client cert file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<VmUserTlsConfigCert>,
-    /// Path to the client cert file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
-    /// Disable target certificate validation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
-    /// Path to the client key file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
     pub key_file: Option<String>,
-    /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<VmUserTlsConfigKeySecret>,
-    /// Used to verify the hostname for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
-/// Struct containing the CA cert to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmUserTlsConfigCa {
-    /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<VmUserTlsConfigCaConfigMap>,
-    /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VmUserTlsConfigCaSecret>,
 }
 
-/// ConfigMap containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmUserTlsConfigCaConfigMap {
-    /// The key to select.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmUserTlsConfigCaSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Struct containing the client cert file for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmUserTlsConfigCert {
-    /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<VmUserTlsConfigCertConfigMap>,
-    /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VmUserTlsConfigCertSecret>,
 }
 
-/// ConfigMap containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmUserTlsConfigCertConfigMap {
-    /// The key to select.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmUserTlsConfigCertSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// Secret containing the client key file for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmUserTlsConfigKeySecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// TokenRef allows fetching token from user-created secrets by its name and key.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmUserTokenRef {
-    /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
-/// VMUserStatus defines the observed state of VMUser
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmUserStatus {
-    /// Known .status.conditions.type are: "Available", "Progressing", and "Degraded"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// ObservedGeneration defines current generation picked by operator for the
-    /// reconcile
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
-    /// Reason defines human readable error reason
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
-    /// UpdateStatus defines a status for update rollout
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateStatus")]
     pub update_status: Option<String>,
 }

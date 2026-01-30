@@ -312,6 +312,8 @@ pub struct ScaledObjectStatus {
     pub scale_target_gvkr: Option<ScaledObjectStatusScaleTargetGvkr>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleTargetKind")]
     pub scale_target_kind: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "triggersActivity")]
+    pub triggers_activity: Option<BTreeMap<String, ScaledObjectStatusTriggersActivity>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "triggersTypes")]
     pub triggers_types: Option<String>,
 }
@@ -348,5 +350,11 @@ pub struct ScaledObjectStatusScaleTargetGvkr {
     pub kind: String,
     pub resource: String,
     pub version: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScaledObjectStatusTriggersActivity {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "isActive")]
+    pub is_active: Option<bool>,
 }
 

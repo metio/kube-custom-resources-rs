@@ -3240,6 +3240,14 @@ pub struct ScyllaClusterNetwork {
     /// Deprecated: `hostNetworking` is deprecated and may be ignored in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetworking")]
     pub host_networking: Option<bool>,
+    /// ipFamilies specifies the IP families to use.
+    /// Supports: IPv4, IPv6.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilies")]
+    pub ip_families: Option<Vec<String>>,
+    /// ipFamilyPolicy specifies the IP family policy for the cluster.
+    /// Supports: SingleStack, PreferDualStack, RequireDualStack.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilyPolicy")]
+    pub ip_family_policy: Option<String>,
 }
 
 /// podMetadata controls shared metadata for all pods created based on this spec.

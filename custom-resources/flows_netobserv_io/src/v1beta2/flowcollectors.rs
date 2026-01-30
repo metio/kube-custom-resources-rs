@@ -903,9 +903,10 @@ pub struct FlowCollectorAgentEbpfAdvancedSchedulingTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// Operator represents a key's relationship to the value.
-    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Valid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.
     /// Exists is equivalent to wildcard for value, so that a pod can
     /// tolerate all taints of a particular category.
+    /// Lt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
     /// TolerationSeconds represents the period of time the toleration (which must be
@@ -2199,9 +2200,10 @@ pub struct FlowCollectorConsolePluginAdvancedSchedulingTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// Operator represents a key's relationship to the value.
-    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Valid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.
     /// Exists is equivalent to wildcard for value, so that a pod can
     /// tolerate all taints of a particular category.
+    /// Lt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
     /// TolerationSeconds represents the period of time the toleration (which must be
@@ -4445,9 +4447,10 @@ pub struct FlowCollectorProcessorAdvancedSchedulingTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// Operator represents a key's relationship to the value.
-    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Valid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.
     /// Exists is equivalent to wildcard for value, so that a pod can
     /// tolerate all taints of a particular category.
+    /// Lt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
     /// TolerationSeconds represents the period of time the toleration (which must be
@@ -4819,7 +4822,7 @@ pub struct FlowCollectorProcessorMetricsHealthRules {
     pub mode: Option<FlowCollectorProcessorMetricsHealthRulesMode>,
     /// Health rule template name.
     /// Possible values are: `PacketDropsByKernel`, `PacketDropsByDevice`, `IPsecErrors`, `NetpolDenied`,
-    /// `LatencyHighTrend`, `DNSErrors`, `DNSNxDomain`, `ExternalEgressHighTrend`, `ExternalIngressHighTrend`.
+    /// `LatencyHighTrend`, `DNSErrors`, `DNSNxDomain`, `ExternalEgressHighTrend`, `ExternalIngressHighTrend`, `Ingress5xxErrors`, `IngressLatencyTrend`.
     /// Note: `NetObservNoFlows` and `NetObservLokiError` are alert-only and cannot be used as health rules.
     /// More information on health rules: <https://github.com/netobserv/network-observability-operator/blob/main/docs/Alerts.md>
     pub template: FlowCollectorProcessorMetricsHealthRulesTemplate,
@@ -4846,6 +4849,8 @@ pub enum FlowCollectorProcessorMetricsHealthRulesTemplate {
     DnsNxDomain,
     ExternalEgressHighTrend,
     ExternalIngressHighTrend,
+    Ingress5xxErrors,
+    IngressLatencyTrend,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4858,6 +4863,11 @@ pub struct FlowCollectorProcessorMetricsHealthRulesVariants {
     /// When provided, it must be parsable as a float.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lowVolumeThreshold")]
     pub low_volume_threshold: Option<String>,
+    /// Mode overrides the health rule mode for this specific variant.
+    /// If not specified, inherits from the parent health rule's mode.
+    /// Possible values are: `Alert`, `Recording`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<FlowCollectorProcessorMetricsHealthRulesVariantsMode>,
     /// Thresholds of the health rule per severity.
     /// They are expressed as a percentage of errors above which the alert is triggered. They must be parsable as floats.
     /// Required for both alert and recording modes
@@ -4877,6 +4887,12 @@ pub enum FlowCollectorProcessorMetricsHealthRulesVariantsGroupBy {
     Node,
     Namespace,
     Workload,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum FlowCollectorProcessorMetricsHealthRulesVariantsMode {
+    Alert,
+    Recording,
 }
 
 /// Thresholds of the health rule per severity.
@@ -5315,6 +5331,7 @@ pub struct FlowCollectorStatus {
     /// `conditions` represents the latest available observations of an object's state
     pub conditions: Vec<Condition>,
     /// Namespace where console plugin and flowlogs-pipeline have been deployed.
+    /// 
     /// Deprecated: annotations are used instead
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,

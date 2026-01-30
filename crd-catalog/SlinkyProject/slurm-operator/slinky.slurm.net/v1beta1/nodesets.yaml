@@ -95,7 +95,7 @@ spec:
                   description: "Partition defines the Slurm partition configuration for this NodeSet."
                   properties:
                     config:
-                      description: "Config is added to the NodeSet's partition line.\nRef: https://slurm.schedmd.com/slurmd.html#OPT_conf-%3Cnode-parameters%3E"
+                      description: "Config is added to the NodeSet's partition line.\nRef: https://slurm.schedmd.com/slurm.conf.html#SECTION_PARTITION-CONFIGURATION"
                       type: "string"
                     enabled:
                       default: true

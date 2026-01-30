@@ -11,7 +11,7 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// Desired state of the Bundle resource.
+/// spec represents the desired state of the Bundle resource.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "trust.cert-manager.io", version = "v1alpha1", kind = "Bundle", plural = "bundles")]
 #[kube(status = "BundleStatus")]
@@ -19,9 +19,9 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct BundleSpec {
-    /// Sources is a set of references to data whose data will sync to the target.
+    /// sources is a set of references to data whose data will sync to the target.
     pub sources: Vec<BundleSources>,
-    /// Target is the target location in all namespaces to sync source data to.
+    /// target is the target location in all namespaces to sync source data to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub target: Option<BundleTarget>,
 }
@@ -30,52 +30,52 @@ pub struct BundleSpec {
 /// the BundleTarget in all Namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BundleSources {
-    /// ConfigMap is a reference (by name) to a ConfigMap's `data` key(s), or to a
-    /// list of ConfigMap's `data` key(s) using label selector, in the trust Namespace.
+    /// configMap is a reference (by name) to a ConfigMap's `data` key(s), or to a
+    /// list of ConfigMap's `data` key(s) using label selector, in the trust namespace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<BundleSourcesConfigMap>,
-    /// InLine is a simple string to append as the source data.
+    /// inLine is a simple string to append as the source data.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "inLine")]
     pub in_line: Option<String>,
-    /// Secret is a reference (by name) to a Secret's `data` key(s), or to a
-    /// list of Secret's `data` key(s) using label selector, in the trust Namespace.
+    /// secret is a reference (by name) to a Secret's `data` key(s), or to a
+    /// list of Secret's `data` key(s) using label selector, in the trust namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<BundleSourcesSecret>,
-    /// UseDefaultCAs, when true, requests the default CA bundle to be used as a source.
-    /// Default CAs are available if trust-manager was installed via Helm
-    /// or was otherwise set up to include a package-injecting init container by using the
-    /// "--default-package-location" flag when starting the trust-manager controller.
-    /// If default CAs were not configured at start-up, any request to use the default
-    /// CAs will fail.
-    /// The version of the default CA package which is used for a Bundle is stored in the
-    /// defaultCAPackageVersion field of the Bundle's status field.
+    /// useDefaultCAs indicates whether the default CA bundle should be used as a source.
+    /// The default CA bundle is available only if trust-manager was installed with
+    /// default CA support enabled, either via the Helm chart or by starting the
+    /// trust-manager controller with the "--default-package-location" flag.
+    /// If default CA support was not enabled at startup, setting this field to true
+    /// will result in reconciliation failure.
+    /// The version of the default CA package used for this Bundle is reported in
+    /// status.defaultCAVersion.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useDefaultCAs")]
     pub use_default_c_as: Option<bool>,
 }
 
-/// ConfigMap is a reference (by name) to a ConfigMap's `data` key(s), or to a
-/// list of ConfigMap's `data` key(s) using label selector, in the trust Namespace.
+/// configMap is a reference (by name) to a ConfigMap's `data` key(s), or to a
+/// list of ConfigMap's `data` key(s) using label selector, in the trust namespace.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BundleSourcesConfigMap {
-    /// IncludeAllKeys is a flag to include all keys in the object's `data` field to be used. False by default.
-    /// This field must not be true when `Key` is set.
+    /// includeAllKeys is a flag to include all keys in the object's `data` field to be used. False by default.
+    /// This field must not be true when `key` is set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeAllKeys")]
     pub include_all_keys: Option<bool>,
-    /// Key of the entry in the object's `data` field to be used.
+    /// key of the entry in the object's `data` field to be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
-    /// Name is the name of the source object in the trust Namespace.
+    /// name is the name of the source object in the trust namespace.
     /// This field must be left empty when `selector` is set
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Selector is the label selector to use to fetch a list of objects. Must not be set
-    /// when `Name` is set.
+    /// selector is the label selector to use to fetch a list of objects. Must not be set
+    /// when `name` is set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<BundleSourcesConfigMapSelector>,
 }
 
-/// Selector is the label selector to use to fetch a list of objects. Must not be set
-/// when `Name` is set.
+/// selector is the label selector to use to fetch a list of objects. Must not be set
+/// when `name` is set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BundleSourcesConfigMapSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -105,29 +105,29 @@ pub struct BundleSourcesConfigMapSelectorMatchExpressions {
     pub values: Option<Vec<String>>,
 }
 
-/// Secret is a reference (by name) to a Secret's `data` key(s), or to a
-/// list of Secret's `data` key(s) using label selector, in the trust Namespace.
+/// secret is a reference (by name) to a Secret's `data` key(s), or to a
+/// list of Secret's `data` key(s) using label selector, in the trust namespace.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BundleSourcesSecret {
-    /// IncludeAllKeys is a flag to include all keys in the object's `data` field to be used. False by default.
-    /// This field must not be true when `Key` is set.
+    /// includeAllKeys is a flag to include all keys in the object's `data` field to be used. False by default.
+    /// This field must not be true when `key` is set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeAllKeys")]
     pub include_all_keys: Option<bool>,
-    /// Key of the entry in the object's `data` field to be used.
+    /// key of the entry in the object's `data` field to be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
-    /// Name is the name of the source object in the trust Namespace.
+    /// name is the name of the source object in the trust namespace.
     /// This field must be left empty when `selector` is set
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Selector is the label selector to use to fetch a list of objects. Must not be set
-    /// when `Name` is set.
+    /// selector is the label selector to use to fetch a list of objects. Must not be set
+    /// when `name` is set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<BundleSourcesSecretSelector>,
 }
 
-/// Selector is the label selector to use to fetch a list of objects. Must not be set
-/// when `Name` is set.
+/// selector is the label selector to use to fetch a list of objects. Must not be set
+/// when `name` is set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BundleSourcesSecretSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -157,38 +157,38 @@ pub struct BundleSourcesSecretSelectorMatchExpressions {
     pub values: Option<Vec<String>>,
 }
 
-/// Target is the target location in all namespaces to sync source data to.
+/// target is the target location in all namespaces to sync source data to.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BundleTarget {
-    /// AdditionalFormats specifies any additional formats to write to the target
+    /// additionalFormats specifies any additional formats to write to the target
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalFormats")]
     pub additional_formats: Option<BundleTargetAdditionalFormats>,
-    /// ConfigMap is the target ConfigMap in Namespaces that all Bundle source
+    /// configMap is the target ConfigMap in Namespaces that all Bundle source
     /// data will be synced to.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<BundleTargetConfigMap>,
-    /// NamespaceSelector will, if set, only sync the target resource in
+    /// namespaceSelector will, if set, only sync the target resource in
     /// Namespaces which match the selector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<BundleTargetNamespaceSelector>,
-    /// Secret is the target Secret that all Bundle source data will be synced to.
+    /// secret is the target Secret that all Bundle source data will be synced to.
     /// Using Secrets as targets is only supported if enabled at trust-manager startup.
     /// By default, trust-manager has no permissions for writing to secrets and can only read secrets in the trust namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<BundleTargetSecret>,
 }
 
-/// AdditionalFormats specifies any additional formats to write to the target
+/// additionalFormats specifies any additional formats to write to the target
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BundleTargetAdditionalFormats {
-    /// JKS requests a JKS-formatted binary trust bundle to be written to the target.
+    /// jks requests a JKS-formatted binary trust bundle to be written to the target.
     /// The bundle has "changeit" as the default password.
     /// For more information refer to this link <https://cert-manager.io/docs/faq/#keystore-passwords>
     /// Format is deprecated: Writing JKS is subject for removal. Please migrate to PKCS12.
     /// PKCS#12 trust stores created by trust-manager are compatible with Java.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub jks: Option<BundleTargetAdditionalFormatsJks>,
-    /// PKCS12 requests a PKCS12-formatted binary trust bundle to be written to the target.
+    /// pkcs12 requests a PKCS12-formatted binary trust bundle to be written to the target.
     /// 
     /// The bundle is by default created without a password.
     /// For more information refer to this link <https://cert-manager.io/docs/faq/#keystore-passwords>
@@ -196,32 +196,32 @@ pub struct BundleTargetAdditionalFormats {
     pub pkcs12: Option<BundleTargetAdditionalFormatsPkcs12>,
 }
 
-/// JKS requests a JKS-formatted binary trust bundle to be written to the target.
+/// jks requests a JKS-formatted binary trust bundle to be written to the target.
 /// The bundle has "changeit" as the default password.
 /// For more information refer to this link <https://cert-manager.io/docs/faq/#keystore-passwords>
 /// Format is deprecated: Writing JKS is subject for removal. Please migrate to PKCS12.
 /// PKCS#12 trust stores created by trust-manager are compatible with Java.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BundleTargetAdditionalFormatsJks {
-    /// Key is the key of the entry in the object's `data` field to be used.
+    /// key is the key of the entry in the object's `data` field to be used.
     pub key: String,
-    /// Password for JKS trust store
+    /// password for JKS trust store
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<String>,
 }
 
-/// PKCS12 requests a PKCS12-formatted binary trust bundle to be written to the target.
+/// pkcs12 requests a PKCS12-formatted binary trust bundle to be written to the target.
 /// 
 /// The bundle is by default created without a password.
 /// For more information refer to this link <https://cert-manager.io/docs/faq/#keystore-passwords>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BundleTargetAdditionalFormatsPkcs12 {
-    /// Key is the key of the entry in the object's `data` field to be used.
+    /// key is the key of the entry in the object's `data` field to be used.
     pub key: String,
-    /// Password for PKCS12 trust store
+    /// password for PKCS12 trust store
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<String>,
-    /// Profile specifies the certificate encryption algorithms and the HMAC algorithm
+    /// profile specifies the certificate encryption algorithms and the HMAC algorithm
     /// used to create the PKCS12 trust store.
     /// 
     /// If provided, allowed values are:
@@ -234,7 +234,7 @@ pub struct BundleTargetAdditionalFormatsPkcs12 {
     pub profile: Option<BundleTargetAdditionalFormatsPkcs12Profile>,
 }
 
-/// PKCS12 requests a PKCS12-formatted binary trust bundle to be written to the target.
+/// pkcs12 requests a PKCS12-formatted binary trust bundle to be written to the target.
 /// 
 /// The bundle is by default created without a password.
 /// For more information refer to this link <https://cert-manager.io/docs/faq/#keystore-passwords>
@@ -247,29 +247,29 @@ pub enum BundleTargetAdditionalFormatsPkcs12Profile {
     Modern2023,
 }
 
-/// ConfigMap is the target ConfigMap in Namespaces that all Bundle source
+/// configMap is the target ConfigMap in Namespaces that all Bundle source
 /// data will be synced to.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BundleTargetConfigMap {
-    /// Key is the key of the entry in the object's `data` field to be used.
+    /// key is the key of the entry in the object's `data` field to be used.
     pub key: String,
-    /// Metadata is an optional set of labels and annotations to be copied to the target.
+    /// metadata is an optional set of labels and annotations to be copied to the target.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<BundleTargetConfigMapMetadata>,
 }
 
-/// Metadata is an optional set of labels and annotations to be copied to the target.
+/// metadata is an optional set of labels and annotations to be copied to the target.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BundleTargetConfigMapMetadata {
-    /// Annotations is a key value map to be copied to the target.
+    /// annotations is a key value map to be copied to the target.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels is a key value map to be copied to the target.
+    /// labels is a key value map to be copied to the target.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// NamespaceSelector will, if set, only sync the target resource in
+/// namespaceSelector will, if set, only sync the target resource in
 /// Namespaces which match the selector.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BundleTargetNamespaceSelector {
@@ -300,40 +300,40 @@ pub struct BundleTargetNamespaceSelectorMatchExpressions {
     pub values: Option<Vec<String>>,
 }
 
-/// Secret is the target Secret that all Bundle source data will be synced to.
+/// secret is the target Secret that all Bundle source data will be synced to.
 /// Using Secrets as targets is only supported if enabled at trust-manager startup.
 /// By default, trust-manager has no permissions for writing to secrets and can only read secrets in the trust namespace.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BundleTargetSecret {
-    /// Key is the key of the entry in the object's `data` field to be used.
+    /// key is the key of the entry in the object's `data` field to be used.
     pub key: String,
-    /// Metadata is an optional set of labels and annotations to be copied to the target.
+    /// metadata is an optional set of labels and annotations to be copied to the target.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<BundleTargetSecretMetadata>,
 }
 
-/// Metadata is an optional set of labels and annotations to be copied to the target.
+/// metadata is an optional set of labels and annotations to be copied to the target.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BundleTargetSecretMetadata {
-    /// Annotations is a key value map to be copied to the target.
+    /// annotations is a key value map to be copied to the target.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels is a key value map to be copied to the target.
+    /// labels is a key value map to be copied to the target.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Status of the Bundle. This is set and managed automatically.
+/// status of the Bundle. This is set and managed automatically.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BundleStatus {
-    /// List of status conditions to indicate the status of the Bundle.
-    /// Known condition types are `Bundle`.
+    /// conditions represent the latest available observations of the Bundle's current state.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// DefaultCAPackageVersion, if set and non-empty, indicates the version information
-    /// which was retrieved when the set of default CAs was requested in the bundle
-    /// source. This should only be set if useDefaultCAs was set to "true" on a source,
-    /// and will be the same for the same version of a bundle with identical certificates.
+    /// defaultCAVersion is the version of the default CA package used when resolving
+    /// the default CA source(s) for this Bundle (for example, when any source has
+    /// useDefaultCAs set to true), if applicable.
+    /// Bundles resolved from identical sets of default CA certificates will report
+    /// the same defaultCAVersion value.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultCAVersion")]
     pub default_ca_version: Option<String>,
 }

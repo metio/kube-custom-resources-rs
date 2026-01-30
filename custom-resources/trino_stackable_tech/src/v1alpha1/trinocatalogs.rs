@@ -525,8 +525,12 @@ pub struct TrinoCatalogConnectorIceberg {
     /// Please make sure that the underlying Hive metastore also has access to the HDFS.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hdfs: Option<TrinoCatalogConnectorIcebergHdfs>,
-    /// Mandatory connection to a Hive Metastore, which will be used as a storage for metadata.
-    pub metastore: TrinoCatalogConnectorIcebergMetastore,
+    /// Optional connection to a Hive Metastore, which will be used as a storage for metadata.
+    /// 
+    /// The connection is optional, as Iceberg also supports other catalogs, such as a REST catalog,
+    /// which (currently) can only be added using configOverrides.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metastore: Option<TrinoCatalogConnectorIcebergMetastore>,
     /// Connection to an S3 store.
     /// Please make sure that the underlying Hive metastore also has access to the S3 store.
     /// Learn more about S3 configuration in the [S3 concept docs](<https://docs.stackable.tech/home/nightly/concepts/s3).>
@@ -543,7 +547,10 @@ pub struct TrinoCatalogConnectorIcebergHdfs {
     pub config_map: String,
 }
 
-/// Mandatory connection to a Hive Metastore, which will be used as a storage for metadata.
+/// Optional connection to a Hive Metastore, which will be used as a storage for metadata.
+/// 
+/// The connection is optional, as Iceberg also supports other catalogs, such as a REST catalog,
+/// which (currently) can only be added using configOverrides.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TrinoCatalogConnectorIcebergMetastore {
     /// Name of the [discovery ConfigMap](<https://docs.stackable.tech/home/nightly/concepts/service_discovery)> providing information about the Hive metastore.

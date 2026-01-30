@@ -43,6 +43,13 @@ pub struct HelmReleaseSpec {
     /// currently existing in the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "driftDetection")]
     pub drift_detection: Option<HelmReleaseDriftDetection>,
+    /// HealthCheckExprs is a list of healthcheck expressions for evaluating the
+    /// health of custom resources using Common Expression Language (CEL).
+    /// The expressions are evaluated only when the specific Helm action
+    /// taking place has wait enabled, i.e. DisableWait is false, and the
+    /// 'poller' WaitStrategy is used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheckExprs")]
+    pub health_check_exprs: Option<Vec<HelmReleaseHealthCheckExprs>>,
     /// Install holds the configuration for Helm install actions for this HelmRelease.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub install: Option<HelmReleaseInstall>,
@@ -121,6 +128,10 @@ pub struct HelmReleaseSpec {
     /// and information about how they should be merged.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valuesFrom")]
     pub values_from: Option<Vec<HelmReleaseValuesFrom>>,
+    /// WaitStrategy defines Helm's wait strategy for waiting for applied
+    /// resources to become ready.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "waitStrategy")]
+    pub wait_strategy: Option<HelmReleaseWaitStrategy>,
 }
 
 /// Chart defines the template of the v1.HelmChart that should be created
@@ -401,6 +412,27 @@ pub enum HelmReleaseDriftDetectionMode {
     Disabled,
 }
 
+/// CustomHealthCheck defines the health check for custom resources.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HelmReleaseHealthCheckExprs {
+    /// APIVersion of the custom resource under evaluation.
+    #[serde(rename = "apiVersion")]
+    pub api_version: String,
+    /// Current is the CEL expression that determines if the status
+    /// of the custom resource has reached the desired state.
+    pub current: String,
+    /// Failed is the CEL expression that determines if the status
+    /// of the custom resource has failed to reach the desired state.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub failed: Option<String>,
+    /// InProgress is the CEL expression that determines if the status
+    /// of the custom resource has not yet reached the desired state.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inProgress")]
+    pub in_progress: Option<String>,
+    /// Kind of the custom resource under evaluation.
+    pub kind: String,
+}
+
 /// Install holds the configuration for Helm install actions for this HelmRelease.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HelmReleaseInstall {
@@ -458,6 +490,10 @@ pub struct HelmReleaseInstall {
     /// if that name is a deleted release which remains in the history.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replace: Option<bool>,
+    /// ServerSideApply enables server-side apply for resources during install.
+    /// Defaults to true (or false when UseHelm3Defaults feature gate is enabled).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverSideApply")]
+    pub server_side_apply: Option<bool>,
     /// SkipCRDs tells the Helm install action to not install any CRDs. By default,
     /// CRDs are installed if not already present.
     /// 
@@ -737,14 +773,39 @@ pub struct HelmReleaseRollback {
     /// Force forces resource updates through a replacement strategy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub force: Option<bool>,
-    /// Recreate performs pod restarts for the resource if applicable.
+    /// Recreate performs pod restarts for any managed workloads.
+    /// 
+    /// Deprecated: This behavior was deprecated in Helm 3:
+    ///   - Deprecation: <https://github.com/helm/helm/pull/6463>
+    ///   - Removal: <https://github.com/helm/helm/pull/31023>
+    /// After helm-controller was upgraded to the Helm 4 SDK,
+    /// this field is no longer functional and will print a
+    /// warning if set to true. It will also be removed in a
+    /// future release.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub recreate: Option<bool>,
+    /// ServerSideApply enables server-side apply for resources during rollback.
+    /// Can be "enabled", "disabled", or "auto".
+    /// When "auto", server-side apply usage will be based on the release's previous usage.
+    /// Defaults to "auto".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverSideApply")]
+    pub server_side_apply: Option<HelmReleaseRollbackServerSideApply>,
     /// Timeout is the time to wait for any individual Kubernetes operation (like
     /// Jobs for hooks) during the performance of a Helm rollback action. Defaults to
     /// 'HelmReleaseSpec.Timeout'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
+}
+
+/// Rollback holds the configuration for Helm rollback actions for this HelmRelease.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum HelmReleaseRollbackServerSideApply {
+    #[serde(rename = "enabled")]
+    Enabled,
+    #[serde(rename = "disabled")]
+    Disabled,
+    #[serde(rename = "auto")]
+    Auto,
 }
 
 /// Test holds the configuration for Helm test actions for this HelmRelease.
@@ -873,6 +934,12 @@ pub struct HelmReleaseUpgrade {
     /// action for the HelmRelease fails. The default is to not perform any action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub remediation: Option<HelmReleaseUpgradeRemediation>,
+    /// ServerSideApply enables server-side apply for resources during upgrade.
+    /// Can be "enabled", "disabled", or "auto".
+    /// When "auto", server-side apply usage will be based on the release's previous usage.
+    /// Defaults to "auto".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverSideApply")]
+    pub server_side_apply: Option<HelmReleaseUpgradeServerSideApply>,
     /// Strategy defines the upgrade strategy to use for this HelmRelease.
     /// Defaults to 'RemediateOnFailure'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -923,6 +990,17 @@ pub enum HelmReleaseUpgradeRemediationStrategy {
     Rollback,
     #[serde(rename = "uninstall")]
     Uninstall,
+}
+
+/// Upgrade holds the configuration for Helm upgrade actions for this HelmRelease.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum HelmReleaseUpgradeServerSideApply {
+    #[serde(rename = "enabled")]
+    Enabled,
+    #[serde(rename = "disabled")]
+    Disabled,
+    #[serde(rename = "auto")]
+    Auto,
 }
 
 /// Strategy defines the upgrade strategy to use for this HelmRelease.
@@ -979,6 +1057,29 @@ pub enum HelmReleaseValuesFromKind {
     ConfigMap,
 }
 
+/// WaitStrategy defines Helm's wait strategy for waiting for applied
+/// resources to become ready.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct HelmReleaseWaitStrategy {
+    /// Name is Helm's wait strategy for waiting for applied resources to
+    /// become ready. One of 'poller' or 'legacy'. The 'poller' strategy uses
+    /// kstatus to poll resource statuses, while the 'legacy' strategy uses
+    /// Helm v3's waiting logic.
+    /// Defaults to 'poller', or to 'legacy' when UseHelm3Defaults feature
+    /// gate is enabled.
+    pub name: HelmReleaseWaitStrategyName,
+}
+
+/// WaitStrategy defines Helm's wait strategy for waiting for applied
+/// resources to become ready.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum HelmReleaseWaitStrategyName {
+    #[serde(rename = "poller")]
+    Poller,
+    #[serde(rename = "legacy")]
+    Legacy,
+}
+
 /// HelmReleaseStatus defines the observed state of a HelmRelease.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HelmReleaseStatus {
@@ -1001,6 +1102,10 @@ pub struct HelmReleaseStatus {
     /// state. It is reset after a successful reconciliation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "installFailures")]
     pub install_failures: Option<i64>,
+    /// Inventory contains the list of Kubernetes resource object references
+    /// that have been applied for this release.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub inventory: Option<HelmReleaseStatusInventory>,
     /// LastAttemptedConfigDigest is the digest for the config (better known as
     /// "values") of the last reconciliation attempt.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastAttemptedConfigDigest")]
@@ -1139,6 +1244,24 @@ pub struct HelmReleaseStatusHistoryTestHooks {
     /// Phase the test hook was observed to be in.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
+}
+
+/// Inventory contains the list of Kubernetes resource object references
+/// that have been applied for this release.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HelmReleaseStatusInventory {
+    /// Entries of Kubernetes resource object references.
+    pub entries: Vec<HelmReleaseStatusInventoryEntries>,
+}
+
+/// ResourceRef contains the information necessary to locate a resource within a cluster.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HelmReleaseStatusInventoryEntries {
+    /// ID is the string representation of the Kubernetes resource object's metadata,
+    /// in the format '<namespace>_<name>_<group>_<kind>'.
+    pub id: String,
+    /// Version is the API version of the Kubernetes resource object's kind.
+    pub v: String,
 }
 
 /// HelmReleaseStatus defines the observed state of a HelmRelease.

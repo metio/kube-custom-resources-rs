@@ -23,6 +23,8 @@ pub struct TenantSpec {
     /// Specifies additional RoleBindings assigned to the Tenant. Capsule will ensure that all namespaces in the Tenant always contain the RoleBinding for the given ClusterRole. Optional.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalRoleBindings")]
     pub additional_role_bindings: Option<Vec<TenantAdditionalRoleBindings>>,
+    /// Deprecated: Use Enforcement.Registries instead
+    /// 
     /// Specifies the trusted Image Registries assigned to the Tenant. Capsule assures that all Pods resources created in the Tenant can use only one of the allowed trusted registries. Optional.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerRegistries")]
     pub container_registries: Option<TenantContainerRegistries>,
@@ -45,6 +47,8 @@ pub struct TenantSpec {
     /// Specifies options for the GatewayClass resources.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gatewayOptions")]
     pub gateway_options: Option<TenantGatewayOptions>,
+    /// Deprecated: Use Enforcement.Registries instead
+    /// 
     /// Specify the allowed values for the imagePullPolicies option in Pod resources. Capsule assures that all Pod resources created in the Tenant can use only one of the allowed policy. Optional.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicies")]
     pub image_pull_policies: Option<Vec<String>>,
@@ -90,6 +94,13 @@ pub struct TenantSpec {
     /// Specifies a list of ResourceQuota resources assigned to the Tenant. The assigned values are inherited by any namespace created in the Tenant. The Capsule operator aggregates ResourceQuota at Tenant level, so that the hard quota is never crossed for the given Tenant. This permits the Tenant owner to consume resources in the Tenant regardless of the namespace. Optional.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceQuotas")]
     pub resource_quotas: Option<TenantResourceQuotas>,
+    /// Specify enforcement specifications for the scope of the Tenant.
+    ///  We are moving all configuration enforcement. per namespace into a rule construct.
+    ///  It's currently not final.
+    /// 
+    /// Read More: <https://projectcapsule.dev/docs/tenants/rules/>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub rules: Option<Vec<TenantRules>>,
     /// Specifies the allowed RuntimeClasses assigned to the Tenant.
     /// Capsule assures that all Pods resources created in the Tenant can use only one of the allowed RuntimeClasses.
     /// Optional.
@@ -140,6 +151,8 @@ pub struct TenantAdditionalRoleBindingsSubjects {
     pub namespace: Option<String>,
 }
 
+/// Deprecated: Use Enforcement.Registries instead
+/// 
 /// Specifies the trusted Image Registries assigned to the Tenant. Capsule assures that all Pods resources created in the Tenant can use only one of the allowed trusted registries. Optional.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantContainerRegistries {
@@ -1066,6 +1079,67 @@ pub enum TenantResourceQuotasScope {
     Namespace,
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TenantRules {
+    /// Enforcement Rules applied
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enforce: Option<TenantRulesEnforce>,
+    /// Select namespaces which are going to usese
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<TenantRulesNamespaceSelector>,
+}
+
+/// Enforcement Rules applied
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TenantRulesEnforce {
+    /// Define registries which are allowed to be used within this tenant
+    /// The rules are aggregated, since you can use Regular Expressions the match registry endpoints
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub registries: Option<Vec<TenantRulesEnforceRegistries>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TenantRulesEnforceRegistries {
+    /// Allowed PullPolicy for the given registry. Supplying no value allows all policies.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub policy: Option<Vec<String>>,
+    /// OCI Registry endpoint, is treated as regular expression.
+    pub url: String,
+    /// Requesting Resources
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub validation: Option<Vec<String>>,
+}
+
+/// Select namespaces which are going to usese
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TenantRulesNamespaceSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<TenantRulesNamespaceSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TenantRulesNamespaceSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
 /// Specifies the allowed RuntimeClasses assigned to the Tenant.
 /// Capsule assures that all Pods resources created in the Tenant can use only one of the allowed RuntimeClasses.
 /// Optional.
@@ -1285,12 +1359,35 @@ pub struct TenantStatusSpaces {
     pub conditions: Vec<Condition>,
     /// Managed Metadata
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enforce: Option<TenantStatusSpacesEnforce>,
+    /// Managed Metadata
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<TenantStatusSpacesMetadata>,
     /// Namespace Name
     pub name: String,
     /// Namespace UID
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
+}
+
+/// Managed Metadata
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TenantStatusSpacesEnforce {
+    /// Registries which are allowed within this namespace
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub registry: Option<Vec<TenantStatusSpacesEnforceRegistry>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TenantStatusSpacesEnforceRegistry {
+    /// Allowed PullPolicy for the given registry. Supplying no value allows all policies.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub policy: Option<Vec<String>>,
+    /// OCI Registry endpoint, is treated as regular expression.
+    pub url: String,
+    /// Requesting Resources
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub validation: Option<Vec<String>>,
 }
 
 /// Managed Metadata

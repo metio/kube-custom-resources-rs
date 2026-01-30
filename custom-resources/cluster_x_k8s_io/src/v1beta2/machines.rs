@@ -243,6 +243,9 @@ pub struct MachineStatus {
     /// deprecated groups all the status fields that are deprecated and will be removed when all the nested field are removed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deprecated: Option<MachineStatusDeprecated>,
+    /// failureDomain is the failure domain where the Machine has been scheduled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomain")]
+    pub failure_domain: Option<String>,
     /// initialization provides observations of the Machine initialization process.
     /// NOTE: Fields in this struct are part of the Cluster API contract and are used to orchestrate initial Machine provisioning.
     #[serde(default, skip_serializing_if = "Option::is_none")]

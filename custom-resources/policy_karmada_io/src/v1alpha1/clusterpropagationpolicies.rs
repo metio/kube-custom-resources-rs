@@ -444,6 +444,10 @@ pub struct ClusterPropagationPolicyPlacement {
     /// SpreadConstraints represents a list of the scheduling constraints.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "spreadConstraints")]
     pub spread_constraints: Option<Vec<ClusterPropagationPolicyPlacementSpreadConstraints>>,
+    /// WorkloadAffinity represents inter-workload affinity and anti-affinity
+    /// scheduling policies.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workloadAffinity")]
+    pub workload_affinity: Option<ClusterPropagationPolicyPlacementWorkloadAffinity>,
 }
 
 /// ClusterAffinityTerm selects a set of cluster.
@@ -833,6 +837,86 @@ pub enum ClusterPropagationPolicyPlacementSpreadConstraintsSpreadByField {
     Zone,
     #[serde(rename = "provider")]
     Provider,
+}
+
+/// WorkloadAffinity represents inter-workload affinity and anti-affinity
+/// scheduling policies.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterPropagationPolicyPlacementWorkloadAffinity {
+    /// Affinity represents inter-workload affinity scheduling rules.
+    /// These are hard requirements: workloads will only be scheduled to clusters
+    /// that satisfy the affinity term if it is specified.
+    /// 
+    /// For the first workload of an affinity group (when no workloads with a
+    /// matching label value exist in the system), the scheduler will not block
+    /// scheduling. This allows bootstrapping new workload groups without
+    /// encountering scheduling deadlocks, providing a better user experience.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub affinity: Option<ClusterPropagationPolicyPlacementWorkloadAffinityAffinity>,
+    /// AntiAffinity represents inter-workload anti-affinity scheduling rules.
+    /// These are hard requirements: workloads will be scheduled to avoid clusters
+    /// where matching workloads are already scheduled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "antiAffinity")]
+    pub anti_affinity: Option<ClusterPropagationPolicyPlacementWorkloadAffinityAntiAffinity>,
+}
+
+/// Affinity represents inter-workload affinity scheduling rules.
+/// These are hard requirements: workloads will only be scheduled to clusters
+/// that satisfy the affinity term if it is specified.
+/// 
+/// For the first workload of an affinity group (when no workloads with a
+/// matching label value exist in the system), the scheduler will not block
+/// scheduling. This allows bootstrapping new workload groups without
+/// encountering scheduling deadlocks, providing a better user experience.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterPropagationPolicyPlacementWorkloadAffinityAffinity {
+    /// GroupByLabelKey declares the label key on the workload resource template that
+    /// determines the affinity group. Workloads with the same label value under
+    /// this key belong to the same affinity group.
+    /// 
+    /// The scheduler maintains a global index of affinity groups in memory for
+    /// efficient lookup. Each affinity group is identified by a serialized
+    /// key-value pair and contains all workload resource templates that belong
+    /// to the group.
+    /// 
+    /// Note: Affinity groups are scoped to the namespace. Workloads that use the
+    /// same affinity label but reside in different namespaces are not treated
+    /// as part of the same group.
+    /// 
+    /// The key must be a valid Kubernetes label key.
+    /// 
+    /// Example: If GroupByLabelKey is "app.group", workloads with the label
+    /// "app.group=frontend" will form one affinity group, while those with
+    /// "app.group=backend" will form another.
+    #[serde(rename = "groupByLabelKey")]
+    pub group_by_label_key: String,
+}
+
+/// AntiAffinity represents inter-workload anti-affinity scheduling rules.
+/// These are hard requirements: workloads will be scheduled to avoid clusters
+/// where matching workloads are already scheduled.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterPropagationPolicyPlacementWorkloadAffinityAntiAffinity {
+    /// GroupByLabelKey declares the label key on the workload resource template that
+    /// determines the anti-affinity group. Workloads with the same label value under
+    /// this key belong to the same anti-affinity group and will be separated.
+    /// 
+    /// The scheduler maintains a global index of affinity groups in memory for
+    /// efficient lookup. Each affinity group is identified by a serialized
+    /// key-value pair and contains all workload resource templates that belong
+    /// to the group.
+    /// 
+    /// Note: Affinity groups are scoped to the namespace. Workloads that use the
+    /// same anti-affinity label but reside in different namespaces are not treated
+    /// as part of the same group.
+    /// 
+    /// The key must be a valid Kubernetes label key.
+    /// 
+    /// Example: If GroupByLabelKey is "app.group", workloads with the label
+    /// "app.group=frontend" will avoid clusters where other
+    /// "app.group=frontend" workloads already exist.
+    #[serde(rename = "groupByLabelKey")]
+    pub group_by_label_key: String,
 }
 
 /// Spec represents the desired behavior of ClusterPropagationPolicy.
