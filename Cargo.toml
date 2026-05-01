@@ -92,6 +92,7 @@ members = [
     "custom-resources/claudie_io",
     "custom-resources/clickhouse_altinity_com",
     "custom-resources/clickhouse_keeper_altinity_com",
+    "custom-resources/cloud_google_com",
     "custom-resources/cloudformation_linki_space",
     "custom-resources/cloudfront_services_k8s_aws",
     "custom-resources/cloudtrail_services_k8s_aws",
