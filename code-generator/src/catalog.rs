@@ -1644,6 +1644,14 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ignores: &[],
     },
     UpstreamSource {
+        project_name: "GoogleCloudPlatform/compute-class-api",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/GoogleCloudPlatform/compute-class-api/blob/release-1.34/cloud.google.com_computeclasses.yaml",
+        ],
+        ignores: &[],
+    },
+    UpstreamSource {
         project_name: "GoogleCloudPlatform/elcarro-oracle-operator",
         license: APACHE_V2,
         urls: &[

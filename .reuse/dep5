@@ -599,6 +599,10 @@ Files: crd-catalog/gitlab-org/gl-openshift/gitlab-runner-operator/*
 Copyright: The gitlab-org/gl-openshift/gitlab-runner-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/GoogleCloudPlatform/compute-class-api/*
+Copyright: The GoogleCloudPlatform/compute-class-api Authors
+License: Apache-2.0
+
 Files: crd-catalog/GoogleCloudPlatform/elcarro-oracle-operator/*
 Copyright: The GoogleCloudPlatform/elcarro-oracle-operator Authors
 License: Apache-2.0

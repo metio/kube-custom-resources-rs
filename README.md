@@ -132,6 +132,7 @@ The following groups are available:
 - [claudie.io](https://crates.io/crates/kcr_claudie_io)
 - [clickhouse-keeper.altinity.com](https://crates.io/crates/kcr_clickhouse_keeper_altinity_com)
 - [clickhouse.altinity.com](https://crates.io/crates/kcr_clickhouse_altinity_com)
+- [cloud.google.com](https://crates.io/crates/kcr_cloud_google_com)
 - [cloudformation.linki.space](https://crates.io/crates/kcr_cloudformation_linki_space)
 - [cloudfront.services.k8s.aws](https://crates.io/crates/kcr_cloudfront_services_k8s_aws)
 - [cloudtrail.services.k8s.aws](https://crates.io/crates/kcr_cloudtrail_services_k8s_aws)
