@@ -2425,6 +2425,15 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ignores: &[],
     },
     UpstreamSource {
+        project_name: "kubernetes-sigs/lws",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/kubernetes-sigs/lws/blob/main/config/crd/bases/disaggregatedset.x-k8s.io_disaggregatedsets.yaml",
+            "https://github.com/kubernetes-sigs/lws/blob/main/config/crd/bases/leaderworkerset.x-k8s.io_leaderworkersets.yaml",
+        ],
+        ignores: &[],
+    },
+    UpstreamSource {
         project_name: "kubernetes-sigs/mcs-api",
         license: APACHE_V2,
         urls: &[

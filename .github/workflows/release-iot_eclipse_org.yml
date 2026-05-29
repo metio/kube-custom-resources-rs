@@ -14,7 +14,7 @@ jobs:
     steps:
       - id: checkout
         name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - id: commits
@@ -45,25 +45,3 @@ jobs:
           --no-verify
         env:
           RUSTFLAGS: "-A warnings"
-      - id: mail
-        name: Send Mail
-        if: steps.commits.outputs.count > 0
-        uses: dawidd6/action-send-mail@v5
-        with:
-          server_address: ${{ secrets.MAIL_SERVER }}
-          server_port: ${{ secrets.MAIL_PORT }}
-          username: ${{ secrets.MAIL_USERNAME }}
-          password: ${{ secrets.MAIL_PASSWORD }}
-          subject: ${{ github.event.repository.name }}/iot_eclipse_org version ${{ steps.release.outputs.version }} published
-          body: See ${{ steps.create_release.outputs.url }} for details.
-          to: ${{ secrets.MAIL_RECIPIENT }}
-          from: ${{ secrets.MAIL_SENDER }}
-      - id: matrix
-        name: Send Matrix Message
-        if: steps.commits.outputs.count > 0
-        uses: s3krit/matrix-message-action@v0.0.3
-        with:
-          room_id: ${{ secrets.MATRIX_ROOM_ID }}
-          access_token: ${{ secrets.MATRIX_ACCESS_TOKEN }}
-          message: ${{ github.event.repository.name }}/iot_eclipse_org version [${{ steps.release.outputs.version }}](${{ steps.create_release.outputs.url }}) published
-          server: ${{ secrets.MATRIX_SERVER }}
