@@ -103,6 +103,10 @@ Files: crd-catalog/argoproj-labs/argocd-operator/*
 Copyright: The argoproj-labs/argocd-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/arsenalzp/apch-operator/*
+Copyright: The arsenalzp/apch-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/atlasmap/atlasmap-operator/*
 Copyright: The atlasmap/atlasmap-operator Authors
 License: Apache-2.0
@@ -526,6 +530,10 @@ License: Apache-2.0
 Files: crd-catalog/FairwindsOps/rbac-manager/*
 Copyright: The FairwindsOps/rbac-manager Authors
 License: Apache-2.0
+
+Files: crd-catalog/Flagsmith/flagsmith-operator/*
+Copyright: The Flagsmith/flagsmith-operator Authors
+License: LicenseRef-Flagsmith
 
 Files: crd-catalog/flanksource/canary-checker/*
 Copyright: The flanksource/canary-checker Authors
@@ -1323,8 +1331,68 @@ Files: crd-catalog/spotahome/redis-operator/*
 Copyright: The spotahome/redis-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/stackabletech/airflow-operator/*
+Copyright: The stackabletech/airflow-operator Authors
+License: OSL-3.0
+
+Files: crd-catalog/stackabletech/commons-operator/*
+Copyright: The stackabletech/commons-operator Authors
+License: OSL-3.0
+
+Files: crd-catalog/stackabletech/druid-operator/*
+Copyright: The stackabletech/druid-operator Authors
+License: OSL-3.0
+
 Files: crd-catalog/stackabletech/edc-operator/*
 Copyright: The stackabletech/edc-operator Authors
+License: OSL-3.0
+
+Files: crd-catalog/stackabletech/hbase-operator/*
+Copyright: The stackabletech/hbase-operator Authors
+License: OSL-3.0
+
+Files: crd-catalog/stackabletech/hdfs-operator/*
+Copyright: The stackabletech/hdfs-operator Authors
+License: OSL-3.0
+
+Files: crd-catalog/stackabletech/hive-operator/*
+Copyright: The stackabletech/hive-operator Authors
+License: OSL-3.0
+
+Files: crd-catalog/stackabletech/kafka-operator/*
+Copyright: The stackabletech/kafka-operator Authors
+License: OSL-3.0
+
+Files: crd-catalog/stackabletech/listener-operator/*
+Copyright: The stackabletech/listener-operator Authors
+License: OSL-3.0
+
+Files: crd-catalog/stackabletech/nifi-operator/*
+Copyright: The stackabletech/nifi-operator Authors
+License: OSL-3.0
+
+Files: crd-catalog/stackabletech/opa-operator/*
+Copyright: The stackabletech/opa-operator Authors
+License: OSL-3.0
+
+Files: crd-catalog/stackabletech/secret-operator/*
+Copyright: The stackabletech/secret-operator Authors
+License: OSL-3.0
+
+Files: crd-catalog/stackabletech/spark-k8s-operator/*
+Copyright: The stackabletech/spark-k8s-operator Authors
+License: OSL-3.0
+
+Files: crd-catalog/stackabletech/superset-operator/*
+Copyright: The stackabletech/superset-operator Authors
+License: OSL-3.0
+
+Files: crd-catalog/stackabletech/trino-operator/*
+Copyright: The stackabletech/trino-operator Authors
+License: OSL-3.0
+
+Files: crd-catalog/stackabletech/zookeeper-operator/*
+Copyright: The stackabletech/zookeeper-operator Authors
 License: OSL-3.0
 
 Files: crd-catalog/stolostron/cluster-templates-operator/*
