@@ -314,6 +314,12 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ignores: &[],
     },
     UpstreamSource {
+        project_name: "arsenalzp/apch-operator",
+        license: APACHE_V2,
+        urls: &[],
+        ignores: &[],
+    },
+    UpstreamSource {
         project_name: "atlasmap/atlasmap-operator",
         license: APACHE_V2,
         urls: &[
@@ -1470,6 +1476,12 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         urls: &[
             "https://github.com/FairwindsOps/rbac-manager/blob/master/deploy/2_crd.yaml",
         ],
+        ignores: &[],
+    },
+    UpstreamSource {
+        project_name: "Flagsmith/flagsmith-operator",
+        license: FLAGSMITH,
+        urls: &[],
         ignores: &[],
     },
     UpstreamSource {
@@ -3665,11 +3677,101 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ignores: &[],
     },
     UpstreamSource {
+        project_name: "stackabletech/airflow-operator",
+        license: OSL_V3,
+        urls: &[],
+        ignores: &[],
+    },
+    UpstreamSource {
+        project_name: "stackabletech/commons-operator",
+        license: OSL_V3,
+        urls: &[],
+        ignores: &[],
+    },
+    UpstreamSource {
+        project_name: "stackabletech/druid-operator",
+        license: OSL_V3,
+        urls: &[],
+        ignores: &[],
+    },
+    UpstreamSource {
         project_name: "stackabletech/edc-operator",
         license: OSL_V3,
         urls: &[
             "https://github.com/stackabletech/edc-operator/blob/main/deploy/helm/edc-operator/crds/crds.yaml",
         ],
+        ignores: &[],
+    },
+    UpstreamSource {
+        project_name: "stackabletech/hbase-operator",
+        license: OSL_V3,
+        urls: &[],
+        ignores: &[],
+    },
+    UpstreamSource {
+        project_name: "stackabletech/hdfs-operator",
+        license: OSL_V3,
+        urls: &[],
+        ignores: &[],
+    },
+    UpstreamSource {
+        project_name: "stackabletech/hive-operator",
+        license: OSL_V3,
+        urls: &[],
+        ignores: &[],
+    },
+    UpstreamSource {
+        project_name: "stackabletech/kafka-operator",
+        license: OSL_V3,
+        urls: &[],
+        ignores: &[],
+    },
+    UpstreamSource {
+        project_name: "stackabletech/listener-operator",
+        license: OSL_V3,
+        urls: &[],
+        ignores: &[],
+    },
+    UpstreamSource {
+        project_name: "stackabletech/nifi-operator",
+        license: OSL_V3,
+        urls: &[],
+        ignores: &[],
+    },
+    UpstreamSource {
+        project_name: "stackabletech/opa-operator",
+        license: OSL_V3,
+        urls: &[],
+        ignores: &[],
+    },
+    UpstreamSource {
+        project_name: "stackabletech/secret-operator",
+        license: OSL_V3,
+        urls: &[],
+        ignores: &[],
+    },
+    UpstreamSource {
+        project_name: "stackabletech/spark-k8s-operator",
+        license: OSL_V3,
+        urls: &[],
+        ignores: &[],
+    },
+    UpstreamSource {
+        project_name: "stackabletech/superset-operator",
+        license: OSL_V3,
+        urls: &[],
+        ignores: &[],
+    },
+    UpstreamSource {
+        project_name: "stackabletech/trino-operator",
+        license: OSL_V3,
+        urls: &[],
+        ignores: &[],
+    },
+    UpstreamSource {
+        project_name: "stackabletech/zookeeper-operator",
+        license: OSL_V3,
+        urls: &[],
         ignores: &[],
     },
     UpstreamSource {
