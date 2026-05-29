@@ -92,6 +92,9 @@ spec:
                         commit:
                           description: "the git commit (full SHA) to check out"
                           type: "string"
+                        path:
+                          description: "the path you want to use for your project. If provided, it must be an existing directory on the Git repository."
+                          type: "string"
                         secret:
                           description: "the Kubernetes secret where token is stored"
                           type: "string"
@@ -129,7 +132,7 @@ spec:
                       type: "object"
                       x-kubernetes-map-type: "atomic"
                     profile:
-                      description: "the profile needed to run this Integration"
+                      description: "the profile needed to run this Integration\n\nDeprecated: may be removed in future releases."
                       type: "string"
                     replicas:
                       default: 1
@@ -914,7 +917,7 @@ spec:
                                         description: "Run container in privileged mode.\nProcesses in privileged containers are essentially equivalent to root on the host.\nDefaults to false.\nNote that this field cannot be set when spec.os.name is windows."
                                         type: "boolean"
                                       procMount:
-                                        description: "procMount denotes the type of proc mount to use for the containers.\nThe default value is Default which uses the container runtime defaults for\nreadonly paths and masked paths.\nThis requires the ProcMountType feature flag to be enabled.\nNote that this field cannot be set when spec.os.name is windows."
+                                        description: "procMount denotes the type of proc mount to use for the containers.\nThe default value is Default which uses the container runtime defaults for\nreadonly paths and masked paths.\nNote that this field cannot be set when spec.os.name is windows."
                                         type: "string"
                                       readOnlyRootFilesystem:
                                         description: "Whether this container has a read-only root filesystem.\nDefault is false.\nNote that this field cannot be set when spec.os.name is windows."
@@ -1861,7 +1864,7 @@ spec:
                                         description: "Run container in privileged mode.\nProcesses in privileged containers are essentially equivalent to root on the host.\nDefaults to false.\nNote that this field cannot be set when spec.os.name is windows."
                                         type: "boolean"
                                       procMount:
-                                        description: "procMount denotes the type of proc mount to use for the containers.\nThe default value is Default which uses the container runtime defaults for\nreadonly paths and masked paths.\nThis requires the ProcMountType feature flag to be enabled.\nNote that this field cannot be set when spec.os.name is windows."
+                                        description: "procMount denotes the type of proc mount to use for the containers.\nThe default value is Default which uses the container runtime defaults for\nreadonly paths and masked paths.\nNote that this field cannot be set when spec.os.name is windows."
                                         type: "string"
                                       readOnlyRootFilesystem:
                                         description: "Whether this container has a read-only root filesystem.\nDefault is false.\nNote that this field cannot be set when spec.os.name is windows."
@@ -2808,7 +2811,7 @@ spec:
                                         description: "Run container in privileged mode.\nProcesses in privileged containers are essentially equivalent to root on the host.\nDefaults to false.\nNote that this field cannot be set when spec.os.name is windows."
                                         type: "boolean"
                                       procMount:
-                                        description: "procMount denotes the type of proc mount to use for the containers.\nThe default value is Default which uses the container runtime defaults for\nreadonly paths and masked paths.\nThis requires the ProcMountType feature flag to be enabled.\nNote that this field cannot be set when spec.os.name is windows."
+                                        description: "procMount denotes the type of proc mount to use for the containers.\nThe default value is Default which uses the container runtime defaults for\nreadonly paths and masked paths.\nNote that this field cannot be set when spec.os.name is windows."
                                         type: "string"
                                       readOnlyRootFilesystem:
                                         description: "Whether this container has a read-only root filesystem.\nDefault is false.\nNote that this field cannot be set when spec.os.name is windows."
@@ -3755,7 +3758,7 @@ spec:
                                       - "path"
                                     type: "object"
                                   image:
-                                    description: "image represents an OCI object (a container image or artifact) pulled and mounted on the kubelet's host machine.\nThe volume is resolved at pod startup depending on which PullPolicy value is provided:\n\n- Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.\n- Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.\n- IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.\n\nThe volume gets re-resolved if the pod gets deleted and recreated, which means that new remote content will become available on pod recreation.\nA failure to resolve or pull the image during pod startup will block containers from starting and may add significant latency. Failures will be retried using normal volume backoff and will be reported on the pod reason and message.\nThe types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.\nThe OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.\nThe volume will be mounted read-only (ro) and non-executable files (noexec).\nSub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.\nThe field spec.securityContext.fsGroupChangePolicy has no effect on this volume type."
+                                    description: "image represents an OCI object (a container image or artifact) pulled and mounted on the kubelet's host machine.\nThe volume is resolved at pod startup depending on which PullPolicy value is provided:\n\n- Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.\n- Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.\n- IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.\n\nThe volume gets re-resolved if the pod gets deleted and recreated, which means that new remote content will become available on pod recreation.\nA failure to resolve or pull the image during pod startup will block containers from starting and may add significant latency. Failures will be retried using normal volume backoff and will be reported on the pod reason and message.\nThe types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.\nThe OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.\nThe volume will be mounted read-only (ro).\nSub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.\nThe field spec.securityContext.fsGroupChangePolicy has no effect on this volume type."
                                     properties:
                                       pullPolicy:
                                         description: "Policy for pulling OCI objects. Possible values are:\nAlways: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.\nNever: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.\nIfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.\nDefaults to Always if :latest tag is specified, or IfNotPresent otherwise."
@@ -3860,7 +3863,7 @@ spec:
                                       - "pdID"
                                     type: "object"
                                   portworxVolume:
-                                    description: "portworxVolume represents a portworx volume attached and mounted on kubelets host machine.\nDeprecated: PortworxVolume is deprecated. All operations for the in-tree portworxVolume type\nare redirected to the pxd.portworx.com CSI driver when the CSIMigrationPortworx feature-gate\nis on."
+                                    description: "portworxVolume represents a portworx volume attached and mounted on kubelets host machine.\nDeprecated: PortworxVolume is deprecated. All operations for the in-tree portworxVolume type\nare redirected to the pxd.portworx.com CSI driver."
                                     properties:
                                       fsType:
                                         description: "fSType represents the filesystem type to mount\nMust be a filesystem type supported by the host operating system.\nEx. \"ext4\", \"xfs\". Implicitly inferred to be \"ext4\" if unspecified."
@@ -4388,7 +4391,7 @@ spec:
                               description: "When using `pod` strategy, the maximum amount of memory required by the pod builder.\n\nDeprecated: use TasksRequestCPU instead with task name `builder`."
                               type: "string"
                             mavenProfiles:
-                              description: "A list of references pointing to configmaps/secrets that contains a maven profile.\nThis configmap/secret is a resource of the IntegrationKit created, therefore it needs to be present in the namespace where the operator is going to create the IntegrationKit.\nThe content of the maven profile is expected to be a text containing a valid maven profile starting with `<profile>` and ending with `</profile>` that will be integrated as an inline profile in the POM.\nSyntax: [configmap|secret]:name[/key], where name represents the resource name, key optionally represents the resource key to be filtered (default key value = profile.xml)."
+                              description: "A list of references pointing to configmaps/secrets that contains a maven profile.\nThis configmap/secret is a resource of the IntegrationKit created, therefore it needs to be present in the namespace where the operator is going to create the IntegrationKit.\nThe content of the maven profile is expected to be a text containing a valid maven profile starting with `<profile>` and ending with `</profile>` that will be integrated as an inline profile in the POM.\nSyntax: [configmap|secret]:name[/key], where name represents the resource name, key optionally represents the resource key to be filtered (default key value = profile.xml).\n\nDeprecated: will be removed in future versions."
                               items:
                                 type: "string"
                               type: "array"
@@ -4718,6 +4721,25 @@ spec:
                               description: "The error handler ref name provided or found in application properties"
                               type: "string"
                           type: "object"
+                        gateway:
+                          description: "The configuration of Istio trait"
+                          properties:
+                            className:
+                              description: "The class name to use for the gateway configuration."
+                              type: "string"
+                            configuration:
+                              description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
+                              type: "object"
+                              x-kubernetes-preserve-unknown-fields: true
+                            enabled:
+                              description: "Can be used to enable or disable a trait. All traits share this common property."
+                              type: "boolean"
+                            listeners:
+                              description: "The listeners in the format \"port;protocol\" (default, \"8080;HTTP\")."
+                              items:
+                                type: "string"
+                              type: "array"
+                          type: "object"
                         gc:
                           description: "The configuration of GC trait"
                           properties:
@@ -4749,11 +4771,9 @@ spec:
                               description: "the git commit (full SHA) to check out."
                               type: "string"
                             committerEmail:
-                              default: "camel-k-operator@apache.org"
                               description: "The email used to commit the GitOps changes (default `camel-k-operator@apache.org`)."
                               type: "string"
                             committerName:
-                              default: "Camel K Operator"
                               description: "The name used to commit the GitOps changes (default `Camel K Operator`)."
                               type: "string"
                             configuration:
@@ -4764,20 +4784,14 @@ spec:
                               description: "Can be used to enable or disable a trait. All traits share this common property."
                               type: "boolean"
                             integrationDirectory:
-                              default: "integrations"
                               description: "The root path where to store Kustomize overlays (default `integrations`)."
                               type: "string"
                             overlays:
-                              default:
-                                - "dev"
-                                - "stag"
-                                - "prod"
                               description: "a list of overlays to provide (default {\"dev\",\"stag\",\"prod\"})."
                               items:
                                 type: "string"
                               type: "array"
                             overwriteOverlay:
-                              default: false
                               description: "a flag (default, false) to overwrite any existing overlay."
                               type: "boolean"
                             secret:
@@ -5524,10 +5538,10 @@ spec:
                               description: "Can be used to enable or disable a trait. All traits share this common property."
                               type: "boolean"
                             imagePullerDelegation:
-                              description: "When using a global operator with a shared platform, this enables delegation of the `system:image-puller` cluster role on the operator namespace to the integration service account."
+                              description: "When using a global operator with a shared platform, this enables delegation of the `system:image-puller`\ncluster role on the operator namespace to the integration service account.\n\nDeprecated: may be removed in future releases."
                               type: "boolean"
                             secretName:
-                              description: "The pull secret name to set on the Pod. If left empty this is automatically taken from the `IntegrationPlatform` registry configuration."
+                              description: "The pull secret name to set on the Pod. If left empty this is automatically taken from the platform registry configuration."
                               type: "string"
                           type: "object"
                         quarkus:
@@ -6020,7 +6034,7 @@ spec:
                           description: "When using `pod` strategy, the maximum amount of memory required by the pod builder.\n\nDeprecated: use TasksRequestCPU instead with task name `builder`."
                           type: "string"
                         mavenProfiles:
-                          description: "A list of references pointing to configmaps/secrets that contains a maven profile.\nThis configmap/secret is a resource of the IntegrationKit created, therefore it needs to be present in the namespace where the operator is going to create the IntegrationKit.\nThe content of the maven profile is expected to be a text containing a valid maven profile starting with `<profile>` and ending with `</profile>` that will be integrated as an inline profile in the POM.\nSyntax: [configmap|secret]:name[/key], where name represents the resource name, key optionally represents the resource key to be filtered (default key value = profile.xml)."
+                          description: "A list of references pointing to configmaps/secrets that contains a maven profile.\nThis configmap/secret is a resource of the IntegrationKit created, therefore it needs to be present in the namespace where the operator is going to create the IntegrationKit.\nThe content of the maven profile is expected to be a text containing a valid maven profile starting with `<profile>` and ending with `</profile>` that will be integrated as an inline profile in the POM.\nSyntax: [configmap|secret]:name[/key], where name represents the resource name, key optionally represents the resource key to be filtered (default key value = profile.xml).\n\nDeprecated: will be removed in future versions."
                           items:
                             type: "string"
                           type: "array"
@@ -6350,6 +6364,25 @@ spec:
                           description: "The error handler ref name provided or found in application properties"
                           type: "string"
                       type: "object"
+                    gateway:
+                      description: "The configuration of Istio trait"
+                      properties:
+                        className:
+                          description: "The class name to use for the gateway configuration."
+                          type: "string"
+                        configuration:
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
+                          type: "object"
+                          x-kubernetes-preserve-unknown-fields: true
+                        enabled:
+                          description: "Can be used to enable or disable a trait. All traits share this common property."
+                          type: "boolean"
+                        listeners:
+                          description: "The listeners in the format \"port;protocol\" (default, \"8080;HTTP\")."
+                          items:
+                            type: "string"
+                          type: "array"
+                      type: "object"
                     gc:
                       description: "The configuration of GC trait"
                       properties:
@@ -6381,11 +6414,9 @@ spec:
                           description: "the git commit (full SHA) to check out."
                           type: "string"
                         committerEmail:
-                          default: "camel-k-operator@apache.org"
                           description: "The email used to commit the GitOps changes (default `camel-k-operator@apache.org`)."
                           type: "string"
                         committerName:
-                          default: "Camel K Operator"
                           description: "The name used to commit the GitOps changes (default `Camel K Operator`)."
                           type: "string"
                         configuration:
@@ -6396,20 +6427,14 @@ spec:
                           description: "Can be used to enable or disable a trait. All traits share this common property."
                           type: "boolean"
                         integrationDirectory:
-                          default: "integrations"
                           description: "The root path where to store Kustomize overlays (default `integrations`)."
                           type: "string"
                         overlays:
-                          default:
-                            - "dev"
-                            - "stag"
-                            - "prod"
                           description: "a list of overlays to provide (default {\"dev\",\"stag\",\"prod\"})."
                           items:
                             type: "string"
                           type: "array"
                         overwriteOverlay:
-                          default: false
                           description: "a flag (default, false) to overwrite any existing overlay."
                           type: "boolean"
                         secret:
@@ -7156,10 +7181,10 @@ spec:
                           description: "Can be used to enable or disable a trait. All traits share this common property."
                           type: "boolean"
                         imagePullerDelegation:
-                          description: "When using a global operator with a shared platform, this enables delegation of the `system:image-puller` cluster role on the operator namespace to the integration service account."
+                          description: "When using a global operator with a shared platform, this enables delegation of the `system:image-puller`\ncluster role on the operator namespace to the integration service account.\n\nDeprecated: may be removed in future releases."
                           type: "boolean"
                         secretName:
-                          description: "The pull secret name to set on the Pod. If left empty this is automatically taken from the `IntegrationPlatform` registry configuration."
+                          description: "The pull secret name to set on the Pod. If left empty this is automatically taken from the platform registry configuration."
                           type: "string"
                       type: "object"
                     quarkus:
@@ -7433,6 +7458,7 @@ spec:
                       pods:
                         description: "Pods collect health and conditions information from the owned PODs"
                         items:
+                          description: "Deprecated: may be removed in future releases."
                           properties:
                             condition:
                               description: "PodCondition contains details for the current condition of this pod."
@@ -7449,7 +7475,7 @@ spec:
                                   description: "Human-readable message indicating details about last transition."
                                   type: "string"
                                 observedGeneration:
-                                  description: "If set, this represents the .metadata.generation that the pod condition was set based upon.\nThe PodObservedGenerationTracking feature gate must be enabled to use this field."
+                                  description: "If set, this represents the .metadata.generation that the pod condition was set based upon."
                                   format: "int64"
                                   type: "integer"
                                 reason:

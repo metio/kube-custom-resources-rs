@@ -3,7 +3,7 @@ kind: "CustomResourceDefinition"
 metadata:
   annotations:
     api-approved.kubernetes.io: "unapproved, experimental v1alpha2 changes"
-    controller-gen.kubebuilder.io/version: "v0.19.0"
+    controller-gen.kubebuilder.io/version: "v0.20.1"
   name: "bucketaccesses.objectstorage.k8s.io"
 spec:
   group: "objectstorage.k8s.io"
@@ -122,6 +122,12 @@ spec:
                         x-kubernetes-validations:
                           - message: "name must be a valid resource name"
                             rule: "!format.dns1123Subdomain().validate(self).hasValue()"
+                      bucketID:
+                        description: "bucketID is the unique identifier for the backend bucket known to the driver for which\nthis access should have permissions.\nMust be at most 2048 characters and consist only of alphanumeric characters ([a-z0-9A-Z]),\ndashes (-), dots (.), underscores (_), and forward slash (/)."
+                        maxLength: 2048
+                        minLength: 1
+                        pattern: "^[a-zA-Z0-9/._-]+$"
+                        type: "string"
                       bucketName:
                         description: "bucketName is the name of a Bucket the access should have permissions for.\nMust be a valid Kubernetes resource name: at most 253 characters, consisting only of\nlower-case alphanumeric characters, hyphens, and periods, starting and ending with an\nalphanumeric character."
                         maxLength: 253
@@ -132,6 +138,7 @@ spec:
                             rule: "!format.dns1123Subdomain().validate(self).hasValue()"
                     required:
                       - "bucketClaimName"
+                      - "bucketID"
                       - "bucketName"
                     type: "object"
                   maxItems: 128

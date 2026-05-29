@@ -66,6 +66,8 @@ spec:
                           - "ImagePolicy"
                           - "ImageUpdateAutomation"
                           - "OCIRepository"
+                          - "ArtifactGenerator"
+                          - "ExternalArtifact"
                         type: "string"
                       matchLabels:
                         additionalProperties:

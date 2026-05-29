@@ -10,15 +10,19 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `Logging`
 - `Output`
 ## logging.banzaicloud.io/v1beta1
+- `AxoSyslog`
 - `ClusterFlow`
 - `ClusterOutput`
 - `Flow`
 - `FluentbitAgent`
+- `FluentdConfig`
+- `LoggingRoute`
 - `Logging`
 - `NodeAgent`
 - `Output`
 - `SyslogNGClusterFlow`
 - `SyslogNGClusterOutput`
+- `SyslogNGConfig`
 - `SyslogNGFlow`
 - `SyslogNGOutput`
 */

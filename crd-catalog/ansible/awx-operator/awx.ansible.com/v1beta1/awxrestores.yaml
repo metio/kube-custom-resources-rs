@@ -116,6 +116,9 @@ spec:
                 - "deployment_name"
               type: "object"
               x-kubernetes-preserve-unknown-fields: true
+              x-kubernetes-validations:
+                - message: "Both postgres_image and postgres_image_version must be set when required"
+                  rule: "has(self.postgres_image) && has(self.postgres_image_version) || !has(self.postgres_image) && !has(self.postgres_image_version)"
             status:
               properties:
                 conditions:

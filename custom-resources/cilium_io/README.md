@@ -17,6 +17,7 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 - `CiliumBGPNodeConfigOverride`
 - `CiliumBGPNodeConfig`
 - `CiliumBGPPeerConfig`
+- `CiliumCIDRGroup`
 - `CiliumClusterwideEnvoyConfig`
 - `CiliumClusterwideNetworkPolicy`
 - `CiliumEgressGatewayPolicy`
@@ -24,10 +25,12 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 - `CiliumEnvoyConfig`
 - `CiliumExternalWorkload`
 - `CiliumIdentity`
+- `CiliumLoadBalancerIPPool`
 - `CiliumLocalRedirectPolicy`
 - `CiliumNetworkPolicy`
 - `CiliumNodeConfig`
 - `CiliumNode`
+- `CiliumPodIPPool`
 ### cilium.io/v2alpha1
 - `CiliumBGPAdvertisement`
 - `CiliumBGPClusterConfig`
@@ -36,6 +39,7 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 - `CiliumBGPPeerConfig`
 - `CiliumBGPPeeringPolicy`
 - `CiliumCIDRGroup`
+- `CiliumDatapathPlugin`
 - `CiliumEndpointSlice`
 - `CiliumGatewayClassConfig`
 - `CiliumL2AnnouncementPolicy`

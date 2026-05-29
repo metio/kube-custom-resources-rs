@@ -58,6 +58,8 @@ spec:
                   type: "string"
                 displayName:
                   type: "string"
+                fifoThroughputScope:
+                  type: "string"
                 fifoTopic:
                   type: "string"
                 firehoseFailureFeedbackRoleARN:
@@ -147,6 +149,9 @@ spec:
                       type: "string"
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."
+                      type: "string"
+                    partition:
+                      description: "Partition is the AWS partition in which the resource exists or will exist"
                       type: "string"
                     region:
                       description: "Region is the AWS region in which the resource exists or will exist."

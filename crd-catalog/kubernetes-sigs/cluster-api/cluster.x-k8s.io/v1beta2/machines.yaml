@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.20.0"
+    controller-gen.kubebuilder.io/version: "v0.21.0"
   name: "machines.cluster.x-k8s.io"
 spec:
   group: "cluster.x-k8s.io"
@@ -30,6 +30,10 @@ spec:
           jsonPath: ".spec.providerID"
           name: "Provider ID"
           priority: 10
+          type: "string"
+        - description: "The failure domain where the Machine has been scheduled"
+          jsonPath: ".status.failureDomain"
+          name: "Failure domain"
           type: "string"
         - description: "Machine pass all readiness checks"
           jsonPath: ".status.conditions[?(@.type==\"Ready\")].status"
@@ -236,9 +240,6 @@ spec:
                         minLength: 1
                         pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*\\/)?([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$"
                         type: "string"
-                        x-kubernetes-validations:
-                          - message: "key must be a valid qualified name of max size 63 characters with an optional subdomain prefix of max size 253 characters"
-                            rule: "self.contains('/') ? ( self.split('/') [0].size() <= 253 && self.split('/') [1].size() <= 63 && self.split('/').size() == 2 ) : self.size() <= 63"
                       propagation:
                         description: "propagation defines how this taint should be propagated to nodes.\nValid values are 'Always' and 'OnInitialization'.\nAlways: The taint will be continuously reconciled. If it is not set for a node, it will be added during reconciliation.\nOnInitialization: The taint will be added during node initialization. If it gets removed from the node later on it will not get added again."
                         enum:
@@ -300,7 +301,7 @@ spec:
                       - "address"
                       - "type"
                     type: "object"
-                  maxItems: 128
+                  maxItems: 256
                   type: "array"
                   x-kubernetes-list-type: "atomic"
                 certificatesExpiryDate:
@@ -308,7 +309,7 @@ spec:
                   format: "date-time"
                   type: "string"
                 conditions:
-                  description: "conditions represents the observations of a Machine's current state.\nKnown condition types are Available, Ready, UpToDate, BootstrapConfigReady, InfrastructureReady, NodeReady,\nNodeHealthy, Updating, Deleting, Paused.\nIf a MachineHealthCheck is targeting this machine, also HealthCheckSucceeded, OwnerRemediated conditions are added.\nAdditionally control plane Machines controlled by KubeadmControlPlane will have following additional conditions:\nAPIServerPodHealthy, ControllerManagerPodHealthy, SchedulerPodHealthy, EtcdPodHealthy, EtcdMemberHealthy."
+                  description: "conditions represents the observations of a Machine's current state.\nKnown condition types are Available, Ready, UpToDate, BootstrapConfigReady, InfrastructureReady, NodeReady,\nNodeHealthy, Updating, Deleting, Paused.\nIf a MachineHealthCheck is targeting this machine, also HealthCheckSucceeded, OwnerRemediated conditions are added.\nAdditionally control plane Machines controlled by KubeadmControlPlane will have following additional conditions:\nAPIServerPodHealthy, ControllerManagerPodHealthy, SchedulerPodHealthy, EtcdPodHealthy, EtcdMemberHealthy, NodeKubeadmLabelsAndTaintsSet."
                   items:
                     description: "Condition contains details for one aspect of the current state of this API Resource."
                     properties:
@@ -420,6 +421,11 @@ spec:
                           type: "string"
                       type: "object"
                   type: "object"
+                failureDomain:
+                  description: "failureDomain is the failure domain where the Machine has been scheduled."
+                  maxLength: 256
+                  minLength: 1
+                  type: "string"
                 initialization:
                   description: "initialization provides observations of the Machine initialization process.\nNOTE: Fields in this struct are part of the Cluster API contract and are used to orchestrate initial Machine provisioning."
                   minProperties: 1

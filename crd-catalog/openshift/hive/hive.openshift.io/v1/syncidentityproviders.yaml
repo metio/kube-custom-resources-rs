@@ -30,7 +30,7 @@ spec:
               description: "SyncIdentityProviderSpec defines the SyncIdentityProviderCommonSpec identity providers to sync along with\nClusterDeploymentRefs indicating which clusters the SyncIdentityProvider applies to in the\nSyncIdentityProvider's namespace."
               properties:
                 clusterDeploymentRefs:
-                  description: "ClusterDeploymentRefs is the list of LocalObjectReference indicating which clusters the\nSyncSet applies to in the SyncSet's namespace."
+                  description: "ClusterDeploymentRefs is the list of LocalObjectReference indicating which clusters the\nSyncIdentityProvider applies to in the SyncIdentityProvider's namespace."
                   items:
                     description: "LocalObjectReference contains enough information to let you locate the\nreferenced object inside the same namespace."
                     properties:
@@ -398,7 +398,7 @@ spec:
                 - "identityProviders"
               type: "object"
             status:
-              description: "IdentityProviderStatus defines the observed state of SyncSet"
+              description: "IdentityProviderStatus defines the observed state of the SyncIdentityProvider"
               type: "object"
           type: "object"
       served: true

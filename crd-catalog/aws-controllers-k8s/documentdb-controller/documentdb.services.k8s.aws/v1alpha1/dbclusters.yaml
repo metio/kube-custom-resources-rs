@@ -94,6 +94,9 @@ spec:
                           type: "string"
                       type: "object"
                   type: "object"
+                manageMasterUserPassword:
+                  description: "Specifies whether to manage the master user password with Amazon Web Services\nSecrets Manager.\n\nConstraint: You can't manage the master user password with Amazon Web Services\nSecrets Manager if MasterUserPassword is specified."
+                  type: "boolean"
                 masterUserPassword:
                   description: "The password for the master database user. This password can contain any\nprintable ASCII character except forward slash (/), double quote (\"), or\nthe \"at\" symbol (@).\n\nConstraints: Must contain from 8 to 100 characters."
                   properties:
@@ -110,8 +113,26 @@ spec:
                     - "key"
                   type: "object"
                   x-kubernetes-map-type: "atomic"
+                masterUserSecretKMSKeyID:
+                  description: "The Amazon Web Services KMS key identifier to encrypt a secret that is automatically\ngenerated and managed in Amazon Web Services Secrets Manager. This setting\nis valid only if the master user password is managed by Amazon DocumentDB\nin Amazon Web Services Secrets Manager for the DB cluster.\n\nThe Amazon Web Services KMS key identifier is the key ARN, key ID, alias\nARN, or alias name for the KMS key. To use a KMS key in a different Amazon\nWeb Services account, specify the key ARN or alias ARN.\n\nIf you don't specify MasterUserSecretKmsKeyId, then the aws/secretsmanager\nKMS key is used to encrypt the secret. If the secret is in a different Amazon\nWeb Services account, then you can't use the aws/secretsmanager KMS key to\nencrypt the secret, and you must use a customer managed KMS key.\n\nThere is a default KMS key for your Amazon Web Services account. Your Amazon\nWeb Services account has a different default KMS key for each Amazon Web\nServices Region."
+                  type: "string"
+                masterUserSecretKMSKeyRef:
+                  description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
+                  properties:
+                    from:
+                      description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
+                      properties:
+                        name:
+                          type: "string"
+                        namespace:
+                          type: "string"
+                      type: "object"
+                  type: "object"
                 masterUsername:
                   description: "The name of the master user for the cluster.\n\nConstraints:\n\n   * Must be from 1 to 63 letters or numbers.\n\n   * The first character must be a letter.\n\n   * Cannot be a reserved word for the chosen database engine."
+                  type: "string"
+                networkType:
+                  description: "The network type of the cluster.\n\nThe network type is determined by the DBSubnetGroup specified for the cluster.\nA DBSubnetGroup can support only the IPv4 protocol or the IPv4 and the IPv6\nprotocols (DUAL).\n\nFor more information, see DocumentDB clusters in a VPC (https://docs.aws.amazon.com/documentdb/latest/developerguide/vpc-clusters.html)\nin the Amazon DocumentDB Developer Guide.\n\nValid Values: IPV4 | DUAL"
                   type: "string"
                 port:
                   description: "The port number on which the instances in the cluster accept connections."
@@ -126,6 +147,14 @@ spec:
                 preferredMaintenanceWindow:
                   description: "The weekly time range during which system maintenance can occur, in Universal\nCoordinated Time (UTC).\n\nFormat: ddd:hh24:mi-ddd:hh24:mi\n\nThe default is a 30-minute window selected at random from an 8-hour block\nof time for each Amazon Web Services Region, occurring on a random day of\nthe week.\n\nValid days: Mon, Tue, Wed, Thu, Fri, Sat, Sun\n\nConstraints: Minimum 30-minute window."
                   type: "string"
+                serverlessV2ScalingConfiguration:
+                  description: "Contains the scaling configuration of an Amazon DocumentDB Serverless cluster."
+                  properties:
+                    maxCapacity:
+                      type: "number"
+                    minCapacity:
+                      type: "number"
+                  type: "object"
                 snapshotIdentifier:
                   description: "The identifier for the snapshot or cluster snapshot to restore from.\n\nYou can use either the name or the Amazon Resource Name (ARN) to specify\na cluster snapshot. However, you can use only the ARN to specify a snapshot.\n\nConstraints:\n\n   * Must match the identifier of an existing snapshot."
                   type: "string"
@@ -136,7 +165,7 @@ spec:
                   description: "Specifies whether the cluster is encrypted."
                   type: "boolean"
                 storageType:
-                  description: "The storage type to associate with the DB cluster.\n\nFor information on storage types for Amazon DocumentDB clusters, see Cluster\nstorage configurations in the Amazon DocumentDB Developer Guide.\n\nValid values for storage type - standard | iopt1\n\nDefault value is standard\n\nWhen you create a DocumentDB DB cluster with the storage type set to iopt1,\nthe storage type is returned in the response. The storage type isn't returned\nwhen you set it to standard."
+                  description: "The storage type to associate with the DB cluster.\n\nFor information on storage types for Amazon DocumentDB clusters, see Cluster\nstorage configurations in the Amazon DocumentDB Developer Guide.\n\nValid values for storage type - standard | iopt1\n\nDefault value is standard\n\nWhen you create an Amazon DocumentDB cluster with the storage type set to\niopt1, the storage type is returned in the response. The storage type isn't\nreturned when you set it to standard."
                   type: "string"
                 tags:
                   description: "The tags to be assigned to the cluster."
@@ -183,6 +212,9 @@ spec:
                       type: "string"
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."
+                      type: "string"
+                    partition:
+                      description: "Partition is the AWS partition in which the resource exists or will exist"
                       type: "string"
                     region:
                       description: "Region is the AWS region in which the resource exists or will exist."
@@ -275,10 +307,24 @@ spec:
                 hostedZoneID:
                   description: "Specifies the ID that Amazon Route 53 assigns when you create a hosted zone."
                   type: "string"
+                iOOptimizedNextAllowedModificationTime:
+                  description: "The next time you can modify the Amazon DocumentDB cluster to use the iopt1\nstorage type."
+                  format: "date-time"
+                  type: "string"
                 latestRestorableTime:
                   description: "Specifies the latest time to which a database can be restored with point-in-time\nrestore."
                   format: "date-time"
                   type: "string"
+                masterUserSecret:
+                  description: "The secret managed by Amazon DocumentDB in Amazon Web Services Secrets Manager\nfor the master user password."
+                  properties:
+                    kmsKeyID:
+                      type: "string"
+                    secretARN:
+                      type: "string"
+                    secretStatus:
+                      type: "string"
+                  type: "object"
                 multiAZ:
                   description: "Specifies whether the cluster has instances in multiple Availability Zones."
                   type: "boolean"

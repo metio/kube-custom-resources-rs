@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   labels:
-    clickhouse.altinity.com/chop: "0.25.6"
+    clickhouse.altinity.com/chop: "0.27.0"
   name: "clickhouseoperatorconfigurations.clickhouse.altinity.com"
 spec:
   group: "clickhouse.altinity.com"
@@ -203,6 +203,14 @@ spec:
                     metrics:
                       description: "parameters which use for connect to fetch metrics from clickhouse by clickhouse-operator"
                       properties:
+                        excludeRegexp:
+                          description: "List of regexps to match ClickHouse metrics to exclude from export.\nRegexps match internal metric names before Prometheus normalization and prefixing.\n"
+                          items:
+                            type: "string"
+                          type: "array"
+                        tablesRegexp:
+                          description: "Regexp to match tables in system database to fetch metrics from.\nMultiple tables can be matched using regexp. Matched tables are merged using merge() table function.\nDefault is \"^(metrics|custom_metrics)$\".\n"
+                          type: "string"
                         timeouts:
                           description: "Timeouts used to limit connection and queries from the metrics exporter to ClickHouse instances\nSpecified in seconds.\n"
                           properties:
@@ -299,6 +307,27 @@ spec:
                 reconcile:
                   description: "allow tuning reconciling process"
                   properties:
+                    coordination:
+                      description: "Coordination with external systems during reconcile"
+                      properties:
+                        keeper:
+                          description: "Keeper-related coordination settings"
+                          properties:
+                            onKeeperResourceUpdate:
+                              description: "Reaction when a referenced CHK resource changes.\n  none (default) — do nothing\n  reconcile — trigger CHI reconcile\n"
+                              enum:
+                                - ""
+                                - "None"
+                                - "none"
+                                - "Reconcile"
+                                - "reconcile"
+                              type: "string"
+                            readyTimeout:
+                              description: "How long the operator waits for a referenced ClickHouseKeeper to become ready\nbefore aborting CHI reconcile. In seconds. Default is 120.\n"
+                              minimum: 1.0
+                              type: "integer"
+                          type: "object"
+                      type: "object"
                     host:
                       description: "Whether the operator during reconcile procedure should wait for a ClickHouse host:\n  - to be excluded from a ClickHouse cluster\n  - to complete all running queries\n  - to be included into a ClickHouse cluster\nrespectfully before moving forward\n"
                       properties:
@@ -389,6 +418,96 @@ spec:
                                     - "enabled"
                                   type: "string"
                               type: "object"
+                          type: "object"
+                        hooks:
+                          description: "default host-level hooks to execute before and after host reconcile"
+                          properties:
+                            post:
+                              description: "actions to execute after host reconcile"
+                              items:
+                                properties:
+                                  http:
+                                    properties:
+                                      method:
+                                        type: "string"
+                                      url:
+                                        type: "string"
+                                    type: "object"
+                                  shell:
+                                    properties:
+                                      command:
+                                        items:
+                                          type: "string"
+                                        nullable: true
+                                        type: "array"
+                                      container:
+                                        type: "string"
+                                    type: "object"
+                                  sql:
+                                    properties:
+                                      queries:
+                                        items:
+                                          type: "string"
+                                        nullable: true
+                                        type: "array"
+                                    type: "object"
+                                  target:
+                                    description: "where to execute hook: FirstHost (default), AllHosts, AllShards"
+                                    enum:
+                                      - ""
+                                      - "FirstHost"
+                                      - "firsthost"
+                                      - "AllHosts"
+                                      - "allhosts"
+                                      - "AllShards"
+                                      - "allshards"
+                                    type: "string"
+                                type: "object"
+                              nullable: true
+                              type: "array"
+                            pre:
+                              description: "actions to execute before host reconcile"
+                              items:
+                                properties:
+                                  http:
+                                    properties:
+                                      method:
+                                        type: "string"
+                                      url:
+                                        type: "string"
+                                    type: "object"
+                                  shell:
+                                    properties:
+                                      command:
+                                        items:
+                                          type: "string"
+                                        nullable: true
+                                        type: "array"
+                                      container:
+                                        type: "string"
+                                    type: "object"
+                                  sql:
+                                    properties:
+                                      queries:
+                                        items:
+                                          type: "string"
+                                        nullable: true
+                                        type: "array"
+                                    type: "object"
+                                  target:
+                                    description: "where to execute hook: FirstHost (default), AllHosts, AllShards"
+                                    enum:
+                                      - ""
+                                      - "FirstHost"
+                                      - "firsthost"
+                                      - "AllHosts"
+                                      - "allhosts"
+                                      - "AllShards"
+                                      - "allshards"
+                                    type: "string"
+                                type: "object"
+                              nullable: true
+                              type: "array"
                           type: "object"
                         wait:
                           properties:
@@ -594,6 +713,27 @@ spec:
                               type: "object"
                           type: "object"
                       type: "object"
+                    recovery:
+                      description: "Auto-recovery from reconcile failures, scoped by CHI state"
+                      properties:
+                        from:
+                          description: "Recovery scopes keyed by CHI state being recovered from"
+                          properties:
+                            aborted:
+                              description: "Recovery from Status=Aborted"
+                              properties:
+                                onPodReady:
+                                  description: "Reaction when a pod belonging to an Aborted CHI transitions to Ready.\n  retry (default) — re-enqueue the CHI for reconcile\n  none — do nothing, CHI stays Aborted\n"
+                                  enum:
+                                    - ""
+                                    - "None"
+                                    - "none"
+                                    - "Retry"
+                                    - "retry"
+                                  type: "string"
+                              type: "object"
+                          type: "object"
+                      type: "object"
                     runtime:
                       description: "runtime parameters for clickhouse-operator process which are used during reconcile cycle"
                       properties:
@@ -621,6 +761,16 @@ spec:
                           properties:
                             onFailure:
                               description: "What to do in case created StatefulSet is not in Ready after `statefulSetUpdateTimeout` seconds\nPossible options:\n1. abort - do nothing, just break the process and wait for admin.\n2. delete - delete newly created problematic StatefulSet.\n3. ignore (default) - ignore error, pretend nothing happened and move on to the next StatefulSet.\n"
+                              type: "string"
+                          type: "object"
+                        recreate:
+                          description: "Behavior during recreate StatefulSet"
+                          properties:
+                            onDataLoss:
+                              description: "What to do in case operator needs to recreate StatefulSet due to PVC data loss or missing volumes.\nPossible options:\n1. abort - abort the process, do nothing with the problematic StatefulSet.\n2. recreate (default) - proceed and recreate StatefulSet.\n"
+                              type: "string"
+                            onUpdateFailure:
+                              description: "What to do in case operator needs to recreate StatefulSet due to update failure or StatefulSet not ready.\nPossible options:\n1. abort - abort the process, do nothing with the problematic StatefulSet.\n2. recreate (default) - proceed and recreate StatefulSet.\n"
                               type: "string"
                           type: "object"
                         update:
@@ -781,6 +931,20 @@ spec:
                 watch:
                   description: "Parameters for watch kubernetes resources which used by clickhouse-operator deployment"
                   properties:
+                    configuration:
+                      description: "Behavior when ClickHouseOperatorConfiguration resources change"
+                      properties:
+                        onChange:
+                          description: "none/ignore — do nothing; restart — exit process so the operator pod restarts"
+                          enum:
+                            - "none"
+                            - "None"
+                            - "ignore"
+                            - "Ignore"
+                            - "restart"
+                            - "Restart"
+                          type: "string"
+                      type: "object"
                     namespaces:
                       description: "List of namespaces where clickhouse-operator watches for events."
                       type: "object"

@@ -16,8 +16,11 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 - `VLCluster`
 - `VLSingle`
 - `VMAnomaly`
+- `VMAnomalyConfig`
 - `VTCluster`
 - `VTSingle`
+### operator.victoriametrics.com/v1alpha1
+- `VMDistributed`
 ### operator.victoriametrics.com/v1beta1
 - `VLogs`
 - `VMAgent`

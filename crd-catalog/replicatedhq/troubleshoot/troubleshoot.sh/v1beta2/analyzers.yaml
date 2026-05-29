@@ -870,6 +870,55 @@ spec:
                           - "namespace"
                           - "outcomes"
                         type: "object"
+                      ingressClass:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          ingressClassName:
+                            type: "string"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "outcomes"
+                        type: "object"
                       jobStatus:
                         properties:
                           annotations:
@@ -1284,6 +1333,8 @@ spec:
                                   - "key"
                                 type: "object"
                             type: "object"
+                          ignoreIfNoFiles:
+                            type: "boolean"
                           outcomes:
                             items:
                               properties:
@@ -1535,6 +1586,58 @@ spec:
                           - "name"
                           - "outcomes"
                           - "selector"
+                        type: "object"
+                      s3Status:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          fileName:
+                            type: "string"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "collectorName"
+                          - "outcomes"
                         type: "object"
                       secret:
                         properties:
@@ -1895,7 +1998,13 @@ spec:
                   items:
                     properties:
                       blockDevices:
+                        description: "BlockDevicesAnalyze evaluates host-collected block device listings (lsblk-based)."
                         properties:
+                          additionalDeviceTypes:
+                            description: "AdditionalDeviceTypes are extra lsblk TYPE values (e.g. loop, lvm) that may count toward outcomes,\nin addition to whole disks and (when IncludeUnmountedPartitions is set) partitions."
+                            items:
+                              type: "string"
+                            type: "array"
                           annotations:
                             additionalProperties:
                               type: "string"
@@ -2650,6 +2759,55 @@ spec:
                           - "outcomes"
                         type: "object"
                       networkNamespaceConnectivity:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "outcomes"
+                        type: "object"
+                      registryImages:
                         properties:
                           annotations:
                             additionalProperties:

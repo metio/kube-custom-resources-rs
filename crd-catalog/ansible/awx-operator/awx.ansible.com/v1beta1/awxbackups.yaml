@@ -64,6 +64,10 @@ spec:
                 clean_backup_on_delete:
                   description: "Flag to indicate if backup should be deleted on PVC if AWXBackup object is deleted"
                   type: "boolean"
+                create_backup_pvc:
+                  default: true
+                  description: "If true (default), automatically create the backup PVC if it does not exist"
+                  type: "boolean"
                 db_management_pod_node_selector:
                   description: "nodeSelector for the Postgres pods to backup"
                   type: "string"
@@ -105,10 +109,17 @@ spec:
                   default: true
                   description: "Maintain some of the recommended `app.kubernetes.io/*` labels on the resource (self)"
                   type: "boolean"
+                use_db_compression:
+                  default: true
+                  description: "Enable compression for database dumps using pg_dump built-in compression."
+                  type: "boolean"
               required:
                 - "deployment_name"
               type: "object"
               x-kubernetes-preserve-unknown-fields: true
+              x-kubernetes-validations:
+                - message: "Both postgres_image and postgres_image_version must be set when required"
+                  rule: "has(self.postgres_image) && has(self.postgres_image_version) || !has(self.postgres_image) && !has(self.postgres_image_version)"
             status:
               properties:
                 backupClaim:

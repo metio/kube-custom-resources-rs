@@ -13,7 +13,6 @@ spec:
     listKind: "ConfigList"
     plural: "configs"
     singular: "config"
-  preserveUnknownFields: false
   scope: "Namespaced"
   versions:
     - name: "v1alpha1"

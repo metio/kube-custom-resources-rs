@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.18.0"
+    controller-gen.kubebuilder.io/version: "v0.20.1"
   name: "tokens.slinky.slurm.net"
 spec:
   group: "slinky.slurm.net"
@@ -45,7 +45,7 @@ spec:
               description: "TokenSpec defines the desired state of Token"
               properties:
                 jwtHs256KeyRef:
-                  description: "Slurm `auth/jwt` JWT HS256 key authentication."
+                  description: "Slurm `auth/jwt` JWT HS256 key authentication.\n\nDeprecated: use JwtKeyRef instead."
                   properties:
                     key:
                       description: "The key of the secret to select from.  Must be a valid secret key."
@@ -55,7 +55,27 @@ spec:
                       description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                       type: "string"
                     namespace:
-                      description: "The namespace of the Slurm `auth/jwt` JWT HS256 key."
+                      description: "The namespace of the Slurm `auth/jwt` JWT key."
+                      type: "string"
+                    optional:
+                      description: "Specify whether the Secret or its key must be defined"
+                      type: "boolean"
+                  required:
+                    - "key"
+                  type: "object"
+                  x-kubernetes-map-type: "atomic"
+                jwtKeyRef:
+                  description: "Slurm `auth/jwt` JWT key authentication."
+                  properties:
+                    key:
+                      description: "The key of the secret to select from.  Must be a valid secret key."
+                      type: "string"
+                    name:
+                      default: ""
+                      description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                      type: "string"
+                    namespace:
+                      description: "The namespace of the Slurm `auth/jwt` JWT key."
                       type: "string"
                     optional:
                       description: "Specify whether the Secret or its key must be defined"
@@ -92,9 +112,11 @@ spec:
                   description: "The username whom the token is created for."
                   type: "string"
               required:
-                - "jwtHs256KeyRef"
                 - "username"
               type: "object"
+              x-kubernetes-validations:
+                - message: "jwtKeyRef or jwtHs256KeyRef must be set"
+                  rule: "has(self.jwtKeyRef) || has(self.jwtHs256KeyRef)"
             status:
               description: "TokenStatus defines the observed state of Token"
               properties:

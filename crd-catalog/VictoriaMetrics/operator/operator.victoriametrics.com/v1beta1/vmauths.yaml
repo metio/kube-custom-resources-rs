@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.18.0"
+    controller-gen.kubebuilder.io/version: "v0.21.0"
   name: "vmauths.operator.victoriametrics.com"
 spec:
   group: "operator.victoriametrics.com"
@@ -45,6 +45,15 @@ spec:
                   description: "Affinity If specified, the pod's scheduling constraints."
                   type: "object"
                   x-kubernetes-preserve-unknown-fields: true
+                arbitraryFSAccessThroughSMs:
+                  description: "ArbitraryFSAccessThroughSMs configures whether configuration\ncan contain paths to arbitrary files on the file system\ne.g bearer token files, basic auth password files, tls certs file paths"
+                  properties:
+                    deny:
+                      type: "boolean"
+                  type: "object"
+                componentVersion:
+                  description: "ComponentVersion defines default images tag for all components.\nit can be overwritten with component specific image.tag value."
+                  type: "string"
                 configMaps:
                   description: "ConfigMaps is a list of ConfigMaps in the same namespace as the Application\nobject, which shall be mounted into the Application container\nat /etc/vm/configs/CONFIGMAP_NAME folder"
                   items:
@@ -70,13 +79,13 @@ spec:
                 configReloaderExtraArgs:
                   additionalProperties:
                     type: "string"
-                  description: "ConfigReloaderExtraArgs that will be passed to  VMAuths config-reloader container\nfor example resyncInterval: \"30s\""
+                  description: "ConfigReloaderExtraArgs that will be passed to  VMAuths config-reloader container\nfor example resync-interval: \"30s\""
                   type: "object"
                 configReloaderImage:
                   description: "ConfigReloaderImage defines image:tag for config-reloader container"
                   type: "string"
                 configReloaderImageTag:
-                  description: "ConfigReloaderImageTag defines image:tag for config-reloader container\nDeprecated: use configReloaderImage instead"
+                  description: "ConfigReloaderImageTag defines image:tag for config-reloader container"
                   type: "string"
                 configReloaderResources:
                   description: "ConfigReloaderResources config-reloader container resource request and limits, https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/\nif not defined default resources from operator config will be used"
@@ -119,7 +128,7 @@ spec:
                       type: "object"
                   type: "object"
                 configSecret:
-                  description: "ConfigSecret is the name of a Kubernetes Secret in the same namespace as the\nVMAuth object, which contains auth configuration for vmauth,\nconfiguration must be inside secret key: config.yaml.\nIt must be created and managed manually.\nIf it's defined, configuration for vmauth becomes unmanaged and operator'll not create any related secrets/config-reloaders\nDeprecated: use externalConfig.secretRef instead"
+                  description: "ConfigSecret is the name of a Kubernetes Secret in the same namespace as the\nVMAuth object, which contains auth configuration for vmauth,\nconfiguration must be inside secret key: config.yaml.\nIt must be created and managed manually.\nIf it's defined, configuration for vmauth becomes unmanaged and operator'll not create any related secrets/config-reloaders"
                   type: "string"
                 containers:
                   description: "Containers property allows to inject additions sidecars or to patch existing containers.\nIt can be useful for proxies, backup, etc."
@@ -129,6 +138,189 @@ spec:
                       - "name"
                     type: "object"
                     x-kubernetes-preserve-unknown-fields: true
+                  type: "array"
+                defaultTargetRefs:
+                  description: "DefaultTargetRefs list of named targetRefs, which may be referenced by VMUser and at unauthorizedUserAccessSpec."
+                  items:
+                    description: "TargetRef describes target for user traffic forwarding.\none of target types can be chosen:\ncrd or static per targetRef.\nuser can define multiple targetRefs with different ref Types."
+                    properties:
+                      crd:
+                        description: "CRD describes exist operator's CRD object,\noperator generates access url based on CRD params."
+                        properties:
+                          kind:
+                            description: "Kind one of:\nVMAgent,VMAlert, VMSingle, VMCluster/vmselect, VMCluster/vmstorage,VMCluster/vminsert,VMAlertManager, VLSingle, VLCluster/vlinsert, VLCluster/vlselect, VLCluster/vlstorage, VTSingle, VTCluster/vtinsert, VTCluster/vtselect, VTCluster/vtstorage VMAnomaly and VLAgent"
+                            enum:
+                              - "VMAgent"
+                              - "VMAlert"
+                              - "VMSingle"
+                              - "VLogs"
+                              - "VMAlertManager"
+                              - "VMAlertmanager"
+                              - "VMCluster/vmselect"
+                              - "VMCluster/vmstorage"
+                              - "VMCluster/vminsert"
+                              - "VLSingle"
+                              - "VLCluster/vlinsert"
+                              - "VLCluster/vlselect"
+                              - "VLCluster/vlstorage"
+                              - "VLAgent"
+                              - "VTCluster/vtinsert"
+                              - "VTCluster/vtselect"
+                              - "VTCluster/vtstorage"
+                              - "VTSingle"
+                              - "VMAnomaly"
+                            type: "string"
+                          name:
+                            description: "Name of the target Kubernetes object"
+                            type: "string"
+                          namespace:
+                            description: "Namespace of the target Kubernetes object"
+                            type: "string"
+                          objects:
+                            description: "Objects defines list of name/namespace pairs that define existing k8s object"
+                            items:
+                              description: "NamespacedName defines name and namespace pairs to reference k8s object"
+                              properties:
+                                name:
+                                  description: "Name of the target Kubernetes object"
+                                  type: "string"
+                                namespace:
+                                  description: "Namespace of the target Kubernetes object"
+                                  type: "string"
+                              required:
+                                - "name"
+                                - "namespace"
+                              type: "object"
+                            type: "array"
+                        required:
+                          - "kind"
+                          - "name"
+                          - "namespace"
+                        type: "object"
+                      discover_backend_ips:
+                        description: "DiscoverBackendIPs instructs discovering URLPrefix backend IPs via DNS."
+                        type: "boolean"
+                      drop_src_path_prefix_parts:
+                        description: "DropSrcPathPrefixParts is the number of `/`-delimited request path prefix parts to drop before proxying the request to backend.\nSee [here](https://docs.victoriametrics.com/victoriametrics/vmauth/#dropping-request-path-prefix) for more details."
+                        type: "integer"
+                      headers:
+                        description: "RequestHeaders represent additional http headers, that vmauth uses\nin form of [\"header_key: header_value\"]\nmultiple values for header key:\n[\"header_key: value1,value2\"]\nit's available since 1.68.0 version of vmauth"
+                        items:
+                          type: "string"
+                        type: "array"
+                      hosts:
+                        items:
+                          type: "string"
+                        type: "array"
+                      load_balancing_policy:
+                        description: "LoadBalancingPolicy defines load balancing policy to use for backend urls.\nSupported policies: least_loaded, first_available.\nSee [here](https://docs.victoriametrics.com/victoriametrics/vmauth/#load-balancing) for more details (default \"least_loaded\")"
+                        enum:
+                          - "least_loaded"
+                          - "first_available"
+                        type: "string"
+                      name:
+                        description: "Name references item at VMAuths spec.defaultTargetRefs map, with name set other attributes are skipped"
+                        type: "string"
+                      paths:
+                        description: "Paths - matched path to route."
+                        items:
+                          type: "string"
+                        type: "array"
+                      query_args:
+                        description: "QueryArgs appends list of query arguments to generated URL"
+                        items:
+                          description: "QueryArg defines item for query arguments"
+                          properties:
+                            name:
+                              description: "Name of query argument"
+                              type: "string"
+                            values:
+                              description: "Values of query argument"
+                              items:
+                                type: "string"
+                              type: "array"
+                          required:
+                            - "name"
+                            - "values"
+                          type: "object"
+                        type: "array"
+                      response_headers:
+                        description: "ResponseHeaders represent additional http headers, that vmauth adds for request response\nin form of [\"header_key: header_value\"]\nmultiple values for header key:\n[\"header_key: value1,value2\"]\nit's available since 1.93.0 version of vmauth"
+                        items:
+                          type: "string"
+                        type: "array"
+                      retry_status_codes:
+                        description: "RetryStatusCodes defines http status codes in numeric format for request retries\nCan be defined per target or at VMUser.spec level\ne.g. [429,503]"
+                        items:
+                          type: "integer"
+                        type: "array"
+                      src_headers:
+                        description: "SrcHeaders is an optional list of headers, which must match request headers."
+                        items:
+                          type: "string"
+                        type: "array"
+                      src_query_args:
+                        description: "SrcQueryArgs is an optional list of query args, which must match request URL query args."
+                        items:
+                          type: "string"
+                        type: "array"
+                      static:
+                        description: "Static - user defined url for traffic forward,\nfor instance http://vmsingle:8428"
+                        properties:
+                          url:
+                            description: "URL http url for given staticRef."
+                            type: "string"
+                          urls:
+                            description: "URLs allows setting multiple urls for load-balancing at vmauth-side."
+                            items:
+                              type: "string"
+                            type: "array"
+                        type: "object"
+                      targetRefBasicAuth:
+                        description: "TargetRefBasicAuth allow an target endpoint to authenticate over basic authentication"
+                        properties:
+                          password:
+                            description: "The secret in the service scrape namespace that contains the password\nfor authentication.\nIt must be at them same namespace as CRD"
+                            properties:
+                              key:
+                                description: "The key of the secret to select from.  Must be a valid secret key."
+                                type: "string"
+                              name:
+                                default: ""
+                                description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                type: "string"
+                              optional:
+                                description: "Specify whether the Secret or its key must be defined"
+                                type: "boolean"
+                            required:
+                              - "key"
+                            type: "object"
+                            x-kubernetes-map-type: "atomic"
+                          username:
+                            description: "The secret in the service scrape namespace that contains the username\nfor authentication.\nIt must be at them same namespace as CRD"
+                            properties:
+                              key:
+                                description: "The key of the secret to select from.  Must be a valid secret key."
+                                type: "string"
+                              name:
+                                default: ""
+                                description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                type: "string"
+                              optional:
+                                description: "Specify whether the Secret or its key must be defined"
+                                type: "boolean"
+                            required:
+                              - "key"
+                            type: "object"
+                            x-kubernetes-map-type: "atomic"
+                        required:
+                          - "password"
+                          - "username"
+                        type: "object"
+                      target_path_suffix:
+                        description: "TargetPathSuffix allows to add some suffix to the target path\nIt allows to hide tenant configuration from user with crd as ref.\nit also may contain any url encoded params."
+                        type: "string"
+                    type: "object"
                   type: "array"
                 disableAutomountServiceAccountToken:
                   description: "DisableAutomountServiceAccountToken whether to disable serviceAccount auto mount by Kubernetes (available from v0.54.0).\nOperator will conditionally create volumes and volumeMounts for containers if it requires k8s API access.\nFor example, vmagent and vm-config-reloader requires k8s API access.\nOperator creates volumes with name: \"kube-api-access\", which can be used as volumeMount for extraContainers if needed.\nAnd also adds VolumeMounts at /var/run/secrets/kubernetes.io/serviceaccount."
@@ -171,6 +363,9 @@ spec:
                 dnsPolicy:
                   description: "DNSPolicy sets DNS policy for the pod"
                   type: "string"
+                enableServiceLinks:
+                  description: "EnableServiceLinks indicates whether information about services should be injected into pod's\nenvironment variables, matching the syntax of Docker links.\nOptional: Defaults to true."
+                  type: "boolean"
                 externalConfig:
                   description: "ExternalConfig defines a source of external VMAuth configuration.\nIf it's defined, configuration for vmauth becomes unmanaged and operator'll not create any related secrets/config-reloaders"
                   properties:
@@ -332,7 +527,7 @@ spec:
                               anyOf:
                                 - type: "integer"
                                 - type: "string"
-                              description: "tolerance is the tolerance on the ratio between the current and desired\nmetric value under which no updates are made to the desired number of\nreplicas (e.g. 0.01 for 1%). Must be greater than or equal to zero. If not\nset, the default cluster-wide tolerance is applied (by default 10%).\n\nFor example, if autoscaling is configured with a memory consumption target of 100Mi,\nand scale-down and scale-up tolerances of 5% and 1% respectively, scaling will be\ntriggered when the actual consumption falls below 95Mi or exceeds 101Mi.\n\nThis is an alpha field and requires enabling the HPAConfigurableTolerance\nfeature gate."
+                              description: "tolerance is the tolerance on the ratio between the current and desired\nmetric value under which no updates are made to the desired number of\nreplicas (e.g. 0.01 for 1%). Must be greater than or equal to zero. If not\nset, the default cluster-wide tolerance is applied (by default 10%).\n\nFor example, if autoscaling is configured with a memory consumption target of 100Mi,\nand scale-down and scale-up tolerances of 5% and 1% respectively, scaling will be\ntriggered when the actual consumption falls below 95Mi or exceeds 101Mi.\n\nThis is an beta field and requires the HPAConfigurableTolerance feature\ngate to be enabled."
                               pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                               x-kubernetes-int-or-string: true
                           type: "object"
@@ -373,7 +568,7 @@ spec:
                               anyOf:
                                 - type: "integer"
                                 - type: "string"
-                              description: "tolerance is the tolerance on the ratio between the current and desired\nmetric value under which no updates are made to the desired number of\nreplicas (e.g. 0.01 for 1%). Must be greater than or equal to zero. If not\nset, the default cluster-wide tolerance is applied (by default 10%).\n\nFor example, if autoscaling is configured with a memory consumption target of 100Mi,\nand scale-down and scale-up tolerances of 5% and 1% respectively, scaling will be\ntriggered when the actual consumption falls below 95Mi or exceeds 101Mi.\n\nThis is an alpha field and requires enabling the HPAConfigurableTolerance\nfeature gate."
+                              description: "tolerance is the tolerance on the ratio between the current and desired\nmetric value under which no updates are made to the desired number of\nreplicas (e.g. 0.01 for 1%). Must be greater than or equal to zero. If not\nset, the default cluster-wide tolerance is applied (by default 10%).\n\nFor example, if autoscaling is configured with a memory consumption target of 100Mi,\nand scale-down and scale-up tolerances of 5% and 1% respectively, scaling will be\ntriggered when the actual consumption falls below 95Mi or exceeds 101Mi.\n\nThis is an beta field and requires the HPAConfigurableTolerance feature\ngate to be enabled."
                               pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                               x-kubernetes-int-or-string: true
                           type: "object"
@@ -992,7 +1187,7 @@ spec:
                       type: "string"
                   type: "object"
                 livenessProbe:
-                  description: "LivenessProbe that will be added CRD pod"
+                  description: "LivenessProbe that will be added to CR pod"
                   type: "object"
                   x-kubernetes-preserve-unknown-fields: true
                 logFormat:
@@ -1099,7 +1294,7 @@ spec:
                     type: "object"
                   type: "array"
                 readinessProbe:
-                  description: "ReadinessProbe that will be added CRD pod"
+                  description: "ReadinessProbe that will be added to CR pod"
                   type: "object"
                   x-kubernetes-preserve-unknown-fields: true
                 replicaCount:
@@ -1224,7 +1419,7 @@ spec:
                     - "spec"
                   type: "object"
                 startupProbe:
-                  description: "StartupProbe that will be added to CRD pod"
+                  description: "StartupProbe that will be added to CR pod"
                   type: "object"
                   x-kubernetes-preserve-unknown-fields: true
                 terminationGracePeriodSeconds:
@@ -1243,7 +1438,7 @@ spec:
                         description: "Key is the taint key that the toleration applies to. Empty means match all taint keys.\nIf the key is empty, operator must be Exists; this combination means to match all values and all keys."
                         type: "string"
                       operator:
-                        description: "Operator represents a key's relationship to the value.\nValid operators are Exists and Equal. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category."
+                        description: "Operator represents a key's relationship to the value.\nValid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category.\nLt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators)."
                         type: "string"
                       tolerationSeconds:
                         description: "TolerationSeconds represents the period of time the toleration (which must be\nof effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,\nit is not set, which means tolerate the taint forever (do not evict). Zero and\nnegative values will be treated as 0 (evict immediately) by the system."
@@ -1266,7 +1461,7 @@ spec:
                     x-kubernetes-preserve-unknown-fields: true
                   type: "array"
                 unauthorizedAccessConfig:
-                  description: "UnauthorizedAccessConfig configures access for un authorized users\n\nDeprecated: use unauthorizedUserAccessSpec instead\nwill be removed at v1.0 release"
+                  description: "UnauthorizedAccessConfig configures access for un authorized users"
                   x-kubernetes-preserve-unknown-fields: true
                 unauthorizedUserAccessSpec:
                   description: "UnauthorizedUserAccessSpec defines unauthorized_user config section of vmauth config"
@@ -1335,7 +1530,7 @@ spec:
                             description: "CRD describes exist operator's CRD object,\noperator generates access url based on CRD params."
                             properties:
                               kind:
-                                description: "Kind one of:\nVMAgent,VMAlert, VMSingle, VMCluster/vmselect, VMCluster/vmstorage,VMCluster/vminsert,VMAlertManager, VLSingle, VLCluster/vlinsert, VLCluster/vlselect, VLCluster/vlstorage, VTSingle, VTCluster/vtinsert, VTCluster/vtselect, VTCluster/vtstorage and VLAgent"
+                                description: "Kind one of:\nVMAgent,VMAlert, VMSingle, VMCluster/vmselect, VMCluster/vmstorage,VMCluster/vminsert,VMAlertManager, VLSingle, VLCluster/vlinsert, VLCluster/vlselect, VLCluster/vlstorage, VTSingle, VTCluster/vtinsert, VTCluster/vtselect, VTCluster/vtstorage VMAnomaly and VLAgent"
                                 enum:
                                   - "VMAgent"
                                   - "VMAlert"
@@ -1355,13 +1550,30 @@ spec:
                                   - "VTCluster/vtselect"
                                   - "VTCluster/vtstorage"
                                   - "VTSingle"
+                                  - "VMAnomaly"
                                 type: "string"
                               name:
-                                description: "Name target CRD object name"
+                                description: "Name of the target Kubernetes object"
                                 type: "string"
                               namespace:
-                                description: "Namespace target CRD object namespace."
+                                description: "Namespace of the target Kubernetes object"
                                 type: "string"
+                              objects:
+                                description: "Objects defines list of name/namespace pairs that define existing k8s object"
+                                items:
+                                  description: "NamespacedName defines name and namespace pairs to reference k8s object"
+                                  properties:
+                                    name:
+                                      description: "Name of the target Kubernetes object"
+                                      type: "string"
+                                    namespace:
+                                      description: "Namespace of the target Kubernetes object"
+                                      type: "string"
+                                  required:
+                                    - "name"
+                                    - "namespace"
+                                  type: "object"
+                                type: "array"
                             required:
                               - "kind"
                               - "name"
@@ -1387,6 +1599,9 @@ spec:
                             enum:
                               - "least_loaded"
                               - "first_available"
+                            type: "string"
+                          name:
+                            description: "Name references item at VMAuths spec.defaultTargetRefs map, with name set other attributes are skipped"
                             type: "string"
                           paths:
                             description: "Paths - matched path to route."
@@ -1602,7 +1817,7 @@ spec:
                           type: "string"
                       type: "object"
                     url_map:
-                      description: "URLMap defines url map for destination\nDeprecated since 0.67: use targetRefs instead"
+                      description: "URLMap defines url map for destination"
                       items:
                         description: "UnauthorizedAccessConfigURLMap defines element of url_map routing configuration\nFor UnauthorizedAccessConfig and VMAuthUnauthorizedUserAccessSpec.URLMap"
                         properties:
@@ -1659,7 +1874,7 @@ spec:
                         type: "object"
                       type: "array"
                     url_prefix:
-                      description: "URLPrefix defines url prefix for destination\nDeprecated since 0.67: use targetRefs instead"
+                      description: "URLPrefix defines url prefix for destination"
                       x-kubernetes-preserve-unknown-fields: true
                   type: "object"
                 updateStrategy:
@@ -1786,6 +2001,125 @@ spec:
                     type: "object"
                     x-kubernetes-preserve-unknown-fields: true
                   type: "array"
+                vpa:
+                  description: "Configures vertical pod autoscaling."
+                  properties:
+                    recommenders:
+                      description: "Recommenders specifies custom VPA recommender names."
+                      items:
+                        description: "VerticalPodAutoscalerRecommenderSelector points to a specific Vertical Pod Autoscaler recommender.\nIn the future it might pass parameters to the recommender."
+                        properties:
+                          name:
+                            description: "Name of the recommender responsible for generating recommendation for this object."
+                            type: "string"
+                        required:
+                          - "name"
+                        type: "object"
+                      type: "array"
+                    resourcePolicy:
+                      description: "ResourcePolicy controls how the autoscaler computes recommended resources per container."
+                      properties:
+                        containerPolicies:
+                          description: "Per-container resource policies."
+                          items:
+                            description: "ContainerResourcePolicy controls how autoscaler computes the recommended\nresources for a specific container."
+                            properties:
+                              containerName:
+                                description: "Name of the container or DefaultContainerResourcePolicy, in which\ncase the policy is used by the containers that don't have their own\npolicy specified."
+                                type: "string"
+                              controlledResources:
+                                description: "Specifies the type of recommendations that will be computed\n(and possibly applied) by VPA.\nIf not specified, the default of [ResourceCPU, ResourceMemory] will be used."
+                                items:
+                                  description: "ResourceName is the name identifying various resources in a ResourceList."
+                                  type: "string"
+                                type: "array"
+                              controlledValues:
+                                description: "Specifies which resource values should be controlled.\nThe default is \"RequestsAndLimits\"."
+                                enum:
+                                  - "RequestsAndLimits"
+                                  - "RequestsOnly"
+                                type: "string"
+                              maxAllowed:
+                                additionalProperties:
+                                  anyOf:
+                                    - type: "integer"
+                                    - type: "string"
+                                  pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                  x-kubernetes-int-or-string: true
+                                description: "Specifies the maximum amount of resources that will be recommended\nfor the container. The default is no maximum."
+                                type: "object"
+                              minAllowed:
+                                additionalProperties:
+                                  anyOf:
+                                    - type: "integer"
+                                    - type: "string"
+                                  pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                  x-kubernetes-int-or-string: true
+                                description: "Specifies the minimal amount of resources that will be recommended\nfor the container. The default is no minimum."
+                                type: "object"
+                              mode:
+                                description: "Whether autoscaler is enabled for the container. The default is \"Auto\"."
+                                enum:
+                                  - "Auto"
+                                  - "Off"
+                                type: "string"
+                              oomBumpUpRatio:
+                                anyOf:
+                                  - type: "integer"
+                                  - type: "string"
+                                description: "oomBumpUpRatio is the ratio to increase memory when OOM is detected."
+                                pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                x-kubernetes-int-or-string: true
+                              oomMinBumpUp:
+                                anyOf:
+                                  - type: "integer"
+                                  - type: "string"
+                                description: "oomMinBumpUp is the minimum increase in memory when OOM is detected."
+                                pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                x-kubernetes-int-or-string: true
+                            type: "object"
+                          type: "array"
+                      type: "object"
+                    updatePolicy:
+                      description: "UpdatePolicy controls how the autoscaler applies changes to pod resources."
+                      properties:
+                        evictionRequirements:
+                          description: "EvictionRequirements is a list of EvictionRequirements that need to\nevaluate to true in order for a Pod to be evicted. If more than one\nEvictionRequirement is specified, all of them need to be fulfilled to allow eviction."
+                          items:
+                            description: "EvictionRequirement defines a single condition which needs to be true in\norder to evict a Pod"
+                            properties:
+                              changeRequirement:
+                                description: "EvictionChangeRequirement refers to the relationship between the new target recommendation for a Pod and its current requests, what kind of change is necessary for the Pod to be evicted"
+                                enum:
+                                  - "TargetHigherThanRequests"
+                                  - "TargetLowerThanRequests"
+                                type: "string"
+                              resources:
+                                description: "Resources is a list of one or more resources that the condition applies\nto. If more than one resource is given, the EvictionRequirement is fulfilled\nif at least one resource meets `changeRequirement`."
+                                items:
+                                  description: "ResourceName is the name identifying various resources in a ResourceList."
+                                  type: "string"
+                                type: "array"
+                            required:
+                              - "changeRequirement"
+                              - "resources"
+                            type: "object"
+                          type: "array"
+                        minReplicas:
+                          description: "Minimal number of replicas which need to be alive for Updater to attempt\npod eviction (pending other checks like PDB). Only positive values are\nallowed. Overrides global '--min-replicas' flag."
+                          format: "int32"
+                          type: "integer"
+                        updateMode:
+                          description: "Controls when autoscaler applies changes to the pod resources.\nThe default is 'Recreate'."
+                          enum:
+                            - "Off"
+                            - "Initial"
+                            - "Recreate"
+                            - "InPlaceOrRecreate"
+                            - "Auto"
+                          type: "string"
+                      type: "object"
+                  type: "object"
               type: "object"
               x-kubernetes-preserve-unknown-fields: true
             status:
@@ -1840,6 +2174,8 @@ spec:
                   x-kubernetes-list-map-keys:
                     - "type"
                   x-kubernetes-list-type: "map"
+                lastAppliedSpec:
+                  x-kubernetes-preserve-unknown-fields: true
                 observedGeneration:
                   description: "ObservedGeneration defines current generation picked by operator for the\nreconcile"
                   format: "int64"

@@ -1,0 +1,140 @@
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: "v0.17.3"
+  name: "configupdatejobs.operations.kubeedge.io"
+spec:
+  group: "operations.kubeedge.io"
+  names:
+    kind: "ConfigUpdateJob"
+    listKind: "ConfigUpdateJobList"
+    plural: "configupdatejobs"
+    singular: "configupdatejob"
+  scope: "Cluster"
+  versions:
+    - name: "v1alpha2"
+      schema:
+        openAPIV3Schema:
+          description: "ConfigUpdateJob is used to update edge configuration from cloud side."
+          properties:
+            apiVersion:
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              type: "string"
+            kind:
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              type: "string"
+            metadata:
+              type: "object"
+            spec:
+              description: "Specification of the desired behavior of ConfigUpdateJob."
+              properties:
+                concurrency:
+                  description: "Concurrency specifies the maximum number of concurrent that edge nodes associated with\neach CloudCore instance can be updated at the same time.\nThe default Concurrency value is 1."
+                  format: "int32"
+                  type: "integer"
+                failureTolerate:
+                  description: "FailureTolerate specifies the task tolerance failure ratio.\nThe default FailureTolerate value is 0.1."
+                  type: "string"
+                labelSelector:
+                  description: "LabelSelector is a filter to select member clusters by labels.\nIt must match a node's labels for the ConfigUpdateJob to be operated on that node.\nPlease note that sets of NodeNames and LabelSelector are ORed.\nUsers must set one and can only set one."
+                  properties:
+                    matchExpressions:
+                      description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
+                      items:
+                        description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
+                        properties:
+                          key:
+                            description: "key is the label key that the selector applies to."
+                            type: "string"
+                          operator:
+                            description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
+                            type: "string"
+                          values:
+                            description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
+                            items:
+                              type: "string"
+                            type: "array"
+                            x-kubernetes-list-type: "atomic"
+                        required:
+                          - "key"
+                          - "operator"
+                        type: "object"
+                      type: "array"
+                      x-kubernetes-list-type: "atomic"
+                    matchLabels:
+                      additionalProperties:
+                        type: "string"
+                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                      type: "object"
+                  type: "object"
+                  x-kubernetes-map-type: "atomic"
+                nodeNames:
+                  description: "NodeNames is a request to select some specific nodes. If it is non-empty,\nthe update job simply select these edge nodes to do config update operation.\nPlease note that sets of NodeNames and LabelSelector are ORed.\nUsers must set one and can only set one."
+                  items:
+                    type: "string"
+                  type: "array"
+                timeoutSeconds:
+                  description: "TimeoutSeconds limits the duration of the config update job.\nDefault to 300.\nIf set to 0, we'll use the default value 300."
+                  format: "int32"
+                  type: "integer"
+                updateFields:
+                  additionalProperties:
+                    type: "string"
+                  description: "UpdateFields specify certain fields in EdgeCore configuration to update"
+                  type: "object"
+              required:
+                - "updateFields"
+              type: "object"
+            status:
+              description: "Most recently observed status of the ConfigUpdateJob."
+              properties:
+                nodeStatus:
+                  description: "NodeStatus contains config update status for each edge node."
+                  items:
+                    description: "ConfigUpdateJobNodeTaskStatus stores the status of config update for each edge node."
+                    properties:
+                      actionFlow:
+                        description: "ActionFlow represents for the results of executing the action flow."
+                        items:
+                          description: "ConfigUpdateJobActionStatus defines the results of executing the action."
+                          properties:
+                            action:
+                              description: "Action represents for the action phase of the ConfigUpdateJob"
+                              type: "string"
+                            reason:
+                              description: "Reason represents the reason for the failure of the action."
+                              type: "string"
+                            status:
+                              description: "State represents for the status of this image pull on the edge node."
+                              type: "string"
+                            time:
+                              description: "Time represents for the running time of the node task."
+                              type: "string"
+                          type: "object"
+                        type: "array"
+                      nodeName:
+                        description: "NodeName is the name of edge node."
+                        type: "string"
+                      phase:
+                        description: "Phase represents for the phase of the node task."
+                        type: "string"
+                      reason:
+                        description: "Reason represents the reason for the failure of the node task."
+                        type: "string"
+                    type: "object"
+                  type: "array"
+                phase:
+                  description: "Phase represents for the phase of the ConfigUpdateJob"
+                  type: "string"
+                reason:
+                  description: "Reason represents for the reason of the ConfigUpdateJob."
+                  type: "string"
+              required:
+                - "phase"
+              type: "object"
+          type: "object"
+      served: true
+      storage: true
+      subresources:
+        status: {}

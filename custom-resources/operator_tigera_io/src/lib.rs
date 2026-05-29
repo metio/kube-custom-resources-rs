@@ -15,6 +15,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `ImageSet`
 - `Installation`
 - `IntrusionDetection`
+- `Istio`
 - `LogCollector`
 - `LogStorage`
 - `ManagementClusterConnection`

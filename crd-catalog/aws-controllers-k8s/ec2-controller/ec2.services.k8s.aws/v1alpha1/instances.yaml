@@ -102,10 +102,10 @@ spec:
                       type: "string"
                   type: "object"
                 disableAPIStop:
-                  description: "Indicates whether an instance is enabled for stop protection. For more information,\nsee Stop protection (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Stop_Start.html#Using_StopProtection)."
+                  description: "Indicates whether an instance is enabled for stop protection. For more information,\nsee Enable stop protection for your EC2 instances (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-stop-protection.html)."
                   type: "boolean"
                 disableAPITermination:
-                  description: "If you set this parameter to true, you can't terminate the instance using\nthe Amazon EC2 console, CLI, or API; otherwise, you can. To change this attribute\nafter launch, use ModifyInstanceAttribute (https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_ModifyInstanceAttribute.html).\nAlternatively, if you set InstanceInitiatedShutdownBehavior to terminate,\nyou can terminate the instance by running the shutdown command from the instance.\n\nDefault: false"
+                  description: "Indicates whether termination protection is enabled for the instance. The\ndefault is false, which means that you can terminate the instance using the\nAmazon EC2 console, command line tools, or API. You can enable termination\nprotection when you launch an instance, while the instance is running, or\nwhile the instance is stopped."
                   type: "boolean"
                 ebsOptimized:
                   description: "Indicates whether the instance is optimized for Amazon EBS I/O. This optimization\nprovides dedicated throughput to Amazon EBS and an optimized configuration\nstack to provide optimal Amazon EBS I/O performance. This optimization isn't\navailable with all instance types. Additional usage charges apply when using\nan EBS-optimized instance.\n\nDefault: false"
@@ -132,7 +132,7 @@ spec:
                     type: "object"
                   type: "array"
                 enclaveOptions:
-                  description: "Indicates whether the instance is enabled for Amazon Web Services Nitro Enclaves.\nFor more information, see What is Amazon Web Services Nitro Enclaves? (https://docs.aws.amazon.com/enclaves/latest/user/nitro-enclave.html)\nin the Amazon Web Services Nitro Enclaves User Guide.\n\nYou can't enable Amazon Web Services Nitro Enclaves and hibernation on the\nsame instance."
+                  description: "Indicates whether the instance is enabled for Amazon Web Services Nitro Enclaves.\nFor more information, see Amazon Web Services Nitro Enclaves User Guide (https://docs.aws.amazon.com/enclaves/latest/user/).\n\nYou can't enable Amazon Web Services Nitro Enclaves and hibernation on the\nsame instance."
                   properties:
                     enabled:
                       type: "boolean"
@@ -180,7 +180,7 @@ spec:
                       type: "object"
                   type: "object"
                 instanceType:
-                  description: "The instance type. For more information, see Amazon EC2 instance types (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html)\nin the Amazon EC2 User Guide."
+                  description: "The instance type. For more information, see Amazon EC2 Instance Types Guide\n(https://docs.aws.amazon.com/ec2/latest/instancetypes/instance-types.html)."
                   type: "string"
                 ipv6AddressCount:
                   description: "The number of IPv6 addresses to associate with the primary network interface.\nAmazon EC2 chooses the IPv6 addresses from the range of your subnet. You\ncannot specify this option and the option to assign specific IPv6 addresses\nin the same request. You can specify this option if you've specified a minimum\nnumber of instances to launch.\n\nYou cannot specify this option and the network interfaces option in the same\nrequest."
@@ -199,7 +199,7 @@ spec:
                   description: "The ID of the kernel.\n\nWe recommend that you use PV-GRUB instead of kernels and RAM disks. For more\ninformation, see PV-GRUB (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/UserProvidedkernels.html)\nin the Amazon EC2 User Guide."
                   type: "string"
                 keyName:
-                  description: "The name of the key pair. You can create a key pair using CreateKeyPair (https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateKeyPair.html)\nor ImportKeyPair (https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_ImportKeyPair.html).\n\nIf you do not specify a key pair, you can't connect to the instance unless\nyou choose an AMI that is configured to allow users another way to log in."
+                  description: "The name of the key pair. For more information, see Create a key pair for\nyour EC2 instance (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/create-key-pairs.html).\n\nIf you do not specify a key pair, you can't connect to the instance unless\nyou choose an AMI that is configured to allow users another way to log in."
                   type: "string"
                 launchTemplate:
                   description: "The launch template. Any additional parameters that you specify for the new\ninstance overwrite the corresponding parameters included in the launch template."
@@ -243,7 +243,7 @@ spec:
                   format: "int64"
                   type: "integer"
                 metadataOptions:
-                  description: "The metadata options for the instance. For more information, see Instance\nmetadata and user data (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html)."
+                  description: "The metadata options for the instance. For more information, see Configure\nthe Instance Metadata Service options (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-options.html)."
                   properties:
                     httpEndpoint:
                       type: "string"
@@ -312,7 +312,7 @@ spec:
                         type: "integer"
                       ipv6Prefixes:
                         items:
-                          description: "Describes the IPv4 prefix option for a network interface."
+                          description: "Describes the IPv6 prefix option for a network interface."
                           properties:
                             ipv6Prefix:
                               type: "string"
@@ -380,7 +380,7 @@ spec:
                   description: "The ID of the RAM disk to select. Some kernels require additional drivers\nat launch. Check the kernel requirements for information about whether you\nneed to specify a RAM disk. To find kernel requirements, go to the Amazon\nWeb Services Resource Center and search for the kernel ID.\n\nWe recommend that you use PV-GRUB instead of kernels and RAM disks. For more\ninformation, see PV-GRUB (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/UserProvidedkernels.html)\nin the Amazon EC2 User Guide."
                   type: "string"
                 securityGroupIDs:
-                  description: "The IDs of the security groups. You can create a security group using CreateSecurityGroup\n(https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateSecurityGroup.html).\n\nIf you specify a network interface, you must specify any security groups\nas part of the network interface instead of using this parameter."
+                  description: "The IDs of the security groups.\n\nIf you specify a network interface, you must specify any security groups\nas part of the network interface instead of using this parameter."
                   items:
                     type: "string"
                   type: "array"
@@ -416,7 +416,7 @@ spec:
                     type: "object"
                   type: "array"
                 userData:
-                  description: "The user data to make available to the instance. User data must be base64-encoded.\nDepending on the tool or SDK that you're using, the base64-encoding might\nbe performed for you. For more information, see Work with instance user data\n(https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-add-user-data.html)."
+                  description: "The user data to make available to the instance. User data must be base64-encoded.\nDepending on the tool or SDK that you're using, the base64-encoding might\nbe performed for you. For more information, see Run commands at launch using\ninstance user data (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html)."
                   type: "string"
               type: "object"
             status:
@@ -430,6 +430,9 @@ spec:
                       type: "string"
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."
+                      type: "string"
+                    partition:
+                      description: "Partition is the AWS partition in which the resource exists or will exist"
                       type: "string"
                     region:
                       description: "Region is the AWS region in which the resource exists or will exist."
@@ -560,7 +563,7 @@ spec:
                     type: "object"
                   type: "array"
                 publicDNSName:
-                  description: "[IPv4 only] The public DNS name assigned to the instance. This name is not\navailable until the instance enters the running state. This name is only\navailable if you've enabled DNS hostnames for your VPC."
+                  description: "The public DNS name assigned to the instance. This name is not available\nuntil the instance enters the running state. This name is only available\nif you've enabled DNS hostnames for your VPC. The format of this name depends\non the public hostname type (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/hostname-types.html#public-hostnames)."
                   type: "string"
                 publicIPAddress:
                   description: "The public IPv4 address, or the Carrier IP address assigned to the instance,\nif applicable.\n\nA Carrier IP address only applies to an instance launched in a subnet associated\nwith a Wavelength Zone."

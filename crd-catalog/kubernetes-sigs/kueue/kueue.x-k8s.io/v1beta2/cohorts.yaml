@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.20.0"
+    controller-gen.kubebuilder.io/version: "v0.20.1"
   name: "cohorts.kueue.x-k8s.io"
 spec:
   group: "kueue.x-k8s.io"
@@ -10,13 +10,15 @@ spec:
     kind: "Cohort"
     listKind: "CohortList"
     plural: "cohorts"
+    shortNames:
+      - "co"
     singular: "cohort"
   scope: "Cluster"
   versions:
     - name: "v1beta2"
       schema:
         openAPIV3Schema:
-          description: "Cohort defines the Cohorts API.\n\nHierarchical Cohorts (any Cohort which has a parent) are compatible\nwith Fair Sharing as of v0.11. Using these features together in\nV0.9 and V0.10 is unsupported, and results in undefined behavior."
+          description: "Cohort defines the Cohorts API."
           properties:
             apiVersion:
               description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
@@ -76,14 +78,14 @@ spec:
                                     anyOf:
                                       - type: "integer"
                                       - type: "string"
-                                    description: "borrowingLimit is the maximum amount of quota for the [flavor, resource]\ncombination that this ClusterQueue is allowed to borrow from the unused\nquota of other ClusterQueues in the same cohort.\nIn total, at a given time, Workloads in a ClusterQueue can consume a\nquantity of quota equal to nominalQuota+borrowingLimit, assuming the other\nClusterQueues in the cohort have enough unused quota.\nIf null, it means that there is no borrowing limit.\nIf not null, it must be non-negative.\nborrowingLimit must be null if spec.cohort is empty."
+                                    description: "borrowingLimit is the maximum amount of quota for the [flavor, resource]\ncombination that this ClusterQueue is allowed to borrow from the unused\nquota of other ClusterQueues in the same cohort.\nIn total, at a given time, Workloads in a ClusterQueue can consume a\nquantity of quota equal to nominalQuota+borrowingLimit, assuming the other\nClusterQueues in the cohort have enough unused quota.\nIf null, it means that there is no borrowing limit.\nIf not null, it must be non-negative.\nborrowingLimit must be null if spec.cohortName is empty."
                                     pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                                     x-kubernetes-int-or-string: true
                                   lendingLimit:
                                     anyOf:
                                       - type: "integer"
                                       - type: "string"
-                                    description: "lendingLimit is the maximum amount of unused quota for the [flavor, resource]\ncombination that this ClusterQueue can lend to other ClusterQueues in the same cohort.\nIn total, at a given time, ClusterQueue reserves for its exclusive use\na quantity of quota equals to nominalQuota - lendingLimit.\nIf null, it means that there is no lending limit, meaning that\nall the nominalQuota can be borrowed by other clusterQueues in the cohort.\nIf not null, it must be non-negative.\nlendingLimit must be null if spec.cohort is empty.\nThis field is in beta stage and is enabled by default."
+                                    description: "lendingLimit is the maximum amount of unused quota for the [flavor, resource]\ncombination that this ClusterQueue can lend to other ClusterQueues in the same cohort.\nIn total, at a given time, ClusterQueue reserves for its exclusive use\na quantity of quota equals to nominalQuota - lendingLimit.\nIf null, it means that there is no lending limit, meaning that\nall the nominalQuota can be borrowed by other clusterQueues in the cohort.\nIf not null, it must be non-negative.\nlendingLimit must be null if spec.cohortName is empty.\nThis field is in beta stage and is enabled by default."
                                     pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                                     x-kubernetes-int-or-string: true
                                   name:

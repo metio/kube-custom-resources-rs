@@ -29,12 +29,16 @@ spec:
             spec:
               description: "MonitorSpec defines the desired state of Tigera monitor."
               properties:
-                alertManager:
-                  description: "AlertManager is the configuration for the AlertManager."
+                alertmanager:
+                  description: "Alertmanager is the configuration for the Alertmanager."
                   properties:
                     spec:
                       description: "Spec is the specification of the Alertmanager."
                       properties:
+                        replicas:
+                          description: "Replicas defines the number of Alertmanager replicas. When set to 0, Alertmanager is not rendered.\nDefault: 0"
+                          format: "int32"
+                          type: "integer"
                         resources:
                           description: "Define resources requests and limits for single Pods."
                           properties:
@@ -125,7 +129,7 @@ spec:
                                   properties:
                                     action:
                                       default: "replace"
-                                      description: "Action to perform based on the regex matching.\n`Uppercase` and `Lowercase` actions require Prometheus >= v2.36.0.\n`DropEqual` and `KeepEqual` actions require Prometheus >= v2.41.0.\nDefault: \"Replace\""
+                                      description: "action to perform based on the regex matching.\n`Uppercase` and `Lowercase` actions require Prometheus >= v2.36.0.\n`DropEqual` and `KeepEqual` actions require Prometheus >= v2.41.0.\nDefault: \"Replace\""
                                       enum:
                                         - "replace"
                                         - "Replace"
@@ -151,27 +155,26 @@ spec:
                                         - "DropEqual"
                                       type: "string"
                                     modulus:
-                                      description: "Modulus to take of the hash of the source label values.\nOnly applicable when the action is `HashMod`."
+                                      description: "modulus to take of the hash of the source label values.\nOnly applicable when the action is `HashMod`."
                                       format: "int64"
                                       type: "integer"
                                     regex:
-                                      description: "Regular expression against which the extracted value is matched."
+                                      description: "regex defines the regular expression against which the extracted value is matched."
                                       type: "string"
                                     replacement:
-                                      description: "Replacement value against which a Replace action is performed if the\nregular expression matches.\nRegex capture groups are available."
+                                      description: "replacement value against which a Replace action is performed if the\nregular expression matches.\nRegex capture groups are available."
                                       type: "string"
                                     separator:
-                                      description: "Separator is the string between concatenated SourceLabels."
+                                      description: "separator defines the string between concatenated SourceLabels."
                                       type: "string"
                                     sourceLabels:
-                                      description: "The source labels select values from existing labels. Their content is\nconcatenated using the configured Separator and matched against the\nconfigured regular expression."
+                                      description: "sourceLabels defines the source labels select values from existing labels. Their content is\nconcatenated using the configured Separator and matched against the\nconfigured regular expression."
                                       items:
-                                        description: "LabelName is a valid Prometheus label name which may only contain ASCII\nletters, numbers, as well as underscores."
-                                        pattern: "^[a-zA-Z_][a-zA-Z0-9_]*$"
+                                        description: "LabelName is a valid Prometheus label name.\nFor Prometheus 3.x, a label name is valid if it contains UTF-8 characters.\nFor Prometheus 2.x, a label name is only valid if it contains ASCII characters, letters, numbers, as well as underscores."
                                         type: "string"
                                       type: "array"
                                     targetLabel:
-                                      description: "Label to which the resulting string is written in a replacement.\nIt is mandatory for `Replace`, `HashMod`, `Lowercase`, `Uppercase`,\n`KeepEqual` and `DropEqual` actions.\nRegex capture groups are available."
+                                      description: "targetLabel defines the label to which the resulting string is written in a replacement.\nIt is mandatory for `Replace`, `HashMod`, `Lowercase`, `Uppercase`,\n`KeepEqual` and `DropEqual` actions.\nRegex capture groups are available."
                                       type: "string"
                                   type: "object"
                                 type: "array"
@@ -189,7 +192,7 @@ spec:
                                   properties:
                                     action:
                                       default: "replace"
-                                      description: "Action to perform based on the regex matching.\n`Uppercase` and `Lowercase` actions require Prometheus >= v2.36.0.\n`DropEqual` and `KeepEqual` actions require Prometheus >= v2.41.0.\nDefault: \"Replace\""
+                                      description: "action to perform based on the regex matching.\n`Uppercase` and `Lowercase` actions require Prometheus >= v2.36.0.\n`DropEqual` and `KeepEqual` actions require Prometheus >= v2.41.0.\nDefault: \"Replace\""
                                       enum:
                                         - "replace"
                                         - "Replace"
@@ -215,27 +218,26 @@ spec:
                                         - "DropEqual"
                                       type: "string"
                                     modulus:
-                                      description: "Modulus to take of the hash of the source label values.\nOnly applicable when the action is `HashMod`."
+                                      description: "modulus to take of the hash of the source label values.\nOnly applicable when the action is `HashMod`."
                                       format: "int64"
                                       type: "integer"
                                     regex:
-                                      description: "Regular expression against which the extracted value is matched."
+                                      description: "regex defines the regular expression against which the extracted value is matched."
                                       type: "string"
                                     replacement:
-                                      description: "Replacement value against which a Replace action is performed if the\nregular expression matches.\nRegex capture groups are available."
+                                      description: "replacement value against which a Replace action is performed if the\nregular expression matches.\nRegex capture groups are available."
                                       type: "string"
                                     separator:
-                                      description: "Separator is the string between concatenated SourceLabels."
+                                      description: "separator defines the string between concatenated SourceLabels."
                                       type: "string"
                                     sourceLabels:
-                                      description: "The source labels select values from existing labels. Their content is\nconcatenated using the configured Separator and matched against the\nconfigured regular expression."
+                                      description: "sourceLabels defines the source labels select values from existing labels. Their content is\nconcatenated using the configured Separator and matched against the\nconfigured regular expression."
                                       items:
-                                        description: "LabelName is a valid Prometheus label name which may only contain ASCII\nletters, numbers, as well as underscores."
-                                        pattern: "^[a-zA-Z_][a-zA-Z0-9_]*$"
+                                        description: "LabelName is a valid Prometheus label name.\nFor Prometheus 3.x, a label name is valid if it contains UTF-8 characters.\nFor Prometheus 2.x, a label name is only valid if it contains ASCII characters, letters, numbers, as well as underscores."
                                         type: "string"
                                       type: "array"
                                     targetLabel:
-                                      description: "Label to which the resulting string is written in a replacement.\nIt is mandatory for `Replace`, `HashMod`, `Lowercase`, `Uppercase`,\n`KeepEqual` and `DropEqual` actions.\nRegex capture groups are available."
+                                      description: "targetLabel defines the label to which the resulting string is written in a replacement.\nIt is mandatory for `Replace`, `HashMod`, `Lowercase`, `Uppercase`,\n`KeepEqual` and `DropEqual` actions.\nRegex capture groups are available."
                                       type: "string"
                                   type: "object"
                                 type: "array"
@@ -268,11 +270,51 @@ spec:
                               items:
                                 description: "PrometheusContainer is a Prometheus container."
                                 properties:
+                                  livenessProbe:
+                                    description: "LivenessProbe allows customization of the liveness probe timing parameters.\nThe probe handler is set by the operator and cannot be overridden."
+                                    properties:
+                                      failureThreshold:
+                                        description: "FailureThreshold is the minimum consecutive failures for the probe\nto be considered failed after having succeeded."
+                                        format: "int32"
+                                        type: "integer"
+                                      initialDelaySeconds:
+                                        description: "InitialDelaySeconds is the number of seconds after the container\nstarts before the probe is initiated."
+                                        format: "int32"
+                                        type: "integer"
+                                      periodSeconds:
+                                        description: "PeriodSeconds is how often (in seconds) to perform the probe."
+                                        format: "int32"
+                                        type: "integer"
+                                      timeoutSeconds:
+                                        description: "TimeoutSeconds is the number of seconds after which the probe times out."
+                                        format: "int32"
+                                        type: "integer"
+                                    type: "object"
                                   name:
                                     description: "Name is an enum which identifies the Prometheus Deployment container by name.\nSupported values are: authn-proxy"
                                     enum:
                                       - "authn-proxy"
                                     type: "string"
+                                  readinessProbe:
+                                    description: "ReadinessProbe allows customization of the readiness probe timing parameters.\nThe probe handler is set by the operator and cannot be overridden."
+                                    properties:
+                                      failureThreshold:
+                                        description: "FailureThreshold is the minimum consecutive failures for the probe\nto be considered failed after having succeeded."
+                                        format: "int32"
+                                        type: "integer"
+                                      initialDelaySeconds:
+                                        description: "InitialDelaySeconds is the number of seconds after the container\nstarts before the probe is initiated."
+                                        format: "int32"
+                                        type: "integer"
+                                      periodSeconds:
+                                        description: "PeriodSeconds is how often (in seconds) to perform the probe."
+                                        format: "int32"
+                                        type: "integer"
+                                      timeoutSeconds:
+                                        description: "TimeoutSeconds is the number of seconds after which the probe times out."
+                                        format: "int32"
+                                        type: "integer"
+                                    type: "object"
                                   resources:
                                     description: "Resources allows customization of limits and requests for compute resources such as cpu and memory.\nIf specified, this overrides the named Prometheus container's resources.\nIf omitted, the Prometheus will use its default value for this container's resources."
                                     properties:

@@ -88,11 +88,9 @@ spec:
                       type: "string"
                   type: "object"
                 disableBinding:
-                  default: false
                   description: "If set, during renewal, skips the matching of presented client identity with the client identity used during login."
                   type: "boolean"
                 enableIdentityAliasMetadata:
-                  default: false
                   description: "If set, metadata of the certificate including the metadata corresponding to allowedMetadataExtensions will be stored in the alias."
                   type: "boolean"
                 name:
@@ -102,6 +100,7 @@ spec:
                 ocspCacheSize:
                   default: 100
                   description: "The size of the OCSP response LRU cache. Note that this cache is used for all configured certificates."
+                  minimum: 0.0
                   type: "integer"
                 path:
                   description: "Path at which to make the configuration.\nThe final path in Vault will be {[spec.authentication.namespace]}/auth/{spec.path}/{metadata.name}/config.\nThe authentication role must have the following capabilities = [ \"create\", \"read\", \"update\", \"delete\"] on that path."
@@ -110,6 +109,7 @@ spec:
                 roleCacheSize:
                   default: 200
                   description: "The size of the role cache. Use -1 to disable role caching."
+                  minimum: -1.0
                   type: "integer"
               type: "object"
             status:

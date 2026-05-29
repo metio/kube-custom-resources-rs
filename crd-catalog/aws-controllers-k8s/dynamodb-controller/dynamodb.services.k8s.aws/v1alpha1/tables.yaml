@@ -89,6 +89,16 @@ spec:
                               type: "string"
                           type: "object"
                         type: "array"
+                      onDemandThroughput:
+                        description: "Sets the maximum number of read and write units for the specified on-demand\ntable. If you use this parameter, you must specify MaxReadRequestUnits, MaxWriteRequestUnits,\nor both."
+                        properties:
+                          maxReadRequestUnits:
+                            format: "int64"
+                            type: "integer"
+                          maxWriteRequestUnits:
+                            format: "int64"
+                            type: "integer"
+                        type: "object"
                       projection:
                         description: "Represents attributes that are copied (projected) from the table into an\nindex. These are in addition to the primary key attributes and index key\nattributes, which are automatically projected."
                         properties:
@@ -157,6 +167,16 @@ spec:
                   x-kubernetes-validations:
                     - message: "Value is immutable once set"
                       rule: "self == oldSelf"
+                onDemandThroughput:
+                  description: "Sets the maximum number of read and write units for the specified table in\non-demand capacity mode. If you use this parameter, you must specify MaxReadRequestUnits,\nMaxWriteRequestUnits, or both."
+                  properties:
+                    maxReadRequestUnits:
+                      format: "int64"
+                      type: "integer"
+                    maxWriteRequestUnits:
+                      format: "int64"
+                      type: "integer"
+                  type: "object"
                 provisionedThroughput:
                   description: "Represents the provisioned throughput settings for a specified table or index.\nThe settings can be modified using the UpdateTable operation.\n\nIf you set BillingMode as PROVISIONED, you must specify this property. If\nyou set BillingMode as PAY_PER_REQUEST, you cannot specify this property.\n\nFor current minimum and maximum provisioned throughput values, see Service,\nAccount, and Table Quotas (https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Limits.html)\nin the Amazon DynamoDB Developer Guide."
                   properties:
@@ -276,6 +296,9 @@ spec:
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."
                       type: "string"
+                    partition:
+                      description: "Partition is the AWS partition in which the resource exists or will exist"
+                      type: "string"
                     region:
                       description: "Region is the AWS region in which the resource exists or will exist."
                       type: "string"
@@ -352,6 +375,16 @@ spec:
                               type: "string"
                           type: "object"
                         type: "array"
+                      onDemandThroughput:
+                        description: "Sets the maximum number of read and write units for the specified on-demand\ntable. If you use this parameter, you must specify MaxReadRequestUnits, MaxWriteRequestUnits,\nor both."
+                        properties:
+                          maxReadRequestUnits:
+                            format: "int64"
+                            type: "integer"
+                          maxWriteRequestUnits:
+                            format: "int64"
+                            type: "integer"
+                        type: "object"
                       projection:
                         description: "Represents attributes that are copied (projected) from the table into an\nindex. These are in addition to the primary key attributes and index key\nattributes, which are automatically projected."
                         properties:

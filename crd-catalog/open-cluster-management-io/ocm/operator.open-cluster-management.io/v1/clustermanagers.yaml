@@ -65,6 +65,35 @@ spec:
                     default:
                       description: "Default includes optional configurations for clustermanager in the Default mode."
                       properties:
+                        addonWebhookConfiguration:
+                          description: "AddonWebhookConfiguration represents the customized webhook-server configuration of addons."
+                          properties:
+                            bindConfiguration:
+                              description: "BindConfiguration represents server bind configuration for the webhook server"
+                              properties:
+                                healthProbePort:
+                                  default: 8000
+                                  description: "HealthProbePort represents the bind port of a webhook-server's healthcheck endpoint. The default value is 8000.\nHealthchecks may be disabled by setting a value less than or equal to 0."
+                                  format: "int32"
+                                  maximum: 65535.0
+                                  type: "integer"
+                                hostNetwork:
+                                  description: "HostNetwork enables running webhook pods in host networking mode.\nThis may be required in some installations, such as EKS with Calico CNI,\nto allow the API Server to communicate with the webhook pods."
+                                  type: "boolean"
+                                metricsPort:
+                                  default: 8080
+                                  description: "MetricsPort represents the bind port for a webhook-server's metric endpoint. The default value is 8080.\nMetrics may be disabled by setting a value less than or equal to 0."
+                                  format: "int32"
+                                  maximum: 65535.0
+                                  type: "integer"
+                                port:
+                                  default: 9443
+                                  description: "Port represents the primary bind port of a server. The default value is 9443."
+                                  format: "int32"
+                                  maximum: 65535.0
+                                  type: "integer"
+                              type: "object"
+                          type: "object"
                         registrationWebhookConfiguration:
                           description: "RegistrationWebhookConfiguration represents the customized webhook-server configuration of registration."
                           properties:
@@ -240,7 +269,7 @@ spec:
                             description: "Key is the taint key that the toleration applies to. Empty means match all taint keys.\nIf the key is empty, operator must be Exists; this combination means to match all values and all keys."
                             type: "string"
                           operator:
-                            description: "Operator represents a key's relationship to the value.\nValid operators are Exists and Equal. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category."
+                            description: "Operator represents a key's relationship to the value.\nValid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category.\nLt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators)."
                             type: "string"
                           tolerationSeconds:
                             description: "TolerationSeconds represents the period of time the toleration (which must be\nof effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,\nit is not set, which means tolerate the taint forever (do not evict). Zero and\nnegative values will be treated as 0 (evict immediately) by the system."
@@ -249,6 +278,28 @@ spec:
                           value:
                             description: "Value is the taint value the toleration matches to.\nIf the operator is Exists, the value should be empty, otherwise just a regular string."
                             type: "string"
+                        type: "object"
+                      type: "array"
+                  type: "object"
+                placementConfiguration:
+                  description: "placementConfiguration contains the configuration of placement"
+                  properties:
+                    featureGates:
+                      description: "FeatureGates represents the list of feature gates for placement\nIf it is set empty, default feature gates will be used.\nIf it is set, featuregate/Foo is an example of one item in FeatureGates:\n  1. If featuregate/Foo does not exist, registration-operator will discard it\n  2. If featuregate/Foo exists and is false by default. It is now possible to set featuregate/Foo=[false|true]\n  3. If featuregate/Foo exists and is true by default. If a cluster-admin upgrading from 1 to 2 wants to continue having featuregate/Foo=false,\n \the can set featuregate/Foo=false before upgrading. Let's say the cluster-admin wants featuregate/Foo=false."
+                      items:
+                        properties:
+                          feature:
+                            description: "Feature is the key of feature gate. e.g. featuregate/Foo."
+                            type: "string"
+                          mode:
+                            default: "Disable"
+                            description: "Mode is either Enable, Disable, \"\" where \"\" is Disable by default.\nIn Enable mode, a valid feature gate `featuregate/Foo` will be set to \"--featuregate/Foo=true\".\nIn Disable mode, a valid feature gate `featuregate/Foo` will be set to \"--featuregate/Foo=false\"."
+                            enum:
+                              - "Enable"
+                              - "Disable"
+                            type: "string"
+                        required:
+                          - "feature"
                         type: "object"
                       type: "array"
                   type: "object"

@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.15.0"
+    controller-gen.kubebuilder.io/version: "v0.18.0"
   name: "nodeptpdevices.ptp.openshift.io"
 spec:
   group: "ptp.openshift.io"
@@ -36,10 +36,81 @@ spec:
             status:
               description: "NodePtpDeviceStatus defines the observed state of NodePtpDevice"
               properties:
+                baseBoardInfo:
+                  description: "BaseBoardInfo contains the base board DMI/SMBIOS information for the node.\nThis includes the base board manufacturer, product name, version, and serial number."
+                  properties:
+                    manufacturer:
+                      description: "Manufacturer is the base board manufacturer from SMBIOS"
+                      type: "string"
+                    productName:
+                      description: "ProductName is the base board product name from SMBIOS"
+                      type: "string"
+                    serialNumber:
+                      description: "SerialNumber is the base board serial number from SMBIOS"
+                      type: "string"
+                    version:
+                      description: "Version is the base board version from SMBIOS"
+                      type: "string"
+                  type: "object"
                 devices:
                   description: "PtpDevice represents a PTP device available in the cluster node.\nThis struct contains information about the device, including its name and profile."
                   items:
                     properties:
+                      hardwareInfo:
+                        description: "HardwareInfo contains detailed hardware identification information for the device."
+                        properties:
+                          deviceID:
+                            description: "DeviceID is the PCI device identifier"
+                            type: "string"
+                          driverVersion:
+                            description: "DriverVersion is the version of the kernel driver in use"
+                            type: "string"
+                          fec:
+                            description: "FEC is the Forward Error Correction mode in use"
+                            type: "string"
+                          firmwareVersion:
+                            description: "FirmwareVersion is the version of the device firmware"
+                            type: "string"
+                          linkSpeed:
+                            description: "LinkSpeed is the negotiated link speed"
+                            type: "string"
+                          linkStatus:
+                            description: "LinkStatus indicates whether the link is up (\"up\") or down (\"down\")"
+                            type: "string"
+                          pciAddress:
+                            description: "PCIAddress is the PCI bus address"
+                            type: "string"
+                          subsystemDeviceID:
+                            description: "SubsystemDeviceID is the PCI subsystem device identifier"
+                            type: "string"
+                          subsystemVendorID:
+                            description: "SubsystemVendorID is the PCI subsystem vendor identifier"
+                            type: "string"
+                          vendorID:
+                            description: "VendorID is the PCI vendor identifier"
+                            type: "string"
+                          vpdIdentifierString:
+                            description: "VPDIdentifierString is the device identifier string from VPD"
+                            type: "string"
+                          vpdManufacturerID:
+                            description: "VPDManufacturerID is the manufacturer identifier from VPD"
+                            type: "string"
+                          vpdPartNumber:
+                            description: "VPDPartNumber is the manufacturer's part number from VPD"
+                            type: "string"
+                          vpdProductName:
+                            description: "VPDProductName is the product name from VPD (V0 field)"
+                            type: "string"
+                          vpdSerialNumber:
+                            description: "VPDSerialNumber is the unique serial number from VPD"
+                            type: "string"
+                          vpdVendorSpecific1:
+                            description: "VPDVendorSpecific1 is vendor-specific data from VPD (V1 field).\nOften contains detailed product identification useful for hardware fingerprinting."
+                            type: "string"
+                          vpdVendorSpecific2:
+                            description: "VPDVendorSpecific2 is vendor-specific data from VPD (V2 field)"
+                            type: "string"
+                        type: "object"
                       name:
                         description: "Name is the name of the PTP device.\nIt is a unique identifier for the device."
                         type: "string"
@@ -69,6 +140,28 @@ spec:
                         type: "string"
                     type: "object"
                   type: "array"
+                systemInfo:
+                  description: "SystemInfo contains the system-level DMI/SMBIOS information for the node.\nThis includes the system manufacturer, product name, version, serial number, SKU, and family."
+                  properties:
+                    family:
+                      description: "Family is the system family from SMBIOS"
+                      type: "string"
+                    manufacturer:
+                      description: "Manufacturer is the system manufacturer from SMBIOS"
+                      type: "string"
+                    productName:
+                      description: "ProductName is the system product name from SMBIOS"
+                      type: "string"
+                    serialNumber:
+                      description: "SerialNumber is the system serial number from SMBIOS"
+                      type: "string"
+                    skuNumber:
+                      description: "SKUNumber is the system SKU number from SMBIOS"
+                      type: "string"
+                    version:
+                      description: "Version is the system version from SMBIOS"
+                      type: "string"
+                  type: "object"
               type: "object"
           type: "object"
       served: true

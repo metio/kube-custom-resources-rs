@@ -4,6 +4,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 # Available Custom Resources
 
 ## extensions.istio.io/v1alpha1
+- `TrafficExtension`
 - `WasmPlugin`
 */
 #[cfg(feature = "v1alpha1")]

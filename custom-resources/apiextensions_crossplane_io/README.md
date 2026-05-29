@@ -15,8 +15,14 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 - `CompositeResourceDefinition`
 - `CompositionRevision`
 - `Composition`
+### apiextensions.crossplane.io/v1alpha1
+- `ManagedResourceActivationPolicy`
+- `ManagedResourceDefinition`
+- `Usage`
 ### apiextensions.crossplane.io/v1beta1
 - `CompositionRevision`
+- `EnvironmentConfig`
+- `Usage`
 ### apiextensions.crossplane.io/v2
 - `CompositeResourceDefinition`
 ### apiextensions.crossplane.io/v2alpha1

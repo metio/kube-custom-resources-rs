@@ -17,6 +17,11 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 - `Gateway`
 - `GRPCRoute`
 - `HTTPRoute`
+- `ListenerSet`
+- `ReferenceGrant`
+- `TCPRoute`
+- `TLSRoute`
+- `UDPRoute`
 ### gateway.networking.k8s.io/v1alpha2
 - `BackendLBPolicy`
 - `GRPCRoute`

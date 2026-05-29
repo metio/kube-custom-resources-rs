@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.17.3"
   name: "frrconfigurations.frrk8s.metallb.io"
 spec:
   group: "frrk8s.metallb.io"
@@ -131,7 +131,7 @@ spec:
                                       rule: "duration(self).getMilliseconds() % 1000 == 0"
                                 disableMP:
                                   default: false
-                                  description: "To set if we want to disable MP BGP that will separate IPv4 and IPv6 route exchanges into distinct BGP sessions.\nDeprecated: DisableMP is deprecated in favor of dualStackAddressFamily."
+                                  description: "DisableMP is no longer used and has no effect.\nUse DualStackAddressFamily instead to enable the neighbor for both IPv4 and IPv6 address families.\nDeprecated: This field is ignored. Use DualStackAddressFamily instead."
                                   type: "boolean"
                                 dualStackAddressFamily:
                                   default: false

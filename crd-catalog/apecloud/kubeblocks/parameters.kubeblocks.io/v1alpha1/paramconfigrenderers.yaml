@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.18.0"
   labels:
     app.kubernetes.io/name: "kubeblocks"
   name: "paramconfigrenderers.parameters.kubeblocks.io"
@@ -31,10 +31,12 @@ spec:
         - jsonPath: ".metadata.creationTimestamp"
           name: "AGE"
           type: "date"
+      deprecated: true
+      deprecationWarning: "This CRD has been deprecated since 1.2.0"
       name: "v1alpha1"
       schema:
         openAPIV3Schema:
-          description: "ParamConfigRenderer is the Schema for the paramconfigrenderers API"
+          description: "Deprecated: retained for API compatibility only.\n\n# ParamConfigRenderer is the Schema for the paramconfigrenderers API"
           properties:
             apiVersion:
               description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
@@ -48,17 +50,17 @@ spec:
               description: "ParamConfigRendererSpec defines the desired state of ParamConfigRenderer"
               properties:
                 componentDef:
-                  description: "Specifies the ComponentDefinition custom resource (CR) that defines the Component's characteristics and behavior."
+                  description: "Specifies the ComponentDefinition custom resource (CR) that defines the Component's characteristics and behavior.\nThe value can represent an exact name, a name prefix, or a regular expression pattern.\n\nFor example:\n\n- \"clickhouse-1.0.0\": Matches the exact name \"clickhouse-1.0.0\"\n- \"clickhouse-1\": Matches all names starting with \"clickhouse-1\"\n- \"^clickhouse-1\\\\.\\\\d+\\\\.\\\\d+$\": Matches all names starting with \"clickhouse-1.\" followed by version numbers."
                   type: "string"
                 configs:
                   description: "Specifies the configuration files."
                   items:
                     properties:
                       fileFormatConfig:
-                        description: "Specifies the format of the configuration file and any associated parameters that are specific to the chosen format.\nSupported formats include `ini`, `xml`, `yaml`, `json`, `hcl`, `dotenv`, `properties`, and `toml`.\n\n\nEach format may have its own set of parameters that can be configured.\nFor instance, when using the `ini` format, you can specify the section name.\n\n\nExample:\n```\nfileFormatConfig:\n format: ini\n iniConfig:\n   sectionName: mysqld\n```"
+                        description: "Specifies the format of the configuration file and any associated parameters that are specific to the chosen format.\nSupported formats include `ini`, `xml`, `yaml`, `json`, `hcl`, `dotenv`, `properties`, and `toml`.\n\nEach format may have its own set of parameters that can be configured.\nFor instance, when using the `ini` format, you can specify the section name.\n\nExample:\n```\nfileFormatConfig:\n format: ini\n iniConfig:\n   sectionName: mysqld\n```"
                         properties:
                           format:
-                            description: "The config file format. Valid values are `ini`, `xml`, `yaml`, `json`,\n`hcl`, `dotenv`, `properties` and `toml`. Each format has its own characteristics and use cases.\n\n\n- ini: is a text-based content with a structure and syntax comprising key–value pairs for properties, reference wiki: https://en.wikipedia.org/wiki/INI_file\n- xml: refers to wiki: https://en.wikipedia.org/wiki/XML\n- yaml: supports for complex data types and structures.\n- json: refers to wiki: https://en.wikipedia.org/wiki/JSON\n- hcl: The HashiCorp Configuration Language (HCL) is a configuration language authored by HashiCorp, reference url: https://www.linode.com/docs/guides/introduction-to-hcl/\n- dotenv: is a plain text file with simple key–value pairs, reference wiki: https://en.wikipedia.org/wiki/Configuration_file#MS-DOS\n- properties: a file extension mainly used in Java, reference wiki: https://en.wikipedia.org/wiki/.properties\n- toml: refers to wiki: https://en.wikipedia.org/wiki/TOML\n- props-plus: a file extension mainly used in Java, supports CamelCase(e.g: brokerMaxConnectionsPerIp)"
+                            description: "The config file format. Valid values are `ini`, `xml`, `yaml`, `json`,\n`hcl`, `dotenv`, `properties` and `toml`. Each format has its own characteristics and use cases.\n\n- ini: is a text-based content with a structure and syntax comprising key–value pairs for properties, reference wiki: https://en.wikipedia.org/wiki/INI_file\n- xml: refers to wiki: https://en.wikipedia.org/wiki/XML\n- yaml: supports for complex data types and structures.\n- json: refers to wiki: https://en.wikipedia.org/wiki/JSON\n- hcl: The HashiCorp Configuration Language (HCL) is a configuration language authored by HashiCorp, reference url: https://www.linode.com/docs/guides/introduction-to-hcl/\n- dotenv: is a plain text file with simple key–value pairs, reference wiki: https://en.wikipedia.org/wiki/Configuration_file#MS-DOS\n- properties: a file extension mainly used in Java, reference wiki: https://en.wikipedia.org/wiki/.properties\n- toml: refers to wiki: https://en.wikipedia.org/wiki/TOML\n- props-plus: a file extension mainly used in Java, supports CamelCase(e.g: brokerMaxConnectionsPerIp)"
                             enum:
                               - "xml"
                               - "ini"
@@ -86,9 +88,9 @@ spec:
                         description: "Specifies the config file name in the config template."
                         type: "string"
                       reRenderResourceTypes:
-                        description: "Specifies whether the configuration needs to be re-rendered after v-scale or h-scale operations to reflect changes.\n\n\nIn some scenarios, the configuration may need to be updated to reflect the changes in resource allocation\nor cluster topology. Examples:\n\n\n- Redis: adjust maxmemory after v-scale operation.\n- MySQL: increase max connections after v-scale operation.\n- Zookeeper: update zoo.cfg with new node addresses after h-scale operation."
+                        description: "Specifies whether the configuration needs to be re-rendered after v-scale or h-scale operations to reflect changes.\n\nIn some scenarios, the configuration may need to be updated to reflect the changes in resource allocation\nor cluster topology. Examples:\n\n- Redis: adjust maxmemory after v-scale operation.\n- MySQL: increase max connections after v-scale operation.\n- Zookeeper: update zoo.cfg with new node addresses after h-scale operation."
                         items:
-                          description: "RerenderResourceType defines the resource requirements for a component."
+                          description: "Deprecated: It is retained for API compatibility with existing ParamConfigRenderer objects.\n\nRerenderResourceType defines the resource requirements for a component."
                           enum:
                             - "vscale"
                             - "hscale"

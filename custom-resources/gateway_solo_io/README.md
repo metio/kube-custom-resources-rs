@@ -14,7 +14,10 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 ### gateway.solo.io/v1
 - `Gateway`
 - `MatchableHttpGateway`
+- `HttpListenerOption`
+- `ListenerOption`
 - `RouteOption`
 - `RouteTable`
+- `MatchableTcpGateway`
 - `VirtualHostOption`
 - `VirtualService`

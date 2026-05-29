@@ -294,6 +294,18 @@ spec:
                     kubeURL:
                       description: "API Server end-point"
                       type: "string"
+                    pauseOnChunksOverlimit:
+                      description: "Specifies if the input plugin should be paused (stop ingesting new data) when the storage.max_chunks_up value is reached."
+                      enum:
+                        - "on"
+                        - "off"
+                      type: "string"
+                    storageType:
+                      description: "Specifies the buffering mechanism for use with the input plugin, requires storage.path to be set in the service."
+                      enum:
+                        - "filesystem"
+                        - "memory"
+                      type: "string"
                     tag:
                       description: "Tag name associated to all records coming from this plugin."
                       type: "string"
@@ -585,6 +597,9 @@ spec:
                         - "on"
                         - "off"
                       type: "string"
+                    storagePath:
+                      description: "Set an optional location in the file system to store streams and chunks of data.\nIf this parameter is not set, Input plugins can only use in-memory buffering."
+                      type: "string"
                     storageType:
                       description: "Specify the buffering mechanism to use. It can be memory or filesystem"
                       enum:
@@ -716,6 +731,9 @@ spec:
                     skipLongLines:
                       description: "When a monitored file reach it buffer capacity due to a very long line (Buffer_Max_Size),\nthe default behavior is to stop monitoring that file.\nSkip_Long_Lines alter that behavior and instruct Fluent Bit to skip long lines\nand continue processing other lines that fits into the buffer size."
                       type: "boolean"
+                    storagePath:
+                      description: "Set an optional location in the file system to store streams and chunks of data.\nIf this parameter is not set, Input plugins can only use in-memory buffering."
+                      type: "string"
                     storageType:
                       description: "Specify the buffering mechanism to use. It can be memory or filesystem"
                       enum:

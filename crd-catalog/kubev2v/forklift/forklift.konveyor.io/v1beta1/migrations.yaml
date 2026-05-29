@@ -207,6 +207,12 @@ spec:
                       deleteVmOnFailMigration:
                         description: "DeleteVmOnFailMigration controls whether the target VM created by this Plan is deleted when a migration fails.\nWhen true and the migration fails after the target VM has been created, the controller\nwill delete the target VM (and related target-side resources) during failed-migration cleanup\nand when the Plan is deleted. When false (default), the target VM is preserved to aid\ntroubleshooting. The source VM is never modified.\n\nNote: If the Plan-level option is set to true, the VM-level option will be ignored."
                         type: "boolean"
+                      detectedBootDisk:
+                        description: "Boot disk index (0-based) detected by virt-v2v. nil means undetected."
+                        type: "integer"
+                      enableNestedVirtualization:
+                        description: "EnableNestedVirtualization controls whether nested virtualization CPU features (vmx/svm)\nare requested on the target VM. This overrides both the plan-level setting and the\nsource VM's configuration.\n\n- nil (default): Falls back to the plan-level enableNestedVirtualization value.\n- true: Request nested virtualization for this VM. CPU features vmx and svm are added\n  with policy \"optional\" -- the VM will have nested virtualization only if the host\n  hardware supports it. This is a best-effort hint, not a guarantee.\n- false: Explicitly disable nested virtualization for this VM. CPU features vmx and svm\n  are added with policy \"disable\", preventing nested virtualization regardless of host\n  capability.\n\nBoth vmx and svm are added together so the VM is portable across Intel and AMD hosts.\nThe \"optional\" policy activates only the feature the host CPU supports; the other is ignored."
+                        type: "boolean"
                       error:
                         description: "Errors"
                         properties:
@@ -294,6 +300,9 @@ spec:
                             type: "string"
                         type: "object"
                         x-kubernetes-map-type: "atomic"
+                      migrateSharedDisks:
+                        description: "MigrateSharedDisks controls whether shared disks are included in the migration for this VM.\nWhen nil (default), the plan-level migrateSharedDisks value is used.\nWhen explicitly set to true, shared disks are migrated for this VM.\nWhen explicitly set to false, shared disks are skipped for this VM."
+                        type: "boolean"
                       name:
                         description: "An object Name.\nvsphere:\n  A qualified name."
                         type: "string"
@@ -444,6 +453,9 @@ spec:
                       pvcNameTemplate:
                         description: "PVCNameTemplate is a template for generating PVC names for VM disks.\nGenerated names must be valid DNS-1123 labels (lowercase alphanumerics, '-' allowed, max 63 chars).\nIt follows Go template syntax and has access to provider-specific variables.\n\nCommon variables (all providers):\n  - .VmName: name of the VM in the source cluster (original source name)\n  - .TargetVmName: final VM name in the target cluster (may equal .VmName if no rename/normalization)\n  - .PlanName: name of the migration plan\n  - .DiskIndex: initial volume index of the disk\n\nVMware (vSphere) specific variables:\n  - .WinDriveLetter: Windows drive letter (lowercase, if applicable, e.g. \"c\", requires guest agent)\n  - .RootDiskIndex: index of the root disk\n  - .Shared: true if the volume is shared by multiple VMs, false otherwise\n  - .FileName: name of the file in the source provider (filename includes the .vmdk suffix)\n\nOpenShift specific variables:\n  - .SourcePVCName: name of the PVC in the source cluster\n  - .SourcePVCNamespace: namespace of the PVC in the source cluster\n\nNote:\n  This template overrides the plan level template.\nExamples:\n  \"{{.TargetVmName}}-disk-{{.DiskIndex}}\"\n  \"{{if eq .DiskIndex .RootDiskIndex}}root{{else}}data{{end}}-{{.DiskIndex}}\" (VMware)\n  \"{{.TargetVmName}}-{{.SourcePVCName}}\" (OpenShift)\nSee:\n\t https://github.com/kubev2v/forklift/tree/main/pkg/templateutil for template functions."
                         type: "string"
+                      rdmAsLun:
+                        description: "RDMAsLun controls whether RDM (Raw Device Mapping) disks from VMware should be\nmapped as LUN devices in the target KubeVirt VM instead of regular disk devices.\nWhen nil (default), the plan-level rdmAsLun value is used.\nWhen explicitly set to true, RDM disks are attached using lun: {} for this VM.\nWhen explicitly set to false, RDM disks are attached as regular disks for this VM."
+                        type: "boolean"
                       restorePowerState:
                         description: "Source VM power state before migration."
                         type: "string"

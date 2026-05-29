@@ -16,7 +16,7 @@ spec:
     - name: "v1"
       schema:
         openAPIV3Schema:
-          description: "ImageSet is used to specify image digests for the images that the operator deploys.\nThe name of the ImageSet is expected to be in the format `<variant>-<release>`.\nThe `variant` used is `enterprise` if the InstallationSpec Variant is\n`TigeraSecureEnterprise` otherwise it is `calico`.\nThe `release` must match the version of the variant that the operator is built to deploy,\nthis version can be obtained by passing the `--version` flag to the operator binary."
+          description: "ImageSet is used to specify image digests for the images that the operator deploys.\nThe name of the ImageSet is expected to be in the format `<variant>-<release>`.\nThe `variant` used is `enterprise` if the InstallationSpec Variant is\n`CalicoEnterprise` or `TigeraSecureEnterprise`, otherwise it is `calico`.\nThe `release` must match the version of the variant that the operator is built to deploy,\nthis version can be obtained by passing the `--version` flag to the operator binary."
           properties:
             apiVersion:
               description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"

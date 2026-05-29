@@ -6,7 +6,7 @@ metadata:
   labels:
     app.kubernetes.io/instance: "longhorn"
     app.kubernetes.io/name: "longhorn"
-    app.kubernetes.io/version: "v1.9.0-dev"
+    app.kubernetes.io/version: "v1.12.0-dev"
     longhorn-manager: ""
   name: "sharemanagers.longhorn.io"
 spec:
@@ -28,6 +28,10 @@ spec:
         - description: "The node that the share manager is owned by"
           jsonPath: ".status.ownerID"
           name: "Node"
+          type: "string"
+        - description: "The current image of the share manager"
+          jsonPath: ".status.currentImage"
+          name: "Image"
           type: "string"
         - jsonPath: ".metadata.creationTimestamp"
           name: "Age"
@@ -55,6 +59,9 @@ spec:
             status:
               description: "ShareManagerStatus defines the observed state of the Longhorn share manager"
               properties:
+                currentImage:
+                  description: "The image currently used by the share manager pod"
+                  type: "string"
                 endpoint:
                   description: "NFS endpoint that can access the mounted filesystem of the volume"
                   type: "string"

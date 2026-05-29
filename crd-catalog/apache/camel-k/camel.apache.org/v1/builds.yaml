@@ -75,7 +75,7 @@ spec:
                       description: "The node selector for the builder pod. Only used for `pod` strategy"
                       type: "object"
                     operatorNamespace:
-                      description: "The namespace where to run the builder Pod (must be the same of the operator in charge of this Build reconciliation)."
+                      description: "The namespace where to run the builder Pod (must be the same of the operator in charge of this Build reconciliation).\n\nDeprecated: no longer in use."
                       type: "string"
                     orderStrategy:
                       description: "the build order strategy to adopt"
@@ -143,7 +143,7 @@ spec:
                                 description: "The node selector for the builder pod. Only used for `pod` strategy"
                                 type: "object"
                               operatorNamespace:
-                                description: "The namespace where to run the builder Pod (must be the same of the operator in charge of this Build reconciliation)."
+                                description: "The namespace where to run the builder Pod (must be the same of the operator in charge of this Build reconciliation).\n\nDeprecated: no longer in use."
                                 type: "string"
                               orderStrategy:
                                 description: "the build order strategy to adopt"
@@ -240,7 +240,7 @@ spec:
                                 description: "The node selector for the builder pod. Only used for `pod` strategy"
                                 type: "object"
                               operatorNamespace:
-                                description: "The namespace where to run the builder Pod (must be the same of the operator in charge of this Build reconciliation)."
+                                description: "The namespace where to run the builder Pod (must be the same of the operator in charge of this Build reconciliation).\n\nDeprecated: no longer in use."
                                 type: "string"
                               orderStrategy:
                                 description: "the build order strategy to adopt"
@@ -284,6 +284,9 @@ spec:
                               commit:
                                 description: "the git commit (full SHA) to check out"
                                 type: "string"
+                              path:
+                                description: "the path you want to use for your project. If provided, it must be an existing directory on the Git repository."
+                                type: "string"
                               secret:
                                 description: "the Kubernetes secret where token is stored"
                                 type: "string"
@@ -318,12 +321,12 @@ spec:
                                   x-kubernetes-map-type: "atomic"
                                 type: "array"
                               cliOptions:
-                                description: "The CLI options that are appended to the list of arguments for Maven commands,\ne.g., `-V,--no-transfer-progress,-Dstyle.color=never`.\nSee https://maven.apache.org/ref/3.8.4/maven-embedder/cli.html."
+                                description: "The CLI options that are appended to the list of arguments for Maven commands,\ne.g., `-V,--no-transfer-progress,-Dstyle.color=never`.\nSee https://maven.apache.org/ref/3.9.14/maven-embedder/cli.html."
                                 items:
                                   type: "string"
                                 type: "array"
                               extension:
-                                description: "The Maven build extensions.\nSee https://maven.apache.org/guides/mini/guide-using-extensions.html."
+                                description: "Deprecated: no longer in use."
                                 items:
                                   description: "MavenArtifact defines a GAV (Group:Artifact:Type:Version:Classifier) Maven artifact."
                                   properties:
@@ -446,7 +449,7 @@ spec:
                                   type: "object"
                                 type: "array"
                               servers:
-                                description: "Servers (auth)"
+                                description: "Servers (auth)\n\nDeprecated: no longer in use."
                                 items:
                                   description: "Server see link:https://maven.apache.org/settings.html[Maven settings]."
                                   properties:
@@ -745,7 +748,7 @@ spec:
                                 description: "The node selector for the builder pod. Only used for `pod` strategy"
                                 type: "object"
                               operatorNamespace:
-                                description: "The namespace where to run the builder Pod (must be the same of the operator in charge of this Build reconciliation)."
+                                description: "The namespace where to run the builder Pod (must be the same of the operator in charge of this Build reconciliation).\n\nDeprecated: no longer in use."
                                 type: "string"
                               orderStrategy:
                                 description: "the build order strategy to adopt"
@@ -815,7 +818,7 @@ spec:
                                 description: "The node selector for the builder pod. Only used for `pod` strategy"
                                 type: "object"
                               operatorNamespace:
-                                description: "The namespace where to run the builder Pod (must be the same of the operator in charge of this Build reconciliation)."
+                                description: "The namespace where to run the builder Pod (must be the same of the operator in charge of this Build reconciliation).\n\nDeprecated: no longer in use."
                                 type: "string"
                               orderStrategy:
                                 description: "the build order strategy to adopt"
@@ -910,7 +913,7 @@ spec:
                                 description: "The node selector for the builder pod. Only used for `pod` strategy"
                                 type: "object"
                               operatorNamespace:
-                                description: "The namespace where to run the builder Pod (must be the same of the operator in charge of this Build reconciliation)."
+                                description: "The namespace where to run the builder Pod (must be the same of the operator in charge of this Build reconciliation).\n\nDeprecated: no longer in use."
                                 type: "string"
                               orderStrategy:
                                 description: "the build order strategy to adopt"
@@ -1004,7 +1007,7 @@ spec:
                                 description: "The node selector for the builder pod. Only used for `pod` strategy"
                                 type: "object"
                               operatorNamespace:
-                                description: "The namespace where to run the builder Pod (must be the same of the operator in charge of this Build reconciliation)."
+                                description: "The namespace where to run the builder Pod (must be the same of the operator in charge of this Build reconciliation).\n\nDeprecated: no longer in use."
                                 type: "string"
                               orderStrategy:
                                 description: "the build order strategy to adopt"
@@ -1048,6 +1051,9 @@ spec:
                               commit:
                                 description: "the git commit (full SHA) to check out"
                                 type: "string"
+                              path:
+                                description: "the path you want to use for your project. If provided, it must be an existing directory on the Git repository."
+                                type: "string"
                               secret:
                                 description: "the Kubernetes secret where token is stored"
                                 type: "string"
@@ -1082,12 +1088,12 @@ spec:
                                   x-kubernetes-map-type: "atomic"
                                 type: "array"
                               cliOptions:
-                                description: "The CLI options that are appended to the list of arguments for Maven commands,\ne.g., `-V,--no-transfer-progress,-Dstyle.color=never`.\nSee https://maven.apache.org/ref/3.8.4/maven-embedder/cli.html."
+                                description: "The CLI options that are appended to the list of arguments for Maven commands,\ne.g., `-V,--no-transfer-progress,-Dstyle.color=never`.\nSee https://maven.apache.org/ref/3.9.14/maven-embedder/cli.html."
                                 items:
                                   type: "string"
                                 type: "array"
                               extension:
-                                description: "The Maven build extensions.\nSee https://maven.apache.org/guides/mini/guide-using-extensions.html."
+                                description: "Deprecated: no longer in use."
                                 items:
                                   description: "MavenArtifact defines a GAV (Group:Artifact:Type:Version:Classifier) Maven artifact."
                                   properties:
@@ -1210,7 +1216,7 @@ spec:
                                   type: "object"
                                 type: "array"
                               servers:
-                                description: "Servers (auth)"
+                                description: "Servers (auth)\n\nDeprecated: no longer in use."
                                 items:
                                   description: "Server see link:https://maven.apache.org/settings.html[Maven settings]."
                                   properties:
@@ -1504,7 +1510,7 @@ spec:
                                 description: "The node selector for the builder pod. Only used for `pod` strategy"
                                 type: "object"
                               operatorNamespace:
-                                description: "The namespace where to run the builder Pod (must be the same of the operator in charge of this Build reconciliation)."
+                                description: "The namespace where to run the builder Pod (must be the same of the operator in charge of this Build reconciliation).\n\nDeprecated: no longer in use."
                                 type: "string"
                               orderStrategy:
                                 description: "the build order strategy to adopt"
@@ -1592,7 +1598,7 @@ spec:
                                 description: "The node selector for the builder pod. Only used for `pod` strategy"
                                 type: "object"
                               operatorNamespace:
-                                description: "The namespace where to run the builder Pod (must be the same of the operator in charge of this Build reconciliation)."
+                                description: "The namespace where to run the builder Pod (must be the same of the operator in charge of this Build reconciliation).\n\nDeprecated: no longer in use."
                                 type: "string"
                               orderStrategy:
                                 description: "the build order strategy to adopt"

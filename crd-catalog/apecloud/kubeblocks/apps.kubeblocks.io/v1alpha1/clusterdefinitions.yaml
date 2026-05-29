@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.18.0"
   labels:
     app.kubernetes.io/name: "kubeblocks"
   name: "clusterdefinitions.apps.kubeblocks.io"
@@ -38,7 +38,7 @@ spec:
       name: "v1alpha1"
       schema:
         openAPIV3Schema:
-          description: "ClusterDefinition defines the topology for databases or storage systems,\noffering a variety of topological configurations to meet diverse deployment needs and scenarios.\n\n\nIt includes a list of Components, each linked to a ComponentDefinition, which enhances reusability and reduce redundancy.\nFor example, widely used components such as etcd and Zookeeper can be defined once and reused across multiple ClusterDefinitions,\nsimplifying the setup of new systems.\n\n\nAdditionally, ClusterDefinition also specifies the sequence of startup, upgrade, and shutdown for Components,\nensuring a controlled and predictable management of component lifecycles."
+          description: "ClusterDefinition defines the topology for databases or storage systems,\noffering a variety of topological configurations to meet diverse deployment needs and scenarios.\n\nIt includes a list of Components, each linked to a ComponentDefinition, which enhances reusability and reduce redundancy.\nFor example, widely used components such as etcd and Zookeeper can be defined once and reused across multiple ClusterDefinitions,\nsimplifying the setup of new systems.\n\nAdditionally, ClusterDefinition also specifies the sequence of startup, upgrade, and shutdown for Components,\nensuring a controlled and predictable management of component lifecycles."
           properties:
             apiVersion:
               description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
@@ -52,9 +52,9 @@ spec:
               description: "ClusterDefinitionSpec defines the desired state of ClusterDefinition."
               properties:
                 componentDefs:
-                  description: "Provides the definitions for the cluster components.\n\n\nDeprecated since v0.9.\nComponents should now be individually defined using ComponentDefinition and\ncollectively referenced via `topology.components`.\nThis field is maintained for backward compatibility and its use is discouraged.\nExisting usage should be updated to the current preferred approach to avoid compatibility issues in future releases."
+                  description: "Provides the definitions for the cluster components.\n\nDeprecated since v0.9.\nComponents should now be individually defined using ComponentDefinition and\ncollectively referenced via `topology.components`.\nThis field is maintained for backward compatibility and its use is discouraged.\nExisting usage should be updated to the current preferred approach to avoid compatibility issues in future releases."
                   items:
-                    description: "ClusterComponentDefinition defines a Component within a ClusterDefinition but is deprecated and\nhas been replaced by ComponentDefinition.\n\n\nDeprecated: Use ComponentDefinition instead. This type is deprecated as of version 0.8."
+                    description: "ClusterComponentDefinition defines a Component within a ClusterDefinition but is deprecated and\nhas been replaced by ComponentDefinition.\n\nDeprecated: Use ComponentDefinition instead. This type is deprecated as of version 0.8."
                     properties:
                       characterType:
                         description: "Defines well-known database component name, such as mongos(mongodb), proxy(redis), mariadb(mysql)."
@@ -62,7 +62,7 @@ spec:
                       componentDefRef:
                         description: "Used to inject values from other components into the current component. Values will be saved and updated in a\nconfigmap and mounted to the current component."
                         items:
-                          description: "ComponentDefRef is used to select the component and its fields to be referenced.\n\n\nDeprecated since v0.8."
+                          description: "ComponentDefRef is used to select the component and its fields to be referenced.\n\nDeprecated since v0.8."
                           properties:
                             componentDefName:
                               description: "The name of the componentDef to be selected."
@@ -70,7 +70,7 @@ spec:
                             componentRefEnv:
                               description: "The values that are to be injected as environment variables into each component."
                               items:
-                                description: "ComponentRefEnv specifies name and value of an env.\n\n\nDeprecated since v0.8."
+                                description: "ComponentRefEnv specifies name and value of an env.\n\nDeprecated since v0.8."
                                 properties:
                                   name:
                                     description: "The name of the env, it must be a C identifier."
@@ -83,11 +83,11 @@ spec:
                                     description: "The source from which the value of the env."
                                     properties:
                                       fieldPath:
-                                        description: "The jsonpath of the source to select when the Type is `FieldRef`.\nTwo objects are registered in the jsonpath: `componentDef` and `components`:\n\n\n- `componentDef` is the component definition object specified in `componentRef.componentDefName`.\n- `components` are the component list objects referring to the component definition object."
+                                        description: "The jsonpath of the source to select when the Type is `FieldRef`.\nTwo objects are registered in the jsonpath: `componentDef` and `components`:\n\n- `componentDef` is the component definition object specified in `componentRef.componentDefName`.\n- `components` are the component list objects referring to the component definition object."
                                         type: "string"
                                       format:
                                         default: "=\"$POD_FQDN\""
-                                        description: "Defines the format of each headless service address.\nThree builtin variables can be used as placeholders: `$POD_ORDINAL`, `$POD_FQDN`, `$POD_NAME`\n\n\n- `$POD_ORDINAL` represents the ordinal of the pod.\n- `$POD_FQDN` represents the fully qualified domain name of the pod.\n- `$POD_NAME` represents the name of the pod."
+                                        description: "Defines the format of each headless service address.\nThree builtin variables can be used as placeholders: `$POD_ORDINAL`, `$POD_FQDN`, `$POD_NAME`\n\n- `$POD_ORDINAL` represents the ordinal of the pod.\n- `$POD_FQDN` represents the fully qualified domain name of the pod.\n- `$POD_NAME` represents the name of the pod."
                                         type: "string"
                                       joinWith:
                                         default: ","
@@ -123,6 +123,7 @@ spec:
                                 - enum:
                                     - "Ignore"
                                     - "Fail"
+                              default: "Ignore"
                               description: "Defines the policy to be followed in case of a failure in finding the component."
                               type: "string"
                           required:
@@ -137,7 +138,7 @@ spec:
                         items:
                           properties:
                             asEnvFrom:
-                              description: "Specifies the containers to inject the ConfigMap parameters as environment variables.\n\n\nThis is useful when application images accept parameters through environment variables and\ngenerate the final configuration file in the startup script based on these variables.\n\n\nThis field allows users to specify a list of container names, and KubeBlocks will inject the environment\nvariables converted from the ConfigMap into these designated containers. This provides a flexible way to\npass the configuration items from the ConfigMap to the container without modifying the image.\n\n\nDeprecated: `asEnvFrom` has been deprecated since 0.9.0 and will be removed in 0.10.0.\nUse `injectEnvTo` instead."
+                              description: "Specifies the containers to inject the ConfigMap parameters as environment variables.\n\nThis is useful when application images accept parameters through environment variables and\ngenerate the final configuration file in the startup script based on these variables.\n\nThis field allows users to specify a list of container names, and KubeBlocks will inject the environment\nvariables converted from the ConfigMap into these designated containers. This provides a flexible way to\npass the configuration items from the ConfigMap to the container without modifying the image.\n\nDeprecated: `asEnvFrom` has been deprecated since 0.9.0 and will be removed in 0.10.0.\nUse `injectEnvTo` instead."
                               items:
                                 type: "string"
                               type: "array"
@@ -151,23 +152,23 @@ spec:
                               pattern: "^[a-z0-9]([a-z0-9\\.\\-]*[a-z0-9])?$"
                               type: "string"
                             defaultMode:
-                              description: "The operator attempts to set default file permissions for scripts (0555) and configurations (0444).\nHowever, certain database engines may require different file permissions.\nYou can specify the desired file permissions here.\n\n\nMust be specified as an octal value between 0000 and 0777 (inclusive),\nor as a decimal value between 0 and 511 (inclusive).\nYAML supports both octal and decimal values for file permissions.\n\n\nPlease note that this setting only affects the permissions of the files themselves.\nDirectories within the specified path are not impacted by this setting.\nIt's important to be aware that this setting might conflict with other options\nthat influence the file mode, such as fsGroup.\nIn such cases, the resulting file mode may have additional bits set.\nRefers to documents of k8s.ConfigMapVolumeSource.defaultMode for more information."
+                              description: "The operator attempts to set default file permissions for scripts (0555) and configurations (0444).\nHowever, certain database engines may require different file permissions.\nYou can specify the desired file permissions here.\n\nMust be specified as an octal value between 0000 and 0777 (inclusive),\nor as a decimal value between 0 and 511 (inclusive).\nYAML supports both octal and decimal values for file permissions.\n\nPlease note that this setting only affects the permissions of the files themselves.\nDirectories within the specified path are not impacted by this setting.\nIt's important to be aware that this setting might conflict with other options\nthat influence the file mode, such as fsGroup.\nIn such cases, the resulting file mode may have additional bits set.\nRefers to documents of k8s.ConfigMapVolumeSource.defaultMode for more information."
                               format: "int32"
                               type: "integer"
                             injectEnvTo:
-                              description: "Specifies the containers to inject the ConfigMap parameters as environment variables.\n\n\nThis is useful when application images accept parameters through environment variables and\ngenerate the final configuration file in the startup script based on these variables.\n\n\nThis field allows users to specify a list of container names, and KubeBlocks will inject the environment\nvariables converted from the ConfigMap into these designated containers. This provides a flexible way to\npass the configuration items from the ConfigMap to the container without modifying the image."
+                              description: "Specifies the containers to inject the ConfigMap parameters as environment variables.\n\nThis is useful when application images accept parameters through environment variables and\ngenerate the final configuration file in the startup script based on these variables.\n\nThis field allows users to specify a list of container names, and KubeBlocks will inject the environment\nvariables converted from the ConfigMap into these designated containers. This provides a flexible way to\npass the configuration items from the ConfigMap to the container without modifying the image."
                               items:
                                 type: "string"
                               type: "array"
                               x-kubernetes-list-type: "set"
                             keys:
-                              description: "Specifies the configuration files within the ConfigMap that support dynamic updates.\n\n\nA configuration template (provided in the form of a ConfigMap) may contain templates for multiple\nconfiguration files.\nEach configuration file corresponds to a key in the ConfigMap.\nSome of these configuration files may support dynamic modification and reloading without requiring\na pod restart.\n\n\nIf empty or omitted, all configuration files in the ConfigMap are assumed to support dynamic updates,\nand ConfigConstraint applies to all keys."
+                              description: "Specifies the configuration files within the ConfigMap that support dynamic updates.\n\nA configuration template (provided in the form of a ConfigMap) may contain templates for multiple\nconfiguration files.\nEach configuration file corresponds to a key in the ConfigMap.\nSome of these configuration files may support dynamic modification and reloading without requiring\na pod restart.\n\nIf empty or omitted, all configuration files in the ConfigMap are assumed to support dynamic updates,\nand ConfigConstraint applies to all keys."
                               items:
                                 type: "string"
                               type: "array"
                               x-kubernetes-list-type: "set"
                             legacyRenderedConfigSpec:
-                              description: "Specifies the secondary rendered config spec for pod-specific customization.\n\n\nThe template is rendered inside the pod (by the \"config-manager\" sidecar container) and merged with the main\ntemplate's render result to generate the final configuration file.\n\n\nThis field is intended to handle scenarios where different pods within the same Component have\nvarying configurations. It allows for pod-specific customization of the configuration.\n\n\nNote: This field will be deprecated in future versions, and the functionality will be moved to\n`cluster.spec.componentSpecs[*].instances[*]`."
+                              description: "Specifies the secondary rendered config spec for pod-specific customization.\n\nThe template is rendered inside the pod (by the \"config-manager\" sidecar container) and merged with the main\ntemplate's render result to generate the final configuration file.\n\nThis field is intended to handle scenarios where different pods within the same Component have\nvarying configurations. It allows for pod-specific customization of the configuration.\n\nNote: This field will be deprecated in future versions, and the functionality will be moved to\n`cluster.spec.componentSpecs[*].instances[*]`."
                               properties:
                                 namespace:
                                   default: "default"
@@ -201,7 +202,7 @@ spec:
                               pattern: "^[a-z0-9]([a-z0-9\\-]*[a-z0-9])?$"
                               type: "string"
                             reRenderResourceTypes:
-                              description: "Specifies whether the configuration needs to be re-rendered after v-scale or h-scale operations to reflect changes.\n\n\nIn some scenarios, the configuration may need to be updated to reflect the changes in resource allocation\nor cluster topology. Examples:\n\n\n- Redis: adjust maxmemory after v-scale operation.\n- MySQL: increase max connections after v-scale operation.\n- Zookeeper: update zoo.cfg with new node addresses after h-scale operation."
+                              description: "Specifies whether the configuration needs to be re-rendered after v-scale or h-scale operations to reflect changes.\n\nIn some scenarios, the configuration may need to be updated to reflect the changes in resource allocation\nor cluster topology. Examples:\n\n- Redis: adjust maxmemory after v-scale operation.\n- MySQL: increase max connections after v-scale operation.\n- Zookeeper: update zoo.cfg with new node addresses after h-scale operation."
                               items:
                                 description: "RerenderResourceType defines the resource requirements for a component."
                                 enum:
@@ -311,7 +312,7 @@ spec:
                               - "name"
                             type: "object"
                           llPodManagementPolicy:
-                            description: "Controls the creation of pods during initial scale up, replacement of pods on nodes, and scaling down.\n\n\n- `OrderedReady`: Creates pods in increasing order (pod-0, then pod-1, etc). The controller waits until each pod\nis ready before continuing. Pods are removed in reverse order when scaling down.\n- `Parallel`: Creates pods in parallel to match the desired scale without waiting. All pods are deleted at once\nwhen scaling down."
+                            description: "Controls the creation of pods during initial scale up, replacement of pods on nodes, and scaling down.\n\n- `OrderedReady`: Creates pods in increasing order (pod-0, then pod-1, etc). The controller waits until each pod\nis ready before continuing. Pods are removed in reverse order when scaling down.\n- `Parallel`: Creates pods in parallel to match the desired scale without waiting. All pods are deleted at once\nwhen scaling down."
                             type: "string"
                           llUpdateStrategy:
                             description: "Specifies the low-level StatefulSetUpdateStrategy to be used when updating Pods in the StatefulSet upon a\nrevision to the Template.\n`UpdateStrategy` will be ignored if this is provided."
@@ -336,7 +337,7 @@ spec:
                             type: "object"
                           updateStrategy:
                             default: "Serial"
-                            description: "Specifies the strategy for updating Pods.\nFor workloadType=`Consensus`, the update strategy can be one of the following:\n\n\n- `Serial`: Updates Members sequentially to minimize component downtime.\n- `BestEffortParallel`: Updates Members in parallel to minimize component write downtime. Majority remains online\nat all times.\n- `Parallel`: Forces parallel updates."
+                            description: "Specifies the strategy for updating Pods.\nFor workloadType=`Consensus`, the update strategy can be one of the following:\n\n- `Serial`: Updates Members sequentially to minimize component downtime.\n- `BestEffortParallel`: Updates Members in parallel to minimize component write downtime. Majority remains online\nat all times.\n- `Parallel`: Forces parallel updates."
                             enum:
                               - "Serial"
                               - "BestEffortParallel"
@@ -375,6 +376,7 @@ spec:
                               type: "string"
                           required:
                             - "key"
+                            - "resources"
                             - "value"
                           type: "object"
                         type: "array"
@@ -411,7 +413,7 @@ spec:
                             type: "string"
                           type:
                             default: "None"
-                            description: "Determines the data synchronization method when a component scales out.\nThe policy can be one of the following: {None, CloneVolume}. The default policy is `None`.\n\n\n- `None`: This is the default policy. It creates an empty volume without data cloning.\n- `CloneVolume`: This policy clones data to newly scaled pods. It first tries to use a volume snapshot.\n  If volume snapshot is not enabled, it will attempt to use a backup tool. If neither method works, it will report an error.\n- `Snapshot`: This policy is deprecated and is an alias for CloneVolume."
+                            description: "Determines the data synchronization method when a component scales out.\nThe policy can be one of the following: {None, CloneVolume}. The default policy is `None`.\n\n- `None`: This is the default policy. It creates an empty volume without data cloning.\n- `CloneVolume`: This policy clones data to newly scaled pods. It first tries to use a volume snapshot.\n  If volume snapshot is not enabled, it will attempt to use a backup tool. If neither method works, it will report an error.\n- `Snapshot`: This policy is deprecated and is an alias for CloneVolume."
                             enum:
                               - "None"
                               - "CloneVolume"
@@ -426,7 +428,7 @@ spec:
                         items:
                           properties:
                             filePathPattern:
-                              description: "Specifies the paths or patterns identifying where the log files are stored.\nThis field allows the system to locate and manage log files effectively.\n\n\nExamples:\n\n\n- /home/postgres/pgdata/pgroot/data/log/postgresql-*\n- /data/mysql/log/mysqld-error.log"
+                              description: "Specifies the paths or patterns identifying where the log files are stored.\nThis field allows the system to locate and manage log files effectively.\n\nExamples:\n\n- /home/postgres/pgdata/pgroot/data/log/postgresql-*\n- /data/mysql/log/mysqld-error.log"
                               maxLength: 4096
                               type: "string"
                             name:
@@ -1037,7 +1039,7 @@ spec:
                                                 description: "The key to select."
                                                 type: "string"
                                               name:
-                                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                                 type: "string"
                                               optional:
                                                 description: "Specify whether the ConfigMap or its key must be defined"
@@ -1086,7 +1088,7 @@ spec:
                                                 description: "The key of the secret to select from.  Must be a valid secret key."
                                                 type: "string"
                                               name:
-                                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                                 type: "string"
                                               optional:
                                                 description: "Specify whether the Secret or its key must be defined"
@@ -1109,7 +1111,7 @@ spec:
                                         description: "The ConfigMap to select from"
                                         properties:
                                           name:
-                                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                             type: "string"
                                           optional:
                                             description: "Specify whether the ConfigMap must be defined"
@@ -1123,7 +1125,7 @@ spec:
                                         description: "The Secret to select from"
                                         properties:
                                           name:
-                                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                             type: "string"
                                           optional:
                                             description: "Specify whether the Secret must be defined"
@@ -1316,7 +1318,8 @@ spec:
                                           format: "int32"
                                           type: "integer"
                                         service:
-                                          description: "Service is the name of the service to place in the gRPC HealthCheckRequest\n(see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).\n\n\nIf this is not specified, the default behavior is defined by gRPC."
+                                          default: ""
+                                          description: "Service is the name of the service to place in the gRPC HealthCheckRequest\n(see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).\n\nIf this is not specified, the default behavior is defined by gRPC."
                                           type: "string"
                                       required:
                                         - "port"
@@ -1452,7 +1455,8 @@ spec:
                                           format: "int32"
                                           type: "integer"
                                         service:
-                                          description: "Service is the name of the service to place in the gRPC HealthCheckRequest\n(see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).\n\n\nIf this is not specified, the default behavior is defined by gRPC."
+                                          default: ""
+                                          description: "Service is the name of the service to place in the gRPC HealthCheckRequest\n(see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).\n\nIf this is not specified, the default behavior is defined by gRPC."
                                           type: "string"
                                       required:
                                         - "port"
@@ -1551,7 +1555,7 @@ spec:
                                   description: "Compute Resources required by this container.\nCannot be updated.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                                   properties:
                                     claims:
-                                      description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
+                                      description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                                       items:
                                         description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                         properties:
@@ -1652,7 +1656,7 @@ spec:
                                           description: "localhostProfile indicates a profile defined in a file on the node should be used.\nThe profile must be preconfigured on the node to work.\nMust be a descending path, relative to the kubelet's configured seccomp profile location.\nMust be set if type is \"Localhost\". Must NOT be set for any other type."
                                           type: "string"
                                         type:
-                                          description: "type indicates which kind of seccomp profile will be applied.\nValid options are:\n\n\nLocalhost - a profile defined in a file on the node should be used.\nRuntimeDefault - the container runtime default profile should be used.\nUnconfined - no profile should be applied."
+                                          description: "type indicates which kind of seccomp profile will be applied.\nValid options are:\n\nLocalhost - a profile defined in a file on the node should be used.\nRuntimeDefault - the container runtime default profile should be used.\nUnconfined - no profile should be applied."
                                           type: "string"
                                       required:
                                         - "type"
@@ -1698,7 +1702,8 @@ spec:
                                           format: "int32"
                                           type: "integer"
                                         service:
-                                          description: "Service is the name of the service to place in the gRPC HealthCheckRequest\n(see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).\n\n\nIf this is not specified, the default behavior is defined by gRPC."
+                                          default: ""
+                                          description: "Service is the name of the service to place in the gRPC HealthCheckRequest\n(see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).\n\nIf this is not specified, the default behavior is defined by gRPC."
                                           type: "string"
                                       required:
                                         - "port"
@@ -1877,7 +1882,7 @@ spec:
                           ephemeralContainers:
                             description: "List of ephemeral containers run in this pod. Ephemeral containers may be run in an existing\npod to perform user-initiated actions such as debugging. This list cannot be specified when\ncreating a pod, and it cannot be modified by updating the pod spec. In order to add an\nephemeral container to an existing pod, use the pod's ephemeralcontainers subresource."
                             items:
-                              description: "An EphemeralContainer is a temporary container that you may add to an existing Pod for\nuser-initiated activities such as debugging. Ephemeral containers have no resource or\nscheduling guarantees, and they will not be restarted when they exit or when a Pod is\nremoved or restarted. The kubelet may evict a Pod if an ephemeral container causes the\nPod to exceed its resource allocation.\n\n\nTo add an ephemeral container, use the ephemeralcontainers subresource of an existing\nPod. Ephemeral containers may not be removed or restarted."
+                              description: "An EphemeralContainer is a temporary container that you may add to an existing Pod for\nuser-initiated activities such as debugging. Ephemeral containers have no resource or\nscheduling guarantees, and they will not be restarted when they exit or when a Pod is\nremoved or restarted. The kubelet may evict a Pod if an ephemeral container causes the\nPod to exceed its resource allocation.\n\nTo add an ephemeral container, use the ephemeralcontainers subresource of an existing\nPod. Ephemeral containers may not be removed or restarted."
                               properties:
                                 args:
                                   description: "Arguments to the entrypoint.\nThe image's CMD is used if this is not provided.\nVariable references $(VAR_NAME) are expanded using the container's environment. If a variable\ncannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced\nto a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. \"$$(VAR_NAME)\" will\nproduce the string literal \"$(VAR_NAME)\". Escaped references will never be expanded, regardless\nof whether the variable exists or not. Cannot be updated.\nMore info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell"
@@ -1910,7 +1915,7 @@ spec:
                                                 description: "The key to select."
                                                 type: "string"
                                               name:
-                                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                                 type: "string"
                                               optional:
                                                 description: "Specify whether the ConfigMap or its key must be defined"
@@ -1959,7 +1964,7 @@ spec:
                                                 description: "The key of the secret to select from.  Must be a valid secret key."
                                                 type: "string"
                                               name:
-                                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                                 type: "string"
                                               optional:
                                                 description: "Specify whether the Secret or its key must be defined"
@@ -1982,7 +1987,7 @@ spec:
                                         description: "The ConfigMap to select from"
                                         properties:
                                           name:
-                                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                             type: "string"
                                           optional:
                                             description: "Specify whether the ConfigMap must be defined"
@@ -1996,7 +2001,7 @@ spec:
                                         description: "The Secret to select from"
                                         properties:
                                           name:
-                                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                             type: "string"
                                           optional:
                                             description: "Specify whether the Secret must be defined"
@@ -2189,7 +2194,8 @@ spec:
                                           format: "int32"
                                           type: "integer"
                                         service:
-                                          description: "Service is the name of the service to place in the gRPC HealthCheckRequest\n(see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).\n\n\nIf this is not specified, the default behavior is defined by gRPC."
+                                          default: ""
+                                          description: "Service is the name of the service to place in the gRPC HealthCheckRequest\n(see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).\n\nIf this is not specified, the default behavior is defined by gRPC."
                                           type: "string"
                                       required:
                                         - "port"
@@ -2325,7 +2331,8 @@ spec:
                                           format: "int32"
                                           type: "integer"
                                         service:
-                                          description: "Service is the name of the service to place in the gRPC HealthCheckRequest\n(see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).\n\n\nIf this is not specified, the default behavior is defined by gRPC."
+                                          default: ""
+                                          description: "Service is the name of the service to place in the gRPC HealthCheckRequest\n(see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).\n\nIf this is not specified, the default behavior is defined by gRPC."
                                           type: "string"
                                       required:
                                         - "port"
@@ -2424,7 +2431,7 @@ spec:
                                   description: "Resources are not allowed for ephemeral containers. Ephemeral containers use spare resources\nalready allocated to the pod."
                                   properties:
                                     claims:
-                                      description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
+                                      description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                                       items:
                                         description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                         properties:
@@ -2525,7 +2532,7 @@ spec:
                                           description: "localhostProfile indicates a profile defined in a file on the node should be used.\nThe profile must be preconfigured on the node to work.\nMust be a descending path, relative to the kubelet's configured seccomp profile location.\nMust be set if type is \"Localhost\". Must NOT be set for any other type."
                                           type: "string"
                                         type:
-                                          description: "type indicates which kind of seccomp profile will be applied.\nValid options are:\n\n\nLocalhost - a profile defined in a file on the node should be used.\nRuntimeDefault - the container runtime default profile should be used.\nUnconfined - no profile should be applied."
+                                          description: "type indicates which kind of seccomp profile will be applied.\nValid options are:\n\nLocalhost - a profile defined in a file on the node should be used.\nRuntimeDefault - the container runtime default profile should be used.\nUnconfined - no profile should be applied."
                                           type: "string"
                                       required:
                                         - "type"
@@ -2571,7 +2578,8 @@ spec:
                                           format: "int32"
                                           type: "integer"
                                         service:
-                                          description: "Service is the name of the service to place in the gRPC HealthCheckRequest\n(see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).\n\n\nIf this is not specified, the default behavior is defined by gRPC."
+                                          default: ""
+                                          description: "Service is the name of the service to place in the gRPC HealthCheckRequest\n(see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).\n\nIf this is not specified, the default behavior is defined by gRPC."
                                           type: "string"
                                       required:
                                         - "port"
@@ -2656,7 +2664,7 @@ spec:
                                   description: "Whether the container runtime should close the stdin channel after it has been opened by\na single attach. When stdin is true the stdin stream will remain open across multiple attach\nsessions. If stdinOnce is set to true, stdin is opened on container start, is empty until the\nfirst client attaches to stdin, and then remains open and accepts data until the client disconnects,\nat which time stdin is closed and remains closed until the container is restarted. If this\nflag is false, a container processes that reads from stdin will never receive an EOF.\nDefault is false"
                                   type: "boolean"
                                 targetContainerName:
-                                  description: "If set, the name of the container from PodSpec that this ephemeral container targets.\nThe ephemeral container will be run in the namespaces (IPC, PID, etc) of this container.\nIf not set then the ephemeral container uses the namespaces configured in the Pod spec.\n\n\nThe container runtime must implement support for this feature. If the runtime does not\nsupport namespace targeting then the result of setting this field is undefined."
+                                  description: "If set, the name of the container from PodSpec that this ephemeral container targets.\nThe ephemeral container will be run in the namespaces (IPC, PID, etc) of this container.\nIf not set then the ephemeral container uses the namespaces configured in the Pod spec.\n\nThe container runtime must implement support for this feature. If the runtime does not\nsupport namespace targeting then the result of setting this field is undefined."
                                   type: "string"
                                 terminationMessagePath:
                                   description: "Optional: Path at which the file to which the container's termination message\nwill be written is mounted into the container's filesystem.\nMessage written is intended to be brief final status, such as an assertion failure message.\nWill be truncated by the node if greater than 4096 bytes. The total message length across\nall containers will be limited to 12kb.\nDefaults to /dev/termination-log.\nCannot be updated."
@@ -2754,7 +2762,7 @@ spec:
                               description: "LocalObjectReference contains enough information to let you locate the\nreferenced object inside the same namespace."
                               properties:
                                 name:
-                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                   type: "string"
                               type: "object"
                               x-kubernetes-map-type: "atomic"
@@ -2795,7 +2803,7 @@ spec:
                                                 description: "The key to select."
                                                 type: "string"
                                               name:
-                                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                                 type: "string"
                                               optional:
                                                 description: "Specify whether the ConfigMap or its key must be defined"
@@ -2844,7 +2852,7 @@ spec:
                                                 description: "The key of the secret to select from.  Must be a valid secret key."
                                                 type: "string"
                                               name:
-                                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                                 type: "string"
                                               optional:
                                                 description: "Specify whether the Secret or its key must be defined"
@@ -2867,7 +2875,7 @@ spec:
                                         description: "The ConfigMap to select from"
                                         properties:
                                           name:
-                                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                             type: "string"
                                           optional:
                                             description: "Specify whether the ConfigMap must be defined"
@@ -2881,7 +2889,7 @@ spec:
                                         description: "The Secret to select from"
                                         properties:
                                           name:
-                                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                             type: "string"
                                           optional:
                                             description: "Specify whether the Secret must be defined"
@@ -3074,7 +3082,8 @@ spec:
                                           format: "int32"
                                           type: "integer"
                                         service:
-                                          description: "Service is the name of the service to place in the gRPC HealthCheckRequest\n(see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).\n\n\nIf this is not specified, the default behavior is defined by gRPC."
+                                          default: ""
+                                          description: "Service is the name of the service to place in the gRPC HealthCheckRequest\n(see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).\n\nIf this is not specified, the default behavior is defined by gRPC."
                                           type: "string"
                                       required:
                                         - "port"
@@ -3210,7 +3219,8 @@ spec:
                                           format: "int32"
                                           type: "integer"
                                         service:
-                                          description: "Service is the name of the service to place in the gRPC HealthCheckRequest\n(see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).\n\n\nIf this is not specified, the default behavior is defined by gRPC."
+                                          default: ""
+                                          description: "Service is the name of the service to place in the gRPC HealthCheckRequest\n(see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).\n\nIf this is not specified, the default behavior is defined by gRPC."
                                           type: "string"
                                       required:
                                         - "port"
@@ -3309,7 +3319,7 @@ spec:
                                   description: "Compute Resources required by this container.\nCannot be updated.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                                   properties:
                                     claims:
-                                      description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
+                                      description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                                       items:
                                         description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                         properties:
@@ -3410,7 +3420,7 @@ spec:
                                           description: "localhostProfile indicates a profile defined in a file on the node should be used.\nThe profile must be preconfigured on the node to work.\nMust be a descending path, relative to the kubelet's configured seccomp profile location.\nMust be set if type is \"Localhost\". Must NOT be set for any other type."
                                           type: "string"
                                         type:
-                                          description: "type indicates which kind of seccomp profile will be applied.\nValid options are:\n\n\nLocalhost - a profile defined in a file on the node should be used.\nRuntimeDefault - the container runtime default profile should be used.\nUnconfined - no profile should be applied."
+                                          description: "type indicates which kind of seccomp profile will be applied.\nValid options are:\n\nLocalhost - a profile defined in a file on the node should be used.\nRuntimeDefault - the container runtime default profile should be used.\nUnconfined - no profile should be applied."
                                           type: "string"
                                       required:
                                         - "type"
@@ -3456,7 +3466,8 @@ spec:
                                           format: "int32"
                                           type: "integer"
                                         service:
-                                          description: "Service is the name of the service to place in the gRPC HealthCheckRequest\n(see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).\n\n\nIf this is not specified, the default behavior is defined by gRPC."
+                                          default: ""
+                                          description: "Service is the name of the service to place in the gRPC HealthCheckRequest\n(see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).\n\nIf this is not specified, the default behavior is defined by gRPC."
                                           type: "string"
                                       required:
                                         - "port"
@@ -3610,7 +3621,7 @@ spec:
                             type: "object"
                             x-kubernetes-map-type: "atomic"
                           os:
-                            description: "Specifies the OS of the containers in the pod.\nSome pod and container fields are restricted if this is set.\n\n\nIf the OS field is set to linux, the following fields must be unset:\n-securityContext.windowsOptions\n\n\nIf the OS field is set to windows, following fields must be unset:\n- spec.hostPID\n- spec.hostIPC\n- spec.hostUsers\n- spec.securityContext.seLinuxOptions\n- spec.securityContext.seccompProfile\n- spec.securityContext.fsGroup\n- spec.securityContext.fsGroupChangePolicy\n- spec.securityContext.sysctls\n- spec.shareProcessNamespace\n- spec.securityContext.runAsUser\n- spec.securityContext.runAsGroup\n- spec.securityContext.supplementalGroups\n- spec.containers[*].securityContext.seLinuxOptions\n- spec.containers[*].securityContext.seccompProfile\n- spec.containers[*].securityContext.capabilities\n- spec.containers[*].securityContext.readOnlyRootFilesystem\n- spec.containers[*].securityContext.privileged\n- spec.containers[*].securityContext.allowPrivilegeEscalation\n- spec.containers[*].securityContext.procMount\n- spec.containers[*].securityContext.runAsUser\n- spec.containers[*].securityContext.runAsGroup"
+                            description: "Specifies the OS of the containers in the pod.\nSome pod and container fields are restricted if this is set.\n\nIf the OS field is set to linux, the following fields must be unset:\n-securityContext.windowsOptions\n\nIf the OS field is set to windows, following fields must be unset:\n- spec.hostPID\n- spec.hostIPC\n- spec.hostUsers\n- spec.securityContext.seLinuxOptions\n- spec.securityContext.seccompProfile\n- spec.securityContext.fsGroup\n- spec.securityContext.fsGroupChangePolicy\n- spec.securityContext.sysctls\n- spec.shareProcessNamespace\n- spec.securityContext.runAsUser\n- spec.securityContext.runAsGroup\n- spec.securityContext.supplementalGroups\n- spec.containers[*].securityContext.seLinuxOptions\n- spec.containers[*].securityContext.seccompProfile\n- spec.containers[*].securityContext.capabilities\n- spec.containers[*].securityContext.readOnlyRootFilesystem\n- spec.containers[*].securityContext.privileged\n- spec.containers[*].securityContext.allowPrivilegeEscalation\n- spec.containers[*].securityContext.procMount\n- spec.containers[*].securityContext.runAsUser\n- spec.containers[*].securityContext.runAsGroup"
                             properties:
                               name:
                                 description: "Name is the name of the operating system. The currently supported values are linux and windows.\nAdditional value may be defined in future and can be one of:\nhttps://github.com/opencontainers/runtime-spec/blob/master/config.md#platform-specific-configuration\nClients should expect to handle additional values and treat unrecognized values in this field as os: null"
@@ -3650,7 +3661,7 @@ spec:
                               type: "object"
                             type: "array"
                           resourceClaims:
-                            description: "ResourceClaims defines which ResourceClaims must be allocated\nand reserved before the Pod is allowed to start. The resources\nwill be made available to those containers which consume them\nby name.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable."
+                            description: "ResourceClaims defines which ResourceClaims must be allocated\nand reserved before the Pod is allowed to start. The resources\nwill be made available to those containers which consume them\nby name.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable."
                             items:
                               description: "PodResourceClaim references exactly one ResourceClaim through a ClaimSource.\nIt adds a name to it that uniquely identifies the ResourceClaim inside the Pod.\nContainers that need access to the ResourceClaim reference it with this name."
                               properties:
@@ -3664,7 +3675,7 @@ spec:
                                       description: "ResourceClaimName is the name of a ResourceClaim object in the same\nnamespace as this pod."
                                       type: "string"
                                     resourceClaimTemplateName:
-                                      description: "ResourceClaimTemplateName is the name of a ResourceClaimTemplate\nobject in the same namespace as this pod.\n\n\nThe template will be used to create a new ResourceClaim, which will\nbe bound to this pod. When this pod is deleted, the ResourceClaim\nwill also be deleted. The pod name and resource name, along with a\ngenerated component, will be used to form a unique name for the\nResourceClaim, which will be recorded in pod.status.resourceClaimStatuses.\n\n\nThis field is immutable and no changes will be made to the\ncorresponding ResourceClaim by the control plane after creating the\nResourceClaim."
+                                      description: "ResourceClaimTemplateName is the name of a ResourceClaimTemplate\nobject in the same namespace as this pod.\n\nThe template will be used to create a new ResourceClaim, which will\nbe bound to this pod. When this pod is deleted, the ResourceClaim\nwill also be deleted. The pod name and resource name, along with a\ngenerated component, will be used to form a unique name for the\nResourceClaim, which will be recorded in pod.status.resourceClaimStatuses.\n\nThis field is immutable and no changes will be made to the\ncorresponding ResourceClaim by the control plane after creating the\nResourceClaim."
                                       type: "string"
                                   type: "object"
                               required:
@@ -3684,7 +3695,7 @@ spec:
                             description: "If specified, the pod will be dispatched by specified scheduler.\nIf not specified, the pod will be dispatched by default scheduler."
                             type: "string"
                           schedulingGates:
-                            description: "SchedulingGates is an opaque list of values that if specified will block scheduling the pod.\nIf schedulingGates is not empty, the pod will stay in the SchedulingGated state and the\nscheduler will not attempt to schedule the pod.\n\n\nSchedulingGates can only be set at pod creation time, and be removed only afterwards.\n\n\nThis is a beta feature enabled by the PodSchedulingReadiness feature gate."
+                            description: "SchedulingGates is an opaque list of values that if specified will block scheduling the pod.\nIf schedulingGates is not empty, the pod will stay in the SchedulingGated state and the\nscheduler will not attempt to schedule the pod.\n\nSchedulingGates can only be set at pod creation time, and be removed only afterwards.\n\nThis is a beta feature enabled by the PodSchedulingReadiness feature gate."
                             items:
                               description: "PodSchedulingGate is associated to a Pod to guard its scheduling."
                               properties:
@@ -3702,7 +3713,7 @@ spec:
                             description: "SecurityContext holds pod-level security attributes and common container settings.\nOptional: Defaults to empty.  See type description for default values of each field."
                             properties:
                               fsGroup:
-                                description: "A special supplemental group that applies to all containers in a pod.\nSome volume types allow the Kubelet to change the ownership of that volume\nto be owned by the pod:\n\n\n1. The owning GID will be the FSGroup\n2. The setgid bit is set (new files created in the volume will be owned by FSGroup)\n3. The permission bits are OR'd with rw-rw----\n\n\nIf unset, the Kubelet will not modify the ownership and permissions of any volume.\nNote that this field cannot be set when spec.os.name is windows."
+                                description: "A special supplemental group that applies to all containers in a pod.\nSome volume types allow the Kubelet to change the ownership of that volume\nto be owned by the pod:\n\n1. The owning GID will be the FSGroup\n2. The setgid bit is set (new files created in the volume will be owned by FSGroup)\n3. The permission bits are OR'd with rw-rw----\n\nIf unset, the Kubelet will not modify the ownership and permissions of any volume.\nNote that this field cannot be set when spec.os.name is windows."
                                 format: "int64"
                                 type: "integer"
                               fsGroupChangePolicy:
@@ -3742,7 +3753,7 @@ spec:
                                     description: "localhostProfile indicates a profile defined in a file on the node should be used.\nThe profile must be preconfigured on the node to work.\nMust be a descending path, relative to the kubelet's configured seccomp profile location.\nMust be set if type is \"Localhost\". Must NOT be set for any other type."
                                     type: "string"
                                   type:
-                                    description: "type indicates which kind of seccomp profile will be applied.\nValid options are:\n\n\nLocalhost - a profile defined in a file on the node should be used.\nRuntimeDefault - the container runtime default profile should be used.\nUnconfined - no profile should be applied."
+                                    description: "type indicates which kind of seccomp profile will be applied.\nValid options are:\n\nLocalhost - a profile defined in a file on the node should be used.\nRuntimeDefault - the container runtime default profile should be used.\nUnconfined - no profile should be applied."
                                     type: "string"
                                 required:
                                   - "type"
@@ -3865,7 +3876,7 @@ spec:
                                   type: "object"
                                   x-kubernetes-map-type: "atomic"
                                 matchLabelKeys:
-                                  description: "MatchLabelKeys is a set of pod label keys to select the pods over which\nspreading will be calculated. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are ANDed with labelSelector\nto select the group of existing pods over which spreading will be calculated\nfor the incoming pod. The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.\nMatchLabelKeys cannot be set when LabelSelector isn't set.\nKeys that don't exist in the incoming pod labels will\nbe ignored. A null or empty list means only match against labelSelector.\n\n\nThis is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default)."
+                                  description: "MatchLabelKeys is a set of pod label keys to select the pods over which\nspreading will be calculated. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are ANDed with labelSelector\nto select the group of existing pods over which spreading will be calculated\nfor the incoming pod. The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.\nMatchLabelKeys cannot be set when LabelSelector isn't set.\nKeys that don't exist in the incoming pod labels will\nbe ignored. A null or empty list means only match against labelSelector.\n\nThis is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default)."
                                   items:
                                     type: "string"
                                   type: "array"
@@ -3875,14 +3886,14 @@ spec:
                                   format: "int32"
                                   type: "integer"
                                 minDomains:
-                                  description: "MinDomains indicates a minimum number of eligible domains.\nWhen the number of eligible domains with matching topology keys is less than minDomains,\nPod Topology Spread treats \"global minimum\" as 0, and then the calculation of Skew is performed.\nAnd when the number of eligible domains with matching topology keys equals or greater than minDomains,\nthis value has no effect on scheduling.\nAs a result, when the number of eligible domains is less than minDomains,\nscheduler won't schedule more than maxSkew Pods to those domains.\nIf value is nil, the constraint behaves as if MinDomains is equal to 1.\nValid values are integers greater than 0.\nWhen value is not nil, WhenUnsatisfiable must be DoNotSchedule.\n\n\nFor example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same\nlabelSelector spread as 2/2/2:\n| zone1 | zone2 | zone3 |\n|  P P  |  P P  |  P P  |\nThe number of domains is less than 5(MinDomains), so \"global minimum\" is treated as 0.\nIn this situation, new pod with the same labelSelector cannot be scheduled,\nbecause computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,\nit will violate MaxSkew.\n\n\nThis is a beta field and requires the MinDomainsInPodTopologySpread feature gate to be enabled (enabled by default)."
+                                  description: "MinDomains indicates a minimum number of eligible domains.\nWhen the number of eligible domains with matching topology keys is less than minDomains,\nPod Topology Spread treats \"global minimum\" as 0, and then the calculation of Skew is performed.\nAnd when the number of eligible domains with matching topology keys equals or greater than minDomains,\nthis value has no effect on scheduling.\nAs a result, when the number of eligible domains is less than minDomains,\nscheduler won't schedule more than maxSkew Pods to those domains.\nIf value is nil, the constraint behaves as if MinDomains is equal to 1.\nValid values are integers greater than 0.\nWhen value is not nil, WhenUnsatisfiable must be DoNotSchedule.\n\nFor example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same\nlabelSelector spread as 2/2/2:\n| zone1 | zone2 | zone3 |\n|  P P  |  P P  |  P P  |\nThe number of domains is less than 5(MinDomains), so \"global minimum\" is treated as 0.\nIn this situation, new pod with the same labelSelector cannot be scheduled,\nbecause computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,\nit will violate MaxSkew.\n\nThis is a beta field and requires the MinDomainsInPodTopologySpread feature gate to be enabled (enabled by default)."
                                   format: "int32"
                                   type: "integer"
                                 nodeAffinityPolicy:
-                                  description: "NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector\nwhen calculating pod topology spread skew. Options are:\n- Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.\n- Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.\n\n\nIf this value is nil, the behavior is equivalent to the Honor policy.\nThis is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag."
+                                  description: "NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector\nwhen calculating pod topology spread skew. Options are:\n- Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.\n- Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.\n\nIf this value is nil, the behavior is equivalent to the Honor policy.\nThis is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag."
                                   type: "string"
                                 nodeTaintsPolicy:
-                                  description: "NodeTaintsPolicy indicates how we will treat node taints when calculating\npod topology spread skew. Options are:\n- Honor: nodes without taints, along with tainted nodes for which the incoming pod\nhas a toleration, are included.\n- Ignore: node taints are ignored. All nodes are included.\n\n\nIf this value is nil, the behavior is equivalent to the Ignore policy.\nThis is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag."
+                                  description: "NodeTaintsPolicy indicates how we will treat node taints when calculating\npod topology spread skew. Options are:\n- Honor: nodes without taints, along with tainted nodes for which the incoming pod\nhas a toleration, are included.\n- Ignore: node taints are ignored. All nodes are included.\n\nIf this value is nil, the behavior is equivalent to the Ignore policy.\nThis is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag."
                                   type: "string"
                                 topologyKey:
                                   description: "TopologyKey is the key of node labels. Nodes that have a label with this key\nand identical values are considered to be in the same topology.\nWe consider each <key, value> as a \"bucket\", and try to put balanced number\nof pods into each bucket.\nWe define a domain as a particular instance of a topology.\nAlso, we define an eligible domain as a domain whose nodes meet the requirements of\nnodeAffinityPolicy and nodeTaintsPolicy.\ne.g. If TopologyKey is \"kubernetes.io/hostname\", each Node is a domain of that topology.\nAnd, if TopologyKey is \"topology.kubernetes.io/zone\", each zone is a domain of that topology.\nIt's a required field."
@@ -3909,7 +3920,7 @@ spec:
                                   description: "awsElasticBlockStore represents an AWS Disk resource that is attached to a\nkubelet's host machine and then exposed to the pod.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore"
                                   properties:
                                     fsType:
-                                      description: "fsType is the filesystem type of the volume that you want to mount.\nTip: Ensure that the filesystem type is supported by the host operating system.\nExamples: \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore\nTODO: how do we prevent errors in the filesystem from compromising the machine"
+                                      description: "fsType is the filesystem type of the volume that you want to mount.\nTip: Ensure that the filesystem type is supported by the host operating system.\nExamples: \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore"
                                       type: "string"
                                     partition:
                                       description: "partition is the partition in the volume that you want to mount.\nIf omitted, the default is to mount by volume name.\nExamples: For volume /dev/sda1, you specify the partition as \"1\".\nSimilarly, the volume partition for /dev/sda is \"0\" (or you can leave the property empty)."
@@ -3986,7 +3997,7 @@ spec:
                                       description: "secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.\nMore info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it"
                                       properties:
                                         name:
-                                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                           type: "string"
                                       type: "object"
                                       x-kubernetes-map-type: "atomic"
@@ -4009,7 +4020,7 @@ spec:
                                       description: "secretRef is optional: points to a secret object containing parameters used to connect\nto OpenStack."
                                       properties:
                                         name:
-                                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                           type: "string"
                                       type: "object"
                                       x-kubernetes-map-type: "atomic"
@@ -4047,7 +4058,7 @@ spec:
                                         type: "object"
                                       type: "array"
                                     name:
-                                      description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                      description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                       type: "string"
                                     optional:
                                       description: "optional specify whether the ConfigMap or its keys must be defined"
@@ -4067,7 +4078,7 @@ spec:
                                       description: "nodePublishSecretRef is a reference to the secret object containing\nsensitive information to pass to the CSI driver to complete the CSI\nNodePublishVolume and NodeUnpublishVolume calls.\nThis field is optional, and  may be empty if no secret is required. If the\nsecret object contains more than one secret, all secret references are passed."
                                       properties:
                                         name:
-                                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                           type: "string"
                                       type: "object"
                                       x-kubernetes-map-type: "atomic"
@@ -4154,10 +4165,10 @@ spec:
                                       x-kubernetes-int-or-string: true
                                   type: "object"
                                 ephemeral:
-                                  description: "ephemeral represents a volume that is handled by a cluster storage driver.\nThe volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,\nand deleted when the pod is removed.\n\n\nUse this if:\na) the volume is only needed while the pod runs,\nb) features of normal volumes like restoring from snapshot or capacity\n   tracking are needed,\nc) the storage driver is specified through a storage class, and\nd) the storage driver supports dynamic volume provisioning through\n   a PersistentVolumeClaim (see EphemeralVolumeSource for more\n   information on the connection between this volume type\n   and PersistentVolumeClaim).\n\n\nUse PersistentVolumeClaim or one of the vendor-specific\nAPIs for volumes that persist for longer than the lifecycle\nof an individual pod.\n\n\nUse CSI for light-weight local ephemeral volumes if the CSI driver is meant to\nbe used that way - see the documentation of the driver for\nmore information.\n\n\nA pod can use both types of ephemeral volumes and\npersistent volumes at the same time."
+                                  description: "ephemeral represents a volume that is handled by a cluster storage driver.\nThe volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,\nand deleted when the pod is removed.\n\nUse this if:\na) the volume is only needed while the pod runs,\nb) features of normal volumes like restoring from snapshot or capacity\n   tracking are needed,\nc) the storage driver is specified through a storage class, and\nd) the storage driver supports dynamic volume provisioning through\n   a PersistentVolumeClaim (see EphemeralVolumeSource for more\n   information on the connection between this volume type\n   and PersistentVolumeClaim).\n\nUse PersistentVolumeClaim or one of the vendor-specific\nAPIs for volumes that persist for longer than the lifecycle\nof an individual pod.\n\nUse CSI for light-weight local ephemeral volumes if the CSI driver is meant to\nbe used that way - see the documentation of the driver for\nmore information.\n\nA pod can use both types of ephemeral volumes and\npersistent volumes at the same time."
                                   properties:
                                     volumeClaimTemplate:
-                                      description: "Will be used to create a stand-alone PVC to provision the volume.\nThe pod in which this EphemeralVolumeSource is embedded will be the\nowner of the PVC, i.e. the PVC will be deleted together with the\npod.  The name of the PVC will be `<pod name>-<volume name>` where\n`<volume name>` is the name from the `PodSpec.Volumes` array\nentry. Pod validation will reject the pod if the concatenated name\nis not valid for a PVC (for example, too long).\n\n\nAn existing PVC with that name that is not owned by the pod\nwill *not* be used for the pod to avoid using an unrelated\nvolume by mistake. Starting the pod is then blocked until\nthe unrelated PVC is removed. If such a pre-created PVC is\nmeant to be used by the pod, the PVC has to updated with an\nowner reference to the pod once the pod exists. Normally\nthis should not be necessary, but it may be useful when\nmanually reconstructing a broken cluster.\n\n\nThis field is read-only and no changes will be made by Kubernetes\nto the PVC after it has been created.\n\n\nRequired, must not be nil."
+                                      description: "Will be used to create a stand-alone PVC to provision the volume.\nThe pod in which this EphemeralVolumeSource is embedded will be the\nowner of the PVC, i.e. the PVC will be deleted together with the\npod.  The name of the PVC will be `<pod name>-<volume name>` where\n`<volume name>` is the name from the `PodSpec.Volumes` array\nentry. Pod validation will reject the pod if the concatenated name\nis not valid for a PVC (for example, too long).\n\nAn existing PVC with that name that is not owned by the pod\nwill *not* be used for the pod to avoid using an unrelated\nvolume by mistake. Starting the pod is then blocked until\nthe unrelated PVC is removed. If such a pre-created PVC is\nmeant to be used by the pod, the PVC has to updated with an\nowner reference to the pod once the pod exists. Normally\nthis should not be necessary, but it may be useful when\nmanually reconstructing a broken cluster.\n\nThis field is read-only and no changes will be made by Kubernetes\nto the PVC after it has been created.\n\nRequired, must not be nil."
                                       properties:
                                         metadata:
                                           description: "May contain labels and annotations that will be copied into the PVC\nwhen creating it. No other fields are allowed and will be rejected during\nvalidation."
@@ -4297,7 +4308,7 @@ spec:
                                   description: "fc represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod."
                                   properties:
                                     fsType:
-                                      description: "fsType is the filesystem type to mount.\nMust be a filesystem type supported by the host operating system.\nEx. \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified.\nTODO: how do we prevent errors in the filesystem from compromising the machine"
+                                      description: "fsType is the filesystem type to mount.\nMust be a filesystem type supported by the host operating system.\nEx. \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified."
                                       type: "string"
                                     lun:
                                       description: "lun is Optional: FC target lun number"
@@ -4338,7 +4349,7 @@ spec:
                                       description: "secretRef is Optional: secretRef is reference to the secret object containing\nsensitive information to pass to the plugin scripts. This may be\nempty if no secret object is specified. If the secret object\ncontains more than one secret, all secrets are passed to the plugin\nscripts."
                                       properties:
                                         name:
-                                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                           type: "string"
                                       type: "object"
                                       x-kubernetes-map-type: "atomic"
@@ -4359,7 +4370,7 @@ spec:
                                   description: "gcePersistentDisk represents a GCE Disk resource that is attached to a\nkubelet's host machine and then exposed to the pod.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk"
                                   properties:
                                     fsType:
-                                      description: "fsType is filesystem type of the volume that you want to mount.\nTip: Ensure that the filesystem type is supported by the host operating system.\nExamples: \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk\nTODO: how do we prevent errors in the filesystem from compromising the machine"
+                                      description: "fsType is filesystem type of the volume that you want to mount.\nTip: Ensure that the filesystem type is supported by the host operating system.\nExamples: \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk"
                                       type: "string"
                                     partition:
                                       description: "partition is the partition in the volume that you want to mount.\nIf omitted, the default is to mount by volume name.\nExamples: For volume /dev/sda1, you specify the partition as \"1\".\nSimilarly, the volume partition for /dev/sda is \"0\" (or you can leave the property empty).\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk"
@@ -4406,7 +4417,7 @@ spec:
                                     - "path"
                                   type: "object"
                                 hostPath:
-                                  description: "hostPath represents a pre-existing file or directory on the host\nmachine that is directly exposed to the container. This is generally\nused for system agents or other privileged things that are allowed\nto see the host machine. Most containers will NOT need this.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath\n---\nTODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not\nmount host directories as read/write."
+                                  description: "hostPath represents a pre-existing file or directory on the host\nmachine that is directly exposed to the container. This is generally\nused for system agents or other privileged things that are allowed\nto see the host machine. Most containers will NOT need this.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath"
                                   properties:
                                     path:
                                       description: "path of the directory on the host.\nIf the path is a symlink, it will follow the link to the real path.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath"
@@ -4427,7 +4438,7 @@ spec:
                                       description: "chapAuthSession defines whether support iSCSI Session CHAP authentication"
                                       type: "boolean"
                                     fsType:
-                                      description: "fsType is the filesystem type of the volume that you want to mount.\nTip: Ensure that the filesystem type is supported by the host operating system.\nExamples: \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#iscsi\nTODO: how do we prevent errors in the filesystem from compromising the machine"
+                                      description: "fsType is the filesystem type of the volume that you want to mount.\nTip: Ensure that the filesystem type is supported by the host operating system.\nExamples: \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#iscsi"
                                       type: "string"
                                     initiatorName:
                                       description: "initiatorName is the custom iSCSI Initiator Name.\nIf initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface\n<target portal>:<volume name> will be created for the connection."
@@ -4454,7 +4465,7 @@ spec:
                                       description: "secretRef is the CHAP Secret for iSCSI target and initiator authentication"
                                       properties:
                                         name:
-                                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                           type: "string"
                                       type: "object"
                                       x-kubernetes-map-type: "atomic"
@@ -4537,7 +4548,7 @@ spec:
                                         description: "Projection that may be projected along with other supported volume types"
                                         properties:
                                           clusterTrustBundle:
-                                            description: "ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field\nof ClusterTrustBundle objects in an auto-updating file.\n\n\nAlpha, gated by the ClusterTrustBundleProjection feature gate.\n\n\nClusterTrustBundle objects can either be selected by name, or by the\ncombination of signer name and a label selector.\n\n\nKubelet performs aggressive normalization of the PEM contents written\ninto the pod filesystem.  Esoteric PEM features such as inter-block\ncomments and block headers are stripped.  Certificates are deduplicated.\nThe ordering of certificates within the file is arbitrary, and Kubelet\nmay change the order over time."
+                                            description: "ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field\nof ClusterTrustBundle objects in an auto-updating file.\n\nAlpha, gated by the ClusterTrustBundleProjection feature gate.\n\nClusterTrustBundle objects can either be selected by name, or by the\ncombination of signer name and a label selector.\n\nKubelet performs aggressive normalization of the PEM contents written\ninto the pod filesystem.  Esoteric PEM features such as inter-block\ncomments and block headers are stripped.  Certificates are deduplicated.\nThe ordering of certificates within the file is arbitrary, and Kubelet\nmay change the order over time."
                                             properties:
                                               labelSelector:
                                                 description: "Select all ClusterTrustBundles that match this label selector.  Only has\neffect if signerName is set.  Mutually-exclusive with name.  If unset,\ninterpreted as \"match nothing\".  If set but empty, interpreted as \"match\neverything\"."
@@ -4609,7 +4620,7 @@ spec:
                                                   type: "object"
                                                 type: "array"
                                               name:
-                                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                                 type: "string"
                                               optional:
                                                 description: "optional specify whether the ConfigMap or its keys must be defined"
@@ -4693,7 +4704,7 @@ spec:
                                                   type: "object"
                                                 type: "array"
                                               name:
-                                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                                 type: "string"
                                               optional:
                                                 description: "optional field specify whether the Secret or its key must be defined"
@@ -4748,7 +4759,7 @@ spec:
                                   description: "rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.\nMore info: https://examples.k8s.io/volumes/rbd/README.md"
                                   properties:
                                     fsType:
-                                      description: "fsType is the filesystem type of the volume that you want to mount.\nTip: Ensure that the filesystem type is supported by the host operating system.\nExamples: \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#rbd\nTODO: how do we prevent errors in the filesystem from compromising the machine"
+                                      description: "fsType is the filesystem type of the volume that you want to mount.\nTip: Ensure that the filesystem type is supported by the host operating system.\nExamples: \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#rbd"
                                       type: "string"
                                     image:
                                       description: "image is the rados image name.\nMore info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it"
@@ -4771,7 +4782,7 @@ spec:
                                       description: "secretRef is name of the authentication secret for RBDUser. If provided\noverrides keyring.\nDefault is nil.\nMore info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it"
                                       properties:
                                         name:
-                                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                           type: "string"
                                       type: "object"
                                       x-kubernetes-map-type: "atomic"
@@ -4801,7 +4812,7 @@ spec:
                                       description: "secretRef references to the secret for ScaleIO user and other\nsensitive information. If this is not provided, Login operation will fail."
                                       properties:
                                         name:
-                                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                           type: "string"
                                       type: "object"
                                       x-kubernetes-map-type: "atomic"
@@ -4872,7 +4883,7 @@ spec:
                                       description: "secretRef specifies the secret to use for obtaining the StorageOS API\ncredentials.  If not specified, default values will be attempted."
                                       properties:
                                         name:
-                                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                           type: "string"
                                       type: "object"
                                       x-kubernetes-map-type: "atomic"
@@ -4947,7 +4958,7 @@ spec:
                                               description: "The key to select."
                                               type: "string"
                                             name:
-                                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                               type: "string"
                                             optional:
                                               description: "Specify whether the ConfigMap or its key must be defined"
@@ -4996,7 +5007,7 @@ spec:
                                               description: "The key of the secret to select from.  Must be a valid secret key."
                                               type: "string"
                                             name:
-                                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                               type: "string"
                                             optional:
                                               description: "Specify whether the Secret or its key must be defined"
@@ -5074,7 +5085,7 @@ spec:
                                 type: "integer"
                             type: "object"
                           roleProbeTimeoutAfterPodsReady:
-                            description: "Defines the timeout (in seconds) for the role probe after all pods of the component are ready.\nThe system will check if the application is available in the pod.\nIf pods exceed the InitializationTimeoutSeconds time without a role label, this component will enter the\nFailed/Abnormal phase.\n\n\nNote that this configuration will only take effect if the component supports RoleProbe\nand will not affect the life cycle of the pod. default values are 60 seconds."
+                            description: "Defines the timeout (in seconds) for the role probe after all pods of the component are ready.\nThe system will check if the application is available in the pod.\nIf pods exceed the InitializationTimeoutSeconds time without a role label, this component will enter the\nFailed/Abnormal phase.\n\nNote that this configuration will only take effect if the component supports RoleProbe\nand will not affect the life cycle of the pod. default values are 60 seconds."
                             format: "int32"
                             minimum: 30.0
                             type: "integer"
@@ -5155,7 +5166,7 @@ spec:
                         description: "Defines spec for `Replication` workloads."
                         properties:
                           llPodManagementPolicy:
-                            description: "Controls the creation of pods during initial scale up, replacement of pods on nodes, and scaling down.\n\n\n- `OrderedReady`: Creates pods in increasing order (pod-0, then pod-1, etc). The controller waits until each pod\nis ready before continuing. Pods are removed in reverse order when scaling down.\n- `Parallel`: Creates pods in parallel to match the desired scale without waiting. All pods are deleted at once\nwhen scaling down."
+                            description: "Controls the creation of pods during initial scale up, replacement of pods on nodes, and scaling down.\n\n- `OrderedReady`: Creates pods in increasing order (pod-0, then pod-1, etc). The controller waits until each pod\nis ready before continuing. Pods are removed in reverse order when scaling down.\n- `Parallel`: Creates pods in parallel to match the desired scale without waiting. All pods are deleted at once\nwhen scaling down."
                             type: "string"
                           llUpdateStrategy:
                             description: "Specifies the low-level StatefulSetUpdateStrategy to be used when updating Pods in the StatefulSet upon a\nrevision to the Template.\n`UpdateStrategy` will be ignored if this is provided."
@@ -5180,7 +5191,7 @@ spec:
                             type: "object"
                           updateStrategy:
                             default: "Serial"
-                            description: "Specifies the strategy for updating Pods.\nFor workloadType=`Consensus`, the update strategy can be one of the following:\n\n\n- `Serial`: Updates Members sequentially to minimize component downtime.\n- `BestEffortParallel`: Updates Members in parallel to minimize component write downtime. Majority remains online\nat all times.\n- `Parallel`: Forces parallel updates."
+                            description: "Specifies the strategy for updating Pods.\nFor workloadType=`Consensus`, the update strategy can be one of the following:\n\n- `Serial`: Updates Members sequentially to minimize component downtime.\n- `BestEffortParallel`: Updates Members in parallel to minimize component write downtime. Majority remains online\nat all times.\n- `Parallel`: Forces parallel updates."
                             enum:
                               - "Serial"
                               - "BestEffortParallel"
@@ -5191,7 +5202,7 @@ spec:
                         description: "Defines workload spec of this component.\nFrom KB 0.7.0, RSM(InstanceSetSpec) will be the underlying CR which powers all kinds of workload in KB.\nRSM is an enhanced stateful workload extension dedicated for heavy-state workloads like databases."
                         properties:
                           memberUpdateStrategy:
-                            description: "Describes the strategy for updating Members (Pods).\n\n\n- `Serial`: Updates Members sequentially to ensure minimum component downtime.\n- `BestEffortParallel`: Updates Members in parallel to ensure minimum component write downtime.\n- `Parallel`: Forces parallel updates."
+                            description: "Describes the strategy for updating Members (Pods).\n\n- `Serial`: Updates Members sequentially to ensure minimum component downtime.\n- `BestEffortParallel`: Updates Members in parallel to ensure minimum component write downtime.\n- `Parallel`: Forces parallel updates."
                             enum:
                               - "Serial"
                               - "BestEffortParallel"
@@ -5277,7 +5288,7 @@ spec:
                                   - "command"
                                 type: "object"
                               switchoverAction:
-                                description: "Specifies the environment variables that can be used in all following Actions:\n- KB_ITS_USERNAME: Represents the username part of the credential\n- KB_ITS_PASSWORD: Represents the password part of the credential\n- KB_ITS_LEADER_HOST: Represents the leader host\n- KB_ITS_TARGET_HOST: Represents the target host\n- KB_ITS_SERVICE_PORT: Represents the service port\n\n\nDefines the action to perform a switchover.\nIf the Image is not configured, the latest [BusyBox](https://busybox.net/) image will be used."
+                                description: "Specifies the environment variables that can be used in all following Actions:\n- KB_ITS_USERNAME: Represents the username part of the credential\n- KB_ITS_PASSWORD: Represents the password part of the credential\n- KB_ITS_LEADER_HOST: Represents the leader host\n- KB_ITS_TARGET_HOST: Represents the target host\n- KB_ITS_SERVICE_PORT: Represents the service port\n\nDefines the action to perform a switchover.\nIf the Image is not configured, the latest [BusyBox](https://busybox.net/) image will be used."
                                 properties:
                                   args:
                                     description: "Additional parameters used to perform specific statements. This field is optional."
@@ -5396,7 +5407,7 @@ spec:
                         items:
                           properties:
                             defaultMode:
-                              description: "The operator attempts to set default file permissions for scripts (0555) and configurations (0444).\nHowever, certain database engines may require different file permissions.\nYou can specify the desired file permissions here.\n\n\nMust be specified as an octal value between 0000 and 0777 (inclusive),\nor as a decimal value between 0 and 511 (inclusive).\nYAML supports both octal and decimal values for file permissions.\n\n\nPlease note that this setting only affects the permissions of the files themselves.\nDirectories within the specified path are not impacted by this setting.\nIt's important to be aware that this setting might conflict with other options\nthat influence the file mode, such as fsGroup.\nIn such cases, the resulting file mode may have additional bits set.\nRefers to documents of k8s.ConfigMapVolumeSource.defaultMode for more information."
+                              description: "The operator attempts to set default file permissions for scripts (0555) and configurations (0444).\nHowever, certain database engines may require different file permissions.\nYou can specify the desired file permissions here.\n\nMust be specified as an octal value between 0000 and 0777 (inclusive),\nor as a decimal value between 0 and 511 (inclusive).\nYAML supports both octal and decimal values for file permissions.\n\nPlease note that this setting only affects the permissions of the files themselves.\nDirectories within the specified path are not impacted by this setting.\nIt's important to be aware that this setting might conflict with other options\nthat influence the file mode, such as fsGroup.\nIn such cases, the resulting file mode may have additional bits set.\nRefers to documents of k8s.ConfigMapVolumeSource.defaultMode for more information."
                               format: "int32"
                               type: "integer"
                             name:
@@ -5457,9 +5468,10 @@ spec:
                                   anyOf:
                                     - type: "integer"
                                     - type: "string"
-                                  description: "Number or name of the port to access on the pods targeted by the service.\n\n\nNumber must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.\n\n\n- If this is a string, it will be looked up as a named port in the target Pod's container ports.\n- If this is not specified, the value of the `port` field is used (an identity map).\n\n\nThis field is ignored for services with clusterIP=None, and should be\nomitted or set equal to the `port` field.\n\n\nMore info: https://kubernetes.io/docs/concepts/services-networking/service/#defining-a-service"
+                                  description: "Number or name of the port to access on the pods targeted by the service.\n\nNumber must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.\n\n- If this is a string, it will be looked up as a named port in the target Pod's container ports.\n- If this is not specified, the value of the `port` field is used (an identity map).\n\nThis field is ignored for services with clusterIP=None, and should be\nomitted or set equal to the `port` field.\n\nMore info: https://kubernetes.io/docs/concepts/services-networking/service/#defining-a-service"
                                   x-kubernetes-int-or-string: true
                               required:
+                                - "name"
                                 - "port"
                               type: "object"
                             type: "array"
@@ -5471,16 +5483,16 @@ spec:
                       serviceRefDeclarations:
                         description: "Used to declare the service reference of the current component."
                         items:
-                          description: "ServiceRefDeclaration represents a reference to a service that can be either provided by a KubeBlocks Cluster\nor an external service.\nIt acts as a placeholder for the actual service reference, which is determined later when a Cluster is created.\n\n\nThe purpose of ServiceRefDeclaration is to declare a service dependency without specifying the concrete details\nof the service.\nIt allows for flexibility and abstraction in defining service references within a Component.\nBy using ServiceRefDeclaration, you can define service dependencies in a declarative manner, enabling loose coupling\nand easier management of service references across different components and clusters.\n\n\nUpon Cluster creation, the ServiceRefDeclaration is bound to an actual service through the ServiceRef field,\neffectively resolving and connecting to the specified service."
+                          description: "ServiceRefDeclaration represents a reference to a service that can be either provided by a KubeBlocks Cluster\nor an external service.\nIt acts as a placeholder for the actual service reference, which is determined later when a Cluster is created.\n\nThe purpose of ServiceRefDeclaration is to declare a service dependency without specifying the concrete details\nof the service.\nIt allows for flexibility and abstraction in defining service references within a Component.\nBy using ServiceRefDeclaration, you can define service dependencies in a declarative manner, enabling loose coupling\nand easier management of service references across different components and clusters.\n\nUpon Cluster creation, the ServiceRefDeclaration is bound to an actual service through the ServiceRef field,\neffectively resolving and connecting to the specified service."
                           properties:
                             name:
                               description: "Specifies the name of the ServiceRefDeclaration."
                               type: "string"
                             optional:
-                              description: "Specifies whether the service reference can be optional.\n\n\nFor an optional service-ref, the component can still be created even if the service-ref is not provided."
+                              description: "Specifies whether the service reference can be optional.\n\nFor an optional service-ref, the component can still be created even if the service-ref is not provided."
                               type: "boolean"
                             serviceRefDeclarationSpecs:
-                              description: "Defines a list of constraints and requirements for services that can be bound to this ServiceRefDeclaration\nupon Cluster creation.\nEach ServiceRefDeclarationSpec defines a ServiceKind and ServiceVersion,\noutlining the acceptable service types and versions that are compatible.\n\n\nThis flexibility allows a ServiceRefDeclaration to be fulfilled by any one of the provided specs.\nFor example, if it requires an OLTP database, specs for both MySQL and PostgreSQL are listed,\neither MySQL or PostgreSQL services can be used when binding."
+                              description: "Defines a list of constraints and requirements for services that can be bound to this ServiceRefDeclaration\nupon Cluster creation.\nEach ServiceRefDeclarationSpec defines a ServiceKind and ServiceVersion,\noutlining the acceptable service types and versions that are compatible.\n\nThis flexibility allows a ServiceRefDeclaration to be fulfilled by any one of the provided specs.\nFor example, if it requires an OLTP database, specs for both MySQL and PostgreSQL are listed,\neither MySQL or PostgreSQL services can be used when binding."
                               items:
                                 properties:
                                   serviceKind:
@@ -5503,7 +5515,7 @@ spec:
                         description: "Defines spec for `Stateful` workloads."
                         properties:
                           llPodManagementPolicy:
-                            description: "Controls the creation of pods during initial scale up, replacement of pods on nodes, and scaling down.\n\n\n- `OrderedReady`: Creates pods in increasing order (pod-0, then pod-1, etc). The controller waits until each pod\nis ready before continuing. Pods are removed in reverse order when scaling down.\n- `Parallel`: Creates pods in parallel to match the desired scale without waiting. All pods are deleted at once\nwhen scaling down."
+                            description: "Controls the creation of pods during initial scale up, replacement of pods on nodes, and scaling down.\n\n- `OrderedReady`: Creates pods in increasing order (pod-0, then pod-1, etc). The controller waits until each pod\nis ready before continuing. Pods are removed in reverse order when scaling down.\n- `Parallel`: Creates pods in parallel to match the desired scale without waiting. All pods are deleted at once\nwhen scaling down."
                             type: "string"
                           llUpdateStrategy:
                             description: "Specifies the low-level StatefulSetUpdateStrategy to be used when updating Pods in the StatefulSet upon a\nrevision to the Template.\n`UpdateStrategy` will be ignored if this is provided."
@@ -5528,7 +5540,7 @@ spec:
                             type: "object"
                           updateStrategy:
                             default: "Serial"
-                            description: "Specifies the strategy for updating Pods.\nFor workloadType=`Consensus`, the update strategy can be one of the following:\n\n\n- `Serial`: Updates Members sequentially to minimize component downtime.\n- `BestEffortParallel`: Updates Members in parallel to minimize component write downtime. Majority remains online\nat all times.\n- `Parallel`: Forces parallel updates."
+                            description: "Specifies the strategy for updating Pods.\nFor workloadType=`Consensus`, the update strategy can be one of the following:\n\n- `Serial`: Updates Members sequentially to minimize component downtime.\n- `BestEffortParallel`: Updates Members in parallel to minimize component write downtime. Majority remains online\nat all times.\n- `Parallel`: Forces parallel updates."
                             enum:
                               - "Serial"
                               - "BestEffortParallel"
@@ -5542,7 +5554,7 @@ spec:
                             description: "Specifies the deployment strategy that will be used to replace existing pods with new ones."
                             properties:
                               rollingUpdate:
-                                description: "Rolling update config params. Present only if DeploymentStrategyType =\nRollingUpdate.\n---\nTODO: Update this to follow our convention for oneOf, whatever we decide it\nto be."
+                                description: "Rolling update config params. Present only if DeploymentStrategyType =\nRollingUpdate."
                                 properties:
                                   maxSurge:
                                     anyOf:
@@ -5603,7 +5615,7 @@ spec:
                                                   description: "The key to select."
                                                   type: "string"
                                                 name:
-                                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                                   type: "string"
                                                 optional:
                                                   description: "Specify whether the ConfigMap or its key must be defined"
@@ -5652,7 +5664,7 @@ spec:
                                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                                   type: "string"
                                                 name:
-                                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                                   type: "string"
                                                 optional:
                                                   description: "Specify whether the Secret or its key must be defined"
@@ -5728,7 +5740,7 @@ spec:
                                                   description: "The key to select."
                                                   type: "string"
                                                 name:
-                                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                                   type: "string"
                                                 optional:
                                                   description: "Specify whether the ConfigMap or its key must be defined"
@@ -5777,7 +5789,7 @@ spec:
                                                   description: "The key of the secret to select from.  Must be a valid secret key."
                                                   type: "string"
                                                 name:
-                                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                                   type: "string"
                                                 optional:
                                                   description: "Specify whether the Secret or its key must be defined"
@@ -5822,7 +5834,7 @@ spec:
                           accounts:
                             description: "Defines the configuration settings for system accounts."
                             items:
-                              description: "SystemAccountConfig specifies how to create and delete system accounts.\n\n\nDeprecated since v0.9."
+                              description: "SystemAccountConfig specifies how to create and delete system accounts.\n\nDeprecated since v0.9."
                               properties:
                                 name:
                                   description: "The unique identifier of a system account."
@@ -5860,7 +5872,7 @@ spec:
                                           description: "Specifies the statement required to create a new account with the necessary privileges."
                                           type: "string"
                                         deletion:
-                                          description: "Defines the statement required to delete an existing account.\nTypically used in conjunction with the creation statement to delete an account before recreating it.\nFor example, one might use a `drop user if exists` statement followed by a `create user` statement to ensure a fresh account.\n\n\nDeprecated: This field is deprecated and the update statement should be used instead."
+                                          description: "Defines the statement required to delete an existing account.\nTypically used in conjunction with the creation statement to delete an account before recreating it.\nFor example, one might use a `drop user if exists` statement followed by a `create user` statement to ensure a fresh account.\n\nDeprecated: This field is deprecated and the update statement should be used instead."
                                           type: "string"
                                         update:
                                           description: "Defines the statement required to update the password of an existing account."
@@ -5922,7 +5934,7 @@ spec:
                                               description: "The key to select."
                                               type: "string"
                                             name:
-                                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                               type: "string"
                                             optional:
                                               description: "Specify whether the ConfigMap or its key must be defined"
@@ -5971,7 +5983,7 @@ spec:
                                               description: "The key of the secret to select from.  Must be a valid secret key."
                                               type: "string"
                                             name:
-                                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                               type: "string"
                                             optional:
                                               description: "Specify whether the Secret or its key must be defined"
@@ -6059,7 +6071,7 @@ spec:
                             type: "array"
                         type: "object"
                       volumeTypes:
-                        description: "Used to describe the purpose of the volumes mapping the name of the VolumeMounts in the PodSpec.Container field,\nsuch as data volume, log volume, etc. When backing up the volume, the volume can be correctly backed up according\nto the volumeType.\n\n\nFor example:\n\n\n- `name: data, type: data` means that the volume named `data` is used to store `data`.\n- `name: binlog, type: log` means that the volume named `binlog` is used to store `log`.\n\n\nNOTE: When volumeTypes is not defined, the backup function will not be supported, even if a persistent volume has\nbeen specified."
+                        description: "Used to describe the purpose of the volumes mapping the name of the VolumeMounts in the PodSpec.Container field,\nsuch as data volume, log volume, etc. When backing up the volume, the volume can be correctly backed up according\nto the volumeType.\n\nFor example:\n\n- `name: data, type: data` means that the volume named `data` is used to store `data`.\n- `name: binlog, type: log` means that the volume named `binlog` is used to store `log`.\n\nNOTE: When volumeTypes is not defined, the backup function will not be supported, even if a persistent volume has\nbeen specified."
                         items:
                           description: "VolumeTypeSpec is deprecated since v0.9, replaced with ComponentVolume."
                           properties:
@@ -6081,7 +6093,7 @@ spec:
                           - "name"
                         x-kubernetes-list-type: "map"
                       workloadType:
-                        description: "Defines the type of the workload.\n\n\n- `Stateless` describes stateless applications.\n- `Stateful` describes common stateful applications.\n- `Consensus` describes applications based on consensus protocols, such as raft and paxos.\n- `Replication` describes applications based on the primary-secondary data replication protocol."
+                        description: "Defines the type of the workload.\n\n- `Stateless` describes stateless applications.\n- `Stateful` describes common stateful applications.\n- `Consensus` describes applications based on consensus protocols, such as raft and paxos.\n- `Replication` describes applications based on the primary-secondary data replication protocol."
                         enum:
                           - "Stateless"
                           - "Stateful"
@@ -6102,7 +6114,7 @@ spec:
                 connectionCredential:
                   additionalProperties:
                     type: "string"
-                  description: "Connection credential template used for creating a connection credential secret for cluster objects.\n\n\nBuilt-in objects are:\n\n\n- `$(RANDOM_PASSWD)` random 8 characters.\n- `$(STRONG_RANDOM_PASSWD)` random 16 characters, with mixed cases, digits and symbols.\n- `$(UUID)` generate a random UUID v4 string.\n- `$(UUID_B64)` generate a random UUID v4 BASE64 encoded string.\n- `$(UUID_STR_B64)` generate a random UUID v4 string then BASE64 encoded.\n- `$(UUID_HEX)` generate a random UUID v4 HEX representation.\n- `$(HEADLESS_SVC_FQDN)` headless service FQDN placeholder, value pattern is `$(CLUSTER_NAME)-$(1ST_COMP_NAME)-headless.$(NAMESPACE).svc`,\n   where 1ST_COMP_NAME is the 1st component that provide `ClusterDefinition.spec.componentDefs[].service` attribute;\n- `$(SVC_FQDN)` service FQDN placeholder, value pattern is `$(CLUSTER_NAME)-$(1ST_COMP_NAME).$(NAMESPACE).svc`,\n   where 1ST_COMP_NAME is the 1st component that provide `ClusterDefinition.spec.componentDefs[].service` attribute;\n- `$(SVC_PORT_{PORT-NAME})` is ServicePort's port value with specified port name, i.e, a servicePort JSON struct:\n   `{\"name\": \"mysql\", \"targetPort\": \"mysqlContainerPort\", \"port\": 3306}`, and `$(SVC_PORT_mysql)` in the\n   connection credential value is 3306.\n\n\nDeprecated since v0.9.\nThis field is maintained for backward compatibility and its use is discouraged.\nExisting usage should be updated to the current preferred approach to avoid compatibility issues in future releases."
+                  description: "Connection credential template used for creating a connection credential secret for cluster objects.\n\nBuilt-in objects are:\n\n- `$(RANDOM_PASSWD)` random 8 characters.\n- `$(STRONG_RANDOM_PASSWD)` random 16 characters, with mixed cases, digits and symbols.\n- `$(UUID)` generate a random UUID v4 string.\n- `$(UUID_B64)` generate a random UUID v4 BASE64 encoded string.\n- `$(UUID_STR_B64)` generate a random UUID v4 string then BASE64 encoded.\n- `$(UUID_HEX)` generate a random UUID v4 HEX representation.\n- `$(HEADLESS_SVC_FQDN)` headless service FQDN placeholder, value pattern is `$(CLUSTER_NAME)-$(1ST_COMP_NAME)-headless.$(NAMESPACE).svc`,\n   where 1ST_COMP_NAME is the 1st component that provide `ClusterDefinition.spec.componentDefs[].service` attribute;\n- `$(SVC_FQDN)` service FQDN placeholder, value pattern is `$(CLUSTER_NAME)-$(1ST_COMP_NAME).$(NAMESPACE).svc`,\n   where 1ST_COMP_NAME is the 1st component that provide `ClusterDefinition.spec.componentDefs[].service` attribute;\n- `$(SVC_PORT_{PORT-NAME})` is ServicePort's port value with specified port name, i.e, a servicePort JSON struct:\n   `{\"name\": \"mysql\", \"targetPort\": \"mysqlContainerPort\", \"port\": 3306}`, and `$(SVC_PORT_mysql)` in the\n   connection credential value is 3306.\n\nDeprecated since v0.9.\nThis field is maintained for backward compatibility and its use is discouraged.\nExisting usage should be updated to the current preferred approach to avoid compatibility issues in future releases."
                   type: "object"
                 topologies:
                   description: "Topologies defines all possible topologies within the cluster."
@@ -6115,11 +6127,11 @@ spec:
                           description: "ClusterTopologyComponent defines a Component within a ClusterTopology."
                           properties:
                             compDef:
-                              description: "Specifies the exact name, name prefix, or regular expression pattern for matching the name of the ComponentDefinition\ncustom resource (CR) that defines the Component's characteristics and behavior.\n\n\nThe system selects the ComponentDefinition CR with the latest version that matches the pattern.\nThis approach allows:\n\n\n1. Precise selection by providing the exact name of a ComponentDefinition CR.\n2. Flexible and automatic selection of the most up-to-date ComponentDefinition CR\n\t  by specifying a name prefix or regular expression pattern.\n\n\nOnce set, this field cannot be updated."
+                              description: "Specifies the exact name, name prefix, or regular expression pattern for matching the name of the ComponentDefinition\ncustom resource (CR) that defines the Component's characteristics and behavior.\n\nThe system selects the ComponentDefinition CR with the latest version that matches the pattern.\nThis approach allows:\n\n1. Precise selection by providing the exact name of a ComponentDefinition CR.\n2. Flexible and automatic selection of the most up-to-date ComponentDefinition CR\n\t  by specifying a name prefix or regular expression pattern.\n\nOnce set, this field cannot be updated."
                               maxLength: 64
                               type: "string"
                             name:
-                              description: "Defines the unique identifier of the component within the cluster topology.\nIt follows IANA Service naming rules and is used as part of the Service's DNS name.\nThe name must start with a lowercase letter, can contain lowercase letters, numbers,\nand hyphens, and must end with a lowercase letter or number.\n\n\nCannot be updated once set."
+                              description: "Defines the unique identifier of the component within the cluster topology.\nIt follows IANA Service naming rules and is used as part of the Service's DNS name.\nThe name must start with a lowercase letter, can contain lowercase letters, numbers,\nand hyphens, and must end with a lowercase letter or number.\n\nCannot be updated once set."
                               maxLength: 16
                               pattern: "^[a-z]([a-z0-9\\-]*[a-z0-9])?$"
                               type: "string"
@@ -6141,17 +6153,17 @@ spec:
                         description: "Specifies the sequence in which components within a cluster topology are\nstarted, stopped, and upgraded.\nThis ordering is crucial for maintaining the correct dependencies and operational flow across components."
                         properties:
                           provision:
-                            description: "Specifies the order for creating and initializing components.\nThis is designed for components that depend on one another. Components without dependencies can be grouped together.\n\n\nComponents that can be provisioned independently or have no dependencies can be listed together in the same stage,\nseparated by commas."
+                            description: "Specifies the order for creating and initializing components.\nThis is designed for components that depend on one another. Components without dependencies can be grouped together.\n\nComponents that can be provisioned independently or have no dependencies can be listed together in the same stage,\nseparated by commas."
                             items:
                               type: "string"
                             type: "array"
                           terminate:
-                            description: "Outlines the order for stopping and deleting components.\nThis sequence is designed for components that require a graceful shutdown or have interdependencies.\n\n\nComponents that can be terminated independently or have no dependencies can be listed together in the same stage,\nseparated by commas."
+                            description: "Outlines the order for stopping and deleting components.\nThis sequence is designed for components that require a graceful shutdown or have interdependencies.\n\nComponents that can be terminated independently or have no dependencies can be listed together in the same stage,\nseparated by commas."
                             items:
                               type: "string"
                             type: "array"
                           update:
-                            description: "Update determines the order for updating components' specifications, such as image upgrades or resource scaling.\nThis sequence is designed for components that have dependencies or require specific update procedures.\n\n\nComponents that can be updated independently or have no dependencies can be listed together in the same stage,\nseparated by commas."
+                            description: "Update determines the order for updating components' specifications, such as image upgrades or resource scaling.\nThis sequence is designed for components that have dependencies or require specific update procedures.\n\nComponents that can be updated independently or have no dependencies can be listed together in the same stage,\nseparated by commas."
                             items:
                               type: "string"
                             type: "array"
@@ -6164,7 +6176,7 @@ spec:
                   minItems: 1
                   type: "array"
                 type:
-                  description: "Specifies the well-known database type, such as mysql, redis, or mongodb.\n\n\nDeprecated since v0.9.\nThis field is maintained for backward compatibility and its use is discouraged.\nExisting usage should be updated to the current preferred approach to avoid compatibility issues in future releases."
+                  description: "Specifies the well-known database type, such as mysql, redis, or mongodb.\n\nDeprecated since v0.9.\nThis field is maintained for backward compatibility and its use is discouraged.\nExisting usage should be updated to the current preferred approach to avoid compatibility issues in future releases."
                   maxLength: 24
                   pattern: "^[a-z0-9]([a-z0-9\\-]*[a-z0-9])?$"
                   type: "string"

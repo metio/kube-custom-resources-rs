@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.18.0"
+    controller-gen.kubebuilder.io/version: "v0.21.0"
   name: "vmalerts.operator.victoriametrics.com"
 spec:
   group: "operator.victoriametrics.com"
@@ -45,6 +45,9 @@ spec:
                   description: "Affinity If specified, the pod's scheduling constraints."
                   type: "object"
                   x-kubernetes-preserve-unknown-fields: true
+                componentVersion:
+                  description: "ComponentVersion defines default images tag for all components.\nit can be overwritten with component specific image.tag value."
+                  type: "string"
                 configMaps:
                   description: "ConfigMaps is a list of ConfigMaps in the same namespace as the Application\nobject, which shall be mounted into the Application container\nat /etc/vm/configs/CONFIGMAP_NAME folder"
                   items:
@@ -70,13 +73,13 @@ spec:
                 configReloaderExtraArgs:
                   additionalProperties:
                     type: "string"
-                  description: "ConfigReloaderExtraArgs that will be passed to  VMAuths config-reloader container\nfor example resyncInterval: \"30s\""
+                  description: "ConfigReloaderExtraArgs that will be passed to  VMAuths config-reloader container\nfor example resync-interval: \"30s\""
                   type: "object"
                 configReloaderImage:
                   description: "ConfigReloaderImage defines image:tag for config-reloader container"
                   type: "string"
                 configReloaderImageTag:
-                  description: "ConfigReloaderImageTag defines image:tag for config-reloader container\nDeprecated: use configReloaderImage instead"
+                  description: "ConfigReloaderImageTag defines image:tag for config-reloader container"
                   type: "string"
                 configReloaderResources:
                   description: "ConfigReloaderResources config-reloader container resource request and limits, https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/\nif not defined default resources from operator config will be used"
@@ -254,6 +257,9 @@ spec:
                 dnsPolicy:
                   description: "DNSPolicy sets DNS policy for the pod"
                   type: "string"
+                enableServiceLinks:
+                  description: "EnableServiceLinks indicates whether information about services should be injected into pod's\nenvironment variables, matching the syntax of Docker links.\nOptional: Defaults to true."
+                  type: "boolean"
                 enforcedNamespaceLabel:
                   description: "EnforcedNamespaceLabel enforces adding a namespace label of origin for each alert\nand metric that is user created. The label value will always be the namespace of the object that is\nbeing created."
                   type: "string"
@@ -425,7 +431,7 @@ spec:
                       type: "string"
                   type: "object"
                 livenessProbe:
-                  description: "LivenessProbe that will be added CRD pod"
+                  description: "LivenessProbe that will be added to CR pod"
                   type: "object"
                   x-kubernetes-preserve-unknown-fields: true
                 logFormat:
@@ -818,7 +824,7 @@ spec:
                     type: "object"
                   type: "array"
                 readinessProbe:
-                  description: "ReadinessProbe that will be added CRD pod"
+                  description: "ReadinessProbe that will be added to CR pod"
                   type: "object"
                   x-kubernetes-preserve-unknown-fields: true
                 remoteRead:
@@ -1205,7 +1211,7 @@ spec:
                     - "spec"
                   type: "object"
                 startupProbe:
-                  description: "StartupProbe that will be added to CRD pod"
+                  description: "StartupProbe that will be added to CR pod"
                   type: "object"
                   x-kubernetes-preserve-unknown-fields: true
                 terminationGracePeriodSeconds:
@@ -1224,7 +1230,7 @@ spec:
                         description: "Key is the taint key that the toleration applies to. Empty means match all taint keys.\nIf the key is empty, operator must be Exists; this combination means to match all values and all keys."
                         type: "string"
                       operator:
-                        description: "Operator represents a key's relationship to the value.\nValid operators are Exists and Equal. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category."
+                        description: "Operator represents a key's relationship to the value.\nValid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category.\nLt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators)."
                         type: "string"
                       tolerationSeconds:
                         description: "TolerationSeconds represents the period of time the toleration (which must be\nof effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,\nit is not set, which means tolerate the taint forever (do not evict). Zero and\nnegative values will be treated as 0 (evict immediately) by the system."
@@ -1356,6 +1362,8 @@ spec:
                   x-kubernetes-list-map-keys:
                     - "type"
                   x-kubernetes-list-type: "map"
+                lastAppliedSpec:
+                  x-kubernetes-preserve-unknown-fields: true
                 observedGeneration:
                   description: "ObservedGeneration defines current generation picked by operator for the\nreconcile"
                   format: "int64"

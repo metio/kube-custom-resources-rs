@@ -53,6 +53,21 @@ spec:
                     brokerAZDistribution:
                       description: "The distribution of broker nodes across Availability Zones. This is an optional\nparameter. If you don't specify it, Amazon MSK gives it the value DEFAULT.\nYou can also explicitly set this parameter to the value DEFAULT. No other\nvalues are currently allowed.\n\nAmazon MSK distributes the broker nodes evenly across the Availability Zones\nthat correspond to the subnets you provide when you create the cluster."
                       type: "string"
+                    clientSubnetRefs:
+                      description: "Reference field for ClientSubnets"
+                      items:
+                        description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
+                        properties:
+                          from:
+                            description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
+                            properties:
+                              name:
+                                type: "string"
+                              namespace:
+                                type: "string"
+                            type: "object"
+                        type: "object"
+                      type: "array"
                     clientSubnets:
                       items:
                         type: "string"
@@ -60,6 +75,9 @@ spec:
                     connectivityInfo:
                       description: "Information about the broker access configuration."
                       properties:
+                        networkType:
+                          description: "The network type of the cluster, which is IPv4 or DUAL. The DUAL network\ntype uses both IPv4 and IPv6 addresses for your cluster and its resources.\n\nBy default, a cluster uses the IPv4 network type."
+                          type: "string"
                         publicAccess:
                           description: "Public access control for brokers."
                           properties:
@@ -219,6 +237,13 @@ spec:
                           type: "object"
                       type: "object"
                   type: "object"
+                rebalancing:
+                  description: "Specifies if intelligent rebalancing should be turned on for the new MSK\nProvisioned cluster with Express brokers. By default, intelligent rebalancing\nstatus is ACTIVE for all new clusters."
+                  properties:
+                    status:
+                      description: "Intelligent rebalancing status. The default intelligent rebalancing status\nis ACTIVE for all new Express-based clusters."
+                      type: "string"
+                  type: "object"
                 storageMode:
                   description: "This controls storage mode for supported storage tiers."
                   type: "string"
@@ -244,6 +269,9 @@ spec:
                       type: "string"
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."
+                      type: "string"
+                    partition:
+                      description: "Partition is the AWS partition in which the resource exists or will exist"
                       type: "string"
                     region:
                       description: "Region is the AWS region in which the resource exists or will exist."

@@ -136,6 +136,22 @@ spec:
                 createBucketConfiguration:
                   description: "The configuration information for the bucket."
                   properties:
+                    bucket:
+                      description: "Specifies the information about the bucket that will be created. For more\ninformation about directory buckets, see Directory buckets (https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-buckets-overview.html)\nin the Amazon S3 User Guide.\n\nThis functionality is only supported by directory buckets."
+                      properties:
+                        dataRedundancy:
+                          type: "string"
+                        type:
+                          type: "string"
+                      type: "object"
+                    location:
+                      description: "Specifies the location where the bucket will be created.\n\nFor directory buckets, the location type is Availability Zone or Local Zone.\nFor more information about directory buckets, see Working with directory\nbuckets (https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-buckets-overview.html)\nin the Amazon S3 User Guide.\n\nThis functionality is only supported by directory buckets."
+                      properties:
+                        name:
+                          type: "string"
+                        type:
+                          type: "string"
+                      type: "object"
                     locationConstraint:
                       type: "string"
                   type: "object"
@@ -147,7 +163,7 @@ spec:
                         description: "Specifies the default server-side encryption configuration.\n\n   * General purpose buckets - If you're specifying a customer managed KMS\n   key, we recommend using a fully qualified KMS key ARN. If you use a KMS\n   key alias instead, then KMS resolves the key within the requester’s\n   account. This behavior can result in data that's encrypted with a KMS\n   key that belongs to the requester, and not the bucket owner.\n\n   * Directory buckets - When you specify an KMS customer managed key (https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#customer-cmk)\n   for encryption in your directory bucket, only use the key ID or key ARN.\n   The key alias format of the KMS key isn't supported."
                         properties:
                           applyServerSideEncryptionByDefault:
-                            description: "Describes the default server-side encryption to apply to new objects in the\nbucket. If a PUT Object request doesn't specify any server-side encryption,\nthis default encryption will be applied. For more information, see PutBucketEncryption\n(https://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketPUTencryption.html).\n\n   * General purpose buckets - If you don't specify a customer managed key\n   at configuration, Amazon S3 automatically creates an Amazon Web Services\n   KMS key (aws/s3) in your Amazon Web Services account the first time that\n   you add an object encrypted with SSE-KMS to a bucket. By default, Amazon\n   S3 uses this KMS key for SSE-KMS.\n\n   * Directory buckets - Your SSE-KMS configuration can only support 1 customer\n   managed key (https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#customer-cmk)\n   per directory bucket for the lifetime of the bucket. The Amazon Web Services\n   managed key (https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk)\n   (aws/s3) isn't supported.\n\n   * Directory buckets - For directory buckets, there are only two supported\n   options for server-side encryption: SSE-S3 and SSE-KMS."
+                            description: "Describes the default server-side encryption to apply to new objects in the\nbucket. If a PUT Object request doesn't specify any server-side encryption,\nthis default encryption will be applied. For more information, see PutBucketEncryption\n(https://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketPUTencryption.html).\n\n   * General purpose buckets - If you don't specify a customer managed key\n   at configuration, Amazon S3 automatically creates an Amazon Web Services\n   KMS key (aws/s3) in your Amazon Web Services account the first time that\n   you add an object encrypted with SSE-KMS to a bucket. By default, Amazon\n   S3 uses this KMS key for SSE-KMS.\n\n   * Directory buckets - Your SSE-KMS configuration can only support 1 customer\n   managed key (https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#customer-cmk)\n   per directory bucket's lifetime. The Amazon Web Services managed key (https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk)\n   (aws/s3) isn't supported.\n\n   * Directory buckets - For directory buckets, there are only two supported\n   options for server-side encryption: SSE-S3 and SSE-KMS."
                             properties:
                               kmsMasterKeyID:
                                 type: "string"
@@ -227,20 +243,20 @@ spec:
                   type: "array"
                 inventory:
                   items:
-                    description: "Specifies the inventory configuration for an Amazon S3 bucket. For more information,\nsee GET Bucket inventory (https://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketGETInventoryConfig.html)\nin the Amazon S3 API Reference."
+                    description: "Specifies the S3 Inventory configuration for an Amazon S3 bucket. For more\ninformation, see GET Bucket inventory (https://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketGETInventoryConfig.html)\nin the Amazon S3 API Reference."
                     properties:
                       destination:
-                        description: "Specifies the inventory configuration for an Amazon S3 bucket."
+                        description: "Specifies the S3 Inventory configuration for an Amazon S3 bucket."
                         properties:
                           s3BucketDestination:
-                            description: "Contains the bucket name, file format, bucket owner (optional), and prefix\n(optional) where inventory results are published."
+                            description: "Contains the bucket name, file format, bucket owner (optional), and prefix\n(optional) where S3 Inventory results are published."
                             properties:
                               accountID:
                                 type: "string"
                               bucket:
                                 type: "string"
                               encryption:
-                                description: "Contains the type of server-side encryption used to encrypt the inventory\nresults."
+                                description: "Contains the type of server-side encryption used to encrypt the S3 Inventory\nresults."
                                 properties:
                                   sseKMS:
                                     description: "Specifies the use of SSE-KMS to encrypt delivered inventory reports."
@@ -256,7 +272,7 @@ spec:
                             type: "object"
                         type: "object"
                       filter:
-                        description: "Specifies an inventory filter. The inventory only includes objects that meet\nthe filter's criteria."
+                        description: "Specifies an S3 Inventory filter. The inventory only includes objects that\nmeet the filter's criteria."
                         properties:
                           prefix:
                             type: "string"
@@ -272,7 +288,7 @@ spec:
                           type: "string"
                         type: "array"
                       schedule:
-                        description: "Specifies the schedule for generating inventory results."
+                        description: "Specifies the schedule for generating S3 Inventory results."
                         properties:
                           frequency:
                             type: "string"
@@ -472,6 +488,12 @@ spec:
                   type: "array"
                 name:
                   description: "The name of the bucket to create.\n\nGeneral purpose buckets - For information about bucket naming restrictions,\nsee Bucket naming rules (https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html)\nin the Amazon S3 User Guide.\n\nDirectory buckets - When you use this operation with a directory bucket,\nyou must use path-style requests in the format https://s3express-control.region-code.amazonaws.com/bucket-name\n. Virtual-hosted-style requests aren't supported. Directory bucket names\nmust be unique in the chosen Zone (Availability Zone or Local Zone). Bucket\nnames must also follow the format bucket-base-name--zone-id--x-s3 (for example,\nDOC-EXAMPLE-BUCKET--usw2-az1--x-s3). For information about bucket naming\nrestrictions, see Directory bucket naming rules (https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-bucket-naming-rules.html)\nin the Amazon S3 User Guide"
+                  type: "string"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
+                namespace:
+                  description: "Specifies the namespace where you want to create your general purpose bucket.\nWhen you create a general purpose bucket, you can choose to create a bucket\nin the shared global namespace or you can choose to create a bucket in your\naccount regional namespace. Your account regional namespace is a subdivision\nof the global namespace that only your account can create buckets in. For\nmore information on bucket namespaces, see Namespaces for general purpose\nbuckets (https://docs.aws.amazon.com/AmazonS3/latest/userguide/gpbucketnamespaces.html).\n\nGeneral purpose buckets in your account regional namespace must follow a\nspecific naming convention. These buckets consist of a bucket name prefix\nthat you create, and a suffix that contains your 12-digit Amazon Web Services\nAccount ID, the Amazon Web Services Region code, and ends with -an. Bucket\nnames must follow the format bucket-name-prefix-accountId-region-an (for\nexample, amzn-s3-demo-bucket-111122223333-us-west-2-an). For information\nabout bucket naming restrictions, see Account regional namespace naming rules\n(https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html#account-regional-naming-rules)\nin the Amazon S3 User Guide.\n\nThis functionality is not supported for directory buckets."
                   type: "string"
                   x-kubernetes-validations:
                     - message: "Value is immutable once set"
@@ -834,6 +856,9 @@ spec:
                       type: "string"
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."
+                      type: "string"
+                    partition:
+                      description: "Partition is the AWS partition in which the resource exists or will exist"
                       type: "string"
                     region:
                       description: "Region is the AWS region in which the resource exists or will exist."

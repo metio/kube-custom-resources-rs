@@ -48,7 +48,7 @@ spec:
                       type: "string"
                   type: "object"
                 imageScanningConfiguration:
-                  description: "The image scanning configuration for the repository. This determines whether\nimages are scanned for known vulnerabilities after being pushed to the repository."
+                  description: "The imageScanningConfiguration parameter is being deprecated, in favor of\nspecifying the image scanning configuration at the registry level. For more\ninformation, see PutRegistryScanningConfiguration.\n\nThe image scanning configuration for the repository. This determines whether\nimages are scanned for known vulnerabilities after being pushed to the repository."
                   properties:
                     scanOnPush:
                       type: "boolean"
@@ -57,9 +57,9 @@ spec:
                   description: "The tag mutability setting for the repository. If this parameter is omitted,\nthe default setting of MUTABLE will be used which will allow image tags to\nbe overwritten. If IMMUTABLE is specified, all image tags within the repository\nwill be immutable which will prevent them from being overwritten."
                   type: "string"
                 imageTagMutabilityExclusionFilters:
-                  description: "Creates a repository with a list of filters that define which image tags\ncan override the default image tag mutability setting."
+                  description: "A list of filters that specify which image tags should be excluded from the\nrepository's image tag mutability setting."
                   items:
-                    description: "Overrides the default image tag mutability setting of the repository for\nimage tags that match the specified filters."
+                    description: "A filter that specifies which image tags should be excluded from the repository's\nimage tag mutability setting."
                     properties:
                       filter:
                         type: "string"
@@ -104,6 +104,9 @@ spec:
                       type: "string"
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."
+                      type: "string"
+                    partition:
+                      description: "Partition is the AWS partition in which the resource exists or will exist"
                       type: "string"
                     region:
                       description: "Region is the AWS region in which the resource exists or will exist."

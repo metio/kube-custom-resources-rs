@@ -2827,6 +2827,7 @@ spec:
                           type: "array"
                       type: "object"
                     featureFlags:
+                      description: "K8sFeatureFlagsSpec is DEPRECATED so do not use! Kept for backwards compatibility."
                       properties:
                         crdMonitoring:
                           type: "boolean"

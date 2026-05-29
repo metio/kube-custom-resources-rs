@@ -1,6 +1,9 @@
 pub mod gateways;
 pub mod httpgateways;
+pub mod httplisteneroptions;
+pub mod listeneroptions;
 pub mod routeoptions;
 pub mod routetables;
+pub mod tcpgateways;
 pub mod virtualhostoptions;
 pub mod virtualservices;

@@ -81,6 +81,9 @@ spec:
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."
                       type: "string"
+                    partition:
+                      description: "Partition is the AWS partition in which the resource exists or will exist"
+                      type: "string"
                     region:
                       description: "Region is the AWS region in which the resource exists or will exist."
                       type: "string"
@@ -133,6 +136,11 @@ spec:
                       subnetStatus:
                         type: "string"
                     type: "object"
+                  type: "array"
+                supportedNetworkTypes:
+                  description: "The network type of the DB subnet group.\n\nValid Values: IPV4 | DUAL\n\nA DBSubnetGroup can support only the IPv4 protocol or the IPv4 and the IPv6\nprotocols (DUAL)."
+                  items:
+                    type: "string"
                   type: "array"
                 vpcID:
                   description: "Provides the virtual private cloud (VPC) ID of the subnet group."

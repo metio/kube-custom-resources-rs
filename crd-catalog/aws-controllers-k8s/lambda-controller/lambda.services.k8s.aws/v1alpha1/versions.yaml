@@ -64,7 +64,7 @@ spec:
                       type: "string"
                   type: "object"
                 functionName:
-                  description: "The name or ARN of the Lambda function.\n\nName formats\n\n   * Function name - MyFunction.\n\n   * Function ARN - arn:aws:lambda:us-west-2:123456789012:function:MyFunction.\n\n   * Partial ARN - 123456789012:function:MyFunction.\n\nThe length constraint applies only to the full ARN. If you specify only the\nfunction name, it is limited to 64 characters in length.\n\nRegex Pattern: `^(arn:(aws[a-zA-Z-]*)?:lambda:)?([a-z]{2}(-gov)?-[a-z]+-\\d{1}:)?(\\d{12}:)?(function:)?([a-zA-Z0-9-_]+)(:(\\$LATEST|[a-zA-Z0-9-_]+))?$`"
+                  description: "The name or ARN of the Lambda function.\n\nName formats\n\n   * Function name - MyFunction.\n\n   * Function ARN - arn:aws:lambda:us-west-2:123456789012:function:MyFunction.\n\n   * Partial ARN - 123456789012:function:MyFunction.\n\nThe length constraint applies only to the full ARN. If you specify only the\nfunction name, it is limited to 64 characters in length.\n\nRegex Pattern: `^(arn:(aws[a-zA-Z-]*)?:lambda:)?([a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:)?(\\d{12}:)?(function:)?([a-zA-Z0-9-_]+)(:(\\$LATEST|[a-zA-Z0-9-_]+))?$`"
                   type: "string"
                 functionRef:
                   description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
@@ -103,6 +103,9 @@ spec:
                       type: "string"
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."
+                      type: "string"
+                    partition:
+                      description: "Partition is the AWS partition in which the resource exists or will exist"
                       type: "string"
                     region:
                       description: "Region is the AWS region in which the resource exists or will exist."
@@ -152,6 +155,16 @@ spec:
                     targetARN:
                       type: "string"
                   type: "object"
+                durableConfig:
+                  description: "The function's durable execution configuration settings, if the function\nis configured for durability."
+                  properties:
+                    executionTimeout:
+                      format: "int64"
+                      type: "integer"
+                    retentionPeriodInDays:
+                      format: "int64"
+                      type: "integer"
+                  type: "object"
                 environment:
                   description: "The function's environment variables (https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html).\nOmitted from CloudTrail logs."
                   properties:
@@ -187,7 +200,7 @@ spec:
                     type: "object"
                   type: "array"
                 functionARN:
-                  description: "The function's Amazon Resource Name (ARN).\n\nRegex Pattern: `^arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}(-gov)?-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9-_\\.]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?$`"
+                  description: "The function's Amazon Resource Name (ARN).\n\nRegex Pattern: `^arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9-_\\.]+(:(\\$LATEST(\\.PUBLISHED)?|[a-zA-Z0-9-_]+))?$`"
                   type: "string"
                 handler:
                   description: "The function that Lambda calls to begin running your function.\n\nRegex Pattern: `^[^\\s]+$`"
@@ -250,7 +263,7 @@ spec:
                     type: "object"
                   type: "array"
                 masterARN:
-                  description: "For Lambda@Edge functions, the ARN of the main function.\n\nRegex Pattern: `^arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}(-gov)?-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9-_]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?$`"
+                  description: "For Lambda@Edge functions, the ARN of the main function.\n\nRegex Pattern: `^arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9-_]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?$`"
                   type: "string"
                 memorySize:
                   description: "The amount of memory available to the function at runtime."
@@ -291,6 +304,12 @@ spec:
                 stateReasonCode:
                   description: "The reason code for the function's current state. When the code is Creating,\nyou can't invoke or modify the function."
                   type: "string"
+                tenancyConfig:
+                  description: "The function's tenant isolation configuration settings. Determines whether\nthe Lambda function runs on a shared or dedicated infrastructure per unique\ntenant."
+                  properties:
+                    tenantIsolationMode:
+                      type: "string"
+                  type: "object"
                 timeout:
                   description: "The amount of time in seconds that Lambda allows a function to run before\nstopping it."
                   format: "int64"

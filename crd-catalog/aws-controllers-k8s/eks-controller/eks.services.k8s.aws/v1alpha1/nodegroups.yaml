@@ -258,6 +258,9 @@ spec:
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."
                       type: "string"
+                    partition:
+                      description: "Partition is the AWS partition in which the resource exists or will exist"
+                      type: "string"
                     region:
                       description: "Region is the AWS region in which the resource exists or will exist."
                       type: "string"
@@ -325,7 +328,7 @@ spec:
                   properties:
                     autoScalingGroups:
                       items:
-                        description: "An Amazon EC2 Auto Scaling group that is associated with an Amazon EKS managed\nnode group."
+                        description: "An Auto Scaling group that is associated with an Amazon EKS managed node\ngroup."
                         properties:
                           name:
                             type: "string"

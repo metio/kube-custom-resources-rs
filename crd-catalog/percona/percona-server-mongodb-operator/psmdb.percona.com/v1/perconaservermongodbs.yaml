@@ -503,6 +503,9 @@ spec:
                               - "physical"
                               - "incremental"
                               - "incremental-base"
+                              - "external"
+                            type: "string"
+                          volumeSnapshotClass:
                             type: "string"
                         required:
                           - "enabled"
@@ -894,6 +897,11 @@ spec:
                   type: "string"
                 pmm:
                   properties:
+                    authenticationMechanism:
+                      enum:
+                        - "SCRAM-SHA-256"
+                        - "SCRAM-SHA-1"
+                      type: "string"
                     containerSecurityContext:
                       properties:
                         allowPrivilegeEscalation:
@@ -3983,6 +3991,8 @@ spec:
                       externalNodes:
                         items:
                           properties:
+                            arbiterOnly:
+                              type: "boolean"
                             horizons:
                               additionalProperties:
                                 type: "string"
@@ -11758,6 +11768,9 @@ spec:
                       - "size"
                     type: "object"
                   type: "array"
+                revisionHistoryLimit:
+                  format: "int32"
+                  type: "integer"
                 roles:
                   items:
                     properties:
@@ -14812,6 +14825,8 @@ spec:
                         externalNodes:
                           items:
                             properties:
+                              arbiterOnly:
+                                type: "boolean"
                               horizons:
                                 additionalProperties:
                                   type: "string"
@@ -25368,29 +25383,41 @@ spec:
                   required:
                     - "enabled"
                   type: "object"
-                storageAutoscaling:
+                storageScaling:
                   properties:
-                    enabled:
+                    autoscaling:
+                      properties:
+                        enabled:
+                          type: "boolean"
+                        growthStep:
+                          anyOf:
+                            - type: "integer"
+                            - type: "string"
+                          default: "2Gi"
+                          pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                          x-kubernetes-int-or-string: true
+                        maxSize:
+                          anyOf:
+                            - type: "integer"
+                            - type: "string"
+                          pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                          x-kubernetes-int-or-string: true
+                        triggerThresholdPercent:
+                          default: 80
+                          maximum: 95.0
+                          minimum: 50.0
+                          type: "integer"
+                      type: "object"
+                    enableExternalAutoscaling:
                       type: "boolean"
-                    growthStep:
-                      anyOf:
-                        - type: "integer"
-                        - type: "string"
-                      default: "2Gi"
-                      pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
-                      x-kubernetes-int-or-string: true
-                    maxSize:
-                      anyOf:
-                        - type: "integer"
-                        - type: "string"
-                      pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
-                      x-kubernetes-int-or-string: true
-                    triggerThresholdPercent:
-                      default: 80
-                      maximum: 95.0
-                      minimum: 50.0
-                      type: "integer"
+                    enableVolumeScaling:
+                      type: "boolean"
                   type: "object"
+                  x-kubernetes-validations:
+                    - message: "autoscaling cannot be enabled when enableVolumeScaling is disabled"
+                      rule: "!has(self.autoscaling) || !has(self.autoscaling.enabled) || !self.autoscaling.enabled || self.enableVolumeScaling"
+                    - message: "autoscaling cannot be enabled when enableExternalAutoscaling is enabled"
+                      rule: "!has(self.autoscaling) || !has(self.autoscaling.enabled) || !self.autoscaling.enabled || !has(self.enableExternalAutoscaling) || !self.enableExternalAutoscaling"
                 tls:
                   properties:
                     allowInvalidCertificates:

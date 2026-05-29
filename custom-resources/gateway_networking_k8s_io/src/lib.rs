@@ -9,6 +9,11 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `Gateway`
 - `GRPCRoute`
 - `HTTPRoute`
+- `ListenerSet`
+- `ReferenceGrant`
+- `TCPRoute`
+- `TLSRoute`
+- `UDPRoute`
 ## gateway.networking.k8s.io/v1alpha2
 - `BackendLBPolicy`
 - `GRPCRoute`

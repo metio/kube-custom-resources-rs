@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.18.0"
+    controller-gen.kubebuilder.io/version: "v0.21.0"
   name: "vlsingles.operator.victoriametrics.com"
 spec:
   group: "operator.victoriametrics.com"
@@ -41,6 +41,9 @@ spec:
                   description: "Affinity If specified, the pod's scheduling constraints."
                   type: "object"
                   x-kubernetes-preserve-unknown-fields: true
+                componentVersion:
+                  description: "ComponentVersion defines default images tag for all components.\nit can be overwritten with component specific image.tag value."
+                  type: "string"
                 configMaps:
                   description: "ConfigMaps is a list of ConfigMaps in the same namespace as the Application\nobject, which shall be mounted into the Application container\nat /etc/vm/configs/CONFIGMAP_NAME folder"
                   items:
@@ -96,6 +99,9 @@ spec:
                 dnsPolicy:
                   description: "DNSPolicy sets DNS policy for the pod"
                   type: "string"
+                enableServiceLinks:
+                  description: "EnableServiceLinks indicates whether information about services should be injected into pod's\nenvironment variables, matching the syntax of Docker links.\nOptional: Defaults to true."
+                  type: "boolean"
                 extraArgs:
                   additionalProperties:
                     type: "string"
@@ -259,7 +265,7 @@ spec:
                       type: "string"
                   type: "object"
                 livenessProbe:
-                  description: "LivenessProbe that will be added CRD pod"
+                  description: "LivenessProbe that will be added to CR pod"
                   type: "object"
                   x-kubernetes-preserve-unknown-fields: true
                 logFormat:
@@ -345,7 +351,7 @@ spec:
                     type: "object"
                   type: "array"
                 readinessProbe:
-                  description: "ReadinessProbe that will be added CRD pod"
+                  description: "ReadinessProbe that will be added to CR pod"
                   type: "object"
                   x-kubernetes-preserve-unknown-fields: true
                 replicaCount:
@@ -458,7 +464,7 @@ spec:
                     - "spec"
                   type: "object"
                 startupProbe:
-                  description: "StartupProbe that will be added to CRD pod"
+                  description: "StartupProbe that will be added to CR pod"
                   type: "object"
                   x-kubernetes-preserve-unknown-fields: true
                 storage:
@@ -507,7 +513,7 @@ spec:
                         - "name"
                       type: "object"
                     resources:
-                      description: "resources represents the minimum resources the volume should have.\nIf RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements\nthat are lower than previous value but must still be higher than capacity recorded in the\nstatus field of the claim.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources"
+                      description: "resources represents the minimum resources the volume should have.\nUsers are allowed to specify resource requirements\nthat are lower than previous value but must still be higher than capacity recorded in the\nstatus field of the claim.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources"
                       properties:
                         limits:
                           additionalProperties:
@@ -716,7 +722,7 @@ spec:
                         description: "Key is the taint key that the toleration applies to. Empty means match all taint keys.\nIf the key is empty, operator must be Exists; this combination means to match all values and all keys."
                         type: "string"
                       operator:
-                        description: "Operator represents a key's relationship to the value.\nValid operators are Exists and Equal. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category."
+                        description: "Operator represents a key's relationship to the value.\nValid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category.\nLt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators)."
                         type: "string"
                       tolerationSeconds:
                         description: "TolerationSeconds represents the period of time the toleration (which must be\nof effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,\nit is not set, which means tolerate the taint forever (do not evict). Zero and\nnegative values will be treated as 0 (evict immediately) by the system."
@@ -837,6 +843,8 @@ spec:
                   x-kubernetes-list-map-keys:
                     - "type"
                   x-kubernetes-list-type: "map"
+                lastAppliedSpec:
+                  x-kubernetes-preserve-unknown-fields: true
                 observedGeneration:
                   description: "ObservedGeneration defines current generation picked by operator for the\nreconcile"
                   format: "int64"

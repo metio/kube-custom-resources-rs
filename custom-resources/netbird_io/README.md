@@ -17,3 +17,9 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 - `NBResource`
 - `NBRoutingPeer`
 - `NBSetupKey`
+### netbird.io/v1alpha1
+- `Group`
+- `NetworkResource`
+- `NetworkRouter`
+- `SetupKey`
+- `SidecarProfile`

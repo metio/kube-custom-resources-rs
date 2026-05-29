@@ -16,6 +16,7 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 - `KafkaConnector`
 - `KafkaConnect`
 - `KafkaMirrorMaker2`
+- `KafkaNodePool`
 - `KafkaRebalance`
 - `Kafka`
 - `KafkaTopic`

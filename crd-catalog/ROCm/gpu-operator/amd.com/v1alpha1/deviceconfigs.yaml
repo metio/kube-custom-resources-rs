@@ -34,6 +34,18 @@ spec:
                 commonConfig:
                   description: "common config"
                   properties:
+                    imageRegistrySecrets:
+                      description: "ImageRegistrySecrets are global secrets used for pull/push images from/to private registries.\nThese secrets will be applied to all component pods (device plugin, metrics exporter,\ntest runner, config manager, DRA driver, node labeller) in addition to component-specific secrets."
+                      items:
+                        description: "LocalObjectReference contains enough information to let you locate the\nreferenced object inside the same namespace."
+                        properties:
+                          name:
+                            default: ""
+                            description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                            type: "string"
+                        type: "object"
+                        x-kubernetes-map-type: "atomic"
+                      type: "array"
                     initContainerImage:
                       description: "InitContainerImage is being used for the operands pods, i.e. metrics exporter, test runner, device plugin, device config manager and node labeller"
                       type: "string"
@@ -66,7 +78,7 @@ spec:
                   description: "config manager"
                   properties:
                     config:
-                      description: "config map to customize the config for config manager, if not specified default config will be applied"
+                      description: "ConfigMap holding DCM config.json. When set, the operator mounts this ConfigMap and does not create it.\nWhen omitted or name is empty, the operator mounts ConfigMap \"default-dcm-config\" and creates it in the\nDeviceConfig namespace if it does not already exist (same default payload as chart defaultDCMConfigMap)."
                       properties:
                         name:
                           default: ""
@@ -183,9 +195,16 @@ spec:
                             type: "string"
                         type: "object"
                       type: "array"
+                    enableDevicePlugin:
+                      default: true
+                      description: "enable Device Plugin, enabled by default"
+                      type: "boolean"
                     enableNodeLabeller:
                       default: true
                       description: "enable or disable the node labeller"
+                      type: "boolean"
+                    hostNetwork:
+                      description: "HostNetwork specifies whether to use host network namespace for the device plugin DaemonSet pods."
                       type: "boolean"
                     imageRegistrySecret:
                       description: "node labeller image registry secret used to pull/push images"
@@ -196,6 +215,11 @@ spec:
                           type: "string"
                       type: "object"
                       x-kubernetes-map-type: "atomic"
+                    kubeletSocketPath:
+                      default: "/var/lib/kubelet/device-plugins"
+                      description: "KubeletSocketPath specifies the kubelet device plugins directory path.\nUseful for Kubernetes distributions like microk8s, k3s where the path differs from the standard."
+                      pattern: "^(/[^/\\0]+)*(/)?$"
+                      type: "string"
                     nodeLabellerArguments:
                       description: "node labeller arguments is used to pass supported labels while starting node labeller daemonset\nsome flags are enabled by default as they are applicable and bare minimum for all setups and are supported in all versions of node labeller\ndefault flags: {\"vram\", \"cu-count\", \"simd-count\", \"device-id\", \"family\", \"product-name\", \"driver-version\"}\nsupported flags: {\"compute-memory-partition\", \"compute-partitioning-supported\", \"memory-partitioning-supported\"}"
                       items:
@@ -237,6 +261,82 @@ spec:
                       type: "array"
                     upgradePolicy:
                       description: "upgrade policy for device plugin and node labeller daemons"
+                      properties:
+                        maxUnavailable:
+                          default: 1
+                          description: "MaxUnavailable specifies the maximum number of Pods that can be unavailable during the update process. Applicable for RollingUpdate only. Default value is 1."
+                          format: "int32"
+                          type: "integer"
+                        upgradeStrategy:
+                          description: "UpgradeStrategy specifies the type of the DaemonSet update. Valid values are \"RollingUpdate\" (default) or \"OnDelete\"."
+                          enum:
+                            - "RollingUpdate"
+                            - "OnDelete"
+                          type: "string"
+                      type: "object"
+                  type: "object"
+                draDriver:
+                  description: "dra driver"
+                  properties:
+                    cmdLineArguments:
+                      additionalProperties:
+                        type: "string"
+                      description: "arguments is used to pass supported flags and their values while starting DRA driver daemonset"
+                      type: "object"
+                    enable:
+                      default: false
+                      description: "enable DRA driver, disabled by default"
+                      type: "boolean"
+                    image:
+                      description: "DRA driver image"
+                      pattern: "^([a-z0-9]+(?:[._-][a-z0-9]+)*(:[0-9]+)?)(/[a-z0-9]+(?:[._-][a-z0-9]+)*)*(?::[a-z0-9._-]+)?(?:@[a-zA-Z0-9]+:[a-f0-9]+)?$"
+                      type: "string"
+                    imagePullPolicy:
+                      description: "image pull policy for DRA driver"
+                      enum:
+                        - "Always"
+                        - "IfNotPresent"
+                        - "Never"
+                      type: "string"
+                    imageRegistrySecret:
+                      description: "DRA driver image registry secret used to pull/push images"
+                      properties:
+                        name:
+                          default: ""
+                          description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                          type: "string"
+                      type: "object"
+                      x-kubernetes-map-type: "atomic"
+                    selector:
+                      additionalProperties:
+                        type: "string"
+                      description: "Selector describes on which nodes to enable DRA driver"
+                      type: "object"
+                    tolerations:
+                      description: "tolerations for the DRA driver DaemonSet"
+                      items:
+                        description: "The pod this Toleration is attached to tolerates any taint that matches\nthe triple <key,value,effect> using the matching operator <operator>."
+                        properties:
+                          effect:
+                            description: "Effect indicates the taint effect to match. Empty means match all taint effects.\nWhen specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute."
+                            type: "string"
+                          key:
+                            description: "Key is the taint key that the toleration applies to. Empty means match all taint keys.\nIf the key is empty, operator must be Exists; this combination means to match all values and all keys."
+                            type: "string"
+                          operator:
+                            description: "Operator represents a key's relationship to the value.\nValid operators are Exists and Equal. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category."
+                            type: "string"
+                          tolerationSeconds:
+                            description: "TolerationSeconds represents the period of time the toleration (which must be\nof effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,\nit is not set, which means tolerate the taint forever (do not evict). Zero and\nnegative values will be treated as 0 (evict immediately) by the system."
+                            format: "int64"
+                            type: "integer"
+                          value:
+                            description: "Value is the taint value the toleration matches to.\nIf the operator is Exists, the value should be empty, otherwise just a regular string."
+                            type: "string"
+                        type: "object"
+                      type: "array"
+                    upgradePolicy:
+                      description: "upgrade policy for DRA driver daemon"
                       properties:
                         maxUnavailable:
                           default: 1
@@ -293,6 +393,12 @@ spec:
                               description: "If true, skip any TLS server certificate validation"
                               type: "boolean"
                           type: "object"
+                        gpgKeyURL:
+                          description: "GPGKeyURL specifies the full URL to the GPG key used to verify packages during driver image build.\nWhen specified, this URL completely overrides the default GPG key URL.\nThis is useful when using a custom package repository that has its own GPG key,\nor when the GPG key location does not follow the standard repo.radeon.com scheme.\nExamples:\n  - \"https://custom-mirror.example.com/keys/amdgpu.gpg.key\"\n  - \"https://repo.example.com/rocm/rocm.gpg.key\"\nWhen empty (default), the URL is constructed as: ${amdgpuInstallerRepoURL}/rocm/rocm.gpg.key"
+                          type: "string"
+                        packageRepoURL:
+                          description: "PackageRepoURL specifies the full URL to the package repository used during driver image build.\nWhen specified, this URL completely overrides the default URL constructed from spec.driver.amdgpuInstallerRepoURL.\nThis is useful when the package repository does not follow the standard repo.radeon.com URL scheme,\nor when using a custom mirror/proxy that requires a different URL structure.\nThe URL should point directly to the repository base (without trailing slash).\nExamples:\n  - For Ubuntu: \"https://custom-mirror.example.com/repos/amdgpu/6.1.3/ubuntu jammy main\"\n    This will be used as: \"deb [arch=amd64 ...] ${PACKAGE_REPO_URL}\"\n  - For CoreOS/RHEL: \"https://custom-mirror.example.com/repos/amdgpu/6.2.2/el/9.4/main/x86_64\"\n    This will be used as: \"baseurl=${PACKAGE_REPO_URL}\"\nWhen empty (default), the URL is constructed as: ${amdgpuInstallerRepoURL}/amdgpu/${DRIVERS_VERSION}/${os}/${distro}"
+                          type: "string"
                         sourceImageRepo:
                           description: "SourceImageRepo specifies the image repository for the driver source code (OpenShift only).\nUsed when spec.driver.useSourceImage is true. The operator automatically determines the image tag\nbased on cluster RHEL version and spec.driver.version (format: coreos-<rhel>-<driver version>).\nDefault: docker.io/rocm/amdgpu-driver\nUse spec.driver.imageRegistrySecret for authentication with private registries."
                           type: "string"
@@ -409,6 +515,15 @@ spec:
                               default: -1
                               description: "GracePeriodSeconds indicates the time kubernetes waits for a pod to shut down gracefully after receiving a termination signal"
                               type: "integer"
+                            ignoreDaemonSets:
+                              default: true
+                              description: "IgnoreDaemonSets indicates whether to ignore DaemonSet-managed pods"
+                              type: "boolean"
+                            ignoreNamespaces:
+                              description: "IgnoreNamespaces is the list of namespaces to ignore during node drain operation.\nThis is useful to avoid draining pods from critical namespaces like 'kube-system', etc."
+                              items:
+                                type: "string"
+                              type: "array"
                             timeoutSeconds:
                               default: 300
                               description: "TimeoutSecond specifies the length of time in seconds to wait before giving up drain, zero means infinite"
@@ -465,6 +580,9 @@ spec:
                       type: "object"
                     enable:
                       description: "enable metrics exporter, disabled by default"
+                      type: "boolean"
+                    hostNetwork:
+                      description: "HostNetwork specifies whether to use host network namespace for the metrics exporter DaemonSet pods."
                       type: "boolean"
                     image:
                       description: "metrics exporter image"
@@ -958,7 +1076,11 @@ spec:
                 remediationWorkflow:
                   description: "remediation workflow"
                   properties:
-                    conditionalWorkflows:
+                    autoStartWorkflow:
+                      default: true
+                      description: "AutoStartWorkflow specifies the behavior of the remediation workflow. Default value is true.\nIf true, remediation workflow will be automatically started when the node condition matches.\nIf false, remediation workflow will be in suspended state when the node condition matches and needs to be manually started by the user.\nThis field gives users more control and flexibility on when to start the remediation workflow.\nDefault value is set to true if not specified and the remediation workflow automatically starts when the node condition matches."
+                      type: "boolean"
+                    config:
                       description: "Name of the ConfigMap that holds condition-to-workflow mappings."
                       properties:
                         name:
@@ -967,20 +1089,87 @@ spec:
                           type: "string"
                       type: "object"
                       x-kubernetes-map-type: "atomic"
+                    configMapImage:
+                      description: "ConfigMapImage specifies a container image that contains the remediation\nConfigMap. When set, the operator runs a Job from this image to apply\nthe ConfigMap to the cluster before the remediation workflow proceeds."
+                      pattern: "^([a-z0-9]+(?:[._-][a-z0-9]+)*(:[0-9]+)?)(/[a-z0-9]+(?:[._-][a-z0-9]+)*)*(?::[a-z0-9._-]+)?(?:@[a-zA-Z0-9]+:[a-f0-9]+)?$"
+                      type: "string"
                     enable:
                       description: "enable remediation workflows. disabled by default\nenable if operator should automatically handle remediation of node incase of gpu issues"
                       type: "boolean"
                     maxParallelWorkflows:
+                      default: 0
                       description: "MaxParallelWorkflows specifies limit on how many remediation workflows can be executed in parallel. 0 is the default value and it means no limit."
+                      format: "int32"
+                      minimum: 0.0
                       type: "integer"
+                    nodeDrainPolicy:
+                      description: "Node drain policy during remediation workflow execution"
+                      properties:
+                        force:
+                          default: false
+                          description: "Force indicates if force draining is allowed"
+                          type: "boolean"
+                        gracePeriodSeconds:
+                          default: -1
+                          description: "GracePeriodSeconds indicates the time kubernetes waits for a pod to shut down gracefully after receiving a termination signal"
+                          type: "integer"
+                        ignoreDaemonSets:
+                          default: true
+                          description: "IgnoreDaemonSets indicates whether to ignore DaemonSet-managed pods"
+                          type: "boolean"
+                        ignoreNamespaces:
+                          description: "IgnoreNamespaces is the list of namespaces to ignore during node drain operation.\nThis is useful to avoid draining pods from critical namespaces like 'kube-system', etc."
+                          items:
+                            type: "string"
+                          type: "array"
+                        timeoutSeconds:
+                          default: 300
+                          description: "TimeoutSecond specifies the length of time in seconds to wait before giving up drain, zero means infinite"
+                          minimum: 0.0
+                          type: "integer"
+                      type: "object"
+                    nodeRemediationLabels:
+                      additionalProperties:
+                        type: "string"
+                      description: "Node Remediation labels are custom labels that we can apply on the node to specify that the node is undergoing remediation or needs attention by the administrator."
+                      type: "object"
+                    nodeRemediationTaints:
+                      description: "Node Remediation taints are custom taints that we can apply on the node to specify that the node is undergoing remediation or needs attention by the administrator.\nIf user does not specify any taints, the operator will apply a taint with key \"amd-gpu-unhealthy\" and effect \"NoSchedule\" to the node under remediation."
+                      items:
+                        description: "The node this Taint is attached to has the \"effect\" on\nany pod that does not tolerate the Taint."
+                        properties:
+                          effect:
+                            description: "Required. The effect of the taint on pods\nthat do not tolerate the taint.\nValid effects are NoSchedule, PreferNoSchedule and NoExecute."
+                            type: "string"
+                          key:
+                            description: "Required. The taint key to be applied to a node."
+                            type: "string"
+                          timeAdded:
+                            description: "TimeAdded represents the time at which the taint was added.\nIt is only written for NoExecute taints."
+                            format: "date-time"
+                            type: "string"
+                          value:
+                            description: "The taint value corresponding to the taint key."
+                            type: "string"
+                        required:
+                          - "effect"
+                          - "key"
+                        type: "object"
+                      type: "array"
+                    rebootTimeout:
+                      default: "15m"
+                      description: "RebootTimeout specifies the duration to wait for the node to reboot. Accepts duration strings like \"30s\", \"4h\", \"24h\". By default, it is set to 15m."
+                      pattern: "^([0-9]+(\\.[0-9]+)?(s|m|h))+$"
+                      type: "string"
                     testerImage:
                       description: "Tester image used to run tests and verify if remediation fixed the reported problem."
                       pattern: "^([a-z0-9]+(?:[._-][a-z0-9]+)*(:[0-9]+)?)(/[a-z0-9]+(?:[._-][a-z0-9]+)*)*(?::[a-z0-9._-]+)?(?:@[a-zA-Z0-9]+:[a-f0-9]+)?$"
                       type: "string"
                     ttlForFailedWorkflows:
-                      default: 24
-                      description: "Time to live for argo workflow object and its pods for a failed workflow in hours. By default, it is set to 24 hours"
-                      type: "integer"
+                      default: "24h"
+                      description: "Time to live for argo workflow object and its pods for a failed workflow. Accepts duration strings like \"30s\", \"4h\", \"24h\". By default, it is set to 24h"
+                      pattern: "^([0-9]+(\\.[0-9]+)?(ns|us|µs|ms|s|m|h))+$"
+                      type: "string"
                   type: "object"
                 selector:
                   additionalProperties:
@@ -1226,6 +1415,22 @@ spec:
                   description: "ObservedGeneration is the latest spec generation successfully processed by the controller"
                   format: "int64"
                   type: "integer"
+                remediationWorkflow:
+                  description: "RemediationWorkflow contains the status of the RemediationWorkflow deployment"
+                  properties:
+                    availableNumber:
+                      description: "number of the actually deployed and running pods"
+                      format: "int32"
+                      type: "integer"
+                    desiredNumber:
+                      description: "number of the pods that should be deployed for daemonset"
+                      format: "int32"
+                      type: "integer"
+                    nodesMatchingSelectorNumber:
+                      description: "number of nodes that are targeted by the DeviceConfig selector"
+                      format: "int32"
+                      type: "integer"
+                  type: "object"
               type: "object"
           type: "object"
       served: true

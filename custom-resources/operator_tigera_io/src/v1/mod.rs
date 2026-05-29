@@ -9,6 +9,7 @@ pub mod goldmanes;
 pub mod imagesets;
 pub mod installations;
 pub mod intrusiondetections;
+pub mod istios;
 pub mod logcollectors;
 pub mod logstorages;
 pub mod managementclusterconnections;

@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.20.0"
+    controller-gen.kubebuilder.io/version: "v0.20.1"
   name: "clusterqueues.kueue.x-k8s.io"
 spec:
   group: "kueue.x-k8s.io"
@@ -17,7 +17,7 @@ spec:
   versions:
     - additionalPrinterColumns:
         - description: "Cohort that this ClusterQueue belongs to"
-          jsonPath: ".spec.cohort"
+          jsonPath: ".spec.cohortName"
           name: "Cohort"
           type: "string"
         - description: "The queueing strategy used to prioritize workloads"
@@ -102,6 +102,34 @@ spec:
                   maxLength: 253
                   pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
                   type: "string"
+                concurrentAdmissionPolicy:
+                  description: "concurrentAdmissionPolicy defines the configuration for ConcurrentAdmission feature.\nIts main capability is to allow Workloads pursuing multiple flavors at the same time, and starting on the first flavor that led to admission.\nAdditionally after the admission, Workloads can still try to pursue capacity on the more preferable flavors while running.\nIt enables them to migrate to more preferable, whenever capacity appears."
+                  properties:
+                    migration:
+                      description: "migration defines the constraints on Workload's migration.\nThe mechanism itself creates \"Variants\" of the same Workload, each pursuing a different flavor.\nAll Variants belong to the same \"Parent\" Workload, and are picked up by Kueue scheduler independently.\nOnce one of the Variants is admitted, the Parent Workload gets also admitted. The Variants that pursue more\nfavorable flavors keep trying to get admitted and if they succeed, the Workload migrates to the new flavor.\nThe Variants that pursue less favorable flavors are deactivated.\nFlavor preferences are expressed through the order of flavors in the ClusterQueue."
+                      properties:
+                        constraints:
+                          description: "constraints defines the constraints of Workload's migration."
+                          properties:
+                            lastAcceptableFlavorName:
+                              description: "lastAcceptableFlavorName defines the last acceptable flavor a Workload can migrate to.\nThe order is based on the order of flavors in ClusterQueue.\nIt can only be used if the Mode is `TryPreferredFlavors`.\nIf the Mode is `TryPreferredFlavors` and LastAcceptableFlavorName is not specified, then\nWorkload can migrate to any flavor that is more preferable than the one it was admitted to."
+                              maxLength: 253
+                              pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
+                              type: "string"
+                          type: "object"
+                        mode:
+                          description: "mode defines the mode of Workload's migration.\nThe possible values are:\n- `TryPreferredFlavors` (default): a Workload will try to migrate to the preferred flavor after it's admitted and running.\n- `RetainFirstAdmission`: a Workload, once admitted to a flavor, will stick to a flavor and will not be migrated."
+                          enum:
+                            - "TryPreferredFlavors"
+                            - "RetainFirstAdmission"
+                          maxLength: 253
+                          type: "string"
+                      required:
+                        - "mode"
+                      type: "object"
+                  required:
+                    - "migration"
+                  type: "object"
                 fairSharing:
                   description: "fairSharing defines the properties of the ClusterQueue when\nparticipating in FairSharing.  The values are only relevant\nif FairSharing is enabled in the Kueue configuration."
                   properties:
@@ -252,14 +280,14 @@ spec:
                                     anyOf:
                                       - type: "integer"
                                       - type: "string"
-                                    description: "borrowingLimit is the maximum amount of quota for the [flavor, resource]\ncombination that this ClusterQueue is allowed to borrow from the unused\nquota of other ClusterQueues in the same cohort.\nIn total, at a given time, Workloads in a ClusterQueue can consume a\nquantity of quota equal to nominalQuota+borrowingLimit, assuming the other\nClusterQueues in the cohort have enough unused quota.\nIf null, it means that there is no borrowing limit.\nIf not null, it must be non-negative.\nborrowingLimit must be null if spec.cohort is empty."
+                                    description: "borrowingLimit is the maximum amount of quota for the [flavor, resource]\ncombination that this ClusterQueue is allowed to borrow from the unused\nquota of other ClusterQueues in the same cohort.\nIn total, at a given time, Workloads in a ClusterQueue can consume a\nquantity of quota equal to nominalQuota+borrowingLimit, assuming the other\nClusterQueues in the cohort have enough unused quota.\nIf null, it means that there is no borrowing limit.\nIf not null, it must be non-negative.\nborrowingLimit must be null if spec.cohortName is empty."
                                     pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                                     x-kubernetes-int-or-string: true
                                   lendingLimit:
                                     anyOf:
                                       - type: "integer"
                                       - type: "string"
-                                    description: "lendingLimit is the maximum amount of unused quota for the [flavor, resource]\ncombination that this ClusterQueue can lend to other ClusterQueues in the same cohort.\nIn total, at a given time, ClusterQueue reserves for its exclusive use\na quantity of quota equals to nominalQuota - lendingLimit.\nIf null, it means that there is no lending limit, meaning that\nall the nominalQuota can be borrowed by other clusterQueues in the cohort.\nIf not null, it must be non-negative.\nlendingLimit must be null if spec.cohort is empty.\nThis field is in beta stage and is enabled by default."
+                                    description: "lendingLimit is the maximum amount of unused quota for the [flavor, resource]\ncombination that this ClusterQueue can lend to other ClusterQueues in the same cohort.\nIn total, at a given time, ClusterQueue reserves for its exclusive use\na quantity of quota equals to nominalQuota - lendingLimit.\nIf null, it means that there is no lending limit, meaning that\nall the nominalQuota can be borrowed by other clusterQueues in the cohort.\nIf not null, it must be non-negative.\nlendingLimit must be null if spec.cohortName is empty.\nThis field is in beta stage and is enabled by default."
                                     pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                                     x-kubernetes-int-or-string: true
                                   name:

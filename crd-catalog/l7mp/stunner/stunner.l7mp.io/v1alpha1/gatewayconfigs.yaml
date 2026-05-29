@@ -87,7 +87,7 @@ spec:
                   description: "Dataplane defines the TURN server to set up for the STUNner Gateways using this\nGatewayConfig. Can be used to select the stunnerd image repo and version or deploy into\nthe host-network namespace."
                   type: "string"
                 healthCheckEndpoint:
-                  description: "HealthCheckEndpoint is the URI of the form `http://address:port` exposed for external\nHTTP health-checking. A liveness probe responder will be exposed on path `/live` and\nreadiness probe on path `/ready`. The scheme (`http://`) is mandatory, default is to\nenable health-checking at \"http://0.0.0.0:8086\"."
+                  description: "HealthCheckEndpoint is the URI of the form `http://address:port` exposed for external\nHTTP health-checking. A liveness probe responder will be exposed on path `/live` and\nreadiness probe on path `/ready`. The scheme (`http://`) is mandatory, default is to\nenable health-checking at \"http://:8086\"."
                   type: "string"
                 loadBalancerServiceAnnotations:
                   additionalProperties:

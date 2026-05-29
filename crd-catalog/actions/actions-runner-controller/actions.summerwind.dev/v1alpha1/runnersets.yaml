@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.19.0"
+    controller-gen.kubebuilder.io/version: "v0.20.1"
   name: "runnersets.actions.summerwind.dev"
 spec:
   group: "actions.summerwind.dev"
@@ -1329,7 +1329,7 @@ spec:
                                     type: "integer"
                                 type: "object"
                               resizePolicy:
-                                description: "Resources resize policy for the container."
+                                description: "Resources resize policy for the container.\nThis field cannot be set on ephemeral containers."
                                 items:
                                   description: "ContainerResizePolicy represents resource resize policy for the container."
                                   properties:
@@ -3310,7 +3310,7 @@ spec:
                                     type: "integer"
                                 type: "object"
                               resizePolicy:
-                                description: "Resources resize policy for the container."
+                                description: "Resources resize policy for the container.\nThis field cannot be set on ephemeral containers."
                                 items:
                                   description: "ContainerResizePolicy represents resource resize policy for the container."
                                   properties:
@@ -3730,7 +3730,7 @@ spec:
                           type: "array"
                           x-kubernetes-list-type: "atomic"
                         resourceClaims:
-                          description: "ResourceClaims defines which ResourceClaims must be allocated\nand reserved before the Pod is allowed to start. The resources\nwill be made available to those containers which consume them\nby name.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable."
+                          description: "ResourceClaims defines which ResourceClaims must be allocated\nand reserved before the Pod is allowed to start. The resources\nwill be made available to those containers which consume them\nby name.\n\nThis is a stable field but requires that the\nDynamicResourceAllocation feature gate is enabled.\n\nThis field is immutable."
                           items:
                             description: "PodResourceClaim references exactly one ResourceClaim, either directly\nor by naming a ResourceClaimTemplate which is then turned into a ResourceClaim\nfor the pod.\n\nIt adds a name to it that uniquely identifies the ResourceClaim inside the Pod.\nContainers that need access to the ResourceClaim reference it with this name."
                             properties:
@@ -3950,7 +3950,7 @@ spec:
                                 description: "Key is the taint key that the toleration applies to. Empty means match all taint keys.\nIf the key is empty, operator must be Exists; this combination means to match all values and all keys."
                                 type: "string"
                               operator:
-                                description: "Operator represents a key's relationship to the value.\nValid operators are Exists and Equal. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category."
+                                description: "Operator represents a key's relationship to the value.\nValid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category.\nLt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators)."
                                 type: "string"
                               tolerationSeconds:
                                 description: "TolerationSeconds represents the period of time the toleration (which must be\nof effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,\nit is not set, which means tolerate the taint forever (do not evict). Zero and\nnegative values will be treated as 0 (evict immediately) by the system."
@@ -4370,7 +4370,7 @@ spec:
                                               - "name"
                                             type: "object"
                                           resources:
-                                            description: "resources represents the minimum resources the volume should have.\nIf RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements\nthat are lower than previous value but must still be higher than capacity recorded in the\nstatus field of the claim.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources"
+                                            description: "resources represents the minimum resources the volume should have.\nUsers are allowed to specify resource requirements\nthat are lower than previous value but must still be higher than capacity recorded in the\nstatus field of the claim.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources"
                                             properties:
                                               limits:
                                                 additionalProperties:
@@ -4860,6 +4860,11 @@ spec:
                                             signerName:
                                               description: "Kubelet's generated CSRs will be addressed to this signer."
                                               type: "string"
+                                            userAnnotations:
+                                              additionalProperties:
+                                                type: "string"
+                                              description: "userAnnotations allow pod authors to pass additional information to\nthe signer implementation.  Kubernetes does not restrict or validate this\nmetadata in any way.\n\nThese values are copied verbatim into the `spec.unverifiedUserAnnotations` field of\nthe PodCertificateRequest objects that Kubelet creates.\n\nEntries are subject to the same validation as object metadata annotations,\nwith the addition that all keys must be domain-prefixed. No restrictions\nare placed on values, except an overall size limitation on the entire field.\n\nSigners should document the keys and values they support. Signers should\ndeny requests that contain keys they do not recognize."
+                                              type: "object"
                                           required:
                                             - "keyType"
                                             - "signerName"
@@ -5116,6 +5121,22 @@ spec:
                           x-kubernetes-list-map-keys:
                             - "name"
                           x-kubernetes-list-type: "map"
+                        workloadRef:
+                          description: "WorkloadRef provides a reference to the Workload object that this Pod belongs to.\nThis field is used by the scheduler to identify the PodGroup and apply the\ncorrect group scheduling policies. The Workload object referenced\nby this field may not exist at the time the Pod is created.\nThis field is immutable, but a Workload object with the same name\nmay be recreated with different policies. Doing this during pod scheduling\nmay result in the placement not conforming to the expected policies."
+                          properties:
+                            name:
+                              description: "Name defines the name of the Workload object this Pod belongs to.\nWorkload must be in the same namespace as the Pod.\nIf it doesn't match any existing Workload, the Pod will remain unschedulable\nuntil a Workload object is created and observed by the kube-scheduler.\nIt must be a DNS subdomain."
+                              type: "string"
+                            podGroup:
+                              description: "PodGroup is the name of the PodGroup within the Workload that this Pod\nbelongs to. If it doesn't match any existing PodGroup within the Workload,\nthe Pod will remain unschedulable until the Workload object is recreated\nand observed by the kube-scheduler. It must be a DNS label."
+                              type: "string"
+                            podGroupReplicaKey:
+                              description: "PodGroupReplicaKey specifies the replica key of the PodGroup to which this\nPod belongs. It is used to distinguish pods belonging to different replicas\nof the same pod group. The pod group policy is applied separately to each replica.\nWhen set, it must be a DNS label."
+                              type: "string"
+                          required:
+                            - "name"
+                            - "podGroup"
+                          type: "object"
                       required:
                         - "containers"
                       type: "object"
@@ -5130,7 +5151,7 @@ spec:
                           anyOf:
                             - type: "integer"
                             - type: "string"
-                          description: "The maximum number of pods that can be unavailable during the update.\nValue can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%).\nAbsolute number is calculated from percentage by rounding up. This can not be 0.\nDefaults to 1. This field is alpha-level and is only honored by servers that enable the\nMaxUnavailableStatefulSet feature. The field applies to all pods in the range 0 to\nReplicas-1. That means if there is any unavailable pod in the range 0 to Replicas-1, it\nwill be counted towards MaxUnavailable."
+                          description: "The maximum number of pods that can be unavailable during the update.\nValue can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%).\nAbsolute number is calculated from percentage by rounding up. This can not be 0.\nDefaults to 1. This field is beta-level and is enabled by default. The field applies to all pods in the range 0 to\nReplicas-1. That means if there is any unavailable pod in the range 0 to Replicas-1, it\nwill be counted towards MaxUnavailable.\nThis setting might not be effective for the OrderedReady podManagementPolicy. That policy ensures pods are created and become ready one at a time."
                           x-kubernetes-int-or-string: true
                         partition:
                           description: "Partition indicates the ordinal at which the StatefulSet should be partitioned\nfor updates. During a rolling update, all pods from ordinal Replicas-1 to\nPartition are updated. All pods from ordinal Partition-1 to 0 remain untouched.\nThis is helpful in being able to do a canary based deployment. The default value is 0."
@@ -5218,7 +5239,7 @@ spec:
                               - "name"
                             type: "object"
                           resources:
-                            description: "resources represents the minimum resources the volume should have.\nIf RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements\nthat are lower than previous value but must still be higher than capacity recorded in the\nstatus field of the claim.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources"
+                            description: "resources represents the minimum resources the volume should have.\nUsers are allowed to specify resource requirements\nthat are lower than previous value but must still be higher than capacity recorded in the\nstatus field of the claim.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources"
                             properties:
                               limits:
                                 additionalProperties:
@@ -5298,7 +5319,7 @@ spec:
                             additionalProperties:
                               description: "When a controller receives persistentvolume claim update with ClaimResourceStatus for a resource\nthat it does not recognizes, then it should ignore that update and let other controllers\nhandle it."
                               type: "string"
-                            description: "allocatedResourceStatuses stores status of resource being resized for the given PVC.\nKey names follow standard Kubernetes label syntax. Valid values are either:\n\t* Un-prefixed keys:\n\t\t- storage - the capacity of the volume.\n\t* Custom resources must use implementation-defined prefixed names such as \"example.com/my-custom-resource\"\nApart from above values - keys that are unprefixed or have kubernetes.io prefix are considered\nreserved and hence may not be used.\n\nClaimResourceStatus can be in any of following states:\n\t- ControllerResizeInProgress:\n\t\tState set when resize controller starts resizing the volume in control-plane.\n\t- ControllerResizeFailed:\n\t\tState set when resize has failed in resize controller with a terminal error.\n\t- NodeResizePending:\n\t\tState set when resize controller has finished resizing the volume but further resizing of\n\t\tvolume is needed on the node.\n\t- NodeResizeInProgress:\n\t\tState set when kubelet starts resizing the volume.\n\t- NodeResizeFailed:\n\t\tState set when resizing has failed in kubelet with a terminal error. Transient errors don't set\n\t\tNodeResizeFailed.\nFor example: if expanding a PVC for more capacity - this field can be one of the following states:\n\t- pvc.status.allocatedResourceStatus['storage'] = \"ControllerResizeInProgress\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"ControllerResizeFailed\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"NodeResizePending\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"NodeResizeInProgress\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"NodeResizeFailed\"\nWhen this field is not set, it means that no resize operation is in progress for the given PVC.\n\nA controller that receives PVC update with previously unknown resourceName or ClaimResourceStatus\nshould ignore the update for the purpose it was designed. For example - a controller that\nonly is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid\nresources associated with PVC.\n\nThis is an alpha field and requires enabling RecoverVolumeExpansionFailure feature."
+                            description: "allocatedResourceStatuses stores status of resource being resized for the given PVC.\nKey names follow standard Kubernetes label syntax. Valid values are either:\n\t* Un-prefixed keys:\n\t\t- storage - the capacity of the volume.\n\t* Custom resources must use implementation-defined prefixed names such as \"example.com/my-custom-resource\"\nApart from above values - keys that are unprefixed or have kubernetes.io prefix are considered\nreserved and hence may not be used.\n\nClaimResourceStatus can be in any of following states:\n\t- ControllerResizeInProgress:\n\t\tState set when resize controller starts resizing the volume in control-plane.\n\t- ControllerResizeFailed:\n\t\tState set when resize has failed in resize controller with a terminal error.\n\t- NodeResizePending:\n\t\tState set when resize controller has finished resizing the volume but further resizing of\n\t\tvolume is needed on the node.\n\t- NodeResizeInProgress:\n\t\tState set when kubelet starts resizing the volume.\n\t- NodeResizeFailed:\n\t\tState set when resizing has failed in kubelet with a terminal error. Transient errors don't set\n\t\tNodeResizeFailed.\nFor example: if expanding a PVC for more capacity - this field can be one of the following states:\n\t- pvc.status.allocatedResourceStatus['storage'] = \"ControllerResizeInProgress\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"ControllerResizeFailed\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"NodeResizePending\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"NodeResizeInProgress\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"NodeResizeFailed\"\nWhen this field is not set, it means that no resize operation is in progress for the given PVC.\n\nA controller that receives PVC update with previously unknown resourceName or ClaimResourceStatus\nshould ignore the update for the purpose it was designed. For example - a controller that\nonly is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid\nresources associated with PVC."
                             type: "object"
                             x-kubernetes-map-type: "granular"
                           allocatedResources:
@@ -5308,7 +5329,7 @@ spec:
                                 - type: "string"
                               pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                               x-kubernetes-int-or-string: true
-                            description: "allocatedResources tracks the resources allocated to a PVC including its capacity.\nKey names follow standard Kubernetes label syntax. Valid values are either:\n\t* Un-prefixed keys:\n\t\t- storage - the capacity of the volume.\n\t* Custom resources must use implementation-defined prefixed names such as \"example.com/my-custom-resource\"\nApart from above values - keys that are unprefixed or have kubernetes.io prefix are considered\nreserved and hence may not be used.\n\nCapacity reported here may be larger than the actual capacity when a volume expansion operation\nis requested.\nFor storage quota, the larger value from allocatedResources and PVC.spec.resources is used.\nIf allocatedResources is not set, PVC.spec.resources alone is used for quota calculation.\nIf a volume expansion capacity request is lowered, allocatedResources is only\nlowered if there are no expansion operations in progress and if the actual volume capacity\nis equal or lower than the requested capacity.\n\nA controller that receives PVC update with previously unknown resourceName\nshould ignore the update for the purpose it was designed. For example - a controller that\nonly is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid\nresources associated with PVC.\n\nThis is an alpha field and requires enabling RecoverVolumeExpansionFailure feature."
+                            description: "allocatedResources tracks the resources allocated to a PVC including its capacity.\nKey names follow standard Kubernetes label syntax. Valid values are either:\n\t* Un-prefixed keys:\n\t\t- storage - the capacity of the volume.\n\t* Custom resources must use implementation-defined prefixed names such as \"example.com/my-custom-resource\"\nApart from above values - keys that are unprefixed or have kubernetes.io prefix are considered\nreserved and hence may not be used.\n\nCapacity reported here may be larger than the actual capacity when a volume expansion operation\nis requested.\nFor storage quota, the larger value from allocatedResources and PVC.spec.resources is used.\nIf allocatedResources is not set, PVC.spec.resources alone is used for quota calculation.\nIf a volume expansion capacity request is lowered, allocatedResources is only\nlowered if there are no expansion operations in progress and if the actual volume capacity\nis equal or lower than the requested capacity.\n\nA controller that receives PVC update with previously unknown resourceName\nshould ignore the update for the purpose it was designed. For example - a controller that\nonly is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid\nresources associated with PVC."
                             type: "object"
                           capacity:
                             additionalProperties:

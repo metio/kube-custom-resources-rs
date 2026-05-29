@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.18.0"
   labels:
     app.kubernetes.io/name: "kubeblocks"
   name: "opsrequests.operations.kubeblocks.io"
@@ -100,14 +100,14 @@ spec:
                       description: "If the specified BackupMethod is incremental, `parentBackupName` is required."
                       type: "string"
                     retentionPeriod:
-                      description: "Determines the duration for which the Backup custom resources should be retained.\n\n\nThe controller will automatically remove all Backup objects that are older than the specified RetentionPeriod.\nFor example, RetentionPeriod of `30d` will keep only the Backup objects of last 30 days.\nSample duration format:\n\n\n- years: 2y\n- months: 6mo\n- days: 30d\n- hours: 12h\n- minutes: 30m\n\n\nYou can also combine the above durations. For example: 30d12h30m.\nIf not set, the Backup objects will be kept forever.\n\n\nIf the `deletionPolicy` is set to 'Delete', then the associated backup data will also be deleted\nalong with the Backup object.\nOtherwise, only the Backup custom resource will be deleted."
+                      description: "Determines the duration for which the Backup custom resources should be retained.\n\nThe controller will automatically remove all Backup objects that are older than the specified RetentionPeriod.\nFor example, RetentionPeriod of `30d` will keep only the Backup objects of last 30 days.\nSample duration format:\n\n- years: 2y\n- months: 6mo\n- days: 30d\n- hours: 12h\n- minutes: 30m\n\nYou can also combine the above durations. For example: 30d12h30m.\nIf not set, the Backup objects will be kept forever.\n\nIf the `deletionPolicy` is set to 'Delete', then the associated backup data will also be deleted\nalong with the Backup object.\nOtherwise, only the Backup custom resource will be deleted."
                       type: "string"
                   type: "object"
                   x-kubernetes-validations:
                     - message: "forbidden to update backup.parameters"
                       rule: "has(oldSelf.parameters) == has(self.parameters)"
                 cancel:
-                  description: "Indicates whether the current operation should be canceled and terminated gracefully if it's in the\n\"Pending\", \"Creating\", or \"Running\" state.\n\n\nThis field applies only to \"VerticalScaling\" and \"HorizontalScaling\" opsRequests.\n\n\nNote: Setting `cancel` to true is irreversible; further modifications to this field are ineffective."
+                  description: "Indicates whether the current operation should be canceled and terminated gracefully if it's in the\n\"Pending\", \"Creating\", or \"Running\" state.\n\nThis field applies only to \"VerticalScaling\" and \"HorizontalScaling\" opsRequests.\n\nNote: Setting `cancel` to true is irreversible; further modifications to this field are ineffective."
                   type: "boolean"
                 clusterName:
                   description: "Specifies the name of the Cluster resource that this operation is targeting."
@@ -145,7 +145,7 @@ spec:
                                           description: "The key to select."
                                           type: "string"
                                         name:
-                                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                           type: "string"
                                         optional:
                                           description: "Specify whether the ConfigMap or its key must be defined"
@@ -161,7 +161,7 @@ spec:
                                           description: "The key of the secret to select from.  Must be a valid secret key."
                                           type: "string"
                                         name:
-                                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                           type: "string"
                                         optional:
                                           description: "Specify whether the Secret or its key must be defined"
@@ -192,7 +192,7 @@ spec:
                       anyOf:
                         - type: "integer"
                         - type: "string"
-                      description: "Specifies the maximum number of components to be operated on concurrently to mitigate performance impact\non clusters with multiple components.\n\n\nIt accepts an absolute number (e.g., 5) or a percentage of components to execute in parallel (e.g., \"10%\").\nPercentages are rounded up to the nearest whole number of components.\nFor example, if \"10%\" results in less than one, it rounds up to 1.\n\n\nWhen unspecified, all components are processed simultaneously by default.\n\n\nNote: This feature is not implemented yet."
+                      description: "Specifies the maximum number of components to be operated on concurrently to mitigate performance impact\non clusters with multiple components.\n\nIt accepts an absolute number (e.g., 5) or a percentage of components to execute in parallel (e.g., \"10%\").\nPercentages are rounded up to the nearest whole number of components.\nFor example, if \"10%\" results in less than one, it rounds up to 1.\n\nWhen unspecified, all components are processed simultaneously by default.\n\nNote: This feature is not implemented yet."
                       x-kubernetes-int-or-string: true
                     opsDefinitionName:
                       description: "Specifies the name of the OpsDefinition."
@@ -216,41 +216,47 @@ spec:
                         description: "Specifies the name of the Component."
                         type: "string"
                       services:
-                        description: "Specifies a list of OpsService.\nWhen an OpsService is exposed, a corresponding ClusterService will be added to `cluster.spec.services`.\nOn the other hand, when an OpsService is unexposed, the corresponding ClusterService will be removed\nfrom `cluster.spec.services`.\n\n\nNote: If `componentName` is not specified, the `ports` and `selector` fields must be provided\nin each OpsService definition."
+                        description: "Specifies a list of OpsService.\nWhen an OpsService is exposed, a corresponding ClusterService will be added to `cluster.spec.services`.\nOn the other hand, when an OpsService is unexposed, the corresponding ClusterService will be removed\nfrom `cluster.spec.services`.\n\nNote: If `componentName` is not specified, the `ports` and `selector` fields must be provided\nin each OpsService definition."
                         items:
                           description: "OpsService represents the parameters to dynamically create or remove a ClusterService in the `cluster.spec.services` array."
                           properties:
                             annotations:
                               additionalProperties:
                                 type: "string"
-                              description: "Contains cloud provider related parameters if ServiceType is LoadBalancer.\n\n\nMore info: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer."
+                              description: "Contains cloud provider related parameters if ServiceType is LoadBalancer.\n\nMore info: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer."
                               type: "object"
+                            externalTrafficPolicy:
+                              description: "Specifies the external traffic policy of the Service. This controls how external traffic is routed to node-local or cluster-wide endpoints.\n\nPossible values:\n\n- `Cluster` (default for NodePort): Routes external traffic to all ready endpoints of the Service.\n  This preserves the original source IP and avoids a second hop for LoadBalancer and NodePort services.\n- `Local`: Routes external traffic only to node-local endpoints.\n  If no node-local endpoints exist, traffic is dropped. This ensures that the source IP is exposed.\n\nThis field is only applicable to LoadBalancer and NodePort services."
+                              type: "string"
+                            internalTrafficPolicy:
+                              description: "Specifies the internal traffic policy of the Service. This controls how traffic from internal sources\nis routed.\n\nPossible values:\n\n- `Cluster` (default): Routes internal traffic to all ready endpoints of the Service.\n  This distributes traffic evenly across all endpoints.\n- `Local`: Routes internal traffic only to node-local endpoints.\n  If no node-local endpoints exist, traffic is dropped.\n\nThis field can be specified on any Service type."
+                              type: "string"
                             ipFamilies:
-                              description: "A list of IP families (e.g., IPv4, IPv6) assigned to this Service.\n\n\nUsually assigned automatically based on the cluster configuration and the `ipFamilyPolicy` field.\nIf specified manually, the requested IP family must be available in the cluster and allowed by the `ipFamilyPolicy`.\nIf the requested IP family is not available or not allowed, the Service creation will fail.\n\n\nValid values:\n\n\n- \"IPv4\"\n- \"IPv6\"\n\n\nThis field may hold a maximum of two entries (dual-stack families, in either order).\n\n\nCommon combinations of `ipFamilies` and `ipFamilyPolicy` are:\n\n\n- ipFamilies=[] + ipFamilyPolicy=\"PreferDualStack\" :\n  The Service prefers dual-stack but can fall back to single-stack if the cluster does not support dual-stack.\n  The IP family is automatically assigned based on the cluster configuration.\n- ipFamilies=[\"IPV4\",\"IPV6\"] + ipFamilyPolicy=\"RequiredDualStack\" :\n  The Service requires dual-stack and will only be created if the cluster supports both IPv4 and IPv6.\n  The primary IP family is IPV4.\n- ipFamilies=[\"IPV6\",\"IPV4\"] + ipFamilyPolicy=\"RequiredDualStack\" :\n  The Service requires dual-stack and will only be created if the cluster supports both IPv4 and IPv6.\n  The primary IP family is IPV6.\n- ipFamilies=[\"IPV4\"] + ipFamilyPolicy=\"SingleStack\" :\n  The Service uses a single-stack with IPv4 only.\n- ipFamilies=[\"IPV6\"] + ipFamilyPolicy=\"SingleStack\" :\n  The Service uses a single-stack with IPv6 only."
+                              description: "A list of IP families (e.g., IPv4, IPv6) assigned to this Service.\n\nUsually assigned automatically based on the cluster configuration and the `ipFamilyPolicy` field.\nIf specified manually, the requested IP family must be available in the cluster and allowed by the `ipFamilyPolicy`.\nIf the requested IP family is not available or not allowed, the Service creation will fail.\n\nValid values:\n\n- \"IPv4\"\n- \"IPv6\"\n\nThis field may hold a maximum of two entries (dual-stack families, in either order).\n\nCommon combinations of `ipFamilies` and `ipFamilyPolicy` are:\n\n- ipFamilies=[] + ipFamilyPolicy=\"PreferDualStack\" :\n  The Service prefers dual-stack but can fall back to single-stack if the cluster does not support dual-stack.\n  The IP family is automatically assigned based on the cluster configuration.\n- ipFamilies=[\"IPV4\",\"IPV6\"] + ipFamilyPolicy=\"RequiredDualStack\" :\n  The Service requires dual-stack and will only be created if the cluster supports both IPv4 and IPv6.\n  The primary IP family is IPV4.\n- ipFamilies=[\"IPV6\",\"IPV4\"] + ipFamilyPolicy=\"RequiredDualStack\" :\n  The Service requires dual-stack and will only be created if the cluster supports both IPv4 and IPv6.\n  The primary IP family is IPV6.\n- ipFamilies=[\"IPV4\"] + ipFamilyPolicy=\"SingleStack\" :\n  The Service uses a single-stack with IPv4 only.\n- ipFamilies=[\"IPV6\"] + ipFamilyPolicy=\"SingleStack\" :\n  The Service uses a single-stack with IPv6 only."
                               items:
                                 description: "IPFamily represents the IP Family (IPv4 or IPv6). This type is used\nto express the family of an IP expressed by a type (e.g. service.spec.ipFamilies)."
                                 type: "string"
                               type: "array"
                               x-kubernetes-list-type: "atomic"
                             ipFamilyPolicy:
-                              description: "Specifies whether the Service should use a single IP family (SingleStack) or two IP families (DualStack).\n\n\nPossible values:\n\n\n- 'SingleStack' (default) : The Service uses a single IP family.\n  If no value is provided, IPFamilyPolicy defaults to SingleStack.\n- 'PreferDualStack' : The Service prefers to use two IP families on dual-stack configured clusters\n  or a single IP family on single-stack clusters.\n- 'RequiredDualStack' : The Service requires two IP families on dual-stack configured clusters.\n  If the cluster is not configured for dual-stack, the Service creation fails."
+                              description: "Specifies whether the Service should use a single IP family (SingleStack) or two IP families (DualStack).\n\nPossible values:\n\n- 'SingleStack' (default) : The Service uses a single IP family.\n  If no value is provided, IPFamilyPolicy defaults to SingleStack.\n- 'PreferDualStack' : The Service prefers to use two IP families on dual-stack configured clusters\n  or a single IP family on single-stack clusters.\n- 'RequiredDualStack' : The Service requires two IP families on dual-stack configured clusters.\n  If the cluster is not configured for dual-stack, the Service creation fails."
                               type: "string"
                             name:
-                              description: "Specifies the name of the Service. This name is used to set `clusterService.name`.\n\n\nNote: This field cannot be updated."
+                              description: "Specifies the name of the Service. This name is used to set `clusterService.name`.\n\nNote: This field cannot be updated."
                               type: "string"
                             podSelector:
                               additionalProperties:
                                 type: "string"
-                              description: "Routes service traffic to pods with matching label keys and values.\nIf specified, the service will only be exposed to pods matching the selector.\n\n\nNote: If the component has roles, at least one of 'roleSelector' or 'podSelector' must be specified.\nIf both are specified, a pod must match both conditions to be selected."
+                              description: "Routes service traffic to pods with matching label keys and values.\nIf specified, the service will only be exposed to pods matching the selector.\n\nNote: If the component has roles, at least one of 'roleSelector' or 'podSelector' must be specified.\nIf both are specified, a pod must match both conditions to be selected."
                               type: "object"
                               x-kubernetes-map-type: "atomic"
                             ports:
-                              description: "Specifies Port definitions that are to be exposed by a ClusterService.\n\n\nIf not specified, the Port definitions from non-NodePort and non-LoadBalancer type ComponentService\ndefined in the ComponentDefinition (`componentDefinition.spec.services`) will be used.\nIf no matching ComponentService is found, the expose operation will fail.\n\n\nMore info: https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports"
+                              description: "Specifies Port definitions that are to be exposed by a ClusterService.\n\nIf not specified, the Port definitions from non-NodePort and non-LoadBalancer type ComponentService\ndefined in the ComponentDefinition (`componentDefinition.spec.services`) will be used.\nIf no matching ComponentService is found, the expose operation will fail.\n\nMore info: https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports"
                               items:
                                 description: "ServicePort contains information on service's port."
                                 properties:
                                   appProtocol:
-                                    description: "The application protocol for this port.\nThis is used as a hint for implementations to offer richer behavior for protocols that they understand.\nThis field follows standard Kubernetes label syntax.\nValid values are either:\n\n\n* Un-prefixed protocol names - reserved for IANA standard service names (as per\nRFC-6335 and https://www.iana.org/assignments/service-names).\n\n\n* Kubernetes-defined prefixed names:\n  * 'kubernetes.io/h2c' - HTTP/2 prior knowledge over cleartext as described in https://www.rfc-editor.org/rfc/rfc9113.html#name-starting-http-2-with-prior-\n  * 'kubernetes.io/ws'  - WebSocket over cleartext as described in https://www.rfc-editor.org/rfc/rfc6455\n  * 'kubernetes.io/wss' - WebSocket over TLS as described in https://www.rfc-editor.org/rfc/rfc6455\n\n\n* Other protocols should use implementation-defined prefixed names such as\nmycompany.com/my-custom-protocol."
+                                    description: "The application protocol for this port.\nThis is used as a hint for implementations to offer richer behavior for protocols that they understand.\nThis field follows standard Kubernetes label syntax.\nValid values are either:\n\n* Un-prefixed protocol names - reserved for IANA standard service names (as per\nRFC-6335 and https://www.iana.org/assignments/service-names).\n\n* Kubernetes-defined prefixed names:\n  * 'kubernetes.io/h2c' - HTTP/2 prior knowledge over cleartext as described in https://www.rfc-editor.org/rfc/rfc9113.html#name-starting-http-2-with-prior-\n  * 'kubernetes.io/ws'  - WebSocket over cleartext as described in https://www.rfc-editor.org/rfc/rfc6455\n  * 'kubernetes.io/wss' - WebSocket over TLS as described in https://www.rfc-editor.org/rfc/rfc6455\n\n* Other protocols should use implementation-defined prefixed names such as\nmycompany.com/my-custom-protocol."
                                     type: "string"
                                   name:
                                     description: "The name of this port within the service. This must be a DNS_LABEL.\nAll ports within a ServiceSpec must have unique names. When considering\nthe endpoints for a Service, this must match the 'name' field in the\nEndpointPort.\nOptional if only one ServicePort is defined on this service."
@@ -282,10 +288,10 @@ spec:
                                 - "protocol"
                               x-kubernetes-list-type: "map"
                             roleSelector:
-                              description: "Specifies a role to target with the service.\nIf specified, the service will only be exposed to pods with the matching role.\n\n\nNote: If the component has roles, at least one of 'roleSelector' or 'podSelector' must be specified.\nIf both are specified, a pod must match both conditions to be selected."
+                              description: "Specifies a role to target with the service.\nIf specified, the service will only be exposed to pods with the matching role.\n\nNote: If the component has roles, at least one of 'roleSelector' or 'podSelector' must be specified.\nIf both are specified, a pod must match both conditions to be selected."
                               type: "string"
                             serviceType:
-                              description: "Determines how the Service is exposed. Defaults to 'ClusterIP'.\nValid options are `ClusterIP`, `NodePort`, and `LoadBalancer`.\n\n\n- `ClusterIP`: allocates a cluster-internal IP address for load-balancing to endpoints.\n   Endpoints are determined by the selector or if that is not specified,\n   they are determined by manual construction of an Endpoints object or EndpointSlice objects.\n- `NodePort`: builds on ClusterIP and allocates a port on every node which routes to the same endpoints as the clusterIP.\n- `LoadBalancer`: builds on NodePort and creates an external load-balancer (if supported in the current cloud)\n   which routes to the same endpoints as the clusterIP.\n\n\nNote: although K8s Service type allows the 'ExternalName' type, it is not a valid option for the expose operation.\n\n\nFor more info, see:\nhttps://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types."
+                              description: "Determines how the Service is exposed. Defaults to 'ClusterIP'.\nValid options are `ClusterIP`, `NodePort`, and `LoadBalancer`.\n\n- `ClusterIP`: allocates a cluster-internal IP address for load-balancing to endpoints.\n   Endpoints are determined by the selector or if that is not specified,\n   they are determined by manual construction of an Endpoints object or EndpointSlice objects.\n- `NodePort`: builds on ClusterIP and allocates a port on every node which routes to the same endpoints as the clusterIP.\n- `LoadBalancer`: builds on NodePort and creates an external load-balancer (if supported in the current cloud)\n   which routes to the same endpoints as the clusterIP.\n\nNote: although K8s Service type allows the 'ExternalName' type, it is not a valid option for the expose operation.\n\nFor more info, see:\nhttps://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types."
                               type: "string"
                           required:
                             - "name"
@@ -303,7 +309,7 @@ spec:
                     type: "object"
                   type: "array"
                 force:
-                  description: "Instructs the system to bypass pre-checks (including cluster state checks and customized pre-conditions hooks)\nand immediately execute the opsRequest, except for the opsRequest of 'Start' type, which will still undergo\npre-checks even if `force` is true.\n\n\nThis is useful for concurrent execution of 'VerticalScaling' and 'HorizontalScaling' opsRequests.\nBy setting `force` to true, you can bypass the default checks and demand these opsRequests to run\nsimultaneously.\n\n\nNote: Once set, the `force` field is immutable and cannot be updated."
+                  description: "Instructs the system to bypass pre-checks (including cluster state checks and customized pre-conditions hooks)\nand immediately execute the opsRequest, except for the opsRequest of 'Start' type, which will still undergo\npre-checks even if `force` is true.\n\nThis is useful for concurrent execution of 'VerticalScaling' and 'HorizontalScaling' opsRequests.\nBy setting `force` to true, you can bypass the default checks and demand these opsRequests to run\nsimultaneously.\n\nNote: Once set, the `force` field is immutable and cannot be updated."
                   type: "boolean"
                   x-kubernetes-validations:
                     - message: "forbidden to update spec.force"
@@ -364,7 +370,7 @@ spec:
                                 description: "Specifies the namespace of the Backup namespace.\nIf not specified, the namespace of the OpsRequest will be used."
                                 type: "string"
                               restoreEnv:
-                                description: "Defines container environment variables for the restore process.\nmerged with the ones specified in the Backup and ActionSet resources.\n\n\nMerge priority: Restore env > Backup env > ActionSet env.\n\n\nPurpose: Some databases require different configurations when being restored as a standby\ncompared to being restored as a primary.\nFor example, when restoring MySQL as a replica, you need to set `skip_slave_start=\"ON\"` for 5.7\nor `skip_replica_start=\"ON\"` for 8.0.\nAllowing environment variables to be passed in makes it more convenient to control these behavioral differences\nduring the restore process."
+                                description: "Defines container environment variables for the restore process.\nmerged with the ones specified in the Backup and ActionSet resources.\n\nMerge priority: Restore env > Backup env > ActionSet env.\n\nPurpose: Some databases require different configurations when being restored as a standby\ncompared to being restored as a primary.\nFor example, when restoring MySQL as a replica, you need to set `skip_slave_start=\"ON\"` for 5.7\nor `skip_replica_start=\"ON\"` for 8.0.\nAllowing environment variables to be passed in makes it more convenient to control these behavioral differences\nduring the restore process."
                                 items:
                                   description: "EnvVar represents an environment variable present in a Container."
                                   properties:
@@ -384,7 +390,7 @@ spec:
                                               description: "The key to select."
                                               type: "string"
                                             name:
-                                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                               type: "string"
                                             optional:
                                               description: "Specify whether the ConfigMap or its key must be defined"
@@ -433,7 +439,7 @@ spec:
                                               description: "The key of the secret to select from.  Must be a valid secret key."
                                               type: "string"
                                             name:
-                                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                               type: "string"
                                             optional:
                                               description: "Specify whether the Secret or its key must be defined"
@@ -449,7 +455,7 @@ spec:
                                 type: "array"
                                 x-kubernetes-preserve-unknown-fields: true
                               restorePointInTime:
-                                description: "Specifies the point in time to which the restore should be performed.\nSupported time formats:\n\n\n- RFC3339 format, e.g. \"2023-11-25T18:52:53Z\"\n- A human-readable date-time format, e.g. \"Jul 25,2023 18:52:53 UTC+0800\""
+                                description: "Specifies the point in time to which the restore should be performed.\nSupported time formats:\n\n- RFC3339 format, e.g. \"2023-11-25T18:52:53Z\"\n- A human-readable date-time format, e.g. \"Jul 25,2023 18:52:53 UTC+0800\""
                                 type: "string"
                             required:
                               - "name"
@@ -513,7 +519,7 @@ spec:
                                                 description: "The key to select."
                                                 type: "string"
                                               name:
-                                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                                 type: "string"
                                               optional:
                                                 description: "Specify whether the ConfigMap or its key must be defined"
@@ -562,7 +568,7 @@ spec:
                                                 description: "The key of the secret to select from.  Must be a valid secret key."
                                                 type: "string"
                                               name:
-                                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                                 type: "string"
                                               optional:
                                                 description: "Specify whether the Secret or its key must be defined"
@@ -587,7 +593,7 @@ spec:
                                   pattern: "^[a-z0-9]([a-z0-9\\.\\-]*[a-z0-9])?$"
                                   type: "string"
                                 ordinals:
-                                  description: "Specifies the desired Ordinals of this InstanceTemplate.\nThe Ordinals used to specify the ordinal of the instance (pod) names to be generated under this InstanceTemplate.\nIf Ordinals are defined, their number must be equal to or more than the corresponding replicas.\n\n\nFor example, if Ordinals is {ranges: [{start: 0, end: 1}], discrete: [7]},\nthen the instance names generated under this InstanceTemplate would be\n$(cluster.name)-$(component.name)-$(template.name)-0、$(cluster.name)-$(component.name)-$(template.name)-1 and\n$(cluster.name)-$(component.name)-$(template.name)-7"
+                                  description: "Specifies the desired Ordinals of this InstanceTemplate.\nThe Ordinals used to specify the ordinal of the instance (pod) names to be generated under this InstanceTemplate.\nIf Ordinals are defined, their number must be equal to or more than the corresponding replicas.\n\nFor example, if Ordinals is {ranges: [{start: 0, end: 1}], discrete: [7]},\nthen the instance names generated under this InstanceTemplate would be\n$(cluster.name)-$(component.name)-$(template.name)-0、$(cluster.name)-$(component.name)-$(template.name)-1 and\n$(cluster.name)-$(component.name)-$(template.name)-7"
                                   properties:
                                     discrete:
                                       items:
@@ -620,7 +626,7 @@ spec:
                                   description: "Specifies an override for the resource requirements of the first container in the Pod.\nThis field allows for customizing resource allocation (CPU, memory, etc.) for the container."
                                   properties:
                                     claims:
-                                      description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
+                                      description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                                       items:
                                         description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                         properties:
@@ -1189,7 +1195,7 @@ spec:
                                       description: "If specified, the Pod will be dispatched by specified scheduler.\nIf not specified, the Pod will be dispatched by default scheduler."
                                       type: "string"
                                     tolerations:
-                                      description: "Allows Pods to be scheduled onto nodes with matching taints.\nEach toleration in the array allows the Pod to tolerate node taints based on\nspecified `key`, `value`, `effect`, and `operator`.\n\n\n- The `key`, `value`, and `effect` identify the taint that the toleration matches.\n- The `operator` determines how the toleration matches the taint.\n\n\nPods with matching tolerations are allowed to be scheduled on tainted nodes, typically reserved for specific purposes."
+                                      description: "Allows Pods to be scheduled onto nodes with matching taints.\nEach toleration in the array allows the Pod to tolerate node taints based on\nspecified `key`, `value`, `effect`, and `operator`.\n\n- The `key`, `value`, and `effect` identify the taint that the toleration matches.\n- The `operator` determines how the toleration matches the taint.\n\nPods with matching tolerations are allowed to be scheduled on tainted nodes, typically reserved for specific purposes."
                                       items:
                                         description: "The pod this Toleration is attached to tolerates any taint that matches\nthe triple <key,value,effect> using the matching operator <operator>."
                                         properties:
@@ -1248,7 +1254,7 @@ spec:
                                             type: "object"
                                             x-kubernetes-map-type: "atomic"
                                           matchLabelKeys:
-                                            description: "MatchLabelKeys is a set of pod label keys to select the pods over which\nspreading will be calculated. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are ANDed with labelSelector\nto select the group of existing pods over which spreading will be calculated\nfor the incoming pod. The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.\nMatchLabelKeys cannot be set when LabelSelector isn't set.\nKeys that don't exist in the incoming pod labels will\nbe ignored. A null or empty list means only match against labelSelector.\n\n\nThis is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default)."
+                                            description: "MatchLabelKeys is a set of pod label keys to select the pods over which\nspreading will be calculated. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are ANDed with labelSelector\nto select the group of existing pods over which spreading will be calculated\nfor the incoming pod. The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.\nMatchLabelKeys cannot be set when LabelSelector isn't set.\nKeys that don't exist in the incoming pod labels will\nbe ignored. A null or empty list means only match against labelSelector.\n\nThis is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default)."
                                             items:
                                               type: "string"
                                             type: "array"
@@ -1258,14 +1264,14 @@ spec:
                                             format: "int32"
                                             type: "integer"
                                           minDomains:
-                                            description: "MinDomains indicates a minimum number of eligible domains.\nWhen the number of eligible domains with matching topology keys is less than minDomains,\nPod Topology Spread treats \"global minimum\" as 0, and then the calculation of Skew is performed.\nAnd when the number of eligible domains with matching topology keys equals or greater than minDomains,\nthis value has no effect on scheduling.\nAs a result, when the number of eligible domains is less than minDomains,\nscheduler won't schedule more than maxSkew Pods to those domains.\nIf value is nil, the constraint behaves as if MinDomains is equal to 1.\nValid values are integers greater than 0.\nWhen value is not nil, WhenUnsatisfiable must be DoNotSchedule.\n\n\nFor example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same\nlabelSelector spread as 2/2/2:\n| zone1 | zone2 | zone3 |\n|  P P  |  P P  |  P P  |\nThe number of domains is less than 5(MinDomains), so \"global minimum\" is treated as 0.\nIn this situation, new pod with the same labelSelector cannot be scheduled,\nbecause computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,\nit will violate MaxSkew.\n\n\nThis is a beta field and requires the MinDomainsInPodTopologySpread feature gate to be enabled (enabled by default)."
+                                            description: "MinDomains indicates a minimum number of eligible domains.\nWhen the number of eligible domains with matching topology keys is less than minDomains,\nPod Topology Spread treats \"global minimum\" as 0, and then the calculation of Skew is performed.\nAnd when the number of eligible domains with matching topology keys equals or greater than minDomains,\nthis value has no effect on scheduling.\nAs a result, when the number of eligible domains is less than minDomains,\nscheduler won't schedule more than maxSkew Pods to those domains.\nIf value is nil, the constraint behaves as if MinDomains is equal to 1.\nValid values are integers greater than 0.\nWhen value is not nil, WhenUnsatisfiable must be DoNotSchedule.\n\nFor example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same\nlabelSelector spread as 2/2/2:\n| zone1 | zone2 | zone3 |\n|  P P  |  P P  |  P P  |\nThe number of domains is less than 5(MinDomains), so \"global minimum\" is treated as 0.\nIn this situation, new pod with the same labelSelector cannot be scheduled,\nbecause computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,\nit will violate MaxSkew.\n\nThis is a beta field and requires the MinDomainsInPodTopologySpread feature gate to be enabled (enabled by default)."
                                             format: "int32"
                                             type: "integer"
                                           nodeAffinityPolicy:
-                                            description: "NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector\nwhen calculating pod topology spread skew. Options are:\n- Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.\n- Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.\n\n\nIf this value is nil, the behavior is equivalent to the Honor policy.\nThis is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag."
+                                            description: "NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector\nwhen calculating pod topology spread skew. Options are:\n- Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.\n- Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.\n\nIf this value is nil, the behavior is equivalent to the Honor policy.\nThis is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag."
                                             type: "string"
                                           nodeTaintsPolicy:
-                                            description: "NodeTaintsPolicy indicates how we will treat node taints when calculating\npod topology spread skew. Options are:\n- Honor: nodes without taints, along with tainted nodes for which the incoming pod\nhas a toleration, are included.\n- Ignore: node taints are ignored. All nodes are included.\n\n\nIf this value is nil, the behavior is equivalent to the Ignore policy.\nThis is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag."
+                                            description: "NodeTaintsPolicy indicates how we will treat node taints when calculating\npod topology spread skew. Options are:\n- Honor: nodes without taints, along with tainted nodes for which the incoming pod\nhas a toleration, are included.\n- Ignore: node taints are ignored. All nodes are included.\n\nIf this value is nil, the behavior is equivalent to the Ignore policy.\nThis is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag."
                                             type: "string"
                                           topologyKey:
                                             description: "TopologyKey is the key of node labels. Nodes that have a label with this key\nand identical values are considered to be in the same topology.\nWe consider each <key, value> as a \"bucket\", and try to put balanced number\nof pods into each bucket.\nWe define a domain as a particular instance of a topology.\nAlso, we define an eligible domain as a domain whose nodes meet the requirements of\nnodeAffinityPolicy and nodeTaintsPolicy.\ne.g. If TopologyKey is \"kubernetes.io/hostname\", each Node is a domain of that topology.\nAnd, if TopologyKey is \"topology.kubernetes.io/zone\", each zone is a domain of that topology.\nIt's a required field."
@@ -1299,10 +1305,10 @@ spec:
                                         description: "Specifies the labels for the PVC of the volume."
                                         type: "object"
                                       name:
-                                        description: "Refers to the name of a volumeMount defined in either:\n\n\n- `componentDefinition.spec.runtime.containers[*].volumeMounts`\n\n\nThe value of `name` must match the `name` field of a volumeMount specified in the corresponding `volumeMounts` array."
+                                        description: "Refers to the name of a volumeMount defined in either:\n\n- `componentDefinition.spec.runtime.containers[*].volumeMounts`\n\nThe value of `name` must match the `name` field of a volumeMount specified in the corresponding `volumeMounts` array."
                                         type: "string"
                                       persistentVolumeClaimName:
-                                        description: "Specifies the prefix of the PVC name for the volume.\n\n\nFor each replica, the final name of the PVC will be in format: <persistentVolumeClaimName>-<ordinal>"
+                                        description: "Specifies the prefix of the PVC name for the volume.\n\nFor each replica, the final name of the PVC will be in format: <persistentVolumeClaimName>-<ordinal>"
                                         type: "string"
                                       spec:
                                         description: "Defines the desired characteristics of a PersistentVolumeClaim that will be created for the volume\nwith the mount name specified in the `name` field."
@@ -1463,7 +1469,7 @@ spec:
                   items:
                     properties:
                       backupName:
-                        description: "Indicates the name of the Backup custom resource from which to recover the instance.\nDefaults to an empty PersistentVolume if unspecified.\n\n\nNote:\n- Only full physical backups are supported for multi-replica Components (e.g., 'xtrabackup' for MySQL).\n- Logical backups (e.g., 'mysqldump' for MySQL) are unsupported in the current version."
+                        description: "Indicates the name of the Backup custom resource from which to recover the instance.\nDefaults to an empty PersistentVolume if unspecified.\n\nNote:\n- Only full physical backups are supported for multi-replica Components (e.g., 'xtrabackup' for MySQL).\n- Logical backups (e.g., 'mysqldump' for MySQL) are unsupported in the current version."
                         type: "string"
                       componentName:
                         description: "Specifies the name of the Component as defined in the cluster.spec"
@@ -1487,7 +1493,7 @@ spec:
                         minItems: 1
                         type: "array"
                       restoreEnv:
-                        description: "Defines container environment variables for the restore process.\nmerged with the ones specified in the Backup and ActionSet resources.\n\n\nMerge priority: Restore env > Backup env > ActionSet env.\n\n\nPurpose: Some databases require different configurations when being restored as a standby\ncompared to being restored as a primary.\nFor example, when restoring MySQL as a replica, you need to set `skip_slave_start=\"ON\"` for 5.7\nor `skip_replica_start=\"ON\"` for 8.0.\nAllowing environment variables to be passed in makes it more convenient to control these behavioral differences\nduring the restore process."
+                        description: "Defines container environment variables for the restore process.\nmerged with the ones specified in the Backup and ActionSet resources.\n\nMerge priority: Restore env > Backup env > ActionSet env.\n\nPurpose: Some databases require different configurations when being restored as a standby\ncompared to being restored as a primary.\nFor example, when restoring MySQL as a replica, you need to set `skip_slave_start=\"ON\"` for 5.7\nor `skip_replica_start=\"ON\"` for 8.0.\nAllowing environment variables to be passed in makes it more convenient to control these behavioral differences\nduring the restore process."
                         items:
                           description: "EnvVar represents an environment variable present in a Container."
                           properties:
@@ -1507,7 +1513,7 @@ spec:
                                       description: "The key to select."
                                       type: "string"
                                     name:
-                                      description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                      description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                       type: "string"
                                     optional:
                                       description: "Specify whether the ConfigMap or its key must be defined"
@@ -1556,7 +1562,7 @@ spec:
                                       description: "The key of the secret to select from.  Must be a valid secret key."
                                       type: "string"
                                     name:
-                                      description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                      description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                       type: "string"
                                     optional:
                                       description: "Specify whether the Secret or its key must be defined"
@@ -1647,7 +1653,7 @@ spec:
                       description: "Specifies the namespace of the backup custom resource. If not specified, the namespace of the opsRequest will be used."
                       type: "string"
                     deferPostReadyUntilClusterRunning:
-                      description: "Controls the timing of PostReady actions during the recovery process.\n\n\nIf false (default), PostReady actions execute when the Component reaches the \"Running\" state.\nIf true, PostReady actions are delayed until the entire Cluster is \"Running,\"\nensuring the cluster's overall stability before proceeding.\n\n\nThis setting is useful for coordinating PostReady operations across the Cluster for optimal cluster conditions."
+                      description: "Controls the timing of PostReady actions during the recovery process.\n\nIf false (default), PostReady actions execute when the Component reaches the \"Running\" state.\nIf true, PostReady actions are delayed until the entire Cluster is \"Running,\"\nensuring the cluster's overall stability before proceeding.\n\nThis setting is useful for coordinating PostReady operations across the Cluster for optimal cluster conditions."
                       type: "boolean"
                     env:
                       description: "Specifies a list of environment variables to be set in the container."
@@ -1670,7 +1676,7 @@ spec:
                                     description: "The key to select."
                                     type: "string"
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the ConfigMap or its key must be defined"
@@ -1719,7 +1725,7 @@ spec:
                                     description: "The key of the secret to select from.  Must be a valid secret key."
                                     type: "string"
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the Secret or its key must be defined"
@@ -1757,11 +1763,11 @@ spec:
                         - message: "forbidden to update parameters"
                           rule: "self == oldSelf"
                     restorePointInTime:
-                      description: "Specifies the point in time to which the restore should be performed.\nSupported time formats:\n\n\n- RFC3339 format, e.g. \"2023-11-25T18:52:53Z\"\n- A human-readable date-time format, e.g. \"Jul 25,2023 18:52:53 UTC+0800\""
+                      description: "Specifies the point in time to which the restore should be performed.\nSupported time formats:\n\n- RFC3339 format, e.g. \"2023-11-25T18:52:53Z\"\n- A human-readable date-time format, e.g. \"Jul 25,2023 18:52:53 UTC+0800\""
                       type: "string"
                     volumeRestorePolicy:
                       default: "Parallel"
-                      description: "Specifies the policy for restoring volume claims of a Component's Pods.\nIt determines whether the volume claims should be restored sequentially (one by one) or in parallel (all at once).\nSupport values:\n\n\n- \"Serial\"\n- \"Parallel\""
+                      description: "Specifies the policy for restoring volume claims of a Component's Pods.\nIt determines whether the volume claims should be restored sequentially (one by one) or in parallel (all at once).\nSupport values:\n\n- \"Serial\"\n- \"Parallel\""
                       enum:
                         - "Serial"
                         - "Parallel"
@@ -1849,7 +1855,7 @@ spec:
                   format: "int32"
                   type: "integer"
                 type:
-                  description: "Specifies the type of this operation. Supported types include \"Start\", \"Stop\", \"Restart\", \"Switchover\",\n\"VerticalScaling\", \"HorizontalScaling\", \"VolumeExpansion\", \"Reconfiguring\", \"Upgrade\", \"Backup\", \"Restore\",\n\"Expose\", \"RebuildInstance\", \"Custom\".\n\n\nNote: This field is immutable once set."
+                  description: "Specifies the type of this operation. Supported types include \"Start\", \"Stop\", \"Restart\", \"Switchover\",\n\"VerticalScaling\", \"HorizontalScaling\", \"VolumeExpansion\", \"Reconfiguring\", \"Upgrade\", \"Backup\", \"Restore\",\n\"Expose\", \"RebuildInstance\", \"Custom\".\n\nNote: This field is immutable once set."
                   enum:
                     - "Upgrade"
                     - "VerticalScaling"
@@ -1870,7 +1876,7 @@ spec:
                     - message: "forbidden to update spec.type"
                       rule: "self == oldSelf"
                 upgrade:
-                  description: "Specifies the desired new version of the Cluster.\n\n\nNote: This field is immutable once set."
+                  description: "Specifies the desired new version of the Cluster.\n\nNote: This field is immutable once set."
                   properties:
                     components:
                       description: "Lists components to be upgrade based on desired ComponentDefinition and ServiceVersion.\nFrom the perspective of cluster API, the reasonable combinations should be:\n1. (comp-def, service-ver) - upgrade to the specified service version and component definition, the user takes the responsibility to ensure that they are compatible.\n2. (\"\", service-ver) - upgrade to the specified service version, let the operator choose the latest compatible component definition.\n3. (comp-def, \"\") - upgrade to the specified component definition, let the operator choose the latest compatible service version.\n4. (\"\", \"\") - upgrade to the latest service version and component definition, the operator will ensure the compatibility between the selected versions."
@@ -1908,7 +1914,7 @@ spec:
                     description: "VerticalScaling refers to the process of adjusting compute resources (e.g., CPU, memory) allocated to a Component.\nIt defines the parameters required for the operation."
                     properties:
                       claims:
-                        description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
+                        description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                         items:
                           description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                           properties:
@@ -1930,7 +1936,7 @@ spec:
                         items:
                           properties:
                             claims:
-                              description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
+                              description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                               items:
                                 description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                 properties:
@@ -2041,9 +2047,6 @@ spec:
               required:
                 - "type"
               type: "object"
-              x-kubernetes-validations:
-                - message: "forbidden to cancel the opsRequest which type not in ['VerticalScaling','HorizontalScaling']"
-                  rule: "has(self.cancel) && self.cancel ? (self.type in ['VerticalScaling', 'HorizontalScaling']) : true"
             status:
               description: "OpsRequestStatus represents the observed state of an OpsRequest."
               properties:
@@ -2173,7 +2176,7 @@ spec:
                 conditions:
                   description: "Describes the detailed status of the OpsRequest.\nPossible condition types include \"Cancelled\", \"WaitForProgressing\", \"Validated\", \"Succeed\", \"Failed\", \"Restarting\",\n\"VerticalScaling\", \"HorizontalScaling\", \"VolumeExpanding\", \"Reconfigure\", \"Switchover\", \"Stopping\", \"Starting\",\n\"VersionUpgrading\", \"Exposing\", \"Backup\", \"InstancesRebuilding\", \"CustomOperation\"."
                   items:
-                    description: "Condition contains details for one aspect of the current state of this API Resource.\n---\nThis struct is intended for direct use as an array at the field path .status.conditions.  For example,\n\n\n\ttype FooStatus struct{\n\t    // Represents the observations of a foo's current state.\n\t    // Known .status.conditions.type are: \"Available\", \"Progressing\", and \"Degraded\"\n\t    // +patchMergeKey=type\n\t    // +patchStrategy=merge\n\t    // +listType=map\n\t    // +listMapKey=type\n\t    Conditions []metav1.Condition `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"`\n\n\n\t    // other fields\n\t}"
+                    description: "Condition contains details for one aspect of the current state of this API Resource."
                     properties:
                       lastTransitionTime:
                         description: "lastTransitionTime is the last time the condition transitioned from one status to another.\nThis should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable."
@@ -2202,7 +2205,7 @@ spec:
                           - "Unknown"
                         type: "string"
                       type:
-                        description: "type of condition in CamelCase or in foo.example.com/CamelCase.\n---\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions can be\nuseful (see .node.status.conditions), the ability to deconflict is important.\nThe regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)"
+                        description: "type of condition in CamelCase or in foo.example.com/CamelCase."
                         maxLength: 316
                         pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$"
                         type: "string"
@@ -2232,7 +2235,7 @@ spec:
                         description: "LastComponentConfiguration can be used to track and compare the desired state of the Component over time."
                         properties:
                           claims:
-                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
+                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                             items:
                               description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                               properties:
@@ -2287,7 +2290,7 @@ spec:
                                                 description: "The key to select."
                                                 type: "string"
                                               name:
-                                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                                 type: "string"
                                               optional:
                                                 description: "Specify whether the ConfigMap or its key must be defined"
@@ -2336,7 +2339,7 @@ spec:
                                                 description: "The key of the secret to select from.  Must be a valid secret key."
                                                 type: "string"
                                               name:
-                                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                                 type: "string"
                                               optional:
                                                 description: "Specify whether the Secret or its key must be defined"
@@ -2361,7 +2364,7 @@ spec:
                                   pattern: "^[a-z0-9]([a-z0-9\\.\\-]*[a-z0-9])?$"
                                   type: "string"
                                 ordinals:
-                                  description: "Specifies the desired Ordinals of this InstanceTemplate.\nThe Ordinals used to specify the ordinal of the instance (pod) names to be generated under this InstanceTemplate.\nIf Ordinals are defined, their number must be equal to or more than the corresponding replicas.\n\n\nFor example, if Ordinals is {ranges: [{start: 0, end: 1}], discrete: [7]},\nthen the instance names generated under this InstanceTemplate would be\n$(cluster.name)-$(component.name)-$(template.name)-0、$(cluster.name)-$(component.name)-$(template.name)-1 and\n$(cluster.name)-$(component.name)-$(template.name)-7"
+                                  description: "Specifies the desired Ordinals of this InstanceTemplate.\nThe Ordinals used to specify the ordinal of the instance (pod) names to be generated under this InstanceTemplate.\nIf Ordinals are defined, their number must be equal to or more than the corresponding replicas.\n\nFor example, if Ordinals is {ranges: [{start: 0, end: 1}], discrete: [7]},\nthen the instance names generated under this InstanceTemplate would be\n$(cluster.name)-$(component.name)-$(template.name)-0、$(cluster.name)-$(component.name)-$(template.name)-1 and\n$(cluster.name)-$(component.name)-$(template.name)-7"
                                   properties:
                                     discrete:
                                       items:
@@ -2394,7 +2397,7 @@ spec:
                                   description: "Specifies an override for the resource requirements of the first container in the Pod.\nThis field allows for customizing resource allocation (CPU, memory, etc.) for the container."
                                   properties:
                                     claims:
-                                      description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
+                                      description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                                       items:
                                         description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                         properties:
@@ -2963,7 +2966,7 @@ spec:
                                       description: "If specified, the Pod will be dispatched by specified scheduler.\nIf not specified, the Pod will be dispatched by default scheduler."
                                       type: "string"
                                     tolerations:
-                                      description: "Allows Pods to be scheduled onto nodes with matching taints.\nEach toleration in the array allows the Pod to tolerate node taints based on\nspecified `key`, `value`, `effect`, and `operator`.\n\n\n- The `key`, `value`, and `effect` identify the taint that the toleration matches.\n- The `operator` determines how the toleration matches the taint.\n\n\nPods with matching tolerations are allowed to be scheduled on tainted nodes, typically reserved for specific purposes."
+                                      description: "Allows Pods to be scheduled onto nodes with matching taints.\nEach toleration in the array allows the Pod to tolerate node taints based on\nspecified `key`, `value`, `effect`, and `operator`.\n\n- The `key`, `value`, and `effect` identify the taint that the toleration matches.\n- The `operator` determines how the toleration matches the taint.\n\nPods with matching tolerations are allowed to be scheduled on tainted nodes, typically reserved for specific purposes."
                                       items:
                                         description: "The pod this Toleration is attached to tolerates any taint that matches\nthe triple <key,value,effect> using the matching operator <operator>."
                                         properties:
@@ -3022,7 +3025,7 @@ spec:
                                             type: "object"
                                             x-kubernetes-map-type: "atomic"
                                           matchLabelKeys:
-                                            description: "MatchLabelKeys is a set of pod label keys to select the pods over which\nspreading will be calculated. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are ANDed with labelSelector\nto select the group of existing pods over which spreading will be calculated\nfor the incoming pod. The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.\nMatchLabelKeys cannot be set when LabelSelector isn't set.\nKeys that don't exist in the incoming pod labels will\nbe ignored. A null or empty list means only match against labelSelector.\n\n\nThis is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default)."
+                                            description: "MatchLabelKeys is a set of pod label keys to select the pods over which\nspreading will be calculated. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are ANDed with labelSelector\nto select the group of existing pods over which spreading will be calculated\nfor the incoming pod. The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.\nMatchLabelKeys cannot be set when LabelSelector isn't set.\nKeys that don't exist in the incoming pod labels will\nbe ignored. A null or empty list means only match against labelSelector.\n\nThis is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default)."
                                             items:
                                               type: "string"
                                             type: "array"
@@ -3032,14 +3035,14 @@ spec:
                                             format: "int32"
                                             type: "integer"
                                           minDomains:
-                                            description: "MinDomains indicates a minimum number of eligible domains.\nWhen the number of eligible domains with matching topology keys is less than minDomains,\nPod Topology Spread treats \"global minimum\" as 0, and then the calculation of Skew is performed.\nAnd when the number of eligible domains with matching topology keys equals or greater than minDomains,\nthis value has no effect on scheduling.\nAs a result, when the number of eligible domains is less than minDomains,\nscheduler won't schedule more than maxSkew Pods to those domains.\nIf value is nil, the constraint behaves as if MinDomains is equal to 1.\nValid values are integers greater than 0.\nWhen value is not nil, WhenUnsatisfiable must be DoNotSchedule.\n\n\nFor example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same\nlabelSelector spread as 2/2/2:\n| zone1 | zone2 | zone3 |\n|  P P  |  P P  |  P P  |\nThe number of domains is less than 5(MinDomains), so \"global minimum\" is treated as 0.\nIn this situation, new pod with the same labelSelector cannot be scheduled,\nbecause computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,\nit will violate MaxSkew.\n\n\nThis is a beta field and requires the MinDomainsInPodTopologySpread feature gate to be enabled (enabled by default)."
+                                            description: "MinDomains indicates a minimum number of eligible domains.\nWhen the number of eligible domains with matching topology keys is less than minDomains,\nPod Topology Spread treats \"global minimum\" as 0, and then the calculation of Skew is performed.\nAnd when the number of eligible domains with matching topology keys equals or greater than minDomains,\nthis value has no effect on scheduling.\nAs a result, when the number of eligible domains is less than minDomains,\nscheduler won't schedule more than maxSkew Pods to those domains.\nIf value is nil, the constraint behaves as if MinDomains is equal to 1.\nValid values are integers greater than 0.\nWhen value is not nil, WhenUnsatisfiable must be DoNotSchedule.\n\nFor example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same\nlabelSelector spread as 2/2/2:\n| zone1 | zone2 | zone3 |\n|  P P  |  P P  |  P P  |\nThe number of domains is less than 5(MinDomains), so \"global minimum\" is treated as 0.\nIn this situation, new pod with the same labelSelector cannot be scheduled,\nbecause computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,\nit will violate MaxSkew.\n\nThis is a beta field and requires the MinDomainsInPodTopologySpread feature gate to be enabled (enabled by default)."
                                             format: "int32"
                                             type: "integer"
                                           nodeAffinityPolicy:
-                                            description: "NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector\nwhen calculating pod topology spread skew. Options are:\n- Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.\n- Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.\n\n\nIf this value is nil, the behavior is equivalent to the Honor policy.\nThis is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag."
+                                            description: "NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector\nwhen calculating pod topology spread skew. Options are:\n- Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.\n- Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.\n\nIf this value is nil, the behavior is equivalent to the Honor policy.\nThis is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag."
                                             type: "string"
                                           nodeTaintsPolicy:
-                                            description: "NodeTaintsPolicy indicates how we will treat node taints when calculating\npod topology spread skew. Options are:\n- Honor: nodes without taints, along with tainted nodes for which the incoming pod\nhas a toleration, are included.\n- Ignore: node taints are ignored. All nodes are included.\n\n\nIf this value is nil, the behavior is equivalent to the Ignore policy.\nThis is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag."
+                                            description: "NodeTaintsPolicy indicates how we will treat node taints when calculating\npod topology spread skew. Options are:\n- Honor: nodes without taints, along with tainted nodes for which the incoming pod\nhas a toleration, are included.\n- Ignore: node taints are ignored. All nodes are included.\n\nIf this value is nil, the behavior is equivalent to the Ignore policy.\nThis is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag."
                                             type: "string"
                                           topologyKey:
                                             description: "TopologyKey is the key of node labels. Nodes that have a label with this key\nand identical values are considered to be in the same topology.\nWe consider each <key, value> as a \"bucket\", and try to put balanced number\nof pods into each bucket.\nWe define a domain as a particular instance of a topology.\nAlso, we define an eligible domain as a domain whose nodes meet the requirements of\nnodeAffinityPolicy and nodeTaintsPolicy.\ne.g. If TopologyKey is \"kubernetes.io/hostname\", each Node is a domain of that topology.\nAnd, if TopologyKey is \"topology.kubernetes.io/zone\", each zone is a domain of that topology.\nIt's a required field."
@@ -3073,10 +3076,10 @@ spec:
                                         description: "Specifies the labels for the PVC of the volume."
                                         type: "object"
                                       name:
-                                        description: "Refers to the name of a volumeMount defined in either:\n\n\n- `componentDefinition.spec.runtime.containers[*].volumeMounts`\n\n\nThe value of `name` must match the `name` field of a volumeMount specified in the corresponding `volumeMounts` array."
+                                        description: "Refers to the name of a volumeMount defined in either:\n\n- `componentDefinition.spec.runtime.containers[*].volumeMounts`\n\nThe value of `name` must match the `name` field of a volumeMount specified in the corresponding `volumeMounts` array."
                                         type: "string"
                                       persistentVolumeClaimName:
-                                        description: "Specifies the prefix of the PVC name for the volume.\n\n\nFor each replica, the final name of the PVC will be in format: <persistentVolumeClaimName>-<ordinal>"
+                                        description: "Specifies the prefix of the PVC name for the volume.\n\nFor each replica, the final name of the PVC will be in format: <persistentVolumeClaimName>-<ordinal>"
                                         type: "string"
                                       spec:
                                         description: "Defines the desired characteristics of a PersistentVolumeClaim that will be created for the volume\nwith the mount name specified in the `name` field."
@@ -3245,7 +3248,7 @@ spec:
                                   type: "boolean"
                                 serviceType:
                                   default: "ClusterIP"
-                                  description: "Determines how the Service is exposed. Valid options are `ClusterIP`, `NodePort`, and `LoadBalancer`.\n\n\n- `ClusterIP` allocates a Cluster-internal IP address for load-balancing to endpoints.\n   Endpoints are determined by the selector or if that is not specified,\n   they are determined by manual construction of an Endpoints object or EndpointSlice objects.\n- `NodePort` builds on ClusterIP and allocates a port on every node which routes to the same endpoints as the ClusterIP.\n- `LoadBalancer` builds on NodePort and creates an external load-balancer (if supported in the current cloud)\n   which routes to the same endpoints as the ClusterIP.\n\n\nNote: although K8s Service type allows the 'ExternalName' type, it is not a valid option for ClusterComponentService.\n\n\nFor more info, see:\nhttps://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types."
+                                  description: "Determines how the Service is exposed. Valid options are `ClusterIP`, `NodePort`, and `LoadBalancer`.\n\n- `ClusterIP` allocates a Cluster-internal IP address for load-balancing to endpoints.\n   Endpoints are determined by the selector or if that is not specified,\n   they are determined by manual construction of an Endpoints object or EndpointSlice objects.\n- `NodePort` builds on ClusterIP and allocates a port on every node which routes to the same endpoints as the ClusterIP.\n- `LoadBalancer` builds on NodePort and creates an external load-balancer (if supported in the current cloud)\n   which routes to the same endpoints as the ClusterIP.\n\nNote: although K8s Service type allows the 'ExternalName' type, it is not a valid option for ClusterComponentService.\n\nFor more info, see:\nhttps://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types."
                                   enum:
                                     - "ClusterIP"
                                     - "NodePort"

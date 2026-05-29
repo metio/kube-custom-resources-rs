@@ -408,6 +408,26 @@ spec:
                   type: "number"
                 provider:
                   description: "Traffic managent provider"
+                  enum:
+                    - "apisix"
+                    - "appmesh"
+                    - "appmesh:v1beta2"
+                    - "contour"
+                    - "gatewayapi:v1"
+                    - "gatewayapi:v1beta1"
+                    - "gloo"
+                    - "istio"
+                    - "knative"
+                    - "kubernetes"
+                    - "kuma"
+                    - "linkerd"
+                    - "nginx"
+                    - "osm"
+                    - "skipper"
+                    - "smi:v1alpha1"
+                    - "smi:v1alpha2"
+                    - "smi:v1alpha3"
+                    - "traefik"
                   type: "string"
                 revertOnDeletion:
                   description: "Revert mutated resources to original spec on deletion"
@@ -445,6 +465,9 @@ spec:
                       type: "object"
                     appProtocol:
                       description: "Application protocol of the port"
+                      type: "string"
+                    backendTimeout:
+                      description: "Backend request timeout (Gateway API only)"
                       type: "string"
                     backends:
                       description: "AppMesh backend array"
@@ -1101,6 +1124,10 @@ spec:
                               description: "Number of gateway errors before a host is ejected from the connection pool."
                               format: "int32"
                               type: "integer"
+                            consecutiveLocalOriginFailures:
+                              description: "Number of consecutive locally originated failures before ejection. Takes effect only when splitExternalLocalOriginErrors is set to true."
+                              format: "int32"
+                              type: "integer"
                             interval:
                               description: "Time interval between ejection sweep analysis."
                               type: "string"
@@ -1110,6 +1137,9 @@ spec:
                             minHealthPercent:
                               format: "int32"
                               type: "integer"
+                            splitExternalLocalOriginErrors:
+                              description: "Determines whether to distinguish local origin failures from external errors."
+                              type: "boolean"
                           type: "object"
                         tls:
                           description: "Istio TLS related settings for connections to the upstream service"

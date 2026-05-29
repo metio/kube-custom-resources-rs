@@ -2,8 +2,8 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    api-approved.kubernetes.io: "https://github.com/kubernetes-sigs/gateway-api/pull/3328"
-    gateway.networking.k8s.io/bundle-version: "v1.4.1"
+    api-approved.kubernetes.io: "https://github.com/kubernetes-sigs/gateway-api/pull/4530"
+    gateway.networking.k8s.io/bundle-version: "v0.0.0-dev"
     gateway.networking.k8s.io/channel: "standard"
   name: "gateways.gateway.networking.k8s.io"
 spec:
@@ -90,6 +90,58 @@ spec:
                       rule: "self.all(a1, a1.type == 'IPAddress' && has(a1.value) ? self.exists_one(a2, a2.type == a1.type && has(a2.value) && a2.value == a1.value) : true )"
                     - message: "Hostname values must be unique"
                       rule: "self.all(a1, a1.type == 'Hostname'  && has(a1.value) ? self.exists_one(a2, a2.type == a1.type && has(a2.value) && a2.value == a1.value) : true )"
+                allowedListeners:
+                  description: "AllowedListeners defines which ListenerSets can be attached to this Gateway.\nThe default value is to allow no ListenerSets."
+                  properties:
+                    namespaces:
+                      default:
+                        from: "None"
+                      description: "Namespaces defines which namespaces ListenerSets can be attached to this Gateway.\nThe default value is to allow no ListenerSets."
+                      properties:
+                        from:
+                          default: "None"
+                          description: "From indicates where ListenerSets can attach to this Gateway. Possible\nvalues are:\n\n* Same: Only ListenerSets in the same namespace may be attached to this Gateway.\n* Selector: ListenerSets in namespaces selected by the selector may be attached to this Gateway.\n* All: ListenerSets in all namespaces may be attached to this Gateway.\n* None: Only listeners defined in the Gateway's spec are allowed\n\nThe default value None"
+                          enum:
+                            - "All"
+                            - "Selector"
+                            - "Same"
+                            - "None"
+                          type: "string"
+                        selector:
+                          description: "Selector must be specified when From is set to \"Selector\". In that case,\nonly ListenerSets in Namespaces matching this Selector will be selected by this\nGateway. This field is ignored for other values of \"From\"."
+                          properties:
+                            matchExpressions:
+                              description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
+                              items:
+                                description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
+                                properties:
+                                  key:
+                                    description: "key is the label key that the selector applies to."
+                                    type: "string"
+                                  operator:
+                                    description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
+                                    type: "string"
+                                  values:
+                                    description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
+                                    items:
+                                      type: "string"
+                                    type: "array"
+                                    x-kubernetes-list-type: "atomic"
+                                required:
+                                  - "key"
+                                  - "operator"
+                                type: "object"
+                              type: "array"
+                              x-kubernetes-list-type: "atomic"
+                            matchLabels:
+                              additionalProperties:
+                                type: "string"
+                              description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                              type: "object"
+                          type: "object"
+                          x-kubernetes-map-type: "atomic"
+                      type: "object"
+                  type: "object"
                 gatewayClassName:
                   description: "GatewayClassName used for this Gateway. This is the name of a\nGatewayClass resource."
                   maxLength: 253
@@ -105,7 +157,7 @@ spec:
                         minLength: 0
                         type: "string"
                       description: "Annotations that SHOULD be applied to any resources created in response to this Gateway.\n\nFor implementations creating other Kubernetes objects, this should be the `metadata.annotations` field on resources.\nFor other implementations, this refers to any relevant (implementation specific) \"annotations\" concepts.\n\nAn implementation may chose to add additional implementation-specific annotations as they see fit.\n\nSupport: Extended"
-                      maxProperties: 8
+                      maxProperties: 16
                       type: "object"
                       x-kubernetes-validations:
                         - message: "Annotation keys must be in the form of an optional DNS subdomain prefix followed by a required name segment of up to 63 characters."
@@ -153,7 +205,7 @@ spec:
                       type: "object"
                   type: "object"
                 listeners:
-                  description: "Listeners associated with this Gateway. Listeners define\nlogical endpoints that are bound on this Gateway's addresses.\nAt least one Listener MUST be specified.\n\n## Distinct Listeners\n\nEach Listener in a set of Listeners (for example, in a single Gateway)\nMUST be _distinct_, in that a traffic flow MUST be able to be assigned to\nexactly one listener. (This section uses \"set of Listeners\" rather than\n\"Listeners in a single Gateway\" because implementations MAY merge configuration\nfrom multiple Gateways onto a single data plane, and these rules _also_\napply in that case).\n\nPractically, this means that each listener in a set MUST have a unique\ncombination of Port, Protocol, and, if supported by the protocol, Hostname.\n\nSome combinations of port, protocol, and TLS settings are considered\nCore support and MUST be supported by implementations based on the objects\nthey support:\n\nHTTPRoute\n\n1. HTTPRoute, Port: 80, Protocol: HTTP\n2. HTTPRoute, Port: 443, Protocol: HTTPS, TLS Mode: Terminate, TLS keypair provided\n\nTLSRoute\n\n1. TLSRoute, Port: 443, Protocol: TLS, TLS Mode: Passthrough\n\n\"Distinct\" Listeners have the following property:\n\n**The implementation can match inbound requests to a single distinct\nListener**.\n\nWhen multiple Listeners share values for fields (for\nexample, two Listeners with the same Port value), the implementation\ncan match requests to only one of the Listeners using other\nListener fields.\n\nWhen multiple listeners have the same value for the Protocol field, then\neach of the Listeners with matching Protocol values MUST have different\nvalues for other fields.\n\nThe set of fields that MUST be different for a Listener differs per protocol.\nThe following rules define the rules for what fields MUST be considered for\nListeners to be distinct with each protocol currently defined in the\nGateway API spec.\n\nThe set of listeners that all share a protocol value MUST have _different_\nvalues for _at least one_ of these fields to be distinct:\n\n* **HTTP, HTTPS, TLS**: Port, Hostname\n* **TCP, UDP**: Port\n\nOne **very** important rule to call out involves what happens when an\nimplementation:\n\n* Supports TCP protocol Listeners, as well as HTTP, HTTPS, or TLS protocol\n  Listeners, and\n* sees HTTP, HTTPS, or TLS protocols with the same `port` as one with TCP\n  Protocol.\n\nIn this case all the Listeners that share a port with the\nTCP Listener are not distinct and so MUST NOT be accepted.\n\nIf an implementation does not support TCP Protocol Listeners, then the\nprevious rule does not apply, and the TCP Listeners SHOULD NOT be\naccepted.\n\nNote that the `tls` field is not used for determining if a listener is distinct, because\nListeners that _only_ differ on TLS config will still conflict in all cases.\n\n### Listeners that are distinct only by Hostname\n\nWhen the Listeners are distinct based only on Hostname, inbound request\nhostnames MUST match from the most specific to least specific Hostname\nvalues to choose the correct Listener and its associated set of Routes.\n\nExact matches MUST be processed before wildcard matches, and wildcard\nmatches MUST be processed before fallback (empty Hostname value)\nmatches. For example, `\"foo.example.com\"` takes precedence over\n`\"*.example.com\"`, and `\"*.example.com\"` takes precedence over `\"\"`.\n\nAdditionally, if there are multiple wildcard entries, more specific\nwildcard entries must be processed before less specific wildcard entries.\nFor example, `\"*.foo.example.com\"` takes precedence over `\"*.example.com\"`.\n\nThe precise definition here is that the higher the number of dots in the\nhostname to the right of the wildcard character, the higher the precedence.\n\nThe wildcard character will match any number of characters _and dots_ to\nthe left, however, so `\"*.example.com\"` will match both\n`\"foo.bar.example.com\"` _and_ `\"bar.example.com\"`.\n\n## Handling indistinct Listeners\n\nIf a set of Listeners contains Listeners that are not distinct, then those\nListeners are _Conflicted_, and the implementation MUST set the \"Conflicted\"\ncondition in the Listener Status to \"True\".\n\nThe words \"indistinct\" and \"conflicted\" are considered equivalent for the\npurpose of this documentation.\n\nImplementations MAY choose to accept a Gateway with some Conflicted\nListeners only if they only accept the partial Listener set that contains\nno Conflicted Listeners.\n\nSpecifically, an implementation MAY accept a partial Listener set subject to\nthe following rules:\n\n* The implementation MUST NOT pick one conflicting Listener as the winner.\n  ALL indistinct Listeners must not be accepted for processing.\n* At least one distinct Listener MUST be present, or else the Gateway effectively\n  contains _no_ Listeners, and must be rejected from processing as a whole.\n\nThe implementation MUST set a \"ListenersNotValid\" condition on the\nGateway Status when the Gateway contains Conflicted Listeners whether or\nnot they accept the Gateway. That Condition SHOULD clearly\nindicate in the Message which Listeners are conflicted, and which are\nAccepted. Additionally, the Listener status for those listeners SHOULD\nindicate which Listeners are conflicted and not Accepted.\n\n## General Listener behavior\n\nNote that, for all distinct Listeners, requests SHOULD match at most one Listener.\nFor example, if Listeners are defined for \"foo.example.com\" and \"*.example.com\", a\nrequest to \"foo.example.com\" SHOULD only be routed using routes attached\nto the \"foo.example.com\" Listener (and not the \"*.example.com\" Listener).\n\nThis concept is known as \"Listener Isolation\", and it is an Extended feature\nof Gateway API. Implementations that do not support Listener Isolation MUST\nclearly document this, and MUST NOT claim support for the\n`GatewayHTTPListenerIsolation` feature.\n\nImplementations that _do_ support Listener Isolation SHOULD claim support\nfor the Extended `GatewayHTTPListenerIsolation` feature and pass the associated\nconformance tests.\n\n## Compatible Listeners\n\nA Gateway's Listeners are considered _compatible_ if:\n\n1. They are distinct.\n2. The implementation can serve them in compliance with the Addresses\n   requirement that all Listeners are available on all assigned\n   addresses.\n\nCompatible combinations in Extended support are expected to vary across\nimplementations. A combination that is compatible for one implementation\nmay not be compatible for another.\n\nFor example, an implementation that cannot serve both TCP and UDP listeners\non the same address, or cannot mix HTTPS and generic TLS listens on the same port\nwould not consider those cases compatible, even though they are distinct.\n\nImplementations MAY merge separate Gateways onto a single set of\nAddresses if all Listeners across all Gateways are compatible.\n\nIn a future release the MinItems=1 requirement MAY be dropped.\n\nSupport: Core"
+                  description: "Listeners associated with this Gateway. Listeners define\nlogical endpoints that are bound on this Gateway's addresses.\nAt least one Listener MUST be specified.\n\n## Distinct Listeners\n\nEach Listener in a set of Listeners (for example, in a single Gateway)\nMUST be _distinct_, in that a traffic flow MUST be able to be assigned to\nexactly one listener. (This section uses \"set of Listeners\" rather than\n\"Listeners in a single Gateway\" because implementations MAY merge configuration\nfrom multiple Gateways onto a single data plane, and these rules _also_\napply in that case).\n\nPractically, this means that each listener in a set MUST have a unique\ncombination of Port, Protocol, and, if supported by the protocol, Hostname.\n\nSome combinations of port, protocol, and TLS settings are considered\nCore support and MUST be supported by implementations based on the objects\nthey support:\n\nHTTPRoute\n\n1. HTTPRoute, Port: 80, Protocol: HTTP\n2. HTTPRoute, Port: 443, Protocol: HTTPS, TLS Mode: Terminate, TLS keypair provided\n\nTLSRoute\n\n1. TLSRoute, Port: 443, Protocol: TLS, TLS Mode: Passthrough\n\n\"Distinct\" Listeners have the following property:\n\n**The implementation can match inbound requests to a single distinct\nListener**.\n\nWhen multiple Listeners share values for fields (for\nexample, two Listeners with the same Port value), the implementation\ncan match requests to only one of the Listeners using other\nListener fields.\n\nWhen multiple listeners have the same value for the Protocol field, then\neach of the Listeners with matching Protocol values MUST have different\nvalues for other fields.\n\nThe set of fields that MUST be different for a Listener differs per protocol.\nThe following rules define the rules for what fields MUST be considered for\nListeners to be distinct with each protocol currently defined in the\nGateway API spec.\n\nThe set of listeners that all share a protocol value MUST have _different_\nvalues for _at least one_ of these fields to be distinct:\n\n* **HTTP, HTTPS, TLS**: Port, Hostname\n* **TCP, UDP**: Port\n\nOne **very** important rule to call out involves what happens when an\nimplementation:\n\n* Supports TCP protocol Listeners, as well as HTTP, HTTPS, or TLS protocol\n  Listeners, and\n* sees HTTP, HTTPS, or TLS protocols with the same `port` as one with TCP\n  Protocol.\n\nIn this case all the Listeners that share a port with the\nTCP Listener are not distinct and so MUST NOT be accepted.\n\nIf an implementation does not support TCP Protocol Listeners, then the\nprevious rule does not apply, and the TCP Listeners SHOULD NOT be\naccepted.\n\nNote that the `tls` field is not used for determining if a listener is distinct, because\nListeners that _only_ differ on TLS config will still conflict in all cases.\n\n### Listeners that are distinct only by Hostname\n\nWhen the Listeners are distinct based only on Hostname, inbound request\nhostnames MUST match from the most specific to least specific Hostname\nvalues to choose the correct Listener and its associated set of Routes.\n\nExact matches MUST be processed before wildcard matches, and wildcard\nmatches MUST be processed before fallback (empty Hostname value)\nmatches. For example, `\"foo.example.com\"` takes precedence over\n`\"*.example.com\"`, and `\"*.example.com\"` takes precedence over `\"\"`.\n\nAdditionally, if there are multiple wildcard entries, more specific\nwildcard entries must be processed before less specific wildcard entries.\nFor example, `\"*.foo.example.com\"` takes precedence over `\"*.example.com\"`.\n\nThe precise definition here is that the higher the number of dots in the\nhostname to the right of the wildcard character, the higher the precedence.\n\nThe wildcard character will match any number of characters _and dots_ to\nthe left, however, so `\"*.example.com\"` will match both\n`\"foo.bar.example.com\"` _and_ `\"bar.example.com\"`.\n\n## Handling indistinct Listeners\n\nIf a set of Listeners contains Listeners that are not distinct, then those\nListeners are _Conflicted_, and the implementation MUST set the \"Conflicted\"\ncondition in the Listener Status to \"True\".\n\nThe words \"indistinct\" and \"conflicted\" are considered equivalent for the\npurpose of this documentation.\n\nImplementations MAY choose to accept a Gateway with some Conflicted\nListeners only if they only accept the partial Listener set that contains\nno Conflicted Listeners.\n\nSpecifically, an implementation MAY accept a partial Listener set subject to\nthe following rules:\n\n* The implementation MUST NOT pick one conflicting Listener as the winner.\n  ALL indistinct Listeners must not be accepted for processing.\n* At least one distinct Listener MUST be present, or else the Gateway effectively\n  contains _no_ Listeners, and must be rejected from processing as a whole.\n\nThe implementation MUST set a \"ListenersNotValid\" condition on the\nGateway Status when the Gateway contains Conflicted Listeners whether or\nnot they accept the Gateway. That Condition SHOULD clearly\nindicate in the Message which Listeners are conflicted, and which are\nAccepted. Additionally, the Listener status for those listeners SHOULD\nindicate which Listeners are conflicted and not Accepted.\n\n## General Listener behavior\n\nNote that, for all distinct Listeners, requests SHOULD match at most one Listener.\nFor example, if Listeners are defined for \"foo.example.com\" and \"*.example.com\", a\nrequest to \"foo.example.com\" SHOULD only be routed using routes attached\nto the \"foo.example.com\" Listener (and not the \"*.example.com\" Listener).\n\nIf traffic to a Gateway does not match any Listener's hostname (or if\nthe Listener does not specify a hostname and the request does not match\nany attached Route), the request MUST be rejected. The specific mechanism\nfor rejection depends on the protocol: HTTP returns a 404 status code,\nwhile gRPC returns an Unimplemented status code.\n\nThis concept is known as \"Listener Isolation\", and it is an Extended feature\nof Gateway API. Implementations that do not support Listener Isolation MUST\nclearly document this, and MUST NOT claim support for the\n`GatewayHTTPListenerIsolation` feature.\n\nImplementations that _do_ support Listener Isolation SHOULD claim support\nfor the Extended `GatewayHTTPListenerIsolation` feature and pass the associated\nconformance tests.\n\n## Compatible Listeners\n\nA Gateway's Listeners are considered _compatible_ if:\n\n1. They are distinct.\n2. The implementation can serve them in compliance with the Addresses\n   requirement that all Listeners are available on all assigned\n   addresses.\n\nCompatible combinations in Extended support are expected to vary across\nimplementations. A combination that is compatible for one implementation\nmay not be compatible for another.\n\nFor example, an implementation that cannot serve both TCP and UDP listeners\non the same address, or cannot mix HTTPS and generic TLS listens on the same port\nwould not consider those cases compatible, even though they are distinct.\n\nImplementations MAY merge separate Gateways onto a single set of\nAddresses if all Listeners across all Gateways are compatible.\n\nIn a future release the MinItems=1 requirement MAY be dropped.\n\nSupport: Core"
                   items:
                     description: "Listener embodies the concept of a logical endpoint where a Gateway accepts\nnetwork connections."
                     properties:
@@ -332,12 +384,186 @@ spec:
                       rule: "self.all(l, l.protocol in ['HTTP', 'TCP', 'UDP'] ? !has(l.tls) : true)"
                     - message: "tls mode must be Terminate for protocol HTTPS"
                       rule: "self.all(l, (l.protocol == 'HTTPS' && has(l.tls)) ? (l.tls.mode == '' || l.tls.mode == 'Terminate') : true)"
+                    - message: "tls mode must be set for protocol TLS"
+                      rule: "self.all(l, (l.protocol == 'TLS' ? has(l.tls) && has(l.tls.mode) && l.tls.mode != '' : true))"
                     - message: "hostname must not be specified for protocols ['TCP', 'UDP']"
                       rule: "self.all(l, l.protocol in ['TCP', 'UDP']  ? (!has(l.hostname) || l.hostname == '') : true)"
                     - message: "Listener name must be unique within the Gateway"
                       rule: "self.all(l1, self.exists_one(l2, l1.name == l2.name))"
                     - message: "Combination of port, protocol and hostname must be unique for each listener"
                       rule: "self.all(l1, self.exists_one(l2, l1.port == l2.port && l1.protocol == l2.protocol && (has(l1.hostname) && has(l2.hostname) ? l1.hostname == l2.hostname : !has(l1.hostname) && !has(l2.hostname))))"
+                tls:
+                  description: "TLS specifies frontend and backend tls configuration for entire gateway.\n\nSupport: Extended"
+                  properties:
+                    backend:
+                      description: "Backend describes TLS configuration for gateway when connecting\nto backends.\n\nNote that this contains only details for the Gateway as a TLS client,\nand does _not_ imply behavior about how to choose which backend should\nget a TLS connection. That is determined by the presence of a BackendTLSPolicy.\n\nSupport: Core"
+                      properties:
+                        clientCertificateRef:
+                          description: "ClientCertificateRef references an object that contains a client certificate\nand its associated private key. It can reference standard Kubernetes resources,\ni.e., Secret, or implementation-specific custom resources.\n\nA ClientCertificateRef is considered invalid if:\n\n* It refers to a resource that cannot be resolved (e.g., the referenced resource\n  does not exist) or is misconfigured (e.g., a Secret does not contain the keys\n  named `tls.crt` and `tls.key`). In this case, the `ResolvedRefs` condition\n  on the Gateway MUST be set to False with the Reason `InvalidClientCertificateRef`\n  and the Message of the Condition MUST indicate why the reference is invalid.\n\n* It refers to a resource in another namespace UNLESS there is a ReferenceGrant\n  in the target namespace that allows the certificate to be attached.\n  If a ReferenceGrant does not allow this reference, the `ResolvedRefs` condition\n  on the Gateway MUST be set to False with the Reason `RefNotPermitted`.\n\nImplementations MAY choose to perform further validation of the certificate\ncontent (e.g., checking expiry or enforcing specific formats). In such cases,\nan implementation-specific Reason and Message MUST be set.\n\nSupport: Core - Reference to a Kubernetes TLS Secret (with the type `kubernetes.io/tls`).\nSupport: Implementation-specific - Other resource kinds or Secrets with a\ndifferent type (e.g., `Opaque`)."
+                          properties:
+                            group:
+                              default: ""
+                              description: "Group is the group of the referent. For example, \"gateway.networking.k8s.io\".\nWhen unspecified or empty string, core API group is inferred."
+                              maxLength: 253
+                              pattern: "^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
+                              type: "string"
+                            kind:
+                              default: "Secret"
+                              description: "Kind is kind of the referent. For example \"Secret\"."
+                              maxLength: 63
+                              minLength: 1
+                              pattern: "^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$"
+                              type: "string"
+                            name:
+                              description: "Name is the name of the referent."
+                              maxLength: 253
+                              minLength: 1
+                              type: "string"
+                            namespace:
+                              description: "Namespace is the namespace of the referenced object. When unspecified, the local\nnamespace is inferred.\n\nNote that when a namespace different than the local namespace is specified,\na ReferenceGrant object is required in the referent namespace to allow that\nnamespace's owner to accept the reference. See the ReferenceGrant\ndocumentation for details.\n\nSupport: Core"
+                              maxLength: 63
+                              minLength: 1
+                              pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
+                              type: "string"
+                          required:
+                            - "name"
+                          type: "object"
+                      type: "object"
+                    frontend:
+                      description: "Frontend describes TLS config when client connects to Gateway.\nSupport: Core"
+                      properties:
+                        default:
+                          description: "Default specifies the default client certificate validation configuration\nfor all Listeners handling HTTPS traffic, unless a per-port configuration\nis defined.\n\nsupport: Core"
+                          properties:
+                            validation:
+                              description: "Validation holds configuration information for validating the frontend (client).\nSetting this field will result in mutual authentication when connecting to the gateway.\nIn browsers this may result in a dialog appearing\nthat requests a user to specify the client certificate.\nThe maximum depth of a certificate chain accepted in verification is Implementation specific.\n\nSupport: Core"
+                              properties:
+                                caCertificateRefs:
+                                  description: "CACertificateRefs contains one or more references to Kubernetes\nobjects that contain a PEM-encoded TLS CA certificate bundle, which\nis used as a trust anchor to validate the certificates presented by\nthe client.\n\nA CACertificateRef is invalid if:\n\n* It refers to a resource that cannot be resolved (e.g., the\n  referenced resource does not exist) or is misconfigured (e.g., a\n  ConfigMap does not contain a key named `ca.crt`). In this case, the\n  Reason on all matching HTTPS listeners must be set to `InvalidCACertificateRef`\n  and the Message of the Condition must indicate which reference is invalid and why.\n\n* It refers to an unknown or unsupported kind of resource. In this\n  case, the Reason on all matching HTTPS listeners must be set to\n  `InvalidCACertificateKind` and the Message of the Condition must explain\n  which kind of resource is unknown or unsupported.\n\n* It refers to a resource in another namespace UNLESS there is a\n  ReferenceGrant in the target namespace that allows the CA\n  certificate to be attached. If a ReferenceGrant does not allow this\n  reference, the `ResolvedRefs` on all matching HTTPS listeners condition\n  MUST be set with the Reason `RefNotPermitted`.\n\nImplementations MAY choose to perform further validation of the\ncertificate content (e.g., checking expiry or enforcing specific formats).\nIn such cases, an implementation-specific Reason and Message MUST be set.\n\nIn all cases, the implementation MUST ensure that the `ResolvedRefs`\ncondition is set to `status: False` on all targeted listeners (i.e.,\nlisteners serving HTTPS on a matching port). The condition MUST\ninclude a Reason and Message that indicate the cause of the error. If\nALL CACertificateRefs are invalid, the implementation MUST also ensure\nthe `Accepted` condition on the listener is set to `status: False`, with\nthe Reason `NoValidCACertificate`.\nImplementations MAY choose to support attaching multiple CA certificates\nto a listener, but this behavior is implementation-specific.\n\nSupport: Core - A single reference to a Kubernetes ConfigMap, with the\nCA certificate in a key named `ca.crt`.\n\nSupport: Implementation-specific - More than one reference, other kinds\nof resources, or a single reference that includes multiple certificates."
+                                  items:
+                                    description: "ObjectReference identifies an API object including its namespace.\n\nThe API object must be valid in the cluster; the Group and Kind must\nbe registered in the cluster for this reference to be valid.\n\nReferences to objects with invalid Group and Kind are not valid, and must\nbe rejected by the implementation, with appropriate Conditions set\non the containing object."
+                                    properties:
+                                      group:
+                                        description: "Group is the group of the referent. For example, \"gateway.networking.k8s.io\".\nWhen set to the empty string, core API group is inferred."
+                                        maxLength: 253
+                                        pattern: "^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
+                                        type: "string"
+                                      kind:
+                                        description: "Kind is kind of the referent. For example \"ConfigMap\" or \"Service\"."
+                                        maxLength: 63
+                                        minLength: 1
+                                        pattern: "^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$"
+                                        type: "string"
+                                      name:
+                                        description: "Name is the name of the referent."
+                                        maxLength: 253
+                                        minLength: 1
+                                        type: "string"
+                                      namespace:
+                                        description: "Namespace is the namespace of the referenced object. When unspecified, the local\nnamespace is inferred.\n\nNote that when a namespace different than the local namespace is specified,\na ReferenceGrant object is required in the referent namespace to allow that\nnamespace's owner to accept the reference. See the ReferenceGrant\ndocumentation for details.\n\nSupport: Core"
+                                        maxLength: 63
+                                        minLength: 1
+                                        pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
+                                        type: "string"
+                                    required:
+                                      - "group"
+                                      - "kind"
+                                      - "name"
+                                    type: "object"
+                                  maxItems: 16
+                                  minItems: 1
+                                  type: "array"
+                                  x-kubernetes-list-type: "atomic"
+                                mode:
+                                  default: "AllowValidOnly"
+                                  description: "FrontendValidationMode defines the mode for validating the client certificate.\nThere are two possible modes:\n\n- AllowValidOnly: In this mode, the gateway will accept connections only if\n  the client presents a valid certificate. This certificate must successfully\n  pass validation against the CA certificates specified in `CACertificateRefs`.\n- AllowInsecureFallback: In this mode, the gateway will accept connections\n  even if the client certificate is not presented or fails verification.\n\n  This approach delegates client authorization to the backend and introduce\n  a significant security risk. It should be used in testing environments or\n  on a temporary basis in non-testing environments.\n\nDefaults to AllowValidOnly.\n\nSupport: Core"
+                                  enum:
+                                    - "AllowValidOnly"
+                                    - "AllowInsecureFallback"
+                                  type: "string"
+                              required:
+                                - "caCertificateRefs"
+                              type: "object"
+                          type: "object"
+                        perPort:
+                          description: "PerPort specifies tls configuration assigned per port.\nPer port configuration is optional. Once set this configuration overrides\nthe default configuration for all Listeners handling HTTPS traffic\nthat match this port.\nEach override port requires a unique TLS configuration.\n\nsupport: Core"
+                          items:
+                            properties:
+                              port:
+                                description: "The Port indicates the Port Number to which the TLS configuration will be\napplied. This configuration will be applied to all Listeners handling HTTPS\ntraffic that match this port.\n\nSupport: Core"
+                                format: "int32"
+                                maximum: 65535.0
+                                minimum: 1.0
+                                type: "integer"
+                              tls:
+                                description: "TLS store the configuration that will be applied to all Listeners handling\nHTTPS traffic and matching given port.\n\nSupport: Core"
+                                properties:
+                                  validation:
+                                    description: "Validation holds configuration information for validating the frontend (client).\nSetting this field will result in mutual authentication when connecting to the gateway.\nIn browsers this may result in a dialog appearing\nthat requests a user to specify the client certificate.\nThe maximum depth of a certificate chain accepted in verification is Implementation specific.\n\nSupport: Core"
+                                    properties:
+                                      caCertificateRefs:
+                                        description: "CACertificateRefs contains one or more references to Kubernetes\nobjects that contain a PEM-encoded TLS CA certificate bundle, which\nis used as a trust anchor to validate the certificates presented by\nthe client.\n\nA CACertificateRef is invalid if:\n\n* It refers to a resource that cannot be resolved (e.g., the\n  referenced resource does not exist) or is misconfigured (e.g., a\n  ConfigMap does not contain a key named `ca.crt`). In this case, the\n  Reason on all matching HTTPS listeners must be set to `InvalidCACertificateRef`\n  and the Message of the Condition must indicate which reference is invalid and why.\n\n* It refers to an unknown or unsupported kind of resource. In this\n  case, the Reason on all matching HTTPS listeners must be set to\n  `InvalidCACertificateKind` and the Message of the Condition must explain\n  which kind of resource is unknown or unsupported.\n\n* It refers to a resource in another namespace UNLESS there is a\n  ReferenceGrant in the target namespace that allows the CA\n  certificate to be attached. If a ReferenceGrant does not allow this\n  reference, the `ResolvedRefs` on all matching HTTPS listeners condition\n  MUST be set with the Reason `RefNotPermitted`.\n\nImplementations MAY choose to perform further validation of the\ncertificate content (e.g., checking expiry or enforcing specific formats).\nIn such cases, an implementation-specific Reason and Message MUST be set.\n\nIn all cases, the implementation MUST ensure that the `ResolvedRefs`\ncondition is set to `status: False` on all targeted listeners (i.e.,\nlisteners serving HTTPS on a matching port). The condition MUST\ninclude a Reason and Message that indicate the cause of the error. If\nALL CACertificateRefs are invalid, the implementation MUST also ensure\nthe `Accepted` condition on the listener is set to `status: False`, with\nthe Reason `NoValidCACertificate`.\nImplementations MAY choose to support attaching multiple CA certificates\nto a listener, but this behavior is implementation-specific.\n\nSupport: Core - A single reference to a Kubernetes ConfigMap, with the\nCA certificate in a key named `ca.crt`.\n\nSupport: Implementation-specific - More than one reference, other kinds\nof resources, or a single reference that includes multiple certificates."
+                                        items:
+                                          description: "ObjectReference identifies an API object including its namespace.\n\nThe API object must be valid in the cluster; the Group and Kind must\nbe registered in the cluster for this reference to be valid.\n\nReferences to objects with invalid Group and Kind are not valid, and must\nbe rejected by the implementation, with appropriate Conditions set\non the containing object."
+                                          properties:
+                                            group:
+                                              description: "Group is the group of the referent. For example, \"gateway.networking.k8s.io\".\nWhen set to the empty string, core API group is inferred."
+                                              maxLength: 253
+                                              pattern: "^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
+                                              type: "string"
+                                            kind:
+                                              description: "Kind is kind of the referent. For example \"ConfigMap\" or \"Service\"."
+                                              maxLength: 63
+                                              minLength: 1
+                                              pattern: "^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$"
+                                              type: "string"
+                                            name:
+                                              description: "Name is the name of the referent."
+                                              maxLength: 253
+                                              minLength: 1
+                                              type: "string"
+                                            namespace:
+                                              description: "Namespace is the namespace of the referenced object. When unspecified, the local\nnamespace is inferred.\n\nNote that when a namespace different than the local namespace is specified,\na ReferenceGrant object is required in the referent namespace to allow that\nnamespace's owner to accept the reference. See the ReferenceGrant\ndocumentation for details.\n\nSupport: Core"
+                                              maxLength: 63
+                                              minLength: 1
+                                              pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
+                                              type: "string"
+                                          required:
+                                            - "group"
+                                            - "kind"
+                                            - "name"
+                                          type: "object"
+                                        maxItems: 16
+                                        minItems: 1
+                                        type: "array"
+                                        x-kubernetes-list-type: "atomic"
+                                      mode:
+                                        default: "AllowValidOnly"
+                                        description: "FrontendValidationMode defines the mode for validating the client certificate.\nThere are two possible modes:\n\n- AllowValidOnly: In this mode, the gateway will accept connections only if\n  the client presents a valid certificate. This certificate must successfully\n  pass validation against the CA certificates specified in `CACertificateRefs`.\n- AllowInsecureFallback: In this mode, the gateway will accept connections\n  even if the client certificate is not presented or fails verification.\n\n  This approach delegates client authorization to the backend and introduce\n  a significant security risk. It should be used in testing environments or\n  on a temporary basis in non-testing environments.\n\nDefaults to AllowValidOnly.\n\nSupport: Core"
+                                        enum:
+                                          - "AllowValidOnly"
+                                          - "AllowInsecureFallback"
+                                        type: "string"
+                                    required:
+                                      - "caCertificateRefs"
+                                    type: "object"
+                                type: "object"
+                            required:
+                              - "port"
+                              - "tls"
+                            type: "object"
+                          maxItems: 64
+                          type: "array"
+                          x-kubernetes-list-map-keys:
+                            - "port"
+                          x-kubernetes-list-type: "map"
+                          x-kubernetes-validations:
+                            - message: "Port for TLS configuration must be unique within the Gateway"
+                              rule: "self.all(t1, self.exists_one(t2, t1.port == t2.port))"
+                      required:
+                        - "default"
+                      type: "object"
+                  type: "object"
               required:
                 - "gatewayClassName"
                 - "listeners"
@@ -550,7 +776,6 @@ spec:
                       - "attachedRoutes"
                       - "conditions"
                       - "name"
-                      - "supportedKinds"
                     type: "object"
                   maxItems: 64
                   type: "array"
@@ -565,7 +790,3 @@ spec:
       storage: false
       subresources:
         status: {}
-status:
-  acceptedNames:
-    kind: ""
-    plural: ""

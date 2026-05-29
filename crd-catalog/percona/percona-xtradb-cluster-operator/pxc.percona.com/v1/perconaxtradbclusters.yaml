@@ -624,6 +624,8 @@ spec:
                                 type: "string"
                               endpointUrl:
                                 type: "string"
+                              prefix:
+                                type: "string"
                               storageClass:
                                 type: "string"
                             type: "object"
@@ -941,12 +943,27 @@ spec:
                                   - "key"
                                 type: "object"
                                 x-kubernetes-map-type: "atomic"
+                              checksumAlgorithm:
+                                enum:
+                                  - "CRC64NVME"
+                                  - "CRC32"
+                                  - "CRC32C"
+                                  - "SHA1"
+                                  - "SHA256"
+                                  - "MD5"
+                                type: "string"
                               credentialsSecret:
                                 type: "string"
                               endpointUrl:
                                 type: "string"
+                              forcePathStyle:
+                                type: "boolean"
+                              prefix:
+                                type: "string"
                               region:
                                 type: "string"
+                              skipBucketExistsCheck:
+                                type: "boolean"
                             type: "object"
                           schedulerName:
                             type: "string"
@@ -1702,8 +1719,6 @@ spec:
                           items:
                             type: "string"
                           type: "array"
-                        trafficPolicy:
-                          type: "string"
                         type:
                           type: "string"
                       type: "object"
@@ -1736,16 +1751,12 @@ spec:
                           type: "array"
                         onlyReaders:
                           type: "boolean"
-                        trafficPolicy:
-                          type: "string"
                         type:
                           type: "string"
                       type: "object"
                       x-kubernetes-validations:
                         - message: "'loadBalancerClass' can only be set when service type is 'LoadBalancer'"
                           rule: "!(has(self.loadBalancerClass)) || self.type == 'LoadBalancer'"
-                    externalTrafficPolicy:
-                      type: "string"
                     extraPVCs:
                       items:
                         properties:
@@ -2014,10 +2025,6 @@ spec:
                           format: "int32"
                           type: "integer"
                       type: "object"
-                    loadBalancerSourceRanges:
-                      items:
-                        type: "string"
-                      type: "array"
                     nodeSelector:
                       additionalProperties:
                         type: "string"
@@ -2200,24 +2207,12 @@ spec:
                           format: "int32"
                           type: "integer"
                       type: "object"
-                    replicasExternalTrafficPolicy:
-                      type: "string"
                     replicasLoadBalancerSourceRanges:
                       items:
                         type: "string"
                       type: "array"
-                    replicasServiceAnnotations:
-                      additionalProperties:
-                        type: "string"
-                      type: "object"
                     replicasServiceEnabled:
                       type: "boolean"
-                    replicasServiceLabels:
-                      additionalProperties:
-                        type: "string"
-                      type: "object"
-                    replicasServiceType:
-                      type: "string"
                     resources:
                       properties:
                         claims:
@@ -2256,16 +2251,6 @@ spec:
                     schedulerName:
                       type: "string"
                     serviceAccountName:
-                      type: "string"
-                    serviceAnnotations:
-                      additionalProperties:
-                        type: "string"
-                      type: "object"
-                    serviceLabels:
-                      additionalProperties:
-                        type: "string"
-                      type: "object"
-                    serviceType:
                       type: "string"
                     sidecarPVCs:
                       items:
@@ -4423,6 +4408,21 @@ spec:
                       type: "string"
                     imagePullPolicy:
                       type: "string"
+                    logRotate:
+                      properties:
+                        configuration:
+                          type: "string"
+                        extraConfig:
+                          properties:
+                            name:
+                              default: ""
+                              type: "string"
+                          type: "object"
+                          x-kubernetes-map-type: "atomic"
+                        schedule:
+                          default: "0 0 * * *"
+                          type: "string"
+                      type: "object"
                     resources:
                       properties:
                         claims:
@@ -5326,16 +5326,12 @@ spec:
                           items:
                             type: "string"
                           type: "array"
-                        trafficPolicy:
-                          type: "string"
                         type:
                           type: "string"
                       type: "object"
                       x-kubernetes-validations:
                         - message: "'loadBalancerClass' can only be set when service type is 'LoadBalancer'"
                           rule: "!(has(self.loadBalancerClass)) || self.type == 'LoadBalancer'"
-                    externalTrafficPolicy:
-                      type: "string"
                     extraPVCs:
                       items:
                         properties:
@@ -5589,10 +5585,6 @@ spec:
                           format: "int32"
                           type: "integer"
                       type: "object"
-                    loadBalancerSourceRanges:
-                      items:
-                        type: "string"
-                      type: "array"
                     nodeSelector:
                       additionalProperties:
                         type: "string"
@@ -5775,18 +5767,6 @@ spec:
                           format: "int32"
                           type: "integer"
                       type: "object"
-                    replicasExternalTrafficPolicy:
-                      type: "string"
-                    replicasServiceAnnotations:
-                      additionalProperties:
-                        type: "string"
-                      type: "object"
-                    replicasServiceLabels:
-                      additionalProperties:
-                        type: "string"
-                      type: "object"
-                    replicasServiceType:
-                      type: "string"
                     resources:
                       properties:
                         claims:
@@ -5857,16 +5837,6 @@ spec:
                     schedulerName:
                       type: "string"
                     serviceAccountName:
-                      type: "string"
-                    serviceAnnotations:
-                      additionalProperties:
-                        type: "string"
-                      type: "object"
-                    serviceLabels:
-                      additionalProperties:
-                        type: "string"
-                      type: "object"
-                    serviceType:
                       type: "string"
                     sidecarPVCs:
                       items:
@@ -8372,16 +8342,12 @@ spec:
                           items:
                             type: "string"
                           type: "array"
-                        trafficPolicy:
-                          type: "string"
                         type:
                           type: "string"
                       type: "object"
                       x-kubernetes-validations:
                         - message: "'loadBalancerClass' can only be set when service type is 'LoadBalancer'"
                           rule: "!(has(self.loadBalancerClass)) || self.type == 'LoadBalancer'"
-                    externalTrafficPolicy:
-                      type: "string"
                     extraPVCs:
                       items:
                         properties:
@@ -8635,10 +8601,6 @@ spec:
                           format: "int32"
                           type: "integer"
                       type: "object"
-                    loadBalancerSourceRanges:
-                      items:
-                        type: "string"
-                      type: "array"
                     mysqlAllocator:
                       enum:
                         - "jemalloc"
@@ -8826,18 +8788,6 @@ spec:
                           format: "int32"
                           type: "integer"
                       type: "object"
-                    replicasExternalTrafficPolicy:
-                      type: "string"
-                    replicasServiceAnnotations:
-                      additionalProperties:
-                        type: "string"
-                      type: "object"
-                    replicasServiceLabels:
-                      additionalProperties:
-                        type: "string"
-                      type: "object"
-                    replicasServiceType:
-                      type: "string"
                     replicationChannels:
                       items:
                         properties:
@@ -8909,16 +8859,6 @@ spec:
                     schedulerName:
                       type: "string"
                     serviceAccountName:
-                      type: "string"
-                    serviceAnnotations:
-                      additionalProperties:
-                        type: "string"
-                      type: "object"
-                    serviceLabels:
-                      additionalProperties:
-                        type: "string"
-                      type: "object"
-                    serviceType:
                       type: "string"
                     sidecarPVCs:
                       items:
@@ -10686,6 +10626,10 @@ spec:
                       type: "string"
                     sslSecretName:
                       type: "string"
+                    sstRetryCount:
+                      format: "int32"
+                      minimum: 1.0
+                      type: "integer"
                     tolerations:
                       items:
                         properties:
@@ -10876,6 +10820,39 @@ spec:
                   type: "string"
                 sslSecretName:
                   type: "string"
+                storageScaling:
+                  properties:
+                    autoscaling:
+                      properties:
+                        enabled:
+                          type: "boolean"
+                        growthStep:
+                          anyOf:
+                            - type: "integer"
+                            - type: "string"
+                          default: "2Gi"
+                          pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                          x-kubernetes-int-or-string: true
+                        maxSize:
+                          anyOf:
+                            - type: "integer"
+                            - type: "string"
+                          pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                          x-kubernetes-int-or-string: true
+                        triggerThresholdPercent:
+                          default: 80
+                          maximum: 95.0
+                          minimum: 50.0
+                          type: "integer"
+                      type: "object"
+                    enableExternalAutoscaling:
+                      type: "boolean"
+                    enableVolumeScaling:
+                      type: "boolean"
+                  type: "object"
+                  x-kubernetes-validations:
+                    - message: "autoscaling cannot be enabled when enableVolumeScaling is disabled"
+                      rule: "!has(self.autoscaling) || !has(self.autoscaling.enabled) || !self.autoscaling.enabled || self.enableVolumeScaling"
                 tls:
                   properties:
                     SANs:
@@ -11099,11 +11076,39 @@ spec:
                 ready:
                   format: "int32"
                   type: "integer"
+                recovery:
+                  properties:
+                    clusterUUID:
+                      type: "string"
+                    lastRecoveryPod:
+                      type: "string"
+                    lastRecoverySeqNo:
+                      format: "int64"
+                      type: "integer"
+                    lastRecoveryTime:
+                      format: "date-time"
+                      type: "string"
+                  type: "object"
                 size:
                   format: "int32"
                   type: "integer"
                 state:
                   type: "string"
+                storageAutoscaling:
+                  additionalProperties:
+                    properties:
+                      currentSize:
+                        type: "string"
+                      lastError:
+                        type: "string"
+                      lastResizeTime:
+                        format: "date-time"
+                        type: "string"
+                      resizeCount:
+                        format: "int32"
+                        type: "integer"
+                    type: "object"
+                  type: "object"
               type: "object"
           type: "object"
           x-kubernetes-preserve-unknown-fields: true

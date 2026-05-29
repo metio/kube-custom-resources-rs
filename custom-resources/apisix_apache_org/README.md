@@ -11,6 +11,12 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 
 ## Available Custom Resources
 
+### apisix.apache.org/v1alpha1
+- `BackendTrafficPolicy`
+- `Consumer`
+- `GatewayProxy`
+- `HTTPRoutePolicy`
+- `PluginConfig`
 ### apisix.apache.org/v2
 - `ApisixClusterConfig`
 - `ApisixConsumer`

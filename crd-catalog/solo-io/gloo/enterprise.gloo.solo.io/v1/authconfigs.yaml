@@ -130,6 +130,12 @@ spec:
                                   type: "string"
                               type: "object"
                             type: "array"
+                          digest:
+                            properties:
+                              algorithm:
+                                type: "string"
+                                x-kubernetes-int-or-string: true
+                            type: "object"
                           headerName:
                             type: "string"
                           headersFromMetadata:
@@ -150,6 +156,19 @@ spec:
                                   type: "boolean"
                               type: "object"
                             type: "object"
+                          hmac:
+                            properties:
+                              algorithm:
+                                type: "string"
+                                x-kubernetes-int-or-string: true
+                              sharedSecretRef:
+                                properties:
+                                  name:
+                                    type: "string"
+                                  namespace:
+                                    type: "string"
+                                type: "object"
+                            type: "object"
                           k8sSecretApikeyStorage:
                             properties:
                               apiKeySecretRefs:
@@ -169,6 +188,16 @@ spec:
                           labelSelector:
                             additionalProperties:
                               type: "string"
+                            type: "object"
+                          match:
+                            properties:
+                              headers:
+                                items:
+                                  properties:
+                                    name:
+                                      type: "string"
+                                  type: "object"
+                                type: "array"
                             type: "object"
                           skipMetadataValidation:
                             type: "boolean"
@@ -386,6 +415,10 @@ spec:
                                 type: "string"
                               jwt:
                                 properties:
+                                  audiences:
+                                    items:
+                                      type: "string"
+                                    type: "array"
                                   issuer:
                                     type: "string"
                                   localJwks:
@@ -930,6 +963,15 @@ spec:
                             type: "object"
                           http:
                             properties:
+                              connectionPool:
+                                properties:
+                                  idleTimeout:
+                                    type: "string"
+                                  maxConns:
+                                    maximum: 4294967295.0
+                                    minimum: 0.0
+                                    type: "integer"
+                                type: "object"
                               connectionTimeout:
                                 type: "string"
                               request:
@@ -966,6 +1008,8 @@ spec:
                                   readStateFromResponse:
                                     type: "boolean"
                                 type: "object"
+                              responseHeaderTimeout:
+                                type: "string"
                               tlsConfig:
                                 properties:
                                   secretRef:

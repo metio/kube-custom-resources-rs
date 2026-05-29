@@ -8,8 +8,11 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `VLCluster`
 - `VLSingle`
 - `VMAnomaly`
+- `VMAnomalyConfig`
 - `VTCluster`
 - `VTSingle`
+## operator.victoriametrics.com/v1alpha1
+- `VMDistributed`
 ## operator.victoriametrics.com/v1beta1
 - `VLogs`
 - `VMAgent`
@@ -30,5 +33,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 */
 #[cfg(feature = "v1")]
 pub mod v1;
+#[cfg(feature = "v1alpha1")]
+pub mod v1alpha1;
 #[cfg(feature = "v1beta1")]
 pub mod v1beta1;

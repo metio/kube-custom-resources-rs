@@ -8,6 +8,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `KafkaConnector`
 - `KafkaConnect`
 - `KafkaMirrorMaker2`
+- `KafkaNodePool`
 - `KafkaRebalance`
 - `Kafka`
 - `KafkaTopic`

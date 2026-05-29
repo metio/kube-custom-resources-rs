@@ -125,6 +125,9 @@ spec:
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."
                       type: "string"
+                    partition:
+                      description: "Partition is the AWS partition in which the resource exists or will exist"
+                      type: "string"
                     region:
                       description: "Region is the AWS region in which the resource exists or will exist."
                       type: "string"
@@ -205,7 +208,7 @@ spec:
                       type: "string"
                   type: "object"
                 state:
-                  description: "The current state of the subnet."
+                  description: "The current state of the subnet.\n\n   * failed: The underlying infrastructure to support the subnet failed to\n   provision as expected.\n\n   * failed-insufficient-capacity: The underlying infrastructure to support\n   the subnet failed to provision due to a shortage of EC2 instance capacity."
                   type: "string"
                 subnetID:
                   description: "The ID of the subnet."

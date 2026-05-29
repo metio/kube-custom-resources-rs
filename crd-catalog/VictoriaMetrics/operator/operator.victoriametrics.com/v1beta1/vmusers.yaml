@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.18.0"
+    controller-gen.kubebuilder.io/version: "v0.21.0"
   name: "vmusers.operator.victoriametrics.com"
 spec:
   group: "operator.victoriametrics.com"
@@ -79,6 +79,52 @@ spec:
                         type: "string"
                       type: "array"
                   type: "object"
+                jwt:
+                  description: "JWT defines JWT based auth for a user"
+                  properties:
+                    matchClaims:
+                      additionalProperties:
+                        type: "string"
+                      description: "MatchClaims enables claim based routing"
+                      type: "object"
+                    oidc:
+                      description: "OIDC defines OIDC configuration section"
+                      properties:
+                        issuer:
+                          description: "Issuer defines issuer URL for OIDC"
+                          type: "string"
+                      required:
+                        - "issuer"
+                      type: "object"
+                    publicKeyRefs:
+                      description: "PublicKeyRefs defines a list of Secret selectors that reference public keys"
+                      items:
+                        description: "SecretKeySelector selects a key of a Secret."
+                        properties:
+                          key:
+                            description: "The key of the secret to select from.  Must be a valid secret key."
+                            type: "string"
+                          name:
+                            default: ""
+                            description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                            type: "string"
+                          optional:
+                            description: "Specify whether the Secret or its key must be defined"
+                            type: "boolean"
+                        required:
+                          - "key"
+                        type: "object"
+                        x-kubernetes-map-type: "atomic"
+                      type: "array"
+                    publicKeys:
+                      description: "PublicKeys defines a list of public keys that are used for signature verification"
+                      items:
+                        type: "string"
+                      type: "array"
+                    skipVerify:
+                      description: "SkipVerify skips signature verification for testing purposes"
+                      type: "boolean"
+                  type: "object"
                 load_balancing_policy:
                   description: "LoadBalancingPolicy defines load balancing policy to use for backend urls.\nSupported policies: least_loaded, first_available.\nSee [here](https://docs.victoriametrics.com/victoriametrics/vmauth/#load-balancing) for more details (default \"least_loaded\")"
                   enum:
@@ -149,7 +195,7 @@ spec:
                         description: "CRD describes exist operator's CRD object,\noperator generates access url based on CRD params."
                         properties:
                           kind:
-                            description: "Kind one of:\nVMAgent,VMAlert, VMSingle, VMCluster/vmselect, VMCluster/vmstorage,VMCluster/vminsert,VMAlertManager, VLSingle, VLCluster/vlinsert, VLCluster/vlselect, VLCluster/vlstorage, VTSingle, VTCluster/vtinsert, VTCluster/vtselect, VTCluster/vtstorage and VLAgent"
+                            description: "Kind one of:\nVMAgent,VMAlert, VMSingle, VMCluster/vmselect, VMCluster/vmstorage,VMCluster/vminsert,VMAlertManager, VLSingle, VLCluster/vlinsert, VLCluster/vlselect, VLCluster/vlstorage, VTSingle, VTCluster/vtinsert, VTCluster/vtselect, VTCluster/vtstorage VMAnomaly and VLAgent"
                             enum:
                               - "VMAgent"
                               - "VMAlert"
@@ -169,13 +215,30 @@ spec:
                               - "VTCluster/vtselect"
                               - "VTCluster/vtstorage"
                               - "VTSingle"
+                              - "VMAnomaly"
                             type: "string"
                           name:
-                            description: "Name target CRD object name"
+                            description: "Name of the target Kubernetes object"
                             type: "string"
                           namespace:
-                            description: "Namespace target CRD object namespace."
+                            description: "Namespace of the target Kubernetes object"
                             type: "string"
+                          objects:
+                            description: "Objects defines list of name/namespace pairs that define existing k8s object"
+                            items:
+                              description: "NamespacedName defines name and namespace pairs to reference k8s object"
+                              properties:
+                                name:
+                                  description: "Name of the target Kubernetes object"
+                                  type: "string"
+                                namespace:
+                                  description: "Namespace of the target Kubernetes object"
+                                  type: "string"
+                              required:
+                                - "name"
+                                - "namespace"
+                              type: "object"
+                            type: "array"
                         required:
                           - "kind"
                           - "name"
@@ -201,6 +264,9 @@ spec:
                         enum:
                           - "least_loaded"
                           - "first_available"
+                        type: "string"
+                      name:
+                        description: "Name references item at VMAuths spec.defaultTargetRefs map, with name set other attributes are skipped"
                         type: "string"
                       paths:
                         description: "Paths - matched path to route."

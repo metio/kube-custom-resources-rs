@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.15.0"
+    controller-gen.kubebuilder.io/version: "v0.20.1"
   name: "bpfapplications.bpfman.io"
 spec:
   group: "bpfman.io"
@@ -26,7 +26,7 @@ spec:
       name: "v1alpha1"
       schema:
         openAPIV3Schema:
-          description: "BpfApplication is the schema for the namespace scoped BPF Applications API.\nThis API allows applications to use bpfman to load and attach one or more\neBPF programs on a Kubernetes cluster.\n\n\nThe bpfApplication.status field reports the overall status of the\nBpfApplication CRD. A given BpfApplication CRD can result in loading and\nattaching multiple eBPF programs on multiple nodes, so this status is just a\nsummary. More granular per-node status details can be found in the\ncorresponding BpfApplicationState CRD that bpfman creates for each node."
+          description: "BpfApplication is the schema for the namespace scoped BPF Applications API.\nThis API allows applications to use bpfman to load and attach one or more\neBPF programs on a Kubernetes cluster.\n\nThe bpfApplication.status field reports the overall status of the\nBpfApplication CRD. A given BpfApplication CRD can result in loading and\nattaching multiple eBPF programs on multiple nodes, so this status is just a\nsummary. More granular per-node status details can be found in the\ncorresponding BpfApplicationState CRD that bpfman creates for each node."
           properties:
             apiVersion:
               description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
@@ -49,7 +49,7 @@ spec:
                       properties:
                         imagePullPolicy:
                           default: "IfNotPresent"
-                          description: "pullPolicy is an optional field that describes a policy for if/when to pull\na bytecode image. Defaults to IfNotPresent. Allowed values are:\n  Always, IfNotPresent and Never\n\n\nWhen set to Always, the given image will be pulled even if the image is\nalready present on the node.\n\n\nWhen set to IfNotPresent, the given image will only be pulled if it is not\npresent on the node.\n\n\nWhen set to Never, the given image will never be pulled and must be\nloaded on the node by some other means."
+                          description: "pullPolicy is an optional field that describes a policy for if/when to pull\na bytecode image. Defaults to IfNotPresent. Allowed values are:\n  Always, IfNotPresent and Never\n\nWhen set to Always, the given image will be pulled even if the image is\nalready present on the node.\n\nWhen set to IfNotPresent, the given image will only be pulled if it is not\npresent on the node.\n\nWhen set to Never, the given image will never be pulled and must be\nloaded on the node by some other means."
                           enum:
                             - "Always"
                             - "Never"
@@ -88,7 +88,7 @@ spec:
                   description: "globalData is an optional field that allows the user to set global variables\nwhen the program is loaded. This allows the same compiled bytecode to be\ndeployed by different BPF Applications to behave differently based on\nglobalData configuration values.  It uses an array of raw bytes. This is a\nvery low level primitive. The caller is responsible for formatting the byte\nstring appropriately considering such things as size, endianness, alignment\nand packing of data structures."
                   type: "object"
                 mapOwnerSelector:
-                  description: "mapOwnerSelector is an optional field used to share maps across\napplications. eBPF programs loaded with the same ClusterBpfApplication or\nBpfApplication instance do not need to use this field. This label selector\nallows maps from a different ClusterBpfApplication or BpfApplication\ninstance to be used by this instance.\nTODO: mapOwnerSelector is currently not supported due to recent code rework."
+                  description: "mapOwnerSelector is an optional field used to share maps across\napplications. eBPF programs loaded with the same ClusterBpfApplication or\nBpfApplication instance do not need to use this field. This label selector\nallows maps from a different ClusterBpfApplication or BpfApplication\ninstance to be used by this instance."
                   properties:
                     matchExpressions:
                       description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
@@ -168,11 +168,11 @@ spec:
                         description: "tc is an optional field, but required when the type field is set to TC. tc\ndefines the desired state of the application's TC programs. TC programs are\nattached to network devices (interfaces). The program can be attached on\neither packet ingress or egress, so the program will be called on every\nincoming or outgoing packet seen by the network device. The TC attachment\npoint is in Linux's Traffic Control (tc) subsystem, which is after the\nLinux kernel has allocated an sk_buff. TCX is newer implementation of TC\nwith enhanced performance and better support for running multiple programs\non a given network device. This makes TC useful for packet classification\nactions."
                         properties:
                           links:
-                            description: "links is an optional field and is the list of attachment points to which the\nTC program should be attached. The TC program is loaded in kernel memory\nwhen the BPF Application CRD is created and the selected Kubernetes nodes\nare active. The TC program will not be triggered until the program has also\nbeen attached to an attachment point described in this list. Items may be\nadded or removed from the list at any point, causing the TC program to be\nattached or detached.\n\n\nThe attachment point for a TC program is a network interface (or device).\nThe interface can be specified by name, by allowing bpfman to discover each\ninterface, or by setting the primaryNodeInterface flag, which instructs\nbpfman to use the primary interface of a Kubernetes node. Optionally, the\nTC program can also be installed into a set of network namespaces."
+                            description: "links is an optional field and is the list of attachment points to which the\nTC program should be attached. The TC program is loaded in kernel memory\nwhen the BPF Application CRD is created and the selected Kubernetes nodes\nare active. The TC program will not be triggered until the program has also\nbeen attached to an attachment point described in this list. Items may be\nadded or removed from the list at any point, causing the TC program to be\nattached or detached.\n\nThe attachment point for a TC program is a network interface (or device).\nThe interface can be specified by name, by allowing bpfman to discover each\ninterface, or by setting the primaryNodeInterface flag, which instructs\nbpfman to use the primary interface of a Kubernetes node. Optionally, the\nTC program can also be installed into a set of network namespaces."
                             items:
                               properties:
                                 direction:
-                                  description: "direction is a required field and specifies the direction of traffic.\nAllowed values are:\n   Ingress, Egress\n\n\nWhen set to Ingress, the TC program is triggered when packets are received\nby the interface.\n\n\nWhen set to Egress, the TC program is triggered when packets are to be\ntransmitted by the interface."
+                                  description: "direction is a required field and specifies the direction of traffic.\nAllowed values are:\n   Ingress, Egress\n\nWhen set to Ingress, the TC program is triggered when packets are received\nby the interface.\n\nWhen set to Egress, the TC program is triggered when packets are to be\ntransmitted by the interface."
                                   enum:
                                     - "Ingress"
                                     - "Egress"
@@ -251,7 +251,6 @@ spec:
                                     - "pods"
                                   type: "object"
                                 priority:
-                                  default: 1000
                                   description: "priority is an optional field and determines the execution order of the TC\nprogram relative to other TC programs attached to the same attachment point.\nIt must be a value between 0 and 1000, where lower values indicate higher\nprecedence. For TC programs on the same attachment point with the same\ndirection and priority, the most recently attached program has a lower\nprecedence. If not provided, priority will default to 1000."
                                   format: "int32"
                                   maximum: 1000.0
@@ -261,7 +260,7 @@ spec:
                                   default:
                                     - "Pipe"
                                     - "DispatcherReturn"
-                                  description: "proceedOn is an optional field and allows the user to call other TC programs\nin a chain, or not call the next program in a chain based on the exit code\nof a TC program. Allowed values, which are the possible exit codes from a TC\neBPF program, are:\n  UnSpec, OK, ReClassify, Shot, Pipe, Stolen, Queued, Repeat, ReDirect,\n  Trap, DispatcherReturn\n\n\nMultiple values are supported. Default is OK, Pipe and DispatcherReturn. So\nusing the default values, if a TC program returns Pipe, the next TC\nprogram in the chain will be called. If a TC program returns Stolen, the\nnext TC program in the chain will NOT be called."
+                                  description: "proceedOn is an optional field and allows the user to call other TC programs\nin a chain, or not call the next program in a chain based on the exit code\nof a TC program. Allowed values, which are the possible exit codes from a TC\neBPF program, are:\n  UnSpec, OK, ReClassify, Shot, Pipe, Stolen, Queued, Repeat, ReDirect,\n  Trap, DispatcherReturn\n\nMultiple values are supported. Default is OK, Pipe and DispatcherReturn. So\nusing the default values, if a TC program returns Pipe, the next TC\nprogram in the chain will be called. If a TC program returns Stolen, the\nnext TC program in the chain will NOT be called."
                                   items:
                                     enum:
                                       - "UnSpec"
@@ -288,11 +287,11 @@ spec:
                         description: "tcx is an optional field, but required when the type field is set to TCX.\ntcx defines the desired state of the application's TCX programs. TCX\nprograms are attached to network devices (interfaces). The program can be\nattached on either packet ingress or egress, so the program will be called\non every incoming or outgoing packet seen by the network device. The TCX\nattachment point is in Linux's Traffic Control (tc) subsystem, which is\nafter the Linux kernel has allocated an sk_buff. This makes TCX useful for\npacket classification actions. TCX is a newer implementation of TC with\nenhanced performance and better support for running multiple programs on a\ngiven network device."
                         properties:
                           links:
-                            description: "links is an optional field and is the list of attachment points to which the\nTCX program should be attached. The TCX program is loaded in kernel memory\nwhen the BPF Application CRD is created and the selected Kubernetes nodes\nare active. The TCX program will not be triggered until the program has also\nbeen attached to an attachment point described in this list. Items may be\nadded or removed from the list at any point, causing the TCX program to be\nattached or detached.\n\n\nThe attachment point for a TCX program is a network interface (or device).\nThe interface can be specified by name, by allowing bpfman to discover each\ninterface, or by setting the primaryNodeInterface flag, which instructs\nbpfman to use the primary interface of a Kubernetes node. Optionally, the\nTCX program can also be installed into a set of network namespaces."
+                            description: "links is an optional field and is the list of attachment points to which the\nTCX program should be attached. The TCX program is loaded in kernel memory\nwhen the BPF Application CRD is created and the selected Kubernetes nodes\nare active. The TCX program will not be triggered until the program has also\nbeen attached to an attachment point described in this list. Items may be\nadded or removed from the list at any point, causing the TCX program to be\nattached or detached.\n\nThe attachment point for a TCX program is a network interface (or device).\nThe interface can be specified by name, by allowing bpfman to discover each\ninterface, or by setting the primaryNodeInterface flag, which instructs\nbpfman to use the primary interface of a Kubernetes node. Optionally, the\nTCX program can also be installed into a set of network namespaces."
                             items:
                               properties:
                                 direction:
-                                  description: "direction is a required field and specifies the direction of traffic.\nAllowed values are:\n   Ingress, Egress\n\n\nWhen set to Ingress, the TC program is triggered when packets are received\nby the interface.\n\n\nWhen set to Egress, the TC program is triggered when packets are to be\ntransmitted by the interface."
+                                  description: "direction is a required field and specifies the direction of traffic.\nAllowed values are:\n   Ingress, Egress\n\nWhen set to Ingress, the TC program is triggered when packets are received\nby the interface.\n\nWhen set to Egress, the TC program is triggered when packets are to be\ntransmitted by the interface."
                                   enum:
                                     - "Ingress"
                                     - "Egress"
@@ -371,7 +370,6 @@ spec:
                                     - "pods"
                                   type: "object"
                                 priority:
-                                  default: 1000
                                   description: "priority is an optional field and determines the execution order of the TCX\nprogram relative to other TCX programs attached to the same attachment\npoint. It must be a value between 0 and 1000, where lower values indicate\nhigher precedence. For TCX programs on the same attachment point with the\nsame direction and priority, the most recently attached program has a lower\nprecedence. If not provided, priority will default to 1000."
                                   format: "int32"
                                   maximum: 1000.0
@@ -385,7 +383,7 @@ spec:
                             type: "array"
                         type: "object"
                       type:
-                        description: "type is a required field used to specify the type of the eBPF program.\n\n\nAllowed values are:\n  TC, TCX, UProbe, URetProbe, XDP\n\n\nWhen set to TC, the eBPF program can attach to network devices (interfaces).\nThe program can be attached on either packet ingress or egress, so the\nprogram will be called on every incoming or outgoing packet seen by the\nnetwork device. When using the TC program type, the tc field is required.\nSee tc for more details on TC programs.\n\n\nWhen set to TCX, the eBPF program can attach to network devices\n(interfaces). The program can be attached on either packet ingress or\negress, so the program will be called on every incoming or outgoing packet\nseen by the network device. When using the TCX program type, the tcx field\nis required. See tcx for more details on TCX programs.\n\n\nWhen set to UProbe, the program can attach in user-space. The UProbe is\nattached to a binary, library or function name, and optionally an offset in\nthe code. When using the UProbe program type, the uprobe field is required.\nSee uprobe for more details on UProbe programs.\n\n\nWhen set to URetProbe, the program can attach in user-space.\nThe URetProbe is attached to the return of a binary, library or function\nname, and optionally an offset in the code.  When using the URetProbe\nprogram type, the uretprobe field is required. See uretprobe for more\ndetails on URetProbe programs.\n\n\nWhen set to XDP, the eBPF program can attach to network devices (interfaces)\nand will be called on every incoming packet received by the network device.\nWhen using the XDP program type, the xdp field is required. See xdp for more\ndetails on XDP programs."
+                        description: "type is a required field used to specify the type of the eBPF program.\n\nAllowed values are:\n  TC, TCX, UProbe, URetProbe, XDP\n\nWhen set to TC, the eBPF program can attach to network devices (interfaces).\nThe program can be attached on either packet ingress or egress, so the\nprogram will be called on every incoming or outgoing packet seen by the\nnetwork device. When using the TC program type, the tc field is required.\nSee tc for more details on TC programs.\n\nWhen set to TCX, the eBPF program can attach to network devices\n(interfaces). The program can be attached on either packet ingress or\negress, so the program will be called on every incoming or outgoing packet\nseen by the network device. When using the TCX program type, the tcx field\nis required. See tcx for more details on TCX programs.\n\nWhen set to UProbe, the program can attach in user-space. The UProbe is\nattached to a binary, library or function name, and optionally an offset in\nthe code. When using the UProbe program type, the uprobe field is required.\nSee uprobe for more details on UProbe programs.\n\nWhen set to URetProbe, the program can attach in user-space.\nThe URetProbe is attached to the return of a binary, library or function\nname, and optionally an offset in the code.  When using the URetProbe\nprogram type, the uretprobe field is required. See uretprobe for more\ndetails on URetProbe programs.\n\nWhen set to XDP, the eBPF program can attach to network devices (interfaces)\nand will be called on every incoming packet received by the network device.\nWhen using the XDP program type, the xdp field is required. See xdp for more\ndetails on XDP programs."
                         enum:
                           - "XDP"
                           - "TC"
@@ -397,7 +395,7 @@ spec:
                         description: "uprobe is an optional field, but required when the type field is set to\nUProbe. uprobe defines the desired state of the application's UProbe\nprograms. UProbe programs are user-space probes. A target must be provided,\nwhich is the library name or absolute path to a binary or library where the\nprobe is attached. Optionally, a function name can also be provided to\nprovide finer granularity on where the probe is attached. They can be\nattached at any point in the binary, library or function using the optional\noffset field. However, caution must be taken when using the offset, ensuring\nthe offset is still in the desired bytecode."
                         properties:
                           links:
-                            description: "links is an optional field and is the list of attachment points to which the\nUProbe or URetProbe program should be attached. The eBPF program is loaded\nin kernel memory when the BPF Application CRD is created and the selected\nKubernetes nodes are active. The eBPF program will not be triggered until\nthe program has also been attached to an attachment point described in this\nlist. Items may be added or removed from the list at any point, causing the\neBPF program to be attached or detached.\n\n\nThe attachment point for a UProbe and URetProbe program is a user-space\nbinary or function. By default, the eBPF program is triggered at the entry\nof the attachment point, but the attachment point can be adjusted using an\noptional function name and/or offset. Optionally, the eBPF program can be\ninstalled in a set of containers or limited to a specified PID."
+                            description: "links is an optional field and is the list of attachment points to which the\nUProbe or URetProbe program should be attached. The eBPF program is loaded\nin kernel memory when the BPF Application CRD is created and the selected\nKubernetes nodes are active. The eBPF program will not be triggered until\nthe program has also been attached to an attachment point described in this\nlist. Items may be added or removed from the list at any point, causing the\neBPF program to be attached or detached.\n\nThe attachment point for a UProbe and URetProbe program is a user-space\nbinary or function. By default, the eBPF program is triggered at the entry\nof the attachment point, but the attachment point can be adjusted using an\noptional function name and/or offset. Optionally, the eBPF program can be\ninstalled in a set of containers or limited to a specified PID."
                             items:
                               properties:
                                 containers:
@@ -472,7 +470,7 @@ spec:
                         description: "uretprobe is an optional field, but required when the type field is set to\nURetProbe. uretprobe defines the desired state of the application's\nURetProbe programs. URetProbe programs are user-space probes. A target must\nbe provided, which is the library name or absolute path to a binary or\nlibrary where the probe is attached. Optionally, a function name can also be\nprovided to provide finer granularity on where the probe is attached. They\nare attached to the return point of the binary, library or function, but can\nbe set anywhere using the optional offset field. However, caution must be\ntaken when using the offset, ensuring the offset is still in the desired\nbytecode."
                         properties:
                           links:
-                            description: "links is an optional field and is the list of attachment points to which the\nUProbe or URetProbe program should be attached. The eBPF program is loaded\nin kernel memory when the BPF Application CRD is created and the selected\nKubernetes nodes are active. The eBPF program will not be triggered until\nthe program has also been attached to an attachment point described in this\nlist. Items may be added or removed from the list at any point, causing the\neBPF program to be attached or detached.\n\n\nThe attachment point for a UProbe and URetProbe program is a user-space\nbinary or function. By default, the eBPF program is triggered at the entry\nof the attachment point, but the attachment point can be adjusted using an\noptional function name and/or offset. Optionally, the eBPF program can be\ninstalled in a set of containers or limited to a specified PID."
+                            description: "links is an optional field and is the list of attachment points to which the\nUProbe or URetProbe program should be attached. The eBPF program is loaded\nin kernel memory when the BPF Application CRD is created and the selected\nKubernetes nodes are active. The eBPF program will not be triggered until\nthe program has also been attached to an attachment point described in this\nlist. Items may be added or removed from the list at any point, causing the\neBPF program to be attached or detached.\n\nThe attachment point for a UProbe and URetProbe program is a user-space\nbinary or function. By default, the eBPF program is triggered at the entry\nof the attachment point, but the attachment point can be adjusted using an\noptional function name and/or offset. Optionally, the eBPF program can be\ninstalled in a set of containers or limited to a specified PID."
                             items:
                               properties:
                                 containers:
@@ -547,7 +545,7 @@ spec:
                         description: "xdp is an optional field, but required when the type field is set to XDP.\nxdp defines the desired state of the application's XDP programs. XDP program\ncan be attached to network devices (interfaces) and will be called on every\nincoming packet received by the network device. The XDP attachment point is\njust after the packet has been received off the wire, but before the Linux\nkernel has allocated an sk_buff, which is used to pass the packet through\nthe kernel networking stack."
                         properties:
                           links:
-                            description: "links is an optional field and is the list of attachment points to which the\nXDP program should be attached. The XDP program is loaded in kernel memory\nwhen the BPF Application CRD is created and the selected Kubernetes nodes\nare active. The XDP program will not be triggered until the program has also\nbeen attached to an attachment point described in this list. Items may be\nadded or removed from the list at any point, causing the XDP program to be\nattached or detached.\n\n\nThe attachment point for a XDP program is a network interface (or device).\nThe interface can be specified by name, by allowing bpfman to discover each\ninterface, or by setting the primaryNodeInterface flag, which instructs\nbpfman to use the primary interface of a Kubernetes node."
+                            description: "links is an optional field and is the list of attachment points to which the\nXDP program should be attached. The XDP program is loaded in kernel memory\nwhen the BPF Application CRD is created and the selected Kubernetes nodes\nare active. The XDP program will not be triggered until the program has also\nbeen attached to an attachment point described in this list. Items may be\nadded or removed from the list at any point, causing the XDP program to be\nattached or detached.\n\nThe attachment point for a XDP program is a network interface (or device).\nThe interface can be specified by name, by allowing bpfman to discover each\ninterface, or by setting the primaryNodeInterface flag, which instructs\nbpfman to use the primary interface of a Kubernetes node."
                             items:
                               properties:
                                 interfaceSelector:
@@ -624,7 +622,6 @@ spec:
                                     - "pods"
                                   type: "object"
                                 priority:
-                                  default: 1000
                                   description: "priority is an optional field and determines the execution order of the XDP\nprogram relative to other XDP programs attached to the same attachment\npoint. It must be a value between 0 and 1000, where lower values indicate\nhigher precedence. For XDP programs on the same attachment point with the\nsame priority, the most recently attached program has a lower precedence.\nIf not provided, priority will default to 1000."
                                   format: "int32"
                                   maximum: 1000.0
@@ -634,7 +631,7 @@ spec:
                                   default:
                                     - "Pass"
                                     - "DispatcherReturn"
-                                  description: "proceedOn is an optional field and allows the user to call other XDP\nprograms in a chain, or not call the next program in a chain based on the\nexit code of an XDP program. Allowed values, which are the possible exit\ncodes from an XDP eBPF program, are:\n  Aborted, Drop, Pass, TX, ReDirect,DispatcherReturn\n\n\nMultiple values are supported. Default is Pass and DispatcherReturn. So\nusing the default values, if an XDP program returns Pass, the next XDP\nprogram in the chain will be called. If an XDP program returns Drop, the\nnext XDP program in the chain will NOT be called."
+                                  description: "proceedOn is an optional field and allows the user to call other XDP\nprograms in a chain, or not call the next program in a chain based on the\nexit code of an XDP program. Allowed values, which are the possible exit\ncodes from an XDP eBPF program, are:\n  Aborted, Drop, Pass, TX, ReDirect,DispatcherReturn\n\nMultiple values are supported. Default is Pass and DispatcherReturn. So\nusing the default values, if an XDP program returns Pass, the next XDP\nprogram in the chain will be called. If an XDP program returns Drop, the\nnext XDP program in the chain will NOT be called."
                                   items:
                                     enum:
                                       - "Aborted"
@@ -671,6 +668,7 @@ spec:
               required:
                 - "byteCode"
                 - "nodeSelector"
+                - "programs"
               type: "object"
             status:
               description: "status reflects the status of a BPF Application and indicates if all the\neBPF programs for a given instance loaded successfully or not."
@@ -678,7 +676,7 @@ spec:
                 conditions:
                   description: "conditions contains the summary state for all eBPF programs defined in the\nBPF Application instance for all the Kubernetes nodes in the cluster."
                   items:
-                    description: "Condition contains details for one aspect of the current state of this API Resource.\n---\nThis struct is intended for direct use as an array at the field path .status.conditions.  For example,\n\n\n\ttype FooStatus struct{\n\t    // Represents the observations of a foo's current state.\n\t    // Known .status.conditions.type are: \"Available\", \"Progressing\", and \"Degraded\"\n\t    // +patchMergeKey=type\n\t    // +patchStrategy=merge\n\t    // +listType=map\n\t    // +listMapKey=type\n\t    Conditions []metav1.Condition `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"`\n\n\n\t    // other fields\n\t}"
+                    description: "Condition contains details for one aspect of the current state of this API Resource."
                     properties:
                       lastTransitionTime:
                         description: "lastTransitionTime is the last time the condition transitioned from one status to another.\nThis should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable."
@@ -707,7 +705,7 @@ spec:
                           - "Unknown"
                         type: "string"
                       type:
-                        description: "type of condition in CamelCase or in foo.example.com/CamelCase.\n---\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions can be\nuseful (see .node.status.conditions), the ability to deconflict is important.\nThe regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)"
+                        description: "type of condition in CamelCase or in foo.example.com/CamelCase."
                         maxLength: 316
                         pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$"
                         type: "string"

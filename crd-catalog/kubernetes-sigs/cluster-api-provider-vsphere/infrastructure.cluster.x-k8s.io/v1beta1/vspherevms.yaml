@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.20.0"
+    controller-gen.kubebuilder.io/version: "v0.21.0"
   name: "vspherevms.infrastructure.cluster.x-k8s.io"
 spec:
   group: "infrastructure.cluster.x-k8s.io"
@@ -68,7 +68,17 @@ spec:
                   type: "object"
                   x-kubernetes-map-type: "atomic"
                 cloneMode:
-                  description: "CloneMode specifies the type of clone operation.\nThe LinkedClone mode is only support for templates that have at least\none snapshot. If the template has no snapshots, then CloneMode defaults\nto FullClone.\nWhen LinkedClone mode is enabled the DiskGiB field is ignored as it is\nnot possible to expand disks of linked clones.\nDefaults to LinkedClone, but fails gracefully to FullClone if the source\nof the clone operation has no snapshots."
+                  description: "CloneMode specifies the type of clone operation.\nThe linkedClone mode is only support for templates that have at least\none snapshot. If the template has no snapshots, then CloneMode defaults\nto fullClone.\nWhen linkedClone mode is enabled the DiskGiB field is ignored as it is\nnot possible to expand disks of linked clones.\nDefaults to linkedClone, but fails gracefully to fullClone if the source\nof the clone operation has no snapshots."
+                  type: "string"
+                cryptoKeyID:
+                  description: "cryptoKeyID is the crypto key id."
+                  maxLength: 128
+                  minLength: 1
+                  type: "string"
+                cryptoProfile:
+                  description: "cryptoProfile of the storage encryption policy to use with this\nVirtual Machine."
+                  maxLength: 128
+                  minLength: 1
                   type: "string"
                 customVMXKeys:
                   additionalProperties:
@@ -116,6 +126,13 @@ spec:
                 folder:
                   description: "Folder is the name, inventory path, managed object reference or the managed\nobject ID of the folder in which the virtual machine is created/located."
                   type: "string"
+                ftEncryptionMode:
+                  description: "ftEncryptionMode is the encrypted fault tolerance mode.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned.\nCheck the compatibility with the ESXi version before setting the value."
+                  enum:
+                    - "ftEncryptionDisabled"
+                    - "ftEncryptionOpportunistic"
+                    - "ftEncryptionRequired"
+                  type: "string"
                 guestSoftPowerOffTimeout:
                   description: "GuestSoftPowerOffTimeout sets the wait timeout for shutdown in the VM guest.\nThe VM will be powered off forcibly after the timeout if the VM is still\nup and running when the PowerOffMode is set to trySoft.\n\nThis parameter only applies when the PowerOffMode is set to trySoft.\n\nIf omitted, the timeout defaults to 5 minutes."
                   type: "string"
@@ -126,6 +143,16 @@ spec:
                   description: "MemoryMiB is the size of a virtual machine's memory, in MiB.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned."
                   format: "int64"
                   type: "integer"
+                migrateEncryption:
+                  description: "migrateEncryption is the encrypted vMotion mode.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned.\nCheck the compatibility with the ESXi version before setting the value."
+                  enum:
+                    - "disabled"
+                    - "opportunistic"
+                    - "required"
+                  type: "string"
+                nestedHV:
+                  description: "nestedHV controls nested hardware-assisted virtualization.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned.\nCheck the compatibility with the ESXi version before setting the value."
+                  type: "boolean"
                 network:
                   description: "Network is the network configuration for this machine's VM."
                   properties:
@@ -416,7 +443,7 @@ spec:
                   description: "Server is the IP address or FQDN of the vSphere server on which\nthe virtual machine is created/located."
                   type: "string"
                 snapshot:
-                  description: "Snapshot is the name of the snapshot from which to create a linked clone.\nThis field is ignored if LinkedClone is not enabled.\nDefaults to the source's current snapshot."
+                  description: "Snapshot is the name of the snapshot from which to create a linked clone.\nThis field is ignored if linkedClone is not enabled.\nDefaults to the source's current snapshot."
                   type: "string"
                 storagePolicyName:
                   description: "StoragePolicyName of the storage policy to use with this\nVirtual Machine"
@@ -446,7 +473,7 @@ spec:
                     type: "string"
                   type: "array"
                 cloneMode:
-                  description: "CloneMode is the type of clone operation used to clone this VM. Since\nLinkedMode is the default but fails gracefully if the source of the\nclone has no snapshots, this field may be used to determine the actual\ntype of clone operation used to create this VM."
+                  description: "CloneMode is the type of clone operation used to clone this VM. Since\nlinkedClone is the default but fails gracefully if the source of the\nclone has no snapshots, this field may be used to determine the actual\ntype of clone operation used to create this VM."
                   type: "string"
                 conditions:
                   description: "Conditions defines current service state of the VSphereVM."
@@ -528,7 +555,7 @@ spec:
                   format: "date-time"
                   type: "string"
                 snapshot:
-                  description: "Snapshot is the name of the snapshot from which the VM was cloned if\nLinkedMode is enabled."
+                  description: "Snapshot is the name of the snapshot from which the VM was cloned if\nlinkedClone is enabled."
                   type: "string"
                 taskRef:
                   description: "TaskRef is a managed object reference to a Task related to the machine.\nThis value is set automatically at runtime and should not be set or\nmodified by users."

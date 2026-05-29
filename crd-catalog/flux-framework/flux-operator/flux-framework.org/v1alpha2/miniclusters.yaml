@@ -384,7 +384,7 @@ spec:
                           description: "Disable the sidecar container, assuming that the main application container has flux"
                           type: "boolean"
                         image:
-                          default: "ghcr.io/converged-computing/flux-view-rocky:tag-9"
+                          default: "ghcr.io/converged-computing/flux-view-ubuntu:tag-noble"
                           type: "string"
                         imagePullSecret:
                           description: "Allow the user to pull authenticated images\nBy default no secret is selected. Setting\nthis with the name of an already existing\nimagePullSecret will specify that secret\nin the pod spec."

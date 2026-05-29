@@ -172,6 +172,11 @@ spec:
                 postCompleteDelay:
                   description: "Time after a Job for one Node is complete before a new Job will be created for the next Node."
                   type: "string"
+                postCompleteLabels:
+                  additionalProperties:
+                    type: "string"
+                  description: "Label key-value pairs to apply to a node when the job for this plan completes successfully.\nValues may contain `$(LATEST_HASH)` or `$(LATEST_VERSION)`, which will be expanded from the plan status."
+                  type: "object"
                 prepare:
                   description: "The prepare init container, if specified, is run before cordon/drain which is run before the upgrade container."
                   properties:
@@ -490,7 +495,7 @@ spec:
                         description: "Key is the taint key that the toleration applies to. Empty means match all taint keys.\nIf the key is empty, operator must be Exists; this combination means to match all values and all keys."
                         type: "string"
                       operator:
-                        description: "Operator represents a key's relationship to the value.\nValid operators are Exists and Equal. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category."
+                        description: "Operator represents a key's relationship to the value.\nValid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category.\nLt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators)."
                         type: "string"
                       tolerationSeconds:
                         description: "TolerationSeconds represents the period of time the toleration (which must be\nof effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,\nit is not set, which means tolerate the taint forever (do not evict). Zero and\nnegative values will be treated as 0 (evict immediately) by the system."

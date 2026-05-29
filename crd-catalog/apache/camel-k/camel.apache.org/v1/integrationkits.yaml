@@ -89,7 +89,7 @@ spec:
                   description: "the container image as identified in the container registry"
                   type: "string"
                 profile:
-                  description: "the profile which is expected by this kit"
+                  description: "the profile which is expected by this kit\n\nDeprecated: may be removed in future releases."
                   type: "string"
                 repositories:
                   description: "Maven repositories that can be used by the kit"
@@ -188,7 +188,7 @@ spec:
                           description: "When using `pod` strategy, the maximum amount of memory required by the pod builder.\n\nDeprecated: use TasksRequestCPU instead with task name `builder`."
                           type: "string"
                         mavenProfiles:
-                          description: "A list of references pointing to configmaps/secrets that contains a maven profile.\nThis configmap/secret is a resource of the IntegrationKit created, therefore it needs to be present in the namespace where the operator is going to create the IntegrationKit.\nThe content of the maven profile is expected to be a text containing a valid maven profile starting with `<profile>` and ending with `</profile>` that will be integrated as an inline profile in the POM.\nSyntax: [configmap|secret]:name[/key], where name represents the resource name, key optionally represents the resource key to be filtered (default key value = profile.xml)."
+                          description: "A list of references pointing to configmaps/secrets that contains a maven profile.\nThis configmap/secret is a resource of the IntegrationKit created, therefore it needs to be present in the namespace where the operator is going to create the IntegrationKit.\nThe content of the maven profile is expected to be a text containing a valid maven profile starting with `<profile>` and ending with `</profile>` that will be integrated as an inline profile in the POM.\nSyntax: [configmap|secret]:name[/key], where name represents the resource name, key optionally represents the resource key to be filtered (default key value = profile.xml).\n\nDeprecated: will be removed in future versions."
                           items:
                             type: "string"
                           type: "array"

@@ -1,0 +1,86 @@
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: "v0.17.3"
+  name: "devicestatuses.devices.kubeedge.io"
+spec:
+  group: "devices.kubeedge.io"
+  names:
+    kind: "DeviceStatus"
+    listKind: "DeviceStatusList"
+    plural: "devicestatuses"
+    singular: "devicestatus"
+  scope: "Namespaced"
+  versions:
+    - name: "v1beta1"
+      schema:
+        openAPIV3Schema:
+          description: "DeviceStatus is the Schema for the devices API"
+          properties:
+            apiVersion:
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              type: "string"
+            kind:
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              type: "string"
+            metadata:
+              type: "object"
+            spec:
+              description: "DeviceStatusSpec represents a single device status instance\nSince the association between device and device status is 1:1 and encoded in OwnerReference,\nthere is no need to have a field to indicate which device this status belongs to."
+              type: "object"
+            status:
+              description: "DeviceStatusStatus reports the device state and the desired/reported values of twin attributes."
+              properties:
+                extensions:
+                  description: "Optional: Extensions can be used to add more status information."
+                  type: "object"
+                  x-kubernetes-preserve-unknown-fields: true
+                lastOnlineTime:
+                  description: "Optional: The last time the device was online."
+                  type: "string"
+                state:
+                  description: "Optional: The state of the device."
+                  type: "string"
+                twins:
+                  description: "A list of device twins containing desired/reported desired/reported values of twin properties.\nOptional: A passive device won't have twin properties and this list could be empty."
+                  items:
+                    description: "Twin provides a logical representation of control properties (writable properties in the\ndevice model). The properties can have a Desired state and a Reported state. The cloud configures\nthe `Desired`state of a device property and this configuration update is pushed to the edge node.\nThe mapper sends a command to the device to change this property value as per the desired state .\nIt receives the `Reported` state of the property once the previous operation is complete and sends\nthe reported state to the cloud. Offline device interaction in the edge is possible via twin\nproperties for control/command operations."
+                    properties:
+                      observedDesired:
+                        description: "The meaning of here is to indicate desired value of `deviceProperty.Desired`\nthat the mapper has received in current cycle.\nUseful in cases that people want to check whether the mapper is working\nappropriately and its internal status is up-to-date.\nThis value should be only updated by devicecontroller upstream."
+                        properties:
+                          metadata:
+                            additionalProperties:
+                              type: "string"
+                            description: "Additional metadata like timestamp when the value was reported etc."
+                            type: "object"
+                          value:
+                            description: "Required: The value for this property."
+                            type: "string"
+                        required:
+                          - "value"
+                        type: "object"
+                      propertyName:
+                        description: "Required: The property name for which the desired/reported values are specified.\nThis property should be present in the device model."
+                        type: "string"
+                      reported:
+                        description: "Required: the reported property value."
+                        properties:
+                          metadata:
+                            additionalProperties:
+                              type: "string"
+                            description: "Additional metadata like timestamp when the value was reported etc."
+                            type: "object"
+                          value:
+                            description: "Required: The value for this property."
+                            type: "string"
+                        required:
+                          - "value"
+                        type: "object"
+                    type: "object"
+                  type: "array"
+              type: "object"
+          type: "object"
+      served: true
+      storage: true

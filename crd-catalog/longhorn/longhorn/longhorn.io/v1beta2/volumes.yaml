@@ -6,7 +6,7 @@ metadata:
   labels:
     app.kubernetes.io/instance: "longhorn"
     app.kubernetes.io/name: "longhorn"
-    app.kubernetes.io/version: "v1.9.0-dev"
+    app.kubernetes.io/version: "v1.12.0-dev"
     longhorn-manager: ""
   name: "volumes.longhorn.io"
 spec:
@@ -44,6 +44,11 @@ spec:
         - description: "The node that the volume is currently attaching to"
           jsonPath: ".status.currentNodeID"
           name: "Node"
+          type: "string"
+        - description: "The engine switchover state"
+          jsonPath: ".status.switchoverState"
+          name: "Switchover"
+          priority: 1
           type: "string"
         - jsonPath: ".metadata.creationTimestamp"
           name: "Age"
@@ -123,6 +128,9 @@ spec:
                   x-kubernetes-validations:
                     - message: "Encrypted is immutable"
                       rule: "self == oldSelf"
+                engineNodeID:
+                  description: "engineNodeID defines the node where the backend engine (target) runs.\nIf empty, falls back to NodeID."
+                  type: "string"
                 freezeFilesystemForSnapshot:
                   description: "Setting that freezes the filesystem on the root partition before a snapshot is created."
                   enum:
@@ -149,6 +157,7 @@ spec:
                 migrationNodeID:
                   type: "string"
                 nodeID:
+                  description: "nodeID defines the node where the volume is attached (where the frontend initiator runs)."
                   type: "string"
                 nodeSelector:
                   items:
@@ -219,6 +228,9 @@ spec:
                     - "enabled"
                     - "fast-check"
                   type: "string"
+                snapshotHashingRequestedAt:
+                  description: "SnapshotHashingRequestedAt is the RFC3339 timestamp (e.g., \"2026-03-16T10:30:00Z\") when an on-demand snapshot checksum calculation is requested.\nWhen this value is set and is later than LastOnDemandSnapshotHashingCompleteAt, the system will calculate checksums\nfor all user snapshots.\n\nIf SnapshotHashingRequestedAt differs from LastOnDemandSnapshotHashingCompleteAt, it indicates that a hashing request\nis still in progress, and a new request will be rejected."
+                  type: "string"
                 snapshotMaxCount:
                   type: "integer"
                 snapshotMaxSize:
@@ -282,6 +294,9 @@ spec:
                     type: "object"
                   nullable: true
                   type: "array"
+                currentEngineNodeID:
+                  description: "the node that the engine (target) is currently running on."
+                  type: "string"
                 currentImage:
                   type: "string"
                 currentMigrationNodeID:
@@ -326,11 +341,16 @@ spec:
                       nullable: true
                       type: "array"
                   type: "object"
+                lastAutoSalvagedAt:
+                  type: "string"
                 lastBackup:
                   type: "string"
                 lastBackupAt:
                   type: "string"
                 lastDegradedAt:
+                  type: "string"
+                lastOnDemandSnapshotHashingCompleteAt:
+                  description: "LastOnDemandSnapshotHashingCompleteAt is the RFC3339 timestamp (e.g., \"2026-03-16T10:30:00Z\") when the\nmost recent on-demand snapshot checksum calculation completed.\nWhen this value matches SnapshotHashingRequestedAt, the requested on-demand checksum calculation is considered complete."
                   type: "string"
                 ownerID:
                   type: "string"
@@ -347,6 +367,9 @@ spec:
                 shareState:
                   type: "string"
                 state:
+                  type: "string"
+                switchoverState:
+                  description: "SwitchoverState describes the current progress of a v2 engine live switchover.\nEmpty when no switchover is in progress."
                   type: "string"
               type: "object"
           type: "object"

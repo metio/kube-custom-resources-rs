@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.20.0"
+    controller-gen.kubebuilder.io/version: "v0.21.0"
   name: "logstashes.logstash.k8s.elastic.co"
 spec:
   group: "logstash.k8s.elastic.co"
@@ -72,6 +72,9 @@ spec:
                   items:
                     description: "ElasticsearchCluster is a named reference to an Elasticsearch cluster which can be used in a Logstash pipeline."
                     properties:
+                      clientCertificateSecretName:
+                        description: "ClientCertificateSecretName is the name of an existing Kubernetes secret containing a client certificate\n(tls.crt) and private key (tls.key) for client authentication to the referenced resource.\nThis field is only relevant when the referenced Elasticsearch cluster has client authentication enabled.\nIf not specified and the referenced resource requires client authentication, ECK will auto-generate a\nclient certificate."
+                        type: "string"
                       clusterName:
                         description: "ClusterName is an alias for the cluster to be used to refer to the Elasticsearch cluster in Logstash\nconfiguration files, and will be used to identify \"named clusters\" in Logstash"
                         minLength: 1
@@ -159,9 +162,49 @@ spec:
                       type: "string"
                   type: "object"
                 podTemplate:
-                  description: "PodTemplate provides customisation options for the Logstash pods."
+                  description: "PodTemplate provides customization options for the Logstash pods."
                   type: "object"
                   x-kubernetes-preserve-unknown-fields: true
+                resources:
+                  description: "Resources provides a shorthand to set CPU and Memory resources on the Logstash container. When set, these\nvalues override any CPU or memory resource settings specified in the PodTemplate for the primary Logstash\ncontainer. To set resources on other containers, use the PodTemplate."
+                  properties:
+                    limits:
+                      description: "Limits is the shorthand for the main container's CPU and memory limits."
+                      properties:
+                        cpu:
+                          anyOf:
+                            - type: "integer"
+                            - type: "string"
+                          description: "CPU overrides the main container's CPU request/limit when the parent Resources\nis merged into a PodTemplate. A nil value means \"do not override\": any CPU\nvalue already set on the main container in the PodTemplate is passed through\nunchanged. Setting this field to nil does not unset a CPU value present in\nthe PodTemplate; to remove it, edit the PodTemplate's container resources.\nA non-nil value wins over the PodTemplate's CPU, including an explicit zero quantity."
+                          pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                          x-kubernetes-int-or-string: true
+                        memory:
+                          anyOf:
+                            - type: "integer"
+                            - type: "string"
+                          description: "Memory overrides the main container's memory request/limit when the parent\nResources is merged into a PodTemplate. A nil value means \"do not override\":\nany memory value already set on the main container in the PodTemplate is\npassed through unchanged. Setting this field to nil does not unset a memory\nvalue present in the PodTemplate; to remove it, edit the PodTemplate's\ncontainer resources.\nA non-nil value wins over the PodTemplate's memory, including an explicit zero quantity."
+                          pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                          x-kubernetes-int-or-string: true
+                      type: "object"
+                    requests:
+                      description: "Requests is the shorthand for the main container's CPU and memory requests."
+                      properties:
+                        cpu:
+                          anyOf:
+                            - type: "integer"
+                            - type: "string"
+                          description: "CPU overrides the main container's CPU request/limit when the parent Resources\nis merged into a PodTemplate. A nil value means \"do not override\": any CPU\nvalue already set on the main container in the PodTemplate is passed through\nunchanged. Setting this field to nil does not unset a CPU value present in\nthe PodTemplate; to remove it, edit the PodTemplate's container resources.\nA non-nil value wins over the PodTemplate's CPU, including an explicit zero quantity."
+                          pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                          x-kubernetes-int-or-string: true
+                        memory:
+                          anyOf:
+                            - type: "integer"
+                            - type: "string"
+                          description: "Memory overrides the main container's memory request/limit when the parent\nResources is merged into a PodTemplate. A nil value means \"do not override\":\nany memory value already set on the main container in the PodTemplate is\npassed through unchanged. Setting this field to nil does not unset a memory\nvalue present in the PodTemplate; to remove it, edit the PodTemplate's\ncontainer resources.\nA non-nil value wins over the PodTemplate's memory, including an explicit zero quantity."
+                          pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                          x-kubernetes-int-or-string: true
+                      type: "object"
+                  type: "object"
                 revisionHistoryLimit:
                   description: "RevisionHistoryLimit is the number of revisions to retain to allow rollback in the underlying StatefulSet."
                   format: "int32"

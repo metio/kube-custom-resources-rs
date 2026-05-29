@@ -648,6 +648,7 @@ spec:
                   description: "DeleteGuestConversionPod determines if the guest conversion pod should be deleted after successful migration.\nNote:\n  - If this option is enabled and migration succeeds then the pod will get deleted. However the VM could still not boot and the virt-v2v logs, with additional information, will be deleted alongside guest conversion pod.\n  - If migration fails the conversion pod will remain present even if this option is enabled."
                   type: "boolean"
                 deleteVmOnFailMigration:
+                  default: true
                   description: "DeleteVmOnFailMigration controls whether the target VM created by this Plan is deleted when a migration fails.\nWhen true and the migration fails after the target VM has been created, the controller\nwill delete the target VM (and related target-side resources) during failed-migration cleanup\nand when the Plan is deleted. When false (default), the target VM is preserved to aid\ntroubleshooting. The source VM is never modified.\n\nNote: If the Plan-level option is set to true, the VM-level option will be ignored."
                   type: "boolean"
                 description:
@@ -656,6 +657,9 @@ spec:
                 diskBus:
                   description: "Deprecated: this field will be deprecated in 2.8."
                   type: "string"
+                enableNestedVirtualization:
+                  description: "EnableNestedVirtualization controls whether nested virtualization CPU features (vmx for Intel,\nsvm for AMD) are requested on the target VM.\n\n- nil (default): Auto-detect from the source VM settings. If the source had nested\n  virtualization enabled, the target will request it; otherwise no CPU feature is added.\n- true: Request nested virtualization on the target VM (overrides source settings).\n  Both vmx and svm CPU features are added with policy \"optional\", meaning the VM will\n  have nested virtualization only if the underlying host hardware supports it.\n  This does NOT guarantee nested virtualization; it is a best-effort hint to the hypervisor.\n- false: Explicitly disable nested virtualization on the target VM (overrides source settings).\n  Both vmx and svm CPU features are added with policy \"disable\", unconditionally preventing\n  nested virtualization regardless of host capability.\n\nBoth vmx and svm are added together so the VM is portable across Intel and AMD hosts.\nThe \"optional\" policy activates only the feature the host CPU supports; the other is ignored."
+                  type: "boolean"
                 installLegacyDrivers:
                   description: "InstallLegacyDrivers determines whether to install legacy windows drivers in the VM.\nThe following Vm's are lack of SHA-2 support and need legacy drivers:\nWindows XP (all)\nWindows Server 2003\nWindows Vista (all)\nWindows Server 2008\nWindows 7 (pre-SP1)\nWindows Server 2008 R2\nBehavior:\n- If set to nil (unset), the system will automatically detect whether the VM requires legacy drivers\n  based on its guest OS type (using IsLegacyWindows).\n- If set to true, legacy drivers will be installed unconditionally by setting the VIRTIO_WIN environment variable.\n- If set to false, legacy drivers will be skipped, and the system will fall back to using the standard (SHA-2 signed) drivers.\n\nWhen enabled, legacy drivers are exposed to the virt-v2v conversion process via the VIRTIO_WIN environment variable,\nwhich points to the legacy ISO at /usr/local/virtio-win-legacy.iso."
                   type: "boolean"
@@ -796,12 +800,20 @@ spec:
                   type: "string"
                 pvcNameTemplateUseGenerateName:
                   default: true
-                  description: "PVCNameTemplateUseGenerateName indicates if the PVC name template should use generateName instead of name.\nThis field controls whether the template output is used as an exact name or as a prefix for generated names.\n\nProvider-specific behavior:\n\nVMware (vSphere):\n  - true (default): Template output is used as generateName prefix, Kubernetes adds a random suffix\n    (e.g., \"my-vm-disk-0-\" becomes \"my-vm-disk-0-abc12\")\n  - false: Template output is used as the exact PVC name\n    **DANGER**: May cause conflicts if the generated name is not unique\n\nOpenShift:\n  - This field is ignored. The template output is always used as the exact PVC name.\n  - Default template \"{{.SourcePVCName}}\" preserves source PVC names which are typically unique."
+                  description: "PVCNameTemplateUseGenerateName indicates if the PVC name template should use generateName instead of name.\nThis field controls whether the template output is used as an exact name or as a prefix for generated names.\n\nProvider-specific behavior:\n\nVMware (vSphere):\n  - true (default): Template output is used as generateName prefix, Kubernetes adds a random suffix\n    (e.g., \"my-vm-disk-0-\" becomes \"my-vm-disk-0-abc12\")\n  - false: Template output is used as the exact PVC name\n    **DANGER**: May cause conflicts if the generated name is not unique\n\nOpenShift:\n  - Supported when a custom pvcNameTemplate is set (plan-level or VM-level).\n  - When no custom template is set, the default \"{{.SourcePVCName}}\" always uses exact names\n    regardless of this field.\n  - true: Template output is used as generateName prefix, Kubernetes adds a random suffix\n  - false: Template output is used as the exact PVC name"
+                  type: "boolean"
+                rdmAsLun:
+                  description: "RDMAsLun controls whether RDM (Raw Device Mapping) disks from VMware should be\nmapped as LUN devices in the target KubeVirt VM instead of regular disk devices.\nWhen true, RDM disks are attached using lun: {} which allows the guest to execute\narbitrary SCSI command passthrough (SGIO).\nThis is useful when the source VM uses RDM disks for applications that require\ndirect SCSI access, such as shared storage clusters or database applications."
                   type: "boolean"
                 runPreflightInspection:
                   default: true
                   description: "RunPreflightInspection controls whether an inspection step on VM base disks is performed before starting the first disk transfer. Applies only to warm migrations from VMWare.\n- true (default): Inspection step runs before transferring any disks and may fail if it detects the migration would fail.\n- false: No inspection is performed before disk transfer."
                   type: "boolean"
+                serviceAccount:
+                  description: "ServiceAccount is the name of the ServiceAccount to use for migration\npods in the target namespace. Overrides the global setting.\nIf empty, falls back to ForkliftController's controller_migration_service_account,\nthen to the namespace default."
+                  maxLength: 253
+                  pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
+                  type: "string"
                 skipGuestConversion:
                   default: false
                   description: "Determines if the plan should skip the guest conversion."
@@ -809,6 +821,18 @@ spec:
                 skipZoneNodeSelector:
                   description: "SkipZoneNodeSelector controls whether to skip adding a zone-based node selector to\nmigrated VMs. By default, the migration automatically reads the availability zone from\nthe source provider's spec.settings.target-az configuration and adds a node selector\n(topology.kubernetes.io/zone=<target-az>) to the target VM. This ensures VMs are\nscheduled on nodes in the same zone as their EBS volumes, which is required for\nvolume attachment by the CSI driver.\nCurrently supported for EC2 provider only.\n- false (default): Add zone-based node selector using value from provider's spec.settings.target-az\n- true: Skip adding zone-based node selector"
                   type: "boolean"
+                tagMapping:
+                  description: "TagMapping configures how vSphere tags are converted to Kubernetes labels on the destination VM.\nOnly applicable to vSphere sources; ignored for other providers (EC2, Hyper-V, oVirt, OpenStack).\nIf not specified, all tags become labels (default behavior).\nIf specified with Disabled: true, no tags become labels.\nIf specified with LabelTags, only those tags become labels; others are ignored.\nCustom attributes always become annotations regardless of this setting.\nExamples:\n  tagMapping:\n    disabled: true\n\n  tagMapping:\n    labelTags:\n      - owner\n      - cost-center\n      - environment"
+                  properties:
+                    disabled:
+                      description: "Disabled completely prevents all tags from being converted to labels.\nWhen true, LabelTags is ignored and no tag labels are applied."
+                      type: "boolean"
+                    labelTags:
+                      description: "LabelTags filters which vSphere tags become labels (case-insensitive).\nEmpty means all tags become labels. Ignored when Disabled is true."
+                      items:
+                        type: "string"
+                      type: "array"
+                  type: "object"
                 targetAffinity:
                   description: "TargetAffinity allows specifying hard- and soft-affinity for VMs.\nit is possible to write matching rules against workloads (VMs and Pods) and Nodes.\nSince VMs are a workload type based on Pods, Pod-affinity affects VMs as well.\nSee virtual machine instance Affinity documentation for more details,\nhttps://kubevirt.io/user-guide/compute/node_assignment/#affinity-and-anti-affinity"
                   properties:
@@ -1422,6 +1446,9 @@ spec:
                   default: true
                   description: "useCompatibilityMode controls whether to use VirtIO devices when skipGuestConversion is true (Raw Copy mode).\nThis setting has no effect when skipGuestConversion is false (V2V Conversion always uses VirtIO).\n- true (default): Use compatibility devices (SATA bus, E1000E NIC) to ensure bootability\n- false: Use high-performance VirtIO devices (requires VirtIO drivers already installed in source VM)"
                   type: "boolean"
+                virtV2vImage:
+                  description: "VirtV2vImage overrides the global virt-v2v container image for this plan.\nWhen set, virt-v2v pods created by this plan will use this image instead\nof the cluster-wide VIRT_V2V_IMAGE setting.\nUse this to run different virt-v2v builds for specific migration scenarios"
+                  type: "string"
                 vms:
                   description: "List of VMs."
                   items:
@@ -1429,6 +1456,9 @@ spec:
                     properties:
                       deleteVmOnFailMigration:
                         description: "DeleteVmOnFailMigration controls whether the target VM created by this Plan is deleted when a migration fails.\nWhen true and the migration fails after the target VM has been created, the controller\nwill delete the target VM (and related target-side resources) during failed-migration cleanup\nand when the Plan is deleted. When false (default), the target VM is preserved to aid\ntroubleshooting. The source VM is never modified.\n\nNote: If the Plan-level option is set to true, the VM-level option will be ignored."
+                        type: "boolean"
+                      enableNestedVirtualization:
+                        description: "EnableNestedVirtualization controls whether nested virtualization CPU features (vmx/svm)\nare requested on the target VM. This overrides both the plan-level setting and the\nsource VM's configuration.\n\n- nil (default): Falls back to the plan-level enableNestedVirtualization value.\n- true: Request nested virtualization for this VM. CPU features vmx and svm are added\n  with policy \"optional\" -- the VM will have nested virtualization only if the host\n  hardware supports it. This is a best-effort hint, not a guarantee.\n- false: Explicitly disable nested virtualization for this VM. CPU features vmx and svm\n  are added with policy \"disable\", preventing nested virtualization regardless of host\n  capability.\n\nBoth vmx and svm are added together so the VM is portable across Intel and AMD hosts.\nThe \"optional\" policy activates only the feature the host CPU supports; the other is ignored."
                         type: "boolean"
                       hooks:
                         description: "Enable hooks."
@@ -1501,6 +1531,9 @@ spec:
                             type: "string"
                         type: "object"
                         x-kubernetes-map-type: "atomic"
+                      migrateSharedDisks:
+                        description: "MigrateSharedDisks controls whether shared disks are included in the migration for this VM.\nWhen nil (default), the plan-level migrateSharedDisks value is used.\nWhen explicitly set to true, shared disks are migrated for this VM.\nWhen explicitly set to false, shared disks are skipped for this VM."
+                        type: "boolean"
                       name:
                         description: "An object Name.\nvsphere:\n  A qualified name."
                         type: "string"
@@ -1516,6 +1549,9 @@ spec:
                       pvcNameTemplate:
                         description: "PVCNameTemplate is a template for generating PVC names for VM disks.\nGenerated names must be valid DNS-1123 labels (lowercase alphanumerics, '-' allowed, max 63 chars).\nIt follows Go template syntax and has access to provider-specific variables.\n\nCommon variables (all providers):\n  - .VmName: name of the VM in the source cluster (original source name)\n  - .TargetVmName: final VM name in the target cluster (may equal .VmName if no rename/normalization)\n  - .PlanName: name of the migration plan\n  - .DiskIndex: initial volume index of the disk\n\nVMware (vSphere) specific variables:\n  - .WinDriveLetter: Windows drive letter (lowercase, if applicable, e.g. \"c\", requires guest agent)\n  - .RootDiskIndex: index of the root disk\n  - .Shared: true if the volume is shared by multiple VMs, false otherwise\n  - .FileName: name of the file in the source provider (filename includes the .vmdk suffix)\n\nOpenShift specific variables:\n  - .SourcePVCName: name of the PVC in the source cluster\n  - .SourcePVCNamespace: namespace of the PVC in the source cluster\n\nNote:\n  This template overrides the plan level template.\nExamples:\n  \"{{.TargetVmName}}-disk-{{.DiskIndex}}\"\n  \"{{if eq .DiskIndex .RootDiskIndex}}root{{else}}data{{end}}-{{.DiskIndex}}\" (VMware)\n  \"{{.TargetVmName}}-{{.SourcePVCName}}\" (OpenShift)\nSee:\n\t https://github.com/kubev2v/forklift/tree/main/pkg/templateutil for template functions."
                         type: "string"
+                      rdmAsLun:
+                        description: "RDMAsLun controls whether RDM (Raw Device Mapping) disks from VMware should be\nmapped as LUN devices in the target KubeVirt VM instead of regular disk devices.\nWhen nil (default), the plan-level rdmAsLun value is used.\nWhen explicitly set to true, RDM disks are attached using lun: {} for this VM.\nWhen explicitly set to false, RDM disks are attached as regular disks for this VM."
+                        type: "boolean"
                       rootDisk:
                         description: "Choose the primary disk the VM boots from"
                         type: "string"
@@ -1542,6 +1578,10 @@ spec:
                   type: "string"
                 warm:
                   description: "Whether this is a warm migration.\nDeprecated: this field will be deprecated in 2.10. Use Type instead."
+                  type: "boolean"
+                xfsCompatibility:
+                  default: false
+                  description: "XfsCompatibility overrides the global virt-v2v container image for this plan.\nWhen set, virt-v2v pods created by this plan will use the XFS compatible image\nVIRT_V2V_IMAGE_XFS instead of the cluster-wide VIRT_V2V_IMAGE setting.\nUse this to enable XFSv4 compatibility mode for specific plan.\nWarning: Enabling XFSv4 support will drop support for BTRFS for the specific plan. Ensure that the plan only selects VMs with supported filesystem."
                   type: "boolean"
               required:
                 - "map"
@@ -1841,6 +1881,12 @@ spec:
                           deleteVmOnFailMigration:
                             description: "DeleteVmOnFailMigration controls whether the target VM created by this Plan is deleted when a migration fails.\nWhen true and the migration fails after the target VM has been created, the controller\nwill delete the target VM (and related target-side resources) during failed-migration cleanup\nand when the Plan is deleted. When false (default), the target VM is preserved to aid\ntroubleshooting. The source VM is never modified.\n\nNote: If the Plan-level option is set to true, the VM-level option will be ignored."
                             type: "boolean"
+                          detectedBootDisk:
+                            description: "Boot disk index (0-based) detected by virt-v2v. nil means undetected."
+                            type: "integer"
+                          enableNestedVirtualization:
+                            description: "EnableNestedVirtualization controls whether nested virtualization CPU features (vmx/svm)\nare requested on the target VM. This overrides both the plan-level setting and the\nsource VM's configuration.\n\n- nil (default): Falls back to the plan-level enableNestedVirtualization value.\n- true: Request nested virtualization for this VM. CPU features vmx and svm are added\n  with policy \"optional\" -- the VM will have nested virtualization only if the host\n  hardware supports it. This is a best-effort hint, not a guarantee.\n- false: Explicitly disable nested virtualization for this VM. CPU features vmx and svm\n  are added with policy \"disable\", preventing nested virtualization regardless of host\n  capability.\n\nBoth vmx and svm are added together so the VM is portable across Intel and AMD hosts.\nThe \"optional\" policy activates only the feature the host CPU supports; the other is ignored."
+                            type: "boolean"
                           error:
                             description: "Errors"
                             properties:
@@ -1928,6 +1974,9 @@ spec:
                                 type: "string"
                             type: "object"
                             x-kubernetes-map-type: "atomic"
+                          migrateSharedDisks:
+                            description: "MigrateSharedDisks controls whether shared disks are included in the migration for this VM.\nWhen nil (default), the plan-level migrateSharedDisks value is used.\nWhen explicitly set to true, shared disks are migrated for this VM.\nWhen explicitly set to false, shared disks are skipped for this VM."
+                            type: "boolean"
                           name:
                             description: "An object Name.\nvsphere:\n  A qualified name."
                             type: "string"
@@ -2078,6 +2127,9 @@ spec:
                           pvcNameTemplate:
                             description: "PVCNameTemplate is a template for generating PVC names for VM disks.\nGenerated names must be valid DNS-1123 labels (lowercase alphanumerics, '-' allowed, max 63 chars).\nIt follows Go template syntax and has access to provider-specific variables.\n\nCommon variables (all providers):\n  - .VmName: name of the VM in the source cluster (original source name)\n  - .TargetVmName: final VM name in the target cluster (may equal .VmName if no rename/normalization)\n  - .PlanName: name of the migration plan\n  - .DiskIndex: initial volume index of the disk\n\nVMware (vSphere) specific variables:\n  - .WinDriveLetter: Windows drive letter (lowercase, if applicable, e.g. \"c\", requires guest agent)\n  - .RootDiskIndex: index of the root disk\n  - .Shared: true if the volume is shared by multiple VMs, false otherwise\n  - .FileName: name of the file in the source provider (filename includes the .vmdk suffix)\n\nOpenShift specific variables:\n  - .SourcePVCName: name of the PVC in the source cluster\n  - .SourcePVCNamespace: namespace of the PVC in the source cluster\n\nNote:\n  This template overrides the plan level template.\nExamples:\n  \"{{.TargetVmName}}-disk-{{.DiskIndex}}\"\n  \"{{if eq .DiskIndex .RootDiskIndex}}root{{else}}data{{end}}-{{.DiskIndex}}\" (VMware)\n  \"{{.TargetVmName}}-{{.SourcePVCName}}\" (OpenShift)\nSee:\n\t https://github.com/kubev2v/forklift/tree/main/pkg/templateutil for template functions."
                             type: "string"
+                          rdmAsLun:
+                            description: "RDMAsLun controls whether RDM (Raw Device Mapping) disks from VMware should be\nmapped as LUN devices in the target KubeVirt VM instead of regular disk devices.\nWhen nil (default), the plan-level rdmAsLun value is used.\nWhen explicitly set to true, RDM disks are attached using lun: {} for this VM.\nWhen explicitly set to false, RDM disks are attached as regular disks for this VM."
+                            type: "boolean"
                           restorePowerState:
                             description: "Source VM power state before migration."
                             type: "string"

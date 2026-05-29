@@ -18,16 +18,7 @@ spec:
     singular: "integrationprofile"
   scope: "Namespaced"
   versions:
-    - additionalPrinterColumns:
-        - description: "The integration profile phase"
-          jsonPath: ".status.phase"
-          name: "Phase"
-          type: "string"
-        - description: "The default runtime version"
-          jsonPath: ".status.build.runtimeVersion"
-          name: "Default runtime"
-          type: "string"
-      name: "v1"
+    - name: "v1"
       schema:
         openAPIV3Schema:
           description: "IntegrationProfile is the resource used to apply user defined settings to the Camel K operator behavior.\nIt defines the behavior of all Custom Resources (`IntegrationKit`, `Integration`, `Kamelet`) in the given namespace."
@@ -73,12 +64,12 @@ spec:
                             x-kubernetes-map-type: "atomic"
                           type: "array"
                         cliOptions:
-                          description: "The CLI options that are appended to the list of arguments for Maven commands,\ne.g., `-V,--no-transfer-progress,-Dstyle.color=never`.\nSee https://maven.apache.org/ref/3.8.4/maven-embedder/cli.html."
+                          description: "The CLI options that are appended to the list of arguments for Maven commands,\ne.g., `-V,--no-transfer-progress,-Dstyle.color=never`.\nSee https://maven.apache.org/ref/3.9.14/maven-embedder/cli.html."
                           items:
                             type: "string"
                           type: "array"
                         extension:
-                          description: "The Maven build extensions.\nSee https://maven.apache.org/guides/mini/guide-using-extensions.html."
+                          description: "Deprecated: no longer in use."
                           items:
                             description: "MavenArtifact defines a GAV (Group:Artifact:Type:Version:Classifier) Maven artifact."
                             properties:
@@ -257,8 +248,13 @@ spec:
                       description: "how much time to wait before time out the pipeline process"
                       type: "string"
                   type: "object"
+                dependencies:
+                  description: "a list of dependencies needed by the application"
+                  items:
+                    type: "string"
+                  type: "array"
                 kamelet:
-                  description: "configuration to be executed to all Kamelets controlled by this IntegrationProfile"
+                  description: "configuration to be executed to all Kamelets controlled by this IntegrationProfile\n\nDeprecated: to be removed in future versions."
                   properties:
                     repositories:
                       description: "remote repository used to retrieve Kamelet catalog"
@@ -351,7 +347,7 @@ spec:
                           description: "When using `pod` strategy, the maximum amount of memory required by the pod builder.\n\nDeprecated: use TasksRequestCPU instead with task name `builder`."
                           type: "string"
                         mavenProfiles:
-                          description: "A list of references pointing to configmaps/secrets that contains a maven profile.\nThis configmap/secret is a resource of the IntegrationKit created, therefore it needs to be present in the namespace where the operator is going to create the IntegrationKit.\nThe content of the maven profile is expected to be a text containing a valid maven profile starting with `<profile>` and ending with `</profile>` that will be integrated as an inline profile in the POM.\nSyntax: [configmap|secret]:name[/key], where name represents the resource name, key optionally represents the resource key to be filtered (default key value = profile.xml)."
+                          description: "A list of references pointing to configmaps/secrets that contains a maven profile.\nThis configmap/secret is a resource of the IntegrationKit created, therefore it needs to be present in the namespace where the operator is going to create the IntegrationKit.\nThe content of the maven profile is expected to be a text containing a valid maven profile starting with `<profile>` and ending with `</profile>` that will be integrated as an inline profile in the POM.\nSyntax: [configmap|secret]:name[/key], where name represents the resource name, key optionally represents the resource key to be filtered (default key value = profile.xml).\n\nDeprecated: will be removed in future versions."
                           items:
                             type: "string"
                           type: "array"
@@ -681,6 +677,25 @@ spec:
                           description: "The error handler ref name provided or found in application properties"
                           type: "string"
                       type: "object"
+                    gateway:
+                      description: "The configuration of Istio trait"
+                      properties:
+                        className:
+                          description: "The class name to use for the gateway configuration."
+                          type: "string"
+                        configuration:
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
+                          type: "object"
+                          x-kubernetes-preserve-unknown-fields: true
+                        enabled:
+                          description: "Can be used to enable or disable a trait. All traits share this common property."
+                          type: "boolean"
+                        listeners:
+                          description: "The listeners in the format \"port;protocol\" (default, \"8080;HTTP\")."
+                          items:
+                            type: "string"
+                          type: "array"
+                      type: "object"
                     gc:
                       description: "The configuration of GC trait"
                       properties:
@@ -712,11 +727,9 @@ spec:
                           description: "the git commit (full SHA) to check out."
                           type: "string"
                         committerEmail:
-                          default: "camel-k-operator@apache.org"
                           description: "The email used to commit the GitOps changes (default `camel-k-operator@apache.org`)."
                           type: "string"
                         committerName:
-                          default: "Camel K Operator"
                           description: "The name used to commit the GitOps changes (default `Camel K Operator`)."
                           type: "string"
                         configuration:
@@ -727,20 +740,14 @@ spec:
                           description: "Can be used to enable or disable a trait. All traits share this common property."
                           type: "boolean"
                         integrationDirectory:
-                          default: "integrations"
                           description: "The root path where to store Kustomize overlays (default `integrations`)."
                           type: "string"
                         overlays:
-                          default:
-                            - "dev"
-                            - "stag"
-                            - "prod"
                           description: "a list of overlays to provide (default {\"dev\",\"stag\",\"prod\"})."
                           items:
                             type: "string"
                           type: "array"
                         overwriteOverlay:
-                          default: false
                           description: "a flag (default, false) to overwrite any existing overlay."
                           type: "boolean"
                         secret:
@@ -1487,10 +1494,10 @@ spec:
                           description: "Can be used to enable or disable a trait. All traits share this common property."
                           type: "boolean"
                         imagePullerDelegation:
-                          description: "When using a global operator with a shared platform, this enables delegation of the `system:image-puller` cluster role on the operator namespace to the integration service account."
+                          description: "When using a global operator with a shared platform, this enables delegation of the `system:image-puller`\ncluster role on the operator namespace to the integration service account.\n\nDeprecated: may be removed in future releases."
                           type: "boolean"
                         secretName:
-                          description: "The pull secret name to set on the Pod. If left empty this is automatically taken from the `IntegrationPlatform` registry configuration."
+                          description: "The pull secret name to set on the Pod. If left empty this is automatically taken from the platform registry configuration."
                           type: "string"
                       type: "object"
                     quarkus:
@@ -1775,12 +1782,12 @@ spec:
                             x-kubernetes-map-type: "atomic"
                           type: "array"
                         cliOptions:
-                          description: "The CLI options that are appended to the list of arguments for Maven commands,\ne.g., `-V,--no-transfer-progress,-Dstyle.color=never`.\nSee https://maven.apache.org/ref/3.8.4/maven-embedder/cli.html."
+                          description: "The CLI options that are appended to the list of arguments for Maven commands,\ne.g., `-V,--no-transfer-progress,-Dstyle.color=never`.\nSee https://maven.apache.org/ref/3.9.14/maven-embedder/cli.html."
                           items:
                             type: "string"
                           type: "array"
                         extension:
-                          description: "The Maven build extensions.\nSee https://maven.apache.org/guides/mini/guide-using-extensions.html."
+                          description: "Deprecated: no longer in use."
                           items:
                             description: "MavenArtifact defines a GAV (Group:Artifact:Type:Version:Classifier) Maven artifact."
                             properties:
@@ -1989,8 +1996,13 @@ spec:
                       - "type"
                     type: "object"
                   type: "array"
+                dependencies:
+                  description: "a list of dependencies needed by the application"
+                  items:
+                    type: "string"
+                  type: "array"
                 kamelet:
-                  description: "configuration to be executed to all Kamelets controlled by this IntegrationProfile"
+                  description: "configuration to be executed to all Kamelets controlled by this IntegrationProfile\n\nDeprecated: to be removed in future versions."
                   properties:
                     repositories:
                       description: "remote repository used to retrieve Kamelet catalog"
@@ -2090,7 +2102,7 @@ spec:
                           description: "When using `pod` strategy, the maximum amount of memory required by the pod builder.\n\nDeprecated: use TasksRequestCPU instead with task name `builder`."
                           type: "string"
                         mavenProfiles:
-                          description: "A list of references pointing to configmaps/secrets that contains a maven profile.\nThis configmap/secret is a resource of the IntegrationKit created, therefore it needs to be present in the namespace where the operator is going to create the IntegrationKit.\nThe content of the maven profile is expected to be a text containing a valid maven profile starting with `<profile>` and ending with `</profile>` that will be integrated as an inline profile in the POM.\nSyntax: [configmap|secret]:name[/key], where name represents the resource name, key optionally represents the resource key to be filtered (default key value = profile.xml)."
+                          description: "A list of references pointing to configmaps/secrets that contains a maven profile.\nThis configmap/secret is a resource of the IntegrationKit created, therefore it needs to be present in the namespace where the operator is going to create the IntegrationKit.\nThe content of the maven profile is expected to be a text containing a valid maven profile starting with `<profile>` and ending with `</profile>` that will be integrated as an inline profile in the POM.\nSyntax: [configmap|secret]:name[/key], where name represents the resource name, key optionally represents the resource key to be filtered (default key value = profile.xml).\n\nDeprecated: will be removed in future versions."
                           items:
                             type: "string"
                           type: "array"
@@ -2420,6 +2432,25 @@ spec:
                           description: "The error handler ref name provided or found in application properties"
                           type: "string"
                       type: "object"
+                    gateway:
+                      description: "The configuration of Istio trait"
+                      properties:
+                        className:
+                          description: "The class name to use for the gateway configuration."
+                          type: "string"
+                        configuration:
+                          description: "Legacy trait configuration parameters.\n\nDeprecated: for backward compatibility."
+                          type: "object"
+                          x-kubernetes-preserve-unknown-fields: true
+                        enabled:
+                          description: "Can be used to enable or disable a trait. All traits share this common property."
+                          type: "boolean"
+                        listeners:
+                          description: "The listeners in the format \"port;protocol\" (default, \"8080;HTTP\")."
+                          items:
+                            type: "string"
+                          type: "array"
+                      type: "object"
                     gc:
                       description: "The configuration of GC trait"
                       properties:
@@ -2451,11 +2482,9 @@ spec:
                           description: "the git commit (full SHA) to check out."
                           type: "string"
                         committerEmail:
-                          default: "camel-k-operator@apache.org"
                           description: "The email used to commit the GitOps changes (default `camel-k-operator@apache.org`)."
                           type: "string"
                         committerName:
-                          default: "Camel K Operator"
                           description: "The name used to commit the GitOps changes (default `Camel K Operator`)."
                           type: "string"
                         configuration:
@@ -2466,20 +2495,14 @@ spec:
                           description: "Can be used to enable or disable a trait. All traits share this common property."
                           type: "boolean"
                         integrationDirectory:
-                          default: "integrations"
                           description: "The root path where to store Kustomize overlays (default `integrations`)."
                           type: "string"
                         overlays:
-                          default:
-                            - "dev"
-                            - "stag"
-                            - "prod"
                           description: "a list of overlays to provide (default {\"dev\",\"stag\",\"prod\"})."
                           items:
                             type: "string"
                           type: "array"
                         overwriteOverlay:
-                          default: false
                           description: "a flag (default, false) to overwrite any existing overlay."
                           type: "boolean"
                         secret:
@@ -3226,10 +3249,10 @@ spec:
                           description: "Can be used to enable or disable a trait. All traits share this common property."
                           type: "boolean"
                         imagePullerDelegation:
-                          description: "When using a global operator with a shared platform, this enables delegation of the `system:image-puller` cluster role on the operator namespace to the integration service account."
+                          description: "When using a global operator with a shared platform, this enables delegation of the `system:image-puller`\ncluster role on the operator namespace to the integration service account.\n\nDeprecated: may be removed in future releases."
                           type: "boolean"
                         secretName:
-                          description: "The pull secret name to set on the Pod. If left empty this is automatically taken from the `IntegrationPlatform` registry configuration."
+                          description: "The pull secret name to set on the Pod. If left empty this is automatically taken from the platform registry configuration."
                           type: "string"
                       type: "object"
                     quarkus:

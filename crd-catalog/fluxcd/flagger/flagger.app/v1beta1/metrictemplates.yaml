@@ -69,6 +69,7 @@ spec:
                         - "prometheus"
                         - "influxdb"
                         - "datadog"
+                        - "externalmetrics"
                         - "stackdriver"
                         - "cloudwatch"
                         - "newrelic"

@@ -5,6 +5,8 @@ metadata:
 spec:
   group: "akri.sh"
   names:
+    categories:
+      - "all"
     kind: "Configuration"
     plural: "configurations"
     shortNames:

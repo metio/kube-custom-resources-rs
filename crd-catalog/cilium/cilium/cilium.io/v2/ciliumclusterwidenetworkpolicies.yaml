@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.19.0"
+    controller-gen.kubebuilder.io/version: "v0.20.1"
   name: "ciliumclusterwidenetworkpolicies.cilium.io"
 spec:
   group: "cilium.io"
@@ -288,9 +288,9 @@ spec:
                           type: "object"
                         type: "array"
                       toGroups:
-                        description: "ToGroups is a directive that allows the integration with multiple outside\nproviders. Currently, only AWS is supported, and the rule can select by\nmultiple sub directives:\n\nExample:\ntoGroups:\n- aws:\n    securityGroupsIds:\n    - 'sg-XXXXXXXXXXXXX'"
+                        description: "ToGroups allows policies to reference CIDRs provided by external integrations.\nCurrently, only AWS is supported, and the rule can select by multiple sub directives.\nToGroups entries are functionally equivalent to toCIDR, and have the same\nlimitiations. They cannot select traffic originating from within the cluster.\n\nExample:\ntoGroups:\n- aws:\n    securityGroupsIds:\n    - 'sg-XXXXXXXXXXXXX'"
                         items:
-                          description: "Groups structure to store all kinds of new integrations that needs a new\nderivative policy."
+                          description: "Groups allows referencing CIDRs that are resolved from an external integration."
                           properties:
                             aws:
                               description: "AWSGroup is an structure that can be used to whitelisting information from AWS integration"
@@ -298,14 +298,18 @@ spec:
                                 labels:
                                   additionalProperties:
                                     type: "string"
+                                  description: "Labels selects AWS ENIs by labels.\nMultiple labels are AND-ed together."
                                   type: "object"
                                 region:
+                                  description: "Deprecated: Region is unused."
                                   type: "string"
                                 securityGroupsIds:
+                                  description: "SecurityGroupsIds selects VPC SecurityGroups by IDs.\nIf multiple IDs are specified, they are OR-ed together.\n\nNote that this may be AND-ed with any Names specified. Specifying both\nIDs and Names is not recommended."
                                   items:
                                     type: "string"
                                   type: "array"
                                 securityGroupsNames:
+                                  description: "SecurityGroupsNames selects VPC SecurityGroups by name.\nIf multiple names are specified, they are OR-ed together.\n\nNote that this may be AND-ed with any IDs specified. Specifying both\nIDs and Names is not recommended."
                                   items:
                                     type: "string"
                                   type: "array"
@@ -436,13 +440,18 @@ spec:
                                     pattern: "^(6553[0-5]|655[0-2][0-9]|65[0-4][0-9]{2}|6[0-4][0-9]{3}|[1-5][0-9]{4}|[0-9]{1,4})|([a-zA-Z0-9]-?)*[a-zA-Z](-?[a-zA-Z0-9])*$"
                                     type: "string"
                                   protocol:
-                                    description: "Protocol is the L4 protocol. If \"ANY\", omitted or empty, any protocols\nwith transport ports (TCP, UDP, SCTP) match.\n\nAccepted values: \"TCP\", \"UDP\", \"SCTP\", \"VRRP\", \"IGMP\", \"ANY\"\n\nMatching on ICMP is not supported.\n\nNamed port specified for a container may narrow this down, but may not\ncontradict this."
+                                    description: "Protocol is the L4 protocol. If \"ANY\", omitted or empty, any protocols\nwith transport ports (TCP, UDP, SCTP) match.\n\nAccepted values: \"TCP\", \"UDP\", \"SCTP\", \"VRRP\", \"IGMP\", \"GRE\", \"IPIP\",\n\"IPV6\", \"ESP\", \"AH\", \"ANY\"\n\nTunnel/encapsulation protocols (GRE, IPIP, IPV6, ESP, AH) and other\nextended IP protocols (VRRP, IGMP) require the --enable-extended-ip-protocols\nflag to be set. These protocols do not use transport-layer ports.\n\nMatching on ICMP is not supported.\n\nNamed port specified for a container may narrow this down, but may not\ncontradict this."
                                     enum:
                                       - "TCP"
                                       - "UDP"
                                       - "SCTP"
                                       - "VRRP"
                                       - "IGMP"
+                                      - "GRE"
+                                      - "IPIP"
+                                      - "IPV6"
+                                      - "ESP"
+                                      - "AH"
                                       - "ANY"
                                     type: "string"
                                 type: "object"
@@ -456,17 +465,9 @@ spec:
                                   required:
                                     - "http"
                                 - properties:
-                                    kafka: {}
-                                  required:
-                                    - "kafka"
-                                - properties:
                                     dns: {}
                                   required:
                                     - "dns"
-                                - properties:
-                                    l7proto: {}
-                                  required:
-                                    - "l7proto"
                               properties:
                                 dns:
                                   description: "DNS-specific rules."
@@ -552,50 +553,13 @@ spec:
                                         type: "string"
                                     type: "object"
                                   type: "array"
-                                kafka:
-                                  description: "Kafka-specific rules.\nDeprecated: This beta feature is deprecated and will be removed in a future release."
-                                  items:
-                                    description: "PortRule is a list of Kafka protocol constraints. All fields are\noptional, if all fields are empty or missing, the rule will match all\nKafka messages."
-                                    properties:
-                                      apiKey:
-                                        description: "APIKey is a case-insensitive string matched against the key of a\nrequest, e.g. \"produce\", \"fetch\", \"createtopic\", \"deletetopic\", et al\nReference: https://kafka.apache.org/protocol#protocol_api_keys\n\nIf omitted or empty, and if Role is not specified, then all keys are allowed."
-                                        type: "string"
-                                      apiVersion:
-                                        description: "APIVersion is the version matched against the api version of the\nKafka message. If set, it has to be a string representing a positive\ninteger.\n\nIf omitted or empty, all versions are allowed."
-                                        type: "string"
-                                      clientID:
-                                        description: "ClientID is the client identifier as provided in the request.\n\nFrom Kafka protocol documentation:\nThis is a user supplied identifier for the client application. The\nuser can use any identifier they like and it will be used when\nlogging errors, monitoring aggregates, etc. For example, one might\nwant to monitor not just the requests per second overall, but the\nnumber coming from each client application (each of which could\nreside on multiple servers). This id acts as a logical grouping\nacross all requests from a particular client.\n\nIf omitted or empty, all client identifiers are allowed."
-                                        type: "string"
-                                      role:
-                                        description: "Role is a case-insensitive string and describes a group of API keys\nnecessary to perform certain higher-level Kafka operations such as \"produce\"\nor \"consume\". A Role automatically expands into all APIKeys required\nto perform the specified higher-level operation.\n\nThe following values are supported:\n - \"produce\": Allow producing to the topics specified in the rule\n - \"consume\": Allow consuming from the topics specified in the rule\n\nThis field is incompatible with the APIKey field, i.e APIKey and Role\ncannot both be specified in the same rule.\n\nIf omitted or empty, and if APIKey is not specified, then all keys are\nallowed."
-                                        enum:
-                                          - "produce"
-                                          - "consume"
-                                        type: "string"
-                                      topic:
-                                        description: "Topic is the topic name contained in the message. If a Kafka request\ncontains multiple topics, then all topics must be allowed or the\nmessage will be rejected.\n\nThis constraint is ignored if the matched request message type\ndoesn't contain any topic. Maximum size of Topic can be 249\ncharacters as per recent Kafka spec and allowed characters are\na-z, A-Z, 0-9, -, . and _.\n\nOlder Kafka versions had longer topic lengths of 255, but in Kafka 0.10\nversion the length was changed from 255 to 249. For compatibility\nreasons we are using 255.\n\nIf omitted or empty, all topics are allowed."
-                                        maxLength: 255
-                                        type: "string"
-                                    type: "object"
-                                  type: "array"
-                                l7:
-                                  description: "Key-value pair rules."
-                                  items:
-                                    additionalProperties:
-                                      type: "string"
-                                    description: "PortRuleL7 is a list of key-value pairs interpreted by a L7 protocol as\nprotocol constraints. All fields are optional, if all fields are empty or\nmissing, the rule does not have any effect."
-                                    type: "object"
-                                  type: "array"
-                                l7proto:
-                                  description: "Name of the L7 protocol for which the Key-value pair rules apply."
-                                  type: "string"
                               type: "object"
                             serverNames:
                               description: "ServerNames is a list of allowed TLS SNI values. If not empty, then\nTLS must be present and one of the provided SNIs must be indicated in the\nTLS handshake."
                               items:
-                                description: "ServerName allows using prefix only wildcards to match DNS names.\n\n- \"*\" matches 0 or more DNS valid characters, and may only occur at the\nbeginning of the pattern. As a special case a \"*\" as the leftmost character,\nwithout a following \".\" matches all subdomains as well as the name to the right.\n\nExamples:\n  - `*.cilium.io` matches exactly one subdomain of cilium at that level www.cilium.io and blog.cilium.io match, cilium.io and google.com do not.\n  - `**.cilium.io` matches more than one subdomain of cilium, e.g. sub1.sub2.cilium.io and sub.cilium.io match, cilium.io do not."
+                                description: "ServerName allows using '*' wildcard specifier for matching server names with\nthe below semantics.\n\n- `*` matches 0 or more DNS valid characters, and may occur anywhere in the pattern.\n- `**.` is a special prefix which matches all multilevel subdomains in the prefix.\n\nAs a special case the name \"*\" matches all valid DNS names.\n\nExamples:\n 1. `*.cilium.io` matches subdomains of cilium at that level\n    www.cilium.io and blog.cilium.io match, cilium.io and google.com do not\n 2. `*cilium.io` matches cilium.io and all subdomains ends with \"cilium.io\"\n    except those containing \".\" separator, subcilium.io and sub-cilium.io match,\n    www.cilium.io and blog.cilium.io does not\n 3. `sub*.cilium.io` matches subdomains of cilium where the subdomain component\n    begins with \"sub\". sub.cilium.io and subdomain.cilium.io match while www.cilium.io,\n    blog.cilium.io, cilium.io and google.com do not\n 4. `**.cilium.io` matches all multilevel subdomains of cilium.io.\n    \"app.cilium.io\" and \"test.app.cilium.io\" match but not \"cilium.io\""
                                 maxLength: 255
-                                pattern: "^(\\*?\\*\\.)?([-a-zA-Z0-9_]+\\.?)+$"
+                                pattern: "^([-a-zA-Z0-9_*]+[.]?)+$"
                                 type: "string"
                               minItems: 1
                               type: "array"
@@ -884,9 +848,9 @@ spec:
                           type: "string"
                         type: "array"
                       toGroups:
-                        description: "ToGroups is a directive that allows the integration with multiple outside\nproviders. Currently, only AWS is supported, and the rule can select by\nmultiple sub directives:\n\nExample:\ntoGroups:\n- aws:\n    securityGroupsIds:\n    - 'sg-XXXXXXXXXXXXX'"
+                        description: "ToGroups allows policies to reference CIDRs provided by external integrations.\nCurrently, only AWS is supported, and the rule can select by multiple sub directives.\nToGroups entries are functionally equivalent to toCIDR, and have the same\nlimitiations. They cannot select traffic originating from within the cluster.\n\nExample:\ntoGroups:\n- aws:\n    securityGroupsIds:\n    - 'sg-XXXXXXXXXXXXX'"
                         items:
-                          description: "Groups structure to store all kinds of new integrations that needs a new\nderivative policy."
+                          description: "Groups allows referencing CIDRs that are resolved from an external integration."
                           properties:
                             aws:
                               description: "AWSGroup is an structure that can be used to whitelisting information from AWS integration"
@@ -894,14 +858,18 @@ spec:
                                 labels:
                                   additionalProperties:
                                     type: "string"
+                                  description: "Labels selects AWS ENIs by labels.\nMultiple labels are AND-ed together."
                                   type: "object"
                                 region:
+                                  description: "Deprecated: Region is unused."
                                   type: "string"
                                 securityGroupsIds:
+                                  description: "SecurityGroupsIds selects VPC SecurityGroups by IDs.\nIf multiple IDs are specified, they are OR-ed together.\n\nNote that this may be AND-ed with any Names specified. Specifying both\nIDs and Names is not recommended."
                                   items:
                                     type: "string"
                                   type: "array"
                                 securityGroupsNames:
+                                  description: "SecurityGroupsNames selects VPC SecurityGroups by name.\nIf multiple names are specified, they are OR-ed together.\n\nNote that this may be AND-ed with any IDs specified. Specifying both\nIDs and Names is not recommended."
                                   items:
                                     type: "string"
                                   type: "array"
@@ -973,13 +941,18 @@ spec:
                                     pattern: "^(6553[0-5]|655[0-2][0-9]|65[0-4][0-9]{2}|6[0-4][0-9]{3}|[1-5][0-9]{4}|[0-9]{1,4})|([a-zA-Z0-9]-?)*[a-zA-Z](-?[a-zA-Z0-9])*$"
                                     type: "string"
                                   protocol:
-                                    description: "Protocol is the L4 protocol. If \"ANY\", omitted or empty, any protocols\nwith transport ports (TCP, UDP, SCTP) match.\n\nAccepted values: \"TCP\", \"UDP\", \"SCTP\", \"VRRP\", \"IGMP\", \"ANY\"\n\nMatching on ICMP is not supported.\n\nNamed port specified for a container may narrow this down, but may not\ncontradict this."
+                                    description: "Protocol is the L4 protocol. If \"ANY\", omitted or empty, any protocols\nwith transport ports (TCP, UDP, SCTP) match.\n\nAccepted values: \"TCP\", \"UDP\", \"SCTP\", \"VRRP\", \"IGMP\", \"GRE\", \"IPIP\",\n\"IPV6\", \"ESP\", \"AH\", \"ANY\"\n\nTunnel/encapsulation protocols (GRE, IPIP, IPV6, ESP, AH) and other\nextended IP protocols (VRRP, IGMP) require the --enable-extended-ip-protocols\nflag to be set. These protocols do not use transport-layer ports.\n\nMatching on ICMP is not supported.\n\nNamed port specified for a container may narrow this down, but may not\ncontradict this."
                                     enum:
                                       - "TCP"
                                       - "UDP"
                                       - "SCTP"
                                       - "VRRP"
                                       - "IGMP"
+                                      - "GRE"
+                                      - "IPIP"
+                                      - "IPV6"
+                                      - "ESP"
+                                      - "AH"
                                       - "ANY"
                                     type: "string"
                                 type: "object"
@@ -1274,9 +1247,9 @@ spec:
                           type: "string"
                         type: "array"
                       fromGroups:
-                        description: "FromGroups is a directive that allows the integration with multiple outside\nproviders. Currently, only AWS is supported, and the rule can select by\nmultiple sub directives:\n\nExample:\nFromGroups:\n- aws:\n    securityGroupsIds:\n    - 'sg-XXXXXXXXXXXXX'"
+                        description: "FromGroups allows policies to reference CIDRs provided by external integrations.\nCurrently, only AWS is supported, and the rule can select by multiple sub directives.\nFromGroups entries are functionally equivalent to FromCIDR, and have the same\nlimitiations. They cannot select traffic originating from within the cluster.\n\nExample:\nfromGroups:\n- aws:\n    securityGroupsIds:\n    - 'sg-XXXXXXXXXXXXX'"
                         items:
-                          description: "Groups structure to store all kinds of new integrations that needs a new\nderivative policy."
+                          description: "Groups allows referencing CIDRs that are resolved from an external integration."
                           properties:
                             aws:
                               description: "AWSGroup is an structure that can be used to whitelisting information from AWS integration"
@@ -1284,14 +1257,18 @@ spec:
                                 labels:
                                   additionalProperties:
                                     type: "string"
+                                  description: "Labels selects AWS ENIs by labels.\nMultiple labels are AND-ed together."
                                   type: "object"
                                 region:
+                                  description: "Deprecated: Region is unused."
                                   type: "string"
                                 securityGroupsIds:
+                                  description: "SecurityGroupsIds selects VPC SecurityGroups by IDs.\nIf multiple IDs are specified, they are OR-ed together.\n\nNote that this may be AND-ed with any Names specified. Specifying both\nIDs and Names is not recommended."
                                   items:
                                     type: "string"
                                   type: "array"
                                 securityGroupsNames:
+                                  description: "SecurityGroupsNames selects VPC SecurityGroups by name.\nIf multiple names are specified, they are OR-ed together.\n\nNote that this may be AND-ed with any IDs specified. Specifying both\nIDs and Names is not recommended."
                                   items:
                                     type: "string"
                                   type: "array"
@@ -1459,13 +1436,18 @@ spec:
                                     pattern: "^(6553[0-5]|655[0-2][0-9]|65[0-4][0-9]{2}|6[0-4][0-9]{3}|[1-5][0-9]{4}|[0-9]{1,4})|([a-zA-Z0-9]-?)*[a-zA-Z](-?[a-zA-Z0-9])*$"
                                     type: "string"
                                   protocol:
-                                    description: "Protocol is the L4 protocol. If \"ANY\", omitted or empty, any protocols\nwith transport ports (TCP, UDP, SCTP) match.\n\nAccepted values: \"TCP\", \"UDP\", \"SCTP\", \"VRRP\", \"IGMP\", \"ANY\"\n\nMatching on ICMP is not supported.\n\nNamed port specified for a container may narrow this down, but may not\ncontradict this."
+                                    description: "Protocol is the L4 protocol. If \"ANY\", omitted or empty, any protocols\nwith transport ports (TCP, UDP, SCTP) match.\n\nAccepted values: \"TCP\", \"UDP\", \"SCTP\", \"VRRP\", \"IGMP\", \"GRE\", \"IPIP\",\n\"IPV6\", \"ESP\", \"AH\", \"ANY\"\n\nTunnel/encapsulation protocols (GRE, IPIP, IPV6, ESP, AH) and other\nextended IP protocols (VRRP, IGMP) require the --enable-extended-ip-protocols\nflag to be set. These protocols do not use transport-layer ports.\n\nMatching on ICMP is not supported.\n\nNamed port specified for a container may narrow this down, but may not\ncontradict this."
                                     enum:
                                       - "TCP"
                                       - "UDP"
                                       - "SCTP"
                                       - "VRRP"
                                       - "IGMP"
+                                      - "GRE"
+                                      - "IPIP"
+                                      - "IPV6"
+                                      - "ESP"
+                                      - "AH"
                                       - "ANY"
                                     type: "string"
                                 type: "object"
@@ -1479,17 +1461,9 @@ spec:
                                   required:
                                     - "http"
                                 - properties:
-                                    kafka: {}
-                                  required:
-                                    - "kafka"
-                                - properties:
                                     dns: {}
                                   required:
                                     - "dns"
-                                - properties:
-                                    l7proto: {}
-                                  required:
-                                    - "l7proto"
                               properties:
                                 dns:
                                   description: "DNS-specific rules."
@@ -1575,50 +1549,13 @@ spec:
                                         type: "string"
                                     type: "object"
                                   type: "array"
-                                kafka:
-                                  description: "Kafka-specific rules.\nDeprecated: This beta feature is deprecated and will be removed in a future release."
-                                  items:
-                                    description: "PortRule is a list of Kafka protocol constraints. All fields are\noptional, if all fields are empty or missing, the rule will match all\nKafka messages."
-                                    properties:
-                                      apiKey:
-                                        description: "APIKey is a case-insensitive string matched against the key of a\nrequest, e.g. \"produce\", \"fetch\", \"createtopic\", \"deletetopic\", et al\nReference: https://kafka.apache.org/protocol#protocol_api_keys\n\nIf omitted or empty, and if Role is not specified, then all keys are allowed."
-                                        type: "string"
-                                      apiVersion:
-                                        description: "APIVersion is the version matched against the api version of the\nKafka message. If set, it has to be a string representing a positive\ninteger.\n\nIf omitted or empty, all versions are allowed."
-                                        type: "string"
-                                      clientID:
-                                        description: "ClientID is the client identifier as provided in the request.\n\nFrom Kafka protocol documentation:\nThis is a user supplied identifier for the client application. The\nuser can use any identifier they like and it will be used when\nlogging errors, monitoring aggregates, etc. For example, one might\nwant to monitor not just the requests per second overall, but the\nnumber coming from each client application (each of which could\nreside on multiple servers). This id acts as a logical grouping\nacross all requests from a particular client.\n\nIf omitted or empty, all client identifiers are allowed."
-                                        type: "string"
-                                      role:
-                                        description: "Role is a case-insensitive string and describes a group of API keys\nnecessary to perform certain higher-level Kafka operations such as \"produce\"\nor \"consume\". A Role automatically expands into all APIKeys required\nto perform the specified higher-level operation.\n\nThe following values are supported:\n - \"produce\": Allow producing to the topics specified in the rule\n - \"consume\": Allow consuming from the topics specified in the rule\n\nThis field is incompatible with the APIKey field, i.e APIKey and Role\ncannot both be specified in the same rule.\n\nIf omitted or empty, and if APIKey is not specified, then all keys are\nallowed."
-                                        enum:
-                                          - "produce"
-                                          - "consume"
-                                        type: "string"
-                                      topic:
-                                        description: "Topic is the topic name contained in the message. If a Kafka request\ncontains multiple topics, then all topics must be allowed or the\nmessage will be rejected.\n\nThis constraint is ignored if the matched request message type\ndoesn't contain any topic. Maximum size of Topic can be 249\ncharacters as per recent Kafka spec and allowed characters are\na-z, A-Z, 0-9, -, . and _.\n\nOlder Kafka versions had longer topic lengths of 255, but in Kafka 0.10\nversion the length was changed from 255 to 249. For compatibility\nreasons we are using 255.\n\nIf omitted or empty, all topics are allowed."
-                                        maxLength: 255
-                                        type: "string"
-                                    type: "object"
-                                  type: "array"
-                                l7:
-                                  description: "Key-value pair rules."
-                                  items:
-                                    additionalProperties:
-                                      type: "string"
-                                    description: "PortRuleL7 is a list of key-value pairs interpreted by a L7 protocol as\nprotocol constraints. All fields are optional, if all fields are empty or\nmissing, the rule does not have any effect."
-                                    type: "object"
-                                  type: "array"
-                                l7proto:
-                                  description: "Name of the L7 protocol for which the Key-value pair rules apply."
-                                  type: "string"
                               type: "object"
                             serverNames:
                               description: "ServerNames is a list of allowed TLS SNI values. If not empty, then\nTLS must be present and one of the provided SNIs must be indicated in the\nTLS handshake."
                               items:
-                                description: "ServerName allows using prefix only wildcards to match DNS names.\n\n- \"*\" matches 0 or more DNS valid characters, and may only occur at the\nbeginning of the pattern. As a special case a \"*\" as the leftmost character,\nwithout a following \".\" matches all subdomains as well as the name to the right.\n\nExamples:\n  - `*.cilium.io` matches exactly one subdomain of cilium at that level www.cilium.io and blog.cilium.io match, cilium.io and google.com do not.\n  - `**.cilium.io` matches more than one subdomain of cilium, e.g. sub1.sub2.cilium.io and sub.cilium.io match, cilium.io do not."
+                                description: "ServerName allows using '*' wildcard specifier for matching server names with\nthe below semantics.\n\n- `*` matches 0 or more DNS valid characters, and may occur anywhere in the pattern.\n- `**.` is a special prefix which matches all multilevel subdomains in the prefix.\n\nAs a special case the name \"*\" matches all valid DNS names.\n\nExamples:\n 1. `*.cilium.io` matches subdomains of cilium at that level\n    www.cilium.io and blog.cilium.io match, cilium.io and google.com do not\n 2. `*cilium.io` matches cilium.io and all subdomains ends with \"cilium.io\"\n    except those containing \".\" separator, subcilium.io and sub-cilium.io match,\n    www.cilium.io and blog.cilium.io does not\n 3. `sub*.cilium.io` matches subdomains of cilium where the subdomain component\n    begins with \"sub\". sub.cilium.io and subdomain.cilium.io match while www.cilium.io,\n    blog.cilium.io, cilium.io and google.com do not\n 4. `**.cilium.io` matches all multilevel subdomains of cilium.io.\n    \"app.cilium.io\" and \"test.app.cilium.io\" match but not \"cilium.io\""
                                 maxLength: 255
-                                pattern: "^(\\*?\\*\\.)?([-a-zA-Z0-9_]+\\.?)+$"
+                                pattern: "^([-a-zA-Z0-9_*]+[.]?)+$"
                                 type: "string"
                               minItems: 1
                               type: "array"
@@ -1806,9 +1743,9 @@ spec:
                           type: "string"
                         type: "array"
                       fromGroups:
-                        description: "FromGroups is a directive that allows the integration with multiple outside\nproviders. Currently, only AWS is supported, and the rule can select by\nmultiple sub directives:\n\nExample:\nFromGroups:\n- aws:\n    securityGroupsIds:\n    - 'sg-XXXXXXXXXXXXX'"
+                        description: "FromGroups allows policies to reference CIDRs provided by external integrations.\nCurrently, only AWS is supported, and the rule can select by multiple sub directives.\nFromGroups entries are functionally equivalent to FromCIDR, and have the same\nlimitiations. They cannot select traffic originating from within the cluster.\n\nExample:\nfromGroups:\n- aws:\n    securityGroupsIds:\n    - 'sg-XXXXXXXXXXXXX'"
                         items:
-                          description: "Groups structure to store all kinds of new integrations that needs a new\nderivative policy."
+                          description: "Groups allows referencing CIDRs that are resolved from an external integration."
                           properties:
                             aws:
                               description: "AWSGroup is an structure that can be used to whitelisting information from AWS integration"
@@ -1816,14 +1753,18 @@ spec:
                                 labels:
                                   additionalProperties:
                                     type: "string"
+                                  description: "Labels selects AWS ENIs by labels.\nMultiple labels are AND-ed together."
                                   type: "object"
                                 region:
+                                  description: "Deprecated: Region is unused."
                                   type: "string"
                                 securityGroupsIds:
+                                  description: "SecurityGroupsIds selects VPC SecurityGroups by IDs.\nIf multiple IDs are specified, they are OR-ed together.\n\nNote that this may be AND-ed with any Names specified. Specifying both\nIDs and Names is not recommended."
                                   items:
                                     type: "string"
                                   type: "array"
                                 securityGroupsNames:
+                                  description: "SecurityGroupsNames selects VPC SecurityGroups by name.\nIf multiple names are specified, they are OR-ed together.\n\nNote that this may be AND-ed with any IDs specified. Specifying both\nIDs and Names is not recommended."
                                   items:
                                     type: "string"
                                   type: "array"
@@ -1932,13 +1873,18 @@ spec:
                                     pattern: "^(6553[0-5]|655[0-2][0-9]|65[0-4][0-9]{2}|6[0-4][0-9]{3}|[1-5][0-9]{4}|[0-9]{1,4})|([a-zA-Z0-9]-?)*[a-zA-Z](-?[a-zA-Z0-9])*$"
                                     type: "string"
                                   protocol:
-                                    description: "Protocol is the L4 protocol. If \"ANY\", omitted or empty, any protocols\nwith transport ports (TCP, UDP, SCTP) match.\n\nAccepted values: \"TCP\", \"UDP\", \"SCTP\", \"VRRP\", \"IGMP\", \"ANY\"\n\nMatching on ICMP is not supported.\n\nNamed port specified for a container may narrow this down, but may not\ncontradict this."
+                                    description: "Protocol is the L4 protocol. If \"ANY\", omitted or empty, any protocols\nwith transport ports (TCP, UDP, SCTP) match.\n\nAccepted values: \"TCP\", \"UDP\", \"SCTP\", \"VRRP\", \"IGMP\", \"GRE\", \"IPIP\",\n\"IPV6\", \"ESP\", \"AH\", \"ANY\"\n\nTunnel/encapsulation protocols (GRE, IPIP, IPV6, ESP, AH) and other\nextended IP protocols (VRRP, IGMP) require the --enable-extended-ip-protocols\nflag to be set. These protocols do not use transport-layer ports.\n\nMatching on ICMP is not supported.\n\nNamed port specified for a container may narrow this down, but may not\ncontradict this."
                                     enum:
                                       - "TCP"
                                       - "UDP"
                                       - "SCTP"
                                       - "VRRP"
                                       - "IGMP"
+                                      - "GRE"
+                                      - "IPIP"
+                                      - "IPV6"
+                                      - "ESP"
+                                      - "AH"
                                       - "ANY"
                                     type: "string"
                                 type: "object"
@@ -2269,9 +2215,9 @@ spec:
                             type: "object"
                           type: "array"
                         toGroups:
-                          description: "ToGroups is a directive that allows the integration with multiple outside\nproviders. Currently, only AWS is supported, and the rule can select by\nmultiple sub directives:\n\nExample:\ntoGroups:\n- aws:\n    securityGroupsIds:\n    - 'sg-XXXXXXXXXXXXX'"
+                          description: "ToGroups allows policies to reference CIDRs provided by external integrations.\nCurrently, only AWS is supported, and the rule can select by multiple sub directives.\nToGroups entries are functionally equivalent to toCIDR, and have the same\nlimitiations. They cannot select traffic originating from within the cluster.\n\nExample:\ntoGroups:\n- aws:\n    securityGroupsIds:\n    - 'sg-XXXXXXXXXXXXX'"
                           items:
-                            description: "Groups structure to store all kinds of new integrations that needs a new\nderivative policy."
+                            description: "Groups allows referencing CIDRs that are resolved from an external integration."
                             properties:
                               aws:
                                 description: "AWSGroup is an structure that can be used to whitelisting information from AWS integration"
@@ -2279,14 +2225,18 @@ spec:
                                   labels:
                                     additionalProperties:
                                       type: "string"
+                                    description: "Labels selects AWS ENIs by labels.\nMultiple labels are AND-ed together."
                                     type: "object"
                                   region:
+                                    description: "Deprecated: Region is unused."
                                     type: "string"
                                   securityGroupsIds:
+                                    description: "SecurityGroupsIds selects VPC SecurityGroups by IDs.\nIf multiple IDs are specified, they are OR-ed together.\n\nNote that this may be AND-ed with any Names specified. Specifying both\nIDs and Names is not recommended."
                                     items:
                                       type: "string"
                                     type: "array"
                                   securityGroupsNames:
+                                    description: "SecurityGroupsNames selects VPC SecurityGroups by name.\nIf multiple names are specified, they are OR-ed together.\n\nNote that this may be AND-ed with any IDs specified. Specifying both\nIDs and Names is not recommended."
                                     items:
                                       type: "string"
                                     type: "array"
@@ -2417,13 +2367,18 @@ spec:
                                       pattern: "^(6553[0-5]|655[0-2][0-9]|65[0-4][0-9]{2}|6[0-4][0-9]{3}|[1-5][0-9]{4}|[0-9]{1,4})|([a-zA-Z0-9]-?)*[a-zA-Z](-?[a-zA-Z0-9])*$"
                                       type: "string"
                                     protocol:
-                                      description: "Protocol is the L4 protocol. If \"ANY\", omitted or empty, any protocols\nwith transport ports (TCP, UDP, SCTP) match.\n\nAccepted values: \"TCP\", \"UDP\", \"SCTP\", \"VRRP\", \"IGMP\", \"ANY\"\n\nMatching on ICMP is not supported.\n\nNamed port specified for a container may narrow this down, but may not\ncontradict this."
+                                      description: "Protocol is the L4 protocol. If \"ANY\", omitted or empty, any protocols\nwith transport ports (TCP, UDP, SCTP) match.\n\nAccepted values: \"TCP\", \"UDP\", \"SCTP\", \"VRRP\", \"IGMP\", \"GRE\", \"IPIP\",\n\"IPV6\", \"ESP\", \"AH\", \"ANY\"\n\nTunnel/encapsulation protocols (GRE, IPIP, IPV6, ESP, AH) and other\nextended IP protocols (VRRP, IGMP) require the --enable-extended-ip-protocols\nflag to be set. These protocols do not use transport-layer ports.\n\nMatching on ICMP is not supported.\n\nNamed port specified for a container may narrow this down, but may not\ncontradict this."
                                       enum:
                                         - "TCP"
                                         - "UDP"
                                         - "SCTP"
                                         - "VRRP"
                                         - "IGMP"
+                                        - "GRE"
+                                        - "IPIP"
+                                        - "IPV6"
+                                        - "ESP"
+                                        - "AH"
                                         - "ANY"
                                       type: "string"
                                   type: "object"
@@ -2437,17 +2392,9 @@ spec:
                                     required:
                                       - "http"
                                   - properties:
-                                      kafka: {}
-                                    required:
-                                      - "kafka"
-                                  - properties:
                                       dns: {}
                                     required:
                                       - "dns"
-                                  - properties:
-                                      l7proto: {}
-                                    required:
-                                      - "l7proto"
                                 properties:
                                   dns:
                                     description: "DNS-specific rules."
@@ -2533,50 +2480,13 @@ spec:
                                           type: "string"
                                       type: "object"
                                     type: "array"
-                                  kafka:
-                                    description: "Kafka-specific rules.\nDeprecated: This beta feature is deprecated and will be removed in a future release."
-                                    items:
-                                      description: "PortRule is a list of Kafka protocol constraints. All fields are\noptional, if all fields are empty or missing, the rule will match all\nKafka messages."
-                                      properties:
-                                        apiKey:
-                                          description: "APIKey is a case-insensitive string matched against the key of a\nrequest, e.g. \"produce\", \"fetch\", \"createtopic\", \"deletetopic\", et al\nReference: https://kafka.apache.org/protocol#protocol_api_keys\n\nIf omitted or empty, and if Role is not specified, then all keys are allowed."
-                                          type: "string"
-                                        apiVersion:
-                                          description: "APIVersion is the version matched against the api version of the\nKafka message. If set, it has to be a string representing a positive\ninteger.\n\nIf omitted or empty, all versions are allowed."
-                                          type: "string"
-                                        clientID:
-                                          description: "ClientID is the client identifier as provided in the request.\n\nFrom Kafka protocol documentation:\nThis is a user supplied identifier for the client application. The\nuser can use any identifier they like and it will be used when\nlogging errors, monitoring aggregates, etc. For example, one might\nwant to monitor not just the requests per second overall, but the\nnumber coming from each client application (each of which could\nreside on multiple servers). This id acts as a logical grouping\nacross all requests from a particular client.\n\nIf omitted or empty, all client identifiers are allowed."
-                                          type: "string"
-                                        role:
-                                          description: "Role is a case-insensitive string and describes a group of API keys\nnecessary to perform certain higher-level Kafka operations such as \"produce\"\nor \"consume\". A Role automatically expands into all APIKeys required\nto perform the specified higher-level operation.\n\nThe following values are supported:\n - \"produce\": Allow producing to the topics specified in the rule\n - \"consume\": Allow consuming from the topics specified in the rule\n\nThis field is incompatible with the APIKey field, i.e APIKey and Role\ncannot both be specified in the same rule.\n\nIf omitted or empty, and if APIKey is not specified, then all keys are\nallowed."
-                                          enum:
-                                            - "produce"
-                                            - "consume"
-                                          type: "string"
-                                        topic:
-                                          description: "Topic is the topic name contained in the message. If a Kafka request\ncontains multiple topics, then all topics must be allowed or the\nmessage will be rejected.\n\nThis constraint is ignored if the matched request message type\ndoesn't contain any topic. Maximum size of Topic can be 249\ncharacters as per recent Kafka spec and allowed characters are\na-z, A-Z, 0-9, -, . and _.\n\nOlder Kafka versions had longer topic lengths of 255, but in Kafka 0.10\nversion the length was changed from 255 to 249. For compatibility\nreasons we are using 255.\n\nIf omitted or empty, all topics are allowed."
-                                          maxLength: 255
-                                          type: "string"
-                                      type: "object"
-                                    type: "array"
-                                  l7:
-                                    description: "Key-value pair rules."
-                                    items:
-                                      additionalProperties:
-                                        type: "string"
-                                      description: "PortRuleL7 is a list of key-value pairs interpreted by a L7 protocol as\nprotocol constraints. All fields are optional, if all fields are empty or\nmissing, the rule does not have any effect."
-                                      type: "object"
-                                    type: "array"
-                                  l7proto:
-                                    description: "Name of the L7 protocol for which the Key-value pair rules apply."
-                                    type: "string"
                                 type: "object"
                               serverNames:
                                 description: "ServerNames is a list of allowed TLS SNI values. If not empty, then\nTLS must be present and one of the provided SNIs must be indicated in the\nTLS handshake."
                                 items:
-                                  description: "ServerName allows using prefix only wildcards to match DNS names.\n\n- \"*\" matches 0 or more DNS valid characters, and may only occur at the\nbeginning of the pattern. As a special case a \"*\" as the leftmost character,\nwithout a following \".\" matches all subdomains as well as the name to the right.\n\nExamples:\n  - `*.cilium.io` matches exactly one subdomain of cilium at that level www.cilium.io and blog.cilium.io match, cilium.io and google.com do not.\n  - `**.cilium.io` matches more than one subdomain of cilium, e.g. sub1.sub2.cilium.io and sub.cilium.io match, cilium.io do not."
+                                  description: "ServerName allows using '*' wildcard specifier for matching server names with\nthe below semantics.\n\n- `*` matches 0 or more DNS valid characters, and may occur anywhere in the pattern.\n- `**.` is a special prefix which matches all multilevel subdomains in the prefix.\n\nAs a special case the name \"*\" matches all valid DNS names.\n\nExamples:\n 1. `*.cilium.io` matches subdomains of cilium at that level\n    www.cilium.io and blog.cilium.io match, cilium.io and google.com do not\n 2. `*cilium.io` matches cilium.io and all subdomains ends with \"cilium.io\"\n    except those containing \".\" separator, subcilium.io and sub-cilium.io match,\n    www.cilium.io and blog.cilium.io does not\n 3. `sub*.cilium.io` matches subdomains of cilium where the subdomain component\n    begins with \"sub\". sub.cilium.io and subdomain.cilium.io match while www.cilium.io,\n    blog.cilium.io, cilium.io and google.com do not\n 4. `**.cilium.io` matches all multilevel subdomains of cilium.io.\n    \"app.cilium.io\" and \"test.app.cilium.io\" match but not \"cilium.io\""
                                   maxLength: 255
-                                  pattern: "^(\\*?\\*\\.)?([-a-zA-Z0-9_]+\\.?)+$"
+                                  pattern: "^([-a-zA-Z0-9_*]+[.]?)+$"
                                   type: "string"
                                 minItems: 1
                                 type: "array"
@@ -2865,9 +2775,9 @@ spec:
                             type: "string"
                           type: "array"
                         toGroups:
-                          description: "ToGroups is a directive that allows the integration with multiple outside\nproviders. Currently, only AWS is supported, and the rule can select by\nmultiple sub directives:\n\nExample:\ntoGroups:\n- aws:\n    securityGroupsIds:\n    - 'sg-XXXXXXXXXXXXX'"
+                          description: "ToGroups allows policies to reference CIDRs provided by external integrations.\nCurrently, only AWS is supported, and the rule can select by multiple sub directives.\nToGroups entries are functionally equivalent to toCIDR, and have the same\nlimitiations. They cannot select traffic originating from within the cluster.\n\nExample:\ntoGroups:\n- aws:\n    securityGroupsIds:\n    - 'sg-XXXXXXXXXXXXX'"
                           items:
-                            description: "Groups structure to store all kinds of new integrations that needs a new\nderivative policy."
+                            description: "Groups allows referencing CIDRs that are resolved from an external integration."
                             properties:
                               aws:
                                 description: "AWSGroup is an structure that can be used to whitelisting information from AWS integration"
@@ -2875,14 +2785,18 @@ spec:
                                   labels:
                                     additionalProperties:
                                       type: "string"
+                                    description: "Labels selects AWS ENIs by labels.\nMultiple labels are AND-ed together."
                                     type: "object"
                                   region:
+                                    description: "Deprecated: Region is unused."
                                     type: "string"
                                   securityGroupsIds:
+                                    description: "SecurityGroupsIds selects VPC SecurityGroups by IDs.\nIf multiple IDs are specified, they are OR-ed together.\n\nNote that this may be AND-ed with any Names specified. Specifying both\nIDs and Names is not recommended."
                                     items:
                                       type: "string"
                                     type: "array"
                                   securityGroupsNames:
+                                    description: "SecurityGroupsNames selects VPC SecurityGroups by name.\nIf multiple names are specified, they are OR-ed together.\n\nNote that this may be AND-ed with any IDs specified. Specifying both\nIDs and Names is not recommended."
                                     items:
                                       type: "string"
                                     type: "array"
@@ -2954,13 +2868,18 @@ spec:
                                       pattern: "^(6553[0-5]|655[0-2][0-9]|65[0-4][0-9]{2}|6[0-4][0-9]{3}|[1-5][0-9]{4}|[0-9]{1,4})|([a-zA-Z0-9]-?)*[a-zA-Z](-?[a-zA-Z0-9])*$"
                                       type: "string"
                                     protocol:
-                                      description: "Protocol is the L4 protocol. If \"ANY\", omitted or empty, any protocols\nwith transport ports (TCP, UDP, SCTP) match.\n\nAccepted values: \"TCP\", \"UDP\", \"SCTP\", \"VRRP\", \"IGMP\", \"ANY\"\n\nMatching on ICMP is not supported.\n\nNamed port specified for a container may narrow this down, but may not\ncontradict this."
+                                      description: "Protocol is the L4 protocol. If \"ANY\", omitted or empty, any protocols\nwith transport ports (TCP, UDP, SCTP) match.\n\nAccepted values: \"TCP\", \"UDP\", \"SCTP\", \"VRRP\", \"IGMP\", \"GRE\", \"IPIP\",\n\"IPV6\", \"ESP\", \"AH\", \"ANY\"\n\nTunnel/encapsulation protocols (GRE, IPIP, IPV6, ESP, AH) and other\nextended IP protocols (VRRP, IGMP) require the --enable-extended-ip-protocols\nflag to be set. These protocols do not use transport-layer ports.\n\nMatching on ICMP is not supported.\n\nNamed port specified for a container may narrow this down, but may not\ncontradict this."
                                       enum:
                                         - "TCP"
                                         - "UDP"
                                         - "SCTP"
                                         - "VRRP"
                                         - "IGMP"
+                                        - "GRE"
+                                        - "IPIP"
+                                        - "IPV6"
+                                        - "ESP"
+                                        - "AH"
                                         - "ANY"
                                       type: "string"
                                   type: "object"
@@ -3255,9 +3174,9 @@ spec:
                             type: "string"
                           type: "array"
                         fromGroups:
-                          description: "FromGroups is a directive that allows the integration with multiple outside\nproviders. Currently, only AWS is supported, and the rule can select by\nmultiple sub directives:\n\nExample:\nFromGroups:\n- aws:\n    securityGroupsIds:\n    - 'sg-XXXXXXXXXXXXX'"
+                          description: "FromGroups allows policies to reference CIDRs provided by external integrations.\nCurrently, only AWS is supported, and the rule can select by multiple sub directives.\nFromGroups entries are functionally equivalent to FromCIDR, and have the same\nlimitiations. They cannot select traffic originating from within the cluster.\n\nExample:\nfromGroups:\n- aws:\n    securityGroupsIds:\n    - 'sg-XXXXXXXXXXXXX'"
                           items:
-                            description: "Groups structure to store all kinds of new integrations that needs a new\nderivative policy."
+                            description: "Groups allows referencing CIDRs that are resolved from an external integration."
                             properties:
                               aws:
                                 description: "AWSGroup is an structure that can be used to whitelisting information from AWS integration"
@@ -3265,14 +3184,18 @@ spec:
                                   labels:
                                     additionalProperties:
                                       type: "string"
+                                    description: "Labels selects AWS ENIs by labels.\nMultiple labels are AND-ed together."
                                     type: "object"
                                   region:
+                                    description: "Deprecated: Region is unused."
                                     type: "string"
                                   securityGroupsIds:
+                                    description: "SecurityGroupsIds selects VPC SecurityGroups by IDs.\nIf multiple IDs are specified, they are OR-ed together.\n\nNote that this may be AND-ed with any Names specified. Specifying both\nIDs and Names is not recommended."
                                     items:
                                       type: "string"
                                     type: "array"
                                   securityGroupsNames:
+                                    description: "SecurityGroupsNames selects VPC SecurityGroups by name.\nIf multiple names are specified, they are OR-ed together.\n\nNote that this may be AND-ed with any IDs specified. Specifying both\nIDs and Names is not recommended."
                                     items:
                                       type: "string"
                                     type: "array"
@@ -3440,13 +3363,18 @@ spec:
                                       pattern: "^(6553[0-5]|655[0-2][0-9]|65[0-4][0-9]{2}|6[0-4][0-9]{3}|[1-5][0-9]{4}|[0-9]{1,4})|([a-zA-Z0-9]-?)*[a-zA-Z](-?[a-zA-Z0-9])*$"
                                       type: "string"
                                     protocol:
-                                      description: "Protocol is the L4 protocol. If \"ANY\", omitted or empty, any protocols\nwith transport ports (TCP, UDP, SCTP) match.\n\nAccepted values: \"TCP\", \"UDP\", \"SCTP\", \"VRRP\", \"IGMP\", \"ANY\"\n\nMatching on ICMP is not supported.\n\nNamed port specified for a container may narrow this down, but may not\ncontradict this."
+                                      description: "Protocol is the L4 protocol. If \"ANY\", omitted or empty, any protocols\nwith transport ports (TCP, UDP, SCTP) match.\n\nAccepted values: \"TCP\", \"UDP\", \"SCTP\", \"VRRP\", \"IGMP\", \"GRE\", \"IPIP\",\n\"IPV6\", \"ESP\", \"AH\", \"ANY\"\n\nTunnel/encapsulation protocols (GRE, IPIP, IPV6, ESP, AH) and other\nextended IP protocols (VRRP, IGMP) require the --enable-extended-ip-protocols\nflag to be set. These protocols do not use transport-layer ports.\n\nMatching on ICMP is not supported.\n\nNamed port specified for a container may narrow this down, but may not\ncontradict this."
                                       enum:
                                         - "TCP"
                                         - "UDP"
                                         - "SCTP"
                                         - "VRRP"
                                         - "IGMP"
+                                        - "GRE"
+                                        - "IPIP"
+                                        - "IPV6"
+                                        - "ESP"
+                                        - "AH"
                                         - "ANY"
                                       type: "string"
                                   type: "object"
@@ -3460,17 +3388,9 @@ spec:
                                     required:
                                       - "http"
                                   - properties:
-                                      kafka: {}
-                                    required:
-                                      - "kafka"
-                                  - properties:
                                       dns: {}
                                     required:
                                       - "dns"
-                                  - properties:
-                                      l7proto: {}
-                                    required:
-                                      - "l7proto"
                                 properties:
                                   dns:
                                     description: "DNS-specific rules."
@@ -3556,50 +3476,13 @@ spec:
                                           type: "string"
                                       type: "object"
                                     type: "array"
-                                  kafka:
-                                    description: "Kafka-specific rules.\nDeprecated: This beta feature is deprecated and will be removed in a future release."
-                                    items:
-                                      description: "PortRule is a list of Kafka protocol constraints. All fields are\noptional, if all fields are empty or missing, the rule will match all\nKafka messages."
-                                      properties:
-                                        apiKey:
-                                          description: "APIKey is a case-insensitive string matched against the key of a\nrequest, e.g. \"produce\", \"fetch\", \"createtopic\", \"deletetopic\", et al\nReference: https://kafka.apache.org/protocol#protocol_api_keys\n\nIf omitted or empty, and if Role is not specified, then all keys are allowed."
-                                          type: "string"
-                                        apiVersion:
-                                          description: "APIVersion is the version matched against the api version of the\nKafka message. If set, it has to be a string representing a positive\ninteger.\n\nIf omitted or empty, all versions are allowed."
-                                          type: "string"
-                                        clientID:
-                                          description: "ClientID is the client identifier as provided in the request.\n\nFrom Kafka protocol documentation:\nThis is a user supplied identifier for the client application. The\nuser can use any identifier they like and it will be used when\nlogging errors, monitoring aggregates, etc. For example, one might\nwant to monitor not just the requests per second overall, but the\nnumber coming from each client application (each of which could\nreside on multiple servers). This id acts as a logical grouping\nacross all requests from a particular client.\n\nIf omitted or empty, all client identifiers are allowed."
-                                          type: "string"
-                                        role:
-                                          description: "Role is a case-insensitive string and describes a group of API keys\nnecessary to perform certain higher-level Kafka operations such as \"produce\"\nor \"consume\". A Role automatically expands into all APIKeys required\nto perform the specified higher-level operation.\n\nThe following values are supported:\n - \"produce\": Allow producing to the topics specified in the rule\n - \"consume\": Allow consuming from the topics specified in the rule\n\nThis field is incompatible with the APIKey field, i.e APIKey and Role\ncannot both be specified in the same rule.\n\nIf omitted or empty, and if APIKey is not specified, then all keys are\nallowed."
-                                          enum:
-                                            - "produce"
-                                            - "consume"
-                                          type: "string"
-                                        topic:
-                                          description: "Topic is the topic name contained in the message. If a Kafka request\ncontains multiple topics, then all topics must be allowed or the\nmessage will be rejected.\n\nThis constraint is ignored if the matched request message type\ndoesn't contain any topic. Maximum size of Topic can be 249\ncharacters as per recent Kafka spec and allowed characters are\na-z, A-Z, 0-9, -, . and _.\n\nOlder Kafka versions had longer topic lengths of 255, but in Kafka 0.10\nversion the length was changed from 255 to 249. For compatibility\nreasons we are using 255.\n\nIf omitted or empty, all topics are allowed."
-                                          maxLength: 255
-                                          type: "string"
-                                      type: "object"
-                                    type: "array"
-                                  l7:
-                                    description: "Key-value pair rules."
-                                    items:
-                                      additionalProperties:
-                                        type: "string"
-                                      description: "PortRuleL7 is a list of key-value pairs interpreted by a L7 protocol as\nprotocol constraints. All fields are optional, if all fields are empty or\nmissing, the rule does not have any effect."
-                                      type: "object"
-                                    type: "array"
-                                  l7proto:
-                                    description: "Name of the L7 protocol for which the Key-value pair rules apply."
-                                    type: "string"
                                 type: "object"
                               serverNames:
                                 description: "ServerNames is a list of allowed TLS SNI values. If not empty, then\nTLS must be present and one of the provided SNIs must be indicated in the\nTLS handshake."
                                 items:
-                                  description: "ServerName allows using prefix only wildcards to match DNS names.\n\n- \"*\" matches 0 or more DNS valid characters, and may only occur at the\nbeginning of the pattern. As a special case a \"*\" as the leftmost character,\nwithout a following \".\" matches all subdomains as well as the name to the right.\n\nExamples:\n  - `*.cilium.io` matches exactly one subdomain of cilium at that level www.cilium.io and blog.cilium.io match, cilium.io and google.com do not.\n  - `**.cilium.io` matches more than one subdomain of cilium, e.g. sub1.sub2.cilium.io and sub.cilium.io match, cilium.io do not."
+                                  description: "ServerName allows using '*' wildcard specifier for matching server names with\nthe below semantics.\n\n- `*` matches 0 or more DNS valid characters, and may occur anywhere in the pattern.\n- `**.` is a special prefix which matches all multilevel subdomains in the prefix.\n\nAs a special case the name \"*\" matches all valid DNS names.\n\nExamples:\n 1. `*.cilium.io` matches subdomains of cilium at that level\n    www.cilium.io and blog.cilium.io match, cilium.io and google.com do not\n 2. `*cilium.io` matches cilium.io and all subdomains ends with \"cilium.io\"\n    except those containing \".\" separator, subcilium.io and sub-cilium.io match,\n    www.cilium.io and blog.cilium.io does not\n 3. `sub*.cilium.io` matches subdomains of cilium where the subdomain component\n    begins with \"sub\". sub.cilium.io and subdomain.cilium.io match while www.cilium.io,\n    blog.cilium.io, cilium.io and google.com do not\n 4. `**.cilium.io` matches all multilevel subdomains of cilium.io.\n    \"app.cilium.io\" and \"test.app.cilium.io\" match but not \"cilium.io\""
                                   maxLength: 255
-                                  pattern: "^(\\*?\\*\\.)?([-a-zA-Z0-9_]+\\.?)+$"
+                                  pattern: "^([-a-zA-Z0-9_*]+[.]?)+$"
                                   type: "string"
                                 minItems: 1
                                 type: "array"
@@ -3787,9 +3670,9 @@ spec:
                             type: "string"
                           type: "array"
                         fromGroups:
-                          description: "FromGroups is a directive that allows the integration with multiple outside\nproviders. Currently, only AWS is supported, and the rule can select by\nmultiple sub directives:\n\nExample:\nFromGroups:\n- aws:\n    securityGroupsIds:\n    - 'sg-XXXXXXXXXXXXX'"
+                          description: "FromGroups allows policies to reference CIDRs provided by external integrations.\nCurrently, only AWS is supported, and the rule can select by multiple sub directives.\nFromGroups entries are functionally equivalent to FromCIDR, and have the same\nlimitiations. They cannot select traffic originating from within the cluster.\n\nExample:\nfromGroups:\n- aws:\n    securityGroupsIds:\n    - 'sg-XXXXXXXXXXXXX'"
                           items:
-                            description: "Groups structure to store all kinds of new integrations that needs a new\nderivative policy."
+                            description: "Groups allows referencing CIDRs that are resolved from an external integration."
                             properties:
                               aws:
                                 description: "AWSGroup is an structure that can be used to whitelisting information from AWS integration"
@@ -3797,14 +3680,18 @@ spec:
                                   labels:
                                     additionalProperties:
                                       type: "string"
+                                    description: "Labels selects AWS ENIs by labels.\nMultiple labels are AND-ed together."
                                     type: "object"
                                   region:
+                                    description: "Deprecated: Region is unused."
                                     type: "string"
                                   securityGroupsIds:
+                                    description: "SecurityGroupsIds selects VPC SecurityGroups by IDs.\nIf multiple IDs are specified, they are OR-ed together.\n\nNote that this may be AND-ed with any Names specified. Specifying both\nIDs and Names is not recommended."
                                     items:
                                       type: "string"
                                     type: "array"
                                   securityGroupsNames:
+                                    description: "SecurityGroupsNames selects VPC SecurityGroups by name.\nIf multiple names are specified, they are OR-ed together.\n\nNote that this may be AND-ed with any IDs specified. Specifying both\nIDs and Names is not recommended."
                                     items:
                                       type: "string"
                                     type: "array"
@@ -3913,13 +3800,18 @@ spec:
                                       pattern: "^(6553[0-5]|655[0-2][0-9]|65[0-4][0-9]{2}|6[0-4][0-9]{3}|[1-5][0-9]{4}|[0-9]{1,4})|([a-zA-Z0-9]-?)*[a-zA-Z](-?[a-zA-Z0-9])*$"
                                       type: "string"
                                     protocol:
-                                      description: "Protocol is the L4 protocol. If \"ANY\", omitted or empty, any protocols\nwith transport ports (TCP, UDP, SCTP) match.\n\nAccepted values: \"TCP\", \"UDP\", \"SCTP\", \"VRRP\", \"IGMP\", \"ANY\"\n\nMatching on ICMP is not supported.\n\nNamed port specified for a container may narrow this down, but may not\ncontradict this."
+                                      description: "Protocol is the L4 protocol. If \"ANY\", omitted or empty, any protocols\nwith transport ports (TCP, UDP, SCTP) match.\n\nAccepted values: \"TCP\", \"UDP\", \"SCTP\", \"VRRP\", \"IGMP\", \"GRE\", \"IPIP\",\n\"IPV6\", \"ESP\", \"AH\", \"ANY\"\n\nTunnel/encapsulation protocols (GRE, IPIP, IPV6, ESP, AH) and other\nextended IP protocols (VRRP, IGMP) require the --enable-extended-ip-protocols\nflag to be set. These protocols do not use transport-layer ports.\n\nMatching on ICMP is not supported.\n\nNamed port specified for a container may narrow this down, but may not\ncontradict this."
                                       enum:
                                         - "TCP"
                                         - "UDP"
                                         - "SCTP"
                                         - "VRRP"
                                         - "IGMP"
+                                        - "GRE"
+                                        - "IPIP"
+                                        - "IPV6"
+                                        - "ESP"
+                                        - "AH"
                                         - "ANY"
                                       type: "string"
                                   type: "object"
@@ -4059,6 +3951,9 @@ spec:
           required:
             - "metadata"
           type: "object"
+          x-kubernetes-validations:
+            - message: "spec or specs must be provided"
+              rule: "has(self.spec) || has(self.specs)"
       served: true
       storage: true
       subresources:

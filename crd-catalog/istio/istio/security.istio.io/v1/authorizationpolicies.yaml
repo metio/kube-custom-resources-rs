@@ -115,6 +115,11 @@ spec:
                                     type: "string"
                                   maxItems: 16
                                   type: "array"
+                                notTrustDomains:
+                                  description: "Optional."
+                                  items:
+                                    type: "string"
+                                  type: "array"
                                 principals:
                                   description: "Optional."
                                   items:
@@ -136,6 +141,11 @@ spec:
                                     maxLength: 320
                                     type: "string"
                                   maxItems: 16
+                                  type: "array"
+                                trustDomains:
+                                  description: "Optional."
+                                  items:
+                                    type: "string"
                                   type: "array"
                               type: "object"
                               x-kubernetes-validations:

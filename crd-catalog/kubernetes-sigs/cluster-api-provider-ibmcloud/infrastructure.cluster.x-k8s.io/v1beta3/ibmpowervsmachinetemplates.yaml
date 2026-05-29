@@ -1,0 +1,176 @@
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: "v0.20.1"
+  name: "ibmpowervsmachinetemplates.infrastructure.cluster.x-k8s.io"
+spec:
+  group: "infrastructure.cluster.x-k8s.io"
+  names:
+    kind: "IBMPowerVSMachineTemplate"
+    listKind: "IBMPowerVSMachineTemplateList"
+    plural: "ibmpowervsmachinetemplates"
+    singular: "ibmpowervsmachinetemplate"
+  scope: "Namespaced"
+  versions:
+    - name: "v1beta3"
+      schema:
+        openAPIV3Schema:
+          description: "IBMPowerVSMachineTemplate is the Schema for the ibmpowervsmachinetemplates API."
+          properties:
+            apiVersion:
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              type: "string"
+            kind:
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              type: "string"
+            metadata:
+              type: "object"
+            spec:
+              description: "spec defines the desired state of IBMPowerVSMachineTemplate"
+              properties:
+                template:
+                  description: "template is the IBMPowerVSMachineTemplateResource."
+                  properties:
+                    metadata:
+                      description: "metadata is the standard object's metadata.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata"
+                      minProperties: 1
+                      properties:
+                        annotations:
+                          additionalProperties:
+                            type: "string"
+                          description: "annotations is an unstructured key value map stored with a resource that may be\nset by external tools to store and retrieve arbitrary metadata. They are not\nqueryable and should be preserved when modifying objects.\nMore info: http://kubernetes.io/docs/user-guide/annotations"
+                          type: "object"
+                        labels:
+                          additionalProperties:
+                            type: "string"
+                          description: "labels is a map of string keys and values that can be used to organize and categorize\n(scope and select) objects. May match selectors of replication controllers\nand services.\nMore info: http://kubernetes.io/docs/user-guide/labels"
+                          type: "object"
+                      type: "object"
+                    spec:
+                      description: "spec is the IBMPowerVSMachineSpec."
+                      properties:
+                        image:
+                          description: "image the reference to the image which is used to create the instance.\nsupported image identifier in IBMPowerVSResourceReference are Name and ID and that can be obtained from IBM Cloud UI or IBM Cloud cli."
+                          properties:
+                            id:
+                              description: "id of resource"
+                              minLength: 1
+                              type: "string"
+                            name:
+                              description: "name of resource"
+                              minLength: 1
+                              type: "string"
+                            regex:
+                              description: "regex is the regular expression to match resource,\nIn case of multiple resources matches the provided regular expression the first matched resource will be selected"
+                              minLength: 1
+                              type: "string"
+                          type: "object"
+                        imageRef:
+                          description: "imageRef is a reference to a IBMPowerVSImage resource, which will be imported from IBM COS Bucket to PowerVS workspace.\nThis is an alternative to the image field."
+                          properties:
+                            name:
+                              description: "name of the IBMPowerVSImage resource."
+                              maxLength: 253
+                              minLength: 1
+                              type: "string"
+                          required:
+                            - "name"
+                          type: "object"
+                        memoryGiB:
+                          description: "memoryGiB is the size of a virtual machine's memory, in GiB.\nmaximum value for the MemoryGiB depends on the selected SystemType, which can be found here: https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-pricing-virtual-server-on-cloud\nThe minimum memory is 2 GiB.\nWhen omitted, this means the user has no opinion and the platform is left to choose a reasonable\ndefault, which is subject to change over time. The current default is 2."
+                          format: "int32"
+                          type: "integer"
+                        network:
+                          description: "network is the reference to the Network to use for this instance.\nsupported network identifier in IBMPowerVSResourceReference are Name, ID and RegEx and that can be obtained from IBM Cloud UI or IBM Cloud cli."
+                          properties:
+                            id:
+                              description: "id of resource"
+                              minLength: 1
+                              type: "string"
+                            name:
+                              description: "name of resource"
+                              minLength: 1
+                              type: "string"
+                            regex:
+                              description: "regex is the regular expression to match resource,\nIn case of multiple resources matches the provided regular expression the first matched resource will be selected"
+                              minLength: 1
+                              type: "string"
+                          type: "object"
+                        processorType:
+                          description: "processorType is the VM instance processor type.\nIt must be set to one of the following values: Dedicated, Capped or Shared.\nDedicated: resources are allocated for a specific client, The hypervisor makes a 1:1 binding of a partition’s processor to a physical processor core.\nShared: Shared among other clients.\nCapped: Shared, but resources do not expand beyond those that are requested, the amount of CPU time is Capped to the value specified for the entitlement.\nif the processorType is selected as Dedicated, then processors value cannot be fractional.\nWhen omitted, this means that the user has no opinion and the platform is left to choose a\nreasonable default, which is subject to change over time. The current default is Shared."
+                          enum:
+                            - "Dedicated"
+                            - "Shared"
+                            - "Capped"
+                            - ""
+                          type: "string"
+                        processors:
+                          anyOf:
+                            - type: "integer"
+                            - type: "string"
+                          description: "processors is the number of virtual processors in a virtual machine.\nwhen the processorType is selected as Dedicated the processors value cannot be fractional.\nmaximum value for the Processors depends on the selected SystemType,\nand minimum value for Processors depends on the selected ProcessorType, which can be found here: https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-pricing-virtual-server-on-cloud.\nwhen ProcessorType is set as Shared or Capped, The minimum processors is 0.25.\nwhen ProcessorType is set as Dedicated, The minimum processors is 1.\nWhen omitted, this means that the user has no opinion and the platform is left to choose a\nreasonable default, which is subject to change over time. The default is set based on the selected ProcessorType.\nwhen ProcessorType selected as Dedicated, the default is set to 1.\nwhen ProcessorType selected as Shared or Capped, the default is set to 0.25."
+                          x-kubernetes-int-or-string: true
+                        providerID:
+                          description: "providerID is the unique identifier as specified by the cloud provider."
+                          maxLength: 512
+                          minLength: 1
+                          type: "string"
+                        serviceInstance:
+                          description: "serviceInstance is the reference to the Power VS workspace on which the server instance(VM) will be created.\nPower VS workspace is a container for all Power VS instances at a specific geographic region.\nserviceInstance can be created via IBM Cloud catalog or CLI.\nsupported serviceInstance identifier in PowerVSResource are Name and ID and that can be obtained from IBM Cloud UI or IBM Cloud cli.\nMore detail about Power VS service instance.\nhttps://cloud.ibm.com/docs/power-iaas?topic=power-iaas-creating-power-virtual-server\nwhen omitted system will dynamically create the service instance"
+                          properties:
+                            id:
+                              description: "id of resource"
+                              minLength: 1
+                              type: "string"
+                            name:
+                              description: "name of resource"
+                              minLength: 1
+                              type: "string"
+                            regex:
+                              description: "regex is the regular expression to match resource,\nIn case of multiple resources matches the provided regular expression the first matched resource will be selected"
+                              minLength: 1
+                              type: "string"
+                          type: "object"
+                        sshKey:
+                          description: "sshKey is the name of the SSH key pair provided to the vsi for authenticating users."
+                          type: "string"
+                        systemType:
+                          description: "systemType is the System type used to host the instance.\nsystemType determines the number of cores and memory that is available.\nFew of the supported SystemTypes are s922,e980,s1022,e1050,e1080.\nWhen omitted, this means that the user has no opinion and the platform is left to choose a\nreasonable default, which is subject to change over time. The current default is s922 which is generally available."
+                          enum:
+                            - "s922"
+                            - "e980"
+                            - "s1022"
+                            - "e1050"
+                            - "e1080"
+                            - ""
+                          type: "string"
+                      required:
+                        - "network"
+                      type: "object"
+                  required:
+                    - "spec"
+                  type: "object"
+              required:
+                - "template"
+              type: "object"
+            status:
+              description: "status defines the observed state of IBMPowerVSMachineTemplate"
+              properties:
+                capacity:
+                  additionalProperties:
+                    anyOf:
+                      - type: "integer"
+                      - type: "string"
+                    pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                    x-kubernetes-int-or-string: true
+                  description: "capacity defines the resource capacity for this machine.\nThis value is used for autoscaling from zero operations as defined in:\nhttps://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20210310-opt-in-autoscaling-from-zero.md"
+                  type: "object"
+              type: "object"
+          required:
+            - "spec"
+          type: "object"
+      served: true
+      storage: true
+      subresources:
+        status: {}

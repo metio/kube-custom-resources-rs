@@ -63,6 +63,18 @@ spec:
                     vpcRegion:
                       type: "string"
                   type: "object"
+                vpcs:
+                  description: "VPCs is the list of Amazon VPCs to associate with this private hosted\nzone. Use this field to manage all VPC associations in one place. It\nis mutually exclusive with spec.vpc — set one or the other, not both.\nThe controller will reject requests that set both fields with a\nterminal error condition.\n\nThe first VPC in the list (spec.vpcs[0]) is used as the initial VPC\nwhen creating the hosted zone. Additional VPCs are associated after\ncreation."
+                  items:
+                    description: "(Private hosted zones only) A complex type that contains information about\nan Amazon VPC.\n\nIf you associate a private hosted zone with an Amazon VPC when you make a\nCreateHostedZone (https://docs.aws.amazon.com/Route53/latest/APIReference/API_CreateHostedZone.html)\nrequest, the following parameters are also required."
+                    properties:
+                      vpcID:
+                        description: "(Private hosted zones only) The ID of an Amazon VPC."
+                        type: "string"
+                      vpcRegion:
+                        type: "string"
+                    type: "object"
+                  type: "array"
               required:
                 - "name"
               type: "object"
@@ -77,6 +89,9 @@ spec:
                       type: "string"
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."
+                      type: "string"
+                    partition:
+                      description: "Partition is the AWS partition in which the resource exists or will exist"
                       type: "string"
                     region:
                       description: "Region is the AWS region in which the resource exists or will exist."

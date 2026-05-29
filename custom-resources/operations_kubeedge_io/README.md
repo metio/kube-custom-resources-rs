@@ -12,4 +12,9 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 ## Available Custom Resources
 
 ### operations.kubeedge.io/v1alpha1
+- `ImagePrePullJob`
+- `NodeUpgradeJob`
+### operations.kubeedge.io/v1alpha2
+- `ConfigUpdateJob`
+- `ImagePrePullJob`
 - `NodeUpgradeJob`

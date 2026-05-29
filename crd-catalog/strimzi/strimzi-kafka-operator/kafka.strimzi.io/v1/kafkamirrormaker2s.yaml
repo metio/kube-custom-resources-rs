@@ -323,7 +323,7 @@ spec:
                             description: "A comma-separated list of `host:port` pairs for establishing the connection to the Kafka cluster."
                             type: "string"
                           config:
-                            description: "The MirrorMaker 2 cluster config. Properties with the following prefixes cannot be set: ssl., sasl., security., listeners, plugin.path, rest., bootstrap.servers, consumer.interceptor.classes, producer.interceptor.classes (with the exception of: ssl.endpoint.identification.algorithm, ssl.cipher.suites, ssl.protocol, ssl.enabled.protocols)."
+                            description: "The MirrorMaker 2 cluster config. Properties with the following prefixes cannot be set: group.id, config.storage.topic, offset.storage.topic, status.storage.topic, ssl., sasl., security., listeners, plugin.path, rest., bootstrap.servers, consumer.interceptor.classes, producer.interceptor.classes (with the exception of: ssl.endpoint.identification.algorithm, ssl.cipher.suites, ssl.protocol, ssl.enabled.protocols)."
                             type: "object"
                             x-kubernetes-preserve-unknown-fields: true
                           tls:
@@ -429,13 +429,25 @@ spec:
                 rack:
                   description: "Configuration of the node label which will be used as the `client.rack` consumer configuration."
                   properties:
+                    envVarName:
+                      description: "The name of the environment variable that defines the rack ID. Its value sets the `broker.rack` configuration for Kafka brokers and the `client.rack` configuration for Kafka Connect or MirrorMaker 2."
+                      type: "string"
                     topologyKey:
                       description: "A key that matches labels assigned to the Kubernetes cluster nodes. The value of the label is used to set a broker's `broker.rack` config, and the `client.rack` config for Kafka Connect or MirrorMaker 2."
                       example: "topology.kubernetes.io/zone"
                       type: "string"
-                  required:
-                    - "topologyKey"
+                    type:
+                      description: "Specifies the rack awareness type. Supported types are `topology-label` and `environment-variable`. `topology-label` uses a Kubernetes worker node label to set the `broker.rack` configuration for Kafka brokers and the `client.rack` configuration for Kafka Connect and MirrorMaker 2. `environment-variable` uses an environment variable to set the `broker.rack` configuration for Kafka brokers and the `client.rack` configuration for Kafka Connect and MirrorMaker 2. When not specified, `topology-label` type is used by default."
+                      enum:
+                        - "topology-label"
+                        - "environment-variable"
+                      type: "string"
                   type: "object"
+                  x-kubernetes-validations:
+                    - message: "topologyKey property is required"
+                      rule: "(has(self.type) && self.type != \"topology-label\") || self.topologyKey != \"\""
+                    - message: "envVarName property is required"
+                      rule: "has(self.type) == false || self.type != \"environment-variable\" || self.envVarName != \"\""
                 readinessProbe:
                   description: "Pod readiness checking."
                   properties:
@@ -558,7 +570,7 @@ spec:
                       description: "A comma-separated list of `host:port` pairs for establishing the connection to the Kafka cluster."
                       type: "string"
                     config:
-                      description: "The MirrorMaker 2 cluster config. Properties with the following prefixes cannot be set: ssl., sasl., security., listeners, plugin.path, rest., bootstrap.servers, consumer.interceptor.classes, producer.interceptor.classes (with the exception of: ssl.endpoint.identification.algorithm, ssl.cipher.suites, ssl.protocol, ssl.enabled.protocols)."
+                      description: "The MirrorMaker 2 cluster config. Properties with the following prefixes cannot be set: group.id, config.storage.topic, offset.storage.topic, status.storage.topic, ssl., sasl., security., listeners, plugin.path, rest., bootstrap.servers, consumer.interceptor.classes, producer.interceptor.classes (with the exception of: ssl.endpoint.identification.algorithm, ssl.cipher.suites, ssl.protocol, ssl.enabled.protocols)."
                       type: "object"
                       x-kubernetes-preserve-unknown-fields: true
                     configStorageTopic:
@@ -2635,7 +2647,7 @@ spec:
             - "spec"
           type: "object"
       served: true
-      storage: false
+      storage: true
       subresources:
         scale:
           labelSelectorPath: ".status.labelSelector"

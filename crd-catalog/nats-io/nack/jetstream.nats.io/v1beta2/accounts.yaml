@@ -34,6 +34,19 @@ spec:
                   minLength: 1
                   pattern: "^[^.*>]*$"
                   type: "string"
+                nkey:
+                  description: "The NKey seed to be used to connect to the NATS Service."
+                  properties:
+                    secret:
+                      properties:
+                        name:
+                          description: "Name of the secret containing the NKey seed."
+                          type: "string"
+                      type: "object"
+                    seed:
+                      description: "Key in the secret that contains the NKey seed."
+                      type: "string"
+                  type: "object"
                 servers:
                   description: "A list of servers to connect."
                   items:

@@ -23,6 +23,7 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 - `ImageSet`
 - `Installation`
 - `IntrusionDetection`
+- `Istio`
 - `LogCollector`
 - `LogStorage`
 - `ManagementClusterConnection`

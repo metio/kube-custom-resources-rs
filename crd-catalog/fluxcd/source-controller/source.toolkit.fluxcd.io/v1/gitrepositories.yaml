@@ -76,9 +76,10 @@ spec:
                   pattern: "^([0-9]+(\\.[0-9]+)?(ms|s|m|h))+$"
                   type: "string"
                 provider:
-                  description: "Provider used for authentication, can be 'azure', 'github', 'generic'.\nWhen not specified, defaults to 'generic'."
+                  description: "Provider used for authentication, can be 'aws', 'azure', 'github', 'generic'.\nWhen not specified, defaults to 'generic'."
                   enum:
                     - "generic"
+                    - "aws"
                     - "azure"
                     - "github"
                   type: "string"
@@ -123,7 +124,7 @@ spec:
                     - "name"
                   type: "object"
                 serviceAccountName:
-                  description: "ServiceAccountName is the name of the Kubernetes ServiceAccount used to\nauthenticate to the GitRepository. This field is only supported for 'azure' provider."
+                  description: "ServiceAccountName is the name of the Kubernetes ServiceAccount used to\nauthenticate to the GitRepository. This field is only supported for 'azure' and 'aws' providers."
                   type: "string"
                 sparseCheckout:
                   description: "SparseCheckout specifies a list of directories to checkout when cloning\nthe repository. If specified, only these directories are included in the\nArtifact produced for this GitRepository."
@@ -171,8 +172,8 @@ spec:
                 - "url"
               type: "object"
               x-kubernetes-validations:
-                - message: "serviceAccountName can only be set when provider is 'azure'"
-                  rule: "!has(self.serviceAccountName) || (has(self.provider) && self.provider == 'azure')"
+                - message: "serviceAccountName can only be set when provider is 'azure' or 'aws'"
+                  rule: "!has(self.serviceAccountName) || (has(self.provider) && (self.provider == 'azure' || self.provider == 'aws'))"
             status:
               default:
                 observedGeneration: -1

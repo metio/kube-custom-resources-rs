@@ -71,7 +71,7 @@ spec:
                                             type: "boolean"
                                         type: "object"
                                       oneTimeBootDeviceAction:
-                                        description: "OneTimeBootDeviceAction represents a baseboard management one time set boot device operation."
+                                        description: "OneTimeBootDeviceAction represents a baseboard management one time set boot device operation.\n\nDeprecated: This field is deprecated and will be removed in a future release. Use bootDevice instead."
                                         properties:
                                           device:
                                             description: "Devices represents the boot devices, in order for setting one time boot.\nCurrently only the first device in the slice is used to set one time boot."
@@ -129,7 +129,7 @@ spec:
                                             type: "boolean"
                                         type: "object"
                                       oneTimeBootDeviceAction:
-                                        description: "OneTimeBootDeviceAction represents a baseboard management one time set boot device operation."
+                                        description: "OneTimeBootDeviceAction represents a baseboard management one time set boot device operation.\n\nDeprecated: This field is deprecated and will be removed in a future release. Use bootDevice instead."
                                         properties:
                                           device:
                                             description: "Devices represents the boot devices, in order for setting one time boot.\nCurrently only the first device in the slice is used to set one time boot."
@@ -170,7 +170,7 @@ spec:
                               type: "object"
                             isoURL:
                               description: "ISOURL is the URL of the ISO that will be one-time booted.\nA HardwareRef that contains a spec.BmcRef must be provided.\n\nThe format of the ISOURL must be http://$IP:$Port/iso/hook.iso\nThe name of the ISO file must have the .iso extension, but the name can be anything.\nThe $IP and $Port should generally point to the IP and Port of the Smee server\nas this is where the ISO patching endpoint lives.\nThe controller will append the MAC address of the hardware in the ISO URL\nright before the iso file name in the URL.\nMAC address is then used to retrieve hardware specific information such as\nIPAM info, custom kernel cmd line args and populate the worker ID for the tink worker/agent.\nFor ex. the above format would be replaced to http://$IP:$Port/iso/<macAddress>/hook.iso\n\nBootMode must be set to \"isoboot\"."
-                              format: "url"
+                              format: "uri"
                               type: "string"
                           type: "object"
                         hardwareAffinity:
@@ -290,6 +290,9 @@ spec:
                           description: "ImageLookupOSVersion is the version of the OS distribution to use when fetching machine\nimages. If not set it will default based on ImageLookupOSDistro."
                           type: "string"
                         providerID:
+                          description: "providerID must match the provider ID as seen on the node object corresponding to this machine."
+                          maxLength: 512
+                          minLength: 1
                           type: "string"
                         templateOverride:
                           description: "TemplateOverride overrides the default Tinkerbell template used by CAPT.\nYou can learn more about Tinkerbell templates here: https://tinkerbell.org/docs/concepts/templates/"

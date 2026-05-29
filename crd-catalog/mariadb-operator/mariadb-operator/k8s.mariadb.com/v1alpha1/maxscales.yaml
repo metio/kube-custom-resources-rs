@@ -588,6 +588,9 @@ spec:
                       description: "ServiceName to be used in the Connection."
                       type: "string"
                   type: "object"
+                enableServiceLinks:
+                  description: "EnableServiceLinks indicates whether information about services should be injected into pod's\nenvironment variables, matching the syntax of Docker links. Defaults to true if not specified.\nSet to false to disable injection of service link environment variables."
+                  type: "boolean"
                 env:
                   description: "Env represents the environment variables to be injected in a container."
                   items:
@@ -789,6 +792,86 @@ spec:
                         - "NodePort"
                         - "LoadBalancer"
                       type: "string"
+                  type: "object"
+                lifecycle:
+                  description: "Lifecycle are actions that the management system should take in response to container lifecycle events."
+                  properties:
+                    postStart:
+                      description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#lifecyclehandler-v1-core."
+                      properties:
+                        exec:
+                          description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core."
+                          properties:
+                            command:
+                              items:
+                                type: "string"
+                              type: "array"
+                              x-kubernetes-list-type: "atomic"
+                          type: "object"
+                        httpGet:
+                          description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core."
+                          properties:
+                            host:
+                              type: "string"
+                            path:
+                              type: "string"
+                            port:
+                              anyOf:
+                                - type: "integer"
+                                - type: "string"
+                              x-kubernetes-int-or-string: true
+                            scheme:
+                              description: "URIScheme identifies the scheme used for connection to a host for Get actions"
+                              type: "string"
+                          required:
+                            - "port"
+                          type: "object"
+                        sleep:
+                          description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#sleepaction-v1-core"
+                          properties:
+                            seconds:
+                              format: "int64"
+                              type: "integer"
+                          type: "object"
+                      type: "object"
+                    preStop:
+                      description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#lifecyclehandler-v1-core."
+                      properties:
+                        exec:
+                          description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core."
+                          properties:
+                            command:
+                              items:
+                                type: "string"
+                              type: "array"
+                              x-kubernetes-list-type: "atomic"
+                          type: "object"
+                        httpGet:
+                          description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core."
+                          properties:
+                            host:
+                              type: "string"
+                            path:
+                              type: "string"
+                            port:
+                              anyOf:
+                                - type: "integer"
+                                - type: "string"
+                              x-kubernetes-int-or-string: true
+                            scheme:
+                              description: "URIScheme identifies the scheme used for connection to a host for Get actions"
+                              type: "string"
+                          required:
+                            - "port"
+                          type: "object"
+                        sleep:
+                          description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#sleepaction-v1-core"
+                          properties:
+                            seconds:
+                              format: "int64"
+                              type: "integer"
+                          type: "object"
+                      type: "object"
                   type: "object"
                 livenessProbe:
                   description: "LivenessProbe to be used in the Container."
@@ -1723,13 +1806,13 @@ spec:
                       description: "AdminCertIssuerRef is a reference to a cert-manager issuer object used to issue the MaxScale's administrative REST API and GUI certificate. cert-manager must be installed previously in the cluster.\nIt is mutually exclusive with adminCertSecretRef.\nBy default, the Secret field 'ca.crt' provisioned by cert-manager will be added to the trust chain. A custom trust bundle may be specified via adminCASecretRef."
                       properties:
                         group:
-                          description: "Group of the resource being referred to."
+                          description: "Group of the issuer being referred to.\nDefaults to 'cert-manager.io'."
                           type: "string"
                         kind:
-                          description: "Kind of the resource being referred to."
+                          description: "Kind of the issuer being referred to.\nDefaults to 'Issuer'."
                           type: "string"
                         name:
-                          description: "Name of the resource being referred to."
+                          description: "Name of the issuer being referred to."
                           type: "string"
                       required:
                         - "name"
@@ -1755,13 +1838,13 @@ spec:
                       description: "ListenerCertIssuerRef is a reference to a cert-manager issuer object used to issue the MaxScale's listeners certificate. cert-manager must be installed previously in the cluster.\nIt is mutually exclusive with listenerCertSecretRef.\nBy default, the Secret field 'ca.crt' provisioned by cert-manager will be added to the trust chain. A custom trust bundle may be specified via listenerCASecretRef."
                       properties:
                         group:
-                          description: "Group of the resource being referred to."
+                          description: "Group of the issuer being referred to.\nDefaults to 'cert-manager.io'."
                           type: "string"
                         kind:
-                          description: "Kind of the resource being referred to."
+                          description: "Kind of the issuer being referred to.\nDefaults to 'Issuer'."
                           type: "string"
                         name:
-                          description: "Name of the resource being referred to."
+                          description: "Name of the issuer being referred to."
                           type: "string"
                       required:
                         - "name"

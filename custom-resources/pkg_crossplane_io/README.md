@@ -14,9 +14,15 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 ### pkg.crossplane.io/v1
 - `ConfigurationRevision`
 - `Configuration`
+- `FunctionRevision`
+- `Function`
 - `ProviderRevision`
 - `Provider`
 ### pkg.crossplane.io/v1alpha1
 - `ControllerConfig`
 ### pkg.crossplane.io/v1beta1
+- `DeploymentRuntimeConfig`
+- `FunctionRevision`
+- `Function`
+- `ImageConfig`
 - `Lock`

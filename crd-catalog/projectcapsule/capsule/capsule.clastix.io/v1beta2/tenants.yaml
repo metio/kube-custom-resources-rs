@@ -105,7 +105,7 @@ spec:
                     type: "object"
                   type: "array"
                 containerRegistries:
-                  description: "Specifies the trusted Image Registries assigned to the Tenant. Capsule assures that all Pods resources created in the Tenant can use only one of the allowed trusted registries. Optional."
+                  description: "Deprecated: Use Enforcement.Registries instead\n\nSpecifies the trusted Image Registries assigned to the Tenant. Capsule assures that all Pods resources created in the Tenant can use only one of the allowed trusted registries. Optional."
                   properties:
                     allowed:
                       description: "Match exact elements which are allowed as class names within this tenant"
@@ -120,6 +120,9 @@ spec:
                   default: false
                   description: "Toggling the Tenant resources cordoning, when enable resources cannot be deleted."
                   type: "boolean"
+                data:
+                  description: "Specify additional data relating to the tenant.\nMainly useable in templating and more accessible than labels/annotations."
+                  x-kubernetes-preserve-unknown-fields: true
                 deviceClasses:
                   description: "Specifies options for the DeviceClass resources."
                   properties:
@@ -211,7 +214,7 @@ spec:
                       x-kubernetes-map-type: "atomic"
                   type: "object"
                 imagePullPolicies:
-                  description: "Specify the allowed values for the imagePullPolicies option in Pod resources. Capsule assures that all Pod resources created in the Tenant can use only one of the allowed policy. Optional."
+                  description: "Deprecated: Use Enforcement.Registries instead\n\nSpecify the allowed values for the imagePullPolicies option in Pod resources. Capsule assures that all Pod resources created in the Tenant can use only one of the allowed policy. Optional."
                   items:
                     enum:
                       - "Always"
@@ -451,6 +454,20 @@ spec:
                       format: "int32"
                       minimum: 1.0
                       type: "integer"
+                    requiredMetadata:
+                      description: "Required Metadata for namespace within this tenant"
+                      properties:
+                        annotations:
+                          additionalProperties:
+                            type: "string"
+                          description: "Annotations that must be defined for each namespace"
+                          type: "object"
+                        labels:
+                          additionalProperties:
+                            type: "string"
+                          description: "Labels that must be defined for each namespace"
+                          type: "object"
+                      type: "object"
                   type: "object"
                 networkPolicies:
                   description: "Deprecated: Use Tenant Replications instead (https://projectcapsule.dev/docs/replications/)\n\nSpecifies the NetworkPolicies assigned to the Tenant. The assigned NetworkPolicies are inherited by any namespace created in the Tenant. Optional."
@@ -809,6 +826,10 @@ spec:
                 permissions:
                   description: "Specify Permissions for the Tenant."
                   properties:
+                    allowOwnerPromotion:
+                      default: true
+                      description: "ClusterRoles granted to the promoted ServiceAccounts across the Tenant"
+                      type: "boolean"
                     matchOwners:
                       description: "Matches TenantOwner objects which are promoted to owners of this tenant\nThe elements are OR operations and independent. You can see the resulting Tenant Owners\nin the Status.Owners specification of the Tenant."
                       items:
@@ -970,6 +991,126 @@ spec:
                         - "Namespace"
                       type: "string"
                   type: "object"
+                rules:
+                  description: "Specify enforcement specifications for the scope of the Tenant.\n We are moving all configuration enforcement. per namespace into a rule construct.\n It's currently not final.\n\nRead More: https://projectcapsule.dev/docs/tenants/rules/"
+                  items:
+                    description: "Rules Distributed via Tenants"
+                    properties:
+                      enforce:
+                        description: "Enforcement for given rule"
+                        properties:
+                          registries:
+                            description: "Define registries which are allowed to be used within this tenant\nThe rules are aggregated, since you can use Regular Expressions the match registry endpoints"
+                            items:
+                              properties:
+                                policy:
+                                  description: "Allowed PullPolicy for the given registry. Supplying no value allows all policies."
+                                  items:
+                                    description: "PullPolicy describes a policy for if/when to pull a container image"
+                                    type: "string"
+                                  type: "array"
+                                url:
+                                  description: "OCI Registry endpoint, is treated as regular expression."
+                                  type: "string"
+                                validation:
+                                  default:
+                                    - "pod/images"
+                                    - "pod/volumes"
+                                  description: "Requesting Resources"
+                                  items:
+                                    enum:
+                                      - "pod/images"
+                                      - "pod/volumes"
+                                    type: "string"
+                                  type: "array"
+                              required:
+                                - "url"
+                              type: "object"
+                            type: "array"
+                        type: "object"
+                      namespaceSelector:
+                        description: "Select namespaces which are going to be targeted with this rule"
+                        properties:
+                          matchExpressions:
+                            description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
+                            items:
+                              description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
+                              properties:
+                                key:
+                                  description: "key is the label key that the selector applies to."
+                                  type: "string"
+                                operator:
+                                  description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
+                                  type: "string"
+                                values:
+                                  description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
+                                  items:
+                                    type: "string"
+                                  type: "array"
+                                  x-kubernetes-list-type: "atomic"
+                              required:
+                                - "key"
+                                - "operator"
+                              type: "object"
+                            type: "array"
+                            x-kubernetes-list-type: "atomic"
+                          matchLabels:
+                            additionalProperties:
+                              type: "string"
+                            description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                            type: "object"
+                        type: "object"
+                        x-kubernetes-map-type: "atomic"
+                      permissions:
+                        description: "Permissions for given rule"
+                        properties:
+                          rules:
+                            description: "Define Promotion Rules which distributed additional ClusterRoles across the Tenant\nfor promoted ServiceAccounts."
+                            items:
+                              properties:
+                                clusterRoles:
+                                  description: "ClusterRoles granted to the promoted ServiceAccounts across the Tenant\nkubebuilder:validation:Minimum=1"
+                                  items:
+                                    type: "string"
+                                  type: "array"
+                                selector:
+                                  description: "Match ServiceAccounts which are promoted which are granted these additional ClusterRoles\nacross the Tenant"
+                                  properties:
+                                    matchExpressions:
+                                      description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
+                                      items:
+                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
+                                        properties:
+                                          key:
+                                            description: "key is the label key that the selector applies to."
+                                            type: "string"
+                                          operator:
+                                            description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
+                                            type: "string"
+                                          values:
+                                            description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
+                                            items:
+                                              type: "string"
+                                            type: "array"
+                                            x-kubernetes-list-type: "atomic"
+                                        required:
+                                          - "key"
+                                          - "operator"
+                                        type: "object"
+                                      type: "array"
+                                      x-kubernetes-list-type: "atomic"
+                                    matchLabels:
+                                      additionalProperties:
+                                        type: "string"
+                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                      type: "object"
+                                  type: "object"
+                                  x-kubernetes-map-type: "atomic"
+                              type: "object"
+                            type: "array"
+                        type: "object"
+                    type: "object"
+                  type: "array"
                 runtimeClasses:
                   description: "Specifies the allowed RuntimeClasses assigned to the Tenant.\nCapsule assures that all Pods resources created in the Tenant can use only one of the allowed RuntimeClasses.\nOptional."
                   properties:
@@ -1228,6 +1369,38 @@ spec:
                       - "name"
                     type: "object"
                   type: "array"
+                promotions:
+                  description: "Promoted ServiceAccounts across the Tenant"
+                  items:
+                    properties:
+                      clusterRoles:
+                        default:
+                          - "admin"
+                          - "capsule-namespace-deleter"
+                        description: "Defines additional cluster-roles for the specific Owner."
+                        items:
+                          type: "string"
+                        type: "array"
+                      kind:
+                        description: "Kind of entity. Possible values are \"User\", \"Group\", and \"ServiceAccount\""
+                        enum:
+                          - "User"
+                          - "Group"
+                          - "ServiceAccount"
+                        type: "string"
+                      name:
+                        description: "Name of the entity."
+                        type: "string"
+                      targets:
+                        description: "Defines additional cluster-roles for the specific Owner."
+                        items:
+                          type: "string"
+                        type: "array"
+                    required:
+                      - "kind"
+                      - "name"
+                    type: "object"
+                  type: "array"
                 size:
                   description: "How many namespaces are assigned to the Tenant."
                   type: "integer"
@@ -1279,6 +1452,38 @@ spec:
                             - "type"
                           type: "object"
                         type: "array"
+                      enforce:
+                        description: "Managed Metadata"
+                        properties:
+                          registry:
+                            description: "Registries which are allowed within this namespace"
+                            items:
+                              properties:
+                                policy:
+                                  description: "Allowed PullPolicy for the given registry. Supplying no value allows all policies."
+                                  items:
+                                    description: "PullPolicy describes a policy for if/when to pull a container image"
+                                    type: "string"
+                                  type: "array"
+                                url:
+                                  description: "OCI Registry endpoint, is treated as regular expression."
+                                  type: "string"
+                                validation:
+                                  default:
+                                    - "pod/images"
+                                    - "pod/volumes"
+                                  description: "Requesting Resources"
+                                  items:
+                                    enum:
+                                      - "pod/images"
+                                      - "pod/volumes"
+                                    type: "string"
+                                  type: "array"
+                              required:
+                                - "url"
+                              type: "object"
+                            type: "array"
+                        type: "object"
                       metadata:
                         description: "Managed Metadata"
                         properties:
@@ -1306,18 +1511,17 @@ spec:
                   type: "array"
                 state:
                   default: "Active"
-                  description: "The operational state of the Tenant. Possible values are \"Active\", \"Cordoned\"."
+                  description: "The operational state of the Tenant. Possible values are \"Active\", \"Cordoned\" or \"Terminating\"."
                   enum:
                     - "Cordoned"
                     - "Active"
+                    - "Terminating"
                   type: "string"
               required:
                 - "conditions"
                 - "size"
                 - "state"
               type: "object"
-          required:
-            - "spec"
           type: "object"
       served: true
       storage: true

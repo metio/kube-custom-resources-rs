@@ -16,7 +16,7 @@ spec:
     - name: "v1"
       schema:
         openAPIV3Schema:
-          description: "SelectorSyncIdentityProvider is the Schema for the SelectorSyncSet API"
+          description: "SelectorSyncIdentityProvider is the Schema for the SelectorSyncIdentityProvider API"
           properties:
             apiVersion:
               description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
@@ -30,7 +30,7 @@ spec:
               description: "SelectorSyncIdentityProviderSpec defines the SyncIdentityProviderCommonSpec to sync to\nClusterDeploymentSelector indicating which clusters the SelectorSyncIdentityProvider applies\nto in any namespace."
               properties:
                 clusterDeploymentSelector:
-                  description: "ClusterDeploymentSelector is a LabelSelector indicating which clusters the SelectorIdentityProvider\napplies to in any namespace."
+                  description: "ClusterDeploymentSelector is a LabelSelector indicating which clusters the SelectorSyncIdentityProvider\napplies to in any namespace."
                   properties:
                     matchExpressions:
                       description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
@@ -418,7 +418,7 @@ spec:
                 - "identityProviders"
               type: "object"
             status:
-              description: "IdentityProviderStatus defines the observed state of SyncSet"
+              description: "IdentityProviderStatus defines the observed state of the SyncIdentityProvider"
               type: "object"
           type: "object"
       served: true

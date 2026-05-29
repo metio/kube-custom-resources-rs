@@ -8,6 +8,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `BaselineAdminNetworkPolicy`
 ## policy.networking.k8s.io/v1alpha2
 - `ClusterNetworkPolicy`
+- `ClusterNetworkPolicy`
 */
 #[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;

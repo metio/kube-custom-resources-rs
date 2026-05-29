@@ -41,6 +41,15 @@ spec:
             spec:
               description: "KustomizationSpec defines the configuration to calculate the desired state\nfrom a Source using Kustomize."
               properties:
+                buildMetadata:
+                  description: "BuildMetadata specifies which kustomize build metadata should be added\nto the built resources. The allowed values are 'originAnnotations' to\nannotate resources with their source origin, and 'transformerAnnotations'\nto annotate resources with the transformers that produced them."
+                  items:
+                    description: "BuildMetadataOption defines the supported buildMetadata options."
+                    enum:
+                      - "originAnnotations"
+                      - "transformerAnnotations"
+                    type: "string"
+                  type: "array"
                 commonMetadata:
                   description: "CommonMetadata specifies the common labels and annotations that are\napplied to all resources. Any existing label or annotation will be\noverridden if its key matches a common one."
                   properties:
@@ -136,7 +145,6 @@ spec:
                     required:
                       - "apiVersion"
                       - "current"
-                      - "kind"
                     type: "object"
                   type: "array"
                 healthChecks:

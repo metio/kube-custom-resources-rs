@@ -1,0 +1,703 @@
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  name: "listeneroptions.gateway.solo.io"
+spec:
+  group: "gateway.solo.io"
+  names:
+    categories:
+      - "gloo-gateway"
+    kind: "ListenerOption"
+    listKind: "ListenerOptionList"
+    plural: "listeneroptions"
+    shortNames:
+      - "lisopts"
+      - "glisopts"
+  scope: "Namespaced"
+  versions:
+    - name: "v1"
+      schema:
+        openAPIV3Schema:
+          properties:
+            spec:
+              properties:
+                namespacedStatuses:
+                  properties:
+                    statuses:
+                      additionalProperties:
+                        type: "object"
+                        x-kubernetes-preserve-unknown-fields: true
+                      type: "object"
+                  type: "object"
+                options:
+                  properties:
+                    accessLoggingService:
+                      properties:
+                        accessLog:
+                          items:
+                            properties:
+                              fileSink:
+                                properties:
+                                  jsonFormat:
+                                    type: "object"
+                                    x-kubernetes-preserve-unknown-fields: true
+                                  path:
+                                    type: "string"
+                                  stringFormat:
+                                    type: "string"
+                                type: "object"
+                              filter:
+                                properties:
+                                  andFilter:
+                                    type: "object"
+                                    x-kubernetes-preserve-unknown-fields: true
+                                  durationFilter:
+                                    properties:
+                                      comparison:
+                                        properties:
+                                          op:
+                                            type: "string"
+                                            x-kubernetes-int-or-string: true
+                                          value:
+                                            properties:
+                                              defaultValue:
+                                                maximum: 4294967295.0
+                                                minimum: 0.0
+                                                type: "integer"
+                                              runtimeKey:
+                                                type: "string"
+                                            type: "object"
+                                        type: "object"
+                                    type: "object"
+                                  grpcStatusFilter:
+                                    properties:
+                                      exclude:
+                                        type: "boolean"
+                                      statuses:
+                                        items:
+                                          type: "string"
+                                          x-kubernetes-int-or-string: true
+                                        type: "array"
+                                    type: "object"
+                                  headerFilter:
+                                    properties:
+                                      header:
+                                        properties:
+                                          exactMatch:
+                                            type: "string"
+                                          invertMatch:
+                                            type: "boolean"
+                                          name:
+                                            type: "string"
+                                          prefixMatch:
+                                            type: "string"
+                                          presentMatch:
+                                            type: "boolean"
+                                          rangeMatch:
+                                            properties:
+                                              end:
+                                                format: "int64"
+                                                type: "integer"
+                                                x-kubernetes-int-or-string: true
+                                              start:
+                                                format: "int64"
+                                                type: "integer"
+                                                x-kubernetes-int-or-string: true
+                                            type: "object"
+                                          safeRegexMatch:
+                                            properties:
+                                              googleRe2:
+                                                properties:
+                                                  maxProgramSize:
+                                                    maximum: 4294967295.0
+                                                    minimum: 0.0
+                                                    nullable: true
+                                                    type: "integer"
+                                                type: "object"
+                                              regex:
+                                                type: "string"
+                                            type: "object"
+                                          suffixMatch:
+                                            type: "string"
+                                        type: "object"
+                                    type: "object"
+                                  notHealthCheckFilter:
+                                    type: "object"
+                                  orFilter:
+                                    type: "object"
+                                    x-kubernetes-preserve-unknown-fields: true
+                                  responseFlagFilter:
+                                    properties:
+                                      flags:
+                                        items:
+                                          type: "string"
+                                        type: "array"
+                                    type: "object"
+                                  runtimeFilter:
+                                    properties:
+                                      percentSampled:
+                                        properties:
+                                          denominator:
+                                            type: "string"
+                                            x-kubernetes-int-or-string: true
+                                          numerator:
+                                            maximum: 4294967295.0
+                                            minimum: 0.0
+                                            type: "integer"
+                                        type: "object"
+                                      runtimeKey:
+                                        type: "string"
+                                      useIndependentRandomness:
+                                        type: "boolean"
+                                    type: "object"
+                                  statusCodeFilter:
+                                    properties:
+                                      comparison:
+                                        properties:
+                                          op:
+                                            type: "string"
+                                            x-kubernetes-int-or-string: true
+                                          value:
+                                            properties:
+                                              defaultValue:
+                                                maximum: 4294967295.0
+                                                minimum: 0.0
+                                                type: "integer"
+                                              runtimeKey:
+                                                type: "string"
+                                            type: "object"
+                                        type: "object"
+                                    type: "object"
+                                  traceableFilter:
+                                    type: "object"
+                                type: "object"
+                              grpcService:
+                                properties:
+                                  additionalRequestHeadersToLog:
+                                    items:
+                                      type: "string"
+                                    type: "array"
+                                  additionalResponseHeadersToLog:
+                                    items:
+                                      type: "string"
+                                    type: "array"
+                                  additionalResponseTrailersToLog:
+                                    items:
+                                      type: "string"
+                                    type: "array"
+                                  filterStateObjectsToLog:
+                                    items:
+                                      type: "string"
+                                    type: "array"
+                                  logName:
+                                    type: "string"
+                                  staticClusterName:
+                                    type: "string"
+                                type: "object"
+                              openTelemetryService:
+                                properties:
+                                  attributes:
+                                    properties:
+                                      values:
+                                        items:
+                                          properties:
+                                            key:
+                                              type: "string"
+                                            value:
+                                              type: "object"
+                                              x-kubernetes-preserve-unknown-fields: true
+                                          type: "object"
+                                        type: "array"
+                                    type: "object"
+                                  body:
+                                    type: "object"
+                                    x-kubernetes-preserve-unknown-fields: true
+                                  collector:
+                                    properties:
+                                      authority:
+                                        type: "string"
+                                      endpoint:
+                                        type: "string"
+                                      headers:
+                                        additionalProperties:
+                                          type: "string"
+                                        type: "object"
+                                      insecure:
+                                        type: "boolean"
+                                      sslConfig:
+                                        properties:
+                                          allowRenegotiation:
+                                            nullable: true
+                                            type: "boolean"
+                                          alpnProtocols:
+                                            items:
+                                              type: "string"
+                                            type: "array"
+                                          oneWayTls:
+                                            nullable: true
+                                            type: "boolean"
+                                          parameters:
+                                            properties:
+                                              cipherSuites:
+                                                items:
+                                                  type: "string"
+                                                type: "array"
+                                              ecdhCurves:
+                                                items:
+                                                  type: "string"
+                                                type: "array"
+                                              maximumProtocolVersion:
+                                                type: "string"
+                                                x-kubernetes-int-or-string: true
+                                              minimumProtocolVersion:
+                                                type: "string"
+                                                x-kubernetes-int-or-string: true
+                                            type: "object"
+                                          sds:
+                                            properties:
+                                              callCredentials:
+                                                properties:
+                                                  fileCredentialSource:
+                                                    properties:
+                                                      header:
+                                                        type: "string"
+                                                      tokenFileName:
+                                                        type: "string"
+                                                    type: "object"
+                                                type: "object"
+                                              certificatesSecretName:
+                                                type: "string"
+                                              clusterName:
+                                                type: "string"
+                                              targetUri:
+                                                type: "string"
+                                              validationContextName:
+                                                type: "string"
+                                            type: "object"
+                                          secretRef:
+                                            properties:
+                                              name:
+                                                type: "string"
+                                              namespace:
+                                                type: "string"
+                                            type: "object"
+                                          sni:
+                                            type: "string"
+                                          sslFiles:
+                                            properties:
+                                              ocspStaple:
+                                                type: "string"
+                                              rootCa:
+                                                type: "string"
+                                              tlsCert:
+                                                type: "string"
+                                              tlsKey:
+                                                type: "string"
+                                            type: "object"
+                                          verifySubjectAltName:
+                                            items:
+                                              type: "string"
+                                            type: "array"
+                                        type: "object"
+                                      timeout:
+                                        type: "string"
+                                    type: "object"
+                                  disableBuiltinLabels:
+                                    type: "boolean"
+                                  filterStateObjectsToLog:
+                                    items:
+                                      type: "string"
+                                    type: "array"
+                                  logName:
+                                    type: "string"
+                                type: "object"
+                            type: "object"
+                          type: "array"
+                      type: "object"
+                    connectionBalanceConfig:
+                      properties:
+                        exactBalance:
+                          type: "object"
+                      type: "object"
+                    extensions:
+                      properties:
+                        configs:
+                          additionalProperties:
+                            type: "object"
+                            x-kubernetes-preserve-unknown-fields: true
+                          type: "object"
+                      type: "object"
+                    listenerAccessLoggingService:
+                      properties:
+                        accessLog:
+                          items:
+                            properties:
+                              fileSink:
+                                properties:
+                                  jsonFormat:
+                                    type: "object"
+                                    x-kubernetes-preserve-unknown-fields: true
+                                  path:
+                                    type: "string"
+                                  stringFormat:
+                                    type: "string"
+                                type: "object"
+                              filter:
+                                properties:
+                                  andFilter:
+                                    type: "object"
+                                    x-kubernetes-preserve-unknown-fields: true
+                                  durationFilter:
+                                    properties:
+                                      comparison:
+                                        properties:
+                                          op:
+                                            type: "string"
+                                            x-kubernetes-int-or-string: true
+                                          value:
+                                            properties:
+                                              defaultValue:
+                                                maximum: 4294967295.0
+                                                minimum: 0.0
+                                                type: "integer"
+                                              runtimeKey:
+                                                type: "string"
+                                            type: "object"
+                                        type: "object"
+                                    type: "object"
+                                  grpcStatusFilter:
+                                    properties:
+                                      exclude:
+                                        type: "boolean"
+                                      statuses:
+                                        items:
+                                          type: "string"
+                                          x-kubernetes-int-or-string: true
+                                        type: "array"
+                                    type: "object"
+                                  headerFilter:
+                                    properties:
+                                      header:
+                                        properties:
+                                          exactMatch:
+                                            type: "string"
+                                          invertMatch:
+                                            type: "boolean"
+                                          name:
+                                            type: "string"
+                                          prefixMatch:
+                                            type: "string"
+                                          presentMatch:
+                                            type: "boolean"
+                                          rangeMatch:
+                                            properties:
+                                              end:
+                                                format: "int64"
+                                                type: "integer"
+                                                x-kubernetes-int-or-string: true
+                                              start:
+                                                format: "int64"
+                                                type: "integer"
+                                                x-kubernetes-int-or-string: true
+                                            type: "object"
+                                          safeRegexMatch:
+                                            properties:
+                                              googleRe2:
+                                                properties:
+                                                  maxProgramSize:
+                                                    maximum: 4294967295.0
+                                                    minimum: 0.0
+                                                    nullable: true
+                                                    type: "integer"
+                                                type: "object"
+                                              regex:
+                                                type: "string"
+                                            type: "object"
+                                          suffixMatch:
+                                            type: "string"
+                                        type: "object"
+                                    type: "object"
+                                  notHealthCheckFilter:
+                                    type: "object"
+                                  orFilter:
+                                    type: "object"
+                                    x-kubernetes-preserve-unknown-fields: true
+                                  responseFlagFilter:
+                                    properties:
+                                      flags:
+                                        items:
+                                          type: "string"
+                                        type: "array"
+                                    type: "object"
+                                  runtimeFilter:
+                                    properties:
+                                      percentSampled:
+                                        properties:
+                                          denominator:
+                                            type: "string"
+                                            x-kubernetes-int-or-string: true
+                                          numerator:
+                                            maximum: 4294967295.0
+                                            minimum: 0.0
+                                            type: "integer"
+                                        type: "object"
+                                      runtimeKey:
+                                        type: "string"
+                                      useIndependentRandomness:
+                                        type: "boolean"
+                                    type: "object"
+                                  statusCodeFilter:
+                                    properties:
+                                      comparison:
+                                        properties:
+                                          op:
+                                            type: "string"
+                                            x-kubernetes-int-or-string: true
+                                          value:
+                                            properties:
+                                              defaultValue:
+                                                maximum: 4294967295.0
+                                                minimum: 0.0
+                                                type: "integer"
+                                              runtimeKey:
+                                                type: "string"
+                                            type: "object"
+                                        type: "object"
+                                    type: "object"
+                                  traceableFilter:
+                                    type: "object"
+                                type: "object"
+                              grpcService:
+                                properties:
+                                  additionalRequestHeadersToLog:
+                                    items:
+                                      type: "string"
+                                    type: "array"
+                                  additionalResponseHeadersToLog:
+                                    items:
+                                      type: "string"
+                                    type: "array"
+                                  additionalResponseTrailersToLog:
+                                    items:
+                                      type: "string"
+                                    type: "array"
+                                  filterStateObjectsToLog:
+                                    items:
+                                      type: "string"
+                                    type: "array"
+                                  logName:
+                                    type: "string"
+                                  staticClusterName:
+                                    type: "string"
+                                type: "object"
+                              openTelemetryService:
+                                properties:
+                                  attributes:
+                                    properties:
+                                      values:
+                                        items:
+                                          properties:
+                                            key:
+                                              type: "string"
+                                            value:
+                                              type: "object"
+                                              x-kubernetes-preserve-unknown-fields: true
+                                          type: "object"
+                                        type: "array"
+                                    type: "object"
+                                  body:
+                                    type: "object"
+                                    x-kubernetes-preserve-unknown-fields: true
+                                  collector:
+                                    properties:
+                                      authority:
+                                        type: "string"
+                                      endpoint:
+                                        type: "string"
+                                      headers:
+                                        additionalProperties:
+                                          type: "string"
+                                        type: "object"
+                                      insecure:
+                                        type: "boolean"
+                                      sslConfig:
+                                        properties:
+                                          allowRenegotiation:
+                                            nullable: true
+                                            type: "boolean"
+                                          alpnProtocols:
+                                            items:
+                                              type: "string"
+                                            type: "array"
+                                          oneWayTls:
+                                            nullable: true
+                                            type: "boolean"
+                                          parameters:
+                                            properties:
+                                              cipherSuites:
+                                                items:
+                                                  type: "string"
+                                                type: "array"
+                                              ecdhCurves:
+                                                items:
+                                                  type: "string"
+                                                type: "array"
+                                              maximumProtocolVersion:
+                                                type: "string"
+                                                x-kubernetes-int-or-string: true
+                                              minimumProtocolVersion:
+                                                type: "string"
+                                                x-kubernetes-int-or-string: true
+                                            type: "object"
+                                          sds:
+                                            properties:
+                                              callCredentials:
+                                                properties:
+                                                  fileCredentialSource:
+                                                    properties:
+                                                      header:
+                                                        type: "string"
+                                                      tokenFileName:
+                                                        type: "string"
+                                                    type: "object"
+                                                type: "object"
+                                              certificatesSecretName:
+                                                type: "string"
+                                              clusterName:
+                                                type: "string"
+                                              targetUri:
+                                                type: "string"
+                                              validationContextName:
+                                                type: "string"
+                                            type: "object"
+                                          secretRef:
+                                            properties:
+                                              name:
+                                                type: "string"
+                                              namespace:
+                                                type: "string"
+                                            type: "object"
+                                          sni:
+                                            type: "string"
+                                          sslFiles:
+                                            properties:
+                                              ocspStaple:
+                                                type: "string"
+                                              rootCa:
+                                                type: "string"
+                                              tlsCert:
+                                                type: "string"
+                                              tlsKey:
+                                                type: "string"
+                                            type: "object"
+                                          verifySubjectAltName:
+                                            items:
+                                              type: "string"
+                                            type: "array"
+                                        type: "object"
+                                      timeout:
+                                        type: "string"
+                                    type: "object"
+                                  disableBuiltinLabels:
+                                    type: "boolean"
+                                  filterStateObjectsToLog:
+                                    items:
+                                      type: "string"
+                                    type: "array"
+                                  logName:
+                                    type: "string"
+                                type: "object"
+                            type: "object"
+                          type: "array"
+                      type: "object"
+                    perConnectionBufferLimitBytes:
+                      maximum: 4294967295.0
+                      minimum: 0.0
+                      nullable: true
+                      type: "integer"
+                    proxyProtocol:
+                      properties:
+                        allowRequestsWithoutProxyProtocol:
+                          type: "boolean"
+                        rules:
+                          items:
+                            properties:
+                              onTlvPresent:
+                                properties:
+                                  key:
+                                    type: "string"
+                                  metadataNamespace:
+                                    type: "string"
+                                type: "object"
+                              tlvType:
+                                maximum: 4294967295.0
+                                minimum: 0.0
+                                type: "integer"
+                            type: "object"
+                          type: "array"
+                      type: "object"
+                    socketOptions:
+                      items:
+                        properties:
+                          bufValue:
+                            format: "byte"
+                            type: "string"
+                          description:
+                            type: "string"
+                          intValue:
+                            format: "int64"
+                            type: "integer"
+                            x-kubernetes-int-or-string: true
+                          level:
+                            format: "int64"
+                            type: "integer"
+                            x-kubernetes-int-or-string: true
+                          name:
+                            format: "int64"
+                            type: "integer"
+                            x-kubernetes-int-or-string: true
+                          state:
+                            type: "string"
+                            x-kubernetes-int-or-string: true
+                        type: "object"
+                      type: "array"
+                    tcpStats:
+                      nullable: true
+                      type: "boolean"
+                  type: "object"
+                targetRefs:
+                  items:
+                    properties:
+                      group:
+                        type: "string"
+                      kind:
+                        type: "string"
+                      name:
+                        type: "string"
+                      namespace:
+                        nullable: true
+                        type: "string"
+                      sectionName:
+                        nullable: true
+                        type: "string"
+                    type: "object"
+                  type: "array"
+              type: "object"
+            status:
+              default: {}
+              properties:
+                statuses:
+                  default: {}
+                  type: "object"
+                  x-kubernetes-preserve-unknown-fields: true
+              type: "object"
+              x-kubernetes-preserve-unknown-fields: true
+          type: "object"
+      served: true
+      storage: true
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
