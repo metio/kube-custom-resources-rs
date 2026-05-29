@@ -5137,7 +5137,7 @@ spec:
                       properties:
                         externalTrafficPolicy:
                           default: "Local"
-                          description: "ExternalTrafficPolicy describes how nodes distribute service traffic they\nreceive on one of the Service's \"externally-facing\" addresses (NodePorts, ExternalIPs,\nand LoadBalancer IPs)."
+                          description: "ExternalTrafficPolicy describes how nodes distribute service traffic they\nreceive on one of the Service's \"externally-facing\" addresses (NodePorts and LoadBalancer IPs)."
                           enum:
                             - "Cluster"
                             - "Local"

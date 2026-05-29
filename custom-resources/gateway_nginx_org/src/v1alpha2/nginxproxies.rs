@@ -7595,8 +7595,7 @@ pub struct NginxProxyKubernetesDeploymentWafContainersEnforcerVolumeMounts {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NginxProxyKubernetesService {
     /// ExternalTrafficPolicy describes how nodes distribute service traffic they
-    /// receive on one of the Service's "externally-facing" addresses (NodePorts, ExternalIPs,
-    /// and LoadBalancer IPs).
+    /// receive on one of the Service's "externally-facing" addresses (NodePorts and LoadBalancer IPs).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTrafficPolicy")]
     pub external_traffic_policy: Option<NginxProxyKubernetesServiceExternalTrafficPolicy>,
     /// LoadBalancerClass is the class of the load balancer implementation this Service belongs to.

@@ -2346,6 +2346,17 @@ pub struct ResourceImportServiceImportMetadata {
 /// spec defines the behavior of a ServiceImport.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ResourceImportServiceImportSpec {
+    /// InternalTrafficPolicy describes how nodes distribute service traffic they
+    /// receive on the ClusterIP. If set to "Local", the proxy will assume that pods
+    /// only want to talk to endpoints of the service on the same node as the pod,
+    /// dropping the traffic if there are no local endpoints. The default value,
+    /// "Cluster", uses the standard behavior of routing to all endpoints evenly
+    /// (possibly modified by topology and other features).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "internalTrafficPolicy")]
+    pub internal_traffic_policy: Option<String>,
+    /// IPFamilies identifies all the IPFamilies assigned for this ServiceImport.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilies")]
+    pub ip_families: Option<Vec<String>>,
     /// ip will be used as the VIP for this service when type is ClusterSetIP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ips: Option<Vec<String>>,
@@ -2361,6 +2372,14 @@ pub struct ResourceImportServiceImportSpec {
     /// sessionAffinityConfig contains session affinity configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionAffinityConfig")]
     pub session_affinity_config: Option<ResourceImportServiceImportSpecSessionAffinityConfig>,
+    /// TrafficDistribution offers a way to express preferences for how traffic
+    /// is distributed to Service endpoints. Implementations can use this field
+    /// as a hint, but are not required to guarantee strict adherence. If the
+    /// field is not set, the implementation will apply its default routing
+    /// strategy. If set to "PreferClose", implementations should prioritize
+    /// endpoints that are in the same zone.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trafficDistribution")]
+    pub traffic_distribution: Option<String>,
     /// type defines the type of this service.
     /// Must be ClusterSetIP or Headless.
     #[serde(rename = "type")]
@@ -2371,10 +2390,17 @@ pub struct ResourceImportServiceImportSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceImportServiceImportSpecPorts {
     /// The application protocol for this port.
+    /// This is used as a hint for implementations to offer richer behavior for protocols that they understand.
     /// This field follows standard Kubernetes label syntax.
-    /// Un-prefixed names are reserved for IANA standard service names (as per
-    /// RFC-6335 and <http://www.iana.org/assignments/service-names).>
-    /// Non-standard protocols should use prefixed names such as
+    /// Valid values are either:
+    /// 
+    /// * Un-prefixed protocol names - reserved for IANA standard service names (as per
+    /// RFC-6335 and <https://www.iana.org/assignments/service-names).>
+    /// 
+    /// * Kubernetes-defined prefixed names:
+    ///   * 'kubernetes.io/h2c' - HTTP/2 over cleartext as described in <https://www.rfc-editor.org/rfc/rfc7540>
+    /// 
+    /// * Other protocols should use implementation-defined prefixed names such as
     /// mycompany.com/my-custom-protocol.
     /// Field can be enabled with ServiceAppProtocol feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "appProtocol")]
@@ -2428,6 +2454,8 @@ pub struct ResourceImportServiceImportStatus {
     /// was derived.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub clusters: Option<Vec<ResourceImportServiceImportStatusClusters>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
 }
 
 /// ClusterStatus contains service configuration mapped to a specific source cluster

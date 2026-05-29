@@ -46,11 +46,20 @@ pub struct SidecarProfileContainerOverride {
     /// Image overrides the image used by the client.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
+    /// LivenessProbe overrides the liveness probe for the sidecar container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
+    pub liveness_probe: Option<SidecarProfileContainerOverrideLivenessProbe>,
+    /// ReadinessProbe overrides the readiness probe for the sidecar container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
+    pub readiness_probe: Option<SidecarProfileContainerOverrideReadinessProbe>,
     /// SecurityContext holds security configuration that will be applied to a container.
     /// Some fields are present in both SecurityContext and PodSecurityContext.  When both
     /// are set, the values in SecurityContext take precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<SidecarProfileContainerOverrideSecurityContext>,
+    /// StartupProbe overrides the startup probe for the sidecar container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
+    pub startup_probe: Option<SidecarProfileContainerOverrideStartupProbe>,
 }
 
 /// EnvVar represents an environment variable present in a Container.
@@ -181,6 +190,246 @@ pub struct SidecarProfileContainerOverrideEnvValueFromSecretKeyRef {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// LivenessProbe overrides the liveness probe for the sidecar container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SidecarProfileContainerOverrideLivenessProbe {
+    /// Exec specifies a command to execute in the container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<SidecarProfileContainerOverrideLivenessProbeExec>,
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
+    /// Defaults to 3. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i32>,
+    /// GRPC specifies a GRPC HealthCheckRequest.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub grpc: Option<SidecarProfileContainerOverrideLivenessProbeGrpc>,
+    /// HTTPGet specifies an HTTP GET request to perform.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<SidecarProfileContainerOverrideLivenessProbeHttpGet>,
+    /// Number of seconds after the container has started before liveness probes are initiated.
+    /// More info: <https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
+    pub initial_delay_seconds: Option<i32>,
+    /// How often (in seconds) to perform the probe.
+    /// Default to 10 seconds. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
+    pub period_seconds: Option<i32>,
+    /// Minimum consecutive successes for the probe to be considered successful after having failed.
+    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
+    pub success_threshold: Option<i32>,
+    /// TCPSocket specifies a connection to a TCP port.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<SidecarProfileContainerOverrideLivenessProbeTcpSocket>,
+    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
+    /// The grace period is the duration in seconds after the processes running in the pod are sent
+    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
+    /// Set this value longer than the expected cleanup time for your process.
+    /// If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this
+    /// value overrides the value provided by the pod spec.
+    /// Value must be non-negative integer. The value zero indicates stop immediately via
+    /// the kill signal (no opportunity to shut down).
+    /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
+    /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
+    pub termination_grace_period_seconds: Option<i64>,
+    /// Number of seconds after which the probe times out.
+    /// Defaults to 1 second. Minimum value is 1.
+    /// More info: <https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
+}
+
+/// Exec specifies a command to execute in the container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SidecarProfileContainerOverrideLivenessProbeExec {
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+/// GRPC specifies a GRPC HealthCheckRequest.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SidecarProfileContainerOverrideLivenessProbeGrpc {
+    /// Port number of the gRPC service. Number must be in the range 1 to 65535.
+    pub port: i32,
+    /// Service is the name of the service to place in the gRPC HealthCheckRequest
+    /// (see <https://github.com/grpc/grpc/blob/master/doc/health-checking.md).>
+    /// 
+    /// If this is not specified, the default behavior is defined by gRPC.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub service: Option<String>,
+}
+
+/// HTTPGet specifies an HTTP GET request to perform.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SidecarProfileContainerOverrideLivenessProbeHttpGet {
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Custom headers to set in the request. HTTP allows repeated headers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<SidecarProfileContainerOverrideLivenessProbeHttpGetHttpHeaders>>,
+    /// Path to access on the HTTP server.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+/// HTTPHeader describes a custom header to be used in HTTP probes
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SidecarProfileContainerOverrideLivenessProbeHttpGetHttpHeaders {
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    pub name: String,
+    /// The header field value
+    pub value: String,
+}
+
+/// TCPSocket specifies a connection to a TCP port.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SidecarProfileContainerOverrideLivenessProbeTcpSocket {
+    /// Optional: Host name to connect to, defaults to the pod IP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+}
+
+/// ReadinessProbe overrides the readiness probe for the sidecar container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SidecarProfileContainerOverrideReadinessProbe {
+    /// Exec specifies a command to execute in the container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<SidecarProfileContainerOverrideReadinessProbeExec>,
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
+    /// Defaults to 3. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i32>,
+    /// GRPC specifies a GRPC HealthCheckRequest.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub grpc: Option<SidecarProfileContainerOverrideReadinessProbeGrpc>,
+    /// HTTPGet specifies an HTTP GET request to perform.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<SidecarProfileContainerOverrideReadinessProbeHttpGet>,
+    /// Number of seconds after the container has started before liveness probes are initiated.
+    /// More info: <https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
+    pub initial_delay_seconds: Option<i32>,
+    /// How often (in seconds) to perform the probe.
+    /// Default to 10 seconds. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
+    pub period_seconds: Option<i32>,
+    /// Minimum consecutive successes for the probe to be considered successful after having failed.
+    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
+    pub success_threshold: Option<i32>,
+    /// TCPSocket specifies a connection to a TCP port.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<SidecarProfileContainerOverrideReadinessProbeTcpSocket>,
+    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
+    /// The grace period is the duration in seconds after the processes running in the pod are sent
+    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
+    /// Set this value longer than the expected cleanup time for your process.
+    /// If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this
+    /// value overrides the value provided by the pod spec.
+    /// Value must be non-negative integer. The value zero indicates stop immediately via
+    /// the kill signal (no opportunity to shut down).
+    /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
+    /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
+    pub termination_grace_period_seconds: Option<i64>,
+    /// Number of seconds after which the probe times out.
+    /// Defaults to 1 second. Minimum value is 1.
+    /// More info: <https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
+}
+
+/// Exec specifies a command to execute in the container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SidecarProfileContainerOverrideReadinessProbeExec {
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+/// GRPC specifies a GRPC HealthCheckRequest.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SidecarProfileContainerOverrideReadinessProbeGrpc {
+    /// Port number of the gRPC service. Number must be in the range 1 to 65535.
+    pub port: i32,
+    /// Service is the name of the service to place in the gRPC HealthCheckRequest
+    /// (see <https://github.com/grpc/grpc/blob/master/doc/health-checking.md).>
+    /// 
+    /// If this is not specified, the default behavior is defined by gRPC.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub service: Option<String>,
+}
+
+/// HTTPGet specifies an HTTP GET request to perform.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SidecarProfileContainerOverrideReadinessProbeHttpGet {
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Custom headers to set in the request. HTTP allows repeated headers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<SidecarProfileContainerOverrideReadinessProbeHttpGetHttpHeaders>>,
+    /// Path to access on the HTTP server.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+/// HTTPHeader describes a custom header to be used in HTTP probes
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SidecarProfileContainerOverrideReadinessProbeHttpGetHttpHeaders {
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    pub name: String,
+    /// The header field value
+    pub value: String,
+}
+
+/// TCPSocket specifies a connection to a TCP port.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SidecarProfileContainerOverrideReadinessProbeTcpSocket {
+    /// Optional: Host name to connect to, defaults to the pod IP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
 }
 
 /// SecurityContext holds security configuration that will be applied to a container.
@@ -369,6 +618,126 @@ pub struct SidecarProfileContainerOverrideSecurityContextWindowsOptions {
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
+}
+
+/// StartupProbe overrides the startup probe for the sidecar container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SidecarProfileContainerOverrideStartupProbe {
+    /// Exec specifies a command to execute in the container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<SidecarProfileContainerOverrideStartupProbeExec>,
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
+    /// Defaults to 3. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i32>,
+    /// GRPC specifies a GRPC HealthCheckRequest.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub grpc: Option<SidecarProfileContainerOverrideStartupProbeGrpc>,
+    /// HTTPGet specifies an HTTP GET request to perform.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<SidecarProfileContainerOverrideStartupProbeHttpGet>,
+    /// Number of seconds after the container has started before liveness probes are initiated.
+    /// More info: <https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
+    pub initial_delay_seconds: Option<i32>,
+    /// How often (in seconds) to perform the probe.
+    /// Default to 10 seconds. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
+    pub period_seconds: Option<i32>,
+    /// Minimum consecutive successes for the probe to be considered successful after having failed.
+    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
+    pub success_threshold: Option<i32>,
+    /// TCPSocket specifies a connection to a TCP port.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<SidecarProfileContainerOverrideStartupProbeTcpSocket>,
+    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
+    /// The grace period is the duration in seconds after the processes running in the pod are sent
+    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
+    /// Set this value longer than the expected cleanup time for your process.
+    /// If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this
+    /// value overrides the value provided by the pod spec.
+    /// Value must be non-negative integer. The value zero indicates stop immediately via
+    /// the kill signal (no opportunity to shut down).
+    /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
+    /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
+    pub termination_grace_period_seconds: Option<i64>,
+    /// Number of seconds after which the probe times out.
+    /// Defaults to 1 second. Minimum value is 1.
+    /// More info: <https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
+}
+
+/// Exec specifies a command to execute in the container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SidecarProfileContainerOverrideStartupProbeExec {
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+/// GRPC specifies a GRPC HealthCheckRequest.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SidecarProfileContainerOverrideStartupProbeGrpc {
+    /// Port number of the gRPC service. Number must be in the range 1 to 65535.
+    pub port: i32,
+    /// Service is the name of the service to place in the gRPC HealthCheckRequest
+    /// (see <https://github.com/grpc/grpc/blob/master/doc/health-checking.md).>
+    /// 
+    /// If this is not specified, the default behavior is defined by gRPC.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub service: Option<String>,
+}
+
+/// HTTPGet specifies an HTTP GET request to perform.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SidecarProfileContainerOverrideStartupProbeHttpGet {
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Custom headers to set in the request. HTTP allows repeated headers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<SidecarProfileContainerOverrideStartupProbeHttpGetHttpHeaders>>,
+    /// Path to access on the HTTP server.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+/// HTTPHeader describes a custom header to be used in HTTP probes
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SidecarProfileContainerOverrideStartupProbeHttpGetHttpHeaders {
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    pub name: String,
+    /// The header field value
+    pub value: String,
+}
+
+/// TCPSocket specifies a connection to a TCP port.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SidecarProfileContainerOverrideStartupProbeTcpSocket {
+    /// Optional: Host name to connect to, defaults to the pod IP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
 }
 
 /// SidecarProfileSpec defines the desired state of SidecarProfile.
