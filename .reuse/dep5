@@ -1087,6 +1087,10 @@ Files: crd-catalog/nginxinc/nginx-kubernetes-gateway/*
 Copyright: The nginxinc/nginx-kubernetes-gateway Authors
 License: Apache-2.0
 
+Files: crd-catalog/nmstate/kubernetes-nmstate/*
+Copyright: The nmstate/kubernetes-nmstate Authors
+License: Apache-2.0
+
 Files: crd-catalog/opdev/synapse-helm/*
 Copyright: The opdev/synapse-helm Authors
 License: Apache-2.0

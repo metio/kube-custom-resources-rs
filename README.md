@@ -337,6 +337,7 @@ The following groups are available:
 - [nfd.k8s-sigs.io](https://crates.io/crates/kcr_nfd_k8s_sigs_io)
 - [nfd.kubernetes.io](https://crates.io/crates/kcr_nfd_kubernetes_io)
 - [nifi.stackable.tech](https://crates.io/crates/kcr_nifi_stackable_tech)
+- [nmstate.io](https://crates.io/crates/kcr_nmstate_io)
 - [nodeinfo.volcano.sh](https://crates.io/crates/kcr_nodeinfo_volcano_sh)
 - [notebook.kubedl.io](https://crates.io/crates/kcr_notebook_kubedl_io)
 - [notification.toolkit.fluxcd.io](https://crates.io/crates/kcr_notification_toolkit_fluxcd_io)
