@@ -240,6 +240,8 @@ pub enum ScaledObjectFallbackBehavior {
     CurrentReplicasIfHigher,
     #[serde(rename = "currentReplicasIfLower")]
     CurrentReplicasIfLower,
+    #[serde(rename = "scalingModifiers")]
+    ScalingModifiers,
 }
 
 /// ScaleTarget holds the reference to the scale target Object
