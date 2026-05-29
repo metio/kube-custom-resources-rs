@@ -51,6 +51,10 @@ Files: crd-catalog/Alvearie/imaging-ingestion/*
 Copyright: The Alvearie/imaging-ingestion Authors
 License: Apache-2.0
 
+Files: crd-catalog/angeloxx/cilium-haegress-operator/*
+Copyright: The angeloxx/cilium-haegress-operator Authors
+License: AGPL-3.0-or-later
+
 Files: crd-catalog/ansible/awx-operator/*
 Copyright: The ansible/awx-operator Authors
 License: Apache-2.0

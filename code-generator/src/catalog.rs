@@ -138,6 +138,14 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ignores: &[],
     },
     UpstreamSource {
+        project_name: "angeloxx/cilium-haegress-operator",
+        license: AGPL_V3_OR_LATER,
+        urls: &[
+            "https://github.com/angeloxx/cilium-haegress-operator/blob/main/config/crd/bases/cilium.angeloxx.ch_haegressgatewaypolicies.yaml",
+        ],
+        ignores: &[],
+    },
+    UpstreamSource {
         project_name: "ansible/awx-operator",
         license: APACHE_V2,
         urls: &[

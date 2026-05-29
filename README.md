@@ -128,6 +128,7 @@ The following groups are available:
 - [charts.operatorhub.io](https://crates.io/crates/kcr_charts_operatorhub_io)
 - [che.eclipse.org](https://crates.io/crates/kcr_che_eclipse_org)
 - [chisel-operator.io](https://crates.io/crates/kcr_chisel_operator_io)
+- [cilium.angeloxx.ch](https://crates.io/crates/kcr_cilium_angeloxx_ch)
 - [cilium.io](https://crates.io/crates/kcr_cilium_io)
 - [claudie.io](https://crates.io/crates/kcr_claudie_io)
 - [clickhouse-keeper.altinity.com](https://crates.io/crates/kcr_clickhouse_keeper_altinity_com)
