@@ -88,6 +88,7 @@ members = [
     "custom-resources/charts_operatorhub_io",
     "custom-resources/che_eclipse_org",
     "custom-resources/chisel_operator_io",
+    "custom-resources/cilium_angeloxx_ch",
     "custom-resources/cilium_io",
     "custom-resources/claudie_io",
     "custom-resources/clickhouse_altinity_com",
