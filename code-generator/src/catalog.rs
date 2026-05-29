@@ -2985,6 +2985,17 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ignores: &[],
     },
     UpstreamSource {
+        project_name: "nmstate/kubernetes-nmstate",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/nmstate/kubernetes-nmstate/blob/main/deploy/crds/nmstate.io_nmstates.yaml",
+            "https://github.com/nmstate/kubernetes-nmstate/blob/main/deploy/crds/nmstate.io_nodenetworkconfigurationenactments.yaml",
+            "https://github.com/nmstate/kubernetes-nmstate/blob/main/deploy/crds/nmstate.io_nodenetworkconfigurationpolicies.yaml",
+            "https://github.com/nmstate/kubernetes-nmstate/blob/main/deploy/crds/nmstate.io_nodenetworkstates.yaml",
+        ],
+        ignores: &[],
+    },
+    UpstreamSource {
         project_name: "opdev/synapse-helm",
         license: APACHE_V2,
         urls: &[

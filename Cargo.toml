@@ -297,6 +297,7 @@ members = [
     "custom-resources/nfd_k8s_sigs_io",
     "custom-resources/nfd_kubernetes_io",
     "custom-resources/nifi_stackable_tech",
+    "custom-resources/nmstate_io",
     "custom-resources/nodeinfo_volcano_sh",
     "custom-resources/notebook_kubedl_io",
     "custom-resources/notification_toolkit_fluxcd_io",
