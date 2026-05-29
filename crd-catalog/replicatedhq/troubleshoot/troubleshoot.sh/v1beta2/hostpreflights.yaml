@@ -33,7 +33,13 @@ spec:
                   items:
                     properties:
                       blockDevices:
+                        description: "BlockDevicesAnalyze evaluates host-collected block device listings (lsblk-based)."
                         properties:
+                          additionalDeviceTypes:
+                            description: "AdditionalDeviceTypes are extra lsblk TYPE values (e.g. loop, lvm) that may count toward outcomes,\nin addition to whole disks and (when IncludeUnmountedPartitions is set) partitions."
+                            items:
+                              type: "string"
+                            type: "array"
                           annotations:
                             additionalProperties:
                               type: "string"
@@ -788,6 +794,55 @@ spec:
                           - "outcomes"
                         type: "object"
                       networkNamespaceConnectivity:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "outcomes"
+                        type: "object"
+                      registryImages:
                         properties:
                           annotations:
                             additionalProperties:
@@ -1732,6 +1787,24 @@ spec:
                           - "fromCIDR"
                           - "port"
                           - "toCIDR"
+                        type: "object"
+                      registryImages:
+                        description: "HostRegistryImages checks whether images are accessible from the host,\nwithout requiring a Kubernetes cluster. Auth can be supplied inline via\nUsername/Password or omitted to rely on ambient credentials (e.g. ~/.docker/config.json)."
+                        properties:
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          images:
+                            items:
+                              type: "string"
+                            type: "array"
+                          password:
+                            type: "string"
+                          username:
+                            type: "string"
+                        required:
+                          - "images"
                         type: "object"
                       run:
                         properties:

@@ -5,7 +5,6 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 
 ## acid.zalan.do/v1
 - `OperatorConfiguration`
-- `postgresql`
 - `PostgresTeam`
 */
 #[cfg(feature = "v1")]

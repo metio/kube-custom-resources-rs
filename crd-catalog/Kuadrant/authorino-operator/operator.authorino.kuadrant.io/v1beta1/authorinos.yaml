@@ -76,7 +76,8 @@ spec:
                           description: "LocalObjectReference contains enough information to let you locate the\nreferenced object inside the same namespace."
                           properties:
                             name:
-                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                              default: ""
+                              description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                               type: "string"
                           type: "object"
                           x-kubernetes-map-type: "atomic"
@@ -109,7 +110,8 @@ spec:
                           description: "LocalObjectReference contains enough information to let you locate the\nreferenced object inside the same namespace."
                           properties:
                             name:
-                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                              default: ""
+                              description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                               type: "string"
                           type: "object"
                           x-kubernetes-map-type: "atomic"

@@ -472,6 +472,16 @@ spec:
                         logLevel:
                           description: "LogLevel refers to the log level used by the Agent component."
                           type: "string"
+                        metrics:
+                          description: "Metrics defines the metrics configuration for the Agent ServiceMonitor."
+                          properties:
+                            interval:
+                              description: "Interval specifies the Prometheus scrape interval for this component's ServiceMonitor.\nIf empty, Prometheus uses its default scrape interval."
+                              type: "string"
+                            scrapeTimeout:
+                              description: "ScrapeTimeout specifies the Prometheus scrape timeout for this component's ServiceMonitor.\nIf empty, Prometheus uses the global scrape timeout."
+                              type: "string"
+                          type: "object"
                         redis:
                           description: "Redis defines the Redis options for the Agent component."
                           properties:
@@ -629,6 +639,16 @@ spec:
                         logLevel:
                           description: "LogLevel refers to the log level used by the Principal component."
                           type: "string"
+                        metrics:
+                          description: "Metrics defines the metrics configuration for the Principal ServiceMonitor."
+                          properties:
+                            interval:
+                              description: "Interval specifies the Prometheus scrape interval for this component's ServiceMonitor.\nIf empty, Prometheus uses its default scrape interval."
+                              type: "string"
+                            scrapeTimeout:
+                              description: "ScrapeTimeout specifies the Prometheus scrape timeout for this component's ServiceMonitor.\nIf empty, Prometheus uses the global scrape timeout."
+                              type: "string"
+                          type: "object"
                         namespace:
                           description: "Namespace is the configuration for the Principal component namespace."
                           properties:
@@ -851,6 +871,16 @@ spec:
                     logLevel:
                       description: "LogLevel refers to the log level used by the Application Controller component. Defaults to ArgoCDDefaultLogLevel if not configured. Valid options are debug, info, error, and warn."
                       type: "string"
+                    metrics:
+                      description: "Metrics defines the metrics configuration for the Application Controller ServiceMonitor."
+                      properties:
+                        interval:
+                          description: "Interval specifies the Prometheus scrape interval for this component's ServiceMonitor.\nIf empty, Prometheus uses its default scrape interval."
+                          type: "string"
+                        scrapeTimeout:
+                          description: "ScrapeTimeout specifies the Prometheus scrape timeout for this component's ServiceMonitor.\nIf empty, Prometheus uses the global scrape timeout."
+                          type: "string"
+                      type: "object"
                     parallelismLimit:
                       description: "ParallelismLimit defines the limit for parallel kubectl operations"
                       format: "int32"
@@ -910,6 +940,13 @@ spec:
                     sharding:
                       description: "Sharding contains the options for the Application Controller sharding configuration."
                       properties:
+                        algorithm:
+                          description: "DistributionAlgorithm determines what algorithm will be used for distribution of shards. Valid options are legacy, round-robin, and consistent-hashing"
+                          enum:
+                            - "legacy"
+                            - "round-robin"
+                            - "consistent-hashing"
+                          type: "string"
                         clustersPerShard:
                           description: "ClustersPerShard defines the maximum number of clusters managed by each argocd shard"
                           format: "int32"
@@ -1324,6 +1361,13 @@ spec:
                       - "name"
                     type: "object"
                   type: "array"
+                networkPolicy:
+                  description: "NetworkPolicy controls whether the operator should create NetworkPolicy resources for this Argo CD instance."
+                  properties:
+                    enabled:
+                      description: "Enabled defines whether NetworkPolicy resources should be created for this Argo CD instance.\nWhen enabled, the operator will reconcile NetworkPolicies for Argo CD components.\nWhen disabled, the operator will remove any previously-created NetworkPolicies."
+                      type: "boolean"
+                  type: "object"
                 nodePlacement:
                   description: "NodePlacement defines NodeSelectors and Taints for Argo CD workloads"
                   properties:
@@ -1473,15 +1517,28 @@ spec:
                     image:
                       description: "Image is the Argo CD Notifications image (optional)"
                       type: "string"
-                    logLevel:
-                      description: "LogLevel describes the log level that should be used by the argocd-notifications. Defaults to ArgoCDDefaultLogLevel if not set.  Valid options are debug,info, error, and warn."
-                      type: "string"
-                    logformat:
+                    logFormat:
                       description: "LogFormat refers to the log format used by the argocd-notifications. Defaults to ArgoCDDefaultLogFormat if not configured. Valid options are text or json."
                       enum:
                         - "text"
                         - "json"
                       type: "string"
+                    logLevel:
+                      description: "LogLevel describes the log level that should be used by the argocd-notifications. Defaults to ArgoCDDefaultLogLevel if not set.  Valid options are debug,info, error, and warn."
+                      type: "string"
+                    logformat:
+                      description: "Deprecated: use LogFormat instead."
+                      type: "string"
+                    metrics:
+                      description: "Metrics defines the metrics configuration for the Notifications ServiceMonitor."
+                      properties:
+                        interval:
+                          description: "Interval specifies the Prometheus scrape interval for this component's ServiceMonitor.\nIf empty, Prometheus uses its default scrape interval."
+                          type: "string"
+                        scrapeTimeout:
+                          description: "ScrapeTimeout specifies the Prometheus scrape timeout for this component's ServiceMonitor.\nIf empty, Prometheus uses the global scrape timeout."
+                          type: "string"
+                      type: "object"
                     replicas:
                       description: "Replicas defines the number of replicas to run for notifications-controller"
                       format: "int32"
@@ -1544,13 +1601,13 @@ spec:
                   description: "Prometheus defines the Prometheus server options for ArgoCD."
                   properties:
                     enabled:
-                      description: "Enabled will toggle Prometheus support globally for ArgoCD."
+                      description: "Enabled will toggle Prometheus support globally for ArgoCD.\nWhen set to true, ServiceMonitors and PrometheusRules will be created for Argo CD metrics.\nThe Prometheus CR, Route, and Ingress are deprecated and will no longer be created."
                       type: "boolean"
                     host:
-                      description: "Host is the hostname to use for Ingress/Route resources."
+                      description: "Host is the hostname to use for Ingress/Route resources.\nDeprecated: This field is no longer used and will be ignored."
                       type: "string"
                     ingress:
-                      description: "Ingress defines the desired state for an Ingress for the Prometheus component."
+                      description: "Ingress defines the desired state for an Ingress for the Prometheus component.\nDeprecated: This field is no longer used and will be ignored."
                       properties:
                         annotations:
                           additionalProperties:
@@ -1586,7 +1643,7 @@ spec:
                         - "enabled"
                       type: "object"
                     route:
-                      description: "Route defines the desired state for an OpenShift Route for the Prometheus component."
+                      description: "Route defines the desired state for an OpenShift Route for the Prometheus component.\nDeprecated: This field is no longer used and will be ignored."
                       properties:
                         annotations:
                           additionalProperties:
@@ -1655,7 +1712,7 @@ spec:
                         - "enabled"
                       type: "object"
                     size:
-                      description: "Size is the replica count for the Prometheus StatefulSet."
+                      description: "Size is the replica count for the Prometheus StatefulSet.\nDeprecated: This field is no longer used and will be ignored."
                       format: "int32"
                       type: "integer"
                   required:
@@ -2808,6 +2865,16 @@ spec:
                     logLevel:
                       description: "LogLevel describes the log level that should be used by the Repo Server. Defaults to ArgoCDDefaultLogLevel if not set.  Valid options are debug, info, error, and warn."
                       type: "string"
+                    metrics:
+                      description: "Metrics defines the metrics configuration for the Repo Server ServiceMonitor."
+                      properties:
+                        interval:
+                          description: "Interval specifies the Prometheus scrape interval for this component's ServiceMonitor.\nIf empty, Prometheus uses its default scrape interval."
+                          type: "string"
+                        scrapeTimeout:
+                          description: "ScrapeTimeout specifies the Prometheus scrape timeout for this component's ServiceMonitor.\nIf empty, Prometheus uses the global scrape timeout."
+                          type: "string"
+                      type: "object"
                     mountsatoken:
                       description: "MountSAToken describes whether you would like to have the Repo server mount the service account token"
                       type: "boolean"
@@ -5240,6 +5307,16 @@ spec:
                     logLevel:
                       description: "LogLevel refers to the log level to be used by the ArgoCD Server component. Defaults to ArgoCDDefaultLogLevel if not set.  Valid options are debug, info, error, and warn."
                       type: "string"
+                    metrics:
+                      description: "Metrics defines the metrics configuration for the Server ServiceMonitor."
+                      properties:
+                        interval:
+                          description: "Interval specifies the Prometheus scrape interval for this component's ServiceMonitor.\nIf empty, Prometheus uses its default scrape interval."
+                          type: "string"
+                        scrapeTimeout:
+                          description: "ScrapeTimeout specifies the Prometheus scrape timeout for this component's ServiceMonitor.\nIf empty, Prometheus uses the global scrape timeout."
+                          type: "string"
+                      type: "object"
                     replicas:
                       description: "Replicas defines the number of replicas for argocd-server. Default is nil. Value should be greater than or equal to 0. Value will be ignored if Autoscaler is enabled."
                       format: "int32"
@@ -5572,6 +5649,128 @@ spec:
                 version:
                   description: "Version is the tag to use with the ArgoCD container image for all ArgoCD components."
                   type: "string"
+                webhookSecrets:
+                  description: "WebhookSecrets references Kubernetes Secrets that supply webhook credentials per provider.\nThe operator syncs values into argocd-secret under the keys Argo CD expects."
+                  properties:
+                    azureDevOps:
+                      description: "AzureDevOps: Secret key references for the Azure DevOps webhook username and password (or PAT)."
+                      properties:
+                        passwordSecretRef:
+                          description: "PasswordSecretRef points to the key holding the password or PAT."
+                          properties:
+                            key:
+                              description: "Key in the Secret whose value should be used."
+                              type: "string"
+                            name:
+                              description: "Name of the Secret."
+                              type: "string"
+                          required:
+                            - "key"
+                            - "name"
+                          type: "object"
+                        usernameSecretRef:
+                          description: "UsernameSecretRef points to the key holding the username."
+                          properties:
+                            key:
+                              description: "Key in the Secret whose value should be used."
+                              type: "string"
+                            name:
+                              description: "Name of the Secret."
+                              type: "string"
+                          required:
+                            - "key"
+                            - "name"
+                          type: "object"
+                      type: "object"
+                      x-kubernetes-validations:
+                        - message: "usernameSecretRef and passwordSecretRef must be set together"
+                          rule: "(has(self.usernameSecretRef) && has(self.passwordSecretRef)) || (!has(self.usernameSecretRef) && !has(self.passwordSecretRef))"
+                    bitbucket:
+                      description: "Bitbucket: Secret key reference for the Bitbucket Cloud webhook UUID."
+                      properties:
+                        webhookUUIDSecretRef:
+                          description: "WebhookUUIDSecretRef points to the key holding the Bitbucket Cloud webhook UUID."
+                          properties:
+                            key:
+                              description: "Key in the Secret whose value should be used."
+                              type: "string"
+                            name:
+                              description: "Name of the Secret."
+                              type: "string"
+                          required:
+                            - "key"
+                            - "name"
+                          type: "object"
+                      type: "object"
+                    bitbucketServer:
+                      description: "BitbucketServer: Secret key reference for the Bitbucket Server webhook secret."
+                      properties:
+                        webhookSecretRef:
+                          description: "WebhookSecretRef points to the key holding the Bitbucket Server webhook shared secret."
+                          properties:
+                            key:
+                              description: "Key in the Secret whose value should be used."
+                              type: "string"
+                            name:
+                              description: "Name of the Secret."
+                              type: "string"
+                          required:
+                            - "key"
+                            - "name"
+                          type: "object"
+                      type: "object"
+                    github:
+                      description: "GitHub: Secret key reference for the GitHub webhook shared secret."
+                      properties:
+                        webhookSecretRef:
+                          description: "WebhookSecretRef points to the key holding the GitHub webhook shared secret."
+                          properties:
+                            key:
+                              description: "Key in the Secret whose value should be used."
+                              type: "string"
+                            name:
+                              description: "Name of the Secret."
+                              type: "string"
+                          required:
+                            - "key"
+                            - "name"
+                          type: "object"
+                      type: "object"
+                    gitlab:
+                      description: "GitLab: Secret key reference for the GitLab webhook shared secret."
+                      properties:
+                        webhookSecretRef:
+                          description: "WebhookSecretRef points to the key holding the GitLab webhook shared secret."
+                          properties:
+                            key:
+                              description: "Key in the Secret whose value should be used."
+                              type: "string"
+                            name:
+                              description: "Name of the Secret."
+                              type: "string"
+                          required:
+                            - "key"
+                            - "name"
+                          type: "object"
+                      type: "object"
+                    gogs:
+                      description: "Gogs: Secret key reference for the Gogs webhook shared secret."
+                      properties:
+                        webhookSecretRef:
+                          description: "WebhookSecretRef points to the key holding the Gogs webhook shared secret."
+                          properties:
+                            key:
+                              description: "Key in the Secret whose value should be used."
+                              type: "string"
+                            name:
+                              description: "Name of the Secret."
+                              type: "string"
+                          required:
+                            - "key"
+                            - "name"
+                          type: "object"
+                      type: "object"
+                  type: "object"
               type: "object"
             status:
               description: "ArgoCDStatus defines the observed state of ArgoCD"

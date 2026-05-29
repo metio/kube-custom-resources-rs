@@ -2399,6 +2399,7 @@ spec:
                                     type: "string"
                                 type: "object"
                               hegel:
+                                description: "This field has been deprecated"
                                 properties:
                                   arch:
                                     description: "Architectures of the asset"
@@ -2739,6 +2740,7 @@ spec:
                                   - "vmlinuz"
                                 type: "object"
                               rufio:
+                                description: "This field has been deprecated"
                                 properties:
                                   arch:
                                     description: "Architectures of the asset"
@@ -2799,6 +2801,7 @@ spec:
                               tink:
                                 properties:
                                   nginx:
+                                    description: "This field has been deprecated"
                                     properties:
                                       arch:
                                         description: "Architectures of the asset"
@@ -2828,6 +2831,7 @@ spec:
                                         type: "string"
                                     type: "object"
                                   tinkController:
+                                    description: "This field has been deprecated"
                                     properties:
                                       arch:
                                         description: "Architectures of the asset"
@@ -2857,6 +2861,7 @@ spec:
                                         type: "string"
                                     type: "object"
                                   tinkRelay:
+                                    description: "This field has been deprecated"
                                     properties:
                                       arch:
                                         description: "Architectures of the asset"
@@ -2915,6 +2920,7 @@ spec:
                                         type: "string"
                                     type: "object"
                                   tinkServer:
+                                    description: "This field has been deprecated"
                                     properties:
                                       arch:
                                         description: "Architectures of the asset"
@@ -2944,6 +2950,7 @@ spec:
                                         type: "string"
                                     type: "object"
                                   tinkWorker:
+                                    description: "This field has been deprecated"
                                     properties:
                                       arch:
                                         description: "Architectures of the asset"
@@ -2973,12 +2980,7 @@ spec:
                                         type: "string"
                                     type: "object"
                                 required:
-                                  - "nginx"
-                                  - "tinkController"
-                                  - "tinkRelay"
                                   - "tinkRelayInit"
-                                  - "tinkServer"
-                                  - "tinkWorker"
                                 type: "object"
                               tinkerbellChart:
                                 properties:
@@ -3041,9 +3043,7 @@ spec:
                             required:
                               - "actions"
                               - "boots"
-                              - "hegel"
                               - "hook"
-                              - "rufio"
                               - "stack"
                               - "tink"
                               - "tinkerbellChart"

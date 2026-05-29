@@ -3,6 +3,10 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 
 # Available Custom Resources
 
+## groupsnapshot.storage.k8s.io/v1
+- `VolumeGroupSnapshotClass`
+- `VolumeGroupSnapshotContent`
+- `VolumeGroupSnapshot`
 ## groupsnapshot.storage.k8s.io/v1alpha1
 - `VolumeGroupSnapshotClass`
 - `VolumeGroupSnapshotContent`
@@ -16,6 +20,8 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `VolumeGroupSnapshotContent`
 - `VolumeGroupSnapshot`
 */
+#[cfg(feature = "v1")]
+pub mod v1;
 #[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;
 #[cfg(feature = "v1beta1")]

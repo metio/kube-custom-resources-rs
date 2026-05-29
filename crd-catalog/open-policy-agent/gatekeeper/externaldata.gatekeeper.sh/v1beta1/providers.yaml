@@ -13,13 +13,12 @@ spec:
     listKind: "ProviderList"
     plural: "providers"
     singular: "provider"
-  preserveUnknownFields: false
   scope: "Cluster"
   versions:
     - name: "v1beta1"
       schema:
         openAPIV3Schema:
-          description: "Provider is the Schema for the providers API"
+          description: "Provider is the Schema for the providers API."
           properties:
             apiVersion:
               description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"

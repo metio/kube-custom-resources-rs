@@ -557,6 +557,9 @@ spec:
                               type: "string"
                           type: "object"
                       type: "object"
+                    disabled:
+                      default: false
+                      type: "boolean"
                     env:
                       items:
                         properties:
@@ -1074,6 +1077,8 @@ spec:
                             x-kubernetes-int-or-string: true
                           type: "object"
                       type: "object"
+                    schedulerName:
+                      type: "string"
                     securityContext:
                       properties:
                         appArmorProfile:
@@ -2592,6 +2597,9 @@ spec:
                               type: "string"
                           type: "object"
                       type: "object"
+                    disabled:
+                      default: false
+                      type: "boolean"
                     env:
                       items:
                         properties:
@@ -3109,6 +3117,8 @@ spec:
                             x-kubernetes-int-or-string: true
                           type: "object"
                       type: "object"
+                    schedulerName:
+                      type: "string"
                     securityContext:
                       properties:
                         appArmorProfile:
@@ -4648,6 +4658,9 @@ spec:
                               type: "string"
                           type: "object"
                       type: "object"
+                    disabled:
+                      default: false
+                      type: "boolean"
                     env:
                       items:
                         properties:
@@ -5165,6 +5178,8 @@ spec:
                             x-kubernetes-int-or-string: true
                           type: "object"
                       type: "object"
+                    schedulerName:
+                      type: "string"
                     securityContext:
                       properties:
                         appArmorProfile:

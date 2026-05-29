@@ -14,6 +14,8 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 ### devices.kubeedge.io/v1alpha2
 - `DeviceModel`
 - `Device`
+- `DeviceStatus`
 ### devices.kubeedge.io/v1beta1
 - `DeviceModel`
 - `Device`
+- `DeviceStatus`

@@ -163,6 +163,94 @@ spec:
                         - "header"
                       type: "string"
                   type: "object"
+                chat_ai:
+                  properties:
+                    default_provider:
+                      description: "The default provider to use for the ChatAI feature. This is the provider that will be used if no provider is specified in the request."
+                      type: "string"
+                    enabled:
+                      default: false
+                      description: "Enable or disable the ChatAI feature."
+                      type: "boolean"
+                    providers:
+                      description: "A list of providers that can be used for the ChatAI feature. This is the list of providers that will be available to the user to choose from."
+                      items:
+                        properties:
+                          config:
+                            description: "The provider configuration variant. Valid values depend on `type`: `anthropic` requires `default`; `google` requires `gemini`; `openai` supports `default`, `gemini`, or `azure`. Default value is `default`."
+                            type: "string"
+                          default_model:
+                            description: "The default model of the provider."
+                            type: "string"
+                          description:
+                            description: "The description of the provider."
+                            type: "string"
+                          enabled:
+                            description: "Enable or disable the provider."
+                            type: "boolean"
+                          endpoint:
+                            description: "The endpoint of the provider. This is only used if a model has no endpoint specified."
+                            type: "string"
+                          key:
+                            description: "The key of the provider. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the token is cached and automatically refreshed when the secret changes, enabling rotation without pod restart."
+                            type: "string"
+                          models:
+                            description: "A list of models that can be used for the ChatAI feature. This is the list of models that will be available to the user to choose from."
+                            items:
+                              properties:
+                                description:
+                                  description: "The description of the model."
+                                  type: "string"
+                                enabled:
+                                  description: "Enable or disable the model."
+                                  type: "boolean"
+                                endpoint:
+                                  description: "The endpoint of the model."
+                                  type: "string"
+                                key:
+                                  description: "The key of the model. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the token is cached and automatically refreshed when the secret changes, enabling rotation without pod restart."
+                                  type: "string"
+                                model:
+                                  description: "The model of the model."
+                                  type: "string"
+                                name:
+                                  description: "The name of the model."
+                                  type: "string"
+                              type: "object"
+                            type: "array"
+                          name:
+                            description: "The name of the provider."
+                            type: "string"
+                          type:
+                            description: "The type of the AI models provider. Available values are `openai`, `anthropic`, and `google`. Default value is `openai`."
+                            type: "string"
+                        type: "object"
+                      type: "array"
+                    store_config:
+                      description: "Configuration for the ChatAI store."
+                      properties:
+                        enabled:
+                          default: true
+                          description: "Enable or disable the ChatAI store."
+                          type: "boolean"
+                        inactivity_timeout:
+                          default: "30m"
+                          description: "Idle time allowed before the conversation is deleted due to inactivity."
+                          type: "string"
+                        max_cache_memory_mb:
+                          default: 1024
+                          description: "The maximum cache memory for the ChatAI store."
+                          type: "integer"
+                        reduce_threshold:
+                          default: 15
+                          description: "The threshold for the ChatAI store reduction with AI. This is the number of messages in a conversation before the conversation is reduced."
+                          type: "integer"
+                        reduce_with_ai:
+                          default: false
+                          description: "Enable or disable the ChatAI store reduction with AI."
+                          type: "boolean"
+                      type: "object"
+                  type: "object"
                 clustering:
                   description: "Multi-cluster related features."
                   properties:
@@ -231,13 +319,13 @@ spec:
                         type: "string"
                       type: "array"
                     additional_pod_containers_yaml:
-                      description: "Additional containers to add to the list of pod containers. Use this to add container(s) to the Kiali pod. SECURITY: By default, the operator will forcibly apply a restrictive security context to all containers (allowPrivilegeEscalation: false, privileged: false, readOnlyRootFilesystem: true, runAsNonRoot: true, capabilities dropped). However, if the operator's ALLOW_SECURITY_CONTEXT_OVERRIDE environment variable is set to 'true', containers can define their own security contexts which will be preserved. Secret-backed volumes are automatically forced to read-only regardless of the security context override setting. Use with care since containers may cause the Kiali container itself to operate incorrectly. It is up to the user who added the additional containers to ensure it works properly inside the Kiali pod; Kiali makes no guarantee additional containers will work."
+                      description: "Additional containers to add to the list of pod containers. Use this to add container(s) to the Kiali pod. SECURITY: By default, the operator will forcibly apply a restrictive security context to all containers (allowPrivilegeEscalation: false, privileged: false, readOnlyRootFilesystem: true, runAsNonRoot: true, seccompProfile: RuntimeDefault, capabilities dropped). However, if the operator's ALLOW_SECURITY_CONTEXT_OVERRIDE environment variable is set to 'true', containers can define their own security contexts which will be preserved. Secret-backed volumes are automatically forced to read-only regardless of the security context override setting. Use with care since containers may cause the Kiali container itself to operate incorrectly. It is up to the user who added the additional containers to ensure it works properly inside the Kiali pod; Kiali makes no guarantee additional containers will work."
                       items:
                         type: "object"
                         x-kubernetes-preserve-unknown-fields: true
                       type: "array"
                     additional_pod_init_containers_yaml:
-                      description: "Additional initContainers to add to the list of pod initContainers. Use this to add initContainer(s) to the Kiali pod. SECURITY: By default, the operator will forcibly apply a restrictive security context to all initContainers (allowPrivilegeEscalation: false, privileged: false, readOnlyRootFilesystem: true, runAsNonRoot: true, capabilities dropped). However, if the operator's ALLOW_SECURITY_CONTEXT_OVERRIDE environment variable is set to 'true', initContainers can define their own security contexts which will be preserved. Secret-backed volumes are automatically forced to read-only regardless of the security context override setting. Use with care since initContainers may cause the Kiali container itself to operate incorrectly. It is up to the user who added the additional initContainers to ensure it works properly inside the Kiali pod; Kiali makes no guarantee additional initContainers will work."
+                      description: "Additional initContainers to add to the list of pod initContainers. Use this to add initContainer(s) to the Kiali pod. SECURITY: By default, the operator will forcibly apply a restrictive security context to all initContainers (allowPrivilegeEscalation: false, privileged: false, readOnlyRootFilesystem: true, runAsNonRoot: true, seccompProfile: RuntimeDefault, capabilities dropped). However, if the operator's ALLOW_SECURITY_CONTEXT_OVERRIDE environment variable is set to 'true', initContainers can define their own security contexts which will be preserved. Secret-backed volumes are automatically forced to read-only regardless of the security context override setting. Use with care since initContainers may cause the Kiali container itself to operate incorrectly. It is up to the user who added the additional initContainers to ensure it works properly inside the Kiali pod; Kiali makes no guarantee additional initContainers will work."
                       items:
                         type: "object"
                         x-kubernetes-preserve-unknown-fields: true
@@ -526,6 +614,17 @@ spec:
                         type: "string"
                       description: "Custom annotations to be created on the Kiali pod.\nBy default, the following annotation is applied:\n```\nproxy.istio.io/config: '{ \"holdApplicationUntilProxyStarts\": true }'\n```\nIf you define your own pod_annotations, they will overwrite this default.\nTo retain the default behavior while adding your own annotations,\nmake sure to include this value alongside your custom annotations.\n"
                       type: "object"
+                    pod_disruption_budget:
+                      description: "Determines what (if any) PodDisruptionBudget should be created for the Kiali pod.\nA typical way to configure PDB for Kiali is,\n```\nspec:\n  deployment:\n    pod_disruption_budget:\n      api_version: \"policy/v1\"\n      spec:\n        minAvailable: 1\n```\n"
+                      properties:
+                        api_version:
+                          description: "A specific PDB API version that can be specified in case there is some PDB feature you want to use that is only supported in that specific version. If value is an empty string, the default version of 'policy/v1' will be used."
+                          type: "string"
+                        spec:
+                          description: "The `spec` specified here will be placed in the created PDB resource's 'spec' section. If `spec` is left empty, no PDB resource will be created. Note that you must not specify the 'selector' section in `spec`; the Kiali Operator will populate that for you."
+                          type: "object"
+                          x-kubernetes-preserve-unknown-fields: true
+                      type: "object"
                     pod_labels:
                       additionalProperties:
                         type: "string"
@@ -600,6 +699,10 @@ spec:
                     service_type:
                       description: "The Kiali service type. Kubernetes determines what values are valid. Common values are 'NodePort', 'ClusterIP', and 'LoadBalancer'."
                       type: "string"
+                    strategy:
+                      description: "Configures the update strategy for the Kiali deployment. If not specified, a RollingUpdate strategy is used with maxSurge=1 and maxUnavailable=1. See the Kubernetes documentation on Deployment Strategy for details."
+                      type: "object"
+                      x-kubernetes-preserve-unknown-fields: true
                     tls_config:
                       description: "TLS policy configuration. When source is 'auto' on OpenShift, the APIServer TLSSecurityProfile is used. Otherwise, the explicit config values are enforced."
                       properties:
@@ -947,8 +1050,8 @@ spec:
                               type: "string"
                           type: "object"
                         istio_identity_domain:
-                          default: "svc.cluster.local"
-                          description: "The annotation used by Istio to identify domains."
+                          default: ""
+                          description: "The Kubernetes cluster DNS domain suffix used to construct fully qualified service hostnames (e.g. reviews.bookinfo.svc.cluster.local) and service account identity strings for validation. When empty, it is auto-detected from the Istio mesh trustDomain (as 'svc.' + trustDomain). Set explicitly only if you need to override the auto-detected value."
                           type: "string"
                         istio_injection_annotation:
                           default: "sidecar.istio.io/inject"
@@ -970,7 +1073,7 @@ spec:
                           type: "integer"
                         istiod_polling_interval_seconds:
                           default: 20
-                          description: "How often in seconds Kiali will poll istiod(s) for proxy status and registry services. Polling is not performed if istio_api_enabled is false."
+                          description: "How often in seconds Kiali will poll istiod(s) for proxy status. Polling is not performed if istio_api_enabled is false."
                           type: "integer"
                         root_namespace:
                           description: "DEPRECATED AFTER v2.11: This setting is deprecated and will be ignored. The namespace to treat as the administrative root namespace for Istio configuration."
@@ -1134,6 +1237,10 @@ spec:
                             type: "string"
                           description: "A set of name/value settings that will be passed as headers when requests are sent to Prometheus."
                           type: "object"
+                        enabled:
+                          default: true
+                          description: "When true, Kiali will connect to the Prometheus instance for Istio telemetry metrics. When false, Kiali will run without metrics support - the graph, health based on request rates, and metrics displays will be unavailable."
+                          type: "boolean"
                         health_check_url:
                           description: "Used in the Components health feature. This is the url which Kiali will ping to determine whether the component is reachable or not. It defaults to `url` when not provided."
                           type: "string"
@@ -1298,6 +1405,10 @@ spec:
                           default: true
                           description: "Set to true in order to enable GRPC connections between Kiali and Jaeger which will speed up the queries. In some setups you might not be able to use GRPC (e.g. if Jaeger is behind some reverse proxy that doesn't support it)."
                           type: "boolean"
+                        use_waypoint_name:
+                          default: false
+                          description: "Set to true in order to look for traces using the waypoint service name and not the actual service. Ex. To find traces for Istio versions earlier than 1.28."
+                          type: "boolean"
                         whitelist_istio_system:
                           description: "Kiali will get the traces of these services found in the Istio control plane namespace."
                           items:
@@ -1309,6 +1420,35 @@ spec:
                 health_config:
                   description: "This section defines what it means for nodes to be healthy. For more details, see https://kiali.io/docs/configuration/health/"
                   properties:
+                    compute:
+                      description: "Configuration for health pre-computation and caching."
+                      properties:
+                        duration:
+                          default: "5m"
+                          description: "The time period over which health is calculated. Used as the rate interval for Prometheus queries."
+                          enum:
+                            - "1m"
+                            - "2m"
+                            - "5m"
+                            - "10m"
+                            - "30m"
+                            - "1h"
+                            - "3h"
+                            - "6h"
+                            - "12h"
+                            - "1d"
+                            - "7d"
+                            - "30d"
+                          type: "string"
+                        refresh_interval:
+                          default: "3m"
+                          description: "The interval between health cache refreshes."
+                          type: "string"
+                        timeout:
+                          default: "10m"
+                          description: "The maximum time allowed for a single health refresh cycle. If exceeded, the refresh is cancelled and the next cycle starts on schedule."
+                          type: "string"
+                      type: "object"
                     rate:
                       items:
                         properties:
@@ -1365,20 +1505,16 @@ spec:
                       description: "If using a single scheme for app/version labeling, set this to the app label name being used. This is typically `app` or `app.kubernetes.io/name`. The default is unset, and Kiali will handle mixed schemes."
                       type: "string"
                     egress_gateway_label:
-                      default: "istio=egressgateway"
-                      description: "The selector label for Egress Gateway workload. This is typically `istio=egressgateway`."
+                      description: "DEPRECATED AFTER v2.27: This setting is deprecated and will be ignored."
                       type: "string"
                     ingress_gateway_label:
-                      default: "istio=ingressgateway"
-                      description: "The selector label for Ingress Gateway workload. This is typically `istio=ingressgateway`."
+                      description: "DEPRECATED AFTER v2.27: This setting is deprecated and will be ignored."
                       type: "string"
                     injection_label_name:
-                      default: "istio-injection"
-                      description: "The name of the label used to instruct Istio to automatically inject sidecar proxies when applications are deployed."
+                      description: "DEPRECATED AFTER v2.27: This setting is deprecated and will be ignored. The injection label name is now hardcoded to the standard value."
                       type: "string"
                     injection_label_rev:
-                      default: "istio.io/rev"
-                      description: "The label used to identify the Istio revision."
+                      description: "DEPRECATED AFTER v2.27: This setting is deprecated and will be ignored. The injection label revision is now hardcoded to the standard value."
                       type: "string"
                     version_label_name:
                       description: "If using a single scheme for app/version labeling, set this to the version label name being used. This is typically `version` or `app.kubernetes.io/version`. The default is unset, and Kiali will handle mixed schemes."
@@ -1390,6 +1526,14 @@ spec:
                 kiali_feature_flags:
                   description: "Kiali features that can be enabled or disabled."
                   properties:
+                    authz:
+                      description: "Authorization-related feature flags."
+                      properties:
+                        require_namespace_get:
+                          default: false
+                          description: "When true, a user must have GET permission on a namespace for it to be visible,\neven if the user has LIST permission. When false (the default), a successful LIST\nis trusted without per-namespace GET checks. Enable this in multi-tenant environments\nwhere LIST permission is granted broadly but GET is restricted per namespace.\n"
+                          type: "boolean"
+                      type: "object"
                     certificates_information_indicators:
                       description: "DEPRECATED AFTER v1.73: Settings for certificate information indicators."
                       properties:
@@ -1812,8 +1956,21 @@ spec:
                           properties:
                             enabled:
                               default: true
-                              description: "When true, the metrics endpoint will be available for Prometheus to scrape."
+                              description: "The metrics HTTP listener is started when either this or health_status.enabled is true."
                               type: "boolean"
+                            health_status:
+                              description: "Settings for the kiali_health_status Prometheus gauge (per-entity health from the health cache refresh). Independent of metrics.enabled."
+                              properties:
+                                enabled:
+                                  default: false
+                                  description: "When true, Kiali exports kiali_health_status metrics during health cache refresh."
+                                  type: "boolean"
+                                max_consecutive_na:
+                                  default: 3
+                                  description: "Number of consecutive health refresh cycles an entity may report NA or be missing before its kiali_health_status series is removed. Values less than or equal to 0 use the server default (3)."
+                                  minimum: 0.0
+                                  type: "integer"
+                              type: "object"
                             port:
                               default: 9090
                               description: "The port that the server will bind to in order to receive metric requests. This is the port Prometheus will need to scrape when collecting metrics from Kiali."

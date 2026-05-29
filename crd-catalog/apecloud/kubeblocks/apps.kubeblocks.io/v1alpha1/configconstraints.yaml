@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.18.0"
   labels:
     app.kubernetes.io/name: "kubeblocks"
   name: "configconstraints.apps.kubeblocks.io"
@@ -30,7 +30,7 @@ spec:
       name: "v1alpha1"
       schema:
         openAPIV3Schema:
-          description: "ConfigConstraint manages the parameters across multiple configuration files contained in a single configure template.\nThese configuration files should have the same format (e.g. ini, xml, properties, json).\n\n\nIt provides the following functionalities:\n\n\n1. **Parameter Value Validation**: Validates and ensures compliance of parameter values with defined constraints.\n2. **Dynamic Reload on Modification**: Monitors parameter changes and triggers dynamic reloads to apply updates.\n3. **Parameter Rendering in Templates**: Injects parameters into templates to generate up-to-date configuration files."
+          description: "ConfigConstraint manages the parameters across multiple configuration files contained in a single configure template.\nThese configuration files should have the same format (e.g. ini, xml, properties, json).\n\nIt provides the following functionalities:\n\n1. **Parameter Value Validation**: Validates and ensures compliance of parameter values with defined constraints.\n2. **Dynamic Reload on Modification**: Monitors parameter changes and triggers dynamic reloads to apply updates.\n3. **Parameter Rendering in Templates**: Injects parameters into templates to generate up-to-date configuration files."
           properties:
             apiVersion:
               description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
@@ -50,14 +50,14 @@ spec:
                   description: "Defines a list of parameters including their names, default values, descriptions,\ntypes, and constraints (permissible values or the range of valid values)."
                   properties:
                     cue:
-                      description: "Hold a string that contains a script written in CUE language that defines a list of configuration items.\nEach item is detailed with its name, default value, description, type (e.g. string, integer, float),\nand constraints (permissible values or the valid range of values).\n\n\nCUE (Configure, Unify, Execute) is a declarative language designed for defining and validating\ncomplex data configurations.\nIt is particularly useful in environments like K8s where complex configurations and validation rules are common.\n\n\nThis script functions as a validator for user-provided configurations, ensuring compliance with\nthe established specifications and constraints."
+                      description: "Hold a string that contains a script written in CUE language that defines a list of configuration items.\nEach item is detailed with its name, default value, description, type (e.g. string, integer, float),\nand constraints (permissible values or the valid range of values).\n\nCUE (Configure, Unify, Execute) is a declarative language designed for defining and validating\ncomplex data configurations.\nIt is particularly useful in environments like K8s where complex configurations and validation rules are common.\n\nThis script functions as a validator for user-provided configurations, ensuring compliance with\nthe established specifications and constraints."
                       type: "string"
                     schema:
                       description: "Generated from the 'cue' field and transformed into a JSON format."
                       x-kubernetes-preserve-unknown-fields: true
                   type: "object"
                 downwardAPIOptions:
-                  description: "Specifies a list of actions to execute specified commands based on Pod labels.\n\n\nIt utilizes the K8s Downward API to mount label information as a volume into the pod.\nThe 'config-manager' sidecar container watches for changes in the role label and dynamically invoke\nregistered commands (usually execute some SQL statements) when a change is detected.\n\n\nIt is designed for scenarios where:\n\n\n- Replicas with different roles have different configurations, such as Redis primary & secondary replicas.\n- After a role switch (e.g., from secondary to primary), some changes in configuration are needed\n  to reflect the new role."
+                  description: "Specifies a list of actions to execute specified commands based on Pod labels.\n\nIt utilizes the K8s Downward API to mount label information as a volume into the pod.\nThe 'config-manager' sidecar container watches for changes in the role label and dynamically invoke\nregistered commands (usually execute some SQL statements) when a change is detected.\n\nIt is designed for scenarios where:\n\n- Replicas with different roles have different configurations, such as Redis primary & secondary replicas.\n- After a role switch (e.g., from secondary to primary), some changes in configuration are needed\n  to reflect the new role."
                   items:
                     description: "DownwardAPIChangeTriggeredAction defines an action that triggers specific commands in response to changes in Pod labels.\nFor example, a command might be executed when the 'role' label of the Pod is updated."
                     properties:
@@ -146,7 +146,7 @@ spec:
                     type: "object"
                   type: "array"
                 dynamicActionCanBeMerged:
-                  description: "Indicates whether to consolidate dynamic reload and restart actions into a single restart.\n\n\n- If true, updates requiring both actions will result in only a restart, merging the actions.\n- If false, updates will trigger both actions executed sequentially: first dynamic reload, then restart.\n\n\nThis flag allows for more efficient handling of configuration changes by potentially eliminating\nan unnecessary reload step."
+                  description: "Indicates whether to consolidate dynamic reload and restart actions into a single restart.\n\n- If true, updates requiring both actions will result in only a restart, merging the actions.\n- If false, updates will trigger both actions executed sequentially: first dynamic reload, then restart.\n\nThis flag allows for more efficient handling of configuration changes by potentially eliminating\nan unnecessary reload step."
                   type: "boolean"
                 dynamicParameters:
                   description: "List dynamic parameters.\nModifications to these parameters trigger a configuration reload without requiring a process restart."
@@ -155,10 +155,10 @@ spec:
                   type: "array"
                   x-kubernetes-list-type: "set"
                 formatterConfig:
-                  description: "Specifies the format of the configuration file and any associated parameters that are specific to the chosen format.\nSupported formats include `ini`, `xml`, `yaml`, `json`, `hcl`, `dotenv`, `properties`, and `toml`.\n\n\nEach format may have its own set of parameters that can be configured.\nFor instance, when using the `ini` format, you can specify the section name.\n\n\nExample:\n```\nformatterConfig:\n format: ini\n iniConfig:\n   sectionName: mysqld\n```"
+                  description: "Specifies the format of the configuration file and any associated parameters that are specific to the chosen format.\nSupported formats include `ini`, `xml`, `yaml`, `json`, `hcl`, `dotenv`, `properties`, and `toml`.\n\nEach format may have its own set of parameters that can be configured.\nFor instance, when using the `ini` format, you can specify the section name.\n\nExample:\n```\nformatterConfig:\n format: ini\n iniConfig:\n   sectionName: mysqld\n```"
                   properties:
                     format:
-                      description: "The config file format. Valid values are `ini`, `xml`, `yaml`, `json`,\n`hcl`, `dotenv`, `properties` and `toml`. Each format has its own characteristics and use cases.\n\n\n- ini: is a text-based content with a structure and syntax comprising key–value pairs for properties, reference wiki: https://en.wikipedia.org/wiki/INI_file\n- xml: refers to wiki: https://en.wikipedia.org/wiki/XML\n- yaml: supports for complex data types and structures.\n- json: refers to wiki: https://en.wikipedia.org/wiki/JSON\n- hcl: The HashiCorp Configuration Language (HCL) is a configuration language authored by HashiCorp, reference url: https://www.linode.com/docs/guides/introduction-to-hcl/\n- dotenv: is a plain text file with simple key–value pairs, reference wiki: https://en.wikipedia.org/wiki/Configuration_file#MS-DOS\n- properties: a file extension mainly used in Java, reference wiki: https://en.wikipedia.org/wiki/.properties\n- toml: refers to wiki: https://en.wikipedia.org/wiki/TOML\n- props-plus: a file extension mainly used in Java, supports CamelCase(e.g: brokerMaxConnectionsPerIp)"
+                      description: "The config file format. Valid values are `ini`, `xml`, `yaml`, `json`,\n`hcl`, `dotenv`, `properties` and `toml`. Each format has its own characteristics and use cases.\n\n- ini: is a text-based content with a structure and syntax comprising key–value pairs for properties, reference wiki: https://en.wikipedia.org/wiki/INI_file\n- xml: refers to wiki: https://en.wikipedia.org/wiki/XML\n- yaml: supports for complex data types and structures.\n- json: refers to wiki: https://en.wikipedia.org/wiki/JSON\n- hcl: The HashiCorp Configuration Language (HCL) is a configuration language authored by HashiCorp, reference url: https://www.linode.com/docs/guides/introduction-to-hcl/\n- dotenv: is a plain text file with simple key–value pairs, reference wiki: https://en.wikipedia.org/wiki/Configuration_file#MS-DOS\n- properties: a file extension mainly used in Java, reference wiki: https://en.wikipedia.org/wiki/.properties\n- toml: refers to wiki: https://en.wikipedia.org/wiki/TOML\n- props-plus: a file extension mainly used in Java, supports CamelCase(e.g: brokerMaxConnectionsPerIp)"
                       enum:
                         - "xml"
                         - "ini"
@@ -188,7 +188,7 @@ spec:
                   type: "array"
                   x-kubernetes-list-type: "set"
                 reloadOptions:
-                  description: "Specifies the dynamic reload action supported by the engine.\nWhen set, the controller executes the method defined here to execute hot parameter updates.\n\n\nDynamic reloading is triggered only if both of the following conditions are met:\n\n\n1. The modified parameters are listed in the `dynamicParameters` field.\n   If `reloadStaticParamsBeforeRestart` is set to true, modifications to `staticParameters`\n   can also trigger a reload.\n2. `reloadOptions` is set.\n\n\nIf `reloadOptions` is not set or the modified parameters are not listed in `dynamicParameters`,\ndynamic reloading will not be triggered.\n\n\nExample:\n```yaml\nreloadOptions:\n tplScriptTrigger:\n   namespace: kb-system\n   scriptConfigMapRef: mysql-reload-script\n   sync: true\n```"
+                  description: "Specifies the dynamic reload action supported by the engine.\nWhen set, the controller executes the method defined here to execute hot parameter updates.\n\nDynamic reloading is triggered only if both of the following conditions are met:\n\n1. The modified parameters are listed in the `dynamicParameters` field.\n   If `reloadStaticParamsBeforeRestart` is set to true, modifications to `staticParameters`\n   can also trigger a reload.\n2. `reloadOptions` is set.\n\nIf `reloadOptions` is not set or the modified parameters are not listed in `dynamicParameters`,\ndynamic reloading will not be triggered.\n\nExample:\n```yaml\nreloadOptions:\n tplScriptTrigger:\n   namespace: kb-system\n   scriptConfigMapRef: mysql-reload-script\n   sync: true\n```"
                   properties:
                     autoTrigger:
                       description: "Automatically perform the reload when specified conditions are met."
@@ -201,10 +201,10 @@ spec:
                       description: "Allows to execute a custom shell script to reload the process."
                       properties:
                         batchParamsFormatterTemplate:
-                          description: "Specifies a Go template string for formatting batch input data.\nIt's used when `batchReload` is 'True' to format data passed into STDIN of the script.\nThe template accesses key-value pairs of updated parameters via the '$' variable.\nThis allows for custom formatting of the input data.\n\n\nExample template:\n\n\n```yaml\nbatchParamsFormatterTemplate: |-\n{{- range $pKey, $pValue := $ }}\n{{ printf \"%s:%s\" $pKey $pValue }}\n{{- end }}\n```\n\n\nThis example generates batch input data in a key:value format, sorted by keys.\n```\nkey1:value1\nkey2:value2\nkey3:value3\n```\n\n\nIf not specified, the default format is key=value, sorted by keys, for each updated parameter.\n```\nkey1=value1\nkey2=value2\nkey3=value3\n```"
+                          description: "Specifies a Go template string for formatting batch input data.\nIt's used when `batchReload` is 'True' to format data passed into STDIN of the script.\nThe template accesses key-value pairs of updated parameters via the '$' variable.\nThis allows for custom formatting of the input data.\n\nExample template:\n\n```yaml\nbatchParamsFormatterTemplate: |-\n{{- range $pKey, $pValue := $ }}\n{{ printf \"%s:%s\" $pKey $pValue }}\n{{- end }}\n```\n\nThis example generates batch input data in a key:value format, sorted by keys.\n```\nkey1:value1\nkey2:value2\nkey3:value3\n```\n\nIf not specified, the default format is key=value, sorted by keys, for each updated parameter.\n```\nkey1=value1\nkey2=value2\nkey3=value3\n```"
                           type: "string"
                         batchReload:
-                          description: "Controls whether parameter updates are processed individually or collectively in a batch:\n\n\n- 'True': Processes all changes in one batch reload.\n- 'False': Processes each change individually.\n\n\nDefaults to 'False' if unspecified."
+                          description: "Controls whether parameter updates are processed individually or collectively in a batch:\n\n- 'True': Processes all changes in one batch reload.\n- 'False': Processes each change individually.\n\nDefaults to 'False' if unspecified."
                           type: "boolean"
                         command:
                           description: "Specifies the command to execute in order to reload the process. It should be a valid shell command."
@@ -227,10 +227,10 @@ spec:
                             - "scriptConfigMapRef"
                           type: "object"
                         sync:
-                          description: "Determines the synchronization mode of parameter updates with \"config-manager\".\n\n\n- 'True': Executes reload actions synchronously, pausing until completion.\n- 'False': Executes reload actions asynchronously, without waiting for completion."
+                          description: "Determines the synchronization mode of parameter updates with \"config-manager\".\n\n- 'True': Executes reload actions synchronously, pausing until completion.\n- 'False': Executes reload actions asynchronously, without waiting for completion."
                           type: "boolean"
                         toolsSetup:
-                          description: "Specifies the tools container image used by ShellTrigger for dynamic reload.\nIf the dynamic reload action is triggered by a ShellTrigger, this field is required.\nThis image must contain all necessary tools for executing the ShellTrigger scripts.\n\n\nUsually the specified image is referenced by the init container,\nwhich is then responsible for copy the tools from the image to a bin volume.\nThis ensures that the tools are available to the 'config-manager' sidecar."
+                          description: "Specifies the tools container image used by ShellTrigger for dynamic reload.\nIf the dynamic reload action is triggered by a ShellTrigger, this field is required.\nThis image must contain all necessary tools for executing the ShellTrigger scripts.\n\nUsually the specified image is referenced by the init container,\nwhich is then responsible for copy the tools from the image to a bin volume.\nThis ensures that the tools are available to the 'config-manager' sidecar."
                           properties:
                             mountPoint:
                               description: "Specifies the directory path in the container where the tools-related files are to be copied.\nThis field is typically used with an emptyDir volume to ensure a temporary, empty directory is provided at pod creation."
@@ -242,7 +242,7 @@ spec:
                                 description: "ToolConfig specifies the settings of an init container that prepare tools for dynamic reload."
                                 properties:
                                   asContainerImage:
-                                    description: "Indicates whether the tool image should be used as the container image for a sidecar.\nThis is useful for large tool images, such as those for C++ tools, which may depend on\nnumerous libraries (e.g., *.so files).\n\n\nIf enabled, the tool image is deployed as a sidecar container image.\n\n\nExamples:\n```yaml\n toolsSetup::\n   mountPoint: /kb_tools\n   toolConfigs:\n     - name: kb-tools\n       asContainerImage: true\n       image:  apecloud/oceanbase:4.2.0.0-100010032023083021\n```\n\n\ngenerated containers:\n```yaml\ninitContainers:\n - name: install-config-manager-tool\n   image: apecloud/kubeblocks-tools:${version}\n   command:\n   - cp\n   - /bin/config_render\n   - /opt/tools\n   volumemounts:\n   - name: kb-tools\n     mountpath: /opt/tools\n\n\ncontainers:\n - name: config-manager\n   image: apecloud/oceanbase:4.2.0.0-100010032023083021\n   imagePullPolicy: IfNotPresent\n\t  command:\n   - /opt/tools/reloader\n   - --log-level\n   - info\n   - --operator-update-enable\n   - --tcp\n   - \"9901\"\n   - --config\n   - /opt/config-manager/config-manager.yaml\n   volumemounts:\n   - name: kb-tools\n     mountpath: /opt/tools\n```"
+                                    description: "Indicates whether the tool image should be used as the container image for a sidecar.\nThis is useful for large tool images, such as those for C++ tools, which may depend on\nnumerous libraries (e.g., *.so files).\n\nIf enabled, the tool image is deployed as a sidecar container image.\n\nExamples:\n```yaml\n toolsSetup::\n   mountPoint: /kb_tools\n   toolConfigs:\n     - name: kb-tools\n       asContainerImage: true\n       image:  apecloud/oceanbase:4.2.0.0-100010032023083021\n```\n\ngenerated containers:\n```yaml\ninitContainers:\n - name: install-config-manager-tool\n   image: apecloud/kubeblocks-tools:${version}\n   command:\n   - cp\n   - /bin/config_render\n   - /opt/tools\n   volumemounts:\n   - name: kb-tools\n     mountpath: /opt/tools\n\ncontainers:\n - name: config-manager\n   image: apecloud/oceanbase:4.2.0.0-100010032023083021\n   imagePullPolicy: IfNotPresent\n\t  command:\n   - /opt/tools/reloader\n   - --log-level\n   - info\n   - --operator-update-enable\n   - --tcp\n   - \"9901\"\n   - --config\n   - /opt/config-manager/config-manager.yaml\n   volumemounts:\n   - name: kb-tools\n     mountpath: /opt/tools\n```"
                                     type: "boolean"
                                   command:
                                     description: "Specifies the command to be executed by the init container."
@@ -257,6 +257,8 @@ spec:
                                     maxLength: 63
                                     pattern: "^[a-z]([a-z0-9\\-]*[a-z0-9])?$"
                                     type: "string"
+                                required:
+                                  - "name"
                                 type: "object"
                               type: "array"
                           required:
@@ -278,7 +280,7 @@ spec:
                           description: "Specifies the reference to the ConfigMap containing the scripts."
                           type: "string"
                         sync:
-                          description: "Determines whether parameter updates should be synchronized with the \"config-manager\".\nSpecifies the controller's reload strategy:\n\n\n- If set to 'True', the controller executes the reload action in synchronous mode,\n  pausing execution until the reload completes.\n- If set to 'False', the controller executes the reload action in asynchronous mode,\n  updating the ConfigMap without waiting for the reload process to finish."
+                          description: "Determines whether parameter updates should be synchronized with the \"config-manager\".\nSpecifies the controller's reload strategy:\n\n- If set to 'True', the controller executes the reload action in synchronous mode,\n  pausing execution until the reload completes.\n- If set to 'False', the controller executes the reload action in asynchronous mode,\n  updating the ConfigMap without waiting for the reload process to finish."
                           type: "boolean"
                       required:
                         - "scriptConfigMapRef"
@@ -330,10 +332,10 @@ spec:
                       type: "object"
                   type: "object"
                 reloadStaticParamsBeforeRestart:
-                  description: "Configures whether the dynamic reload specified in `reloadOptions` applies only to dynamic parameters or\nto all parameters (including static parameters).\n\n\n- false (default): Only modifications to the dynamic parameters listed in `dynamicParameters`\n  will trigger a dynamic reload.\n- true: Modifications to both dynamic parameters listed in `dynamicParameters` and static parameters\n  listed in `staticParameters` will trigger a dynamic reload.\n  The \"true\" option is for certain engines that require static parameters to be set\n  via SQL statements before they can take effect on restart."
+                  description: "Configures whether the dynamic reload specified in `reloadOptions` applies only to dynamic parameters or\nto all parameters (including static parameters).\n\n- false (default): Only modifications to the dynamic parameters listed in `dynamicParameters`\n  will trigger a dynamic reload.\n- true: Modifications to both dynamic parameters listed in `dynamicParameters` and static parameters\n  listed in `staticParameters` will trigger a dynamic reload.\n  The \"true\" option is for certain engines that require static parameters to be set\n  via SQL statements before they can take effect on restart."
                   type: "boolean"
                 scriptConfigs:
-                  description: "A list of ScriptConfig Object.\n\n\nEach ScriptConfig object specifies a ConfigMap that contains script files that should be mounted inside the pod.\nThe scripts are mounted as volumes and can be referenced and executed by the dynamic reload\nand DownwardAction to perform specific tasks or configurations."
+                  description: "A list of ScriptConfig Object.\n\nEach ScriptConfig object specifies a ConfigMap that contains script files that should be mounted inside the pod.\nThe scripts are mounted as volumes and can be referenced and executed by the dynamic reload\nand DownwardAction to perform specific tasks or configurations."
                   items:
                     properties:
                       namespace:
@@ -353,7 +355,7 @@ spec:
                     - "scriptConfigMapRef"
                   x-kubernetes-list-type: "map"
                 selector:
-                  description: "Used to match labels on the pod to determine whether a dynamic reload should be performed.\n\n\nIn some scenarios, only specific pods (e.g., primary replicas) need to undergo a dynamic reload.\nThe `selector` allows you to specify label selectors to target the desired pods for the reload process.\n\n\nIf the `selector` is not specified or is nil, all pods managed by the workload will be considered for the dynamic\nreload."
+                  description: "Used to match labels on the pod to determine whether a dynamic reload should be performed.\n\nIn some scenarios, only specific pods (e.g., primary replicas) need to undergo a dynamic reload.\nThe `selector` allows you to specify label selectors to target the desired pods for the reload process.\n\nIf the `selector` is not specified or is nil, all pods managed by the workload will be considered for the dynamic\nreload."
                   properties:
                     matchExpressions:
                       description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
@@ -390,7 +392,7 @@ spec:
                   type: "array"
                   x-kubernetes-list-type: "set"
                 toolsImageSpec:
-                  description: "Specifies the tools container image used by ShellTrigger for dynamic reload.\nIf the dynamic reload action is triggered by a ShellTrigger, this field is required.\nThis image must contain all necessary tools for executing the ShellTrigger scripts.\n\n\nUsually the specified image is referenced by the init container,\nwhich is then responsible for copy the tools from the image to a bin volume.\nThis ensures that the tools are available to the 'config-manager' sidecar."
+                  description: "Specifies the tools container image used by ShellTrigger for dynamic reload.\nIf the dynamic reload action is triggered by a ShellTrigger, this field is required.\nThis image must contain all necessary tools for executing the ShellTrigger scripts.\n\nUsually the specified image is referenced by the init container,\nwhich is then responsible for copy the tools from the image to a bin volume.\nThis ensures that the tools are available to the 'config-manager' sidecar."
                   properties:
                     mountPoint:
                       description: "Specifies the directory path in the container where the tools-related files are to be copied.\nThis field is typically used with an emptyDir volume to ensure a temporary, empty directory is provided at pod creation."
@@ -402,7 +404,7 @@ spec:
                         description: "ToolConfig specifies the settings of an init container that prepare tools for dynamic reload."
                         properties:
                           asContainerImage:
-                            description: "Indicates whether the tool image should be used as the container image for a sidecar.\nThis is useful for large tool images, such as those for C++ tools, which may depend on\nnumerous libraries (e.g., *.so files).\n\n\nIf enabled, the tool image is deployed as a sidecar container image.\n\n\nExamples:\n```yaml\n toolsSetup::\n   mountPoint: /kb_tools\n   toolConfigs:\n     - name: kb-tools\n       asContainerImage: true\n       image:  apecloud/oceanbase:4.2.0.0-100010032023083021\n```\n\n\ngenerated containers:\n```yaml\ninitContainers:\n - name: install-config-manager-tool\n   image: apecloud/kubeblocks-tools:${version}\n   command:\n   - cp\n   - /bin/config_render\n   - /opt/tools\n   volumemounts:\n   - name: kb-tools\n     mountpath: /opt/tools\n\n\ncontainers:\n - name: config-manager\n   image: apecloud/oceanbase:4.2.0.0-100010032023083021\n   imagePullPolicy: IfNotPresent\n\t  command:\n   - /opt/tools/reloader\n   - --log-level\n   - info\n   - --operator-update-enable\n   - --tcp\n   - \"9901\"\n   - --config\n   - /opt/config-manager/config-manager.yaml\n   volumemounts:\n   - name: kb-tools\n     mountpath: /opt/tools\n```"
+                            description: "Indicates whether the tool image should be used as the container image for a sidecar.\nThis is useful for large tool images, such as those for C++ tools, which may depend on\nnumerous libraries (e.g., *.so files).\n\nIf enabled, the tool image is deployed as a sidecar container image.\n\nExamples:\n```yaml\n toolsSetup::\n   mountPoint: /kb_tools\n   toolConfigs:\n     - name: kb-tools\n       asContainerImage: true\n       image:  apecloud/oceanbase:4.2.0.0-100010032023083021\n```\n\ngenerated containers:\n```yaml\ninitContainers:\n - name: install-config-manager-tool\n   image: apecloud/kubeblocks-tools:${version}\n   command:\n   - cp\n   - /bin/config_render\n   - /opt/tools\n   volumemounts:\n   - name: kb-tools\n     mountpath: /opt/tools\n\ncontainers:\n - name: config-manager\n   image: apecloud/oceanbase:4.2.0.0-100010032023083021\n   imagePullPolicy: IfNotPresent\n\t  command:\n   - /opt/tools/reloader\n   - --log-level\n   - info\n   - --operator-update-enable\n   - --tcp\n   - \"9901\"\n   - --config\n   - /opt/config-manager/config-manager.yaml\n   volumemounts:\n   - name: kb-tools\n     mountpath: /opt/tools\n```"
                             type: "boolean"
                           command:
                             description: "Specifies the command to be executed by the init container."
@@ -417,6 +419,8 @@ spec:
                             maxLength: 63
                             pattern: "^[a-z]([a-z0-9\\-]*[a-z0-9])?$"
                             type: "string"
+                        required:
+                          - "name"
                         type: "object"
                       type: "array"
                   required:

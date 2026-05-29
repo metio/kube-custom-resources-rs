@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.18.0"
   labels:
     app.kubernetes.io/name: "kubeblocks"
   name: "shardingdefinitions.apps.kubeblocks.io"
@@ -48,13 +48,13 @@ spec:
               description: "ShardingDefinitionSpec defines the desired state of ShardingDefinition"
               properties:
                 lifecycleActions:
-                  description: "Defines a set of hooks and procedures that customize the behavior of a sharding throughout its lifecycle.\n\n\nThis field is immutable."
+                  description: "Defines a set of hooks and procedures that customize the behavior of a sharding throughout its lifecycle.\n\nThis field is immutable."
                   properties:
                     postProvision:
-                      description: "Specifies the hook to be executed after a sharding's creation.\n\n\nBy setting `postProvision.preCondition`, you can determine the specific lifecycle stage at which\nthe action should trigger, available conditions for sharding include: `Immediately`, `ComponentReady`,\nand `ClusterReady`. For sharding, the `ComponentReady` condition means all components of the sharding are ready.\n\n\nWith `ComponentReady` being the default.\n\n\nThe PostProvision action is intended to run only once.\n\n\nNote: This field is immutable once it has been set."
+                      description: "Specifies the hook to be executed after a sharding's creation.\n\nBy setting `postProvision.preCondition`, you can determine the specific lifecycle stage at which\nthe action should trigger, available conditions for sharding include: `Immediately`, `ComponentReady`,\nand `ClusterReady`. For sharding, the `ComponentReady` condition means all components of the sharding are ready.\n\nWith `ComponentReady` being the default.\n\nThe PostProvision action is intended to run only once.\n\nNote: This field is immutable once it has been set."
                       properties:
                         exec:
-                          description: "Defines the command to run.\n\n\nThis field cannot be updated."
+                          description: "Defines the command to run.\n\nThis field cannot be updated."
                           properties:
                             args:
                               description: "Args represents the arguments that are passed to the `command` for execution."
@@ -62,15 +62,15 @@ spec:
                                 type: "string"
                               type: "array"
                             command:
-                              description: "Specifies the command to be executed inside the container.\nThe working directory for this command is the container's root directory('/').\nCommands are executed directly without a shell environment, meaning shell-specific syntax ('|', etc.) is not supported.\nIf the shell is required, it must be explicitly invoked in the command.\n\n\nA successful execution is indicated by an exit status of 0; any non-zero status signifies a failure."
+                              description: "Specifies the command to be executed inside the container.\nThe working directory for this command is the container's root directory('/').\nCommands are executed directly without a shell environment, meaning shell-specific syntax ('|', etc.) is not supported.\nIf the shell is required, it must be explicitly invoked in the command.\n\nA successful execution is indicated by an exit status of 0; any non-zero status signifies a failure."
                               items:
                                 type: "string"
                               type: "array"
                             container:
-                              description: "Specifies the name of the container within the same pod whose resources will be shared with the action.\nThis allows the action to utilize the specified container's resources without executing within it.\n\n\nThe name must match one of the containers defined in `componentDefinition.spec.runtime`.\n\n\nThe resources that can be shared are included:\n\n\n- volume mounts\n\n\nThis field cannot be updated."
+                              description: "Specifies the name of the container within the same pod whose resources will be shared with the action.\nThis allows the action to utilize the specified container's resources without executing within it.\n\nThe name must match one of the containers defined in `componentDefinition.spec.runtime`.\n\nThe resources that can be shared are included:\n\n- volume mounts\n\nThis field cannot be updated."
                               type: "string"
                             env:
-                              description: "Represents a list of environment variables that will be injected into the container.\nThese variables enable the container to adapt its behavior based on the environment it's running in.\n\n\nThis field cannot be updated."
+                              description: "Represents a list of environment variables that will be injected into the container.\nThese variables enable the container to adapt its behavior based on the environment it's running in.\n\nThis field cannot be updated."
                               items:
                                 description: "EnvVar represents an environment variable present in a Container."
                                 properties:
@@ -90,7 +90,7 @@ spec:
                                             description: "The key to select."
                                             type: "string"
                                           name:
-                                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                             type: "string"
                                           optional:
                                             description: "Specify whether the ConfigMap or its key must be defined"
@@ -139,7 +139,7 @@ spec:
                                             description: "The key of the secret to select from.  Must be a valid secret key."
                                             type: "string"
                                           name:
-                                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                             type: "string"
                                           optional:
                                             description: "Specify whether the Secret or its key must be defined"
@@ -154,13 +154,13 @@ spec:
                                 type: "object"
                               type: "array"
                             image:
-                              description: "Specifies the container image to be used for running the Action.\n\n\nWhen specified, a dedicated container will be created using this image to execute the Action.\nAll actions with same image will share the same container.\n\n\nThis field cannot be updated."
+                              description: "Specifies the container image to be used for running the Action.\n\nWhen specified, a dedicated container will be created using this image to execute the Action.\nAll actions with same image will share the same container.\n\nThis field cannot be updated."
                               type: "string"
                             matchingKey:
-                              description: "Used in conjunction with the `targetPodSelector` field to refine the selection of target pod(s) for Action execution.\nThe impact of this field depends on the `targetPodSelector` value:\n\n\n- When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.\n- When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`\n  will be selected for the Action.\n\n\nThis field cannot be updated."
+                              description: "Used in conjunction with the `targetPodSelector` field to refine the selection of target pod(s) for Action execution.\nThe impact of this field depends on the `targetPodSelector` value:\n\n- When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.\n- When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`\n  will be selected for the Action.\n\nThis field cannot be updated."
                               type: "string"
                             targetPodSelector:
-                              description: "Defines the criteria used to select the target Pod(s) for executing the Action.\nThis is useful when there is no default target replica identified.\nIt allows for precise control over which Pod(s) the Action should run in.\n\n\nIf not specified, the Action will be executed in the pod where the Action is triggered, such as the pod\nto be removed or added; or a random pod if the Action is triggered at the component level, such as\npost-provision or pre-terminate of the component.\n\n\nThis field cannot be updated."
+                              description: "Defines the criteria used to select the target Pod(s) for executing the Action.\nThis is useful when there is no default target replica identified.\nIt allows for precise control over which Pod(s) the Action should run in.\n\nIf not specified, the Action will be executed in the pod where the Action is triggered, such as the pod\nto be removed or added; or a random pod if the Action is triggered at the component level, such as\npost-provision or pre-terminate of the component.\n\nThis field cannot be updated."
                               enum:
                                 - "Any"
                                 - "All"
@@ -169,7 +169,7 @@ spec:
                               type: "string"
                           type: "object"
                         grpc:
-                          description: "Defines the gRPC call to issue.\n\n\nThis field cannot be updated."
+                          description: "Defines the gRPC call to issue.\n\nThis field cannot be updated."
                           properties:
                             host:
                               description: "The target host to connect to.\nDefaults to \"127.0.0.1\" if not specified."
@@ -183,7 +183,7 @@ spec:
                             request:
                               additionalProperties:
                                 type: "string"
-                              description: "Request payload for the gRPC method.\n\n\nKeys are proto field names (lowerCamelCase); values are strings that can include Go templates.\nTemplates are rendered with predefined action variables before the request is sent."
+                              description: "Request payload for the gRPC method.\n\nKeys are proto field names (lowerCamelCase); values are strings that can include Go templates.\nTemplates are rendered with predefined action variables before the request is sent."
                               type: "object"
                             response:
                               description: "Required response schema for the gRPC method."
@@ -204,10 +204,10 @@ spec:
                             - "service"
                           type: "object"
                         http:
-                          description: "Defines the HTTP request to perform.\n\n\nThis field cannot be updated."
+                          description: "Defines the HTTP request to perform.\n\nThis field cannot be updated."
                           properties:
                             body:
-                              description: "Optional HTTP request body.\n\n\nSupports Go text/template syntax; rendered with predefined variables before sending."
+                              description: "Optional HTTP request body.\n\nSupports Go text/template syntax; rendered with predefined variables before sending."
                               type: "string"
                             headers:
                               description: "Custom headers to set in the request.\nHeader values may use Go text/template syntax, rendered with predefined variables."
@@ -258,13 +258,13 @@ spec:
                             - "port"
                           type: "object"
                         matchingKey:
-                          description: "Used in conjunction with the `targetPodSelector` field to refine the selection of target pod(s) for Action execution.\nThe impact of this field depends on the `targetPodSelector` value:\n\n\n- When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.\n- When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`\n  will be selected for the Action.\n\n\nThis field cannot be updated."
+                          description: "Used in conjunction with the `targetPodSelector` field to refine the selection of target pod(s) for Action execution.\nThe impact of this field depends on the `targetPodSelector` value:\n\n- When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.\n- When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`\n  will be selected for the Action.\n\nThis field cannot be updated."
                           type: "string"
                         preCondition:
-                          description: "Specifies the state that the cluster must reach before the Action is executed.\nCurrently, this is only applicable to the `postProvision` action.\n\n\nThe conditions are as follows:\n\n\n- `Immediately`: Executed right after the Component object is created.\n  The readiness of the Component and its resources is not guaranteed at this stage.\n- `RuntimeReady`: The Action is triggered after the Component object has been created and all associated\n  runtime resources (e.g. Pods) are in a ready state.\n- `ComponentReady`: The Action is triggered after the Component itself is in a ready state.\n  This process does not affect the readiness state of the Component or the Cluster.\n- `ClusterReady`: The Action is executed after the Cluster is in a ready state.\n  This execution does not alter the Component or the Cluster's state of readiness.\n\n\nThis field cannot be updated."
+                          description: "Specifies the state that the cluster must reach before the Action is executed.\nCurrently, this is only applicable to the `postProvision` action.\n\nThe conditions are as follows:\n\n- `Immediately`: Executed right after the Component object is created.\n  The readiness of the Component and its resources is not guaranteed at this stage.\n- `RuntimeReady`: The Action is triggered after the Component object has been created and all associated\n  runtime resources (e.g. Pods) are in a ready state.\n- `ComponentReady`: The Action is triggered after the Component itself is in a ready state.\n  This process does not affect the readiness state of the Component or the Cluster.\n- `ClusterReady`: The Action is executed after the Cluster is in a ready state.\n  This execution does not alter the Component or the Cluster's state of readiness.\n\nThis field cannot be updated."
                           type: "string"
                         retryPolicy:
-                          description: "Defines the strategy to be taken when retrying the Action after a failure.\n\n\nIt specifies the conditions under which the Action should be retried and the limits to apply,\nsuch as the maximum number of retries and backoff strategy.\n\n\nThis field cannot be updated."
+                          description: "Defines the strategy to be taken when retrying the Action after a failure.\n\nIt specifies the conditions under which the Action should be retried and the limits to apply,\nsuch as the maximum number of retries and backoff strategy.\n\nThis field cannot be updated."
                           properties:
                             maxRetries:
                               default: 0
@@ -277,7 +277,7 @@ spec:
                               type: "integer"
                           type: "object"
                         targetPodSelector:
-                          description: "Defines the criteria used to select the target Pod(s) for executing the Action.\nThis is useful when there is no default target replica identified.\nIt allows for precise control over which Pod(s) the Action should run in.\n\n\nIf not specified, the Action will be executed in the pod where the Action is triggered, such as the pod\nto be removed or added; or a random pod if the Action is triggered at the component level, such as\npost-provision or pre-terminate of the component.\n\n\nThis field cannot be updated."
+                          description: "Defines the criteria used to select the target Pod(s) for executing the Action.\nThis is useful when there is no default target replica identified.\nIt allows for precise control over which Pod(s) the Action should run in.\n\nIf not specified, the Action will be executed in the pod where the Action is triggered, such as the pod\nto be removed or added; or a random pod if the Action is triggered at the component level, such as\npost-provision or pre-terminate of the component.\n\nThis field cannot be updated."
                           enum:
                             - "Any"
                             - "All"
@@ -285,22 +285,22 @@ spec:
                             - "Ordinal"
                           type: "string"
                         targetShardSelector:
-                          description: "Defines the criteria used to select the target shard(s) for executing the Action.\nIt provides precise control over which shard(s) should be targeted.\n\n\nThe default selection logic (when this field is omitted) is context-dependent:\n1. Contextual Default: If the Action is triggered by or originates from a specific shard,\n   that shard is selected as the default target.\n2. Global Default: In other cases (where no specific shard context exists),\n   one shard is selected randomly by default.\n\n\nThis field cannot be updated."
+                          description: "Defines the criteria used to select the target shard(s) for executing the Action.\nIt provides precise control over which shard(s) should be targeted.\n\nThe default selection logic (when this field is omitted) is context-dependent:\n1. Contextual Default: If the Action is triggered by or originates from a specific shard,\n   that shard is selected as the default target.\n2. Global Default: In other cases (where no specific shard context exists),\n   one shard is selected randomly by default.\n\nThis field cannot be updated."
                           enum:
                             - "Any"
                             - "All"
                           type: "string"
                         timeoutSeconds:
                           default: 0
-                          description: "Specifies the maximum duration in seconds that the Action is allowed to run.\n\n\nBehavior based on the value:\n- Positive (> 0): The action will be terminated after this many seconds. The maximum allowed value is 60.\n- Zero (= 0): The timeout is managed by the system, defaulting to 30 seconds typically.\n- Negative (< 0): No timeout is applied; the action runs until the command completes.\n\n\nThis field cannot be updated."
+                          description: "Specifies the maximum duration in seconds that the Action is allowed to run.\n\nBehavior based on the value:\n- Positive (> 0): The action will be terminated after this many seconds. The maximum allowed value is 60.\n- Zero (= 0): The timeout is managed by the system, defaulting to 30 seconds typically.\n- Negative (< 0): No timeout is applied; the action runs until the command completes.\n\nThis field cannot be updated."
                           format: "int32"
                           type: "integer"
                       type: "object"
                     preTerminate:
-                      description: "Specifies the hook to be executed prior to terminating a sharding.\n\n\nThe PreTerminate action is intended to run only once.\n\n\nThis action is executed immediately when a terminate operation for the sharding is initiated.\nThe actual termination and cleanup of the sharding and its associated resources will not proceed\nuntil the PreTerminate action has completed successfully.\n\n\nIf a PostProvision action is defined, this action will only execute if PostProvision reaches\nthe 'Succeeded' phase. If the defined PostProvision fails, this action will be skipped.\n\n\nNote: This field is immutable once it has been set."
+                      description: "Specifies the hook to be executed prior to terminating a sharding.\n\nThe PreTerminate action is intended to run only once.\n\nThis action is executed immediately when a terminate operation for the sharding is initiated.\nThe actual termination and cleanup of the sharding and its associated resources will not proceed\nuntil the PreTerminate action has completed successfully.\n\nIf a PostProvision action is defined, this action will only execute if PostProvision reaches\nthe 'Succeeded' phase. If the defined PostProvision fails, this action will be skipped.\n\nNote: This field is immutable once it has been set."
                       properties:
                         exec:
-                          description: "Defines the command to run.\n\n\nThis field cannot be updated."
+                          description: "Defines the command to run.\n\nThis field cannot be updated."
                           properties:
                             args:
                               description: "Args represents the arguments that are passed to the `command` for execution."
@@ -308,15 +308,15 @@ spec:
                                 type: "string"
                               type: "array"
                             command:
-                              description: "Specifies the command to be executed inside the container.\nThe working directory for this command is the container's root directory('/').\nCommands are executed directly without a shell environment, meaning shell-specific syntax ('|', etc.) is not supported.\nIf the shell is required, it must be explicitly invoked in the command.\n\n\nA successful execution is indicated by an exit status of 0; any non-zero status signifies a failure."
+                              description: "Specifies the command to be executed inside the container.\nThe working directory for this command is the container's root directory('/').\nCommands are executed directly without a shell environment, meaning shell-specific syntax ('|', etc.) is not supported.\nIf the shell is required, it must be explicitly invoked in the command.\n\nA successful execution is indicated by an exit status of 0; any non-zero status signifies a failure."
                               items:
                                 type: "string"
                               type: "array"
                             container:
-                              description: "Specifies the name of the container within the same pod whose resources will be shared with the action.\nThis allows the action to utilize the specified container's resources without executing within it.\n\n\nThe name must match one of the containers defined in `componentDefinition.spec.runtime`.\n\n\nThe resources that can be shared are included:\n\n\n- volume mounts\n\n\nThis field cannot be updated."
+                              description: "Specifies the name of the container within the same pod whose resources will be shared with the action.\nThis allows the action to utilize the specified container's resources without executing within it.\n\nThe name must match one of the containers defined in `componentDefinition.spec.runtime`.\n\nThe resources that can be shared are included:\n\n- volume mounts\n\nThis field cannot be updated."
                               type: "string"
                             env:
-                              description: "Represents a list of environment variables that will be injected into the container.\nThese variables enable the container to adapt its behavior based on the environment it's running in.\n\n\nThis field cannot be updated."
+                              description: "Represents a list of environment variables that will be injected into the container.\nThese variables enable the container to adapt its behavior based on the environment it's running in.\n\nThis field cannot be updated."
                               items:
                                 description: "EnvVar represents an environment variable present in a Container."
                                 properties:
@@ -336,7 +336,7 @@ spec:
                                             description: "The key to select."
                                             type: "string"
                                           name:
-                                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                             type: "string"
                                           optional:
                                             description: "Specify whether the ConfigMap or its key must be defined"
@@ -385,7 +385,7 @@ spec:
                                             description: "The key of the secret to select from.  Must be a valid secret key."
                                             type: "string"
                                           name:
-                                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                             type: "string"
                                           optional:
                                             description: "Specify whether the Secret or its key must be defined"
@@ -400,13 +400,13 @@ spec:
                                 type: "object"
                               type: "array"
                             image:
-                              description: "Specifies the container image to be used for running the Action.\n\n\nWhen specified, a dedicated container will be created using this image to execute the Action.\nAll actions with same image will share the same container.\n\n\nThis field cannot be updated."
+                              description: "Specifies the container image to be used for running the Action.\n\nWhen specified, a dedicated container will be created using this image to execute the Action.\nAll actions with same image will share the same container.\n\nThis field cannot be updated."
                               type: "string"
                             matchingKey:
-                              description: "Used in conjunction with the `targetPodSelector` field to refine the selection of target pod(s) for Action execution.\nThe impact of this field depends on the `targetPodSelector` value:\n\n\n- When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.\n- When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`\n  will be selected for the Action.\n\n\nThis field cannot be updated."
+                              description: "Used in conjunction with the `targetPodSelector` field to refine the selection of target pod(s) for Action execution.\nThe impact of this field depends on the `targetPodSelector` value:\n\n- When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.\n- When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`\n  will be selected for the Action.\n\nThis field cannot be updated."
                               type: "string"
                             targetPodSelector:
-                              description: "Defines the criteria used to select the target Pod(s) for executing the Action.\nThis is useful when there is no default target replica identified.\nIt allows for precise control over which Pod(s) the Action should run in.\n\n\nIf not specified, the Action will be executed in the pod where the Action is triggered, such as the pod\nto be removed or added; or a random pod if the Action is triggered at the component level, such as\npost-provision or pre-terminate of the component.\n\n\nThis field cannot be updated."
+                              description: "Defines the criteria used to select the target Pod(s) for executing the Action.\nThis is useful when there is no default target replica identified.\nIt allows for precise control over which Pod(s) the Action should run in.\n\nIf not specified, the Action will be executed in the pod where the Action is triggered, such as the pod\nto be removed or added; or a random pod if the Action is triggered at the component level, such as\npost-provision or pre-terminate of the component.\n\nThis field cannot be updated."
                               enum:
                                 - "Any"
                                 - "All"
@@ -415,7 +415,7 @@ spec:
                               type: "string"
                           type: "object"
                         grpc:
-                          description: "Defines the gRPC call to issue.\n\n\nThis field cannot be updated."
+                          description: "Defines the gRPC call to issue.\n\nThis field cannot be updated."
                           properties:
                             host:
                               description: "The target host to connect to.\nDefaults to \"127.0.0.1\" if not specified."
@@ -429,7 +429,7 @@ spec:
                             request:
                               additionalProperties:
                                 type: "string"
-                              description: "Request payload for the gRPC method.\n\n\nKeys are proto field names (lowerCamelCase); values are strings that can include Go templates.\nTemplates are rendered with predefined action variables before the request is sent."
+                              description: "Request payload for the gRPC method.\n\nKeys are proto field names (lowerCamelCase); values are strings that can include Go templates.\nTemplates are rendered with predefined action variables before the request is sent."
                               type: "object"
                             response:
                               description: "Required response schema for the gRPC method."
@@ -450,10 +450,10 @@ spec:
                             - "service"
                           type: "object"
                         http:
-                          description: "Defines the HTTP request to perform.\n\n\nThis field cannot be updated."
+                          description: "Defines the HTTP request to perform.\n\nThis field cannot be updated."
                           properties:
                             body:
-                              description: "Optional HTTP request body.\n\n\nSupports Go text/template syntax; rendered with predefined variables before sending."
+                              description: "Optional HTTP request body.\n\nSupports Go text/template syntax; rendered with predefined variables before sending."
                               type: "string"
                             headers:
                               description: "Custom headers to set in the request.\nHeader values may use Go text/template syntax, rendered with predefined variables."
@@ -504,13 +504,13 @@ spec:
                             - "port"
                           type: "object"
                         matchingKey:
-                          description: "Used in conjunction with the `targetPodSelector` field to refine the selection of target pod(s) for Action execution.\nThe impact of this field depends on the `targetPodSelector` value:\n\n\n- When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.\n- When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`\n  will be selected for the Action.\n\n\nThis field cannot be updated."
+                          description: "Used in conjunction with the `targetPodSelector` field to refine the selection of target pod(s) for Action execution.\nThe impact of this field depends on the `targetPodSelector` value:\n\n- When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.\n- When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`\n  will be selected for the Action.\n\nThis field cannot be updated."
                           type: "string"
                         preCondition:
-                          description: "Specifies the state that the cluster must reach before the Action is executed.\nCurrently, this is only applicable to the `postProvision` action.\n\n\nThe conditions are as follows:\n\n\n- `Immediately`: Executed right after the Component object is created.\n  The readiness of the Component and its resources is not guaranteed at this stage.\n- `RuntimeReady`: The Action is triggered after the Component object has been created and all associated\n  runtime resources (e.g. Pods) are in a ready state.\n- `ComponentReady`: The Action is triggered after the Component itself is in a ready state.\n  This process does not affect the readiness state of the Component or the Cluster.\n- `ClusterReady`: The Action is executed after the Cluster is in a ready state.\n  This execution does not alter the Component or the Cluster's state of readiness.\n\n\nThis field cannot be updated."
+                          description: "Specifies the state that the cluster must reach before the Action is executed.\nCurrently, this is only applicable to the `postProvision` action.\n\nThe conditions are as follows:\n\n- `Immediately`: Executed right after the Component object is created.\n  The readiness of the Component and its resources is not guaranteed at this stage.\n- `RuntimeReady`: The Action is triggered after the Component object has been created and all associated\n  runtime resources (e.g. Pods) are in a ready state.\n- `ComponentReady`: The Action is triggered after the Component itself is in a ready state.\n  This process does not affect the readiness state of the Component or the Cluster.\n- `ClusterReady`: The Action is executed after the Cluster is in a ready state.\n  This execution does not alter the Component or the Cluster's state of readiness.\n\nThis field cannot be updated."
                           type: "string"
                         retryPolicy:
-                          description: "Defines the strategy to be taken when retrying the Action after a failure.\n\n\nIt specifies the conditions under which the Action should be retried and the limits to apply,\nsuch as the maximum number of retries and backoff strategy.\n\n\nThis field cannot be updated."
+                          description: "Defines the strategy to be taken when retrying the Action after a failure.\n\nIt specifies the conditions under which the Action should be retried and the limits to apply,\nsuch as the maximum number of retries and backoff strategy.\n\nThis field cannot be updated."
                           properties:
                             maxRetries:
                               default: 0
@@ -523,7 +523,7 @@ spec:
                               type: "integer"
                           type: "object"
                         targetPodSelector:
-                          description: "Defines the criteria used to select the target Pod(s) for executing the Action.\nThis is useful when there is no default target replica identified.\nIt allows for precise control over which Pod(s) the Action should run in.\n\n\nIf not specified, the Action will be executed in the pod where the Action is triggered, such as the pod\nto be removed or added; or a random pod if the Action is triggered at the component level, such as\npost-provision or pre-terminate of the component.\n\n\nThis field cannot be updated."
+                          description: "Defines the criteria used to select the target Pod(s) for executing the Action.\nThis is useful when there is no default target replica identified.\nIt allows for precise control over which Pod(s) the Action should run in.\n\nIf not specified, the Action will be executed in the pod where the Action is triggered, such as the pod\nto be removed or added; or a random pod if the Action is triggered at the component level, such as\npost-provision or pre-terminate of the component.\n\nThis field cannot be updated."
                           enum:
                             - "Any"
                             - "All"
@@ -531,22 +531,22 @@ spec:
                             - "Ordinal"
                           type: "string"
                         targetShardSelector:
-                          description: "Defines the criteria used to select the target shard(s) for executing the Action.\nIt provides precise control over which shard(s) should be targeted.\n\n\nThe default selection logic (when this field is omitted) is context-dependent:\n1. Contextual Default: If the Action is triggered by or originates from a specific shard,\n   that shard is selected as the default target.\n2. Global Default: In other cases (where no specific shard context exists),\n   one shard is selected randomly by default.\n\n\nThis field cannot be updated."
+                          description: "Defines the criteria used to select the target shard(s) for executing the Action.\nIt provides precise control over which shard(s) should be targeted.\n\nThe default selection logic (when this field is omitted) is context-dependent:\n1. Contextual Default: If the Action is triggered by or originates from a specific shard,\n   that shard is selected as the default target.\n2. Global Default: In other cases (where no specific shard context exists),\n   one shard is selected randomly by default.\n\nThis field cannot be updated."
                           enum:
                             - "Any"
                             - "All"
                           type: "string"
                         timeoutSeconds:
                           default: 0
-                          description: "Specifies the maximum duration in seconds that the Action is allowed to run.\n\n\nBehavior based on the value:\n- Positive (> 0): The action will be terminated after this many seconds. The maximum allowed value is 60.\n- Zero (= 0): The timeout is managed by the system, defaulting to 30 seconds typically.\n- Negative (< 0): No timeout is applied; the action runs until the command completes.\n\n\nThis field cannot be updated."
+                          description: "Specifies the maximum duration in seconds that the Action is allowed to run.\n\nBehavior based on the value:\n- Positive (> 0): The action will be terminated after this many seconds. The maximum allowed value is 60.\n- Zero (= 0): The timeout is managed by the system, defaulting to 30 seconds typically.\n- Negative (< 0): No timeout is applied; the action runs until the command completes.\n\nThis field cannot be updated."
                           format: "int32"
                           type: "integer"
                       type: "object"
                     shardAdd:
-                      description: "Specifies the hook to be executed after a shard added.\n\n\nThe container executing this action has access to following variables:\n\n\n- KB_ADD_SHARD_NAME: The name of the shard being added.\n\n\nNote: This field is immutable once it has been set."
+                      description: "Specifies the hook to be executed after a shard added.\n\nThe container executing this action has access to following variables:\n\n- KB_ADD_SHARD_NAME: The name of the shard being added.\n\nNote: This field is immutable once it has been set."
                       properties:
                         exec:
-                          description: "Defines the command to run.\n\n\nThis field cannot be updated."
+                          description: "Defines the command to run.\n\nThis field cannot be updated."
                           properties:
                             args:
                               description: "Args represents the arguments that are passed to the `command` for execution."
@@ -554,15 +554,15 @@ spec:
                                 type: "string"
                               type: "array"
                             command:
-                              description: "Specifies the command to be executed inside the container.\nThe working directory for this command is the container's root directory('/').\nCommands are executed directly without a shell environment, meaning shell-specific syntax ('|', etc.) is not supported.\nIf the shell is required, it must be explicitly invoked in the command.\n\n\nA successful execution is indicated by an exit status of 0; any non-zero status signifies a failure."
+                              description: "Specifies the command to be executed inside the container.\nThe working directory for this command is the container's root directory('/').\nCommands are executed directly without a shell environment, meaning shell-specific syntax ('|', etc.) is not supported.\nIf the shell is required, it must be explicitly invoked in the command.\n\nA successful execution is indicated by an exit status of 0; any non-zero status signifies a failure."
                               items:
                                 type: "string"
                               type: "array"
                             container:
-                              description: "Specifies the name of the container within the same pod whose resources will be shared with the action.\nThis allows the action to utilize the specified container's resources without executing within it.\n\n\nThe name must match one of the containers defined in `componentDefinition.spec.runtime`.\n\n\nThe resources that can be shared are included:\n\n\n- volume mounts\n\n\nThis field cannot be updated."
+                              description: "Specifies the name of the container within the same pod whose resources will be shared with the action.\nThis allows the action to utilize the specified container's resources without executing within it.\n\nThe name must match one of the containers defined in `componentDefinition.spec.runtime`.\n\nThe resources that can be shared are included:\n\n- volume mounts\n\nThis field cannot be updated."
                               type: "string"
                             env:
-                              description: "Represents a list of environment variables that will be injected into the container.\nThese variables enable the container to adapt its behavior based on the environment it's running in.\n\n\nThis field cannot be updated."
+                              description: "Represents a list of environment variables that will be injected into the container.\nThese variables enable the container to adapt its behavior based on the environment it's running in.\n\nThis field cannot be updated."
                               items:
                                 description: "EnvVar represents an environment variable present in a Container."
                                 properties:
@@ -582,7 +582,7 @@ spec:
                                             description: "The key to select."
                                             type: "string"
                                           name:
-                                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                             type: "string"
                                           optional:
                                             description: "Specify whether the ConfigMap or its key must be defined"
@@ -631,7 +631,7 @@ spec:
                                             description: "The key of the secret to select from.  Must be a valid secret key."
                                             type: "string"
                                           name:
-                                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                             type: "string"
                                           optional:
                                             description: "Specify whether the Secret or its key must be defined"
@@ -646,13 +646,13 @@ spec:
                                 type: "object"
                               type: "array"
                             image:
-                              description: "Specifies the container image to be used for running the Action.\n\n\nWhen specified, a dedicated container will be created using this image to execute the Action.\nAll actions with same image will share the same container.\n\n\nThis field cannot be updated."
+                              description: "Specifies the container image to be used for running the Action.\n\nWhen specified, a dedicated container will be created using this image to execute the Action.\nAll actions with same image will share the same container.\n\nThis field cannot be updated."
                               type: "string"
                             matchingKey:
-                              description: "Used in conjunction with the `targetPodSelector` field to refine the selection of target pod(s) for Action execution.\nThe impact of this field depends on the `targetPodSelector` value:\n\n\n- When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.\n- When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`\n  will be selected for the Action.\n\n\nThis field cannot be updated."
+                              description: "Used in conjunction with the `targetPodSelector` field to refine the selection of target pod(s) for Action execution.\nThe impact of this field depends on the `targetPodSelector` value:\n\n- When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.\n- When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`\n  will be selected for the Action.\n\nThis field cannot be updated."
                               type: "string"
                             targetPodSelector:
-                              description: "Defines the criteria used to select the target Pod(s) for executing the Action.\nThis is useful when there is no default target replica identified.\nIt allows for precise control over which Pod(s) the Action should run in.\n\n\nIf not specified, the Action will be executed in the pod where the Action is triggered, such as the pod\nto be removed or added; or a random pod if the Action is triggered at the component level, such as\npost-provision or pre-terminate of the component.\n\n\nThis field cannot be updated."
+                              description: "Defines the criteria used to select the target Pod(s) for executing the Action.\nThis is useful when there is no default target replica identified.\nIt allows for precise control over which Pod(s) the Action should run in.\n\nIf not specified, the Action will be executed in the pod where the Action is triggered, such as the pod\nto be removed or added; or a random pod if the Action is triggered at the component level, such as\npost-provision or pre-terminate of the component.\n\nThis field cannot be updated."
                               enum:
                                 - "Any"
                                 - "All"
@@ -661,7 +661,7 @@ spec:
                               type: "string"
                           type: "object"
                         grpc:
-                          description: "Defines the gRPC call to issue.\n\n\nThis field cannot be updated."
+                          description: "Defines the gRPC call to issue.\n\nThis field cannot be updated."
                           properties:
                             host:
                               description: "The target host to connect to.\nDefaults to \"127.0.0.1\" if not specified."
@@ -675,7 +675,7 @@ spec:
                             request:
                               additionalProperties:
                                 type: "string"
-                              description: "Request payload for the gRPC method.\n\n\nKeys are proto field names (lowerCamelCase); values are strings that can include Go templates.\nTemplates are rendered with predefined action variables before the request is sent."
+                              description: "Request payload for the gRPC method.\n\nKeys are proto field names (lowerCamelCase); values are strings that can include Go templates.\nTemplates are rendered with predefined action variables before the request is sent."
                               type: "object"
                             response:
                               description: "Required response schema for the gRPC method."
@@ -696,10 +696,10 @@ spec:
                             - "service"
                           type: "object"
                         http:
-                          description: "Defines the HTTP request to perform.\n\n\nThis field cannot be updated."
+                          description: "Defines the HTTP request to perform.\n\nThis field cannot be updated."
                           properties:
                             body:
-                              description: "Optional HTTP request body.\n\n\nSupports Go text/template syntax; rendered with predefined variables before sending."
+                              description: "Optional HTTP request body.\n\nSupports Go text/template syntax; rendered with predefined variables before sending."
                               type: "string"
                             headers:
                               description: "Custom headers to set in the request.\nHeader values may use Go text/template syntax, rendered with predefined variables."
@@ -750,13 +750,13 @@ spec:
                             - "port"
                           type: "object"
                         matchingKey:
-                          description: "Used in conjunction with the `targetPodSelector` field to refine the selection of target pod(s) for Action execution.\nThe impact of this field depends on the `targetPodSelector` value:\n\n\n- When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.\n- When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`\n  will be selected for the Action.\n\n\nThis field cannot be updated."
+                          description: "Used in conjunction with the `targetPodSelector` field to refine the selection of target pod(s) for Action execution.\nThe impact of this field depends on the `targetPodSelector` value:\n\n- When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.\n- When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`\n  will be selected for the Action.\n\nThis field cannot be updated."
                           type: "string"
                         preCondition:
-                          description: "Specifies the state that the cluster must reach before the Action is executed.\nCurrently, this is only applicable to the `postProvision` action.\n\n\nThe conditions are as follows:\n\n\n- `Immediately`: Executed right after the Component object is created.\n  The readiness of the Component and its resources is not guaranteed at this stage.\n- `RuntimeReady`: The Action is triggered after the Component object has been created and all associated\n  runtime resources (e.g. Pods) are in a ready state.\n- `ComponentReady`: The Action is triggered after the Component itself is in a ready state.\n  This process does not affect the readiness state of the Component or the Cluster.\n- `ClusterReady`: The Action is executed after the Cluster is in a ready state.\n  This execution does not alter the Component or the Cluster's state of readiness.\n\n\nThis field cannot be updated."
+                          description: "Specifies the state that the cluster must reach before the Action is executed.\nCurrently, this is only applicable to the `postProvision` action.\n\nThe conditions are as follows:\n\n- `Immediately`: Executed right after the Component object is created.\n  The readiness of the Component and its resources is not guaranteed at this stage.\n- `RuntimeReady`: The Action is triggered after the Component object has been created and all associated\n  runtime resources (e.g. Pods) are in a ready state.\n- `ComponentReady`: The Action is triggered after the Component itself is in a ready state.\n  This process does not affect the readiness state of the Component or the Cluster.\n- `ClusterReady`: The Action is executed after the Cluster is in a ready state.\n  This execution does not alter the Component or the Cluster's state of readiness.\n\nThis field cannot be updated."
                           type: "string"
                         retryPolicy:
-                          description: "Defines the strategy to be taken when retrying the Action after a failure.\n\n\nIt specifies the conditions under which the Action should be retried and the limits to apply,\nsuch as the maximum number of retries and backoff strategy.\n\n\nThis field cannot be updated."
+                          description: "Defines the strategy to be taken when retrying the Action after a failure.\n\nIt specifies the conditions under which the Action should be retried and the limits to apply,\nsuch as the maximum number of retries and backoff strategy.\n\nThis field cannot be updated."
                           properties:
                             maxRetries:
                               default: 0
@@ -769,7 +769,7 @@ spec:
                               type: "integer"
                           type: "object"
                         targetPodSelector:
-                          description: "Defines the criteria used to select the target Pod(s) for executing the Action.\nThis is useful when there is no default target replica identified.\nIt allows for precise control over which Pod(s) the Action should run in.\n\n\nIf not specified, the Action will be executed in the pod where the Action is triggered, such as the pod\nto be removed or added; or a random pod if the Action is triggered at the component level, such as\npost-provision or pre-terminate of the component.\n\n\nThis field cannot be updated."
+                          description: "Defines the criteria used to select the target Pod(s) for executing the Action.\nThis is useful when there is no default target replica identified.\nIt allows for precise control over which Pod(s) the Action should run in.\n\nIf not specified, the Action will be executed in the pod where the Action is triggered, such as the pod\nto be removed or added; or a random pod if the Action is triggered at the component level, such as\npost-provision or pre-terminate of the component.\n\nThis field cannot be updated."
                           enum:
                             - "Any"
                             - "All"
@@ -777,22 +777,22 @@ spec:
                             - "Ordinal"
                           type: "string"
                         targetShardSelector:
-                          description: "Defines the criteria used to select the target shard(s) for executing the Action.\nIt provides precise control over which shard(s) should be targeted.\n\n\nThe default selection logic (when this field is omitted) is context-dependent:\n1. Contextual Default: If the Action is triggered by or originates from a specific shard,\n   that shard is selected as the default target.\n2. Global Default: In other cases (where no specific shard context exists),\n   one shard is selected randomly by default.\n\n\nThis field cannot be updated."
+                          description: "Defines the criteria used to select the target shard(s) for executing the Action.\nIt provides precise control over which shard(s) should be targeted.\n\nThe default selection logic (when this field is omitted) is context-dependent:\n1. Contextual Default: If the Action is triggered by or originates from a specific shard,\n   that shard is selected as the default target.\n2. Global Default: In other cases (where no specific shard context exists),\n   one shard is selected randomly by default.\n\nThis field cannot be updated."
                           enum:
                             - "Any"
                             - "All"
                           type: "string"
                         timeoutSeconds:
                           default: 0
-                          description: "Specifies the maximum duration in seconds that the Action is allowed to run.\n\n\nBehavior based on the value:\n- Positive (> 0): The action will be terminated after this many seconds. The maximum allowed value is 60.\n- Zero (= 0): The timeout is managed by the system, defaulting to 30 seconds typically.\n- Negative (< 0): No timeout is applied; the action runs until the command completes.\n\n\nThis field cannot be updated."
+                          description: "Specifies the maximum duration in seconds that the Action is allowed to run.\n\nBehavior based on the value:\n- Positive (> 0): The action will be terminated after this many seconds. The maximum allowed value is 60.\n- Zero (= 0): The timeout is managed by the system, defaulting to 30 seconds typically.\n- Negative (< 0): No timeout is applied; the action runs until the command completes.\n\nThis field cannot be updated."
                           format: "int32"
                           type: "integer"
                       type: "object"
                     shardRemove:
-                      description: "Specifies the hook to be executed prior to remove a shard.\n\n\nThe container executing this action has access to following variables:\n\n\n- KB_REMOVE_SHARD_NAME: The name of the shard being removed.\n\n\nNote: This field is immutable once it has been set."
+                      description: "Specifies the hook to be executed prior to remove a shard.\n\nThe container executing this action has access to following variables:\n\n- KB_REMOVE_SHARD_NAME: The name of the shard being removed.\n\nNote: This field is immutable once it has been set."
                       properties:
                         exec:
-                          description: "Defines the command to run.\n\n\nThis field cannot be updated."
+                          description: "Defines the command to run.\n\nThis field cannot be updated."
                           properties:
                             args:
                               description: "Args represents the arguments that are passed to the `command` for execution."
@@ -800,15 +800,15 @@ spec:
                                 type: "string"
                               type: "array"
                             command:
-                              description: "Specifies the command to be executed inside the container.\nThe working directory for this command is the container's root directory('/').\nCommands are executed directly without a shell environment, meaning shell-specific syntax ('|', etc.) is not supported.\nIf the shell is required, it must be explicitly invoked in the command.\n\n\nA successful execution is indicated by an exit status of 0; any non-zero status signifies a failure."
+                              description: "Specifies the command to be executed inside the container.\nThe working directory for this command is the container's root directory('/').\nCommands are executed directly without a shell environment, meaning shell-specific syntax ('|', etc.) is not supported.\nIf the shell is required, it must be explicitly invoked in the command.\n\nA successful execution is indicated by an exit status of 0; any non-zero status signifies a failure."
                               items:
                                 type: "string"
                               type: "array"
                             container:
-                              description: "Specifies the name of the container within the same pod whose resources will be shared with the action.\nThis allows the action to utilize the specified container's resources without executing within it.\n\n\nThe name must match one of the containers defined in `componentDefinition.spec.runtime`.\n\n\nThe resources that can be shared are included:\n\n\n- volume mounts\n\n\nThis field cannot be updated."
+                              description: "Specifies the name of the container within the same pod whose resources will be shared with the action.\nThis allows the action to utilize the specified container's resources without executing within it.\n\nThe name must match one of the containers defined in `componentDefinition.spec.runtime`.\n\nThe resources that can be shared are included:\n\n- volume mounts\n\nThis field cannot be updated."
                               type: "string"
                             env:
-                              description: "Represents a list of environment variables that will be injected into the container.\nThese variables enable the container to adapt its behavior based on the environment it's running in.\n\n\nThis field cannot be updated."
+                              description: "Represents a list of environment variables that will be injected into the container.\nThese variables enable the container to adapt its behavior based on the environment it's running in.\n\nThis field cannot be updated."
                               items:
                                 description: "EnvVar represents an environment variable present in a Container."
                                 properties:
@@ -828,7 +828,7 @@ spec:
                                             description: "The key to select."
                                             type: "string"
                                           name:
-                                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                             type: "string"
                                           optional:
                                             description: "Specify whether the ConfigMap or its key must be defined"
@@ -877,7 +877,7 @@ spec:
                                             description: "The key of the secret to select from.  Must be a valid secret key."
                                             type: "string"
                                           name:
-                                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                             type: "string"
                                           optional:
                                             description: "Specify whether the Secret or its key must be defined"
@@ -892,13 +892,13 @@ spec:
                                 type: "object"
                               type: "array"
                             image:
-                              description: "Specifies the container image to be used for running the Action.\n\n\nWhen specified, a dedicated container will be created using this image to execute the Action.\nAll actions with same image will share the same container.\n\n\nThis field cannot be updated."
+                              description: "Specifies the container image to be used for running the Action.\n\nWhen specified, a dedicated container will be created using this image to execute the Action.\nAll actions with same image will share the same container.\n\nThis field cannot be updated."
                               type: "string"
                             matchingKey:
-                              description: "Used in conjunction with the `targetPodSelector` field to refine the selection of target pod(s) for Action execution.\nThe impact of this field depends on the `targetPodSelector` value:\n\n\n- When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.\n- When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`\n  will be selected for the Action.\n\n\nThis field cannot be updated."
+                              description: "Used in conjunction with the `targetPodSelector` field to refine the selection of target pod(s) for Action execution.\nThe impact of this field depends on the `targetPodSelector` value:\n\n- When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.\n- When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`\n  will be selected for the Action.\n\nThis field cannot be updated."
                               type: "string"
                             targetPodSelector:
-                              description: "Defines the criteria used to select the target Pod(s) for executing the Action.\nThis is useful when there is no default target replica identified.\nIt allows for precise control over which Pod(s) the Action should run in.\n\n\nIf not specified, the Action will be executed in the pod where the Action is triggered, such as the pod\nto be removed or added; or a random pod if the Action is triggered at the component level, such as\npost-provision or pre-terminate of the component.\n\n\nThis field cannot be updated."
+                              description: "Defines the criteria used to select the target Pod(s) for executing the Action.\nThis is useful when there is no default target replica identified.\nIt allows for precise control over which Pod(s) the Action should run in.\n\nIf not specified, the Action will be executed in the pod where the Action is triggered, such as the pod\nto be removed or added; or a random pod if the Action is triggered at the component level, such as\npost-provision or pre-terminate of the component.\n\nThis field cannot be updated."
                               enum:
                                 - "Any"
                                 - "All"
@@ -907,7 +907,7 @@ spec:
                               type: "string"
                           type: "object"
                         grpc:
-                          description: "Defines the gRPC call to issue.\n\n\nThis field cannot be updated."
+                          description: "Defines the gRPC call to issue.\n\nThis field cannot be updated."
                           properties:
                             host:
                               description: "The target host to connect to.\nDefaults to \"127.0.0.1\" if not specified."
@@ -921,7 +921,7 @@ spec:
                             request:
                               additionalProperties:
                                 type: "string"
-                              description: "Request payload for the gRPC method.\n\n\nKeys are proto field names (lowerCamelCase); values are strings that can include Go templates.\nTemplates are rendered with predefined action variables before the request is sent."
+                              description: "Request payload for the gRPC method.\n\nKeys are proto field names (lowerCamelCase); values are strings that can include Go templates.\nTemplates are rendered with predefined action variables before the request is sent."
                               type: "object"
                             response:
                               description: "Required response schema for the gRPC method."
@@ -942,10 +942,10 @@ spec:
                             - "service"
                           type: "object"
                         http:
-                          description: "Defines the HTTP request to perform.\n\n\nThis field cannot be updated."
+                          description: "Defines the HTTP request to perform.\n\nThis field cannot be updated."
                           properties:
                             body:
-                              description: "Optional HTTP request body.\n\n\nSupports Go text/template syntax; rendered with predefined variables before sending."
+                              description: "Optional HTTP request body.\n\nSupports Go text/template syntax; rendered with predefined variables before sending."
                               type: "string"
                             headers:
                               description: "Custom headers to set in the request.\nHeader values may use Go text/template syntax, rendered with predefined variables."
@@ -996,13 +996,13 @@ spec:
                             - "port"
                           type: "object"
                         matchingKey:
-                          description: "Used in conjunction with the `targetPodSelector` field to refine the selection of target pod(s) for Action execution.\nThe impact of this field depends on the `targetPodSelector` value:\n\n\n- When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.\n- When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`\n  will be selected for the Action.\n\n\nThis field cannot be updated."
+                          description: "Used in conjunction with the `targetPodSelector` field to refine the selection of target pod(s) for Action execution.\nThe impact of this field depends on the `targetPodSelector` value:\n\n- When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.\n- When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`\n  will be selected for the Action.\n\nThis field cannot be updated."
                           type: "string"
                         preCondition:
-                          description: "Specifies the state that the cluster must reach before the Action is executed.\nCurrently, this is only applicable to the `postProvision` action.\n\n\nThe conditions are as follows:\n\n\n- `Immediately`: Executed right after the Component object is created.\n  The readiness of the Component and its resources is not guaranteed at this stage.\n- `RuntimeReady`: The Action is triggered after the Component object has been created and all associated\n  runtime resources (e.g. Pods) are in a ready state.\n- `ComponentReady`: The Action is triggered after the Component itself is in a ready state.\n  This process does not affect the readiness state of the Component or the Cluster.\n- `ClusterReady`: The Action is executed after the Cluster is in a ready state.\n  This execution does not alter the Component or the Cluster's state of readiness.\n\n\nThis field cannot be updated."
+                          description: "Specifies the state that the cluster must reach before the Action is executed.\nCurrently, this is only applicable to the `postProvision` action.\n\nThe conditions are as follows:\n\n- `Immediately`: Executed right after the Component object is created.\n  The readiness of the Component and its resources is not guaranteed at this stage.\n- `RuntimeReady`: The Action is triggered after the Component object has been created and all associated\n  runtime resources (e.g. Pods) are in a ready state.\n- `ComponentReady`: The Action is triggered after the Component itself is in a ready state.\n  This process does not affect the readiness state of the Component or the Cluster.\n- `ClusterReady`: The Action is executed after the Cluster is in a ready state.\n  This execution does not alter the Component or the Cluster's state of readiness.\n\nThis field cannot be updated."
                           type: "string"
                         retryPolicy:
-                          description: "Defines the strategy to be taken when retrying the Action after a failure.\n\n\nIt specifies the conditions under which the Action should be retried and the limits to apply,\nsuch as the maximum number of retries and backoff strategy.\n\n\nThis field cannot be updated."
+                          description: "Defines the strategy to be taken when retrying the Action after a failure.\n\nIt specifies the conditions under which the Action should be retried and the limits to apply,\nsuch as the maximum number of retries and backoff strategy.\n\nThis field cannot be updated."
                           properties:
                             maxRetries:
                               default: 0
@@ -1015,7 +1015,7 @@ spec:
                               type: "integer"
                           type: "object"
                         targetPodSelector:
-                          description: "Defines the criteria used to select the target Pod(s) for executing the Action.\nThis is useful when there is no default target replica identified.\nIt allows for precise control over which Pod(s) the Action should run in.\n\n\nIf not specified, the Action will be executed in the pod where the Action is triggered, such as the pod\nto be removed or added; or a random pod if the Action is triggered at the component level, such as\npost-provision or pre-terminate of the component.\n\n\nThis field cannot be updated."
+                          description: "Defines the criteria used to select the target Pod(s) for executing the Action.\nThis is useful when there is no default target replica identified.\nIt allows for precise control over which Pod(s) the Action should run in.\n\nIf not specified, the Action will be executed in the pod where the Action is triggered, such as the pod\nto be removed or added; or a random pod if the Action is triggered at the component level, such as\npost-provision or pre-terminate of the component.\n\nThis field cannot be updated."
                           enum:
                             - "Any"
                             - "All"
@@ -1023,28 +1023,28 @@ spec:
                             - "Ordinal"
                           type: "string"
                         targetShardSelector:
-                          description: "Defines the criteria used to select the target shard(s) for executing the Action.\nIt provides precise control over which shard(s) should be targeted.\n\n\nThe default selection logic (when this field is omitted) is context-dependent:\n1. Contextual Default: If the Action is triggered by or originates from a specific shard,\n   that shard is selected as the default target.\n2. Global Default: In other cases (where no specific shard context exists),\n   one shard is selected randomly by default.\n\n\nThis field cannot be updated."
+                          description: "Defines the criteria used to select the target shard(s) for executing the Action.\nIt provides precise control over which shard(s) should be targeted.\n\nThe default selection logic (when this field is omitted) is context-dependent:\n1. Contextual Default: If the Action is triggered by or originates from a specific shard,\n   that shard is selected as the default target.\n2. Global Default: In other cases (where no specific shard context exists),\n   one shard is selected randomly by default.\n\nThis field cannot be updated."
                           enum:
                             - "Any"
                             - "All"
                           type: "string"
                         timeoutSeconds:
                           default: 0
-                          description: "Specifies the maximum duration in seconds that the Action is allowed to run.\n\n\nBehavior based on the value:\n- Positive (> 0): The action will be terminated after this many seconds. The maximum allowed value is 60.\n- Zero (= 0): The timeout is managed by the system, defaulting to 30 seconds typically.\n- Negative (< 0): No timeout is applied; the action runs until the command completes.\n\n\nThis field cannot be updated."
+                          description: "Specifies the maximum duration in seconds that the Action is allowed to run.\n\nBehavior based on the value:\n- Positive (> 0): The action will be terminated after this many seconds. The maximum allowed value is 60.\n- Zero (= 0): The timeout is managed by the system, defaulting to 30 seconds typically.\n- Negative (< 0): No timeout is applied; the action runs until the command completes.\n\nThis field cannot be updated."
                           format: "int32"
                           type: "integer"
                       type: "object"
                   type: "object"
                 provisionStrategy:
                   default: "Serial"
-                  description: "Specifies the strategy for provisioning shards of the sharding. Only `Serial` and `Parallel` are supported.\n\n\nThis field is immutable."
+                  description: "Specifies the strategy for provisioning shards of the sharding. Only `Serial` and `Parallel` are supported.\n\nThis field is immutable."
                   enum:
                     - "Serial"
                     - "BestEffortParallel"
                     - "Parallel"
                   type: "string"
                 shardsLimit:
-                  description: "Defines the upper limit of the number of shards supported by the sharding.\n\n\nThis field is immutable."
+                  description: "Defines the upper limit of the number of shards supported by the sharding.\n\nThis field is immutable."
                   properties:
                     maxShards:
                       description: "The maximum limit of shards."
@@ -1064,11 +1064,11 @@ spec:
                     - message: "the minimum shards limit should be no greater than the maximum"
                       rule: "self.minShards <= self.maxShards"
                 systemAccounts:
-                  description: "Defines the system accounts for the sharding.\n\n\nThis field is immutable."
+                  description: "Defines the system accounts for the sharding.\n\nThis field is immutable."
                   items:
                     properties:
                       name:
-                        description: "The name of the system account defined in the sharding template.\n\n\nThis field is immutable once set."
+                        description: "The name of the system account defined in the sharding template.\n\nThis field is immutable once set."
                         type: "string"
                       shared:
                         description: "Specifies whether the account is shared across all shards in the sharding."
@@ -1081,13 +1081,13 @@ spec:
                   description: "This field is immutable."
                   properties:
                     compDef:
-                      description: "The component definition(s) that the sharding is based on.\n\n\nThe component definition can be specified using one of the following:\n\n\n- the full name\n- the regular expression pattern ('^' will be added to the beginning of the pattern automatically)\n\n\nThis field is immutable."
+                      description: "The component definition(s) that the sharding is based on.\n\nThe component definition can be specified using one of the following:\n\n- the full name\n- the regular expression pattern ('^' will be added to the beginning of the pattern automatically)\n\nThis field is immutable."
                       type: "string"
                   required:
                     - "compDef"
                   type: "object"
                 tls:
-                  description: "Defines the TLS for the sharding.\n\n\nThis field is immutable."
+                  description: "Defines the TLS for the sharding.\n\nThis field is immutable."
                   properties:
                     shared:
                       description: "Specifies whether the TLS configuration is shared across all shards in the sharding."
@@ -1095,7 +1095,7 @@ spec:
                   type: "object"
                 updateStrategy:
                   default: "Serial"
-                  description: "Specifies the strategy for updating shards of the sharding. Only `Serial` and `Parallel` are supported.\n\n\nThis field is immutable."
+                  description: "Specifies the strategy for updating shards of the sharding. Only `Serial` and `Parallel` are supported.\n\nThis field is immutable."
                   enum:
                     - "Serial"
                     - "BestEffortParallel"

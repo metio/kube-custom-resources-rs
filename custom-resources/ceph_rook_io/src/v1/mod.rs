@@ -11,6 +11,7 @@ pub mod cephfilesystemsubvolumegroups;
 pub mod cephnfses;
 pub mod cephnvmeofgateways;
 pub mod cephobjectrealms;
+pub mod cephobjectstoreaccounts;
 pub mod cephobjectstores;
 pub mod cephobjectstoreusers;
 pub mod cephobjectzonegroups;

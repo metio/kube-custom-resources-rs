@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.18.0"
   labels:
     app.kubernetes.io/name: "kubeblocks"
   name: "configurations.apps.kubeblocks.io"
@@ -44,7 +44,7 @@ spec:
                     - message: "forbidden to update spec.clusterRef"
                       rule: "self == oldSelf"
                 configItemDetails:
-                  description: "ConfigItemDetails is an array of ConfigurationItemDetail objects.\n\n\nEach ConfigurationItemDetail corresponds to a configuration template,\nwhich is a ConfigMap that contains multiple configuration files.\nEach configuration file is stored as a key-value pair within the ConfigMap.\n\n\nThe ConfigurationItemDetail includes information such as:\n\n\n- The configuration template (a ConfigMap)\n- The corresponding ConfigConstraint (constraints and validation rules for the configuration)\n- Volume mounts (for mounting the configuration files)"
+                  description: "ConfigItemDetails is an array of ConfigurationItemDetail objects.\n\nEach ConfigurationItemDetail corresponds to a configuration template,\nwhich is a ConfigMap that contains multiple configuration files.\nEach configuration file is stored as a key-value pair within the ConfigMap.\n\nThe ConfigurationItemDetail includes information such as:\n\n- The configuration template (a ConfigMap)\n- The corresponding ConfigConstraint (constraints and validation rules for the configuration)\n- Volume mounts (for mounting the configuration files)"
                   items:
                     description: "ConfigurationItemDetail corresponds to settings of a configuration template (a ConfigMap)."
                     properties:
@@ -52,7 +52,7 @@ spec:
                         additionalProperties:
                           properties:
                             content:
-                              description: "Holds the configuration keys and values. This field is a workaround for issues found in kubebuilder and code-generator.\nRefer to https://github.com/kubernetes-sigs/kubebuilder/issues/528 and https://github.com/kubernetes/code-generator/issues/50 for more details.\n\n\nRepresents the content of the configuration file."
+                              description: "Holds the configuration keys and values. This field is a workaround for issues found in kubebuilder and code-generator.\nRefer to https://github.com/kubernetes-sigs/kubebuilder/issues/528 and https://github.com/kubernetes/code-generator/issues/50 for more details.\n\nRepresents the content of the configuration file."
                               type: "string"
                             parameters:
                               additionalProperties:
@@ -60,13 +60,13 @@ spec:
                               description: "Represents the updated parameters for a single configuration file."
                               type: "object"
                           type: "object"
-                        description: "Specifies the user-defined configuration parameters.\n\n\nWhen provided, the parameter values in `configFileParams` override the default configuration parameters.\nThis allows users to override the default configuration according to their specific needs."
+                        description: "Specifies the user-defined configuration parameters.\n\nWhen provided, the parameter values in `configFileParams` override the default configuration parameters.\nThis allows users to override the default configuration according to their specific needs."
                         type: "object"
                       configSpec:
-                        description: "Specifies the name of the configuration template (a ConfigMap), ConfigConstraint, and other miscellaneous options.\n\n\nThe configuration template is a ConfigMap that contains multiple configuration files.\nEach configuration file is stored as a key-value pair within the ConfigMap.\n\n\nConfigConstraint allows defining constraints and validation rules for configuration parameters.\nIt ensures that the configuration adheres to certain requirements and limitations."
+                        description: "Specifies the name of the configuration template (a ConfigMap), ConfigConstraint, and other miscellaneous options.\n\nThe configuration template is a ConfigMap that contains multiple configuration files.\nEach configuration file is stored as a key-value pair within the ConfigMap.\n\nConfigConstraint allows defining constraints and validation rules for configuration parameters.\nIt ensures that the configuration adheres to certain requirements and limitations."
                         properties:
                           asEnvFrom:
-                            description: "Specifies the containers to inject the ConfigMap parameters as environment variables.\n\n\nThis is useful when application images accept parameters through environment variables and\ngenerate the final configuration file in the startup script based on these variables.\n\n\nThis field allows users to specify a list of container names, and KubeBlocks will inject the environment\nvariables converted from the ConfigMap into these designated containers. This provides a flexible way to\npass the configuration items from the ConfigMap to the container without modifying the image.\n\n\nDeprecated: `asEnvFrom` has been deprecated since 0.9.0 and will be removed in 0.10.0.\nUse `injectEnvTo` instead."
+                            description: "Specifies the containers to inject the ConfigMap parameters as environment variables.\n\nThis is useful when application images accept parameters through environment variables and\ngenerate the final configuration file in the startup script based on these variables.\n\nThis field allows users to specify a list of container names, and KubeBlocks will inject the environment\nvariables converted from the ConfigMap into these designated containers. This provides a flexible way to\npass the configuration items from the ConfigMap to the container without modifying the image.\n\nDeprecated: `asEnvFrom` has been deprecated since 0.9.0 and will be removed in 0.10.0.\nUse `injectEnvTo` instead."
                             items:
                               type: "string"
                             type: "array"
@@ -80,23 +80,23 @@ spec:
                             pattern: "^[a-z0-9]([a-z0-9\\.\\-]*[a-z0-9])?$"
                             type: "string"
                           defaultMode:
-                            description: "The operator attempts to set default file permissions for scripts (0555) and configurations (0444).\nHowever, certain database engines may require different file permissions.\nYou can specify the desired file permissions here.\n\n\nMust be specified as an octal value between 0000 and 0777 (inclusive),\nor as a decimal value between 0 and 511 (inclusive).\nYAML supports both octal and decimal values for file permissions.\n\n\nPlease note that this setting only affects the permissions of the files themselves.\nDirectories within the specified path are not impacted by this setting.\nIt's important to be aware that this setting might conflict with other options\nthat influence the file mode, such as fsGroup.\nIn such cases, the resulting file mode may have additional bits set.\nRefers to documents of k8s.ConfigMapVolumeSource.defaultMode for more information."
+                            description: "The operator attempts to set default file permissions for scripts (0555) and configurations (0444).\nHowever, certain database engines may require different file permissions.\nYou can specify the desired file permissions here.\n\nMust be specified as an octal value between 0000 and 0777 (inclusive),\nor as a decimal value between 0 and 511 (inclusive).\nYAML supports both octal and decimal values for file permissions.\n\nPlease note that this setting only affects the permissions of the files themselves.\nDirectories within the specified path are not impacted by this setting.\nIt's important to be aware that this setting might conflict with other options\nthat influence the file mode, such as fsGroup.\nIn such cases, the resulting file mode may have additional bits set.\nRefers to documents of k8s.ConfigMapVolumeSource.defaultMode for more information."
                             format: "int32"
                             type: "integer"
                           injectEnvTo:
-                            description: "Specifies the containers to inject the ConfigMap parameters as environment variables.\n\n\nThis is useful when application images accept parameters through environment variables and\ngenerate the final configuration file in the startup script based on these variables.\n\n\nThis field allows users to specify a list of container names, and KubeBlocks will inject the environment\nvariables converted from the ConfigMap into these designated containers. This provides a flexible way to\npass the configuration items from the ConfigMap to the container without modifying the image."
+                            description: "Specifies the containers to inject the ConfigMap parameters as environment variables.\n\nThis is useful when application images accept parameters through environment variables and\ngenerate the final configuration file in the startup script based on these variables.\n\nThis field allows users to specify a list of container names, and KubeBlocks will inject the environment\nvariables converted from the ConfigMap into these designated containers. This provides a flexible way to\npass the configuration items from the ConfigMap to the container without modifying the image."
                             items:
                               type: "string"
                             type: "array"
                             x-kubernetes-list-type: "set"
                           keys:
-                            description: "Specifies the configuration files within the ConfigMap that support dynamic updates.\n\n\nA configuration template (provided in the form of a ConfigMap) may contain templates for multiple\nconfiguration files.\nEach configuration file corresponds to a key in the ConfigMap.\nSome of these configuration files may support dynamic modification and reloading without requiring\na pod restart.\n\n\nIf empty or omitted, all configuration files in the ConfigMap are assumed to support dynamic updates,\nand ConfigConstraint applies to all keys."
+                            description: "Specifies the configuration files within the ConfigMap that support dynamic updates.\n\nA configuration template (provided in the form of a ConfigMap) may contain templates for multiple\nconfiguration files.\nEach configuration file corresponds to a key in the ConfigMap.\nSome of these configuration files may support dynamic modification and reloading without requiring\na pod restart.\n\nIf empty or omitted, all configuration files in the ConfigMap are assumed to support dynamic updates,\nand ConfigConstraint applies to all keys."
                             items:
                               type: "string"
                             type: "array"
                             x-kubernetes-list-type: "set"
                           legacyRenderedConfigSpec:
-                            description: "Specifies the secondary rendered config spec for pod-specific customization.\n\n\nThe template is rendered inside the pod (by the \"config-manager\" sidecar container) and merged with the main\ntemplate's render result to generate the final configuration file.\n\n\nThis field is intended to handle scenarios where different pods within the same Component have\nvarying configurations. It allows for pod-specific customization of the configuration.\n\n\nNote: This field will be deprecated in future versions, and the functionality will be moved to\n`cluster.spec.componentSpecs[*].instances[*]`."
+                            description: "Specifies the secondary rendered config spec for pod-specific customization.\n\nThe template is rendered inside the pod (by the \"config-manager\" sidecar container) and merged with the main\ntemplate's render result to generate the final configuration file.\n\nThis field is intended to handle scenarios where different pods within the same Component have\nvarying configurations. It allows for pod-specific customization of the configuration.\n\nNote: This field will be deprecated in future versions, and the functionality will be moved to\n`cluster.spec.componentSpecs[*].instances[*]`."
                             properties:
                               namespace:
                                 default: "default"
@@ -130,7 +130,7 @@ spec:
                             pattern: "^[a-z0-9]([a-z0-9\\-]*[a-z0-9])?$"
                             type: "string"
                           reRenderResourceTypes:
-                            description: "Specifies whether the configuration needs to be re-rendered after v-scale or h-scale operations to reflect changes.\n\n\nIn some scenarios, the configuration may need to be updated to reflect the changes in resource allocation\nor cluster topology. Examples:\n\n\n- Redis: adjust maxmemory after v-scale operation.\n- MySQL: increase max connections after v-scale operation.\n- Zookeeper: update zoo.cfg with new node addresses after h-scale operation."
+                            description: "Specifies whether the configuration needs to be re-rendered after v-scale or h-scale operations to reflect changes.\n\nIn some scenarios, the configuration may need to be updated to reflect the changes in resource allocation\nor cluster topology. Examples:\n\n- Redis: adjust maxmemory after v-scale operation.\n- MySQL: increase max connections after v-scale operation.\n- Zookeeper: update zoo.cfg with new node addresses after h-scale operation."
                             items:
                               description: "RerenderResourceType defines the resource requirements for a component."
                               enum:
@@ -155,7 +155,7 @@ spec:
                           - "name"
                         type: "object"
                       importTemplateRef:
-                        description: "Specifies the user-defined configuration template.\n\n\nWhen provided, the `importTemplateRef` overrides the default configuration template\nspecified in `configSpec.templateRef`.\nThis allows users to customize the configuration template according to their specific requirements."
+                        description: "Specifies the user-defined configuration template.\n\nWhen provided, the `importTemplateRef` overrides the default configuration template\nspecified in `configSpec.templateRef`.\nThis allows users to customize the configuration template according to their specific requirements."
                         properties:
                           namespace:
                             default: "default"
@@ -178,12 +178,12 @@ spec:
                           - "templateRef"
                         type: "object"
                       name:
-                        description: "Defines the unique identifier of the configuration template.\n\n\nIt must be a string of maximum 63 characters, and can only include lowercase alphanumeric characters,\nhyphens, and periods.\nThe name must start and end with an alphanumeric character."
+                        description: "Defines the unique identifier of the configuration template.\n\nIt must be a string of maximum 63 characters, and can only include lowercase alphanumeric characters,\nhyphens, and periods.\nThe name must start and end with an alphanumeric character."
                         maxLength: 63
                         pattern: "^[a-z0-9]([a-z0-9\\.\\-]*[a-z0-9])?$"
                         type: "string"
                       payload:
-                        description: "External controllers can trigger a configuration rerender by modifying this field.\n\n\nNote: Currently, the `payload` field is opaque and its content is not interpreted by the system.\nModifying this field will cause a rerender, regardless of the specific content of this field."
+                        description: "External controllers can trigger a configuration rerender by modifying this field.\n\nNote: Currently, the `payload` field is opaque and its content is not interpreted by the system.\nModifying this field will cause a rerender, regardless of the specific content of this field."
                         type: "object"
                         x-kubernetes-preserve-unknown-fields: true
                       version:
@@ -206,7 +206,7 @@ spec:
                 conditions:
                   description: "Provides detailed status information for opsRequest."
                   items:
-                    description: "Condition contains details for one aspect of the current state of this API Resource.\n---\nThis struct is intended for direct use as an array at the field path .status.conditions.  For example,\n\n\n\ttype FooStatus struct{\n\t    // Represents the observations of a foo's current state.\n\t    // Known .status.conditions.type are: \"Available\", \"Progressing\", and \"Degraded\"\n\t    // +patchMergeKey=type\n\t    // +patchStrategy=merge\n\t    // +listType=map\n\t    // +listMapKey=type\n\t    Conditions []metav1.Condition `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"`\n\n\n\t    // other fields\n\t}"
+                    description: "Condition contains details for one aspect of the current state of this API Resource."
                     properties:
                       lastTransitionTime:
                         description: "lastTransitionTime is the last time the condition transitioned from one status to another.\nThis should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable."
@@ -235,7 +235,7 @@ spec:
                           - "Unknown"
                         type: "string"
                       type:
-                        description: "type of condition in CamelCase or in foo.example.com/CamelCase.\n---\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions can be\nuseful (see .node.status.conditions), the ability to deconflict is important.\nThe regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)"
+                        description: "type of condition in CamelCase or in foo.example.com/CamelCase."
                         maxLength: 316
                         pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$"
                         type: "string"
@@ -266,7 +266,7 @@ spec:
                         pattern: "^[a-z0-9]([a-z0-9\\.\\-]*[a-z0-9])?$"
                         type: "string"
                       phase:
-                        description: "Indicates the current status of the configuration item.\n\n\nPossible values include \"Creating\", \"Init\", \"Running\", \"Pending\", \"Merged\", \"MergeFailed\", \"FailedAndPause\",\n\"Upgrading\", \"Deleting\", \"FailedAndRetry\", \"Finished\"."
+                        description: "Indicates the current status of the configuration item.\n\nPossible values include \"Creating\", \"Init\", \"Running\", \"Pending\", \"Merged\", \"MergeFailed\", \"FailedAndPause\",\n\"Upgrading\", \"Deleting\", \"FailedAndRetry\", \"Finished\"."
                         enum:
                           - "Creating"
                           - "Init"

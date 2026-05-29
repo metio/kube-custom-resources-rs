@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.16.5"
+    controller-gen.kubebuilder.io/version: "v0.17.0"
   name: "tempostacks.tempo.grafana.com"
 spec:
   group: "tempo.grafana.com"
@@ -44,6 +44,148 @@ spec:
             spec:
               description: "TempoStackSpec defines the desired state of TempoStack."
               properties:
+                env:
+                  description: "Env defines additional environment variables for the Tempo containers of all components.\nThese environment variables can be used together with extraConfig and the -config.expand-env=true flag\nto reference Kubernetes Secrets or ConfigMaps in the Tempo configuration,\nfor example for a password-protected Redis cache."
+                  items:
+                    description: "EnvVar represents an environment variable present in a Container."
+                    properties:
+                      name:
+                        description: "Name of the environment variable.\nMay consist of any printable ASCII characters except '='."
+                        type: "string"
+                      value:
+                        description: "Variable references $(VAR_NAME) are expanded\nusing the previously defined environment variables in the container and\nany service environment variables. If a variable cannot be resolved,\nthe reference in the input string will be unchanged. Double $$ are reduced\nto a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.\n\"$$(VAR_NAME)\" will produce the string literal \"$(VAR_NAME)\".\nEscaped references will never be expanded, regardless of whether the variable\nexists or not.\nDefaults to \"\"."
+                        type: "string"
+                      valueFrom:
+                        description: "Source for the environment variable's value. Cannot be used if value is not empty."
+                        properties:
+                          configMapKeyRef:
+                            description: "Selects a key of a ConfigMap."
+                            properties:
+                              key:
+                                description: "The key to select."
+                                type: "string"
+                              name:
+                                default: ""
+                                description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                type: "string"
+                              optional:
+                                description: "Specify whether the ConfigMap or its key must be defined"
+                                type: "boolean"
+                            required:
+                              - "key"
+                            type: "object"
+                            x-kubernetes-map-type: "atomic"
+                          fieldRef:
+                            description: "Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,\nspec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs."
+                            properties:
+                              apiVersion:
+                                description: "Version of the schema the FieldPath is written in terms of, defaults to \"v1\"."
+                                type: "string"
+                              fieldPath:
+                                description: "Path of the field to select in the specified API version."
+                                type: "string"
+                            required:
+                              - "fieldPath"
+                            type: "object"
+                            x-kubernetes-map-type: "atomic"
+                          fileKeyRef:
+                            description: "FileKeyRef selects a key of the env file.\nRequires the EnvFiles feature gate to be enabled."
+                            properties:
+                              key:
+                                description: "The key within the env file. An invalid key will prevent the pod from starting.\nThe keys defined within a source may consist of any printable ASCII characters except '='.\nDuring Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters."
+                                type: "string"
+                              optional:
+                                default: false
+                                description: "Specify whether the file or its key must be defined. If the file or key\ndoes not exist, then the env var is not published.\nIf optional is set to true and the specified key does not exist,\nthe environment variable will not be set in the Pod's containers.\n\nIf optional is set to false and the specified key does not exist,\nan error will be returned during Pod creation."
+                                type: "boolean"
+                              path:
+                                description: "The path within the volume from which to select the file.\nMust be relative and may not contain the '..' path or start with '..'."
+                                type: "string"
+                              volumeName:
+                                description: "The name of the volume mount containing the env file."
+                                type: "string"
+                            required:
+                              - "key"
+                              - "path"
+                              - "volumeName"
+                            type: "object"
+                            x-kubernetes-map-type: "atomic"
+                          resourceFieldRef:
+                            description: "Selects a resource of the container: only resources limits and requests\n(limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported."
+                            properties:
+                              containerName:
+                                description: "Container name: required for volumes, optional for env vars"
+                                type: "string"
+                              divisor:
+                                anyOf:
+                                  - type: "integer"
+                                  - type: "string"
+                                description: "Specifies the output format of the exposed resources, defaults to \"1\""
+                                pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                x-kubernetes-int-or-string: true
+                              resource:
+                                description: "Required: resource to select"
+                                type: "string"
+                            required:
+                              - "resource"
+                            type: "object"
+                            x-kubernetes-map-type: "atomic"
+                          secretKeyRef:
+                            description: "Selects a key of a secret in the pod's namespace"
+                            properties:
+                              key:
+                                description: "The key of the secret to select from.  Must be a valid secret key."
+                                type: "string"
+                              name:
+                                default: ""
+                                description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                type: "string"
+                              optional:
+                                description: "Specify whether the Secret or its key must be defined"
+                                type: "boolean"
+                            required:
+                              - "key"
+                            type: "object"
+                            x-kubernetes-map-type: "atomic"
+                        type: "object"
+                    required:
+                      - "name"
+                    type: "object"
+                  type: "array"
+                envFrom:
+                  description: "EnvFrom defines additional environment variable sources for the Tempo containers of all components.\nThese environment variables can be used together with extraConfig and the -config.expand-env=true flag\nto reference Kubernetes Secrets or ConfigMaps in the Tempo configuration,\nfor example for a password-protected Redis cache."
+                  items:
+                    description: "EnvFromSource represents the source of a set of ConfigMaps or Secrets"
+                    properties:
+                      configMapRef:
+                        description: "The ConfigMap to select from"
+                        properties:
+                          name:
+                            default: ""
+                            description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                            type: "string"
+                          optional:
+                            description: "Specify whether the ConfigMap must be defined"
+                            type: "boolean"
+                        type: "object"
+                        x-kubernetes-map-type: "atomic"
+                      prefix:
+                        description: "Optional text to prepend to the name of each environment variable.\nMay consist of any printable ASCII characters except '='."
+                        type: "string"
+                      secretRef:
+                        description: "The Secret to select from"
+                        properties:
+                          name:
+                            default: ""
+                            description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                            type: "string"
+                          optional:
+                            description: "Specify whether the Secret must be defined"
+                            type: "boolean"
+                        type: "object"
+                        x-kubernetes-map-type: "atomic"
+                    type: "object"
+                  type: "array"
                 extraConfig:
                   description: "ExtraConfigSpec defines extra configurations for tempo that will be merged with the operator generated, configurations defined here\nhas precedence and could override generated config."
                   properties:
@@ -170,6 +312,14 @@ spec:
                     - "Managed"
                     - "Unmanaged"
                   type: "string"
+                networkPolicy:
+                  description: "NetworkPolicySpec defines how network policies are handled."
+                  properties:
+                    enabled:
+                      default: true
+                      description: "Enabled determines whether network policies are generated for the operands."
+                      type: "boolean"
+                  type: "object"
                 observability:
                   description: "ObservabilitySpec defines how telemetry data gets handled."
                   properties:
@@ -241,7 +391,6 @@ spec:
                           description: "JaegerAgentEndpoint defines the jaeger endpoint data gets send to.\nDeprecated: in favor of OTLPHttpEndpoint."
                           type: "string"
                         otlp_http_endpoint:
-                          default: "http://localhost:4320"
                           description: "OTLPHttpEndpoint defines the OTLP/http endpoint data gets send to.\nFor example, \"http://localhost:4320\".\nThe default OTLP/http port 4318 collides with the distributor ports, therefore it is recommended to use a different port\non the sidecar injected to the Tempo (e.g. 4320)."
                           type: "string"
                         sampling_fraction:
@@ -333,6 +482,15 @@ spec:
                 serviceAccount:
                   description: "ServiceAccount defines the service account to use for all tempo components."
                   type: "string"
+                size:
+                  description: "Size defines a predefined deployment size profile for this TempoStack.\nThe operator will apply pre-tested resource configurations based on the selected size.\nWhen not set, resources are determined by spec.resources.total or component-level overrides.\nSize also sets a default replication factor (1 for demo, 2 for others) if not explicitly specified."
+                  enum:
+                    - "1x.demo"
+                    - "1x.pico"
+                    - "1x.extra-small"
+                    - "1x.small"
+                    - "1x.medium"
+                  type: "string"
                 storage:
                   description: "Storage defines the spec for the object storage endpoint to store traces.\nUser is required to create secret and supply it."
                   properties:
@@ -370,11 +528,16 @@ spec:
                         certName:
                           description: "Cert is the name of a Secret containing a certificate (tls.crt) and private key (tls.key).\nIt needs to be in the same namespace as the Tempo custom resource."
                           type: "string"
+                        cipherSuites:
+                          description: "CipherSuites defines the list of acceptable TLS cipher suites.\n\nIf not set, the ciphers are set based on feature gate tlsProfile or obtained from the cluster if openshift.clusterTLSPolicy is enabled."
+                          items:
+                            type: "string"
+                          type: "array"
                         enabled:
                           description: "Enabled defines if TLS is enabled."
                           type: "boolean"
                         minVersion:
-                          description: "MinVersion defines the minimum acceptable TLS version."
+                          description: "MinVersion defines the minimum acceptable TLS version.\n\nIf not set, the version is set based on feature gate tlsProfile or obtained from the cluster if openshift.clusterTLSPolicy is enabled."
                           type: "string"
                       type: "object"
                   required:
@@ -776,11 +939,16 @@ spec:
                             certName:
                               description: "Cert is the name of a Secret containing a certificate (tls.crt) and private key (tls.key).\nIt needs to be in the same namespace as the Tempo custom resource."
                               type: "string"
+                            cipherSuites:
+                              description: "CipherSuites defines the list of acceptable TLS cipher suites.\n\nIf not set, the ciphers are set based on feature gate tlsProfile or obtained from the cluster if openshift.clusterTLSPolicy is enabled."
+                              items:
+                                type: "string"
+                              type: "array"
                             enabled:
                               description: "Enabled defines if TLS is enabled."
                               type: "boolean"
                             minVersion:
-                              description: "MinVersion defines the minimum acceptable TLS version."
+                              description: "MinVersion defines the minimum acceptable TLS version.\n\nIf not set, the version is set based on feature gate tlsProfile or obtained from the cluster if openshift.clusterTLSPolicy is enabled."
                               type: "string"
                           type: "object"
                       type: "object"

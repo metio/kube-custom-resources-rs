@@ -138,6 +138,9 @@ spec:
                 name:
                   description: "The unique name to give to your cluster. The name can contain only alphanumeric\ncharacters (case-sensitive),hyphens, and underscores. It must start with\nan alphanumeric character and can't be longer than100 characters. The name\nmust be unique within the Amazon Web Services Region and Amazon Web Services\naccount that you're creating the cluster in.\n\nRegex Pattern: `^[0-9A-Za-z][A-Za-z0-9\\-_]*$`"
                   type: "string"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
                 outpostConfig:
                   description: "An object representing the configuration of your local Amazon EKS cluster\non an Amazon Web Services Outpost. Before creating a local cluster on an\nOutpost, review Local clusters for Amazon EKS on Amazon Web Services Outposts\n(https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-local-cluster-overview.html)\nin the Amazon EKS User Guide. This object isn't available for creating Amazon\nEKS clusters on the Amazon Web Services cloud."
                   properties:
@@ -289,6 +292,9 @@ spec:
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."
                       type: "string"
+                    partition:
+                      description: "Partition is the AWS partition in which the resource exists or will exist"
+                      type: "string"
                     region:
                       description: "Region is the AWS region in which the resource exists or will exist."
                       type: "string"
@@ -302,6 +308,9 @@ spec:
                     data:
                       type: "string"
                   type: "object"
+                clusterSecurityGroupID:
+                  description: "The cluster security group that was created by Amazon EKS for the cluster.\nManaged node groups use this security group for control-plane-to-data-plane\ncommunication."
+                  type: "string"
                 conditions:
                   description: "All CRs managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
                   items:

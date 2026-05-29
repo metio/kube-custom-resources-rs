@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.18.0"
   labels:
     app.kubernetes.io/name: "kubeblocks"
   name: "backuppolicytemplates.dataprotection.kubeblocks.io"
@@ -85,7 +85,7 @@ spec:
                                         description: "Specifies a mapping value based on service version.\nTypically used to set up the tools image required for backup operations."
                                         type: "string"
                                       serviceVersions:
-                                        description: "Represents an array of the service version that can be mapped to the appropriate value.\nEach name in the list can represent an exact name, a name prefix, or a regular expression pattern.\n\n\nFor example:\n\n\n- \"8.0.33\": Matches the exact name \"8.0.33\"\n- \"8.0\": Matches all names starting with \"8.0\"\n- \"^8.0.\\d{1,2}$\": Matches all names starting with \"8.0.\" followed by one or two digits."
+                                        description: "Represents an array of the service version that can be mapped to the appropriate value.\nEach name in the list can represent an exact name, a name prefix, or a regular expression pattern.\n\nFor example:\n\n- \"8.0.33\": Matches the exact name \"8.0.33\"\n- \"8.0\": Matches all names starting with \"8.0\"\n- \"^8.0.\\d{1,2}$\": Matches all names starting with \"8.0.\" followed by one or two digits."
                                         items:
                                           type: "string"
                                         type: "array"
@@ -110,7 +110,7 @@ spec:
                             description: "Specifies the resource required by container.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/"
                             properties:
                               claims:
-                                description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
+                                description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                                 items:
                                   description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                   properties:
@@ -149,7 +149,7 @@ spec:
                         description: "Specifies whether to take snapshots of persistent volumes. If true,\nthe ActionSetName is not required, the controller will use the CSI volume\nsnapshotter to create the snapshot."
                         type: "boolean"
                       target:
-                        description: "If set, specifies the method for selecting the replica to be backed up using the criteria defined here.\nIf this field is not set, the selection method specified in `backupPolicy.target` is used.\n\n\nThis field provides a way to override the global `backupPolicy.target` setting for specific BackupMethod."
+                        description: "If set, specifies the method for selecting the replica to be backed up using the criteria defined here.\nIf this field is not set, the selection method specified in `backupPolicy.target` is used.\n\nThis field provides a way to override the global `backupPolicy.target` setting for specific BackupMethod."
                         properties:
                           account:
                             description: "If `backupPolicy.componentDefs` is set, this field is required to specify the system account name.\nThis account must match one listed in `componentDefinition.spec.systemAccounts[*].name`.\nThe corresponding secret created by this account is used to connect to the database."
@@ -163,15 +163,18 @@ spec:
                               portName:
                                 description: "Specifies the port name."
                                 type: "string"
+                            required:
+                              - "containerName"
+                              - "portName"
                             type: "object"
                           fallbackRole:
                             description: "Specifies the fallback role to select one replica for backup, this only takes effect when the\n`strategy` field below is set to `Any`."
                             type: "string"
                           role:
-                            description: "Specifies the role to select one or more replicas for backup.\n\n\n- If no replica with the specified role exists, the backup task will fail.\n  Special case: If there is only one replica in the cluster, it will be used for backup,\n  even if its role differs from the specified one.\n  For example, if you specify backing up on a secondary replica, but the cluster is single-node\n  with only one primary replica, the primary will be used for backup.\n  Future versions will address this special case using role priorities.\n- If multiple replicas satisfy the specified role, the choice (`Any` or `All`) will be made according to\n  the `strategy` field below."
+                            description: "Specifies the role to select one or more replicas for backup.\n\n- If no replica with the specified role exists, the backup task will fail.\n  Special case: If there is only one replica in the cluster, it will be used for backup,\n  even if its role differs from the specified one.\n  For example, if you specify backing up on a secondary replica, but the cluster is single-node\n  with only one primary replica, the primary will be used for backup.\n  Future versions will address this special case using role priorities.\n- If multiple replicas satisfy the specified role, the choice (`Any` or `All`) will be made according to\n  the `strategy` field below."
                             type: "string"
                           strategy:
-                            description: "Specifies the PodSelectionStrategy to use when multiple pods are\nselected for the backup target.\nValid values are:\n\n\n- Any: Selects any one pod that matches the labelsSelector.\n- All: Selects all pods that match the labelsSelector."
+                            description: "Specifies the PodSelectionStrategy to use when multiple pods are\nselected for the backup target.\nValid values are:\n\n- Any: Selects any one pod that matches the labelsSelector.\n- All: Selects all pods that match the labelsSelector."
                             enum:
                               - "Any"
                               - "All"
@@ -224,7 +227,7 @@ spec:
                     type: "object"
                   type: "array"
                 compDefs:
-                  description: "CompDefs specifies names for the component definitions associated with this BackupPolicyTemplate.\nEach name in the list can represent an exact name, a name prefix, or a regular expression pattern.\n\n\nFor example:\n\n\n- \"mysql-8.0.30-v1alpha1\": Matches the exact name \"mysql-8.0.30-v1alpha1\"\n- \"mysql-8.0.30\": Matches all names starting with \"mysql-8.0.30\"\n- \"^mysql-8.0.\\d{1,2}$\": Matches all names starting with \"mysql-8.0.\" followed by one or two digits."
+                  description: "CompDefs specifies names for the component definitions associated with this BackupPolicyTemplate.\nEach name in the list can represent an exact name, a name prefix, or a regular expression pattern.\n\nFor example:\n\n- \"mysql-8.0.30-v1alpha1\": Matches the exact name \"mysql-8.0.30-v1alpha1\"\n- \"mysql-8.0.30\": Matches all names starting with \"mysql-8.0.30\"\n- \"^mysql-8.0.\\d{1,2}$\": Matches all names starting with \"mysql-8.0.\" followed by one or two digits."
                   items:
                     type: "string"
                   maxItems: 128
@@ -273,7 +276,7 @@ spec:
                         x-kubernetes-list-type: "map"
                       retentionPeriod:
                         default: "7d"
-                        description: "Determines the duration for which the backup should be kept.\nKubeBlocks will remove all backups that are older than the RetentionPeriod.\nFor example, RetentionPeriod of `30d` will keep only the backups of last 30 days.\nSample duration format:\n\n\n- years: \t2y\n- months: \t6mo\n- days: \t\t30d\n- hours: \t12h\n- minutes: \t30m\n\n\nYou can also combine the above durations. For example: 30d12h30m"
+                        description: "Determines the duration for which the backup should be kept.\nKubeBlocks will remove all backups that are older than the RetentionPeriod.\nFor example, RetentionPeriod of `30d` will keep only the backups of last 30 days.\nSample duration format:\n\n- years: \t2y\n- months: \t6mo\n- days: \t\t30d\n- hours: \t12h\n- minutes: \t30m\n\nYou can also combine the above durations. For example: 30d12h30m"
                         type: "string"
                     required:
                       - "backupMethod"
@@ -281,7 +284,7 @@ spec:
                     type: "object"
                   type: "array"
                 serviceKind:
-                  description: "Defines the type of well-known service protocol that the BackupPolicyTemplate provides, and it is optional.\nSome examples of well-known service protocols include:\n\n\n- \"MySQL\": Indicates that the Component provides a MySQL database service.\n- \"PostgreSQL\": Indicates that the Component offers a PostgreSQL database service.\n- \"Redis\": Signifies that the Component functions as a Redis key-value store.\n- \"ETCD\": Denotes that the Component serves as an ETCD distributed key-value store"
+                  description: "Defines the type of well-known service protocol that the BackupPolicyTemplate provides, and it is optional.\nSome examples of well-known service protocols include:\n\n- \"MySQL\": Indicates that the Component provides a MySQL database service.\n- \"PostgreSQL\": Indicates that the Component offers a PostgreSQL database service.\n- \"Redis\": Signifies that the Component functions as a Redis key-value store.\n- \"ETCD\": Denotes that the Component serves as an ETCD distributed key-value store"
                   maxLength: 32
                   type: "string"
                 target:
@@ -299,15 +302,18 @@ spec:
                         portName:
                           description: "Specifies the port name."
                           type: "string"
+                      required:
+                        - "containerName"
+                        - "portName"
                       type: "object"
                     fallbackRole:
                       description: "Specifies the fallback role to select one replica for backup, this only takes effect when the\n`strategy` field below is set to `Any`."
                       type: "string"
                     role:
-                      description: "Specifies the role to select one or more replicas for backup.\n\n\n- If no replica with the specified role exists, the backup task will fail.\n  Special case: If there is only one replica in the cluster, it will be used for backup,\n  even if its role differs from the specified one.\n  For example, if you specify backing up on a secondary replica, but the cluster is single-node\n  with only one primary replica, the primary will be used for backup.\n  Future versions will address this special case using role priorities.\n- If multiple replicas satisfy the specified role, the choice (`Any` or `All`) will be made according to\n  the `strategy` field below."
+                      description: "Specifies the role to select one or more replicas for backup.\n\n- If no replica with the specified role exists, the backup task will fail.\n  Special case: If there is only one replica in the cluster, it will be used for backup,\n  even if its role differs from the specified one.\n  For example, if you specify backing up on a secondary replica, but the cluster is single-node\n  with only one primary replica, the primary will be used for backup.\n  Future versions will address this special case using role priorities.\n- If multiple replicas satisfy the specified role, the choice (`Any` or `All`) will be made according to\n  the `strategy` field below."
                       type: "string"
                     strategy:
-                      description: "Specifies the PodSelectionStrategy to use when multiple pods are\nselected for the backup target.\nValid values are:\n\n\n- Any: Selects any one pod that matches the labelsSelector.\n- All: Selects all pods that match the labelsSelector."
+                      description: "Specifies the PodSelectionStrategy to use when multiple pods are\nselected for the backup target.\nValid values are:\n\n- Any: Selects any one pod that matches the labelsSelector.\n- All: Selects all pods that match the labelsSelector."
                       enum:
                         - "Any"
                         - "All"
@@ -320,6 +326,7 @@ spec:
                   type: "object"
               required:
                 - "backupMethods"
+                - "compDefs"
               type: "object"
             status:
               description: "Populated by the system, it represents the current information about the BackupPolicyTemplate."

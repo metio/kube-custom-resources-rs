@@ -35,6 +35,9 @@ spec:
                 allowDeletion:
                   description: "AllowDeletion makes the controller delete the Temporal namespace if the\nCRD is deleted."
                   type: "boolean"
+                allowSearchAttributeDeletion:
+                  description: "AllowSearchAttributeDeletion makes the controller remove custom search attributes\nfrom the Temporal server if they are not present in the spec."
+                  type: "boolean"
                 archival:
                   description: "Archival is a per-namespace archival configuration.\nIf not set, the default cluster configuration is used."
                   properties:
@@ -100,6 +103,11 @@ spec:
                   items:
                     type: "string"
                   type: "array"
+                customSearchAttributes:
+                  additionalProperties:
+                    type: "string"
+                  description: "CustomSearchAttributes is an optional mapping of custom search attribute names to types.\nSupported types: Text, Keyword, Int, Double, Bool, DateTime, KeywordList."
+                  type: "object"
                 data:
                   additionalProperties:
                     type: "string"

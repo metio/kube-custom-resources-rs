@@ -39,18 +39,37 @@ spec:
                   type: "integer"
                 excludeHeadPodFromServeSvc:
                   type: "boolean"
+                managedBy:
+                  type: "string"
+                  x-kubernetes-validations:
+                    - message: "the managedBy field is immutable"
+                      rule: "self == oldSelf"
+                    - message: "the managedBy field value must be either 'ray.io/kuberay-operator' or 'kueue.x-k8s.io/multikueue'"
+                      rule: "self in ['ray.io/kuberay-operator', 'kueue.x-k8s.io/multikueue']"
                 rayClusterConfig:
                   properties:
                     authOptions:
                       properties:
+                        enableK8sTokenAuth:
+                          type: "boolean"
                         mode:
                           enum:
                             - "disabled"
                             - "token"
                           type: "string"
+                        secretName:
+                          type: "string"
                       type: "object"
                     autoscalerOptions:
                       properties:
+                        args:
+                          items:
+                            type: "string"
+                          type: "array"
+                        command:
+                          items:
+                            type: "string"
+                          type: "array"
                         env:
                           items:
                             properties:
@@ -3501,6 +3520,11 @@ spec:
                                   x-kubernetes-list-map-keys:
                                     - "name"
                                   x-kubernetes-list-type: "map"
+                                schedulingGroup:
+                                  properties:
+                                    podGroupName:
+                                      type: "string"
+                                  type: "object"
                                 securityContext:
                                   properties:
                                     appArmorProfile:
@@ -4492,18 +4516,6 @@ spec:
                                   x-kubernetes-list-map-keys:
                                     - "name"
                                   x-kubernetes-list-type: "map"
-                                workloadRef:
-                                  properties:
-                                    name:
-                                      type: "string"
-                                    podGroup:
-                                      type: "string"
-                                    podGroupReplicaKey:
-                                      type: "string"
-                                  required:
-                                    - "name"
-                                    - "podGroup"
-                                  type: "object"
                               required:
                                 - "containers"
                               type: "object"
@@ -7397,6 +7409,11 @@ spec:
                                     x-kubernetes-list-map-keys:
                                       - "name"
                                     x-kubernetes-list-type: "map"
+                                  schedulingGroup:
+                                    properties:
+                                      podGroupName:
+                                        type: "string"
+                                    type: "object"
                                   securityContext:
                                     properties:
                                       appArmorProfile:
@@ -8388,18 +8405,6 @@ spec:
                                     x-kubernetes-list-map-keys:
                                       - "name"
                                     x-kubernetes-list-type: "map"
-                                  workloadRef:
-                                    properties:
-                                      name:
-                                        type: "string"
-                                      podGroup:
-                                        type: "string"
-                                      podGroupReplicaKey:
-                                        type: "string"
-                                    required:
-                                      - "name"
-                                      - "podGroup"
-                                    type: "object"
                                 required:
                                   - "containers"
                                 type: "object"
@@ -8618,6 +8623,8 @@ spec:
                 serviceUnhealthySecondThreshold:
                   format: "int32"
                   type: "integer"
+                suspend:
+                  type: "boolean"
                 upgradeStrategy:
                   properties:
                     clusterUpgradeOptions:

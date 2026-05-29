@@ -1,11 +1,14 @@
 apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: "v0.17.2"
   name: "apisixupstreams.apisix.apache.org"
 spec:
   group: "apisix.apache.org"
   names:
     kind: "ApisixUpstream"
+    listKind: "ApisixUpstreamList"
     plural: "apisixupstreams"
     shortNames:
       - "au"
@@ -15,174 +18,225 @@ spec:
     - name: "v2"
       schema:
         openAPIV3Schema:
+          description: "ApisixUpstream defines configuration for upstream services."
           properties:
+            apiVersion:
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              type: "string"
+            kind:
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              type: "string"
+            metadata:
+              type: "object"
             spec:
+              description: "ApisixUpstreamSpec defines the upstream configuration."
               properties:
                 discovery:
-                  description: "Discovery is used to configure service discovery for upstream"
+                  description: "Discovery configures service discovery for the upstream."
                   properties:
                     args:
+                      additionalProperties:
+                        type: "string"
+                      description: "Args contains additional configuration parameters required by the discovery provider.\nThese are passed as key-value pairs."
                       type: "object"
-                      x-kubernetes-preserve-unknown-fields: true
                     serviceName:
+                      description: "ServiceName is the name of the service to discover."
                       type: "string"
                     type:
+                      description: "Type is the name of the service discovery provider."
                       type: "string"
+                  required:
+                    - "serviceName"
+                    - "type"
                   type: "object"
                 externalNodes:
-                  description: "ExternalNodes contains external nodes the Upstream should use If this field is set, the upstream will use these nodes directly without any further resolves"
+                  description: "ExternalNodes defines a static list of backend nodes. These can be external hosts\noutside the cluster or cluster-internal Services specified by their DNS name.\nWhen this field is set, the upstream will route traffic directly to these nodes\nwithout DNS resolution or service discovery."
                   items:
-                    description: "ApisixUpstreamExternalNode is the external node conf"
+                    description: "ApisixUpstreamExternalNode defines configuration for an external upstream node.\nThis allows referencing services outside the cluster."
                     properties:
                       name:
+                        description: "Name is the hostname or IP address of the external node."
                         type: "string"
                       port:
+                        description: "Port specifies the port number on which the external node is accepting traffic."
+                        maximum: 65535.0
+                        minimum: 1.0
                         type: "integer"
                       type:
+                        description: "Type indicates the kind of external node. Can be `Domain`, or `Service`."
                         type: "string"
                       weight:
+                        description: "Weight defines the load balancing weight of this node.\nHigher values increase the share of traffic sent to this node."
                         type: "integer"
                     type: "object"
+                  minItems: 1
                   type: "array"
                 healthCheck:
-                  anyOf:
-                    - required:
-                        - "active"
-                    - required:
-                        - "active"
-                        - "passive"
+                  description: "HealthCheck defines the active and passive health check configuration for the upstream."
                   properties:
                     active:
+                      description: "Active health checks proactively send requests to upstream nodes to determine their availability."
                       properties:
                         concurrency:
-                          minimum: 1.0
+                          description: "Concurrency sets the number of targets to be checked at the same time."
+                          minimum: 0.0
                           type: "integer"
                         healthy:
+                          description: "Healthy configures the rules that define an upstream node as healthy."
                           properties:
                             httpCodes:
+                              description: "HTTPCodes define a list of HTTP status codes that are considered healthy."
                               items:
-                                maximum: 599.0
-                                minimum: 200.0
                                 type: "integer"
                               minItems: 1
                               type: "array"
                             interval:
+                              description: "Interval defines the time interval for checking targets, in seconds."
                               type: "string"
                             successes:
+                              description: "Successes define the number of successful probes to define a healthy target."
                               maximum: 254.0
-                              minimum: 1.0
+                              minimum: 0.0
                               type: "integer"
                           type: "object"
                         host:
-                          pattern: "^\\*?[0-9a-zA-Z-._]+$"
+                          description: "Host sets the upstream host."
                           type: "string"
                         httpPath:
-                          minLength: 1
+                          description: "HTTPPath sets the HTTP probe request path."
                           type: "string"
                         port:
+                          description: "Port sets the upstream port."
+                          format: "int32"
                           maximum: 65535.0
                           minimum: 1.0
                           type: "integer"
                         requestHeaders:
+                          description: "RequestHeaders sets the request headers."
                           items:
                             type: "string"
-                          minItems: 1
                           type: "array"
                         strictTLS:
+                          description: "StrictTLS sets whether to enforce TLS."
                           type: "boolean"
                         timeout:
-                          minimum: 0.0
-                          type: "number"
+                          description: "Timeout sets health check timeout in seconds."
+                          format: "int64"
+                          type: "integer"
                         type:
+                          default: "http"
+                          description: "Type is the health check type. Can be `http`, `https`, or `tcp`."
                           enum:
                             - "http"
                             - "https"
                             - "tcp"
                           type: "string"
                         unhealthy:
+                          description: "Unhealthy configures the rules that define an upstream node as unhealthy."
                           properties:
                             httpCodes:
+                              description: "HTTPCodes define a list of HTTP status codes that are considered unhealthy."
                               items:
-                                maximum: 599.0
-                                minimum: 200.0
                                 type: "integer"
                               minItems: 1
                               type: "array"
                             httpFailures:
+                              description: "HTTPFailures define the number of HTTP failures to define an unhealthy target."
                               maximum: 254.0
-                              minimum: 1.0
+                              minimum: 0.0
                               type: "integer"
                             interval:
+                              description: "Interval defines the time interval for checking targets, in seconds."
                               type: "string"
                             tcpFailures:
+                              description: "TCPFailures define the number of TCP failures to define an unhealthy target."
+                              maximum: 254.0
+                              minimum: 0.0
+                              type: "integer"
+                            timeout:
+                              description: "Timeout sets the number of timeouts to define an unhealthy target."
                               maximum: 254.0
                               minimum: 1.0
-                              type: "integer"
-                            timeouts:
-                              minimum: 0.0
                               type: "integer"
                           type: "object"
                       type: "object"
                     passive:
+                      description: "Passive health checks evaluate upstream health based on observed traffic, such as timeouts or errors."
                       properties:
                         healthy:
+                          description: "Healthy defines the conditions under which an upstream node is considered healthy."
                           properties:
                             httpCodes:
+                              description: "HTTPCodes define a list of HTTP status codes that are considered healthy."
                               items:
-                                maximum: 599.0
-                                minimum: 200.0
                                 type: "integer"
                               minItems: 1
                               type: "array"
                             successes:
+                              description: "Successes define the number of successful probes to define a healthy target."
                               maximum: 254.0
-                              minimum: 1.0
+                              minimum: 0.0
                               type: "integer"
                           type: "object"
                         type:
+                          default: "http"
+                          description: "Type specifies the type of passive health check.\nCan be `http`, `https`, or `tcp`."
                           enum:
                             - "http"
                             - "https"
                             - "tcp"
                           type: "string"
                         unhealthy:
+                          description: "Unhealthy defines the conditions under which an upstream node is considered unhealthy."
                           properties:
                             httpCodes:
+                              description: "HTTPCodes define a list of HTTP status codes that are considered unhealthy."
                               items:
-                                maximum: 599.0
-                                minimum: 200.0
                                 type: "integer"
                               minItems: 1
                               type: "array"
                             httpFailures:
+                              description: "HTTPFailures define the number of HTTP failures to define an unhealthy target."
                               maximum: 254.0
-                              minimum: 1.0
+                              minimum: 0.0
                               type: "integer"
                             tcpFailures:
+                              description: "TCPFailures define the number of TCP failures to define an unhealthy target."
+                              maximum: 254.0
+                              minimum: 0.0
+                              type: "integer"
+                            timeout:
+                              description: "Timeout sets the number of timeouts to define an unhealthy target."
                               maximum: 254.0
                               minimum: 1.0
-                              type: "integer"
-                            timeouts:
-                              minimum: 0.0
                               type: "integer"
                           type: "object"
                       type: "object"
+                  required:
+                    - "active"
                   type: "object"
                 ingressClassName:
+                  description: "IngressClassName is the name of an IngressClass cluster resource.\nController implementations use this field to determine whether they\nshould process this ApisixUpstream resource."
                   type: "string"
                 loadbalancer:
+                  description: "LoadBalancer specifies the load balancer configuration for Kubernetes Service."
                   properties:
                     hashOn:
+                      default: "vars"
+                      description: "HashOn specified the type of field used for hashing, required when type is `chash`.\nDefault is `vars`. Can be `vars`, `header`, `cookie`, `consumer`, or `vars_combinations`."
                       enum:
                         - "vars"
-                        - "vars_combinations"
                         - "header"
                         - "cookie"
                         - "consumer"
+                        - "vars_combinations"
                       type: "string"
                     key:
+                      description: "Key is used with HashOn, generally required when type is `chash`.\nWhen HashOn is `header` or `cookie`, specifies the name of the header or cookie.\nWhen HashOn is `consumer`, key is not required, as the consumer name is used automatically.\nWhen HashOn is `vars` or `vars_combinations`, key refers to one or a combination of\n[APISIX variables](https://apisix.apache.org/docs/apisix/apisix-variable)."
                       type: "string"
                     type:
+                      default: "roundrobin"
+                      description: "Type specifies the load balancing algorithms to route traffic to the backend.\nDefault is `roundrobin`.\nCan be `roundrobin`, `chash`, `ewma`, or `least_conn`."
                       enum:
                         - "roundrobin"
                         - "chash"
@@ -193,149 +247,198 @@ spec:
                     - "type"
                   type: "object"
                 passHost:
+                  description: "PassHost configures how the host header should be determined when a\nrequest is forwarded to the upstream.\nDefault is `pass`.\nCan be `pass`, `node` or `rewrite`:\n* `pass`: preserve the original Host header\n* `node`: use the upstream node’s host\n* `rewrite`: set to a custom host via upstreamHost"
                   enum:
                     - "pass"
                     - "node"
                     - "rewrite"
                   type: "string"
                 portLevelSettings:
+                  description: "PortLevelSettings allows fine-grained upstream configuration for specific ports,\nuseful when a backend service exposes multiple ports with different behaviors or protocols."
                   items:
+                    description: "PortLevelSettings configures the ApisixUpstreamConfig for each individual port. It inherits\nconfiguration from the outer level (the whole Kubernetes Service) and overrides some of\nthem if they are set on the port level."
                     properties:
+                      discovery:
+                        description: "Discovery configures service discovery for the upstream."
+                        properties:
+                          args:
+                            additionalProperties:
+                              type: "string"
+                            description: "Args contains additional configuration parameters required by the discovery provider.\nThese are passed as key-value pairs."
+                            type: "object"
+                          serviceName:
+                            description: "ServiceName is the name of the service to discover."
+                            type: "string"
+                          type:
+                            description: "Type is the name of the service discovery provider."
+                            type: "string"
+                        required:
+                          - "serviceName"
+                          - "type"
+                        type: "object"
                       healthCheck:
-                        anyOf:
-                          - required:
-                              - "active"
-                          - required:
-                              - "active"
-                              - "passive"
+                        description: "HealthCheck defines the active and passive health check configuration for the upstream."
                         properties:
                           active:
+                            description: "Active health checks proactively send requests to upstream nodes to determine their availability."
                             properties:
                               concurrency:
-                                minimum: 1.0
+                                description: "Concurrency sets the number of targets to be checked at the same time."
+                                minimum: 0.0
                                 type: "integer"
                               healthy:
+                                description: "Healthy configures the rules that define an upstream node as healthy."
                                 properties:
                                   httpCodes:
+                                    description: "HTTPCodes define a list of HTTP status codes that are considered healthy."
                                     items:
-                                      maximum: 599.0
-                                      minimum: 200.0
                                       type: "integer"
                                     minItems: 1
                                     type: "array"
                                   interval:
+                                    description: "Interval defines the time interval for checking targets, in seconds."
                                     type: "string"
                                   successes:
+                                    description: "Successes define the number of successful probes to define a healthy target."
                                     maximum: 254.0
-                                    minimum: 1.0
+                                    minimum: 0.0
                                     type: "integer"
                                 type: "object"
                               host:
-                                pattern: "^\\*?[0-9a-zA-Z-._]+$"
+                                description: "Host sets the upstream host."
                                 type: "string"
                               httpPath:
-                                minLength: 1
+                                description: "HTTPPath sets the HTTP probe request path."
                                 type: "string"
                               port:
+                                description: "Port sets the upstream port."
+                                format: "int32"
                                 maximum: 65535.0
                                 minimum: 1.0
                                 type: "integer"
                               requestHeaders:
+                                description: "RequestHeaders sets the request headers."
                                 items:
                                   type: "string"
-                                minItems: 1
                                 type: "array"
                               strictTLS:
+                                description: "StrictTLS sets whether to enforce TLS."
                                 type: "boolean"
                               timeout:
-                                minimum: 0.0
-                                type: "number"
+                                description: "Timeout sets health check timeout in seconds."
+                                format: "int64"
+                                type: "integer"
                               type:
+                                default: "http"
+                                description: "Type is the health check type. Can be `http`, `https`, or `tcp`."
                                 enum:
                                   - "http"
                                   - "https"
                                   - "tcp"
                                 type: "string"
                               unhealthy:
+                                description: "Unhealthy configures the rules that define an upstream node as unhealthy."
                                 properties:
                                   httpCodes:
+                                    description: "HTTPCodes define a list of HTTP status codes that are considered unhealthy."
                                     items:
-                                      maximum: 599.0
-                                      minimum: 200.0
                                       type: "integer"
                                     minItems: 1
                                     type: "array"
                                   httpFailures:
+                                    description: "HTTPFailures define the number of HTTP failures to define an unhealthy target."
                                     maximum: 254.0
-                                    minimum: 1.0
+                                    minimum: 0.0
                                     type: "integer"
                                   interval:
+                                    description: "Interval defines the time interval for checking targets, in seconds."
                                     type: "string"
                                   tcpFailures:
+                                    description: "TCPFailures define the number of TCP failures to define an unhealthy target."
+                                    maximum: 254.0
+                                    minimum: 0.0
+                                    type: "integer"
+                                  timeout:
+                                    description: "Timeout sets the number of timeouts to define an unhealthy target."
                                     maximum: 254.0
                                     minimum: 1.0
                                     type: "integer"
-                                  timeout:
-                                    type: "string"
                                 type: "object"
                             type: "object"
                           passive:
+                            description: "Passive health checks evaluate upstream health based on observed traffic, such as timeouts or errors."
                             properties:
                               healthy:
+                                description: "Healthy defines the conditions under which an upstream node is considered healthy."
                                 properties:
                                   httpCodes:
+                                    description: "HTTPCodes define a list of HTTP status codes that are considered healthy."
                                     items:
-                                      maximum: 599.0
-                                      minimum: 200.0
                                       type: "integer"
                                     minItems: 1
                                     type: "array"
                                   successes:
+                                    description: "Successes define the number of successful probes to define a healthy target."
                                     maximum: 254.0
-                                    minimum: 1.0
+                                    minimum: 0.0
                                     type: "integer"
                                 type: "object"
                               type:
+                                default: "http"
+                                description: "Type specifies the type of passive health check.\nCan be `http`, `https`, or `tcp`."
                                 enum:
                                   - "http"
                                   - "https"
                                   - "tcp"
                                 type: "string"
                               unhealthy:
+                                description: "Unhealthy defines the conditions under which an upstream node is considered unhealthy."
                                 properties:
                                   httpCodes:
+                                    description: "HTTPCodes define a list of HTTP status codes that are considered unhealthy."
                                     items:
-                                      maximum: 599.0
-                                      minimum: 200.0
                                       type: "integer"
                                     minItems: 1
                                     type: "array"
                                   httpFailures:
+                                    description: "HTTPFailures define the number of HTTP failures to define an unhealthy target."
                                     maximum: 254.0
-                                    minimum: 1.0
+                                    minimum: 0.0
                                     type: "integer"
                                   tcpFailures:
+                                    description: "TCPFailures define the number of TCP failures to define an unhealthy target."
+                                    maximum: 254.0
+                                    minimum: 0.0
+                                    type: "integer"
+                                  timeout:
+                                    description: "Timeout sets the number of timeouts to define an unhealthy target."
                                     maximum: 254.0
                                     minimum: 1.0
                                     type: "integer"
-                                  timeout:
-                                    type: "string"
                                 type: "object"
                             type: "object"
+                        required:
+                          - "active"
                         type: "object"
                       loadbalancer:
+                        description: "LoadBalancer specifies the load balancer configuration for Kubernetes Service."
                         properties:
                           hashOn:
+                            default: "vars"
+                            description: "HashOn specified the type of field used for hashing, required when type is `chash`.\nDefault is `vars`. Can be `vars`, `header`, `cookie`, `consumer`, or `vars_combinations`."
                             enum:
                               - "vars"
-                              - "vars_combinations"
                               - "header"
                               - "cookie"
                               - "consumer"
+                              - "vars_combinations"
                             type: "string"
                           key:
+                            description: "Key is used with HashOn, generally required when type is `chash`.\nWhen HashOn is `header` or `cookie`, specifies the name of the header or cookie.\nWhen HashOn is `consumer`, key is not required, as the consumer name is used automatically.\nWhen HashOn is `vars` or `vars_combinations`, key refers to one or a combination of\n[APISIX variables](https://apisix.apache.org/docs/apisix/apisix-variable)."
                             type: "string"
                           type:
+                            default: "roundrobin"
+                            description: "Type specifies the load balancing algorithms to route traffic to the backend.\nDefault is `roundrobin`.\nCan be `roundrobin`, `chash`, `ewma`, or `least_conn`."
                             enum:
                               - "roundrobin"
                               - "chash"
@@ -345,69 +448,136 @@ spec:
                         required:
                           - "type"
                         type: "object"
+                      passHost:
+                        description: "PassHost configures how the host header should be determined when a\nrequest is forwarded to the upstream.\nDefault is `pass`.\nCan be `pass`, `node` or `rewrite`:\n* `pass`: preserve the original Host header\n* `node`: use the upstream node’s host\n* `rewrite`: set to a custom host via upstreamHost"
+                        enum:
+                          - "pass"
+                          - "node"
+                          - "rewrite"
+                        type: "string"
                       port:
+                        description: "Port is a Kubernetes Service port."
+                        format: "int32"
                         maximum: 65535.0
                         minimum: 1.0
                         type: "integer"
                       retries:
-                        minimum: 0.0
+                        description: "Retries defines the number of retry attempts APISIX should make when a failure occurs.\nFailures include timeouts, network errors, or 5xx status codes."
+                        format: "int64"
                         type: "integer"
                       scheme:
+                        description: "Scheme is the protocol used to communicate with the upstream.\nDefault is `http`.\nCan be `http`, `https`, `grpc`, or `grpcs`."
                         enum:
                           - "http"
+                          - "https"
                           - "grpc"
+                          - "grpcs"
                         type: "string"
+                      subsets:
+                        description: "Subsets defines labeled subsets of service endpoints, typically used for\nservice versioning or canary deployments."
+                        items:
+                          description: "ApisixUpstreamSubset defines a single endpoints group of one Service."
+                          properties:
+                            labels:
+                              additionalProperties:
+                                type: "string"
+                              description: "Labels is the label set of this subset."
+                              type: "object"
+                            name:
+                              description: "Name is the name of subset."
+                              type: "string"
+                          required:
+                            - "labels"
+                            - "name"
+                          type: "object"
+                        type: "array"
                       timeout:
+                        description: "Timeout specifies the connection, send, and read timeouts for upstream requests."
                         properties:
                           connect:
+                            description: "Connect timeout for establishing a connection to the upstream."
                             type: "string"
                           read:
+                            description: "Read timeout for reading data from the upstream."
                             type: "string"
                           send:
+                            description: "Send timeout for sending data to the upstream."
                             type: "string"
                         type: "object"
+                      tlsSecret:
+                        description: "TLSSecret references a Kubernetes Secret that contains the client certificate and key\nfor mutual TLS when connecting to the upstream."
+                        properties:
+                          name:
+                            description: "Name is the name of the Kubernetes Secret."
+                            minLength: 1
+                            type: "string"
+                          namespace:
+                            description: "Namespace is the namespace where the Kubernetes Secret is located."
+                            minLength: 1
+                            type: "string"
+                        required:
+                          - "name"
+                          - "namespace"
+                        type: "object"
+                      upstreamHost:
+                        description: "UpstreamHost sets a custom Host header when passHost is set to `rewrite`."
+                        type: "string"
+                    required:
+                      - "port"
                     type: "object"
                   type: "array"
                 retries:
-                  minimum: 0.0
+                  description: "Retries defines the number of retry attempts APISIX should make when a failure occurs.\nFailures include timeouts, network errors, or 5xx status codes."
+                  format: "int64"
                   type: "integer"
                 scheme:
+                  description: "Scheme is the protocol used to communicate with the upstream.\nDefault is `http`.\nCan be `http`, `https`, `grpc`, or `grpcs`."
                   enum:
                     - "http"
-                    - "grpc"
                     - "https"
+                    - "grpc"
                     - "grpcs"
                   type: "string"
                 subsets:
+                  description: "Subsets defines labeled subsets of service endpoints, typically used for\nservice versioning or canary deployments."
                   items:
+                    description: "ApisixUpstreamSubset defines a single endpoints group of one Service."
                     properties:
                       labels:
+                        additionalProperties:
+                          type: "string"
+                        description: "Labels is the label set of this subset."
                         type: "object"
-                        x-kubernetes-preserve-unknown-fields: true
                       name:
-                        minLength: 1
+                        description: "Name is the name of subset."
                         type: "string"
                     required:
-                      - "name"
                       - "labels"
+                      - "name"
                     type: "object"
                   type: "array"
                 timeout:
+                  description: "Timeout specifies the connection, send, and read timeouts for upstream requests."
                   properties:
                     connect:
+                      description: "Connect timeout for establishing a connection to the upstream."
                       type: "string"
                     read:
+                      description: "Read timeout for reading data from the upstream."
                       type: "string"
                     send:
+                      description: "Send timeout for sending data to the upstream."
                       type: "string"
                   type: "object"
                 tlsSecret:
-                  description: "ApisixSecret describes the Kubernetes Secret name and namespace."
+                  description: "TLSSecret references a Kubernetes Secret that contains the client certificate and key\nfor mutual TLS when connecting to the upstream."
                   properties:
                     name:
+                      description: "Name is the name of the Kubernetes Secret."
                       minLength: 1
                       type: "string"
                     namespace:
+                      description: "Namespace is the namespace where the Kubernetes Secret is located."
                       minLength: 1
                       type: "string"
                   required:
@@ -415,24 +585,53 @@ spec:
                     - "namespace"
                   type: "object"
                 upstreamHost:
-                  pattern: "^\\*?[0-9a-zA-Z-._]+$"
+                  description: "UpstreamHost sets a custom Host header when passHost is set to `rewrite`."
                   type: "string"
               type: "object"
             status:
+              description: "ApisixStatus is the status report for Apisix ingress Resources"
               properties:
                 conditions:
                   items:
+                    description: "Condition contains details for one aspect of the current state of this API Resource."
                     properties:
+                      lastTransitionTime:
+                        description: "lastTransitionTime is the last time the condition transitioned from one status to another.\nThis should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable."
+                        format: "date-time"
+                        type: "string"
                       message:
+                        description: "message is a human readable message indicating details about the transition.\nThis may be an empty string."
+                        maxLength: 32768
                         type: "string"
                       observedGeneration:
+                        description: "observedGeneration represents the .metadata.generation that the condition was set based upon.\nFor instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date\nwith respect to the current state of the instance."
+                        format: "int64"
+                        minimum: 0.0
                         type: "integer"
                       reason:
+                        description: "reason contains a programmatic identifier indicating the reason for the condition's last transition.\nProducers of specific condition types may define expected values and meanings for this field,\nand whether the values are considered a guaranteed API.\nThe value should be a CamelCase string.\nThis field may not be empty."
+                        maxLength: 1024
+                        minLength: 1
+                        pattern: "^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$"
                         type: "string"
                       status:
+                        description: "status of the condition, one of True, False, Unknown."
+                        enum:
+                          - "True"
+                          - "False"
+                          - "Unknown"
                         type: "string"
                       type:
+                        description: "type of condition in CamelCase or in foo.example.com/CamelCase."
+                        maxLength: 316
+                        pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$"
                         type: "string"
+                    required:
+                      - "lastTransitionTime"
+                      - "message"
+                      - "reason"
+                      - "status"
+                      - "type"
                     type: "object"
                   type: "array"
               type: "object"

@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.16.2"
+    controller-gen.kubebuilder.io/version: "v0.20.0"
   name: "flowcollectors.flows.netobserv.io"
 spec:
   group: "flows.netobserv.io"
@@ -14,11 +14,17 @@ spec:
   scope: "Cluster"
   versions:
     - additionalPrinterColumns:
-        - jsonPath: ".spec.agent.type"
+        - jsonPath: ".status.components.agent.state"
           name: "Agent"
           type: "string"
+        - jsonPath: ".status.components.processor.state"
+          name: "Processor"
+          type: "string"
+        - jsonPath: ".status.components.plugin.state"
+          name: "Plugin"
+          type: "string"
         - jsonPath: ".spec.agent.ebpf.sampling"
-          name: "Sampling (EBPF)"
+          name: "Sampling"
           type: "string"
         - jsonPath: ".spec.deploymentModel"
           name: "Deployment Model"
@@ -642,7 +648,7 @@ spec:
                                         description: "Key is the taint key that the toleration applies to. Empty means match all taint keys.\nIf the key is empty, operator must be Exists; this combination means to match all values and all keys."
                                         type: "string"
                                       operator:
-                                        description: "Operator represents a key's relationship to the value.\nValid operators are Exists and Equal. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category."
+                                        description: "Operator represents a key's relationship to the value.\nValid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category.\nLt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators)."
                                         type: "string"
                                       tolerationSeconds:
                                         description: "TolerationSeconds represents the period of time the toleration (which must be\nof effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,\nit is not set, which means tolerate the taint forever (do not evict). Zero and\nnegative values will be treated as 0 (evict immediately) by the system."
@@ -656,13 +662,13 @@ spec:
                               type: "object"
                           type: "object"
                         cacheActiveTimeout:
-                          default: "5s"
-                          description: "`cacheActiveTimeout` is the max period during which the reporter aggregates flows before sending.\nIncreasing `cacheMaxFlows` and `cacheActiveTimeout` can decrease the network traffic overhead and the CPU load,\nhowever you can expect higher memory consumption and an increased latency in the flow collection."
+                          default: "15s"
+                          description: "`cacheActiveTimeout` is the period during which the agent aggregates flows before sending.\nIncreasing `cacheMaxFlows` and `cacheActiveTimeout` can decrease the network traffic overhead and the CPU load,\nhowever you can expect higher memory consumption and an increased latency in the flow collection."
                           pattern: "^\\d+(ns|ms|s|m)?$"
                           type: "string"
                         cacheMaxFlows:
-                          default: 100000
-                          description: "`cacheMaxFlows` is the max number of flows in an aggregate; when reached, the reporter sends the flows.\nIncreasing `cacheMaxFlows` and `cacheActiveTimeout` can decrease the network traffic overhead and the CPU load,\nhowever you can expect higher memory consumption and an increased latency in the flow collection."
+                          default: 120000
+                          description: "`cacheMaxFlows` is the maximum number of flows in an aggregate; when reached, the reporter sends the flows.\nIncreasing `cacheMaxFlows` and `cacheActiveTimeout` can decrease the network traffic overhead and the CPU load,\nhowever you can expect higher memory consumption and an increased latency in the flow collection."
                           format: "int32"
                           minimum: 1.0
                           type: "integer"
@@ -674,9 +680,9 @@ spec:
                             type: "string"
                           type: "array"
                         features:
-                          description: "List of additional features to enable. They are all disabled by default. Enabling additional features might have performance impacts. Possible values are:<br>\n- `PacketDrop`: Enable the packets drop flows logging feature. This feature requires mounting\nthe kernel debug filesystem, so the eBPF agent pods must run as privileged via `spec.agent.ebpf.privileged`.<br>\n- `DNSTracking`: Enable the DNS tracking feature.<br>\n- `FlowRTT`: Enable flow latency (sRTT) extraction in the eBPF agent from TCP traffic.<br>\n- `NetworkEvents`: Enable the network events monitoring feature, such as correlating flows and network policies.\nThis feature requires mounting the kernel debug filesystem, so the eBPF agent pods must run as privileged via `spec.agent.ebpf.privileged`.\nIt requires using the OVN-Kubernetes network plugin with the Observability feature.\nIMPORTANT: This feature is available as a Technology Preview.<br>\n- `PacketTranslation`: Enable enriching flows with packet translation information, such as Service NAT.<br>\n- `EbpfManager`: [Unsupported (*)]. Use eBPF Manager to manage NetObserv eBPF programs. Pre-requisite: the eBPF Manager operator (or upstream bpfman operator) must be installed.<br>\n- `UDNMapping`: Enable interfaces mapping to User Defined Networks (UDN). <br>\nThis feature requires mounting the kernel debug filesystem, so the eBPF agent pods must run as privileged via `spec.agent.ebpf.privileged`.\nIt requires using the OVN-Kubernetes network plugin with the Observability feature. <br>\n- `IPSec`, to track flows between nodes with IPsec encryption. <br>"
+                          description: "List of additional features to enable. They are all disabled by default. Enabling additional features might have performance impacts. Possible values are:<br>\n- `PacketDrop`: Enable the packets drop flows logging feature. This feature requires mounting\nthe kernel debug filesystem, so the eBPF agent pods must run as privileged via `spec.agent.ebpf.privileged`.<br>\n- `DNSTracking`: Enable the DNS tracking feature.<br>\n- `FlowRTT`: Enable flow latency (sRTT) extraction in the eBPF agent from TCP traffic.<br>\n- `NetworkEvents`: Enable the network events monitoring feature, such as correlating flows and network policies.\nThis feature requires mounting the kernel debug filesystem, so the eBPF agent pods must run as privileged via `spec.agent.ebpf.privileged`.\nIt requires using the OVN-Kubernetes network plugin with the Observability feature.\nIMPORTANT: This feature is available as a Technology Preview.<br>\n- `PacketTranslation`: Enable enriching flows with packet translation information, such as Service NAT.<br>\n- `EbpfManager`: [Unsupported (*)]. Use eBPF Manager to manage NetObserv eBPF programs. Pre-requisite: the eBPF Manager operator (or upstream bpfman operator) must be installed.<br>\n- `UDNMapping`: Enable interfaces mapping to User Defined Networks (UDN). <br>\nThis feature requires mounting the kernel debug filesystem, so the eBPF agent pods must run as privileged via `spec.agent.ebpf.privileged`.\nIt requires using the OVN-Kubernetes network plugin with the Observability feature. <br>\n- `IPSec`, to track flows between nodes with IPsec encryption. <br>\n- `TLSTracking`, to track TLS usage. <br>"
                           items:
-                            description: "Agent feature, can be one of:<br>\n- `PacketDrop`, to track packet drops.<br>\n- `DNSTracking`, to track specific information on DNS traffic.<br>\n- `FlowRTT`, to track TCP latency.<br>\n- `NetworkEvents`, to track network events [Technology Preview].<br>\n- `PacketTranslation`, to enrich flows with packets translation information, such as Service NAT.<br>\n- `EbpfManager`, to enable using eBPF Manager to manage NetObserv eBPF programs. [Unsupported (*)].<br>\n- `UDNMapping`, to enable interfaces mapping to UDN.<br>\n- `IPSec`, to track flows between nodes with IPsec encryption.<br>"
+                            description: "Agent feature, can be one of:<br>\n- `PacketDrop`, to track packet drops.<br>\n- `DNSTracking`, to track specific information on DNS traffic.<br>\n- `FlowRTT`, to track TCP latency.<br>\n- `NetworkEvents`, to track network events [Technology Preview].<br>\n- `PacketTranslation`, to enrich flows with packets translation information, such as Service NAT.<br>\n- `EbpfManager`, to enable using eBPF Manager to manage NetObserv eBPF programs. [Unsupported (*)].<br>\n- `UDNMapping`, to enable interfaces mapping to UDN.<br>\n- `IPSec`, to track flows between nodes with IPsec encryption.<br>\n- `TLSTracking`, to track TLS usage.<br>"
                             enum:
                               - "PacketDrop"
                               - "DNSTracking"
@@ -686,6 +692,7 @@ spec:
                               - "EbpfManager"
                               - "UDNMapping"
                               - "IPSec"
+                              - "TLSTracking"
                             type: "string"
                           type: "array"
                         flowFilter:
@@ -1687,7 +1694,7 @@ spec:
                                     description: "Key is the taint key that the toleration applies to. Empty means match all taint keys.\nIf the key is empty, operator must be Exists; this combination means to match all values and all keys."
                                     type: "string"
                                   operator:
-                                    description: "Operator represents a key's relationship to the value.\nValid operators are Exists and Equal. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category."
+                                    description: "Operator represents a key's relationship to the value.\nValid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category.\nLt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators)."
                                     type: "string"
                                   tolerationSeconds:
                                     description: "TolerationSeconds represents the period of time the toleration (which must be\nof effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,\nit is not set, which means tolerate the taint forever (do not evict). Zero and\nnegative values will be treated as 0 (evict immediately) by the system."
@@ -2138,6 +2145,18 @@ spec:
                     - "Direct"
                     - "Kafka"
                   type: "string"
+                execution:
+                  description: "`execution` defines configuration related to the execution of the flow collection process."
+                  properties:
+                    mode:
+                      default: "Running"
+                      description: "`mode` is the flow collection process execution desired mode: `Running` or `OnHold`.\nWhen `OnHold`, the operator deletes all managed services and workloads, with the exception\nof the static console plugin, and the operator itself.\nIt allows to use minimal cluster resources without losing configuration."
+                      enum:
+                        - ""
+                        - "Running"
+                        - "OnHold"
+                      type: "string"
+                  type: "object"
                 exporters:
                   description: "`exporters` defines additional optional exporters for custom consumption or storage."
                   items:
@@ -2175,6 +2194,16 @@ spec:
                           address:
                             default: ""
                             description: "Address of the Kafka server"
+                            type: "string"
+                          compression:
+                            default: "none"
+                            description: "Compression codec to use when producing messages to Kafka.\nAccepted values are: `none` (default), `gzip`, `snappy`, `lz4`, `zstd`."
+                            enum:
+                              - "none"
+                              - "gzip"
+                              - "snappy"
+                              - "lz4"
+                              - "zstd"
                             type: "string"
                           sasl:
                             description: "SASL authentication configuration. [Unsupported (*)]."
@@ -2229,7 +2258,7 @@ spec:
                                 type: "string"
                             type: "object"
                           tls:
-                            description: "TLS client configuration. When using TLS, verify that the address matches the Kafka port used for TLS, generally 9093."
+                            description: "TLS and mTLS client configuration. When using TLS, verify that the address matches the Kafka port used for TLS, generally 9093.\nWe recommend the use of mTLS for higher security standards."
                             properties:
                               caCert:
                                 description: "`caCert` defines the reference of the certificate for the Certificate Authority."
@@ -2428,6 +2457,16 @@ spec:
                       default: ""
                       description: "Address of the Kafka server"
                       type: "string"
+                    compression:
+                      default: "none"
+                      description: "Compression codec to use when producing messages to Kafka.\nAccepted values are: `none` (default), `gzip`, `snappy`, `lz4`, `zstd`."
+                      enum:
+                        - "none"
+                        - "gzip"
+                        - "snappy"
+                        - "lz4"
+                        - "zstd"
+                      type: "string"
                     sasl:
                       description: "SASL authentication configuration. [Unsupported (*)]."
                       properties:
@@ -2481,7 +2520,7 @@ spec:
                           type: "string"
                       type: "object"
                     tls:
-                      description: "TLS client configuration. When using TLS, verify that the address matches the Kafka port used for TLS, generally 9093."
+                      description: "TLS and mTLS client configuration. When using TLS, verify that the address matches the Kafka port used for TLS, generally 9093.\nWe recommend the use of mTLS for higher security standards."
                       properties:
                         caCert:
                           description: "`caCert` defines the reference of the certificate for the Certificate Authority."
@@ -2827,7 +2866,7 @@ spec:
                       properties:
                         installDemoLoki:
                           default: false
-                          description: "Set `installDemoLoki` to `true` to automatically create Loki deployment, service and storage.\nThis is useful for development and demo purposes. Do not use it in production."
+                          description: "Set `installDemoLoki` to `true` to automatically create Loki deployment, service and storage.\nThis is useful for development and demo purposes. Do not use it in production.\n[Unsupported (*)]."
                           type: "boolean"
                         tenantID:
                           default: "netobserv"
@@ -2933,7 +2972,7 @@ spec:
                         type: "string"
                       type: "array"
                     enable:
-                      description: "Deploys network policies on the namespaces used by NetObserv (main and privileged).\nThese network policies better isolate the NetObserv components to prevent undesired connections from and to them.\nThis option is enabled by default when using with OVNKubernetes, and disabled otherwise (it has not been tested with other CNIs).\nWhen disabled, you can manually create the network policies for the NetObserv components."
+                      description: "Deploys network policies on the namespaces used by NetObserv (main and privileged).\nThese network policies better isolate the NetObserv components to prevent undesired connections from and to them.\nBecause it cannot be tested with all CNIs, this option is only enabled by default when NetObserv runs in a known\nsupported environment, and it is disabled by default otherwise.\nWhen disabled, it is highly recommended to create network policies manually, to prevent undesired accesses.\nMore information: https://github.com/netobserv/netobserv-operator/blob/main/docs/NetworkPolicy.md."
                       type: "boolean"
                   type: "object"
                 processor:
@@ -3568,7 +3607,7 @@ spec:
                                     description: "Key is the taint key that the toleration applies to. Empty means match all taint keys.\nIf the key is empty, operator must be Exists; this combination means to match all values and all keys."
                                     type: "string"
                                   operator:
-                                    description: "Operator represents a key's relationship to the value.\nValid operators are Exists and Equal. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category."
+                                    description: "Operator represents a key's relationship to the value.\nValid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category.\nLt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators)."
                                     type: "string"
                                   tolerationSeconds:
                                     description: "TolerationSeconds represents the period of time the toleration (which must be\nof effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,\nit is not set, which means tolerate the taint forever (do not evict). Zero and\nnegative values will be treated as 0 (evict immediately) by the system."
@@ -3581,7 +3620,7 @@ spec:
                               type: "array"
                           type: "object"
                         secondaryNetworks:
-                          description: "Defines secondary networks to be checked for resources identification.\nTo guarantee a correct identification, indexed values must form an unique identifier across the cluster.\nIf the same index is used by several resources, those resources might be incorrectly labeled."
+                          description: "Defines secondary networks to be checked for resources identification.\nTo guarantee a correct identification, indexed values must form an unique identifier across the cluster.\nIf the same index is used by several resources, those resources might be incorrectly labeled.\nIf not provided and `spec.agent.ebpf.privileged` is `true`, secondary networks are detected automatically."
                           items:
                             properties:
                               index:
@@ -3595,11 +3634,10 @@ spec:
                                   type: "string"
                                 type: "array"
                               name:
-                                description: "`name` should match the network name as visible in the pods annotation 'k8s.v1.cni.cncf.io/network-status'."
+                                description: "Deprecated: `name` is unused."
                                 type: "string"
                             required:
                               - "index"
-                              - "name"
                             type: "object"
                           type: "array"
                       type: "object"
@@ -3988,82 +4026,10 @@ spec:
                     metrics:
                       description: "`Metrics` define the processor configuration regarding metrics"
                       properties:
-                        disableAlerts:
-                          description: "`disableAlerts` is a list of alert groups that should be disabled from the default set of alerts.\nPossible values are: `NetObservNoFlows`, `NetObservLokiError`, `PacketDropsByKernel`, `PacketDropsByDevice`, `IPsecErrors`, `NetpolDenied`,\n`LatencyHighTrend`, `DNSErrors`, `DNSNxDomain`, `ExternalEgressHighTrend`, `ExternalIngressHighTrend`.\nMore information on alerts: https://github.com/netobserv/network-observability-operator/blob/main/docs/Alerts.md"
+                        additionalIncludeList:
+                          description: "`additionalIncludeList` is a list of metric names to include in addition to the default metrics.\nUnlike `includeList`, this appends to the default list rather than replacing it.\nThis field is mutually exclusive with `includeList`. If `includeList` is set, `additionalIncludeList` is ignored.\nThe names correspond to the names in Prometheus without the prefix. For example,\n`namespace_egress_packets_total` shows up as `netobserv_namespace_egress_packets_total` in Prometheus.\nNote that the more metrics you add, the bigger is the impact on Prometheus workload resources.\nMore information, with full list of available metrics: https://github.com/netobserv/netobserv-operator/blob/main/docs/Metrics.md"
                           items:
-                            type: "string"
-                          type: "array"
-                        healthRules:
-                          description: "`healthRules` is a list of health rules to be created for Prometheus, organized by templates and variants.\nEach health rule can be configured to generate either alerts or recording rules based on the mode field.\nMore information on health rules: https://github.com/netobserv/network-observability-operator/blob/main/docs/Alerts.md"
-                          items:
-                            properties:
-                              mode:
-                                default: "Alert"
-                                description: "Mode defines whether this health rule should be generated as an alert or a recording rule.\nPossible values are: `Alert` (default), `Recording`.\nRecording rules violations are visible in the Network Health dashboard without generating any Prometheus alert.\nThis provides an alternative way of getting Health information for SRE and cluster admins who may find\nmany new alerts burdensome."
-                                enum:
-                                  - "Alert"
-                                  - "Recording"
-                                type: "string"
-                              template:
-                                description: "Health rule template name.\nPossible values are: `PacketDropsByKernel`, `PacketDropsByDevice`, `IPsecErrors`, `NetpolDenied`,\n`LatencyHighTrend`, `DNSErrors`, `DNSNxDomain`, `ExternalEgressHighTrend`, `ExternalIngressHighTrend`.\nNote: `NetObservNoFlows` and `NetObservLokiError` are alert-only and cannot be used as health rules.\nMore information on health rules: https://github.com/netobserv/network-observability-operator/blob/main/docs/Alerts.md"
-                                enum:
-                                  - "PacketDropsByKernel"
-                                  - "PacketDropsByDevice"
-                                  - "IPsecErrors"
-                                  - "NetpolDenied"
-                                  - "LatencyHighTrend"
-                                  - "DNSErrors"
-                                  - "DNSNxDomain"
-                                  - "ExternalEgressHighTrend"
-                                  - "ExternalIngressHighTrend"
-                                type: "string"
-                              variants:
-                                description: "A list of variants for this template"
-                                items:
-                                  properties:
-                                    groupBy:
-                                      description: "Optional grouping criteria, possible values are: `Node`, `Namespace`, `Workload`."
-                                      enum:
-                                        - ""
-                                        - "Node"
-                                        - "Namespace"
-                                        - "Workload"
-                                      type: "string"
-                                    lowVolumeThreshold:
-                                      description: "The low volume threshold allows to ignore metrics with a too low volume of traffic, in order to improve signal-to-noise.\nIt is provided as an absolute rate (bytes per second or packets per second, depending on the context).\nWhen provided, it must be parsable as a float."
-                                      type: "string"
-                                    thresholds:
-                                      description: "Thresholds of the health rule per severity.\nThey are expressed as a percentage of errors above which the alert is triggered. They must be parsable as floats.\nRequired for both alert and recording modes"
-                                      properties:
-                                        critical:
-                                          description: "Threshold for severity `critical`. Leave empty to not generate a Critical alert."
-                                          type: "string"
-                                        info:
-                                          description: "Threshold for severity `info`. Leave empty to not generate an Info alert."
-                                          type: "string"
-                                        warning:
-                                          description: "Threshold for severity `warning`. Leave empty to not generate a Warning alert."
-                                          type: "string"
-                                      type: "object"
-                                    trendDuration:
-                                      description: "For trending health rules, the duration interval for baseline comparison. For example, \"2h\" means comparing against a 2-hours average. Defaults to 2h."
-                                      type: "string"
-                                    trendOffset:
-                                      description: "For trending health rules, the time offset for baseline comparison. For example, \"1d\" means comparing against yesterday. Defaults to 1d."
-                                      type: "string"
-                                  required:
-                                    - "thresholds"
-                                  type: "object"
-                                type: "array"
-                            required:
-                              - "template"
-                              - "variants"
-                            type: "object"
-                          type: "array"
-                        includeList:
-                          description: "`includeList` is a list of metric names to specify which ones to generate.\nThe names correspond to the names in Prometheus without the prefix. For example,\n`namespace_egress_packets_total` shows up as `netobserv_namespace_egress_packets_total` in Prometheus.\nNote that the more metrics you add, the bigger is the impact on Prometheus workload resources.\nMetrics enabled by default are:\n`namespace_flows_total`, `node_ingress_bytes_total`, `node_egress_bytes_total`, `workload_ingress_bytes_total`,\n`workload_egress_bytes_total`, `namespace_drop_packets_total` (when `PacketDrop` feature is enabled),\n`namespace_rtt_seconds` (when `FlowRTT` feature is enabled), `namespace_dns_latency_seconds` (when `DNSTracking` feature is enabled),\n`namespace_network_policy_events_total` (when `NetworkEvents` feature is enabled).\nMore information, with full list of available metrics: https://github.com/netobserv/network-observability-operator/blob/main/docs/Metrics.md"
-                          items:
-                            description: "Metric name. More information in https://github.com/netobserv/network-observability-operator/blob/main/docs/Metrics.md."
+                            description: "Metric name. More information in https://github.com/netobserv/netobserv-operator/blob/main/docs/Metrics.md."
                             enum:
                               - "namespace_egress_bytes_total"
                               - "namespace_egress_packets_total"
@@ -4096,6 +4062,135 @@ spec:
                               - "namespace_network_policy_events_total"
                               - "workload_network_policy_events_total"
                               - "node_ipsec_flows_total"
+                              - "namespace_ipsec_flows_total"
+                              - "workload_ipsec_flows_total"
+                              - "node_tls_flows_total"
+                              - "namespace_tls_flows_total"
+                              - "workload_tls_flows_total"
+                              - "node_to_node_ingress_flows_total"
+                            type: "string"
+                          type: "array"
+                        disableAlerts:
+                          description: "`disableAlerts` is a list of alert groups that should be disabled from the default set of alerts.\nPossible values are: `NetObservNoFlows`, `NetObservLokiError`, `PacketDropsByKernel`, `PacketDropsByDevice`, `IPsecErrors`, `NetpolDenied`,\n`LatencyHighTrend`, `DNSErrors`, `DNSNxDomain`, `ExternalEgressHighTrend`, `ExternalIngressHighTrend`, `Ingress5xxErrors`, `IngressHTTPLatencyTrend`.\nMore information on alerts: https://github.com/netobserv/netobserv-operator/blob/main/docs/HealthRules.md"
+                          items:
+                            type: "string"
+                          type: "array"
+                        healthRules:
+                          description: "`healthRules` is a list of health rules to be created for Prometheus, organized by templates and variants.\nEach health rule can be configured to generate either alerts or recording rules based on the mode field.\nMore information on health rules: https://github.com/netobserv/netobserv-operator/blob/main/docs/HealthRules.md"
+                          items:
+                            properties:
+                              mode:
+                                default: "Alert"
+                                description: "Mode defines whether this health rule should be generated as an alert or a recording rule.\nPossible values are: `Alert` (default), `Recording`.\nRecording rules violations are visible in the Network Health dashboard without generating any Prometheus alert.\nThis provides an alternative way of getting Health information for SRE and cluster admins who may find\nmany new alerts burdensome."
+                                enum:
+                                  - "Alert"
+                                  - "Recording"
+                                type: "string"
+                              template:
+                                description: "Health rule template name.\nPossible values are: `PacketDropsByKernel`, `PacketDropsByDevice`, `IPsecErrors`, `NetpolDenied`,\n`LatencyHighTrend`, `DNSErrors`, `DNSNxDomain`, `ExternalEgressHighTrend`, `ExternalIngressHighTrend`, `Ingress5xxErrors`, `IngressHTTPLatencyTrend`.\nNote: `NetObservNoFlows` and `NetObservLokiError` are alert-only and cannot be used as health rules.\nMore information on health rules: https://github.com/netobserv/netobserv-operator/blob/main/docs/HealthRules.md"
+                                enum:
+                                  - "PacketDropsByKernel"
+                                  - "PacketDropsByDevice"
+                                  - "IPsecErrors"
+                                  - "NetpolDenied"
+                                  - "LatencyHighTrend"
+                                  - "DNSErrors"
+                                  - "DNSNxDomain"
+                                  - "ExternalEgressHighTrend"
+                                  - "ExternalIngressHighTrend"
+                                  - "Ingress5xxErrors"
+                                  - "IngressHTTPLatencyTrend"
+                                type: "string"
+                              variants:
+                                description: "A list of variants for this template"
+                                items:
+                                  properties:
+                                    groupBy:
+                                      description: "Optional grouping criteria, possible values are: `Node`, `Namespace`, `Workload`."
+                                      enum:
+                                        - ""
+                                        - "Node"
+                                        - "Namespace"
+                                        - "Workload"
+                                      type: "string"
+                                    lowVolumeThreshold:
+                                      description: "The low volume threshold allows to ignore metrics with a too low volume of traffic, in order to improve signal-to-noise.\nIt is provided as an absolute rate (bytes per second or packets per second, depending on the context).\nWhen provided, it must be parsable as a float."
+                                      type: "string"
+                                    mode:
+                                      description: "Mode overrides the health rule mode for this specific variant.\nIf not specified, inherits from the parent health rule's mode.\nPossible values are: `Alert`, `Recording`."
+                                      enum:
+                                        - "Alert"
+                                        - "Recording"
+                                      type: "string"
+                                    thresholds:
+                                      description: "Thresholds of the health rule per severity.\nThey are expressed as a percentage of errors above which the alert is triggered. They must be parsable as floats.\nRequired for both alert and recording modes"
+                                      properties:
+                                        critical:
+                                          description: "Threshold for severity `critical`. Leave empty to not generate a Critical alert."
+                                          type: "string"
+                                        info:
+                                          description: "Threshold for severity `info`. Leave empty to not generate an Info alert."
+                                          type: "string"
+                                        warning:
+                                          description: "Threshold for severity `warning`. Leave empty to not generate a Warning alert."
+                                          type: "string"
+                                      type: "object"
+                                    trendDuration:
+                                      description: "For trending health rules, the duration interval for baseline comparison. For example, \"2h\" means comparing against a 2-hours average. Defaults to 2h."
+                                      type: "string"
+                                    trendOffset:
+                                      description: "For trending health rules, the time offset for baseline comparison. For example, \"1d\" means comparing against yesterday. Defaults to 1d."
+                                      type: "string"
+                                  required:
+                                    - "thresholds"
+                                  type: "object"
+                                type: "array"
+                            required:
+                              - "template"
+                              - "variants"
+                            type: "object"
+                          type: "array"
+                        includeList:
+                          description: "`includeList` is a list of metric names to specify which ones to generate.\nThe names correspond to the names in Prometheus without the prefix. For example,\n`namespace_egress_packets_total` shows up as `netobserv_namespace_egress_packets_total` in Prometheus.\nNote that the more metrics you add, the bigger is the impact on Prometheus workload resources.\nMetrics enabled by default are:\n`namespace_flows_total`, `node_ingress_bytes_total`, `node_egress_bytes_total`, `workload_ingress_bytes_total`,\n`workload_egress_bytes_total`, `namespace_drop_packets_total` (when `PacketDrop` feature is enabled),\n`namespace_rtt_seconds` (when `FlowRTT` feature is enabled), `namespace_dns_latency_seconds` (when `DNSTracking` feature is enabled),\n`namespace_network_policy_events_total` (when `NetworkEvents` feature is enabled).\nMore information, with full list of available metrics: https://github.com/netobserv/netobserv-operator/blob/main/docs/Metrics.md"
+                          items:
+                            description: "Metric name. More information in https://github.com/netobserv/netobserv-operator/blob/main/docs/Metrics.md."
+                            enum:
+                              - "namespace_egress_bytes_total"
+                              - "namespace_egress_packets_total"
+                              - "namespace_ingress_bytes_total"
+                              - "namespace_ingress_packets_total"
+                              - "namespace_flows_total"
+                              - "node_egress_bytes_total"
+                              - "node_egress_packets_total"
+                              - "node_ingress_bytes_total"
+                              - "node_ingress_packets_total"
+                              - "node_flows_total"
+                              - "workload_egress_bytes_total"
+                              - "workload_egress_packets_total"
+                              - "workload_ingress_bytes_total"
+                              - "workload_ingress_packets_total"
+                              - "workload_flows_total"
+                              - "namespace_drop_bytes_total"
+                              - "namespace_drop_packets_total"
+                              - "node_drop_bytes_total"
+                              - "node_drop_packets_total"
+                              - "workload_drop_bytes_total"
+                              - "workload_drop_packets_total"
+                              - "namespace_rtt_seconds"
+                              - "node_rtt_seconds"
+                              - "workload_rtt_seconds"
+                              - "namespace_dns_latency_seconds"
+                              - "node_dns_latency_seconds"
+                              - "workload_dns_latency_seconds"
+                              - "node_network_policy_events_total"
+                              - "namespace_network_policy_events_total"
+                              - "workload_network_policy_events_total"
+                              - "node_ipsec_flows_total"
+                              - "namespace_ipsec_flows_total"
+                              - "workload_ipsec_flows_total"
+                              - "node_tls_flows_total"
+                              - "namespace_tls_flows_total"
+                              - "workload_tls_flows_total"
                               - "node_to_node_ingress_flows_total"
                             type: "string"
                           type: "array"
@@ -4221,6 +4316,91 @@ spec:
                           description: "Requests describes the minimum amount of compute resources required.\nIf Requests is omitted for a container, it defaults to Limits if that is explicitly specified,\notherwise to an implementation-defined value. Requests cannot exceed Limits.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                           type: "object"
                       type: "object"
+                    service:
+                      description: "Service configuration, only used when `spec.deploymentModel` is `Service`."
+                      properties:
+                        providedCertificates:
+                          description: "TLS or mTLS configuration when `type` is set to `Provided`."
+                          properties:
+                            caFile:
+                              description: "Reference to the CA file."
+                              properties:
+                                file:
+                                  description: "File name within the config map or secret."
+                                  type: "string"
+                                name:
+                                  description: "Name of the config map or secret containing the file."
+                                  type: "string"
+                                namespace:
+                                  default: ""
+                                  description: "Namespace of the config map or secret containing the file. If omitted, the default is to use the same namespace as where NetObserv is deployed.\nIf the namespace is different, the config map or the secret is copied so that it can be mounted as required."
+                                  type: "string"
+                                type:
+                                  description: "Type for the file reference: `configmap` or `secret`."
+                                  enum:
+                                    - "configmap"
+                                    - "secret"
+                                  type: "string"
+                              type: "object"
+                            clientCert:
+                              description: "TLS client certificate reference, used for mTLS. Leave unset for simple TLS."
+                              properties:
+                                certFile:
+                                  description: "`certFile` defines the path to the certificate file name within the config map or secret."
+                                  type: "string"
+                                certKey:
+                                  description: "`certKey` defines the path to the certificate private key file name within the config map or secret. Omit when the key is not necessary."
+                                  type: "string"
+                                name:
+                                  description: "Name of the config map or secret containing certificates."
+                                  type: "string"
+                                namespace:
+                                  default: ""
+                                  description: "Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed.\nIf the namespace is different, the config map or the secret is copied so that it can be mounted as required."
+                                  type: "string"
+                                type:
+                                  description: "Type for the certificate reference: `configmap` or `secret`."
+                                  enum:
+                                    - "configmap"
+                                    - "secret"
+                                  type: "string"
+                              type: "object"
+                            serverCert:
+                              description: "TLS server certificate reference."
+                              properties:
+                                certFile:
+                                  description: "`certFile` defines the path to the certificate file name within the config map or secret."
+                                  type: "string"
+                                certKey:
+                                  description: "`certKey` defines the path to the certificate private key file name within the config map or secret. Omit when the key is not necessary."
+                                  type: "string"
+                                name:
+                                  description: "Name of the config map or secret containing certificates."
+                                  type: "string"
+                                namespace:
+                                  default: ""
+                                  description: "Namespace of the config map or secret containing certificates. If omitted, the default is to use the same namespace as where NetObserv is deployed.\nIf the namespace is different, the config map or the secret is copied so that it can be mounted as required."
+                                  type: "string"
+                                type:
+                                  description: "Type for the certificate reference: `configmap` or `secret`."
+                                  enum:
+                                    - "configmap"
+                                    - "secret"
+                                  type: "string"
+                              type: "object"
+                          type: "object"
+                        tlsType:
+                          default: "Auto"
+                          description: "Select the type of TLS configuration:<br>\n- `Disabled` to not configure TLS for the endpoint. Disabling TLS results in a less secure deployment model.<br>\n- `Provided` to manually provide the key and certificate references.<br>\n- `Auto` (default) to enable automatically based on the running environment.<br>\n- `Auto-mTLS` to preconfigure mTLS. [Unsupported (*)].<br>\nSee also: https://github.com/netobserv/netobserv-operator/blob/main/docs/TLS.md."
+                          enum:
+                            - "Disabled"
+                            - "Provided"
+                            - "Auto"
+                            - "Auto-mTLS"
+                          type: "string"
+                      required:
+                        - "tlsType"
+                      type: "object"
                     slicesConfig:
                       description: "Global configuration managing FlowCollectorSlices custom resources."
                       properties:
@@ -4257,7 +4437,7 @@ spec:
                                   type: "string"
                                 type: "array"
                               name:
-                                description: "Label name, used to flag matching flows."
+                                description: "Label name, used to flag matching flows.\nExternal subnets must be labeled with the prefix `EXT:`, or not labeled at all, in order to work with default quick filters and some metrics examples provided.<br/>"
                                 pattern: "^[a-zA-Z_:-][a-zA-Z0-9_:-]*$"
                                 type: "string"
                             required:
@@ -4280,7 +4460,8 @@ spec:
                       description: "Prometheus querying configuration, such as client settings, used in the Console plugin."
                       properties:
                         enable:
-                          description: "When `enable` is `true`, the Console plugin queries flow metrics from Prometheus instead of Loki whenever possible.\nIt is enbaled by default: set it to `false` to disable this feature.\nThe Console plugin can use either Loki or Prometheus as a data source for metrics (see also `spec.loki`), or both.\nNot all queries are transposable from Loki to Prometheus. Hence, if Loki is disabled, some features of the plugin are disabled as well,\nsuch as getting per-pod information or viewing raw flows.\nIf both Prometheus and Loki are enabled, Prometheus takes precedence and Loki is used as a fallback for queries that Prometheus cannot handle.\nIf they are both disabled, the Console plugin is not deployed."
+                          default: true
+                          description: "When `enable` is `true`, the Console plugin queries flow metrics from Prometheus instead of Loki whenever possible.\nIt is enabled by default: set it to `false` to disable this feature.\nThe Console plugin can use either Loki or Prometheus as a data source for metrics (see also `spec.loki`), or both.\nNot all queries are transposable from Loki to Prometheus. Hence, if Loki is disabled, some features of the plugin are disabled as well,\nsuch as getting per-pod information or viewing raw flows.\nIf both Prometheus and Loki are enabled, Prometheus takes precedence and Loki is used as a fallback for queries that Prometheus cannot handle.\nIf they are both disabled, the Console plugin is not deployed."
                           type: "boolean"
                         manual:
                           description: "Prometheus configuration for `Manual` mode."
@@ -4435,6 +4616,121 @@ spec:
             status:
               description: "`FlowCollectorStatus` defines the observed state of FlowCollector"
               properties:
+                components:
+                  description: "`components` reports the status of operator-managed components (agent, processor, plugin)."
+                  properties:
+                    agent:
+                      description: "`agent` reports the status of the eBPF agent component."
+                      properties:
+                        desiredReplicas:
+                          description: "`desiredReplicas` is the desired number of replicas (for Deployments) or nodes (for DaemonSets)."
+                          format: "int32"
+                          type: "integer"
+                        message:
+                          description: "`message` is a human-readable description of the component's current state."
+                          type: "string"
+                        podIssues:
+                          description: "`podIssues` is a summary of unhealthy pod issues (e.g., \"3 pods CrashLoopBackOff: kafka connection refused\")."
+                          type: "string"
+                        readyReplicas:
+                          description: "`readyReplicas` is the number of ready replicas (for Deployments) or up-to-date nodes (for DaemonSets)."
+                          format: "int32"
+                          type: "integer"
+                        reason:
+                          description: "`reason` is a one-word CamelCase reason for the component's current state."
+                          type: "string"
+                        state:
+                          description: "`state` reports the overall health of the component."
+                          enum:
+                            - "Ready"
+                            - "InProgress"
+                            - "Failure"
+                            - "Degraded"
+                            - "Unknown"
+                            - "Unused"
+                          type: "string"
+                        unhealthyPodCount:
+                          description: "`unhealthyPodCount` is the number of pods in a degraded state (CrashLoopBackOff, OOMKilled, etc.)."
+                          format: "int32"
+                          type: "integer"
+                      required:
+                        - "state"
+                      type: "object"
+                    plugin:
+                      description: "`plugin` reports the status of the console plugin component."
+                      properties:
+                        desiredReplicas:
+                          description: "`desiredReplicas` is the desired number of replicas (for Deployments) or nodes (for DaemonSets)."
+                          format: "int32"
+                          type: "integer"
+                        message:
+                          description: "`message` is a human-readable description of the component's current state."
+                          type: "string"
+                        podIssues:
+                          description: "`podIssues` is a summary of unhealthy pod issues (e.g., \"3 pods CrashLoopBackOff: kafka connection refused\")."
+                          type: "string"
+                        readyReplicas:
+                          description: "`readyReplicas` is the number of ready replicas (for Deployments) or up-to-date nodes (for DaemonSets)."
+                          format: "int32"
+                          type: "integer"
+                        reason:
+                          description: "`reason` is a one-word CamelCase reason for the component's current state."
+                          type: "string"
+                        state:
+                          description: "`state` reports the overall health of the component."
+                          enum:
+                            - "Ready"
+                            - "InProgress"
+                            - "Failure"
+                            - "Degraded"
+                            - "Unknown"
+                            - "Unused"
+                          type: "string"
+                        unhealthyPodCount:
+                          description: "`unhealthyPodCount` is the number of pods in a degraded state (CrashLoopBackOff, OOMKilled, etc.)."
+                          format: "int32"
+                          type: "integer"
+                      required:
+                        - "state"
+                      type: "object"
+                    processor:
+                      description: "`processor` reports the status of the flowlogs-pipeline component."
+                      properties:
+                        desiredReplicas:
+                          description: "`desiredReplicas` is the desired number of replicas (for Deployments) or nodes (for DaemonSets)."
+                          format: "int32"
+                          type: "integer"
+                        message:
+                          description: "`message` is a human-readable description of the component's current state."
+                          type: "string"
+                        podIssues:
+                          description: "`podIssues` is a summary of unhealthy pod issues (e.g., \"3 pods CrashLoopBackOff: kafka connection refused\")."
+                          type: "string"
+                        readyReplicas:
+                          description: "`readyReplicas` is the number of ready replicas (for Deployments) or up-to-date nodes (for DaemonSets)."
+                          format: "int32"
+                          type: "integer"
+                        reason:
+                          description: "`reason` is a one-word CamelCase reason for the component's current state."
+                          type: "string"
+                        state:
+                          description: "`state` reports the overall health of the component."
+                          enum:
+                            - "Ready"
+                            - "InProgress"
+                            - "Failure"
+                            - "Degraded"
+                            - "Unknown"
+                            - "Unused"
+                          type: "string"
+                        unhealthyPodCount:
+                          description: "`unhealthyPodCount` is the number of pods in a degraded state (CrashLoopBackOff, OOMKilled, etc.)."
+                          format: "int32"
+                          type: "integer"
+                      required:
+                        - "state"
+                      type: "object"
+                  type: "object"
                 conditions:
                   description: "`conditions` represents the latest available observations of an object's state"
                   items:
@@ -4479,8 +4775,122 @@ spec:
                       - "type"
                     type: "object"
                   type: "array"
+                integrations:
+                  description: "`integrations` reports the status of external integrations (Loki, monitoring, exporters)."
+                  properties:
+                    exporters:
+                      description: "`exporters` reports the status of configured exporters."
+                      items:
+                        description: "`FlowCollectorExporterStatus` represents the status of a configured exporter."
+                        properties:
+                          message:
+                            description: "`message` is a human-readable description of the exporter's current state."
+                            type: "string"
+                          name:
+                            description: "`name` is a generated identifier for this exporter (e.g., \"kafka-export-0\"), derived from its type and position in spec.exporters."
+                            type: "string"
+                          reason:
+                            description: "`reason` is a one-word CamelCase reason for the exporter's current state."
+                            type: "string"
+                          state:
+                            description: "`state` reports the health of this exporter."
+                            enum:
+                              - "Ready"
+                              - "InProgress"
+                              - "Failure"
+                              - "Degraded"
+                              - "Unknown"
+                            type: "string"
+                          type:
+                            description: "`type` is the exporter type (Kafka, IPFIX, OpenTelemetry)."
+                            enum:
+                              - "Kafka"
+                              - "IPFIX"
+                              - "OpenTelemetry"
+                            type: "string"
+                        required:
+                          - "name"
+                          - "state"
+                          - "type"
+                        type: "object"
+                      type: "array"
+                    loki:
+                      description: "`loki` reports the status of the Loki integration."
+                      properties:
+                        desiredReplicas:
+                          description: "`desiredReplicas` is the desired number of replicas (for Deployments) or nodes (for DaemonSets)."
+                          format: "int32"
+                          type: "integer"
+                        message:
+                          description: "`message` is a human-readable description of the component's current state."
+                          type: "string"
+                        podIssues:
+                          description: "`podIssues` is a summary of unhealthy pod issues (e.g., \"3 pods CrashLoopBackOff: kafka connection refused\")."
+                          type: "string"
+                        readyReplicas:
+                          description: "`readyReplicas` is the number of ready replicas (for Deployments) or up-to-date nodes (for DaemonSets)."
+                          format: "int32"
+                          type: "integer"
+                        reason:
+                          description: "`reason` is a one-word CamelCase reason for the component's current state."
+                          type: "string"
+                        state:
+                          description: "`state` reports the overall health of the component."
+                          enum:
+                            - "Ready"
+                            - "InProgress"
+                            - "Failure"
+                            - "Degraded"
+                            - "Unknown"
+                            - "Unused"
+                          type: "string"
+                        unhealthyPodCount:
+                          description: "`unhealthyPodCount` is the number of pods in a degraded state (CrashLoopBackOff, OOMKilled, etc.)."
+                          format: "int32"
+                          type: "integer"
+                      required:
+                        - "state"
+                      type: "object"
+                    monitoring:
+                      description: "`monitoring` reports the status of monitoring (dashboards, ServiceMonitor, etc.)."
+                      properties:
+                        desiredReplicas:
+                          description: "`desiredReplicas` is the desired number of replicas (for Deployments) or nodes (for DaemonSets)."
+                          format: "int32"
+                          type: "integer"
+                        message:
+                          description: "`message` is a human-readable description of the component's current state."
+                          type: "string"
+                        podIssues:
+                          description: "`podIssues` is a summary of unhealthy pod issues (e.g., \"3 pods CrashLoopBackOff: kafka connection refused\")."
+                          type: "string"
+                        readyReplicas:
+                          description: "`readyReplicas` is the number of ready replicas (for Deployments) or up-to-date nodes (for DaemonSets)."
+                          format: "int32"
+                          type: "integer"
+                        reason:
+                          description: "`reason` is a one-word CamelCase reason for the component's current state."
+                          type: "string"
+                        state:
+                          description: "`state` reports the overall health of the component."
+                          enum:
+                            - "Ready"
+                            - "InProgress"
+                            - "Failure"
+                            - "Degraded"
+                            - "Unknown"
+                            - "Unused"
+                          type: "string"
+                        unhealthyPodCount:
+                          description: "`unhealthyPodCount` is the number of pods in a degraded state (CrashLoopBackOff, OOMKilled, etc.)."
+                          format: "int32"
+                          type: "integer"
+                      required:
+                        - "state"
+                      type: "object"
+                  type: "object"
                 namespace:
-                  description: "Namespace where console plugin and flowlogs-pipeline have been deployed.\nDeprecated: annotations are used instead"
+                  description: "Namespace where console plugin and flowlogs-pipeline have been deployed.\n\nDeprecated: annotations are used instead"
                   type: "string"
               required:
                 - "conditions"

@@ -714,7 +714,7 @@ spec:
                   description: "Disable health-checking. Default is to enable HTTP health-checks on port 8086: a\nliveness probe responder will be exposed on path `/live` and readiness probe on path\n`/ready`."
                   type: "boolean"
                 enableMetricsEndpoint:
-                  description: "EnableMetricsEnpoint can be used to enable metrics scraping (Prometheus). If enabled, a\nmetrics endpoint will be available at http://0.0.0.0:8080 at all dataplane pods. Default\nis no metrics collection."
+                  description: "EnableMetricsEnpoint can be used to enable metrics scraping (Prometheus). If enabled, a\nmetrics endpoint will be available at http://:8080 at all dataplane pods. Default\nis no metrics collection."
                   type: "boolean"
                 env:
                   description: "List of environment variables to set in the stunnerd container."

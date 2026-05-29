@@ -13,7 +13,20 @@ spec:
     singular: "quayregistry"
   scope: "Namespaced"
   versions:
-    - name: "v1"
+    - additionalPrinterColumns:
+        - jsonPath: ".status.currentVersion"
+          name: "Version"
+          type: "string"
+        - jsonPath: ".status.registryEndpoint"
+          name: "Endpoint"
+          type: "string"
+        - jsonPath: ".status.conditions[?(@.type==\"Available\")].status"
+          name: "Available"
+          type: "string"
+        - jsonPath: ".metadata.creationTimestamp"
+          name: "Age"
+          type: "date"
+      name: "v1"
       schema:
         openAPIV3Schema:
           description: "QuayRegistry is the Schema for the quayregistries API."
@@ -36,6 +49,18 @@ spec:
                     properties:
                       kind:
                         description: "Kind is the unique name of this type of component."
+                        enum:
+                          - "quay"
+                          - "postgres"
+                          - "clair"
+                          - "clairpostgres"
+                          - "redis"
+                          - "horizontalpodautoscaler"
+                          - "objectstorage"
+                          - "route"
+                          - "mirror"
+                          - "monitoring"
+                          - "tls"
                         type: "string"
                       managed:
                         description: "Managed indicates whether or not the Operator is responsible for the lifecycle of this component.\nDefault is true."
@@ -608,6 +633,7 @@ spec:
                             type: "object"
                           replicas:
                             format: "int32"
+                            minimum: 0.0
                             nullable: true
                             type: "integer"
                           resources:
@@ -632,6 +658,93 @@ spec:
                                 description: "ResourceList is a set of (resource name, quantity) pairs."
                                 type: "object"
                             type: "object"
+                          securityContext:
+                            description: "SecurityContext holds security configuration that will be applied to a container.\nSome fields are present in both SecurityContext and PodSecurityContext.  When both\nare set, the values in SecurityContext take precedence."
+                            properties:
+                              allowPrivilegeEscalation:
+                                description: "AllowPrivilegeEscalation controls whether a process can gain more\nprivileges than its parent process. This bool directly controls if\nthe no_new_privs flag will be set on the container process.\nAllowPrivilegeEscalation is true always when the container is:\n1) run as Privileged\n2) has CAP_SYS_ADMIN\nNote that this field cannot be set when spec.os.name is windows."
+                                type: "boolean"
+                              capabilities:
+                                description: "The capabilities to add/drop when running containers.\nDefaults to the default set of capabilities granted by the container runtime.\nNote that this field cannot be set when spec.os.name is windows."
+                                properties:
+                                  add:
+                                    description: "Added capabilities"
+                                    items:
+                                      description: "Capability represent POSIX capabilities type"
+                                      type: "string"
+                                    type: "array"
+                                  drop:
+                                    description: "Removed capabilities"
+                                    items:
+                                      description: "Capability represent POSIX capabilities type"
+                                      type: "string"
+                                    type: "array"
+                                type: "object"
+                              privileged:
+                                description: "Run container in privileged mode.\nProcesses in privileged containers are essentially equivalent to root on the host.\nDefaults to false.\nNote that this field cannot be set when spec.os.name is windows."
+                                type: "boolean"
+                              procMount:
+                                description: "procMount denotes the type of proc mount to use for the containers.\nThe default is DefaultProcMount which uses the container runtime defaults for\nreadonly paths and masked paths.\nThis requires the ProcMountType feature flag to be enabled.\nNote that this field cannot be set when spec.os.name is windows."
+                                type: "string"
+                              readOnlyRootFilesystem:
+                                description: "Whether this container has a read-only root filesystem.\nDefault is false.\nNote that this field cannot be set when spec.os.name is windows."
+                                type: "boolean"
+                              runAsGroup:
+                                description: "The GID to run the entrypoint of the container process.\nUses runtime default if unset.\nMay also be set in PodSecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence.\nNote that this field cannot be set when spec.os.name is windows."
+                                format: "int64"
+                                type: "integer"
+                              runAsNonRoot:
+                                description: "Indicates that the container must run as a non-root user.\nIf true, the Kubelet will validate the image at runtime to ensure that it\ndoes not run as UID 0 (root) and fail to start the container if it does.\nIf unset or false, no such validation will be performed.\nMay also be set in PodSecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence."
+                                type: "boolean"
+                              runAsUser:
+                                description: "The UID to run the entrypoint of the container process.\nDefaults to user specified in image metadata if unspecified.\nMay also be set in PodSecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence.\nNote that this field cannot be set when spec.os.name is windows."
+                                format: "int64"
+                                type: "integer"
+                              seLinuxOptions:
+                                description: "The SELinux context to be applied to the container.\nIf unspecified, the container runtime will allocate a random SELinux context for each\ncontainer.  May also be set in PodSecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence.\nNote that this field cannot be set when spec.os.name is windows."
+                                properties:
+                                  level:
+                                    description: "Level is SELinux level label that applies to the container."
+                                    type: "string"
+                                  role:
+                                    description: "Role is a SELinux role label that applies to the container."
+                                    type: "string"
+                                  type:
+                                    description: "Type is a SELinux type label that applies to the container."
+                                    type: "string"
+                                  user:
+                                    description: "User is a SELinux user label that applies to the container."
+                                    type: "string"
+                                type: "object"
+                              seccompProfile:
+                                description: "The seccomp options to use by this container. If seccomp options are\nprovided at both the pod & container level, the container options\noverride the pod options.\nNote that this field cannot be set when spec.os.name is windows."
+                                properties:
+                                  localhostProfile:
+                                    description: "localhostProfile indicates a profile defined in a file on the node should be used.\nThe profile must be preconfigured on the node to work.\nMust be a descending path, relative to the kubelet's configured seccomp profile location.\nMust be set if type is \"Localhost\". Must NOT be set for any other type."
+                                    type: "string"
+                                  type:
+                                    description: "type indicates which kind of seccomp profile will be applied.\nValid options are:\n\nLocalhost - a profile defined in a file on the node should be used.\nRuntimeDefault - the container runtime default profile should be used.\nUnconfined - no profile should be applied."
+                                    type: "string"
+                                required:
+                                  - "type"
+                                type: "object"
+                              windowsOptions:
+                                description: "The Windows specific settings applied to all containers.\nIf unspecified, the options from the PodSecurityContext will be used.\nIf set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.\nNote that this field cannot be set when spec.os.name is linux."
+                                properties:
+                                  gmsaCredentialSpec:
+                                    description: "GMSACredentialSpec is where the GMSA admission webhook\n(https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the\nGMSA credential spec named by the GMSACredentialSpecName field."
+                                    type: "string"
+                                  gmsaCredentialSpecName:
+                                    description: "GMSACredentialSpecName is the name of the GMSA credential spec to use."
+                                    type: "string"
+                                  hostProcess:
+                                    description: "HostProcess determines if a container should be run as a 'Host Process' container.\nAll of a Pod's containers must have the same effective HostProcess value\n(it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).\nIn addition, if HostProcess is true then HostNetwork must also be set to true."
+                                    type: "boolean"
+                                  runAsUserName:
+                                    description: "The UserName in Windows to run the entrypoint of the container process.\nDefaults to the user specified in image metadata if unspecified.\nMay also be set in PodSecurityContext. If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence."
+                                    type: "string"
+                                type: "object"
+                            type: "object"
                           storageClassName:
                             description: "StorageClassName is the name of the StorageClass to use for the PVC."
                             type: "string"
@@ -642,10 +755,25 @@ spec:
                             pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                             x-kubernetes-int-or-string: true
                         type: "object"
+                      secretRef:
+                        description: "SecretRef references a Kubernetes Secret for this component. For the TLS component,\nthis references a `kubernetes.io/tls` Secret containing `tls.crt` and `tls.key`.\nThe operator watches the Secret and triggers rolling restarts when its contents change.\nOnly valid when managed is false."
+                        properties:
+                          name:
+                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                            type: "string"
+                        type: "object"
+                        x-kubernetes-map-type: "atomic"
                     required:
                       - "kind"
                       - "managed"
                     type: "object"
+                    x-kubernetes-validations:
+                      - message: "cannot set overrides on unmanaged component"
+                        rule: "self.managed || !has(self.overrides)"
+                      - message: "secretRef cannot be set on a managed component"
+                        rule: "!self.managed || !has(self.secretRef)"
+                      - message: "secretRef.name must not be empty"
+                        rule: "!has(self.secretRef) || self.secretRef.name.size() != 0"
                   type: "array"
                 configBundleSecret:
                   description: "ConfigBundleSecret is the name of the Kubernetes `Secret` in the same namespace\nwhich contains the base Quay config and extra certs."
@@ -657,7 +785,7 @@ spec:
                 conditions:
                   description: "Conditions represent the conditions that a QuayRegistry can have."
                   items:
-                    description: "Condition is a single condition of a QuayRegistry.\nConditions should follow the \"abnormal-true\" principle in order to only bring the attention of users to \"broken\" states.\nExample: a condition of `type: \"Ready\", status: \"True\"“ is less useful and should be omitted whereas `type: \"NotReady\", status: \"True\"`\nis more useful when trying to monitor when something is wrong."
+                    description: "Condition is a single condition of a QuayRegistry.\nConditions should follow the \"abnormal-true\" principle in order to only bring the attention of users to \"broken\" states.\nExample: a condition of `type: \"Ready\", status: \"True\"\" is less useful and should be omitted whereas `type: \"NotReady\", status: \"True\"`\nis more useful when trying to monitor when something is wrong."
                     properties:
                       lastTransitionTime:
                         format: "date-time"
@@ -681,6 +809,10 @@ spec:
                 lastUpdated:
                   description: "LastUpdate is the timestamp when the Operator last processed this instance."
                   type: "string"
+                observedGeneration:
+                  description: "ObservedGeneration is the most recent generation observed by the controller."
+                  format: "int64"
+                  type: "integer"
                 registryEndpoint:
                   description: "RegistryEndpoint is the external access point for the Quay registry."
                   type: "string"

@@ -5,6 +5,7 @@ pub mod ciliumbgpnodeconfigs;
 pub mod ciliumbgppeerconfigs;
 pub mod ciliumbgppeeringpolicies;
 pub mod ciliumcidrgroups;
+pub mod ciliumdatapathplugins;
 pub mod ciliumendpointslices;
 pub mod ciliumgatewayclassconfigs;
 pub mod ciliuml2announcementpolicies;

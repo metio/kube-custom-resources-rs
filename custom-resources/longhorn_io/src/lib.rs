@@ -27,6 +27,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `Backup`
 - `BackupTarget`
 - `BackupVolume`
+- `EngineFrontend`
 - `EngineImage`
 - `Engine`
 - `InstanceManager`

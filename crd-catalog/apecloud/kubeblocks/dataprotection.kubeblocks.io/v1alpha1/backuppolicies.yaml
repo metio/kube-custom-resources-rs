@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.18.0"
   labels:
     app.kubernetes.io/name: "kubeblocks"
   name: "backuppolicies.dataprotection.kubeblocks.io"
@@ -85,7 +85,7 @@ spec:
                                       description: "The key to select."
                                       type: "string"
                                     name:
-                                      description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                      description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                       type: "string"
                                     optional:
                                       description: "Specify whether the ConfigMap or its key must be defined"
@@ -134,7 +134,7 @@ spec:
                                       description: "The key of the secret to select from.  Must be a valid secret key."
                                       type: "string"
                                     name:
-                                      description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                      description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                       type: "string"
                                     optional:
                                       description: "Specify whether the Secret or its key must be defined"
@@ -159,7 +159,7 @@ spec:
                             description: "Specifies the resource required by container.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/"
                             properties:
                               claims:
-                                description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
+                                description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                                 items:
                                   description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                   properties:
@@ -233,6 +233,9 @@ spec:
                               portName:
                                 description: "Specifies the port name."
                                 type: "string"
+                            required:
+                              - "containerName"
+                              - "portName"
                             type: "object"
                           name:
                             description: "Specifies a mandatory and unique identifier for each target when using the \"targets\" field.\nThe backup data for the current target is stored in a uniquely named subdirectory."
@@ -299,7 +302,7 @@ spec:
                                 type: "object"
                               strategy:
                                 default: "Any"
-                                description: "Specifies the strategy to select the target pod when multiple pods are selected.\nValid values are:\n\n\n- `Any`: select any one pod that match the labelsSelector.\n- `All`: select all pods that match the labelsSelector. The backup data for the current pod\nwill be stored in a subdirectory named after the pod."
+                                description: "Specifies the strategy to select the target pod when multiple pods are selected.\nValid values are:\n\n- `Any`: select any one pod that match the labelsSelector.\n- `All`: select all pods that match the labelsSelector. The backup data for the current pod\nwill be stored in a subdirectory named after the pod."
                                 enum:
                                   - "Any"
                                   - "All"
@@ -432,6 +435,9 @@ spec:
                                 portName:
                                   description: "Specifies the port name."
                                   type: "string"
+                              required:
+                                - "containerName"
+                                - "portName"
                               type: "object"
                             name:
                               description: "Specifies a mandatory and unique identifier for each target when using the \"targets\" field.\nThe backup data for the current target is stored in a uniquely named subdirectory."
@@ -498,7 +504,7 @@ spec:
                                   type: "object"
                                 strategy:
                                   default: "Any"
-                                  description: "Specifies the strategy to select the target pod when multiple pods are selected.\nValid values are:\n\n\n- `Any`: select any one pod that match the labelsSelector.\n- `All`: select all pods that match the labelsSelector. The backup data for the current pod\nwill be stored in a subdirectory named after the pod."
+                                  description: "Specifies the strategy to select the target pod when multiple pods are selected.\nValid values are:\n\n- `Any`: select any one pod that match the labelsSelector.\n- `All`: select all pods that match the labelsSelector. The backup data for the current pod\nwill be stored in a subdirectory named after the pod."
                                   enum:
                                     - "Any"
                                     - "All"
@@ -571,7 +577,7 @@ spec:
                   properties:
                     algorithm:
                       default: "AES-256-CFB"
-                      description: "Specifies the encryption algorithm. Currently supported algorithms are:\n\n\n- AES-128-CFB\n- AES-192-CFB\n- AES-256-CFB"
+                      description: "Specifies the encryption algorithm. Currently supported algorithms are:\n\n- AES-128-CFB\n- AES-192-CFB\n- AES-256-CFB"
                       enum:
                         - "AES-128-CFB"
                         - "AES-192-CFB"
@@ -584,7 +590,7 @@ spec:
                           description: "The key of the secret to select from.  Must be a valid secret key."
                           type: "string"
                         name:
-                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                           type: "string"
                         optional:
                           description: "Specify whether the Secret or its key must be defined"
@@ -642,6 +648,9 @@ spec:
                         portName:
                           description: "Specifies the port name."
                           type: "string"
+                      required:
+                        - "containerName"
+                        - "portName"
                       type: "object"
                     name:
                       description: "Specifies a mandatory and unique identifier for each target when using the \"targets\" field.\nThe backup data for the current target is stored in a uniquely named subdirectory."
@@ -708,7 +717,7 @@ spec:
                           type: "object"
                         strategy:
                           default: "Any"
-                          description: "Specifies the strategy to select the target pod when multiple pods are selected.\nValid values are:\n\n\n- `Any`: select any one pod that match the labelsSelector.\n- `All`: select all pods that match the labelsSelector. The backup data for the current pod\nwill be stored in a subdirectory named after the pod."
+                          description: "Specifies the strategy to select the target pod when multiple pods are selected.\nValid values are:\n\n- `Any`: select any one pod that match the labelsSelector.\n- `All`: select all pods that match the labelsSelector. The backup data for the current pod\nwill be stored in a subdirectory named after the pod."
                           enum:
                             - "Any"
                             - "All"
@@ -804,6 +813,9 @@ spec:
                           portName:
                             description: "Specifies the port name."
                             type: "string"
+                        required:
+                          - "containerName"
+                          - "portName"
                         type: "object"
                       name:
                         description: "Specifies a mandatory and unique identifier for each target when using the \"targets\" field.\nThe backup data for the current target is stored in a uniquely named subdirectory."
@@ -870,7 +882,7 @@ spec:
                             type: "object"
                           strategy:
                             default: "Any"
-                            description: "Specifies the strategy to select the target pod when multiple pods are selected.\nValid values are:\n\n\n- `Any`: select any one pod that match the labelsSelector.\n- `All`: select all pods that match the labelsSelector. The backup data for the current pod\nwill be stored in a subdirectory named after the pod."
+                            description: "Specifies the strategy to select the target pod when multiple pods are selected.\nValid values are:\n\n- `Any`: select any one pod that match the labelsSelector.\n- `All`: select all pods that match the labelsSelector. The backup data for the current pod\nwill be stored in a subdirectory named after the pod."
                             enum:
                               - "Any"
                               - "All"
@@ -932,7 +944,7 @@ spec:
                   type: "array"
                 useKopia:
                   default: false
-                  description: "Specifies whether backup data should be stored in a Kopia repository.\n\n\nData within the Kopia repository is both compressed and encrypted. Furthermore,\ndata deduplication is implemented across various backups of the same cluster.\nThis approach significantly reduces the actual storage usage, particularly\nfor clusters with a low update frequency.\n\n\nNOTE: This feature should NOT be enabled when using KubeBlocks Community Edition, otherwise the backup will not be processed."
+                  description: "Specifies whether backup data should be stored in a Kopia repository.\n\nData within the Kopia repository is both compressed and encrypted. Furthermore,\ndata deduplication is implemented across various backups of the same cluster.\nThis approach significantly reduces the actual storage usage, particularly\nfor clusters with a low update frequency.\n\nNOTE: This feature should NOT be enabled when using KubeBlocks Community Edition, otherwise the backup will not be processed."
                   type: "boolean"
               required:
                 - "backupMethods"

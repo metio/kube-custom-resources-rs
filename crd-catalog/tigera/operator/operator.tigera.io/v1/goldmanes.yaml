@@ -651,10 +651,50 @@ spec:
                                   description: "Containers is a list of goldmane containers.\nIf specified, this overrides the specified EGW Deployment containers.\nIf omitted, the goldmane Deployment will use its default values for its containers."
                                   items:
                                     properties:
+                                      livenessProbe:
+                                        description: "LivenessProbe allows customization of the liveness probe timing parameters.\nThe probe handler is set by the operator and cannot be overridden."
+                                        properties:
+                                          failureThreshold:
+                                            description: "FailureThreshold is the minimum consecutive failures for the probe\nto be considered failed after having succeeded."
+                                            format: "int32"
+                                            type: "integer"
+                                          initialDelaySeconds:
+                                            description: "InitialDelaySeconds is the number of seconds after the container\nstarts before the probe is initiated."
+                                            format: "int32"
+                                            type: "integer"
+                                          periodSeconds:
+                                            description: "PeriodSeconds is how often (in seconds) to perform the probe."
+                                            format: "int32"
+                                            type: "integer"
+                                          timeoutSeconds:
+                                            description: "TimeoutSeconds is the number of seconds after which the probe times out."
+                                            format: "int32"
+                                            type: "integer"
+                                        type: "object"
                                       name:
                                         enum:
                                           - "goldmane"
                                         type: "string"
+                                      readinessProbe:
+                                        description: "ReadinessProbe allows customization of the readiness probe timing parameters.\nThe probe handler is set by the operator and cannot be overridden."
+                                        properties:
+                                          failureThreshold:
+                                            description: "FailureThreshold is the minimum consecutive failures for the probe\nto be considered failed after having succeeded."
+                                            format: "int32"
+                                            type: "integer"
+                                          initialDelaySeconds:
+                                            description: "InitialDelaySeconds is the number of seconds after the container\nstarts before the probe is initiated."
+                                            format: "int32"
+                                            type: "integer"
+                                          periodSeconds:
+                                            description: "PeriodSeconds is how often (in seconds) to perform the probe."
+                                            format: "int32"
+                                            type: "integer"
+                                          timeoutSeconds:
+                                            description: "TimeoutSeconds is the number of seconds after which the probe times out."
+                                            format: "int32"
+                                            type: "integer"
+                                        type: "object"
                                       resources:
                                         description: "ResourceRequirements describes the compute resource requirements."
                                         properties:
@@ -724,7 +764,7 @@ spec:
                                         description: "Key is the taint key that the toleration applies to. Empty means match all taint keys.\nIf the key is empty, operator must be Exists; this combination means to match all values and all keys."
                                         type: "string"
                                       operator:
-                                        description: "Operator represents a key's relationship to the value.\nValid operators are Exists and Equal. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category."
+                                        description: "Operator represents a key's relationship to the value.\nValid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category.\nLt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators)."
                                         type: "string"
                                       tolerationSeconds:
                                         description: "TolerationSeconds represents the period of time the toleration (which must be\nof effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,\nit is not set, which means tolerate the taint forever (do not evict). Zero and\nnegative values will be treated as 0 (evict immediately) by the system."
@@ -809,6 +849,10 @@ spec:
                           type: "object"
                       type: "object"
                   type: "object"
+                metricsPort:
+                  description: "MetricsPort configures the port that Goldmane uses to serve Prometheus metrics.\nWhen set to a non-zero value, Goldmane will expose a /metrics endpoint on the given port.\nSet to zero to disable metrics. If omitted, metrics are disabled."
+                  format: "int32"
+                  type: "integer"
               type: "object"
             status:
               description: "GoldmaneStatus defines the observed state of Goldmane"

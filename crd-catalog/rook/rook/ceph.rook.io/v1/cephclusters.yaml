@@ -255,7 +255,7 @@ spec:
                       format: "int64"
                       type: "integer"
                     pgHealthyRegex:
-                      description: "PgHealthyRegex is the regular expression that is used to determine which PG states should be considered healthy.\nThe default is `^(active\\+clean|active\\+clean\\+scrubbing|active\\+clean\\+scrubbing\\+deep)$`"
+                      description: "PgHealthyRegex is the regular expression that is used to determine which PG states should be considered healthy.\nThe default is `^active(\\+(clean|deep|scrubbing|snaptrim|snaptrim_wait))+$`"
                       type: "string"
                   type: "object"
                 external:
@@ -632,6 +632,25 @@ spec:
                       type: "array"
                     failureDomainLabel:
                       type: "string"
+                    floatingMon:
+                      description: "FloatingMon is the specification of the floating monitor for two-node clusters.\nThe floating mon is backed by a synchronously replicated store (e.g. DRBD)\nand can be scheduled on either node. Template variables are supplied via a ConfigMap."
+                      minProperties: 2
+                      properties:
+                        configmapName:
+                          description: "ConfigMapName is the name of the ConfigMap containing key-value pairs\nof template variables for the floating mon deployment."
+                          maxLength: 253
+                          minLength: 1
+                          type: "string"
+                        name:
+                          description: "Name is the identifier for the floating monitor (recommended \"c\")"
+                          maxLength: 1
+                          minLength: 1
+                          pattern: "^[a-z]$"
+                          type: "string"
+                      required:
+                        - "configmapName"
+                        - "name"
+                      type: "object"
                     stretchCluster:
                       description: "StretchCluster is the stretch cluster specification"
                       properties:
@@ -1107,6 +1126,12 @@ spec:
                           default: 5
                           description: "Only performance counters greater than or equal to this option are fetched"
                           format: "int64"
+                          type: "integer"
+                        port:
+                          description: "Port is the listening port of the ceph-exporter process. Defaults to 9926."
+                          format: "int32"
+                          maximum: 65535.0
+                          minimum: 1.0
                           type: "integer"
                         statsPeriodSeconds:
                           default: 5

@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.19.0"
+    controller-gen.kubebuilder.io/version: "v0.20.0"
   name: "resourcebindings.work.karmada.io"
 spec:
   group: "work.karmada.io"
@@ -153,7 +153,7 @@ spec:
                                       description: "Key is the taint key that the toleration applies to. Empty means match all taint keys.\nIf the key is empty, operator must be Exists; this combination means to match all values and all keys."
                                       type: "string"
                                     operator:
-                                      description: "Operator represents a key's relationship to the value.\nValid operators are Exists and Equal. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category."
+                                      description: "Operator represents a key's relationship to the value.\nValid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category.\nLt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators)."
                                       type: "string"
                                     tolerationSeconds:
                                       description: "TolerationSeconds represents the period of time the toleration (which must be\nof effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,\nit is not set, which means tolerate the taint forever (do not evict). Zero and\nnegative values will be treated as 0 (evict immediately) by the system."
@@ -425,6 +425,89 @@ spec:
                                 type: "object"
                             type: "object"
                             x-kubernetes-map-type: "atomic"
+                          overflowAffinities:
+                            description: "OverflowAffinities defines additional cluster groups that the scheduler\ncan progressively include when the primary group (defined by the inline\nClusterAffinity) has insufficient resources. Groups are expanded in order\nand contracted in reverse during scale-down.\nCan only be used together with the inline ClusterAffinity (the inline\nClusterAffinity serves as the primary/preferred group).\nIf a cluster appears in multiple OverflowClusterAffinity entries, it is\nscheduled according to the first entry in which it appears; subsequent\noccurrences of the same cluster are ignored."
+                            items:
+                              description: "OverflowClusterAffinity represents an overflow tier of candidate clusters."
+                              properties:
+                                affinityName:
+                                  description: "AffinityName is the name of the cluster group."
+                                  maxLength: 32
+                                  minLength: 1
+                                  type: "string"
+                                clusterNames:
+                                  description: "ClusterNames is the list of clusters to be selected."
+                                  items:
+                                    type: "string"
+                                  type: "array"
+                                exclude:
+                                  description: "ExcludedClusters is the list of clusters to be ignored."
+                                  items:
+                                    type: "string"
+                                  type: "array"
+                                fieldSelector:
+                                  description: "FieldSelector is a filter to select member clusters by fields.\nThe key(field) of the match expression should be 'provider', 'region', or 'zone',\nand the operator of the match expression should be 'In' or 'NotIn'.\nIf non-nil and non-empty, only the clusters match this filter will be selected."
+                                  properties:
+                                    matchExpressions:
+                                      description: "A list of field selector requirements."
+                                      items:
+                                        description: "A node selector requirement is a selector that contains values, a key, and an operator\nthat relates the key and values."
+                                        properties:
+                                          key:
+                                            description: "The label key that the selector applies to."
+                                            type: "string"
+                                          operator:
+                                            description: "Represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt."
+                                            type: "string"
+                                          values:
+                                            description: "An array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. If the operator is Gt or Lt, the values\narray must have a single element, which will be interpreted as an integer.\nThis array is replaced during a strategic merge patch."
+                                            items:
+                                              type: "string"
+                                            type: "array"
+                                            x-kubernetes-list-type: "atomic"
+                                        required:
+                                          - "key"
+                                          - "operator"
+                                        type: "object"
+                                      type: "array"
+                                  type: "object"
+                                labelSelector:
+                                  description: "LabelSelector is a filter to select member clusters by labels.\nIf non-nil and non-empty, only the clusters match this filter will be selected."
+                                  properties:
+                                    matchExpressions:
+                                      description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
+                                      items:
+                                        description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
+                                        properties:
+                                          key:
+                                            description: "key is the label key that the selector applies to."
+                                            type: "string"
+                                          operator:
+                                            description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
+                                            type: "string"
+                                          values:
+                                            description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
+                                            items:
+                                              type: "string"
+                                            type: "array"
+                                            x-kubernetes-list-type: "atomic"
+                                        required:
+                                          - "key"
+                                          - "operator"
+                                        type: "object"
+                                      type: "array"
+                                      x-kubernetes-list-type: "atomic"
+                                    matchLabels:
+                                      additionalProperties:
+                                        type: "string"
+                                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                      type: "object"
+                                  type: "object"
+                                  x-kubernetes-map-type: "atomic"
+                              required:
+                                - "affinityName"
+                              type: "object"
+                            type: "array"
                         required:
                           - "affinityName"
                         type: "object"
@@ -514,7 +597,7 @@ spec:
                             description: "Key is the taint key that the toleration applies to. Empty means match all taint keys.\nIf the key is empty, operator must be Exists; this combination means to match all values and all keys."
                             type: "string"
                           operator:
-                            description: "Operator represents a key's relationship to the value.\nValid operators are Exists and Equal. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category."
+                            description: "Operator represents a key's relationship to the value.\nValid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category.\nLt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators)."
                             type: "string"
                           tolerationSeconds:
                             description: "TolerationSeconds represents the period of time the toleration (which must be\nof effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,\nit is not set, which means tolerate the taint forever (do not evict). Zero and\nnegative values will be treated as 0 (evict immediately) by the system."
@@ -663,6 +746,28 @@ spec:
                             type: "string"
                         type: "object"
                       type: "array"
+                    workloadAffinity:
+                      description: "WorkloadAffinity represents inter-workload affinity and anti-affinity\nscheduling policies."
+                      properties:
+                        affinity:
+                          description: "Affinity represents inter-workload affinity scheduling rules.\nThese are hard requirements: workloads will only be scheduled to clusters\nthat satisfy the affinity term if it is specified.\n\nFor the first workload of an affinity group (when no workloads with a\nmatching label value exist in the system), the scheduler will not block\nscheduling. This allows bootstrapping new workload groups without\nencountering scheduling deadlocks, providing a better user experience."
+                          properties:
+                            groupByLabelKey:
+                              description: "GroupByLabelKey declares the label key on the workload resource template that\ndetermines the affinity group. Workloads with the same label value under\nthis key belong to the same affinity group.\n\nThe scheduler maintains a global index of affinity groups in memory for\nefficient lookup. Each affinity group is identified by a serialized\nkey-value pair and contains all workload resource templates that belong\nto the group.\n\nNote: Affinity groups are scoped to the namespace. Workloads that use the\nsame affinity label but reside in different namespaces are not treated\nas part of the same group.\n\nThe key must be a valid Kubernetes label key.\n\nExample: If GroupByLabelKey is \"app.group\", workloads with the label\n\"app.group=frontend\" will form one affinity group, while those with\n\"app.group=backend\" will form another."
+                              type: "string"
+                          required:
+                            - "groupByLabelKey"
+                          type: "object"
+                        antiAffinity:
+                          description: "AntiAffinity represents inter-workload anti-affinity scheduling rules.\nThese are hard requirements: workloads will be scheduled to avoid clusters\nwhere matching workloads are already scheduled."
+                          properties:
+                            groupByLabelKey:
+                              description: "GroupByLabelKey declares the label key on the workload resource template that\ndetermines the anti-affinity group. Workloads with the same label value under\nthis key belong to the same anti-affinity group and will be separated.\n\nThe scheduler maintains a global index of affinity groups in memory for\nefficient lookup. Each affinity group is identified by a serialized\nkey-value pair and contains all workload resource templates that belong\nto the group.\n\nNote: Affinity groups are scoped to the namespace. Workloads that use the\nsame anti-affinity label but reside in different namespaces are not treated\nas part of the same group.\n\nThe key must be a valid Kubernetes label key.\n\nExample: If GroupByLabelKey is \"app.group\", workloads with the label\n\"app.group=frontend\" will avoid clusters where other\n\"app.group=frontend\" workloads already exist."
+                              type: "string"
+                          required:
+                            - "groupByLabelKey"
+                          type: "object"
+                      type: "object"
                   type: "object"
                 preserveResourcesOnDeletion:
                   description: "PreserveResourcesOnDeletion controls whether resources should be preserved on the\nmember clusters when the binding object is deleted.\nIf set to true, resources will be preserved on the member clusters.\nDefault is false, which means resources will be deleted along with the binding object.\nThis setting applies to all Work objects created under this binding object."
@@ -758,7 +863,7 @@ spec:
                                 description: "Key is the taint key that the toleration applies to. Empty means match all taint keys.\nIf the key is empty, operator must be Exists; this combination means to match all values and all keys."
                                 type: "string"
                               operator:
-                                description: "Operator represents a key's relationship to the value.\nValid operators are Exists and Equal. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category."
+                                description: "Operator represents a key's relationship to the value.\nValid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category.\nLt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators)."
                                 type: "string"
                               tolerationSeconds:
                                 description: "TolerationSeconds represents the period of time the toleration (which must be\nof effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,\nit is not set, which means tolerate the taint forever (do not evict). Zero and\nnegative values will be treated as 0 (evict immediately) by the system."
@@ -878,6 +983,16 @@ spec:
                     scheduling:
                       description: "Scheduling controls whether scheduling should be suspended, the scheduler will pause scheduling and not\nprocess resource binding when the value is true and resume scheduling when it's false or nil.\nThis is designed for third-party systems to temporarily pause the scheduling of applications, which enabling\nmanage resource allocation, prioritize critical workloads, etc.\nIt is expected that third-party systems use an admission webhook to suspend scheduling at the time of\nResourceBinding creation. Once a ResourceBinding has been scheduled, it cannot be paused afterward, as it may\nlead to ineffective suspension."
                       type: "boolean"
+                  type: "object"
+                workloadAffinityGroups:
+                  description: "WorkloadAffinityGroups represents instantiated grouping results from .spec.placement.workloadAffinity,\nused to keep workloads with the same affinity group co-located or those with the same\nanti-affinity group separated across clusters. Populated by controllers, the scheduler\nconsumes it for decisions.\nNote: Since workloads are namespace-scoped resources, workload affinity only applies to\nResourceBinding. Therefore, the WorkloadAffinityGroups field in ClusterResourceBinding\nwill not be set and will not be consumed by the scheduler."
+                  properties:
+                    affinityGroup:
+                      description: "AffinityGroup is the instantiated group name derived from affinity rules."
+                      type: "string"
+                    antiAffinityGroup:
+                      description: "AntiAffinityGroup is the instantiated group name derived from anti-affinity rules."
+                      type: "string"
                   type: "object"
               required:
                 - "resource"

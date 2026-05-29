@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.20.0"
+    controller-gen.kubebuilder.io/version: "v0.21.0"
   name: "nodeconfigs.scylla.scylladb.com"
 spec:
   group: "scylla.scylladb.com"
@@ -41,7 +41,7 @@ spec:
             spec:
               properties:
                 disableOptimizations:
-                  description: "disableOptimizations controls if nodes matching placement requirements are going to be optimized for performance.\nTurning off optimizations on already optimized Nodes does not revert changes.\nSee https://operator.docs.scylladb.com/stable/architecture/tuning.html for details."
+                  description: "disableOptimizations controls if nodes matching placement requirements are going to be optimized for performance.\nTurning off optimizations on already optimized Nodes does not revert changes.\nSee https://operator.docs.scylladb.com/stable/understand/tuning.html for details."
                   type: "boolean"
                 localDiskSetup:
                   description: "localDiskSetup contains options of automatic local disk setup."

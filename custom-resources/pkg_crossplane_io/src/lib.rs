@@ -6,11 +6,17 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## pkg.crossplane.io/v1
 - `ConfigurationRevision`
 - `Configuration`
+- `FunctionRevision`
+- `Function`
 - `ProviderRevision`
 - `Provider`
 ## pkg.crossplane.io/v1alpha1
 - `ControllerConfig`
 ## pkg.crossplane.io/v1beta1
+- `DeploymentRuntimeConfig`
+- `FunctionRevision`
+- `Function`
+- `ImageConfig`
 - `Lock`
 */
 #[cfg(feature = "v1")]

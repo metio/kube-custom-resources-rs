@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.17.2"
+    controller-gen.kubebuilder.io/version: "v0.20.1"
   name: "ciliumcidrgroups.cilium.io"
 spec:
   group: "cilium.io"
@@ -17,7 +17,8 @@ spec:
     singular: "ciliumcidrgroup"
   scope: "Cluster"
   versions:
-    - name: "v2alpha1"
+    - deprecated: true
+      name: "v2alpha1"
       schema:
         openAPIV3Schema:
           description: "CiliumCIDRGroup is a list of external CIDRs (i.e: CIDRs selecting peers\noutside the clusters) that can be referenced as a single entity from\nCiliumNetworkPolicies."
@@ -47,4 +48,4 @@ spec:
             - "spec"
           type: "object"
       served: true
-      storage: true
+      storage: false

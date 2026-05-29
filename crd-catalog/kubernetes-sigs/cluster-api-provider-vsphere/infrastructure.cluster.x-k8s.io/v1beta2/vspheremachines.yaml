@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.20.0"
+    controller-gen.kubebuilder.io/version: "v0.21.0"
   name: "vspheremachines.infrastructure.cluster.x-k8s.io"
 spec:
   group: "infrastructure.cluster.x-k8s.io"
@@ -20,18 +20,24 @@ spec:
           jsonPath: ".metadata.labels['cluster\\.x-k8s\\.io/cluster-name']"
           name: "Cluster"
           type: "string"
+        - description: "Provider ID"
+          jsonPath: ".spec.providerID"
+          name: "Provider ID"
+          priority: 10
+          type: "string"
+        - description: "Template is the name, inventory path, managed object reference or the managed object ID of the template used to clone the VM"
+          jsonPath: ".spec.template"
+          name: "Template"
+          priority: 10
+          type: "string"
+        - description: "Reconciliation paused"
+          jsonPath: ".status.conditions[?(@.type==\"Paused\")].status"
+          name: "Paused"
+          priority: 10
+          type: "string"
         - description: "VSphereMachine is provisioned"
           jsonPath: ".status.initialization.provisioned"
           name: "Provisioned"
-          type: "string"
-        - description: "VSphereMachine instance ID"
-          jsonPath: ".spec.providerID"
-          name: "ProviderID"
-          type: "string"
-        - description: "Machine object which owns with this VSphereMachine"
-          jsonPath: ".metadata.ownerReferences[?(@.kind==\"Machine\")].name"
-          name: "Machine"
-          priority: 1
           type: "string"
         - description: "Time duration since creation of VSphereMachine"
           jsonPath: ".metadata.creationTimestamp"
@@ -62,10 +68,20 @@ spec:
                   type: "array"
                   x-kubernetes-list-type: "atomic"
                 cloneMode:
-                  description: "cloneMode specifies the type of clone operation.\nThe LinkedClone mode is only support for templates that have at least\none snapshot. If the template has no snapshots, then CloneMode defaults\nto FullClone.\nWhen LinkedClone mode is enabled the DiskGiB field is ignored as it is\nnot possible to expand disks of linked clones.\nDefaults to LinkedClone, but fails gracefully to FullClone if the source\nof the clone operation has no snapshots."
+                  description: "cloneMode specifies the type of clone operation.\nThe linkedClone mode is only support for templates that have at least\none snapshot. If the template has no snapshots, then CloneMode defaults\nto fullClone.\nWhen linkedClone mode is enabled the DiskGiB field is ignored as it is\nnot possible to expand disks of linked clones.\nDefaults to linkedClone, but fails gracefully to fullClone if the source\nof the clone operation has no snapshots."
                   enum:
                     - "fullClone"
                     - "linkedClone"
+                  type: "string"
+                cryptoKeyID:
+                  description: "cryptoKeyID is the crypto key id."
+                  maxLength: 128
+                  minLength: 1
+                  type: "string"
+                cryptoProfile:
+                  description: "cryptoProfile of the storage encryption policy to use with this\nVirtual Machine."
+                  maxLength: 128
+                  minLength: 1
                   type: "string"
                 customVMXKeys:
                   additionalProperties:
@@ -118,15 +134,17 @@ spec:
                   format: "int32"
                   minimum: 1.0
                   type: "integer"
-                failureDomain:
-                  description: "failureDomain is the failure domain unique identifier this Machine should be attached to, as defined in Cluster API.\nFor this infrastructure provider, the name is equivalent to the name of the VSphereDeploymentZone."
-                  maxLength: 253
-                  minLength: 1
-                  type: "string"
                 folder:
                   description: "folder is the name, inventory path, managed object reference or the managed\nobject ID of the folder in which the virtual machine is created/located."
                   maxLength: 2048
                   minLength: 1
+                  type: "string"
+                ftEncryptionMode:
+                  description: "ftEncryptionMode is the encrypted fault tolerance mode.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned.\nCheck the compatibility with the ESXi version before setting the value."
+                  enum:
+                    - "ftEncryptionDisabled"
+                    - "ftEncryptionOpportunistic"
+                    - "ftEncryptionRequired"
                   type: "string"
                 guestSoftPowerOffTimeoutSeconds:
                   description: "guestSoftPowerOffTimeoutSeconds sets the wait timeout for shutdown in the VM guest.\nThe VM will be powered off forcibly after the timeout if the VM is still\nup and running when the PowerOffMode is set to trySoft.\n\nThis parameter only applies when the PowerOffMode is set to trySoft.\n\nIf omitted, the timeout defaults to 5 minutes."
@@ -143,8 +161,15 @@ spec:
                   format: "int64"
                   minimum: 1.0
                   type: "integer"
-                namingStrategy:
-                  description: "namingStrategy allows configuring the naming strategy used when calculating the name of the VSphereVM."
+                migrateEncryption:
+                  description: "migrateEncryption is the encrypted vMotion mode.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned.\nCheck the compatibility with the ESXi version before setting the value."
+                  enum:
+                    - "disabled"
+                    - "opportunistic"
+                    - "required"
+                  type: "string"
+                naming:
+                  description: "naming allows configuring the naming strategy used when calculating the name of the VSphereVM."
                   minProperties: 1
                   properties:
                     template:
@@ -153,6 +178,9 @@ spec:
                       minLength: 1
                       type: "string"
                   type: "object"
+                nestedHV:
+                  description: "nestedHV controls nested hardware-assisted virtualization.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned.\nCheck the compatibility with the ESXi version before setting the value."
+                  type: "boolean"
                 network:
                   description: "network is the network configuration for this machine's VM."
                   properties:
@@ -397,10 +425,12 @@ spec:
                 numCPUs:
                   description: "numCPUs is the number of virtual processors in a virtual machine.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned."
                   format: "int32"
+                  minimum: 2.0
                   type: "integer"
                 numCoresPerSocket:
-                  description: "numCoresPerSocket is the number of cores among which to distribute CPUs in this\nvirtual machine.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned."
+                  description: "numCoresPerSocket is the number of cores among which to distribute CPUs in this\nvirtual machine.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned.\nNote: Starting with vSphere 8 numCoresPerSocket can be set to 0 to enable \"Assigned at power on\"."
                   format: "int32"
+                  minimum: 0.0
                   type: "integer"
                 os:
                   description: "os is the Operating System of the virtual machine\nDefaults to Linux"
@@ -515,7 +545,7 @@ spec:
                   minLength: 1
                   type: "string"
                 snapshot:
-                  description: "snapshot is the name of the snapshot from which to create a linked clone.\nThis field is ignored if LinkedClone is not enabled.\nDefaults to the source's current snapshot."
+                  description: "snapshot is the name of the snapshot from which to create a linked clone.\nThis field is ignored if linkedClone is not enabled.\nDefaults to the source's current snapshot."
                   maxLength: 1024
                   minLength: 1
                   type: "string"

@@ -369,6 +369,22 @@ spec:
                                         type: "object"
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
+                                  source:
+                                    description: "Source of the client certificate. Defaults to the certificate from the TLS connection attributes."
+                                    properties:
+                                      clientCertHeader:
+                                        description: "Name of the HTTP header containing the client certificate as defined in RFC 9440.\nUse this option when the certificate is forwarded in the Client-Cert header format (https://datatracker.ietf.org/doc/rfc9440/).\nThe certificate must be in DER format, base64-encoded, and delimited by colons (:base64_cert:) as specified in the RFC.\nOne of: xfccHeader, clientCertHeader, expression"
+                                        type: "string"
+                                      expression:
+                                        description: "CEL expression that resolves to the certificate in PEM format, usually extracted from the Envoy CheckRequest attributes.\nUse this option for advanced use cases where the certificate is available in a non-standard attribute path.\nThe certificate must be in PEM format and URL-encoded.\nWhen omitted and no other source is specified, defaults to \"source.certificate\" for backward compatibility.\nOne of: xfccHeader, clientCertHeader, expression"
+                                        type: "string"
+                                      xfccHeader:
+                                        description: "Name of the X-Forwarded-Client-Cert (XFCC) HTTP header containing the client certificate.\nUse this option when Authorino is deployed behind a proxy that terminates TLS and forwards the client certificate\nin an HTTP header using Envoy's XFCC standard (https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_conn_man/headers#x-forwarded-client-cert).\nOne of: xfccHeader, clientCertHeader, expression"
+                                        type: "string"
+                                    type: "object"
+                                    x-kubernetes-validations:
+                                      - message: "Use one of: xfccHeader, clientCertHeader, expression"
+                                        rule: "(has(self.xfccHeader) ? 1 : 0) + (has(self.clientCertHeader) ? 1 : 0) + (has(self.expression) ? 1 : 0) <= 1"
                                 required:
                                   - "selector"
                                 type: "object"
@@ -2147,6 +2163,22 @@ spec:
                                         type: "object"
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
+                                  source:
+                                    description: "Source of the client certificate. Defaults to the certificate from the TLS connection attributes."
+                                    properties:
+                                      clientCertHeader:
+                                        description: "Name of the HTTP header containing the client certificate as defined in RFC 9440.\nUse this option when the certificate is forwarded in the Client-Cert header format (https://datatracker.ietf.org/doc/rfc9440/).\nThe certificate must be in DER format, base64-encoded, and delimited by colons (:base64_cert:) as specified in the RFC.\nOne of: xfccHeader, clientCertHeader, expression"
+                                        type: "string"
+                                      expression:
+                                        description: "CEL expression that resolves to the certificate in PEM format, usually extracted from the Envoy CheckRequest attributes.\nUse this option for advanced use cases where the certificate is available in a non-standard attribute path.\nThe certificate must be in PEM format and URL-encoded.\nWhen omitted and no other source is specified, defaults to \"source.certificate\" for backward compatibility.\nOne of: xfccHeader, clientCertHeader, expression"
+                                        type: "string"
+                                      xfccHeader:
+                                        description: "Name of the X-Forwarded-Client-Cert (XFCC) HTTP header containing the client certificate.\nUse this option when Authorino is deployed behind a proxy that terminates TLS and forwards the client certificate\nin an HTTP header using Envoy's XFCC standard (https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_conn_man/headers#x-forwarded-client-cert).\nOne of: xfccHeader, clientCertHeader, expression"
+                                        type: "string"
+                                    type: "object"
+                                    x-kubernetes-validations:
+                                      - message: "Use one of: xfccHeader, clientCertHeader, expression"
+                                        rule: "(has(self.xfccHeader) ? 1 : 0) + (has(self.clientCertHeader) ? 1 : 0) + (has(self.expression) ? 1 : 0) <= 1"
                                 required:
                                   - "selector"
                                 type: "object"
@@ -3922,6 +3954,22 @@ spec:
                                     type: "object"
                                 type: "object"
                                 x-kubernetes-map-type: "atomic"
+                              source:
+                                description: "Source of the client certificate. Defaults to the certificate from the TLS connection attributes."
+                                properties:
+                                  clientCertHeader:
+                                    description: "Name of the HTTP header containing the client certificate as defined in RFC 9440.\nUse this option when the certificate is forwarded in the Client-Cert header format (https://datatracker.ietf.org/doc/rfc9440/).\nThe certificate must be in DER format, base64-encoded, and delimited by colons (:base64_cert:) as specified in the RFC.\nOne of: xfccHeader, clientCertHeader, expression"
+                                    type: "string"
+                                  expression:
+                                    description: "CEL expression that resolves to the certificate in PEM format, usually extracted from the Envoy CheckRequest attributes.\nUse this option for advanced use cases where the certificate is available in a non-standard attribute path.\nThe certificate must be in PEM format and URL-encoded.\nWhen omitted and no other source is specified, defaults to \"source.certificate\" for backward compatibility.\nOne of: xfccHeader, clientCertHeader, expression"
+                                    type: "string"
+                                  xfccHeader:
+                                    description: "Name of the X-Forwarded-Client-Cert (XFCC) HTTP header containing the client certificate.\nUse this option when Authorino is deployed behind a proxy that terminates TLS and forwards the client certificate\nin an HTTP header using Envoy's XFCC standard (https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_conn_man/headers#x-forwarded-client-cert).\nOne of: xfccHeader, clientCertHeader, expression"
+                                    type: "string"
+                                type: "object"
+                                x-kubernetes-validations:
+                                  - message: "Use one of: xfccHeader, clientCertHeader, expression"
+                                    rule: "(has(self.xfccHeader) ? 1 : 0) + (has(self.clientCertHeader) ? 1 : 0) + (has(self.expression) ? 1 : 0) <= 1"
                             required:
                               - "selector"
                             type: "object"
@@ -5403,8 +5451,8 @@ spec:
                   x-kubernetes-validations:
                     - message: "Invalid targetRef.group. The only supported value is 'gateway.networking.k8s.io'"
                       rule: "self.group == 'gateway.networking.k8s.io'"
-                    - message: "Invalid targetRef.kind. The only supported values are 'HTTPRoute' and 'Gateway'"
-                      rule: "self.kind == 'HTTPRoute' || self.kind == 'Gateway'"
+                    - message: "Invalid targetRef.kind. The only supported values are 'HTTPRoute', 'GRPCRoute', and 'Gateway'"
+                      rule: "self.kind == 'HTTPRoute' || self.kind == 'GRPCRoute' || self.kind == 'Gateway'"
                 when:
                   description: "Overall conditions for the policy to be enforced.\nIf omitted, the policy will be enforced at all requests to the protected routes.\nIf present, all conditions must match for the policy to be enforced."
                   items:

@@ -137,8 +137,6 @@ spec:
                   items:
                     description: "PatternApplicationInfo defines the Applications\nStatus for the Pattern.\nThis structure is part of the PatternStatus as an array\nThe Application Status will be included as part of the Observed state of Pattern"
                     properties:
-                      healthMessage:
-                        type: "string"
                       healthStatus:
                         type: "string"
                       name:
@@ -185,6 +183,9 @@ spec:
                       - "type"
                     type: "object"
                   type: "array"
+                deletionPhase:
+                  description: "DeletionPhase tracks the current phase of pattern deletion\nValues: \"\" (not deleting), \"DeleteSpokeChildApps\" (Phase 1: Delete child applications from spoke clusters), \"DeleteSpoke\" (Phase 2: Delete app of apps from spoke),\n\t\t\t\t \"DeleteHubChildApps\" (Phase 3: Delete applications from hub), \"DeleteHub\" (Phase 4: Delete app of apps from hub)"
+                  type: "string"
                 lastError:
                   description: "Last error encountered by the pattern"
                   type: "string"

@@ -19,6 +19,16 @@ spec:
         - jsonPath: ".spec.schedule"
           name: "Schedule"
           type: "string"
+        - jsonPath: ".status.conditions[?(@.type==\"Reconciled\")].status"
+          name: "Ready"
+          type: "string"
+        - jsonPath: ".status.conditions[?(@.type==\"Reconciled\")].reason"
+          name: "Reason"
+          type: "string"
+        - jsonPath: ".status.conditions[?(@.type==\"Reconciled\")].message"
+          name: "Status"
+          priority: 1
+          type: "string"
       name: "v1"
       schema:
         openAPIV3Schema:
@@ -33,3 +43,5 @@ spec:
           type: "object"
       served: true
       storage: true
+      subresources:
+        status: {}

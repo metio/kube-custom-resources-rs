@@ -273,6 +273,13 @@ spec:
                     hotReload:
                       description: "If true enable reloading via HTTP"
                       type: "boolean"
+                    hotReloadEnsureThreadSafety:
+                      description: "If true, preserve thread safety during hot reload by waiting for in-flight work to drain before reloading; this wait can be bounded by hotReloadTimeout."
+                      type: "boolean"
+                    hotReloadTimeout:
+                      description: "Maximum time in seconds to wait for a hot reload to complete before aborting."
+                      format: "int32"
+                      type: "integer"
                     httpListen:
                       description: "Address to listen"
                       pattern: "^(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})|(([A-Fa-f0-9:]+:+)+[A-Fa-f0-9]*)$"
@@ -298,6 +305,10 @@ spec:
                         - "info"
                         - "debug"
                         - "trace"
+                      type: "string"
+                    multilineBufferLimit:
+                      description: "Set a default buffer size limit for multiline parsers. The value must be according to the Unit Size specification."
+                      pattern: "^\\d+(k|K|KB|kb|m|M|MB|mb|g|G|GB|gb)?$"
                       type: "string"
                     parsersFile:
                       description: "Optional 'parsers' config file (can be multiple)"

@@ -28,6 +28,24 @@ spec:
               additionalProperties: true
               description: "Spec defines the desired state of ForkliftController"
               properties:
+                aap_ca_secret_name:
+                  description: "Name of the Secret in the operator namespace containing a custom CA certificate (data key: ca.crt) for verifying the AAP server TLS certificate. Optional; when unset, the system CA bundle is used."
+                  type: "string"
+                aap_insecure_skip_verify:
+                  description: "Skip TLS certificate verification when connecting to AAP (default: false). Use only for testing or when the AAP server uses a self-signed certificate and no CA is provided."
+                  enum:
+                    - "true"
+                    - "false"
+                  type: "string"
+                aap_timeout:
+                  description: "Default timeout in seconds for AAP HTTP calls and job polling when Hook spec.deadline is 0 (optional)."
+                  x-kubernetes-int-or-string: true
+                aap_token_secret_name:
+                  description: "Name of the Secret in the operator namespace containing the AAP API Bearer token (data key: token). Required for centralized AAP connection together with aap_url; omit when hooks use per-hook spec.aap.url and tokenSecret."
+                  type: "string"
+                aap_url:
+                  description: "Ansible Automation Platform base URL (e.g. https://aap.example.com). Required for centralized AAP connection together with aap_token_secret_name; omit when hooks use spec.aap.url and spec.aap.tokenSecret."
+                  type: "string"
                 api_container_limits_cpu:
                   description: "API service CPU limit (default: 1000m)"
                   example: "2000m"
@@ -71,6 +89,9 @@ spec:
                 controller_block_overhead:
                   description: "Block overhead in bytes (default: 0)"
                   x-kubernetes-int-or-string: true
+                controller_blocker_grace_period_minutes:
+                  description: "How long Critical/Error blocker conditions must persist before failing an active migration, in minutes (default: 5)"
+                  x-kubernetes-int-or-string: true
                 controller_cleanup_retries:
                   description: "Cleanup retry count (default: 10)"
                   x-kubernetes-int-or-string: true
@@ -100,6 +121,14 @@ spec:
                   description: "Namespace for host lease objects (default: openshift-mtv)"
                   example: "openshift-mtv"
                   type: "string"
+                controller_hyperv_refresh_interval:
+                  description: "HyperV inventory refresh interval as a Go duration (default: 10s)"
+                  example: "30s"
+                  type: "string"
+                controller_hyperv_validation_timeout:
+                  description: "Timeout for HyperV SMB disk validation HTTP calls as a Go duration (default: 30s)"
+                  example: "60s"
+                  type: "string"
                 controller_image_fqin:
                   description: "Controller pod image"
                   example: "quay.io/kubev2v/forklift-controller:latest"
@@ -113,9 +142,17 @@ spec:
                 controller_max_parent_backing_retries:
                   description: "Max retries when getting parent disks (default: 10)"
                   x-kubernetes-int-or-string: true
+                controller_max_populator_inflight:
+                  description: "Max concurrent populator pods per ESXi host (default: 20)"
+                  example: 10
+                  x-kubernetes-int-or-string: true
                 controller_max_vm_inflight:
                   description: "Max concurrent VM migrations (default: 20)"
                   x-kubernetes-int-or-string: true
+                controller_migration_service_account:
+                  description: "Global default ServiceAccount for migration pods in the target namespace. Overridden by Plan-level serviceAccount."
+                  example: "custom-migration-sa"
+                  type: "string"
                 controller_ovirt_warm_migration:
                   description: "Enable oVirt warm migration (default: true)"
                   enum:
@@ -125,6 +162,12 @@ spec:
                 controller_precopy_interval:
                   description: "Precopy interval in minutes (default: 60)"
                   x-kubernetes-int-or-string: true
+                controller_retain_populator_pods:
+                  description: "Retain populator pods after migration for debugging (default: false)"
+                  enum:
+                    - "true"
+                    - "false"
+                  type: "string"
                 controller_retain_precopy_importer_pods:
                   description: "Retain precopy pods (default: false)"
                   enum:
@@ -162,6 +205,18 @@ spec:
                     - "true"
                     - "false"
                   type: "string"
+                controller_windows_reboot_timeout:
+                  description: "Timeout in seconds for the wait-for-reboot step (default: 1800)"
+                  minimum: 1.0
+                  type: "integer"
+                deep_inspection_image_fqin:
+                  description: "Deep inspection image used by deep-inspection pods"
+                  example: "quay.io/kubev2v/deep-inspection:latest"
+                  type: "string"
+                deep_inspection_image_xfs_fqin:
+                  description: "Deep inspection image built on RHEL9, used when xfsCompatibility is enabled"
+                  example: "quay.io/kubev2v/deep-inspection-rhel9:latest"
+                  type: "string"
                 feature_auth_required:
                   description: "Require authentication (default: true)"
                   enum:
@@ -175,7 +230,13 @@ spec:
                     - "false"
                   type: "string"
                 feature_copy_offload:
-                  description: "Enable copy offload plugins (default: false)"
+                  description: "Enable copy offload plugins (default: true)"
+                  enum:
+                    - "true"
+                    - "false"
+                  type: "string"
+                feature_mcp_server:
+                  description: "Enable MCP server deployment (requires OpenShift with Lightspeed) (default: false)"
                   enum:
                     - "true"
                     - "false"
@@ -198,6 +259,12 @@ spec:
                     - "true"
                     - "false"
                   type: "string"
+                feature_use_conversion_cr:
+                  description: "Delegate VM conversion to Conversion CRs instead of managing it directly (default: true)"
+                  enum:
+                    - "true"
+                    - "false"
+                  type: "string"
                 feature_validation:
                   description: "Enable validation service (default: true)"
                   enum:
@@ -212,6 +279,30 @@ spec:
                   type: "string"
                 feature_volume_populator:
                   description: "Enable volume populators (default: true)"
+                  enum:
+                    - "true"
+                    - "false"
+                  type: "string"
+                feature_vsphere_vmware_driver_removal:
+                  description: "Run VMware driver removal scripts during Windows vSphere conversion (default: false)"
+                  enum:
+                    - "true"
+                    - "false"
+                  type: "string"
+                feature_windows_registry_network_config:
+                  description: "Use registry-based network configuration scripts for Windows static IP setup (default: false)"
+                  enum:
+                    - "true"
+                    - "false"
+                  type: "string"
+                feature_windows_wait_for_reboot:
+                  description: "Enable automatic wait-for-reboot step for Windows VM migrations (default: false)"
+                  enum:
+                    - "true"
+                    - "false"
+                  type: "string"
+                feature_xfs_repair_ignore:
+                  description: "Ignore xfs_repair exit status during conversion (default: false)"
                   enum:
                     - "true"
                     - "false"
@@ -285,6 +376,56 @@ spec:
                     - "true"
                     - "false"
                   type: "string"
+                mcp_server_container_limits_cpu:
+                  description: "MCP server CPU limit (default: 1000m)"
+                  example: "2000m"
+                  type: "string"
+                mcp_server_container_limits_memory:
+                  description: "MCP server memory limit (default: 512Mi)"
+                  example: "1Gi"
+                  type: "string"
+                mcp_server_container_requests_cpu:
+                  description: "MCP server CPU request (default: 100m)"
+                  example: "200m"
+                  type: "string"
+                mcp_server_container_requests_memory:
+                  description: "MCP server memory request (default: 256Mi)"
+                  example: "512Mi"
+                  type: "string"
+                mcp_server_kube_insecure:
+                  description: "Skip TLS verification for in-cluster MCP calls (default: true)"
+                  enum:
+                    - "true"
+                    - "false"
+                  type: "string"
+                mcp_server_lightspeed_integration:
+                  description: "Register MCP server with OpenShift Lightspeed (default: true)"
+                  enum:
+                    - "true"
+                    - "false"
+                  type: "string"
+                mcp_server_lightspeed_set_mcp_gate:
+                  description: "Add MCPServer to OLSConfig featureGates when registering with Lightspeed (default: false)"
+                  enum:
+                    - "true"
+                    - "false"
+                  type: "string"
+                mcp_server_max_response_chars:
+                  description: "MCP server max response chars, 0 for unlimited (default: 0)"
+                  x-kubernetes-int-or-string: true
+                mcp_server_output_format:
+                  description: "MCP server output format (default: markdown)"
+                  example: "markdown"
+                  type: "string"
+                mcp_server_read_only:
+                  description: "Run MCP server in read-only mode (default: false)"
+                  enum:
+                    - "true"
+                    - "false"
+                  type: "string"
+                mcp_server_verbose:
+                  description: "MCP server verbosity level (default: 2)"
+                  x-kubernetes-int-or-string: true
                 metric_interval:
                   description: "Metrics scrape interval (default: 30s)"
                   example: "60s"
@@ -369,7 +510,7 @@ spec:
                   description: "oVirt populator image"
                   example: "quay.io/kubev2v/ovirt-populator:latest"
                   type: "string"
-                populator_vsphere_xcopy_volume_image_fqin:
+                populator_vsphere_copy_offload_image_fqin:
                   description: "vSphere xcopy populator image"
                   example: "quay.io/kubev2v/vsphere-populator:latest"
                   type: "string"
@@ -455,8 +596,8 @@ spec:
                     - "false"
                   type: "string"
                 virt_v2v_extra_args:
-                  description: "Additional arguments for virt-v2v"
-                  example: "--debug-overlays"
+                  description: "Additional arguments for virt-v2v conversion"
+                  example: "--parallel 4"
                   type: "string"
                 virt_v2v_extra_conf_config_map:
                   description: "ConfigMap name containing extra virt-v2v configuration"
@@ -465,6 +606,22 @@ spec:
                   description: "Virt-v2v conversion image used by migration pods"
                   example: "quay.io/kubev2v/forklift-virt-v2v:latest"
                   type: "string"
+                virt_v2v_image_xfs_fqin:
+                  description: "Virt-v2v XFS conversion image used by migration pods"
+                  example: "quay.io/kubev2v/forklift-virt-v2v-xfs:latest"
+                  type: "string"
+                virt_v2v_inspector_extra_args:
+                  description: "Additional arguments for virt-v2v-inspector"
+                  example: "--root first"
+                  type: "string"
+                virt_v2v_memsize:
+                  description: "Memory (in MB) allocated for the virt-v2v conversion appliance (default: virt-v2v chooses)"
+                  example: 4096
+                  type: "integer"
+                virt_v2v_smp:
+                  description: "Number of virtual CPUs for the virt-v2v conversion appliance (default: virt-v2v chooses)"
+                  example: 8
+                  type: "integer"
                 vsphere_osmap_configmap_name:
                   description: "ConfigMap name for vSphere OS mappings (default: forklift-vsphere-osmap)"
                   example: "custom-vsphere-osmap"

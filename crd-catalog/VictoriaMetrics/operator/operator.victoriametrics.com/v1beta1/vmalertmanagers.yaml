@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.18.0"
+    controller-gen.kubebuilder.io/version: "v0.21.0"
   name: "vmalertmanagers.operator.victoriametrics.com"
 spec:
   group: "operator.victoriametrics.com"
@@ -52,6 +52,12 @@ spec:
                   description: "Affinity If specified, the pod's scheduling constraints."
                   type: "object"
                   x-kubernetes-preserve-unknown-fields: true
+                arbitraryFSAccessThroughSMs:
+                  description: "ArbitraryFSAccessThroughSMs configures whether configuration\ncan contain paths to arbitrary files on the file system\ne.g bearer token files, basic auth password files, tls certs file paths"
+                  properties:
+                    deny:
+                      type: "boolean"
+                  type: "object"
                 claimTemplates:
                   description: "ClaimTemplates allows adding additional VolumeClaimTemplates for StatefulSet"
                   items:
@@ -113,7 +119,7 @@ spec:
                               - "name"
                             type: "object"
                           resources:
-                            description: "resources represents the minimum resources the volume should have.\nIf RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements\nthat are lower than previous value but must still be higher than capacity recorded in the\nstatus field of the claim.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources"
+                            description: "resources represents the minimum resources the volume should have.\nUsers are allowed to specify resource requirements\nthat are lower than previous value but must still be higher than capacity recorded in the\nstatus field of the claim.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources"
                             properties:
                               limits:
                                 additionalProperties:
@@ -193,7 +199,7 @@ spec:
                             additionalProperties:
                               description: "When a controller receives persistentvolume claim update with ClaimResourceStatus for a resource\nthat it does not recognizes, then it should ignore that update and let other controllers\nhandle it."
                               type: "string"
-                            description: "allocatedResourceStatuses stores status of resource being resized for the given PVC.\nKey names follow standard Kubernetes label syntax. Valid values are either:\n\t* Un-prefixed keys:\n\t\t- storage - the capacity of the volume.\n\t* Custom resources must use implementation-defined prefixed names such as \"example.com/my-custom-resource\"\nApart from above values - keys that are unprefixed or have kubernetes.io prefix are considered\nreserved and hence may not be used.\n\nClaimResourceStatus can be in any of following states:\n\t- ControllerResizeInProgress:\n\t\tState set when resize controller starts resizing the volume in control-plane.\n\t- ControllerResizeFailed:\n\t\tState set when resize has failed in resize controller with a terminal error.\n\t- NodeResizePending:\n\t\tState set when resize controller has finished resizing the volume but further resizing of\n\t\tvolume is needed on the node.\n\t- NodeResizeInProgress:\n\t\tState set when kubelet starts resizing the volume.\n\t- NodeResizeFailed:\n\t\tState set when resizing has failed in kubelet with a terminal error. Transient errors don't set\n\t\tNodeResizeFailed.\nFor example: if expanding a PVC for more capacity - this field can be one of the following states:\n\t- pvc.status.allocatedResourceStatus['storage'] = \"ControllerResizeInProgress\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"ControllerResizeFailed\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"NodeResizePending\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"NodeResizeInProgress\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"NodeResizeFailed\"\nWhen this field is not set, it means that no resize operation is in progress for the given PVC.\n\nA controller that receives PVC update with previously unknown resourceName or ClaimResourceStatus\nshould ignore the update for the purpose it was designed. For example - a controller that\nonly is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid\nresources associated with PVC.\n\nThis is an alpha field and requires enabling RecoverVolumeExpansionFailure feature."
+                            description: "allocatedResourceStatuses stores status of resource being resized for the given PVC.\nKey names follow standard Kubernetes label syntax. Valid values are either:\n\t* Un-prefixed keys:\n\t\t- storage - the capacity of the volume.\n\t* Custom resources must use implementation-defined prefixed names such as \"example.com/my-custom-resource\"\nApart from above values - keys that are unprefixed or have kubernetes.io prefix are considered\nreserved and hence may not be used.\n\nClaimResourceStatus can be in any of following states:\n\t- ControllerResizeInProgress:\n\t\tState set when resize controller starts resizing the volume in control-plane.\n\t- ControllerResizeFailed:\n\t\tState set when resize has failed in resize controller with a terminal error.\n\t- NodeResizePending:\n\t\tState set when resize controller has finished resizing the volume but further resizing of\n\t\tvolume is needed on the node.\n\t- NodeResizeInProgress:\n\t\tState set when kubelet starts resizing the volume.\n\t- NodeResizeFailed:\n\t\tState set when resizing has failed in kubelet with a terminal error. Transient errors don't set\n\t\tNodeResizeFailed.\nFor example: if expanding a PVC for more capacity - this field can be one of the following states:\n\t- pvc.status.allocatedResourceStatus['storage'] = \"ControllerResizeInProgress\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"ControllerResizeFailed\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"NodeResizePending\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"NodeResizeInProgress\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"NodeResizeFailed\"\nWhen this field is not set, it means that no resize operation is in progress for the given PVC.\n\nA controller that receives PVC update with previously unknown resourceName or ClaimResourceStatus\nshould ignore the update for the purpose it was designed. For example - a controller that\nonly is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid\nresources associated with PVC."
                             type: "object"
                             x-kubernetes-map-type: "granular"
                           allocatedResources:
@@ -203,7 +209,7 @@ spec:
                                 - type: "string"
                               pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                               x-kubernetes-int-or-string: true
-                            description: "allocatedResources tracks the resources allocated to a PVC including its capacity.\nKey names follow standard Kubernetes label syntax. Valid values are either:\n\t* Un-prefixed keys:\n\t\t- storage - the capacity of the volume.\n\t* Custom resources must use implementation-defined prefixed names such as \"example.com/my-custom-resource\"\nApart from above values - keys that are unprefixed or have kubernetes.io prefix are considered\nreserved and hence may not be used.\n\nCapacity reported here may be larger than the actual capacity when a volume expansion operation\nis requested.\nFor storage quota, the larger value from allocatedResources and PVC.spec.resources is used.\nIf allocatedResources is not set, PVC.spec.resources alone is used for quota calculation.\nIf a volume expansion capacity request is lowered, allocatedResources is only\nlowered if there are no expansion operations in progress and if the actual volume capacity\nis equal or lower than the requested capacity.\n\nA controller that receives PVC update with previously unknown resourceName\nshould ignore the update for the purpose it was designed. For example - a controller that\nonly is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid\nresources associated with PVC.\n\nThis is an alpha field and requires enabling RecoverVolumeExpansionFailure feature."
+                            description: "allocatedResources tracks the resources allocated to a PVC including its capacity.\nKey names follow standard Kubernetes label syntax. Valid values are either:\n\t* Un-prefixed keys:\n\t\t- storage - the capacity of the volume.\n\t* Custom resources must use implementation-defined prefixed names such as \"example.com/my-custom-resource\"\nApart from above values - keys that are unprefixed or have kubernetes.io prefix are considered\nreserved and hence may not be used.\n\nCapacity reported here may be larger than the actual capacity when a volume expansion operation\nis requested.\nFor storage quota, the larger value from allocatedResources and PVC.spec.resources is used.\nIf allocatedResources is not set, PVC.spec.resources alone is used for quota calculation.\nIf a volume expansion capacity request is lowered, allocatedResources is only\nlowered if there are no expansion operations in progress and if the actual volume capacity\nis equal or lower than the requested capacity.\n\nA controller that receives PVC update with previously unknown resourceName\nshould ignore the update for the purpose it was designed. For example - a controller that\nonly is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid\nresources associated with PVC."
                             type: "object"
                           capacity:
                             additionalProperties:
@@ -274,6 +280,9 @@ spec:
                 clusterDomainName:
                   description: "ClusterDomainName defines domain name suffix for in-cluster dns addresses\naka .cluster.local\nused to build pod peer addresses for in-cluster communication"
                   type: "string"
+                componentVersion:
+                  description: "ComponentVersion defines default images tag for all components.\nit can be overwritten with component specific image.tag value."
+                  type: "string"
                 configMaps:
                   description: "ConfigMaps is a list of ConfigMaps in the same namespace as the Application\nobject, which shall be mounted into the Application container\nat /etc/vm/configs/CONFIGMAP_NAME folder"
                   items:
@@ -335,13 +344,13 @@ spec:
                 configReloaderExtraArgs:
                   additionalProperties:
                     type: "string"
-                  description: "ConfigReloaderExtraArgs that will be passed to  VMAuths config-reloader container\nfor example resyncInterval: \"30s\""
+                  description: "ConfigReloaderExtraArgs that will be passed to  VMAuths config-reloader container\nfor example resync-interval: \"30s\""
                   type: "object"
                 configReloaderImage:
                   description: "ConfigReloaderImage defines image:tag for config-reloader container"
                   type: "string"
                 configReloaderImageTag:
-                  description: "ConfigReloaderImageTag defines image:tag for config-reloader container\nDeprecated: use configReloaderImage instead"
+                  description: "ConfigReloaderImageTag defines image:tag for config-reloader container"
                   type: "string"
                 configReloaderResources:
                   description: "ConfigReloaderResources config-reloader container resource request and limits, https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/\nif not defined default resources from operator config will be used"
@@ -475,6 +484,9 @@ spec:
                 dnsPolicy:
                   description: "DNSPolicy sets DNS policy for the pod"
                   type: "string"
+                enableServiceLinks:
+                  description: "EnableServiceLinks indicates whether information about services should be injected into pod's\nenvironment variables, matching the syntax of Docker links.\nOptional: Defaults to true."
+                  type: "boolean"
                 enforcedNamespaceLabel:
                   description: "EnforcedNamespaceLabel defines the namespace label key for top route matcher for VMAlertmanagerConfig\nDefault is \"namespace\""
                   type: "string"
@@ -791,7 +803,7 @@ spec:
                   description: "ListenLocal makes the VMAlertmanager server listen on loopback, so that it\ndoes not bind against the Pod IP. Note this is only for the VMAlertmanager\nUI, not the gossip communication."
                   type: "boolean"
                 livenessProbe:
-                  description: "LivenessProbe that will be added CRD pod"
+                  description: "LivenessProbe that will be added to CR pod"
                   type: "object"
                   x-kubernetes-preserve-unknown-fields: true
                 logFormat:
@@ -914,7 +926,7 @@ spec:
                     type: "object"
                   type: "array"
                 readinessProbe:
-                  description: "ReadinessProbe that will be added CRD pod"
+                  description: "ReadinessProbe that will be added to CR pod"
                   type: "object"
                   x-kubernetes-preserve-unknown-fields: true
                 replicaCount:
@@ -1033,15 +1045,12 @@ spec:
                     - "spec"
                   type: "object"
                 startupProbe:
-                  description: "StartupProbe that will be added to CRD pod"
+                  description: "StartupProbe that will be added to CR pod"
                   type: "object"
                   x-kubernetes-preserve-unknown-fields: true
                 storage:
                   description: "Storage is the definition of how storage will be used by the VMAlertmanager\ninstances."
                   properties:
-                    disableMountSubPath:
-                      description: "Deprecated: subPath usage will be disabled by default in a future release, this option will become unnecessary.\nDisableMountSubPath allows to remove any subPath usage in volume mounts."
-                      type: "boolean"
                     emptyDir:
                       description: "EmptyDirVolumeSource to be used by the Prometheus StatefulSets. If specified, used in place of any volumeClaimTemplate. More\ninfo: https://kubernetes.io/docs/concepts/storage/volumes/#emptydir"
                       properties:
@@ -1128,7 +1137,7 @@ spec:
                                 - "name"
                               type: "object"
                             resources:
-                              description: "resources represents the minimum resources the volume should have.\nIf RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements\nthat are lower than previous value but must still be higher than capacity recorded in the\nstatus field of the claim.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources"
+                              description: "resources represents the minimum resources the volume should have.\nUsers are allowed to specify resource requirements\nthat are lower than previous value but must still be higher than capacity recorded in the\nstatus field of the claim.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources"
                               properties:
                                 limits:
                                   additionalProperties:
@@ -1208,7 +1217,7 @@ spec:
                               additionalProperties:
                                 description: "When a controller receives persistentvolume claim update with ClaimResourceStatus for a resource\nthat it does not recognizes, then it should ignore that update and let other controllers\nhandle it."
                                 type: "string"
-                              description: "allocatedResourceStatuses stores status of resource being resized for the given PVC.\nKey names follow standard Kubernetes label syntax. Valid values are either:\n\t* Un-prefixed keys:\n\t\t- storage - the capacity of the volume.\n\t* Custom resources must use implementation-defined prefixed names such as \"example.com/my-custom-resource\"\nApart from above values - keys that are unprefixed or have kubernetes.io prefix are considered\nreserved and hence may not be used.\n\nClaimResourceStatus can be in any of following states:\n\t- ControllerResizeInProgress:\n\t\tState set when resize controller starts resizing the volume in control-plane.\n\t- ControllerResizeFailed:\n\t\tState set when resize has failed in resize controller with a terminal error.\n\t- NodeResizePending:\n\t\tState set when resize controller has finished resizing the volume but further resizing of\n\t\tvolume is needed on the node.\n\t- NodeResizeInProgress:\n\t\tState set when kubelet starts resizing the volume.\n\t- NodeResizeFailed:\n\t\tState set when resizing has failed in kubelet with a terminal error. Transient errors don't set\n\t\tNodeResizeFailed.\nFor example: if expanding a PVC for more capacity - this field can be one of the following states:\n\t- pvc.status.allocatedResourceStatus['storage'] = \"ControllerResizeInProgress\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"ControllerResizeFailed\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"NodeResizePending\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"NodeResizeInProgress\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"NodeResizeFailed\"\nWhen this field is not set, it means that no resize operation is in progress for the given PVC.\n\nA controller that receives PVC update with previously unknown resourceName or ClaimResourceStatus\nshould ignore the update for the purpose it was designed. For example - a controller that\nonly is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid\nresources associated with PVC.\n\nThis is an alpha field and requires enabling RecoverVolumeExpansionFailure feature."
+                              description: "allocatedResourceStatuses stores status of resource being resized for the given PVC.\nKey names follow standard Kubernetes label syntax. Valid values are either:\n\t* Un-prefixed keys:\n\t\t- storage - the capacity of the volume.\n\t* Custom resources must use implementation-defined prefixed names such as \"example.com/my-custom-resource\"\nApart from above values - keys that are unprefixed or have kubernetes.io prefix are considered\nreserved and hence may not be used.\n\nClaimResourceStatus can be in any of following states:\n\t- ControllerResizeInProgress:\n\t\tState set when resize controller starts resizing the volume in control-plane.\n\t- ControllerResizeFailed:\n\t\tState set when resize has failed in resize controller with a terminal error.\n\t- NodeResizePending:\n\t\tState set when resize controller has finished resizing the volume but further resizing of\n\t\tvolume is needed on the node.\n\t- NodeResizeInProgress:\n\t\tState set when kubelet starts resizing the volume.\n\t- NodeResizeFailed:\n\t\tState set when resizing has failed in kubelet with a terminal error. Transient errors don't set\n\t\tNodeResizeFailed.\nFor example: if expanding a PVC for more capacity - this field can be one of the following states:\n\t- pvc.status.allocatedResourceStatus['storage'] = \"ControllerResizeInProgress\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"ControllerResizeFailed\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"NodeResizePending\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"NodeResizeInProgress\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"NodeResizeFailed\"\nWhen this field is not set, it means that no resize operation is in progress for the given PVC.\n\nA controller that receives PVC update with previously unknown resourceName or ClaimResourceStatus\nshould ignore the update for the purpose it was designed. For example - a controller that\nonly is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid\nresources associated with PVC."
                               type: "object"
                               x-kubernetes-map-type: "granular"
                             allocatedResources:
@@ -1218,7 +1227,7 @@ spec:
                                   - type: "string"
                                 pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                                 x-kubernetes-int-or-string: true
-                              description: "allocatedResources tracks the resources allocated to a PVC including its capacity.\nKey names follow standard Kubernetes label syntax. Valid values are either:\n\t* Un-prefixed keys:\n\t\t- storage - the capacity of the volume.\n\t* Custom resources must use implementation-defined prefixed names such as \"example.com/my-custom-resource\"\nApart from above values - keys that are unprefixed or have kubernetes.io prefix are considered\nreserved and hence may not be used.\n\nCapacity reported here may be larger than the actual capacity when a volume expansion operation\nis requested.\nFor storage quota, the larger value from allocatedResources and PVC.spec.resources is used.\nIf allocatedResources is not set, PVC.spec.resources alone is used for quota calculation.\nIf a volume expansion capacity request is lowered, allocatedResources is only\nlowered if there are no expansion operations in progress and if the actual volume capacity\nis equal or lower than the requested capacity.\n\nA controller that receives PVC update with previously unknown resourceName\nshould ignore the update for the purpose it was designed. For example - a controller that\nonly is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid\nresources associated with PVC.\n\nThis is an alpha field and requires enabling RecoverVolumeExpansionFailure feature."
+                              description: "allocatedResources tracks the resources allocated to a PVC including its capacity.\nKey names follow standard Kubernetes label syntax. Valid values are either:\n\t* Un-prefixed keys:\n\t\t- storage - the capacity of the volume.\n\t* Custom resources must use implementation-defined prefixed names such as \"example.com/my-custom-resource\"\nApart from above values - keys that are unprefixed or have kubernetes.io prefix are considered\nreserved and hence may not be used.\n\nCapacity reported here may be larger than the actual capacity when a volume expansion operation\nis requested.\nFor storage quota, the larger value from allocatedResources and PVC.spec.resources is used.\nIf allocatedResources is not set, PVC.spec.resources alone is used for quota calculation.\nIf a volume expansion capacity request is lowered, allocatedResources is only\nlowered if there are no expansion operations in progress and if the actual volume capacity\nis equal or lower than the requested capacity.\n\nA controller that receives PVC update with previously unknown resourceName\nshould ignore the update for the purpose it was designed. For example - a controller that\nonly is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid\nresources associated with PVC."
                               type: "object"
                             capacity:
                               additionalProperties:
@@ -1316,7 +1325,7 @@ spec:
                         description: "Key is the taint key that the toleration applies to. Empty means match all taint keys.\nIf the key is empty, operator must be Exists; this combination means to match all values and all keys."
                         type: "string"
                       operator:
-                        description: "Operator represents a key's relationship to the value.\nValid operators are Exists and Equal. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category."
+                        description: "Operator represents a key's relationship to the value.\nValid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category.\nLt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators)."
                         type: "string"
                       tolerationSeconds:
                         description: "TolerationSeconds represents the period of time the toleration (which must be\nof effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,\nit is not set, which means tolerate the taint forever (do not evict). Zero and\nnegative values will be treated as 0 (evict immediately) by the system."
@@ -1338,6 +1347,108 @@ spec:
                     type: "object"
                     x-kubernetes-preserve-unknown-fields: true
                   type: "array"
+                tracingConfig:
+                  description: "TracingConfig defines tracing configuration for Alertmanager"
+                  properties:
+                    client_type:
+                      description: "ClientType defines tracing client protocol"
+                      enum:
+                        - "http"
+                        - "grpc"
+                      type: "string"
+                    compression:
+                      description: "Compression defines compression algorithm for tracing"
+                      type: "string"
+                    endpoint:
+                      description: "Endpoint defines tracing URL where traces will be sent"
+                      type: "string"
+                    headers:
+                      additionalProperties:
+                        type: "string"
+                      description: "Headers defines custom HTTP headers for tracing"
+                      type: "object"
+                    insecure:
+                      description: "Insecure allows TLS configuration to be omitted"
+                      type: "boolean"
+                    sampling_fraction:
+                      description: "SamplingFraction defines fraction of the requests that should be sampled"
+                      type: "string"
+                    timeout:
+                      description: "Timeout defines tracing connection timeout"
+                      type: "string"
+                    tls_config:
+                      description: "TLSConfig defines tracing TLS config"
+                      properties:
+                        ca_file:
+                          description: "CAFile defines path to the pre-mounted file with CA\nmutually exclusive with CASecretRef"
+                          type: "string"
+                        ca_secret_ref:
+                          description: "CA defines reference for secret with CA content under given key\nmutually exclusive with CAFile"
+                          properties:
+                            key:
+                              description: "The key of the secret to select from.  Must be a valid secret key."
+                              type: "string"
+                            name:
+                              default: ""
+                              description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                              type: "string"
+                            optional:
+                              description: "Specify whether the Secret or its key must be defined"
+                              type: "boolean"
+                          required:
+                            - "key"
+                          type: "object"
+                          x-kubernetes-map-type: "atomic"
+                        cert_file:
+                          description: "CertFile defines path to the pre-mounted file with certificate\nmutually exclusive with CertSecretRef"
+                          type: "string"
+                        cert_secret_ref:
+                          description: "CertSecretRef defines reference for secret with certificate content under given key\nmutually exclusive with CertFile"
+                          properties:
+                            key:
+                              description: "The key of the secret to select from.  Must be a valid secret key."
+                              type: "string"
+                            name:
+                              default: ""
+                              description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                              type: "string"
+                            optional:
+                              description: "Specify whether the Secret or its key must be defined"
+                              type: "boolean"
+                          required:
+                            - "key"
+                          type: "object"
+                          x-kubernetes-map-type: "atomic"
+                        insecure_skip_verify:
+                          description: "Cert defines reference for secret with CA content under given key\nmutually exclusive with CertFile"
+                          type: "boolean"
+                        key_file:
+                          description: "KeyFile defines path to the pre-mounted file with certificate key\nmutually exclusive with KeySecretRef"
+                          type: "string"
+                        key_secret_ref:
+                          description: "Key defines reference for secret with certificate key content under given key\nmutually exclusive with KeyFile"
+                          properties:
+                            key:
+                              description: "The key of the secret to select from.  Must be a valid secret key."
+                              type: "string"
+                            name:
+                              default: ""
+                              description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                              type: "string"
+                            optional:
+                              description: "Specify whether the Secret or its key must be defined"
+                              type: "boolean"
+                          required:
+                            - "key"
+                          type: "object"
+                          x-kubernetes-map-type: "atomic"
+                        server_name:
+                          description: "ServerName indicates a name of a server"
+                          type: "string"
+                      type: "object"
+                  required:
+                    - "endpoint"
+                  type: "object"
                 useDefaultResources:
                   description: "UseDefaultResources controls resource settings\nBy default, operator sets built-in resource requirements"
                   type: "boolean"
@@ -1560,6 +1671,8 @@ spec:
                   x-kubernetes-list-map-keys:
                     - "type"
                   x-kubernetes-list-type: "map"
+                lastAppliedSpec:
+                  x-kubernetes-preserve-unknown-fields: true
                 observedGeneration:
                   description: "ObservedGeneration defines current generation picked by operator for the\nreconcile"
                   format: "int64"

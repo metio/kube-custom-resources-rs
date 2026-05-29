@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.18.0"
+    controller-gen.kubebuilder.io/version: "v0.21.0"
   name: "vmalertmanagerconfigs.operator.victoriametrics.com"
 spec:
   group: "operator.victoriametrics.com"
@@ -167,6 +167,12 @@ spec:
                                     - "key"
                                   type: "object"
                                   x-kubernetes-map-type: "atomic"
+                                follow_redirects:
+                                  description: "FollowRedirects controls redirects for scraping."
+                                  type: "boolean"
+                                noProxy:
+                                  description: "NoProxy defines a comma-separated string that can contain IPs, CIDR notation, domain names that should be excluded from proxying.\nIP and domain names can contain port numbers."
+                                  type: "string"
                                 oauth2:
                                   description: "OAuth2 client credentials used to fetch a token for the targets."
                                   properties:
@@ -252,8 +258,34 @@ spec:
                                     - "client_id"
                                     - "token_url"
                                   type: "object"
+                                proxyConnectHeader:
+                                  additionalProperties:
+                                    items:
+                                      description: "SecretKeySelector selects a key of a Secret."
+                                      properties:
+                                        key:
+                                          description: "The key of the secret to select from.  Must be a valid secret key."
+                                          type: "string"
+                                        name:
+                                          default: ""
+                                          description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                          type: "string"
+                                        optional:
+                                          description: "Specify whether the Secret or its key must be defined"
+                                          type: "boolean"
+                                      required:
+                                        - "key"
+                                      type: "object"
+                                      x-kubernetes-map-type: "atomic"
+                                    type: "array"
+                                  description: "ProxyConnectHeader optionally specifies headers to send to proxies during CONNECT requests."
+                                  type: "object"
+                                proxyFromEnvironment:
+                                  description: "ProxyFromEnvironment defines whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY)."
+                                  type: "boolean"
                                 proxyURL:
-                                  description: "Optional proxy URL."
+                                  description: "ProxyUrl defines the HTTP proxy server to use."
+                                  pattern: "^(http|https|socks5)://.+$"
                                   type: "string"
                                 tls_config:
                                   description: "TLS configuration for the client."
@@ -592,7 +624,7 @@ spec:
                         type: "array"
                       incidentio_configs:
                         items:
-                          description: "IncidentIOConfig configures notifications via incident.io.\nhttps://prometheus.io/docs/alerting/latest/configuration/#incidentio_config\navailable from v0.66.0 operator version\nand v0.29.0 alertmanager version"
+                          description: "IncidentioConfig configures notifications via incident.io.\nhttps://prometheus.io/docs/alerting/latest/configuration/#incidentio_config\navailable from v0.66.0 operator version\nand v0.29.0 alertmanager version"
                           properties:
                             alert_source_token:
                               description: "AlertSourceToken is used to authenticate with incident.io"
@@ -681,6 +713,112 @@ spec:
                           required:
                             - "issue_type"
                             - "project"
+                          type: "object"
+                        type: "array"
+                      mattermost_configs:
+                        description: "MattermostConfigs defines Mattermost notification configurations."
+                        items:
+                          description: "MattermostConfig configures notifications via Mattermost."
+                          properties:
+                            attachments:
+                              description: "Attachments defines richer formatting options"
+                              items:
+                                properties:
+                                  author_icon:
+                                    type: "string"
+                                  author_link:
+                                    type: "string"
+                                  author_name:
+                                    type: "string"
+                                  color:
+                                    type: "string"
+                                  fallback:
+                                    type: "string"
+                                  fields:
+                                    items:
+                                      properties:
+                                        short:
+                                          type: "boolean"
+                                        title:
+                                          type: "string"
+                                        value:
+                                          type: "string"
+                                      type: "object"
+                                    type: "array"
+                                  footer:
+                                    type: "string"
+                                  footer_icon:
+                                    type: "string"
+                                  image_url:
+                                    type: "string"
+                                  pretext:
+                                    type: "string"
+                                  text:
+                                    type: "string"
+                                  thumb_url:
+                                    type: "string"
+                                  title:
+                                    type: "string"
+                                  title_link:
+                                    type: "string"
+                                type: "object"
+                              type: "array"
+                            channel:
+                              description: "Channel overrides the channel the message posts in."
+                              type: "string"
+                            http_config:
+                              x-kubernetes-preserve-unknown-fields: true
+                            icon_emoji:
+                              description: "IconEmoji overrides the profile picture and icon_url parameter."
+                              type: "string"
+                            icon_url:
+                              description: "IconURL overrides the profile picture the message posts with."
+                              type: "string"
+                            priority:
+                              properties:
+                                persistent_notifications:
+                                  type: "boolean"
+                                priority:
+                                  type: "string"
+                                requested_ack:
+                                  type: "boolean"
+                              type: "object"
+                            props:
+                              properties:
+                                card:
+                                  type: "string"
+                              type: "object"
+                            send_resolved:
+                              description: "SendResolved controls notify about resolved alerts."
+                              type: "boolean"
+                            text:
+                              description: "Text defines markdown-formatted message to display in the post."
+                              type: "string"
+                            url:
+                              description: "URL to send requests to,\none of `urlSecret` and `url` must be defined."
+                              type: "string"
+                            url_secret:
+                              description: "URLSecret defines secret name and key at the CRD namespace.\nIt must contain the Mattermost URL.\none of `urlSecret` and `url` must be defined."
+                              properties:
+                                key:
+                                  description: "The key of the secret to select from.  Must be a valid secret key."
+                                  type: "string"
+                                name:
+                                  default: ""
+                                  description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                  type: "string"
+                                optional:
+                                  description: "Specify whether the Secret or its key must be defined"
+                                  type: "boolean"
+                              required:
+                                - "key"
+                              type: "object"
+                              x-kubernetes-map-type: "atomic"
+                            username:
+                              description: "Username overrides the username the message posts as"
+                              type: "string"
+                          required:
+                            - "text"
                           type: "object"
                         type: "array"
                       msteams_configs:
@@ -777,6 +915,12 @@ spec:
                                     - "key"
                                   type: "object"
                                   x-kubernetes-map-type: "atomic"
+                                follow_redirects:
+                                  description: "FollowRedirects controls redirects for scraping."
+                                  type: "boolean"
+                                noProxy:
+                                  description: "NoProxy defines a comma-separated string that can contain IPs, CIDR notation, domain names that should be excluded from proxying.\nIP and domain names can contain port numbers."
+                                  type: "string"
                                 oauth2:
                                   description: "OAuth2 client credentials used to fetch a token for the targets."
                                   properties:
@@ -862,8 +1006,34 @@ spec:
                                     - "client_id"
                                     - "token_url"
                                   type: "object"
+                                proxyConnectHeader:
+                                  additionalProperties:
+                                    items:
+                                      description: "SecretKeySelector selects a key of a Secret."
+                                      properties:
+                                        key:
+                                          description: "The key of the secret to select from.  Must be a valid secret key."
+                                          type: "string"
+                                        name:
+                                          default: ""
+                                          description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                          type: "string"
+                                        optional:
+                                          description: "Specify whether the Secret or its key must be defined"
+                                          type: "boolean"
+                                      required:
+                                        - "key"
+                                      type: "object"
+                                      x-kubernetes-map-type: "atomic"
+                                    type: "array"
+                                  description: "ProxyConnectHeader optionally specifies headers to send to proxies during CONNECT requests."
+                                  type: "object"
+                                proxyFromEnvironment:
+                                  description: "ProxyFromEnvironment defines whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY)."
+                                  type: "boolean"
                                 proxyURL:
-                                  description: "Optional proxy URL."
+                                  description: "ProxyUrl defines the HTTP proxy server to use."
+                                  pattern: "^(http|https|socks5)://.+$"
                                   type: "string"
                                 tls_config:
                                   description: "TLS configuration for the client."
@@ -1535,6 +1705,9 @@ spec:
                               type: "string"
                             title_link:
                               type: "string"
+                            update_message:
+                              description: "Whether to update the original message in-place instead of sending a new one.\nRequires Slack Bot API and chat:write scope.\nAvailable since alertmanager v0.32.0."
+                              type: "boolean"
                             username:
                               type: "string"
                           type: "object"
@@ -1641,6 +1814,12 @@ spec:
                                     - "key"
                                   type: "object"
                                   x-kubernetes-map-type: "atomic"
+                                follow_redirects:
+                                  description: "FollowRedirects controls redirects for scraping."
+                                  type: "boolean"
+                                noProxy:
+                                  description: "NoProxy defines a comma-separated string that can contain IPs, CIDR notation, domain names that should be excluded from proxying.\nIP and domain names can contain port numbers."
+                                  type: "string"
                                 oauth2:
                                   description: "OAuth2 client credentials used to fetch a token for the targets."
                                   properties:
@@ -1726,8 +1905,34 @@ spec:
                                     - "client_id"
                                     - "token_url"
                                   type: "object"
+                                proxyConnectHeader:
+                                  additionalProperties:
+                                    items:
+                                      description: "SecretKeySelector selects a key of a Secret."
+                                      properties:
+                                        key:
+                                          description: "The key of the secret to select from.  Must be a valid secret key."
+                                          type: "string"
+                                        name:
+                                          default: ""
+                                          description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                          type: "string"
+                                        optional:
+                                          description: "Specify whether the Secret or its key must be defined"
+                                          type: "boolean"
+                                      required:
+                                        - "key"
+                                      type: "object"
+                                      x-kubernetes-map-type: "atomic"
+                                    type: "array"
+                                  description: "ProxyConnectHeader optionally specifies headers to send to proxies during CONNECT requests."
+                                  type: "object"
+                                proxyFromEnvironment:
+                                  description: "ProxyFromEnvironment defines whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY)."
+                                  type: "boolean"
                                 proxyURL:
-                                  description: "Optional proxy URL."
+                                  description: "ProxyUrl defines the HTTP proxy server to use."
+                                  pattern: "^(http|https|socks5)://.+$"
                                   type: "string"
                                 tls_config:
                                   description: "TLS configuration for the client."
@@ -2087,6 +2292,12 @@ spec:
                                     - "key"
                                   type: "object"
                                   x-kubernetes-map-type: "atomic"
+                                follow_redirects:
+                                  description: "FollowRedirects controls redirects for scraping."
+                                  type: "boolean"
+                                noProxy:
+                                  description: "NoProxy defines a comma-separated string that can contain IPs, CIDR notation, domain names that should be excluded from proxying.\nIP and domain names can contain port numbers."
+                                  type: "string"
                                 oauth2:
                                   description: "OAuth2 client credentials used to fetch a token for the targets."
                                   properties:
@@ -2172,8 +2383,34 @@ spec:
                                     - "client_id"
                                     - "token_url"
                                   type: "object"
+                                proxyConnectHeader:
+                                  additionalProperties:
+                                    items:
+                                      description: "SecretKeySelector selects a key of a Secret."
+                                      properties:
+                                        key:
+                                          description: "The key of the secret to select from.  Must be a valid secret key."
+                                          type: "string"
+                                        name:
+                                          default: ""
+                                          description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                          type: "string"
+                                        optional:
+                                          description: "Specify whether the Secret or its key must be defined"
+                                          type: "boolean"
+                                      required:
+                                        - "key"
+                                      type: "object"
+                                      x-kubernetes-map-type: "atomic"
+                                    type: "array"
+                                  description: "ProxyConnectHeader optionally specifies headers to send to proxies during CONNECT requests."
+                                  type: "object"
+                                proxyFromEnvironment:
+                                  description: "ProxyFromEnvironment defines whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY)."
+                                  type: "boolean"
                                 proxyURL:
-                                  description: "Optional proxy URL."
+                                  description: "ProxyUrl defines the HTTP proxy server to use."
+                                  pattern: "^(http|https|socks5)://.+$"
                                   type: "string"
                                 tls_config:
                                   description: "TLS configuration for the client."
@@ -2404,6 +2641,12 @@ spec:
                                     - "key"
                                   type: "object"
                                   x-kubernetes-map-type: "atomic"
+                                follow_redirects:
+                                  description: "FollowRedirects controls redirects for scraping."
+                                  type: "boolean"
+                                noProxy:
+                                  description: "NoProxy defines a comma-separated string that can contain IPs, CIDR notation, domain names that should be excluded from proxying.\nIP and domain names can contain port numbers."
+                                  type: "string"
                                 oauth2:
                                   description: "OAuth2 client credentials used to fetch a token for the targets."
                                   properties:
@@ -2489,8 +2732,34 @@ spec:
                                     - "client_id"
                                     - "token_url"
                                   type: "object"
+                                proxyConnectHeader:
+                                  additionalProperties:
+                                    items:
+                                      description: "SecretKeySelector selects a key of a Secret."
+                                      properties:
+                                        key:
+                                          description: "The key of the secret to select from.  Must be a valid secret key."
+                                          type: "string"
+                                        name:
+                                          default: ""
+                                          description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                          type: "string"
+                                        optional:
+                                          description: "Specify whether the Secret or its key must be defined"
+                                          type: "boolean"
+                                      required:
+                                        - "key"
+                                      type: "object"
+                                      x-kubernetes-map-type: "atomic"
+                                    type: "array"
+                                  description: "ProxyConnectHeader optionally specifies headers to send to proxies during CONNECT requests."
+                                  type: "object"
+                                proxyFromEnvironment:
+                                  description: "ProxyFromEnvironment defines whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY)."
+                                  type: "boolean"
                                 proxyURL:
-                                  description: "Optional proxy URL."
+                                  description: "ProxyUrl defines the HTTP proxy server to use."
+                                  pattern: "^(http|https|socks5)://.+$"
                                   type: "string"
                                 tls_config:
                                   description: "TLS configuration for the client."
@@ -2662,9 +2931,9 @@ spec:
                           type: "object"
                         type: "array"
                       wechat_configs:
-                        description: "WeChatConfigs defines wechat notification configurations."
+                        description: "WechatConfigs defines wechat notification configurations."
                         items:
-                          description: "WeChatConfig configures notifications via WeChat.\nSee https://prometheus.io/docs/alerting/latest/configuration/#wechat_config"
+                          description: "WechatConfig configures notifications via Wechat.\nSee https://prometheus.io/docs/alerting/latest/configuration/#wechat_config"
                           properties:
                             agent_id:
                               type: "string"
@@ -2782,6 +3051,12 @@ spec:
                                     - "key"
                                   type: "object"
                                   x-kubernetes-map-type: "atomic"
+                                follow_redirects:
+                                  description: "FollowRedirects controls redirects for scraping."
+                                  type: "boolean"
+                                noProxy:
+                                  description: "NoProxy defines a comma-separated string that can contain IPs, CIDR notation, domain names that should be excluded from proxying.\nIP and domain names can contain port numbers."
+                                  type: "string"
                                 oauth2:
                                   description: "OAuth2 client credentials used to fetch a token for the targets."
                                   properties:
@@ -2867,8 +3142,34 @@ spec:
                                     - "client_id"
                                     - "token_url"
                                   type: "object"
+                                proxyConnectHeader:
+                                  additionalProperties:
+                                    items:
+                                      description: "SecretKeySelector selects a key of a Secret."
+                                      properties:
+                                        key:
+                                          description: "The key of the secret to select from.  Must be a valid secret key."
+                                          type: "string"
+                                        name:
+                                          default: ""
+                                          description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                          type: "string"
+                                        optional:
+                                          description: "Specify whether the Secret or its key must be defined"
+                                          type: "boolean"
+                                      required:
+                                        - "key"
+                                      type: "object"
+                                      x-kubernetes-map-type: "atomic"
+                                    type: "array"
+                                  description: "ProxyConnectHeader optionally specifies headers to send to proxies during CONNECT requests."
+                                  type: "object"
+                                proxyFromEnvironment:
+                                  description: "ProxyFromEnvironment defines whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY)."
+                                  type: "boolean"
                                 proxyURL:
-                                  description: "Optional proxy URL."
+                                  description: "ProxyUrl defines the HTTP proxy server to use."
+                                  pattern: "^(http|https|socks5)://.+$"
                                   type: "string"
                                 tls_config:
                                   description: "TLS configuration for the client."
@@ -3111,9 +3412,6 @@ spec:
                       - "time_intervals"
                     type: "object"
                   type: "array"
-              required:
-                - "receivers"
-                - "route"
               type: "object"
             status:
               description: "VMAlertmanagerConfigStatus defines the observed state of VMAlertmanagerConfig"

@@ -133,6 +133,19 @@ spec:
                           description: "Number of data chunks per object in an erasure coded storage pool (required for erasure-coded pool type).\nThe number of chunks required to recover an object when any single OSD is lost is the same\nas dataChunks so be aware that the larger the number of data chunks, the higher the cost of recovery."
                           minimum: 0.0
                           type: "integer"
+                        stripeUnit:
+                          anyOf:
+                            - type: "integer"
+                            - type: "string"
+                          description: "Erasure code stripe size in bytes. Ceph default is 4096 bytes (4 KiB).\nValue must be a multiple of 4096 (4Ki)."
+                          enum:
+                            - "4Ki"
+                            - "16Ki"
+                            - "64Ki"
+                            - "256Ki"
+                            - "1Mi"
+                          pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                          x-kubernetes-int-or-string: true
                       required:
                         - "codingChunks"
                         - "dataChunks"
@@ -1266,6 +1279,11 @@ spec:
                             type: "string"
                           description: "The annotations-related configuration to add/set on each rgw service.\nnullable\noptional"
                           type: "object"
+                        labels:
+                          additionalProperties:
+                            type: "string"
+                          description: "The labels-related configuration to add/set on each rgw service."
+                          type: "object"
                       type: "object"
                     sslCertificateRef:
                       description: "The name of the secret that stores the ssl certificate for secure rgw connections"
@@ -1581,6 +1599,19 @@ spec:
                           description: "Number of data chunks per object in an erasure coded storage pool (required for erasure-coded pool type).\nThe number of chunks required to recover an object when any single OSD is lost is the same\nas dataChunks so be aware that the larger the number of data chunks, the higher the cost of recovery."
                           minimum: 0.0
                           type: "integer"
+                        stripeUnit:
+                          anyOf:
+                            - type: "integer"
+                            - type: "string"
+                          description: "Erasure code stripe size in bytes. Ceph default is 4096 bytes (4 KiB).\nValue must be a multiple of 4096 (4Ki)."
+                          enum:
+                            - "4Ki"
+                            - "16Ki"
+                            - "64Ki"
+                            - "256Ki"
+                            - "1Mi"
+                          pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                          x-kubernetes-int-or-string: true
                       required:
                         - "codingChunks"
                         - "dataChunks"
@@ -1766,6 +1797,20 @@ spec:
                   description: "Security represents security settings"
                   nullable: true
                   properties:
+                    cipherSuites:
+                      description: "CipherSuites specifies the cipher suites used during the TLS handshake for TLS v1.3.\nEach value must be a valid OpenSSL cipher suite name.\nSee https://docs.openssl.org/master/man1/openssl-ciphers/"
+                      items:
+                        type: "string"
+                      maxItems: 1000
+                      minItems: 0
+                      type: "array"
+                    ciphers:
+                      description: "Ciphers specifies the cipher suites used during the TLS handshake for TLS v1.2 and below.\nEach value must be a valid OpenSSL cipher suite name.\nSee https://docs.openssl.org/master/man1/openssl-ciphers/"
+                      items:
+                        type: "string"
+                      maxItems: 1000
+                      minItems: 0
+                      type: "array"
                     keyRotation:
                       description: "KeyRotation defines options for Key Rotation."
                       nullable: true
@@ -1808,6 +1853,39 @@ spec:
                           description: "TokenSecretName is the kubernetes secret containing the KMS token"
                           type: "string"
                       type: "object"
+                    sslOptions:
+                      description: "SslOptions sets the SSL context options for the Ceph RGW beast frontend.\nSee https://docs.ceph.com/en/latest/radosgw/frontends/#options"
+                      properties:
+                        defaultWorkarounds:
+                          description: "defaultWorkarounds implements various bug workaround when true, or disables it when false. Default disabled."
+                          type: "boolean"
+                        noCompression:
+                          description: "noCompression disables compression when true, or disables it when false. Default disabled."
+                          type: "boolean"
+                        singleDiffieHellmanUse:
+                          description: "SingleDiffieHellmanUse always creates a new key when using tmp_dh parameters when true, or disables it when false. Default disabled."
+                          type: "boolean"
+                        sslv2:
+                          description: "sslv2 enables SSL v2 when true, or disables it when false. Default disabled."
+                          type: "boolean"
+                        sslv3:
+                          description: "sslv3 enables SSL v3 when true, or disables it when false. Default disabled."
+                          type: "boolean"
+                        tlsv1_0:
+                          description: "tlsv1_0 enables TLS v1.0 when true, or disables it when false. Default disabled."
+                          type: "boolean"
+                        tlsv1_1:
+                          description: "tlsv1_1 enables TLS v1.1 when true, or disables it when false. Default disabled."
+                          type: "boolean"
+                        tlsv1_2:
+                          description: "tlsv1_2 enables TLS v1.2 when true, or disables it when false. Default enabled."
+                          type: "boolean"
+                      type: "object"
+                    tlsGroups:
+                      description: "TlsGroups specifies one or more TLS Group strings separated by colons.\nMultiple suites are supported with ':' colon-separated.\nThe pseudo group name DEFAULT can be used to select the OpenSSL built-in default list of groups.\nOther valid group names will depend on OpenSSL version\nSee https://docs.openssl.org/master/man3/SSL_CTX_set1_curves/#description"
+                      items:
+                        type: "string"
+                      type: "array"
                   type: "object"
                 sharedPools:
                   description: "The pool information when configuring RADOS namespaces in existing pools."
@@ -1830,17 +1908,17 @@ spec:
                       items:
                         properties:
                           dataNonECPoolName:
-                            description: "The data pool used to store ObjectStore data that cannot use erasure coding (ex: multi-part uploads).\nIf dataPoolName is not erasure coded, then there is no need for dataNonECPoolName."
+                            description: "The data pool used to store ObjectStore data that cannot use erasure coding (ex: multi-part uploads).\nIf dataPoolName is not erasure coded, then there is no need for dataNonECPoolName.\nWARNING: Do not change this field after creation. Pool names are used in RADOS namespaces and renaming leads to data loss."
                             type: "string"
                           dataPoolName:
-                            description: "The data pool used to store ObjectStore objects data."
+                            description: "The data pool used to store ObjectStore objects data.\nWARNING: Do not change this field after creation. Pool names are used in RADOS namespaces and renaming leads to data loss."
                             minLength: 1
                             type: "string"
                           default:
                             description: "Sets given placement as default. Only one placement in the list can be marked as default.\nDefault is false."
                             type: "boolean"
                           metadataPoolName:
-                            description: "The metadata pool used to store ObjectStore bucket index."
+                            description: "The metadata pool used to store ObjectStore bucket index.\nWARNING: Do not change this field after creation. Pool names are used in RADOS namespaces and renaming leads to data loss."
                             minLength: 1
                             type: "string"
                           name:
@@ -1853,7 +1931,7 @@ spec:
                             items:
                               properties:
                                 dataPoolName:
-                                  description: "DataPoolName is the data pool used to store ObjectStore objects data."
+                                  description: "DataPoolName is the data pool used to store ObjectStore objects data.\nWARNING: Do not change this field after creation. Pool names are used in RADOS namespaces and renaming leads to data loss."
                                   minLength: 1
                                   type: "string"
                                 name:
@@ -1865,6 +1943,7 @@ spec:
                                 - "dataPoolName"
                                 - "name"
                               type: "object"
+                            maxItems: 10
                             type: "array"
                         required:
                           - "dataPoolName"

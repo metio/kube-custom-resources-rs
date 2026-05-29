@@ -96,6 +96,12 @@ spec:
                           exclude:
                             description: "Exclude records which field matches the regular expression.\nValue Format: FIELD REGEX"
                             type: "string"
+                          logicalOp:
+                            description: "Specify the logical operator for multiple regex/exclude rules."
+                            enum:
+                              - "and"
+                              - "or"
+                            type: "string"
                           regex:
                             description: "Keep records which field matches the regular expression.\nValue Format: FIELD REGEX"
                             type: "string"

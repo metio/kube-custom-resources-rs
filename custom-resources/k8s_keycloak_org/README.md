@@ -14,3 +14,6 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 ### k8s.keycloak.org/v2alpha1
 - `KeycloakRealmImport`
 - `Keycloak`
+### k8s.keycloak.org/v2beta1
+- `KeycloakRealmImport`
+- `Keycloak`

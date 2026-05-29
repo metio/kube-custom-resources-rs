@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.18.0"
+    controller-gen.kubebuilder.io/version: "v0.21.0"
   name: "vmclusters.operator.victoriametrics.com"
 spec:
   group: "operator.victoriametrics.com"
@@ -151,6 +151,9 @@ spec:
                     clusterNativeListenPort:
                       description: "ClusterNativePort for multi-level cluster setup.\nMore [details](https://docs.victoriametrics.com/victoriametrics/cluster-victoriametrics/#multi-level-cluster-setup)"
                       type: "string"
+                    componentVersion:
+                      description: "ComponentVersion defines default images tag for this component.\nit can be overwritten with component specific image.tag value."
+                      type: "string"
                     configMaps:
                       description: "ConfigMaps is a list of ConfigMaps in the same namespace as the Application\nobject, which shall be mounted into the Application container\nat /etc/vm/configs/CONFIGMAP_NAME folder"
                       items:
@@ -206,6 +209,9 @@ spec:
                     dnsPolicy:
                       description: "DNSPolicy sets DNS policy for the pod"
                       type: "string"
+                    enableServiceLinks:
+                      description: "EnableServiceLinks indicates whether information about services should be injected into pod's\nenvironment variables, matching the syntax of Docker links.\nOptional: Defaults to true."
+                      type: "boolean"
                     extraArgs:
                       additionalProperties:
                         type: "string"
@@ -355,7 +361,7 @@ spec:
                           type: "string"
                       type: "object"
                     livenessProbe:
-                      description: "LivenessProbe that will be added CRD pod"
+                      description: "LivenessProbe that will be added to CR pod"
                       type: "object"
                       x-kubernetes-preserve-unknown-fields: true
                     logFormat:
@@ -448,7 +454,7 @@ spec:
                         type: "object"
                       type: "array"
                     readinessProbe:
-                      description: "ReadinessProbe that will be added CRD pod"
+                      description: "ReadinessProbe that will be added to CR pod"
                       type: "object"
                       x-kubernetes-preserve-unknown-fields: true
                     replicaCount:
@@ -567,7 +573,7 @@ spec:
                         - "spec"
                       type: "object"
                     startupProbe:
-                      description: "StartupProbe that will be added to CRD pod"
+                      description: "StartupProbe that will be added to CR pod"
                       type: "object"
                       x-kubernetes-preserve-unknown-fields: true
                     terminationGracePeriodSeconds:
@@ -586,7 +592,7 @@ spec:
                             description: "Key is the taint key that the toleration applies to. Empty means match all taint keys.\nIf the key is empty, operator must be Exists; this combination means to match all values and all keys."
                             type: "string"
                           operator:
-                            description: "Operator represents a key's relationship to the value.\nValid operators are Exists and Equal. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category."
+                            description: "Operator represents a key's relationship to the value.\nValid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category.\nLt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators)."
                             type: "string"
                           tolerationSeconds:
                             description: "TolerationSeconds represents the period of time the toleration (which must be\nof effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,\nit is not set, which means tolerate the taint forever (do not evict). Zero and\nnegative values will be treated as 0 (evict immediately) by the system."
@@ -660,6 +666,125 @@ spec:
                         type: "object"
                         x-kubernetes-preserve-unknown-fields: true
                       type: "array"
+                    vpa:
+                      description: "Configures vertical pod autoscaling."
+                      properties:
+                        recommenders:
+                          description: "Recommenders specifies custom VPA recommender names."
+                          items:
+                            description: "VerticalPodAutoscalerRecommenderSelector points to a specific Vertical Pod Autoscaler recommender.\nIn the future it might pass parameters to the recommender."
+                            properties:
+                              name:
+                                description: "Name of the recommender responsible for generating recommendation for this object."
+                                type: "string"
+                            required:
+                              - "name"
+                            type: "object"
+                          type: "array"
+                        resourcePolicy:
+                          description: "ResourcePolicy controls how the autoscaler computes recommended resources per container."
+                          properties:
+                            containerPolicies:
+                              description: "Per-container resource policies."
+                              items:
+                                description: "ContainerResourcePolicy controls how autoscaler computes the recommended\nresources for a specific container."
+                                properties:
+                                  containerName:
+                                    description: "Name of the container or DefaultContainerResourcePolicy, in which\ncase the policy is used by the containers that don't have their own\npolicy specified."
+                                    type: "string"
+                                  controlledResources:
+                                    description: "Specifies the type of recommendations that will be computed\n(and possibly applied) by VPA.\nIf not specified, the default of [ResourceCPU, ResourceMemory] will be used."
+                                    items:
+                                      description: "ResourceName is the name identifying various resources in a ResourceList."
+                                      type: "string"
+                                    type: "array"
+                                  controlledValues:
+                                    description: "Specifies which resource values should be controlled.\nThe default is \"RequestsAndLimits\"."
+                                    enum:
+                                      - "RequestsAndLimits"
+                                      - "RequestsOnly"
+                                    type: "string"
+                                  maxAllowed:
+                                    additionalProperties:
+                                      anyOf:
+                                        - type: "integer"
+                                        - type: "string"
+                                      pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                      x-kubernetes-int-or-string: true
+                                    description: "Specifies the maximum amount of resources that will be recommended\nfor the container. The default is no maximum."
+                                    type: "object"
+                                  minAllowed:
+                                    additionalProperties:
+                                      anyOf:
+                                        - type: "integer"
+                                        - type: "string"
+                                      pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                      x-kubernetes-int-or-string: true
+                                    description: "Specifies the minimal amount of resources that will be recommended\nfor the container. The default is no minimum."
+                                    type: "object"
+                                  mode:
+                                    description: "Whether autoscaler is enabled for the container. The default is \"Auto\"."
+                                    enum:
+                                      - "Auto"
+                                      - "Off"
+                                    type: "string"
+                                  oomBumpUpRatio:
+                                    anyOf:
+                                      - type: "integer"
+                                      - type: "string"
+                                    description: "oomBumpUpRatio is the ratio to increase memory when OOM is detected."
+                                    pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                    x-kubernetes-int-or-string: true
+                                  oomMinBumpUp:
+                                    anyOf:
+                                      - type: "integer"
+                                      - type: "string"
+                                    description: "oomMinBumpUp is the minimum increase in memory when OOM is detected."
+                                    pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                    x-kubernetes-int-or-string: true
+                                type: "object"
+                              type: "array"
+                          type: "object"
+                        updatePolicy:
+                          description: "UpdatePolicy controls how the autoscaler applies changes to pod resources."
+                          properties:
+                            evictionRequirements:
+                              description: "EvictionRequirements is a list of EvictionRequirements that need to\nevaluate to true in order for a Pod to be evicted. If more than one\nEvictionRequirement is specified, all of them need to be fulfilled to allow eviction."
+                              items:
+                                description: "EvictionRequirement defines a single condition which needs to be true in\norder to evict a Pod"
+                                properties:
+                                  changeRequirement:
+                                    description: "EvictionChangeRequirement refers to the relationship between the new target recommendation for a Pod and its current requests, what kind of change is necessary for the Pod to be evicted"
+                                    enum:
+                                      - "TargetHigherThanRequests"
+                                      - "TargetLowerThanRequests"
+                                    type: "string"
+                                  resources:
+                                    description: "Resources is a list of one or more resources that the condition applies\nto. If more than one resource is given, the EvictionRequirement is fulfilled\nif at least one resource meets `changeRequirement`."
+                                    items:
+                                      description: "ResourceName is the name identifying various resources in a ResourceList."
+                                      type: "string"
+                                    type: "array"
+                                required:
+                                  - "changeRequirement"
+                                  - "resources"
+                                type: "object"
+                              type: "array"
+                            minReplicas:
+                              description: "Minimal number of replicas which need to be alive for Updater to attempt\npod eviction (pending other checks like PDB). Only positive values are\nallowed. Overrides global '--min-replicas' flag."
+                              format: "int32"
+                              type: "integer"
+                            updateMode:
+                              description: "Controls when autoscaler applies changes to the pod resources.\nThe default is 'Recreate'."
+                              enum:
+                                - "Off"
+                                - "Initial"
+                                - "Recreate"
+                                - "InPlaceOrRecreate"
+                                - "Auto"
+                              type: "string"
+                          type: "object"
+                      type: "object"
                   type: "object"
                 vmselect:
                   description: "VMSelect defines configuration section for vmselect components of the victoria-metrics cluster"
@@ -679,6 +804,9 @@ spec:
                       type: "array"
                     clusterNativeListenPort:
                       description: "ClusterNativePort for multi-level cluster setup.\nMore [details](https://docs.victoriametrics.com/victoriametrics/cluster-victoriametrics/#multi-level-cluster-setup)"
+                      type: "string"
+                    componentVersion:
+                      description: "ComponentVersion defines default images tag for this component.\nit can be overwritten with component specific image.tag value."
                       type: "string"
                     configMaps:
                       description: "ConfigMaps is a list of ConfigMaps in the same namespace as the Application\nobject, which shall be mounted into the Application container\nat /etc/vm/configs/CONFIGMAP_NAME folder"
@@ -735,6 +863,9 @@ spec:
                     dnsPolicy:
                       description: "DNSPolicy sets DNS policy for the pod"
                       type: "string"
+                    enableServiceLinks:
+                      description: "EnableServiceLinks indicates whether information about services should be injected into pod's\nenvironment variables, matching the syntax of Docker links.\nOptional: Defaults to true."
+                      type: "boolean"
                     extraArgs:
                       additionalProperties:
                         type: "string"
@@ -868,7 +999,7 @@ spec:
                         x-kubernetes-preserve-unknown-fields: true
                       type: "array"
                     livenessProbe:
-                      description: "LivenessProbe that will be added CRD pod"
+                      description: "LivenessProbe that will be added to CR pod"
                       type: "object"
                       x-kubernetes-preserve-unknown-fields: true
                     logFormat:
@@ -971,7 +1102,7 @@ spec:
                         type: "object"
                       type: "array"
                     readinessProbe:
-                      description: "ReadinessProbe that will be added CRD pod"
+                      description: "ReadinessProbe that will be added to CR pod"
                       type: "object"
                       x-kubernetes-preserve-unknown-fields: true
                     replicaCount:
@@ -1087,15 +1218,12 @@ spec:
                         - "spec"
                       type: "object"
                     startupProbe:
-                      description: "StartupProbe that will be added to CRD pod"
+                      description: "StartupProbe that will be added to CR pod"
                       type: "object"
                       x-kubernetes-preserve-unknown-fields: true
                     storage:
                       description: "StorageSpec - add persistent volume claim for cacheMountPath\nits needed for persistent cache"
                       properties:
-                        disableMountSubPath:
-                          description: "Deprecated: subPath usage will be disabled by default in a future release, this option will become unnecessary.\nDisableMountSubPath allows to remove any subPath usage in volume mounts."
-                          type: "boolean"
                         emptyDir:
                           description: "EmptyDirVolumeSource to be used by the Prometheus StatefulSets. If specified, used in place of any volumeClaimTemplate. More\ninfo: https://kubernetes.io/docs/concepts/storage/volumes/#emptydir"
                           properties:
@@ -1182,7 +1310,7 @@ spec:
                                     - "name"
                                   type: "object"
                                 resources:
-                                  description: "resources represents the minimum resources the volume should have.\nIf RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements\nthat are lower than previous value but must still be higher than capacity recorded in the\nstatus field of the claim.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources"
+                                  description: "resources represents the minimum resources the volume should have.\nUsers are allowed to specify resource requirements\nthat are lower than previous value but must still be higher than capacity recorded in the\nstatus field of the claim.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources"
                                   properties:
                                     limits:
                                       additionalProperties:
@@ -1262,7 +1390,7 @@ spec:
                                   additionalProperties:
                                     description: "When a controller receives persistentvolume claim update with ClaimResourceStatus for a resource\nthat it does not recognizes, then it should ignore that update and let other controllers\nhandle it."
                                     type: "string"
-                                  description: "allocatedResourceStatuses stores status of resource being resized for the given PVC.\nKey names follow standard Kubernetes label syntax. Valid values are either:\n\t* Un-prefixed keys:\n\t\t- storage - the capacity of the volume.\n\t* Custom resources must use implementation-defined prefixed names such as \"example.com/my-custom-resource\"\nApart from above values - keys that are unprefixed or have kubernetes.io prefix are considered\nreserved and hence may not be used.\n\nClaimResourceStatus can be in any of following states:\n\t- ControllerResizeInProgress:\n\t\tState set when resize controller starts resizing the volume in control-plane.\n\t- ControllerResizeFailed:\n\t\tState set when resize has failed in resize controller with a terminal error.\n\t- NodeResizePending:\n\t\tState set when resize controller has finished resizing the volume but further resizing of\n\t\tvolume is needed on the node.\n\t- NodeResizeInProgress:\n\t\tState set when kubelet starts resizing the volume.\n\t- NodeResizeFailed:\n\t\tState set when resizing has failed in kubelet with a terminal error. Transient errors don't set\n\t\tNodeResizeFailed.\nFor example: if expanding a PVC for more capacity - this field can be one of the following states:\n\t- pvc.status.allocatedResourceStatus['storage'] = \"ControllerResizeInProgress\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"ControllerResizeFailed\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"NodeResizePending\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"NodeResizeInProgress\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"NodeResizeFailed\"\nWhen this field is not set, it means that no resize operation is in progress for the given PVC.\n\nA controller that receives PVC update with previously unknown resourceName or ClaimResourceStatus\nshould ignore the update for the purpose it was designed. For example - a controller that\nonly is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid\nresources associated with PVC.\n\nThis is an alpha field and requires enabling RecoverVolumeExpansionFailure feature."
+                                  description: "allocatedResourceStatuses stores status of resource being resized for the given PVC.\nKey names follow standard Kubernetes label syntax. Valid values are either:\n\t* Un-prefixed keys:\n\t\t- storage - the capacity of the volume.\n\t* Custom resources must use implementation-defined prefixed names such as \"example.com/my-custom-resource\"\nApart from above values - keys that are unprefixed or have kubernetes.io prefix are considered\nreserved and hence may not be used.\n\nClaimResourceStatus can be in any of following states:\n\t- ControllerResizeInProgress:\n\t\tState set when resize controller starts resizing the volume in control-plane.\n\t- ControllerResizeFailed:\n\t\tState set when resize has failed in resize controller with a terminal error.\n\t- NodeResizePending:\n\t\tState set when resize controller has finished resizing the volume but further resizing of\n\t\tvolume is needed on the node.\n\t- NodeResizeInProgress:\n\t\tState set when kubelet starts resizing the volume.\n\t- NodeResizeFailed:\n\t\tState set when resizing has failed in kubelet with a terminal error. Transient errors don't set\n\t\tNodeResizeFailed.\nFor example: if expanding a PVC for more capacity - this field can be one of the following states:\n\t- pvc.status.allocatedResourceStatus['storage'] = \"ControllerResizeInProgress\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"ControllerResizeFailed\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"NodeResizePending\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"NodeResizeInProgress\"\n     - pvc.status.allocatedResourceStatus['storage'] = \"NodeResizeFailed\"\nWhen this field is not set, it means that no resize operation is in progress for the given PVC.\n\nA controller that receives PVC update with previously unknown resourceName or ClaimResourceStatus\nshould ignore the update for the purpose it was designed. For example - a controller that\nonly is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid\nresources associated with PVC."
                                   type: "object"
                                   x-kubernetes-map-type: "granular"
                                 allocatedResources:
@@ -1272,7 +1400,7 @@ spec:
                                       - type: "string"
                                     pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                                     x-kubernetes-int-or-string: true
-                                  description: "allocatedResources tracks the resources allocated to a PVC including its capacity.\nKey names follow standard Kubernetes label syntax. Valid values are either:\n\t* Un-prefixed keys:\n\t\t- storage - the capacity of the volume.\n\t* Custom resources must use implementation-defined prefixed names such as \"example.com/my-custom-resource\"\nApart from above values - keys that are unprefixed or have kubernetes.io prefix are considered\nreserved and hence may not be used.\n\nCapacity reported here may be larger than the actual capacity when a volume expansion operation\nis requested.\nFor storage quota, the larger value from allocatedResources and PVC.spec.resources is used.\nIf allocatedResources is not set, PVC.spec.resources alone is used for quota calculation.\nIf a volume expansion capacity request is lowered, allocatedResources is only\nlowered if there are no expansion operations in progress and if the actual volume capacity\nis equal or lower than the requested capacity.\n\nA controller that receives PVC update with previously unknown resourceName\nshould ignore the update for the purpose it was designed. For example - a controller that\nonly is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid\nresources associated with PVC.\n\nThis is an alpha field and requires enabling RecoverVolumeExpansionFailure feature."
+                                  description: "allocatedResources tracks the resources allocated to a PVC including its capacity.\nKey names follow standard Kubernetes label syntax. Valid values are either:\n\t* Un-prefixed keys:\n\t\t- storage - the capacity of the volume.\n\t* Custom resources must use implementation-defined prefixed names such as \"example.com/my-custom-resource\"\nApart from above values - keys that are unprefixed or have kubernetes.io prefix are considered\nreserved and hence may not be used.\n\nCapacity reported here may be larger than the actual capacity when a volume expansion operation\nis requested.\nFor storage quota, the larger value from allocatedResources and PVC.spec.resources is used.\nIf allocatedResources is not set, PVC.spec.resources alone is used for quota calculation.\nIf a volume expansion capacity request is lowered, allocatedResources is only\nlowered if there are no expansion operations in progress and if the actual volume capacity\nis equal or lower than the requested capacity.\n\nA controller that receives PVC update with previously unknown resourceName\nshould ignore the update for the purpose it was designed. For example - a controller that\nonly is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid\nresources associated with PVC."
                                   type: "object"
                                 capacity:
                                   additionalProperties:
@@ -1353,7 +1481,7 @@ spec:
                             description: "Key is the taint key that the toleration applies to. Empty means match all taint keys.\nIf the key is empty, operator must be Exists; this combination means to match all values and all keys."
                             type: "string"
                           operator:
-                            description: "Operator represents a key's relationship to the value.\nValid operators are Exists and Equal. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category."
+                            description: "Operator represents a key's relationship to the value.\nValid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category.\nLt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators)."
                             type: "string"
                           tolerationSeconds:
                             description: "TolerationSeconds represents the period of time the toleration (which must be\nof effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,\nit is not set, which means tolerate the taint forever (do not evict). Zero and\nnegative values will be treated as 0 (evict immediately) by the system."
@@ -1421,6 +1549,125 @@ spec:
                         type: "object"
                         x-kubernetes-preserve-unknown-fields: true
                       type: "array"
+                    vpa:
+                      description: "Configures vertical pod autoscaling."
+                      properties:
+                        recommenders:
+                          description: "Recommenders specifies custom VPA recommender names."
+                          items:
+                            description: "VerticalPodAutoscalerRecommenderSelector points to a specific Vertical Pod Autoscaler recommender.\nIn the future it might pass parameters to the recommender."
+                            properties:
+                              name:
+                                description: "Name of the recommender responsible for generating recommendation for this object."
+                                type: "string"
+                            required:
+                              - "name"
+                            type: "object"
+                          type: "array"
+                        resourcePolicy:
+                          description: "ResourcePolicy controls how the autoscaler computes recommended resources per container."
+                          properties:
+                            containerPolicies:
+                              description: "Per-container resource policies."
+                              items:
+                                description: "ContainerResourcePolicy controls how autoscaler computes the recommended\nresources for a specific container."
+                                properties:
+                                  containerName:
+                                    description: "Name of the container or DefaultContainerResourcePolicy, in which\ncase the policy is used by the containers that don't have their own\npolicy specified."
+                                    type: "string"
+                                  controlledResources:
+                                    description: "Specifies the type of recommendations that will be computed\n(and possibly applied) by VPA.\nIf not specified, the default of [ResourceCPU, ResourceMemory] will be used."
+                                    items:
+                                      description: "ResourceName is the name identifying various resources in a ResourceList."
+                                      type: "string"
+                                    type: "array"
+                                  controlledValues:
+                                    description: "Specifies which resource values should be controlled.\nThe default is \"RequestsAndLimits\"."
+                                    enum:
+                                      - "RequestsAndLimits"
+                                      - "RequestsOnly"
+                                    type: "string"
+                                  maxAllowed:
+                                    additionalProperties:
+                                      anyOf:
+                                        - type: "integer"
+                                        - type: "string"
+                                      pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                      x-kubernetes-int-or-string: true
+                                    description: "Specifies the maximum amount of resources that will be recommended\nfor the container. The default is no maximum."
+                                    type: "object"
+                                  minAllowed:
+                                    additionalProperties:
+                                      anyOf:
+                                        - type: "integer"
+                                        - type: "string"
+                                      pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                      x-kubernetes-int-or-string: true
+                                    description: "Specifies the minimal amount of resources that will be recommended\nfor the container. The default is no minimum."
+                                    type: "object"
+                                  mode:
+                                    description: "Whether autoscaler is enabled for the container. The default is \"Auto\"."
+                                    enum:
+                                      - "Auto"
+                                      - "Off"
+                                    type: "string"
+                                  oomBumpUpRatio:
+                                    anyOf:
+                                      - type: "integer"
+                                      - type: "string"
+                                    description: "oomBumpUpRatio is the ratio to increase memory when OOM is detected."
+                                    pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                    x-kubernetes-int-or-string: true
+                                  oomMinBumpUp:
+                                    anyOf:
+                                      - type: "integer"
+                                      - type: "string"
+                                    description: "oomMinBumpUp is the minimum increase in memory when OOM is detected."
+                                    pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                    x-kubernetes-int-or-string: true
+                                type: "object"
+                              type: "array"
+                          type: "object"
+                        updatePolicy:
+                          description: "UpdatePolicy controls how the autoscaler applies changes to pod resources."
+                          properties:
+                            evictionRequirements:
+                              description: "EvictionRequirements is a list of EvictionRequirements that need to\nevaluate to true in order for a Pod to be evicted. If more than one\nEvictionRequirement is specified, all of them need to be fulfilled to allow eviction."
+                              items:
+                                description: "EvictionRequirement defines a single condition which needs to be true in\norder to evict a Pod"
+                                properties:
+                                  changeRequirement:
+                                    description: "EvictionChangeRequirement refers to the relationship between the new target recommendation for a Pod and its current requests, what kind of change is necessary for the Pod to be evicted"
+                                    enum:
+                                      - "TargetHigherThanRequests"
+                                      - "TargetLowerThanRequests"
+                                    type: "string"
+                                  resources:
+                                    description: "Resources is a list of one or more resources that the condition applies\nto. If more than one resource is given, the EvictionRequirement is fulfilled\nif at least one resource meets `changeRequirement`."
+                                    items:
+                                      description: "ResourceName is the name identifying various resources in a ResourceList."
+                                      type: "string"
+                                    type: "array"
+                                required:
+                                  - "changeRequirement"
+                                  - "resources"
+                                type: "object"
+                              type: "array"
+                            minReplicas:
+                              description: "Minimal number of replicas which need to be alive for Updater to attempt\npod eviction (pending other checks like PDB). Only positive values are\nallowed. Overrides global '--min-replicas' flag."
+                              format: "int32"
+                              type: "integer"
+                            updateMode:
+                              description: "Controls when autoscaler applies changes to the pod resources.\nThe default is 'Recreate'."
+                              enum:
+                                - "Off"
+                                - "Initial"
+                                - "Recreate"
+                                - "InPlaceOrRecreate"
+                                - "Auto"
+                              type: "string"
+                          type: "object"
+                      type: "object"
                   type: "object"
                 vmstorage:
                   properties:
@@ -1435,6 +1682,9 @@ spec:
                         type: "object"
                         x-kubernetes-preserve-unknown-fields: true
                       type: "array"
+                    componentVersion:
+                      description: "ComponentVersion defines default images tag for this component.\nit can be overwritten with component specific image.tag value."
+                      type: "string"
                     configMaps:
                       description: "ConfigMaps is a list of ConfigMaps in the same namespace as the Application\nobject, which shall be mounted into the Application container\nat /etc/vm/configs/CONFIGMAP_NAME folder"
                       items:
@@ -1490,6 +1740,9 @@ spec:
                     dnsPolicy:
                       description: "DNSPolicy sets DNS policy for the pod"
                       type: "string"
+                    enableServiceLinks:
+                      description: "EnableServiceLinks indicates whether information about services should be injected into pod's\nenvironment variables, matching the syntax of Docker links.\nOptional: Defaults to true."
+                      type: "boolean"
                     extraArgs:
                       additionalProperties:
                         type: "string"
@@ -1627,7 +1880,7 @@ spec:
                                   anyOf:
                                     - type: "integer"
                                     - type: "string"
-                                  description: "tolerance is the tolerance on the ratio between the current and desired\nmetric value under which no updates are made to the desired number of\nreplicas (e.g. 0.01 for 1%). Must be greater than or equal to zero. If not\nset, the default cluster-wide tolerance is applied (by default 10%).\n\nFor example, if autoscaling is configured with a memory consumption target of 100Mi,\nand scale-down and scale-up tolerances of 5% and 1% respectively, scaling will be\ntriggered when the actual consumption falls below 95Mi or exceeds 101Mi.\n\nThis is an alpha field and requires enabling the HPAConfigurableTolerance\nfeature gate."
+                                  description: "tolerance is the tolerance on the ratio between the current and desired\nmetric value under which no updates are made to the desired number of\nreplicas (e.g. 0.01 for 1%). Must be greater than or equal to zero. If not\nset, the default cluster-wide tolerance is applied (by default 10%).\n\nFor example, if autoscaling is configured with a memory consumption target of 100Mi,\nand scale-down and scale-up tolerances of 5% and 1% respectively, scaling will be\ntriggered when the actual consumption falls below 95Mi or exceeds 101Mi.\n\nThis is an beta field and requires the HPAConfigurableTolerance feature\ngate to be enabled."
                                   pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                                   x-kubernetes-int-or-string: true
                               type: "object"
@@ -1668,7 +1921,7 @@ spec:
                                   anyOf:
                                     - type: "integer"
                                     - type: "string"
-                                  description: "tolerance is the tolerance on the ratio between the current and desired\nmetric value under which no updates are made to the desired number of\nreplicas (e.g. 0.01 for 1%). Must be greater than or equal to zero. If not\nset, the default cluster-wide tolerance is applied (by default 10%).\n\nFor example, if autoscaling is configured with a memory consumption target of 100Mi,\nand scale-down and scale-up tolerances of 5% and 1% respectively, scaling will be\ntriggered when the actual consumption falls below 95Mi or exceeds 101Mi.\n\nThis is an alpha field and requires enabling the HPAConfigurableTolerance\nfeature gate."
+                                  description: "tolerance is the tolerance on the ratio between the current and desired\nmetric value under which no updates are made to the desired number of\nreplicas (e.g. 0.01 for 1%). Must be greater than or equal to zero. If not\nset, the default cluster-wide tolerance is applied (by default 10%).\n\nFor example, if autoscaling is configured with a memory consumption target of 100Mi,\nand scale-down and scale-up tolerances of 5% and 1% respectively, scaling will be\ntriggered when the actual consumption falls below 95Mi or exceeds 101Mi.\n\nThis is an beta field and requires the HPAConfigurableTolerance feature\ngate to be enabled."
                                   pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                                   x-kubernetes-int-or-string: true
                               type: "object"
@@ -2049,7 +2302,7 @@ spec:
                         x-kubernetes-preserve-unknown-fields: true
                       type: "array"
                     livenessProbe:
-                      description: "LivenessProbe that will be added CRD pod"
+                      description: "LivenessProbe that will be added to CR pod"
                       type: "object"
                       x-kubernetes-preserve-unknown-fields: true
                     logFormat:
@@ -2074,7 +2327,7 @@ spec:
                         type: "integer"
                       type: "array"
                     maintenanceSelectNodeIDs:
-                      description: "MaintenanceInsertNodeIDs - excludes given node ids from select requests routing, must contain pod suffixes - for pod-0, id will be 0 and etc."
+                      description: "MaintenanceSelectNodeIDs - excludes given node ids from select requests routing, must contain pod suffixes - for pod-0, id will be 0 and etc."
                       items:
                         format: "int32"
                         type: "integer"
@@ -2164,7 +2417,7 @@ spec:
                         type: "object"
                       type: "array"
                     readinessProbe:
-                      description: "ReadinessProbe that will be added CRD pod"
+                      description: "ReadinessProbe that will be added to CR pod"
                       type: "object"
                       x-kubernetes-preserve-unknown-fields: true
                     replicaCount:
@@ -2280,15 +2533,12 @@ spec:
                         - "spec"
                       type: "object"
                     startupProbe:
-                      description: "StartupProbe that will be added to CRD pod"
+                      description: "StartupProbe that will be added to CR pod"
                       type: "object"
                       x-kubernetes-preserve-unknown-fields: true
                     storage:
                       description: "Storage - add persistent volume for StorageDataPath\nits useful for persistent cache"
                       properties:
-                        disableMountSubPath:
-                          description: "Deprecated: subPath usage will be disabled by default in a future release, this option will become unnecessary.\nDisableMountSubPath allows to remove any subPath usage in volume mounts."
-                          type: "boolean"
                         emptyDir:
                           description: "EmptyDirVolumeSource to be used by the Prometheus StatefulSets. If specified, used in place of any volumeClaimTemplate. More\ninfo: https://kubernetes.io/docs/concepts/storage/volumes/#emptydir"
                           properties:
@@ -2327,7 +2577,7 @@ spec:
                             description: "Key is the taint key that the toleration applies to. Empty means match all taint keys.\nIf the key is empty, operator must be Exists; this combination means to match all values and all keys."
                             type: "string"
                           operator:
-                            description: "Operator represents a key's relationship to the value.\nValid operators are Exists and Equal. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category."
+                            description: "Operator represents a key's relationship to the value.\nValid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category.\nLt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators)."
                             type: "string"
                           tolerationSeconds:
                             description: "TolerationSeconds represents the period of time the toleration (which must be\nof effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,\nit is not set, which means tolerate the taint forever (do not evict). Zero and\nnegative values will be treated as 0 (evict immediately) by the system."
@@ -2359,7 +2609,7 @@ spec:
                       description: "VMBackup configuration for backup"
                       properties:
                         acceptEULA:
-                          description: "AcceptEULA accepts enterprise feature usage, must be set to true.\notherwise backupmanager cannot be added to single/cluster version.\nhttps://victoriametrics.com/legal/esa/\nDeprecated: use license.key or license.keyRef instead"
+                          description: "AcceptEULA accepts enterprise feature usage, must be set to true.\notherwise backupmanager cannot be added to single/cluster version.\nhttps://victoriametrics.com/legal/esa/"
                           type: "boolean"
                         concurrency:
                           description: "Defines number of concurrent workers. Higher concurrency may reduce backup duration (default 10)"
@@ -2635,7 +2885,7 @@ spec:
                           description: "SnapshotCreateURL overwrites url for snapshot create"
                           type: "string"
                         snapshotDeleteURL:
-                          description: "SnapShotDeleteURL overwrites url for snapshot delete"
+                          description: "SnapshotDeleteURL overwrites url for snapshot delete"
                           type: "string"
                         volumeMounts:
                           description: "VolumeMounts allows configuration of additional VolumeMounts on the output Deployment definition.\nVolumeMounts specified will be appended to other VolumeMounts in the vmbackupmanager container,\nthat are generated as a result of StorageSpec objects."
@@ -2715,6 +2965,125 @@ spec:
                         type: "object"
                         x-kubernetes-preserve-unknown-fields: true
                       type: "array"
+                    vpa:
+                      description: "Configures vertical pod autoscaling."
+                      properties:
+                        recommenders:
+                          description: "Recommenders specifies custom VPA recommender names."
+                          items:
+                            description: "VerticalPodAutoscalerRecommenderSelector points to a specific Vertical Pod Autoscaler recommender.\nIn the future it might pass parameters to the recommender."
+                            properties:
+                              name:
+                                description: "Name of the recommender responsible for generating recommendation for this object."
+                                type: "string"
+                            required:
+                              - "name"
+                            type: "object"
+                          type: "array"
+                        resourcePolicy:
+                          description: "ResourcePolicy controls how the autoscaler computes recommended resources per container."
+                          properties:
+                            containerPolicies:
+                              description: "Per-container resource policies."
+                              items:
+                                description: "ContainerResourcePolicy controls how autoscaler computes the recommended\nresources for a specific container."
+                                properties:
+                                  containerName:
+                                    description: "Name of the container or DefaultContainerResourcePolicy, in which\ncase the policy is used by the containers that don't have their own\npolicy specified."
+                                    type: "string"
+                                  controlledResources:
+                                    description: "Specifies the type of recommendations that will be computed\n(and possibly applied) by VPA.\nIf not specified, the default of [ResourceCPU, ResourceMemory] will be used."
+                                    items:
+                                      description: "ResourceName is the name identifying various resources in a ResourceList."
+                                      type: "string"
+                                    type: "array"
+                                  controlledValues:
+                                    description: "Specifies which resource values should be controlled.\nThe default is \"RequestsAndLimits\"."
+                                    enum:
+                                      - "RequestsAndLimits"
+                                      - "RequestsOnly"
+                                    type: "string"
+                                  maxAllowed:
+                                    additionalProperties:
+                                      anyOf:
+                                        - type: "integer"
+                                        - type: "string"
+                                      pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                      x-kubernetes-int-or-string: true
+                                    description: "Specifies the maximum amount of resources that will be recommended\nfor the container. The default is no maximum."
+                                    type: "object"
+                                  minAllowed:
+                                    additionalProperties:
+                                      anyOf:
+                                        - type: "integer"
+                                        - type: "string"
+                                      pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                      x-kubernetes-int-or-string: true
+                                    description: "Specifies the minimal amount of resources that will be recommended\nfor the container. The default is no minimum."
+                                    type: "object"
+                                  mode:
+                                    description: "Whether autoscaler is enabled for the container. The default is \"Auto\"."
+                                    enum:
+                                      - "Auto"
+                                      - "Off"
+                                    type: "string"
+                                  oomBumpUpRatio:
+                                    anyOf:
+                                      - type: "integer"
+                                      - type: "string"
+                                    description: "oomBumpUpRatio is the ratio to increase memory when OOM is detected."
+                                    pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                    x-kubernetes-int-or-string: true
+                                  oomMinBumpUp:
+                                    anyOf:
+                                      - type: "integer"
+                                      - type: "string"
+                                    description: "oomMinBumpUp is the minimum increase in memory when OOM is detected."
+                                    pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                    x-kubernetes-int-or-string: true
+                                type: "object"
+                              type: "array"
+                          type: "object"
+                        updatePolicy:
+                          description: "UpdatePolicy controls how the autoscaler applies changes to pod resources."
+                          properties:
+                            evictionRequirements:
+                              description: "EvictionRequirements is a list of EvictionRequirements that need to\nevaluate to true in order for a Pod to be evicted. If more than one\nEvictionRequirement is specified, all of them need to be fulfilled to allow eviction."
+                              items:
+                                description: "EvictionRequirement defines a single condition which needs to be true in\norder to evict a Pod"
+                                properties:
+                                  changeRequirement:
+                                    description: "EvictionChangeRequirement refers to the relationship between the new target recommendation for a Pod and its current requests, what kind of change is necessary for the Pod to be evicted"
+                                    enum:
+                                      - "TargetHigherThanRequests"
+                                      - "TargetLowerThanRequests"
+                                    type: "string"
+                                  resources:
+                                    description: "Resources is a list of one or more resources that the condition applies\nto. If more than one resource is given, the EvictionRequirement is fulfilled\nif at least one resource meets `changeRequirement`."
+                                    items:
+                                      description: "ResourceName is the name identifying various resources in a ResourceList."
+                                      type: "string"
+                                    type: "array"
+                                required:
+                                  - "changeRequirement"
+                                  - "resources"
+                                type: "object"
+                              type: "array"
+                            minReplicas:
+                              description: "Minimal number of replicas which need to be alive for Updater to attempt\npod eviction (pending other checks like PDB). Only positive values are\nallowed. Overrides global '--min-replicas' flag."
+                              format: "int32"
+                              type: "integer"
+                            updateMode:
+                              description: "Controls when autoscaler applies changes to the pod resources.\nThe default is 'Recreate'."
+                              enum:
+                                - "Off"
+                                - "Initial"
+                                - "Recreate"
+                                - "InPlaceOrRecreate"
+                                - "Auto"
+                              type: "string"
+                          type: "object"
+                      type: "object"
                   type: "object"
               type: "object"
             status:
@@ -2769,6 +3138,8 @@ spec:
                   x-kubernetes-list-map-keys:
                     - "type"
                   x-kubernetes-list-type: "map"
+                lastAppliedSpec:
+                  x-kubernetes-preserve-unknown-fields: true
                 observedGeneration:
                   description: "ObservedGeneration defines current generation picked by operator for the\nreconcile"
                   format: "int64"

@@ -11,6 +11,10 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 
 ## Available Custom Resources
 
+### groupsnapshot.storage.k8s.io/v1
+- `VolumeGroupSnapshotClass`
+- `VolumeGroupSnapshotContent`
+- `VolumeGroupSnapshot`
 ### groupsnapshot.storage.k8s.io/v1alpha1
 - `VolumeGroupSnapshotClass`
 - `VolumeGroupSnapshotContent`

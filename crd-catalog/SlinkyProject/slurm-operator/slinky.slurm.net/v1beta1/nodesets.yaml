@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.18.0"
+    controller-gen.kubebuilder.io/version: "v0.20.1"
   name: "nodesets.slinky.slurm.net"
 spec:
   group: "slinky.slurm.net"
@@ -18,6 +18,10 @@ spec:
   scope: "Namespaced"
   versions:
     - additionalPrinterColumns:
+        - description: "The number of nodes match the node selector and tolerations (DaemonSet mode) or replicas (StatefulSet mode)."
+          jsonPath: ".status.desired"
+          name: "DESIRED"
+          type: "integer"
         - description: "The current number of pods."
           jsonPath: ".status.replicas"
           name: "REPLICAS"
@@ -91,14 +95,18 @@ spec:
                   description: "minReadySeconds is the minimum number of seconds for which a newly\ncreated NodeSet Pod should be ready without any of its container crashing,\nfor it to be considered available.\nDefaults to 0 (pod will be considered available as soon as it is ready)."
                   format: "int32"
                   type: "integer"
+                ordinalPadding:
+                  default: 0
+                  description: "OrdinalPadding indicates how many digit places to pad with zeroes when constructing the pod ordinal.\nThis is used only when `scalingMode=StatefulSet`."
+                  type: "integer"
                 partition:
                   description: "Partition defines the Slurm partition configuration for this NodeSet."
                   properties:
                     config:
-                      description: "Config is added to the NodeSet's partition line.\nRef: https://slurm.schedmd.com/slurmd.html#OPT_conf-%3Cnode-parameters%3E"
+                      description: "Config is added to the NodeSet's partition line.\nRef: https://slurm.schedmd.com/slurm.conf.html#SECTION_PARTITION-CONFIGURATION"
                       type: "string"
                     enabled:
-                      default: true
+                      default: false
                       description: "Enabled will create a partition for this NodeSet."
                       type: "boolean"
                   required:
@@ -108,20 +116,48 @@ spec:
                   description: "PersistentVolumeClaimRetentionPolicy describes the policy used for PVCs\ncreated from the NodeSet VolumeClaimTemplates. This requires the\nNodeSetAutoDeletePVC feature gate to be enabled, which is alpha."
                   properties:
                     whenDeleted:
+                      default: "Retain"
                       description: "WhenDeleted specifies what happens to PVCs created from NodeSet\nVolumeClaimTemplates when the NodeSet is deleted. The default policy\nof `Retain` causes PVCs to not be affected by NodeSet deletion. The\n`Delete` policy causes those PVCs to be deleted."
+                      enum:
+                        - "Retain"
+                        - "Delete"
                       type: "string"
                     whenScaled:
+                      default: "Retain"
                       description: "WhenScaled specifies what happens to PVCs created from NodeSet\nVolumeClaimTemplates when the NodeSet is scaled down. The default\npolicy of `Retain` causes PVCs to not be affected by a scaledown. The\n`Delete` policy causes the associated PVCs for any excess pods to be\ndeleted."
+                      enum:
+                        - "Retain"
+                        - "Delete"
                       type: "string"
                   type: "object"
+                pinToNode:
+                  default: false
+                  description: "PinToNode controls whether pods are pinned to the Kubernetes node they were first scheduled on.\nWhen enabled, pods will always run on the Kube node they were first scheduled on, regardless of its availability.\nKubernetes node pinnings are reset when:\n* The Node does not exist.\n* The new NodeSet pod no longer matches the Node it was pinned to.\nWhen disabled, all stored node pinnings are removed.\nUsed only when `scalingMode=StatefulSet`."
+                  type: "boolean"
+                pruneSlurmNodeRecords:
+                  default: "Never"
+                  description: "PruneSlurmNodeRecords controls when the operator deletes Slurm node records."
+                  enum:
+                    - "Never"
+                    - "NodeNotFound"
+                  type: "string"
                 replicas:
-                  description: "replicas is the desired number of replicas of the given Template.\nThese are replicas in the sense that they are instantiations of the\nsame Template, but individual replicas also have a consistent identity.\nIf unspecified, defaults to 1."
+                  default: 1
+                  description: "replicas is the desired number of replicas of the given Template.\nThese are replicas in the sense that they are instantiations of the\nsame Template, but individual replicas also have a consistent identity.\nIf unspecified, defaults to 1.\nWhen ScalingMode is daemonset, this field is ignored."
                   format: "int32"
                   type: "integer"
                 revisionHistoryLimit:
+                  default: 0
                   description: "revisionHistoryLimit is the maximum number of revisions that will\nbe maintained in the NodeSet's revision history. The revision history\nconsists of all revisions not represented by a currently applied\nNodeSetSpec version. The default value is 0."
                   format: "int32"
                   type: "integer"
+                scalingMode:
+                  default: "StatefulSet"
+                  description: "ScalingMode controls how the NodeSet scales pods.\n\"StatefulSet\" uses a fixed replica count; \"DaemonSet\" schedules one pod per matching node."
+                  enum:
+                    - "DaemonSet"
+                    - "StatefulSet"
+                  type: "string"
                 slurmd:
                   description: "The slurmd container configuration.\nSee corev1.Container spec.\nRef: https://github.com/kubernetes/api/blob/master/core/v1/types.go#L2885"
                   type: "object"
@@ -159,7 +195,7 @@ spec:
                   type: "object"
                 taintKubeNodes:
                   default: false
-                  description: "TaintKubeNodes controls whether or not to apply a NoExecute taint to any nodes which are running a pod from this NodeSet.\nSee https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/ for more information."
+                  description: "TaintKubeNodes controls whether or not to apply a NoExecute taint to any nodes which are running a pod from this NodeSet.\nSee https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/ for more information.\n\nDeprecated: To be removed in the future."
                   type: "boolean"
                 template:
                   description: "Template is the object that describes the pod that will be created if\ninsufficient replicas are detected.\nMore info: https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller#pod-template"
@@ -195,11 +231,16 @@ spec:
                           anyOf:
                             - type: "integer"
                             - type: "string"
-                          description: "The maximum number of pods that can be unavailable during the update.\nValue can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%).\nAbsolute number is calculated from percentage by rounding up. This can not be 0.\nDefaults to 1."
+                          default: "25%"
+                          description: "The maximum number of pods that can be unavailable during the update.\nValue can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%).\nAbsolute number is calculated from percentage by rounding up. This can not be 0.\nDefaults to 25%."
                           x-kubernetes-int-or-string: true
                       type: "object"
                     type:
-                      description: "Type indicates the type of the NodeSetUpdateStrategy.\nDefault is RollingUpdate."
+                      default: "RollingUpdate"
+                      description: "Type indicates the type of the NodeSetUpdateStrategy.\nOne of: RollingUpdate; OnDelete.\nDefault is RollingUpdate."
+                      enum:
+                        - "RollingUpdate"
+                        - "OnDelete"
                       type: "string"
                   type: "object"
                 volumeClaimTemplates:
@@ -271,6 +312,10 @@ spec:
                   x-kubernetes-list-map-keys:
                     - "type"
                   x-kubernetes-list-type: "map"
+                desired:
+                  description: "Desired is the number of nodes that should be running a NodeSet pod.\nIn DaemonSet scaling mode this is the number of nodes matching the node selector and tolerations.\nIn StatefulSet scaling mode this is the number of replicas."
+                  format: "int32"
+                  type: "integer"
                 nodeSetHash:
                   description: "NodeSetHash is the \"controller-revision-hash\", which represents the\nlatest version of the NodeSet."
                   type: "string"
@@ -278,6 +323,12 @@ spec:
                   description: "observedGeneration is the most recent generation observed for this NodeSet. It corresponds to the\nNodeSet's generation, which is updated on mutation by the API Server."
                   format: "int64"
                   type: "integer"
+                ordinalToNode:
+                  additionalProperties:
+                    type: "string"
+                  description: "OrdinalToNode stores the node name to pod ordinal map."
+                  nullable: true
+                  type: "object"
                 readyReplicas:
                   description: "readyReplicas is the number of pods targeted by this NodeSet with a Ready Condition."
                   format: "int32"

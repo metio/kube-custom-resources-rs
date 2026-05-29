@@ -89,7 +89,6 @@ spec:
                       type: "object"
                   type: "object"
                 clientID:
-                  default: ""
                   description: "The client id for credentials to query the Azure APIs.\nCurrently read permissions to query compute resources are required.\nThis value can also be provided with the AZURE_CLIENT_ID environment variable."
                   type: "string"
                 connection:
@@ -128,6 +127,11 @@ spec:
                 environment:
                   default: "AzurePublicCloud"
                   description: "The Azure cloud environment. Valid values: AzurePublicCloud, AzureUSGovernmentCloud, AzureChinaCloud, AzureGermanCloud.\nThis value can also be provided with the AZURE_ENVIRONMENT environment variable"
+                  enum:
+                    - "AzurePublicCloud"
+                    - "AzureUSGovernmentCloud"
+                    - "AzureChinaCloud"
+                    - "AzureGermanCloud"
                   type: "string"
                 maxRetries:
                   default: 3

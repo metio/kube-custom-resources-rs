@@ -6,6 +6,11 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## k8s.keycloak.org/v2alpha1
 - `KeycloakRealmImport`
 - `Keycloak`
+## k8s.keycloak.org/v2beta1
+- `KeycloakRealmImport`
+- `Keycloak`
 */
 #[cfg(feature = "v2alpha1")]
 pub mod v2alpha1;
+#[cfg(feature = "v2beta1")]
+pub mod v2beta1;

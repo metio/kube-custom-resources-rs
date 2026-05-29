@@ -5,6 +5,7 @@ pub mod backupbackingimages;
 pub mod backups;
 pub mod backuptargets;
 pub mod backupvolumes;
+pub mod enginefrontends;
 pub mod engineimages;
 pub mod engines;
 pub mod instancemanagers;

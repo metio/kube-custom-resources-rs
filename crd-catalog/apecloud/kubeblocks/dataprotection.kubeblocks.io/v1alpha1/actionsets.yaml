@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.18.0"
   labels:
     app.kubernetes.io/name: "kubeblocks"
   name: "actionsets.dataprotection.kubeblocks.io"
@@ -238,7 +238,7 @@ spec:
                         - "Continuous"
                         - "Selective"
                   default: "Full"
-                  description: "Specifies the backup type. Supported values include:\n\n\n- `Full` for a full backup.\n- `Incremental` back up data that have changed since the last backup (either full or incremental).\n- `Differential` back up data that has changed since the last full backup.\n- `Continuous` back up transaction logs continuously, such as MySQL binlog, PostgreSQL WAL, etc.\n- `Selective` back up data more precisely, use custom parameters, such as specific databases or tables.\n\n\nContinuous backup is essential for implementing Point-in-Time Recovery (PITR)."
+                  description: "Specifies the backup type. Supported values include:\n\n- `Full` for a full backup.\n- `Incremental` back up data that have changed since the last backup (either full or incremental).\n- `Differential` back up data that has changed since the last full backup.\n- `Continuous` back up transaction logs continuously, such as MySQL binlog, PostgreSQL WAL, etc.\n- `Selective` back up data more precisely, use custom parameters, such as specific databases or tables.\n\nContinuous backup is essential for implementing Point-in-Time Recovery (PITR)."
                   type: "string"
                 env:
                   description: "Specifies a list of environment variables to be set in the container."
@@ -261,7 +261,7 @@ spec:
                                 description: "The key to select."
                                 type: "string"
                               name:
-                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                 type: "string"
                               optional:
                                 description: "Specify whether the ConfigMap or its key must be defined"
@@ -310,7 +310,7 @@ spec:
                                 description: "The key of the secret to select from.  Must be a valid secret key."
                                 type: "string"
                               name:
-                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                 type: "string"
                               optional:
                                 description: "Specify whether the Secret or its key must be defined"
@@ -326,7 +326,7 @@ spec:
                   type: "array"
                   x-kubernetes-preserve-unknown-fields: true
                 envFrom:
-                  description: "Specifies a list of sources to populate environment variables in the container.\nThe keys within a source must be a C_IDENTIFIER. Any invalid keys will be\nreported as an event when the container starts. If a key exists in multiple\nsources, the value from the last source will take precedence. Any values\ndefined by an Env with a duplicate key will take precedence.\n\n\nThis field cannot be updated."
+                  description: "Specifies a list of sources to populate environment variables in the container.\nThe keys within a source must be a C_IDENTIFIER. Any invalid keys will be\nreported as an event when the container starts. If a key exists in multiple\nsources, the value from the last source will take precedence. Any values\ndefined by an Env with a duplicate key will take precedence.\n\nThis field cannot be updated."
                   items:
                     description: "EnvFromSource represents the source of a set of ConfigMaps"
                     properties:
@@ -334,7 +334,7 @@ spec:
                         description: "The ConfigMap to select from"
                         properties:
                           name:
-                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                             type: "string"
                           optional:
                             description: "Specify whether the ConfigMap must be defined"
@@ -348,7 +348,7 @@ spec:
                         description: "The Secret to select from"
                         properties:
                           name:
-                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                             type: "string"
                           optional:
                             description: "Specify whether the Secret must be defined"

@@ -268,6 +268,56 @@ spec:
                 bootstrapFrom:
                   description: "BootstrapFrom defines a source to bootstrap from."
                   properties:
+                    azureBlob:
+                      description: "AzureBlob defines the configuration to restore from Azure Blob compatible storage.\nThis field takes precedence over the Volume source."
+                      properties:
+                        containerName:
+                          description: "ContainerName is the name of the storage container."
+                          type: "string"
+                        prefix:
+                          description: "Prefix indicates a folder/subfolder in the container. For example: mariadb/ or mariadb/backups. A trailing slash '/' is added if not provided."
+                          type: "string"
+                        serviceURL:
+                          description: "ServiceURL is the full URL for connecting to Azure, usually in the form: http(s)://<account>.blob.core.windows.net/."
+                          type: "string"
+                        storageAccountKey:
+                          description: "StorageAccountKey is a reference to a Secret key containing the Azure Blob Storage Storage account Key. Pairs with StorageAccountKey for static credential authentication"
+                          properties:
+                            key:
+                              type: "string"
+                            name:
+                              default: ""
+                              type: "string"
+                          required:
+                            - "key"
+                          type: "object"
+                          x-kubernetes-map-type: "atomic"
+                        storageAccountName:
+                          description: "StorageAccountName is the name of the storage account. Pairs with StorageAccountKey for static credential authentication"
+                          type: "string"
+                        tls:
+                          description: "TLS provides the configuration required to establish TLS connections with Azure Blob Storage."
+                          properties:
+                            caSecretKeyRef:
+                              description: "CASecretKeyRef is a reference to a Secret key containing a CA bundle in PEM format used to establish TLS connections with S3.\nBy default, the system trust chain will be used, but you can use this field to add more CAs to the bundle."
+                              properties:
+                                key:
+                                  type: "string"
+                                name:
+                                  default: ""
+                                  type: "string"
+                              required:
+                                - "key"
+                              type: "object"
+                              x-kubernetes-map-type: "atomic"
+                            enabled:
+                              description: "Enabled is a flag to enable TLS."
+                              type: "boolean"
+                          type: "object"
+                      required:
+                        - "containerName"
+                        - "serviceURL"
+                      type: "object"
                     backupContentType:
                       description: "BackupContentType is the backup content type available in the source to bootstrap from.\nIt is inferred based on the BackupRef and VolumeSnapshotRef fields. If inference is not possible, it defaults to Logical.\nSet this field explicitly when using physical backups from S3 or Volume sources."
                       enum:
@@ -284,8 +334,27 @@ spec:
                           description: "Name of the referent."
                           type: "string"
                       type: "object"
+                    logLevel:
+                      default: "info"
+                      description: "LogLevel to be used in the mariadb-operator container of the restoration Job. It defaults to 'info'."
+                      enum:
+                        - "debug"
+                        - "info"
+                        - "warn"
+                        - "error"
+                        - "dpanic"
+                        - "panic"
+                        - "fatal"
+                      type: "string"
+                    pointInTimeRecoveryRef:
+                      description: "PointInTimeRecoveryRef is a reference to a PointInTimeRecovery object.\nProviding this field implies restoring the PhysicalBackup referenced in the PointInTimeRecovery object and replaying the\narchived binary logs up to the point-in-time restoration target, defined by the targetRecoveryTime field."
+                      properties:
+                        name:
+                          default: ""
+                          type: "string"
+                      type: "object"
                     restoreJob:
-                      description: "RestoreJob defines additional properties for the Job used to perform the restoration."
+                      description: "RestoreJob defines additional properties for the restoration Job."
                       properties:
                         affinity:
                           description: "Affinity to be used in the Pod."
@@ -663,7 +732,7 @@ spec:
                         - "endpoint"
                       type: "object"
                     stagingStorage:
-                      description: "StagingStorage defines the temporary storage used to keep external backups (i.e. S3) while they are being processed.\nIt defaults to an emptyDir volume, meaning that the backups will be temporarily stored in the node where the Job is scheduled."
+                      description: "StagingStorage defines the temporary storage used to keep external backups and binary logs (i.e. S3) while they are being processed.\nIt defaults to an emptyDir volume, meaning that the backups will be temporarily stored in the node where the Job is scheduled."
                       properties:
                         persistentVolumeClaim:
                           description: "PersistentVolumeClaim is a Kubernetes PVC specification."
@@ -972,6 +1041,9 @@ spec:
                 database:
                   description: "Database is the name of the initial Database."
                   type: "string"
+                enableServiceLinks:
+                  description: "EnableServiceLinks to be used in the Pod."
+                  type: "boolean"
                 env:
                   description: "Env represents the environment variables to be injected in a container."
                   items:
@@ -1188,6 +1260,86 @@ spec:
                             enabled:
                               description: "Enabled is a flag to enable KubernetesAuth"
                               type: "boolean"
+                          type: "object"
+                        lifecycle:
+                          description: "Lifecycle are actions that the management system should take in response to container lifecycle events."
+                          properties:
+                            postStart:
+                              description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#lifecyclehandler-v1-core."
+                              properties:
+                                exec:
+                                  description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core."
+                                  properties:
+                                    command:
+                                      items:
+                                        type: "string"
+                                      type: "array"
+                                      x-kubernetes-list-type: "atomic"
+                                  type: "object"
+                                httpGet:
+                                  description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core."
+                                  properties:
+                                    host:
+                                      type: "string"
+                                    path:
+                                      type: "string"
+                                    port:
+                                      anyOf:
+                                        - type: "integer"
+                                        - type: "string"
+                                      x-kubernetes-int-or-string: true
+                                    scheme:
+                                      description: "URIScheme identifies the scheme used for connection to a host for Get actions"
+                                      type: "string"
+                                  required:
+                                    - "port"
+                                  type: "object"
+                                sleep:
+                                  description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#sleepaction-v1-core"
+                                  properties:
+                                    seconds:
+                                      format: "int64"
+                                      type: "integer"
+                                  type: "object"
+                              type: "object"
+                            preStop:
+                              description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#lifecyclehandler-v1-core."
+                              properties:
+                                exec:
+                                  description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core."
+                                  properties:
+                                    command:
+                                      items:
+                                        type: "string"
+                                      type: "array"
+                                      x-kubernetes-list-type: "atomic"
+                                  type: "object"
+                                httpGet:
+                                  description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core."
+                                  properties:
+                                    host:
+                                      type: "string"
+                                    path:
+                                      type: "string"
+                                    port:
+                                      anyOf:
+                                        - type: "integer"
+                                        - type: "string"
+                                      x-kubernetes-int-or-string: true
+                                    scheme:
+                                      description: "URIScheme identifies the scheme used for connection to a host for Get actions"
+                                      type: "string"
+                                  required:
+                                    - "port"
+                                  type: "object"
+                                sleep:
+                                  description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#sleepaction-v1-core"
+                                  properties:
+                                    seconds:
+                                      format: "int64"
+                                      type: "integer"
+                                  type: "object"
+                              type: "object"
                           type: "object"
                         livenessProbe:
                           description: "LivenessProbe to be used in the Container."
@@ -1647,6 +1799,86 @@ spec:
                             - "Never"
                             - "IfNotPresent"
                           type: "string"
+                        lifecycle:
+                          description: "Lifecycle are actions that the management system should take in response to container lifecycle events."
+                          properties:
+                            postStart:
+                              description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#lifecyclehandler-v1-core."
+                              properties:
+                                exec:
+                                  description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core."
+                                  properties:
+                                    command:
+                                      items:
+                                        type: "string"
+                                      type: "array"
+                                      x-kubernetes-list-type: "atomic"
+                                  type: "object"
+                                httpGet:
+                                  description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core."
+                                  properties:
+                                    host:
+                                      type: "string"
+                                    path:
+                                      type: "string"
+                                    port:
+                                      anyOf:
+                                        - type: "integer"
+                                        - type: "string"
+                                      x-kubernetes-int-or-string: true
+                                    scheme:
+                                      description: "URIScheme identifies the scheme used for connection to a host for Get actions"
+                                      type: "string"
+                                  required:
+                                    - "port"
+                                  type: "object"
+                                sleep:
+                                  description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#sleepaction-v1-core"
+                                  properties:
+                                    seconds:
+                                      format: "int64"
+                                      type: "integer"
+                                  type: "object"
+                              type: "object"
+                            preStop:
+                              description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#lifecyclehandler-v1-core."
+                              properties:
+                                exec:
+                                  description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core."
+                                  properties:
+                                    command:
+                                      items:
+                                        type: "string"
+                                      type: "array"
+                                      x-kubernetes-list-type: "atomic"
+                                  type: "object"
+                                httpGet:
+                                  description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core."
+                                  properties:
+                                    host:
+                                      type: "string"
+                                    path:
+                                      type: "string"
+                                    port:
+                                      anyOf:
+                                        - type: "integer"
+                                        - type: "string"
+                                      x-kubernetes-int-or-string: true
+                                    scheme:
+                                      description: "URIScheme identifies the scheme used for connection to a host for Get actions"
+                                      type: "string"
+                                  required:
+                                    - "port"
+                                  type: "object"
+                                sleep:
+                                  description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#sleepaction-v1-core"
+                                  properties:
+                                    seconds:
+                                      format: "int64"
+                                      type: "integer"
+                                  type: "object"
+                              type: "object"
+                          type: "object"
                         livenessProbe:
                           description: "LivenessProbe to be used in the Container."
                           properties:
@@ -2210,6 +2442,86 @@ spec:
                       - "image"
                     type: "object"
                   type: "array"
+                lifecycle:
+                  description: "Lifecycle are actions that the management system should take in response to container lifecycle events."
+                  properties:
+                    postStart:
+                      description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#lifecyclehandler-v1-core."
+                      properties:
+                        exec:
+                          description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core."
+                          properties:
+                            command:
+                              items:
+                                type: "string"
+                              type: "array"
+                              x-kubernetes-list-type: "atomic"
+                          type: "object"
+                        httpGet:
+                          description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core."
+                          properties:
+                            host:
+                              type: "string"
+                            path:
+                              type: "string"
+                            port:
+                              anyOf:
+                                - type: "integer"
+                                - type: "string"
+                              x-kubernetes-int-or-string: true
+                            scheme:
+                              description: "URIScheme identifies the scheme used for connection to a host for Get actions"
+                              type: "string"
+                          required:
+                            - "port"
+                          type: "object"
+                        sleep:
+                          description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#sleepaction-v1-core"
+                          properties:
+                            seconds:
+                              format: "int64"
+                              type: "integer"
+                          type: "object"
+                      type: "object"
+                    preStop:
+                      description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#lifecyclehandler-v1-core."
+                      properties:
+                        exec:
+                          description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core."
+                          properties:
+                            command:
+                              items:
+                                type: "string"
+                              type: "array"
+                              x-kubernetes-list-type: "atomic"
+                          type: "object"
+                        httpGet:
+                          description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core."
+                          properties:
+                            host:
+                              type: "string"
+                            path:
+                              type: "string"
+                            port:
+                              anyOf:
+                                - type: "integer"
+                                - type: "string"
+                              x-kubernetes-int-or-string: true
+                            scheme:
+                              description: "URIScheme identifies the scheme used for connection to a host for Get actions"
+                              type: "string"
+                          required:
+                            - "port"
+                          type: "object"
+                        sleep:
+                          description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#sleepaction-v1-core"
+                          properties:
+                            seconds:
+                              format: "int64"
+                              type: "integer"
+                          type: "object"
+                      type: "object"
+                  type: "object"
                 livenessProbe:
                   description: "LivenessProbe to be used in the Container."
                   properties:
@@ -2270,7 +2582,7 @@ spec:
                       type: "integer"
                   type: "object"
                 maxScaleRef:
-                  description: "MaxScaleRef is a reference to a MaxScale resource to be used with the current MariaDB.\nProviding this field implies delegating high availability tasks such as primary failover to MaxScale."
+                  description: "MaxScaleRef is a reference to a MaxScale resource to be used with the current MariaDB.\nProviding this reference implies delegating high availability tasks such as primary failover to MaxScale."
                   properties:
                     name:
                       type: "string"
@@ -2902,6 +3214,13 @@ spec:
                       type: "array"
                       x-kubernetes-list-type: "atomic"
                   type: "object"
+                pointInTimeRecoveryRef:
+                  description: "PointInTimeRecoveryRef is a reference to a PointInTimeRecovery resource to be used with the current MariaDB.\nProviding this reference implies configuring binary logs in the MariaDB instance and binary log archival in the sidecar agent."
+                  properties:
+                    name:
+                      default: ""
+                      type: "string"
+                  type: "object"
                 port:
                   default: 3306
                   description: "Port where the instances will be listening for connections."
@@ -3232,6 +3551,86 @@ spec:
                             enabled:
                               description: "Enabled is a flag to enable KubernetesAuth"
                               type: "boolean"
+                          type: "object"
+                        lifecycle:
+                          description: "Lifecycle are actions that the management system should take in response to container lifecycle events."
+                          properties:
+                            postStart:
+                              description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#lifecyclehandler-v1-core."
+                              properties:
+                                exec:
+                                  description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core."
+                                  properties:
+                                    command:
+                                      items:
+                                        type: "string"
+                                      type: "array"
+                                      x-kubernetes-list-type: "atomic"
+                                  type: "object"
+                                httpGet:
+                                  description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core."
+                                  properties:
+                                    host:
+                                      type: "string"
+                                    path:
+                                      type: "string"
+                                    port:
+                                      anyOf:
+                                        - type: "integer"
+                                        - type: "string"
+                                      x-kubernetes-int-or-string: true
+                                    scheme:
+                                      description: "URIScheme identifies the scheme used for connection to a host for Get actions"
+                                      type: "string"
+                                  required:
+                                    - "port"
+                                  type: "object"
+                                sleep:
+                                  description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#sleepaction-v1-core"
+                                  properties:
+                                    seconds:
+                                      format: "int64"
+                                      type: "integer"
+                                  type: "object"
+                              type: "object"
+                            preStop:
+                              description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#lifecyclehandler-v1-core."
+                              properties:
+                                exec:
+                                  description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core."
+                                  properties:
+                                    command:
+                                      items:
+                                        type: "string"
+                                      type: "array"
+                                      x-kubernetes-list-type: "atomic"
+                                  type: "object"
+                                httpGet:
+                                  description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core."
+                                  properties:
+                                    host:
+                                      type: "string"
+                                    path:
+                                      type: "string"
+                                    port:
+                                      anyOf:
+                                        - type: "integer"
+                                        - type: "string"
+                                      x-kubernetes-int-or-string: true
+                                    scheme:
+                                      description: "URIScheme identifies the scheme used for connection to a host for Get actions"
+                                      type: "string"
+                                  required:
+                                    - "port"
+                                  type: "object"
+                                sleep:
+                                  description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#sleepaction-v1-core"
+                                  properties:
+                                    seconds:
+                                      format: "int64"
+                                      type: "integer"
+                                  type: "object"
+                              type: "object"
                           type: "object"
                         livenessProbe:
                           description: "LivenessProbe to be used in the Container."
@@ -3601,6 +4000,86 @@ spec:
                             - "Never"
                             - "IfNotPresent"
                           type: "string"
+                        lifecycle:
+                          description: "Lifecycle are actions that the management system should take in response to container lifecycle events."
+                          properties:
+                            postStart:
+                              description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#lifecyclehandler-v1-core."
+                              properties:
+                                exec:
+                                  description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core."
+                                  properties:
+                                    command:
+                                      items:
+                                        type: "string"
+                                      type: "array"
+                                      x-kubernetes-list-type: "atomic"
+                                  type: "object"
+                                httpGet:
+                                  description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core."
+                                  properties:
+                                    host:
+                                      type: "string"
+                                    path:
+                                      type: "string"
+                                    port:
+                                      anyOf:
+                                        - type: "integer"
+                                        - type: "string"
+                                      x-kubernetes-int-or-string: true
+                                    scheme:
+                                      description: "URIScheme identifies the scheme used for connection to a host for Get actions"
+                                      type: "string"
+                                  required:
+                                    - "port"
+                                  type: "object"
+                                sleep:
+                                  description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#sleepaction-v1-core"
+                                  properties:
+                                    seconds:
+                                      format: "int64"
+                                      type: "integer"
+                                  type: "object"
+                              type: "object"
+                            preStop:
+                              description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#lifecyclehandler-v1-core."
+                              properties:
+                                exec:
+                                  description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core."
+                                  properties:
+                                    command:
+                                      items:
+                                        type: "string"
+                                      type: "array"
+                                      x-kubernetes-list-type: "atomic"
+                                  type: "object"
+                                httpGet:
+                                  description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core."
+                                  properties:
+                                    host:
+                                      type: "string"
+                                    path:
+                                      type: "string"
+                                    port:
+                                      anyOf:
+                                        - type: "integer"
+                                        - type: "string"
+                                      x-kubernetes-int-or-string: true
+                                    scheme:
+                                      description: "URIScheme identifies the scheme used for connection to a host for Get actions"
+                                      type: "string"
+                                  required:
+                                    - "port"
+                                  type: "object"
+                                sleep:
+                                  description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#sleepaction-v1-core"
+                                  properties:
+                                    seconds:
+                                      format: "int64"
+                                      type: "integer"
+                                  type: "object"
+                              type: "object"
+                          type: "object"
                         livenessProbe:
                           description: "LivenessProbe to be used in the Container."
                           properties:
@@ -4793,6 +5272,10 @@ spec:
                   default: false
                   description: "Suspend indicates whether the current resource should be suspended or not.\nThis can be useful for maintenance, as disabling the reconciliation prevents the operator from interfering with user operations during maintenance activities."
                   type: "boolean"
+                terminationGracePeriodSeconds:
+                  description: "TerminationGracePeriodSeconds to be used in the Pod."
+                  format: "int64"
+                  type: "integer"
                 timeZone:
                   description: "TimeZone sets the default timezone. If not provided, it defaults to SYSTEM and the timezone data is not loaded."
                   type: "string"
@@ -4810,13 +5293,13 @@ spec:
                       description: "ClientCertIssuerRef is a reference to a cert-manager issuer object used to issue the client certificate. cert-manager must be installed previously in the cluster.\nIt is mutually exclusive with clientCertSecretRef.\nBy default, the Secret field 'ca.crt' provisioned by cert-manager will be added to the trust chain. A custom trust bundle may be specified via clientCASecretRef."
                       properties:
                         group:
-                          description: "Group of the resource being referred to."
+                          description: "Group of the issuer being referred to.\nDefaults to 'cert-manager.io'."
                           type: "string"
                         kind:
-                          description: "Kind of the resource being referred to."
+                          description: "Kind of the issuer being referred to.\nDefaults to 'Issuer'."
                           type: "string"
                         name:
-                          description: "Name of the resource being referred to."
+                          description: "Name of the issuer being referred to."
                           type: "string"
                       required:
                         - "name"
@@ -4848,13 +5331,13 @@ spec:
                       description: "ServerCertIssuerRef is a reference to a cert-manager issuer object used to issue the server certificate. cert-manager must be installed previously in the cluster.\nIt is mutually exclusive with serverCertSecretRef.\nBy default, the Secret field 'ca.crt' provisioned by cert-manager will be added to the trust chain. A custom trust bundle may be specified via serverCASecretRef."
                       properties:
                         group:
-                          description: "Group of the resource being referred to."
+                          description: "Group of the issuer being referred to.\nDefaults to 'cert-manager.io'."
                           type: "string"
                         kind:
-                          description: "Kind of the resource being referred to."
+                          description: "Kind of the issuer being referred to.\nDefaults to 'Issuer'."
                           type: "string"
                         name:
-                          description: "Name of the resource being referred to."
+                          description: "Name of the issuer being referred to."
                           type: "string"
                       required:
                         - "name"
@@ -5057,6 +5540,90 @@ spec:
                             pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                             x-kubernetes-int-or-string: true
                         type: "object"
+                      ephemeral:
+                        description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#ephemeralvolumesource-v1-core."
+                        properties:
+                          volumeClaimTemplate:
+                            description: "VolumeClaimTemplate defines a template to customize PVC objects."
+                            properties:
+                              accessModes:
+                                items:
+                                  type: "string"
+                                type: "array"
+                                x-kubernetes-list-type: "atomic"
+                              metadata:
+                                description: "Metadata to be added to the PVC metadata."
+                                properties:
+                                  annotations:
+                                    additionalProperties:
+                                      type: "string"
+                                    description: "Annotations to be added to children resources."
+                                    type: "object"
+                                  labels:
+                                    additionalProperties:
+                                      type: "string"
+                                    description: "Labels to be added to children resources."
+                                    type: "object"
+                                type: "object"
+                              resources:
+                                description: "VolumeResourceRequirements describes the storage resource requirements for a volume."
+                                properties:
+                                  limits:
+                                    additionalProperties:
+                                      anyOf:
+                                        - type: "integer"
+                                        - type: "string"
+                                      pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                      x-kubernetes-int-or-string: true
+                                    description: "Limits describes the maximum amount of compute resources allowed.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                                    type: "object"
+                                  requests:
+                                    additionalProperties:
+                                      anyOf:
+                                        - type: "integer"
+                                        - type: "string"
+                                      pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                      x-kubernetes-int-or-string: true
+                                    description: "Requests describes the minimum amount of compute resources required.\nIf Requests is omitted for a container, it defaults to Limits if that is explicitly specified,\notherwise to an implementation-defined value. Requests cannot exceed Limits.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                                    type: "object"
+                                type: "object"
+                              selector:
+                                description: "A label selector is a label query over a set of resources. The result of matchLabels and\nmatchExpressions are ANDed. An empty label selector matches all objects. A null\nlabel selector matches no objects."
+                                properties:
+                                  matchExpressions:
+                                    description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
+                                    items:
+                                      description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
+                                      properties:
+                                        key:
+                                          description: "key is the label key that the selector applies to."
+                                          type: "string"
+                                        operator:
+                                          description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
+                                          type: "string"
+                                        values:
+                                          description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
+                                          items:
+                                            type: "string"
+                                          type: "array"
+                                          x-kubernetes-list-type: "atomic"
+                                      required:
+                                        - "key"
+                                        - "operator"
+                                      type: "object"
+                                    type: "array"
+                                    x-kubernetes-list-type: "atomic"
+                                  matchLabels:
+                                    additionalProperties:
+                                      type: "string"
+                                    description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                    type: "object"
+                                type: "object"
+                                x-kubernetes-map-type: "atomic"
+                              storageClassName:
+                                type: "string"
+                            type: "object"
+                        type: "object"
                       hostPath:
                         description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#hostpathvolumesource-v1-core"
                         properties:
@@ -5217,6 +5784,34 @@ spec:
                       description: "State is a per Pod representation of the Galera state file (grastate.dat)."
                       type: "object"
                   type: "object"
+                pointInTimeRecovery:
+                  description: "PointInTimeRecovery is the status of the point-in-time-recovery process."
+                  properties:
+                    gtidStrictModePaused:
+                      description: "GtidStrictModePaused indicates that gtid_strict_mode has been temporarily paused to replay binlogs."
+                      type: "boolean"
+                    lastArchivedBinaryLog:
+                      description: "LastArchivedBinaryLog is name of the last archived binary log."
+                      type: "string"
+                    lastArchivedGtid:
+                      description: "LastArchivedGtid is the last archived GTID."
+                      type: "string"
+                    lastArchivedPosition:
+                      description: "LastArchivedPosition is the position of last archived binary log event."
+                      format: "int32"
+                      type: "integer"
+                    lastArchivedTime:
+                      description: "LastArchivedTime is the time of the last archived binary log event."
+                      format: "date-time"
+                      type: "string"
+                    serverId:
+                      description: "ServerId identifies the server whose binary logs are being archived."
+                      format: "int32"
+                      type: "integer"
+                    storageReadyForArchival:
+                      description: "StorageReadyForArchival indicates that the storage is ready for archival, meaning that the sidecar agent can start archiving the binary logs."
+                      type: "boolean"
+                  type: "object"
                 replicas:
                   description: "Replicas indicates the number of current instances."
                   format: "int32"
@@ -5272,6 +5867,9 @@ spec:
                       description: "Roles is the observed replication roles for each Pod."
                       type: "object"
                   type: "object"
+                rootPasswordHash:
+                  description: "RootPasswordHash is a hash of the root password. It is used to avoid unnecessary reconciliations."
+                  type: "string"
                 scaleOutInitialIndex:
                   description: "ScaleOutInitialIndex is the initial index where the scale out operation started."
                   type: "integer"

@@ -12,7 +12,9 @@ spec:
     singular: "keycloak"
   scope: "Namespaced"
   versions:
-    - name: "v2alpha1"
+    - deprecated: true
+      deprecationWarning: "Please migrate to v2beta1"
+      name: "v2alpha1"
       schema:
         openAPIV3Schema:
           properties:
@@ -37,6 +39,13 @@ spec:
                         type: "string"
                     type: "object"
                   type: "array"
+                admin:
+                  description: "In this section you can find all properties related to making admin connections from the operator to the server. These settings are not used by the server."
+                  properties:
+                    tlsSecret:
+                      description: "If mTLS is required, this references a secret containing the client TLS configuration for the admin client. Reference: https://kubernetes.io/docs/concepts/configuration/secret/#tls-secrets."
+                      type: "string"
+                  type: "object"
                 automountServiceAccountToken:
                   description: "Set this to to false to disable automounting the default ServiceAccount Token and Service CA. This is enabled by default."
                   type: "boolean"
@@ -199,6 +208,15 @@ spec:
                         type: "string"
                       description: "Labels to be appended to the Service object"
                       type: "object"
+                    serviceHttpPort:
+                      description: "The HTTP port exposed on the Kubernetes Service. When set, the Service will use this port while the pod still listens on httpPort."
+                      type: "integer"
+                    serviceHttpsPort:
+                      description: "The HTTPS port exposed on the Kubernetes Service. When set, the Service will use this port while the pod still listens on httpsPort."
+                      type: "integer"
+                    serviceName:
+                      description: "The name of the Kubernetes Service. When not set, the name defaults to the Keycloak CR name with a \"-service\" suffix."
+                      type: "string"
                     tlsSecret:
                       description: "A secret containing the TLS configuration for HTTPS. Reference: https://kubernetes.io/docs/concepts/configuration/secret/#tls-secrets."
                       type: "string"
@@ -1255,6 +1273,11 @@ spec:
                 serviceMonitor:
                   description: "Configuration related to the generated ServiceMonitor"
                   properties:
+                    annotations:
+                      additionalProperties:
+                        type: "string"
+                      description: "Annotations to be appended to the Service object"
+                      type: "object"
                     enabled:
                       default: true
                       description: "Enables or disables the creation of the ServiceMonitor."
@@ -1263,6 +1286,11 @@ spec:
                       default: "30s"
                       description: "Interval at which metrics should be scraped"
                       type: "string"
+                    labels:
+                      additionalProperties:
+                        type: "string"
+                      description: "Labels to be appended to the Service object"
+                      type: "object"
                     scrapeTimeout:
                       default: "10s"
                       description: "Timeout after which the scrape is ended"
@@ -1810,6 +1838,17 @@ spec:
                                                 fieldPath:
                                                   type: "string"
                                               type: "object"
+                                            fileKeyRef:
+                                              properties:
+                                                key:
+                                                  type: "string"
+                                                optional:
+                                                  type: "boolean"
+                                                path:
+                                                  type: "string"
+                                                volumeName:
+                                                  type: "string"
+                                              type: "object"
                                             resourceFieldRef:
                                               properties:
                                                 containerName:
@@ -2138,6 +2177,22 @@ spec:
                                     type: "object"
                                   restartPolicy:
                                     type: "string"
+                                  restartPolicyRules:
+                                    items:
+                                      properties:
+                                        action:
+                                          type: "string"
+                                        exitCodes:
+                                          properties:
+                                            operator:
+                                              type: "string"
+                                            values:
+                                              items:
+                                                type: "integer"
+                                              type: "array"
+                                          type: "object"
+                                      type: "object"
+                                    type: "array"
                                   securityContext:
                                     properties:
                                       allowPrivilegeEscalation:
@@ -2366,6 +2421,17 @@ spec:
                                                 fieldPath:
                                                   type: "string"
                                               type: "object"
+                                            fileKeyRef:
+                                              properties:
+                                                key:
+                                                  type: "string"
+                                                optional:
+                                                  type: "boolean"
+                                                path:
+                                                  type: "string"
+                                                volumeName:
+                                                  type: "string"
+                                              type: "object"
                                             resourceFieldRef:
                                               properties:
                                                 containerName:
@@ -2694,6 +2760,22 @@ spec:
                                     type: "object"
                                   restartPolicy:
                                     type: "string"
+                                  restartPolicyRules:
+                                    items:
+                                      properties:
+                                        action:
+                                          type: "string"
+                                        exitCodes:
+                                          properties:
+                                            operator:
+                                              type: "string"
+                                            values:
+                                              items:
+                                                type: "integer"
+                                              type: "array"
+                                          type: "object"
+                                      type: "object"
+                                    type: "array"
                                   securityContext:
                                     properties:
                                       allowPrivilegeEscalation:
@@ -2885,6 +2967,8 @@ spec:
                               type: "boolean"
                             hostname:
                               type: "string"
+                            hostnameOverride:
+                              type: "string"
                             imagePullSecrets:
                               items:
                                 properties:
@@ -2926,6 +3010,17 @@ spec:
                                                 apiVersion:
                                                   type: "string"
                                                 fieldPath:
+                                                  type: "string"
+                                              type: "object"
+                                            fileKeyRef:
+                                              properties:
+                                                key:
+                                                  type: "string"
+                                                optional:
+                                                  type: "boolean"
+                                                path:
+                                                  type: "string"
+                                                volumeName:
                                                   type: "string"
                                               type: "object"
                                             resourceFieldRef:
@@ -3256,6 +3351,22 @@ spec:
                                     type: "object"
                                   restartPolicy:
                                     type: "string"
+                                  restartPolicyRules:
+                                    items:
+                                      properties:
+                                        action:
+                                          type: "string"
+                                        exitCodes:
+                                          properties:
+                                            operator:
+                                              type: "string"
+                                            values:
+                                              items:
+                                                type: "integer"
+                                              type: "array"
+                                          type: "object"
+                                      type: "object"
+                                    type: "array"
                                   securityContext:
                                     properties:
                                       allowPrivilegeEscalation:
@@ -4177,6 +4288,21 @@ spec:
                                                     type: "object"
                                                   type: "array"
                                               type: "object"
+                                            podCertificate:
+                                              properties:
+                                                certificateChainPath:
+                                                  type: "string"
+                                                credentialBundlePath:
+                                                  type: "string"
+                                                keyPath:
+                                                  type: "string"
+                                                keyType:
+                                                  type: "string"
+                                                maxExpirationSeconds:
+                                                  type: "integer"
+                                                signerName:
+                                                  type: "string"
+                                              type: "object"
                                             secret:
                                               properties:
                                                 items:
@@ -4764,7 +4890,7 @@ spec:
               type: "object"
           type: "object"
       served: true
-      storage: true
+      storage: false
       subresources:
         scale:
           labelSelectorPath: ".status.selector"

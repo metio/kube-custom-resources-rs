@@ -13,7 +13,6 @@ spec:
     listKind: "ExpansionTemplatePodStatusList"
     plural: "expansiontemplatepodstatuses"
     singular: "expansiontemplatepodstatus"
-  preserveUnknownFields: false
   scope: "Namespaced"
   versions:
     - name: "v1beta1"

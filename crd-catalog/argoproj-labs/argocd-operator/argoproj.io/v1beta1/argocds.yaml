@@ -167,14 +167,17 @@ spec:
                         type: "string"
                       description: "Custom labels to pods deployed by the operator"
                       type: "object"
-                    logLevel:
-                      description: "LogLevel describes the log level that should be used by the ApplicationSet controller. Defaults to ArgoCDDefaultLogLevel if not set.  Valid options are debug,info, error, and warn."
-                      type: "string"
-                    logformat:
+                    logFormat:
                       description: "LogFormat refers to the log format used by the ApplicationSet component. Defaults to ArgoCDDefaultLogFormat if not configured. Valid options are text or json."
                       enum:
                         - "text"
                         - "json"
+                      type: "string"
+                    logLevel:
+                      description: "LogLevel describes the log level that should be used by the ApplicationSet controller. Defaults to ArgoCDDefaultLogLevel if not set.  Valid options are debug,info, error, and warn."
+                      type: "string"
+                    logformat:
+                      description: "Deprecated: use LogFormat instead."
                       type: "string"
                     resources:
                       description: "Resources defines the Compute Resources required by the container for ApplicationSet."
@@ -1442,6 +1445,11 @@ spec:
                     agent:
                       description: "Agent defines configurations for the Agent component of Argo CD Agent."
                       properties:
+                        allowedNamespaces:
+                          description: "AllowedNamespaces is a list of additional namespaces the agent is allowed to\nmanage applications in. Supports glob patterns."
+                          items:
+                            type: "string"
+                          type: "array"
                         client:
                           description: "Client defines the client options for the Agent component."
                           properties:
@@ -1467,6 +1475,16 @@ spec:
                         creds:
                           description: "Creds is the credential identifier for the agent authentication"
                           type: "string"
+                        destinationBasedMapping:
+                          description: "DestinationBasedMapping defines the options for destination based mapping for the Agent component."
+                          properties:
+                            createNamespace:
+                              description: "CreateNamespace enables automatic creation of target namespaces on the managed cluster\nwhen destination-based mapping is enabled."
+                              type: "boolean"
+                            enabled:
+                              description: "Enabled is the flag to enable destination based mapping for the Agent component."
+                              type: "boolean"
+                          type: "object"
                         enabled:
                           description: "Enabled is the flag to enable the Agent component during Argo CD installation. (optional, default `false`)"
                           type: "boolean"
@@ -1587,12 +1605,62 @@ spec:
                         logLevel:
                           description: "LogLevel refers to the log level used by the Agent component."
                           type: "string"
+                        metrics:
+                          description: "Metrics defines the metrics configuration for the Agent ServiceMonitor."
+                          properties:
+                            interval:
+                              description: "Interval specifies the Prometheus scrape interval for this component's ServiceMonitor.\nIf empty, Prometheus uses its default scrape interval."
+                              type: "string"
+                            scrapeTimeout:
+                              description: "ScrapeTimeout specifies the Prometheus scrape timeout for this component's ServiceMonitor.\nIf empty, Prometheus uses the global scrape timeout."
+                              type: "string"
+                          type: "object"
                         redis:
                           description: "Redis defines the Redis options for the Agent component."
                           properties:
                             serverAddress:
                               description: "ServerAddress is the address of the Redis server to be used by the PrincAgentipal component."
                               type: "string"
+                          type: "object"
+                        resources:
+                          description: "Resources defines the Compute Resources required by the container for the Argo CD Agent agent component."
+                          properties:
+                            claims:
+                              description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis field depends on the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
+                              items:
+                                description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
+                                properties:
+                                  name:
+                                    description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
+                                    type: "string"
+                                  request:
+                                    description: "Request is the name chosen for a request in the referenced claim.\nIf empty, everything from the claim is made available, otherwise\nonly the result of this request."
+                                    type: "string"
+                                required:
+                                  - "name"
+                                type: "object"
+                              type: "array"
+                              x-kubernetes-list-map-keys:
+                                - "name"
+                              x-kubernetes-list-type: "map"
+                            limits:
+                              additionalProperties:
+                                anyOf:
+                                  - type: "integer"
+                                  - type: "string"
+                                pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                x-kubernetes-int-or-string: true
+                              description: "Limits describes the maximum amount of compute resources allowed.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                              type: "object"
+                            requests:
+                              additionalProperties:
+                                anyOf:
+                                  - type: "integer"
+                                  - type: "string"
+                                pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                x-kubernetes-int-or-string: true
+                              description: "Requests describes the minimum amount of compute resources required.\nIf Requests is omitted for a container, it defaults to Limits if that is explicitly specified,\notherwise to an implementation-defined value. Requests cannot exceed Limits.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                              type: "object"
                           type: "object"
                         tls:
                           description: "TLS defines the TLS options for the Agent component."
@@ -1614,6 +1682,9 @@ spec:
                         auth:
                           description: "Auth is the authentication method for the Principal component."
                           type: "string"
+                        destinationBasedMapping:
+                          description: "DestinationBasedMapping is the flag to enable destination based mapping for the Principal component."
+                          type: "boolean"
                         enabled:
                           description: "Enabled is the flag to enable the Principal component during Argo CD installation. (optional, default `false`)"
                           type: "boolean"
@@ -1744,6 +1815,16 @@ spec:
                         logLevel:
                           description: "LogLevel refers to the log level used by the Principal component."
                           type: "string"
+                        metrics:
+                          description: "Metrics defines the metrics configuration for the Principal ServiceMonitor."
+                          properties:
+                            interval:
+                              description: "Interval specifies the Prometheus scrape interval for this component's ServiceMonitor.\nIf empty, Prometheus uses its default scrape interval."
+                              type: "string"
+                            scrapeTimeout:
+                              description: "ScrapeTimeout specifies the Prometheus scrape timeout for this component's ServiceMonitor.\nIf empty, Prometheus uses the global scrape timeout."
+                              type: "string"
+                          type: "object"
                         namespace:
                           description: "Namespace is the configuration for the Principal component namespace."
                           properties:
@@ -1783,6 +1864,46 @@ spec:
                             secretName:
                               description: "SecretName is the name of the secret containing the TLS certificate and key for the resource proxy."
                               type: "string"
+                          type: "object"
+                        resources:
+                          description: "Resources defines the Compute Resources required by the container for the Argo CD Agent principal component."
+                          properties:
+                            claims:
+                              description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis field depends on the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
+                              items:
+                                description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
+                                properties:
+                                  name:
+                                    description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
+                                    type: "string"
+                                  request:
+                                    description: "Request is the name chosen for a request in the referenced claim.\nIf empty, everything from the claim is made available, otherwise\nonly the result of this request."
+                                    type: "string"
+                                required:
+                                  - "name"
+                                type: "object"
+                              type: "array"
+                              x-kubernetes-list-map-keys:
+                                - "name"
+                              x-kubernetes-list-type: "map"
+                            limits:
+                              additionalProperties:
+                                anyOf:
+                                  - type: "integer"
+                                  - type: "string"
+                                pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                x-kubernetes-int-or-string: true
+                              description: "Limits describes the maximum amount of compute resources allowed.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                              type: "object"
+                            requests:
+                              additionalProperties:
+                                anyOf:
+                                  - type: "integer"
+                                  - type: "string"
+                                pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                x-kubernetes-int-or-string: true
+                              description: "Requests describes the minimum amount of compute resources required.\nIf Requests is omitted for a container, it defaults to Limits if that is explicitly specified,\notherwise to an implementation-defined value. Requests cannot exceed Limits.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+                              type: "object"
                           type: "object"
                         server:
                           description: "Server defines the server options for the Principal component."
@@ -1843,10 +1964,13 @@ spec:
                   required:
                     - "content"
                   type: "object"
+                clusterDomain:
+                  description: "ClusterDomain is the cluster domain suffix used for constructing service FQDNs. Defaults to \"cluster.local\".\nThe full FQDN will be: <service>.<namespace>.svc.<clusterDomain>\nThis is useful for clusters that use a different DNS suffix (e.g., \"CLUSTER_ID.cluster.local\", \"edge.local\")."
+                  type: "string"
                 cmdParams:
                   additionalProperties:
                     type: "string"
-                  description: "CmdParams specifies command-line parameters for the Argo CD components."
+                  description: "CmdParams specifies command-line parameters for the Argo CD components.\nThe only keys currently supported for this parameter are:\n- controller.resource.health.persist\n- applicationsetcontroller.enable.tokenref.strict.mode — when ApplicationSet-in-any-namespace is active, the operator defaults this to \"true\""
                   type: "object"
                 configManagementPlugins:
                   description: "Deprecated: ConfigManagementPlugins field is no longer supported. Argo CD now requires plugins to be defined as sidecar containers of repo server component. See '.spec.repo.sidecarContainers'. ConfigManagementPlugins was previously used to specify additional config management plugins."
@@ -2933,6 +3057,16 @@ spec:
                     logLevel:
                       description: "LogLevel refers to the log level used by the Application Controller component. Defaults to ArgoCDDefaultLogLevel if not configured. Valid options are debug, info, error, and warn."
                       type: "string"
+                    metrics:
+                      description: "Metrics defines the metrics configuration for the Application Controller ServiceMonitor."
+                      properties:
+                        interval:
+                          description: "Interval specifies the Prometheus scrape interval for this component's ServiceMonitor.\nIf empty, Prometheus uses its default scrape interval."
+                          type: "string"
+                        scrapeTimeout:
+                          description: "ScrapeTimeout specifies the Prometheus scrape timeout for this component's ServiceMonitor.\nIf empty, Prometheus uses the global scrape timeout."
+                          type: "string"
+                      type: "object"
                     parallelismLimit:
                       description: "ParallelismLimit defines the limit for parallel kubectl operations"
                       format: "int32"
@@ -2995,6 +3129,13 @@ spec:
                     sharding:
                       description: "Sharding contains the options for the Application Controller sharding configuration."
                       properties:
+                        algorithm:
+                          description: "DistributionAlgorithm determines what algorithm will be used for distribution of shards. Valid options are legacy, round-robin, and consistent-hashing"
+                          enum:
+                            - "legacy"
+                            - "round-robin"
+                            - "consistent-hashing"
+                          type: "string"
                         clustersPerShard:
                           description: "ClustersPerShard defines the maximum number of clusters managed by each argocd shard"
                           format: "int32"
@@ -5567,6 +5708,13 @@ spec:
                       - "name"
                     type: "object"
                   type: "array"
+                networkPolicy:
+                  description: "NetworkPolicy controls whether the operator should create NetworkPolicy resources for this Argo CD instance."
+                  properties:
+                    enabled:
+                      description: "Enabled defines whether NetworkPolicy resources are created for this Argo CD instance.\nWhen enabled, the operator will reconcile NetworkPolicies for Argo CD components.\nWhen disabled, the operator will remove any previously-created NetworkPolicies."
+                      type: "boolean"
+                  type: "object"
                 nodePlacement:
                   description: "NodePlacement defines NodeSelectors and Taints for Argo CD workloads"
                   properties:
@@ -5716,15 +5864,28 @@ spec:
                     image:
                       description: "Image is the Argo CD Notifications image (optional)"
                       type: "string"
-                    logLevel:
-                      description: "LogLevel describes the log level that should be used by the argocd-notifications. Defaults to ArgoCDDefaultLogLevel if not set.  Valid options are debug,info, error, and warn."
-                      type: "string"
-                    logformat:
+                    logFormat:
                       description: "LogFormat refers to the log format used by the argocd-notifications. Defaults to ArgoCDDefaultLogFormat if not configured. Valid options are text or json."
                       enum:
                         - "text"
                         - "json"
                       type: "string"
+                    logLevel:
+                      description: "LogLevel describes the log level that should be used by the argocd-notifications. Defaults to ArgoCDDefaultLogLevel if not set.  Valid options are debug,info, error, and warn."
+                      type: "string"
+                    logformat:
+                      description: "Deprecated: use LogFormat instead."
+                      type: "string"
+                    metrics:
+                      description: "Metrics defines the metrics configuration for the Notifications ServiceMonitor."
+                      properties:
+                        interval:
+                          description: "Interval specifies the Prometheus scrape interval for this component's ServiceMonitor.\nIf empty, Prometheus uses its default scrape interval."
+                          type: "string"
+                        scrapeTimeout:
+                          description: "ScrapeTimeout specifies the Prometheus scrape timeout for this component's ServiceMonitor.\nIf empty, Prometheus uses the global scrape timeout."
+                          type: "string"
+                      type: "object"
                     replicas:
                       description: "Replicas defines the number of replicas to run for notifications-controller"
                       format: "int32"
@@ -5787,13 +5948,13 @@ spec:
                   description: "Prometheus defines the Prometheus server options for ArgoCD."
                   properties:
                     enabled:
-                      description: "Enabled will toggle Prometheus support globally for ArgoCD."
+                      description: "Enabled will toggle Prometheus support globally for ArgoCD.\nWhen set to true, ServiceMonitors and PrometheusRules will be created for Argo CD metrics.\nThe Prometheus CR, Route, and Ingress are deprecated and will no longer be created."
                       type: "boolean"
                     host:
-                      description: "Host is the hostname to use for Ingress/Route resources."
+                      description: "Host is the hostname to use for Ingress/Route resources.\nDeprecated: This field is no longer used and will be ignored."
                       type: "string"
                     ingress:
-                      description: "Ingress defines the desired state for an Ingress for the Prometheus component."
+                      description: "Ingress defines the desired state for an Ingress for the Prometheus component.\nDeprecated: This field is no longer used and will be ignored."
                       properties:
                         annotations:
                           additionalProperties:
@@ -5829,7 +5990,7 @@ spec:
                         - "enabled"
                       type: "object"
                     route:
-                      description: "Route defines the desired state for an OpenShift Route for the Prometheus component."
+                      description: "Route defines the desired state for an OpenShift Route for the Prometheus component.\nDeprecated: This field is no longer used and will be ignored."
                       properties:
                         annotations:
                           additionalProperties:
@@ -5898,7 +6059,7 @@ spec:
                         - "enabled"
                       type: "object"
                     size:
-                      description: "Size is the replica count for the Prometheus StatefulSet."
+                      description: "Size is the replica count for the Prometheus StatefulSet.\nDeprecated: This field is no longer used and will be ignored."
                       format: "int32"
                       type: "integer"
                   required:
@@ -7070,6 +7231,16 @@ spec:
                     logLevel:
                       description: "LogLevel describes the log level that should be used by the Repo Server. Defaults to ArgoCDDefaultLogLevel if not set.  Valid options are debug, info, error, and warn."
                       type: "string"
+                    metrics:
+                      description: "Metrics defines the metrics configuration for the Repo Server ServiceMonitor."
+                      properties:
+                        interval:
+                          description: "Interval specifies the Prometheus scrape interval for this component's ServiceMonitor.\nIf empty, Prometheus uses its default scrape interval."
+                          type: "string"
+                        scrapeTimeout:
+                          description: "ScrapeTimeout specifies the Prometheus scrape timeout for this component's ServiceMonitor.\nIf empty, Prometheus uses the global scrape timeout."
+                          type: "string"
+                      type: "object"
                     mountsatoken:
                       description: "MountSAToken describes whether you would like to have the Repo server mount the service account token"
                       type: "boolean"
@@ -8067,6 +8238,139 @@ spec:
                           - "name"
                         type: "object"
                       type: "array"
+                    systemCATrust:
+                      description: "Custom certificates to inject into the repo server container and its plugins to trust source hosting sites"
+                      properties:
+                        clusterTrustBundles:
+                          description: "ClusterTrustBundles is a list of projected ClusterTrustBundle volume definitions from where to take the trust certs."
+                          items:
+                            description: "ClusterTrustBundleProjection describes how to select a set of\nClusterTrustBundle objects and project their contents into the pod\nfilesystem."
+                            properties:
+                              labelSelector:
+                                description: "Select all ClusterTrustBundles that match this label selector.  Only has\neffect if signerName is set.  Mutually-exclusive with name.  If unset,\ninterpreted as \"match nothing\".  If set but empty, interpreted as \"match\neverything\"."
+                                properties:
+                                  matchExpressions:
+                                    description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
+                                    items:
+                                      description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
+                                      properties:
+                                        key:
+                                          description: "key is the label key that the selector applies to."
+                                          type: "string"
+                                        operator:
+                                          description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
+                                          type: "string"
+                                        values:
+                                          description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
+                                          items:
+                                            type: "string"
+                                          type: "array"
+                                          x-kubernetes-list-type: "atomic"
+                                      required:
+                                        - "key"
+                                        - "operator"
+                                      type: "object"
+                                    type: "array"
+                                    x-kubernetes-list-type: "atomic"
+                                  matchLabels:
+                                    additionalProperties:
+                                      type: "string"
+                                    description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                    type: "object"
+                                type: "object"
+                                x-kubernetes-map-type: "atomic"
+                              name:
+                                description: "Select a single ClusterTrustBundle by object name.  Mutually-exclusive\nwith signerName and labelSelector."
+                                type: "string"
+                              optional:
+                                description: "If true, don't block pod startup if the referenced ClusterTrustBundle(s)\naren't available.  If using name, then the named ClusterTrustBundle is\nallowed not to exist.  If using signerName, then the combination of\nsignerName and labelSelector is allowed to match zero\nClusterTrustBundles."
+                                type: "boolean"
+                              path:
+                                description: "Relative path from the volume root to write the bundle."
+                                type: "string"
+                              signerName:
+                                description: "Select all ClusterTrustBundles that match this signer name.\nMutually-exclusive with name.  The contents of all selected\nClusterTrustBundles will be unified and deduplicated."
+                                type: "string"
+                            required:
+                              - "path"
+                            type: "object"
+                          type: "array"
+                        configMaps:
+                          description: "ConfigMaps is a list of projected ConfigMap volume definitions from where to take the trust certs."
+                          items:
+                            description: "Adapts a ConfigMap into a projected volume.\n\nThe contents of the target ConfigMap's Data field will be presented in a\nprojected volume as files using the keys in the Data field as the file names,\nunless the items element is populated with specific mappings of keys to paths.\nNote that this is identical to a configmap volume source without the default\nmode."
+                            properties:
+                              items:
+                                description: "items if unspecified, each key-value pair in the Data field of the referenced\nConfigMap will be projected into the volume as a file whose name is the\nkey and content is the value. If specified, the listed keys will be\nprojected into the specified paths, and unlisted keys will not be\npresent. If a key is specified which is not present in the ConfigMap,\nthe volume setup will error unless it is marked optional. Paths must be\nrelative and may not contain the '..' path or start with '..'."
+                                items:
+                                  description: "Maps a string key to a path within a volume."
+                                  properties:
+                                    key:
+                                      description: "key is the key to project."
+                                      type: "string"
+                                    mode:
+                                      description: "mode is Optional: mode bits used to set permissions on this file.\nMust be an octal value between 0000 and 0777 or a decimal value between 0 and 511.\nYAML accepts both octal and decimal values, JSON requires decimal values for mode bits.\nIf not specified, the volume defaultMode will be used.\nThis might be in conflict with other options that affect the file\nmode, like fsGroup, and the result can be other mode bits set."
+                                      format: "int32"
+                                      type: "integer"
+                                    path:
+                                      description: "path is the relative path of the file to map the key to.\nMay not be an absolute path.\nMay not contain the path element '..'.\nMay not start with the string '..'."
+                                      type: "string"
+                                  required:
+                                    - "key"
+                                    - "path"
+                                  type: "object"
+                                type: "array"
+                                x-kubernetes-list-type: "atomic"
+                              name:
+                                default: ""
+                                description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                type: "string"
+                              optional:
+                                description: "optional specify whether the ConfigMap or its keys must be defined"
+                                type: "boolean"
+                            type: "object"
+                            x-kubernetes-map-type: "atomic"
+                          type: "array"
+                        dropImageCertificates:
+                          description: "DropImageCertificates will remove all certs that are present in the image, leaving only those explicitly configured here."
+                          type: "boolean"
+                        secrets:
+                          description: "Secrets is a list of projected Secret volume definitions from where to take the trust certs."
+                          items:
+                            description: "Adapts a secret into a projected volume.\n\nThe contents of the target Secret's Data field will be presented in a\nprojected volume as files using the keys in the Data field as the file names.\nNote that this is identical to a secret volume source without the default\nmode."
+                            properties:
+                              items:
+                                description: "items if unspecified, each key-value pair in the Data field of the referenced\nSecret will be projected into the volume as a file whose name is the\nkey and content is the value. If specified, the listed keys will be\nprojected into the specified paths, and unlisted keys will not be\npresent. If a key is specified which is not present in the Secret,\nthe volume setup will error unless it is marked optional. Paths must be\nrelative and may not contain the '..' path or start with '..'."
+                                items:
+                                  description: "Maps a string key to a path within a volume."
+                                  properties:
+                                    key:
+                                      description: "key is the key to project."
+                                      type: "string"
+                                    mode:
+                                      description: "mode is Optional: mode bits used to set permissions on this file.\nMust be an octal value between 0000 and 0777 or a decimal value between 0 and 511.\nYAML accepts both octal and decimal values, JSON requires decimal values for mode bits.\nIf not specified, the volume defaultMode will be used.\nThis might be in conflict with other options that affect the file\nmode, like fsGroup, and the result can be other mode bits set."
+                                      format: "int32"
+                                      type: "integer"
+                                    path:
+                                      description: "path is the relative path of the file to map the key to.\nMay not be an absolute path.\nMay not contain the path element '..'.\nMay not start with the string '..'."
+                                      type: "string"
+                                  required:
+                                    - "key"
+                                    - "path"
+                                  type: "object"
+                                type: "array"
+                                x-kubernetes-list-type: "atomic"
+                              name:
+                                default: ""
+                                description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                type: "string"
+                              optional:
+                                description: "optional field specify whether the Secret or its key must be defined"
+                                type: "boolean"
+                            type: "object"
+                            x-kubernetes-map-type: "atomic"
+                          type: "array"
+                      type: "object"
                     verifytls:
                       description: "VerifyTLS defines whether repo server API should be accessed using strict TLS validation"
                       type: "boolean"
@@ -10459,6 +10763,16 @@ spec:
                     logLevel:
                       description: "LogLevel refers to the log level to be used by the ArgoCD Server component. Defaults to ArgoCDDefaultLogLevel if not set.  Valid options are debug, info, error, and warn."
                       type: "string"
+                    metrics:
+                      description: "Metrics defines the metrics configuration for the Server ServiceMonitor."
+                      properties:
+                        interval:
+                          description: "Interval specifies the Prometheus scrape interval for this component's ServiceMonitor.\nIf empty, Prometheus uses its default scrape interval."
+                          type: "string"
+                        scrapeTimeout:
+                          description: "ScrapeTimeout specifies the Prometheus scrape timeout for this component's ServiceMonitor.\nIf empty, Prometheus uses the global scrape timeout."
+                          type: "string"
+                      type: "object"
                     replicas:
                       description: "Replicas defines the number of replicas for argocd-server. Default is nil. Value should be greater than or equal to 0. Value will be ignored if Autoscaler is enabled."
                       format: "int32"
@@ -13976,7 +14290,135 @@ spec:
                 version:
                   description: "Version is the tag to use with the ArgoCD container image for all ArgoCD components."
                   type: "string"
+                webTerminalEnabled:
+                  description: "WebTerminalEnabled allows you to get a shell inside a running pod just like you would with kubectl exec"
+                  type: "boolean"
+                webhookSecrets:
+                  description: "WebhookSecrets references Kubernetes Secrets that supply webhook credentials per provider.\nThe operator syncs values into argocd-secret under the keys Argo CD expects."
+                  properties:
+                    azureDevOps:
+                      description: "AzureDevOps: Secret key references for the Azure DevOps webhook username and password (or PAT)."
+                      properties:
+                        passwordSecretRef:
+                          description: "PasswordSecretRef points to the key holding the password or PAT."
+                          properties:
+                            key:
+                              description: "Key in the Secret whose value should be used."
+                              type: "string"
+                            name:
+                              description: "Name of the Secret."
+                              type: "string"
+                          required:
+                            - "key"
+                            - "name"
+                          type: "object"
+                        usernameSecretRef:
+                          description: "UsernameSecretRef points to the key holding the username."
+                          properties:
+                            key:
+                              description: "Key in the Secret whose value should be used."
+                              type: "string"
+                            name:
+                              description: "Name of the Secret."
+                              type: "string"
+                          required:
+                            - "key"
+                            - "name"
+                          type: "object"
+                      type: "object"
+                      x-kubernetes-validations:
+                        - message: "usernameSecretRef and passwordSecretRef must be set together"
+                          rule: "(has(self.usernameSecretRef) && has(self.passwordSecretRef)) || (!has(self.usernameSecretRef) && !has(self.passwordSecretRef))"
+                    bitbucket:
+                      description: "Bitbucket: Secret key reference for the Bitbucket Cloud webhook UUID."
+                      properties:
+                        webhookUUIDSecretRef:
+                          description: "WebhookUUIDSecretRef points to the key holding the Bitbucket Cloud webhook UUID."
+                          properties:
+                            key:
+                              description: "Key in the Secret whose value should be used."
+                              type: "string"
+                            name:
+                              description: "Name of the Secret."
+                              type: "string"
+                          required:
+                            - "key"
+                            - "name"
+                          type: "object"
+                      type: "object"
+                    bitbucketServer:
+                      description: "BitbucketServer: Secret key reference for the Bitbucket Server webhook secret."
+                      properties:
+                        webhookSecretRef:
+                          description: "WebhookSecretRef points to the key holding the Bitbucket Server webhook shared secret."
+                          properties:
+                            key:
+                              description: "Key in the Secret whose value should be used."
+                              type: "string"
+                            name:
+                              description: "Name of the Secret."
+                              type: "string"
+                          required:
+                            - "key"
+                            - "name"
+                          type: "object"
+                      type: "object"
+                    github:
+                      description: "GitHub: Secret key reference for the GitHub webhook shared secret."
+                      properties:
+                        webhookSecretRef:
+                          description: "WebhookSecretRef points to the key holding the GitHub webhook shared secret."
+                          properties:
+                            key:
+                              description: "Key in the Secret whose value should be used."
+                              type: "string"
+                            name:
+                              description: "Name of the Secret."
+                              type: "string"
+                          required:
+                            - "key"
+                            - "name"
+                          type: "object"
+                      type: "object"
+                    gitlab:
+                      description: "GitLab: Secret key reference for the GitLab webhook shared secret."
+                      properties:
+                        webhookSecretRef:
+                          description: "WebhookSecretRef points to the key holding the GitLab webhook shared secret."
+                          properties:
+                            key:
+                              description: "Key in the Secret whose value should be used."
+                              type: "string"
+                            name:
+                              description: "Name of the Secret."
+                              type: "string"
+                          required:
+                            - "key"
+                            - "name"
+                          type: "object"
+                      type: "object"
+                    gogs:
+                      description: "Gogs: Secret key reference for the Gogs webhook shared secret."
+                      properties:
+                        webhookSecretRef:
+                          description: "WebhookSecretRef points to the key holding the Gogs webhook shared secret."
+                          properties:
+                            key:
+                              description: "Key in the Secret whose value should be used."
+                              type: "string"
+                            name:
+                              description: "Name of the Secret."
+                              type: "string"
+                          required:
+                            - "key"
+                            - "name"
+                          type: "object"
+                      type: "object"
+                  type: "object"
               type: "object"
+              x-kubernetes-validations:
+                - message: "spec.sso and spec.oidcConfig cannot both be set"
+                  rule: "!(has(self.sso) && has(self.oidcConfig))"
             status:
               description: "ArgoCDStatus defines the observed state of ArgoCD"
               properties:

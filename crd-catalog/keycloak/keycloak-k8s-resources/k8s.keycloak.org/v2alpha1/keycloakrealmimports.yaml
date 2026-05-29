@@ -10,7 +10,9 @@ spec:
     singular: "keycloakrealmimport"
   scope: "Namespaced"
   versions:
-    - name: "v2alpha1"
+    - deprecated: true
+      deprecationWarning: "Please migrate to v2beta1"
+      name: "v2alpha1"
       schema:
         openAPIV3Schema:
           properties:
@@ -1843,6 +1845,23 @@ spec:
                             type: "object"
                           username:
                             type: "string"
+                          verifiableCredentials:
+                            items:
+                              properties:
+                                createdDate:
+                                  type: "integer"
+                                credentialScopeName:
+                                  type: "string"
+                                revision:
+                                  type: "string"
+                                userAttributes:
+                                  additionalProperties:
+                                    items:
+                                      type: "string"
+                                    type: "array"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
                         type: "object"
                       type: "array"
                     firstBrokerLoginFlow:
@@ -2333,6 +2352,8 @@ spec:
                     maxDeltaTimeSeconds:
                       type: "integer"
                     maxFailureWaitSeconds:
+                      type: "integer"
+                    maxSecondaryAuthFailures:
                       type: "integer"
                     maxTemporaryLockouts:
                       type: "integer"
@@ -3395,6 +3416,23 @@ spec:
                                   type: "object"
                                 username:
                                   type: "string"
+                                verifiableCredentials:
+                                  items:
+                                    properties:
+                                      createdDate:
+                                        type: "integer"
+                                      credentialScopeName:
+                                        type: "string"
+                                      revision:
+                                        type: "string"
+                                      userAttributes:
+                                        additionalProperties:
+                                          items:
+                                            type: "string"
+                                          type: "array"
+                                        type: "object"
+                                    type: "object"
+                                  type: "array"
                               type: "object"
                             type: "array"
                           name:
@@ -3638,6 +3676,8 @@ spec:
                             type: "object"
                           type: "array"
                       type: "object"
+                    scimApiEnabled:
+                      type: "boolean"
                     scopeMappings:
                       items:
                         properties:
@@ -3927,6 +3967,23 @@ spec:
                             type: "object"
                           username:
                             type: "string"
+                          verifiableCredentials:
+                            items:
+                              properties:
+                                createdDate:
+                                  type: "integer"
+                                credentialScopeName:
+                                  type: "string"
+                                revision:
+                                  type: "string"
+                                userAttributes:
+                                  additionalProperties:
+                                    items:
+                                      type: "string"
+                                    type: "array"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
                         type: "object"
                       type: "array"
                     verifiableCredentialsEnabled:
@@ -3967,6 +4024,8 @@ spec:
                       items:
                         type: "string"
                       type: "array"
+                    webAuthnPolicyPasswordlessMediation:
+                      type: "string"
                     webAuthnPolicyPasswordlessPasskeysEnabled:
                       type: "boolean"
                     webAuthnPolicyPasswordlessRequireResidentKey:
@@ -4045,6 +4104,6 @@ spec:
               type: "object"
           type: "object"
       served: true
-      storage: true
+      storage: false
       subresources:
         status: {}

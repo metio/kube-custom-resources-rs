@@ -72,6 +72,9 @@ spec:
                 sshPort:
                   format: "int32"
                   type: "integer"
+                tektonDisabled:
+                  description: "TektonDisabled disables creation of Tekton EventListener and associated\nIngress/Route resources for this GitServer.\nUse this when the git provider's native CI (e.g. GitLab CI, GitHub Actions)\nis used instead of Tekton, or when webhook endpoints are managed externally."
+                  type: "boolean"
                 webhookUrl:
                   description: "WebhookUrl is a URL for webhook that will be created in the git provider.\nIf not set, a new EventListener and Ingress will be created and used for webhooks."
                   example: "https://webhook-url.com"

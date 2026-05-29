@@ -4,7 +4,14 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 # Available Custom Resources
 
 ## operations.kubeedge.io/v1alpha1
+- `ImagePrePullJob`
+- `NodeUpgradeJob`
+## operations.kubeedge.io/v1alpha2
+- `ConfigUpdateJob`
+- `ImagePrePullJob`
 - `NodeUpgradeJob`
 */
 #[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;
+#[cfg(feature = "v1alpha2")]
+pub mod v1alpha2;

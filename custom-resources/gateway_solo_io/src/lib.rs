@@ -6,8 +6,11 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## gateway.solo.io/v1
 - `Gateway`
 - `MatchableHttpGateway`
+- `HttpListenerOption`
+- `ListenerOption`
 - `RouteOption`
 - `RouteTable`
+- `MatchableTcpGateway`
 - `VirtualHostOption`
 - `VirtualService`
 */

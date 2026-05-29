@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.20.0"
+    controller-gen.kubebuilder.io/version: "v0.21.0"
   name: "elasticsearches.elasticsearch.k8s.elastic.co"
 spec:
   group: "elasticsearch.k8s.elastic.co"
@@ -256,7 +256,7 @@ spec:
                         pattern: "[a-zA-Z0-9-]+"
                         type: "string"
                       podTemplate:
-                        description: "PodTemplate provides customisation options (labels, annotations, affinity rules, resource requests, and so on) for the Pods belonging to this NodeSet."
+                        description: "PodTemplate provides customization options (labels, annotations, affinity rules, resource requests, and so on) for the Pods belonging to this NodeSet."
                         type: "object"
                       volumeClaimTemplates:
                         description: "VolumeClaimTemplates is a list of persistent volume claims to be used by each Pod in this NodeSet.\nEvery claim in this list must have a matching volumeMount in one of the containers defined in the PodTemplate.\nItems defined here take precedence over any default claims added by the operator with the same name."

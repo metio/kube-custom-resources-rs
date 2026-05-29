@@ -37,6 +37,10 @@ spec:
                   default: false
                   description: "When true, enables atomic batch publishing."
                   type: "boolean"
+                allowBatched:
+                  default: false
+                  description: "When true, enables fast-ingest batch publishing (nats-server 2.14+)."
+                  type: "boolean"
                 allowDirect:
                   default: false
                   description: "When true, allow higher performance, direct access to get individual messages."
@@ -146,6 +150,18 @@ spec:
                 mirror:
                   description: "A stream mirror."
                   properties:
+                    consumer:
+                      description: "Reference a durable consumer when sourcing/mirroring (nats-server 2.14+)."
+                      properties:
+                        deliverSubject:
+                          description: "Deliver subject for the durable push consumer."
+                          type: "string"
+                        name:
+                          description: "Durable consumer name on the source stream."
+                          type: "string"
+                      required:
+                        - "name"
+                      type: "object"
                     externalApiPrefix:
                       type: "string"
                     externalDeliverPrefix:
@@ -249,6 +265,18 @@ spec:
                   description: "A stream's sources."
                   items:
                     properties:
+                      consumer:
+                        description: "Reference a durable consumer when sourcing/mirroring (nats-server 2.14+)."
+                        properties:
+                          deliverSubject:
+                            description: "Deliver subject for the durable push consumer."
+                            type: "string"
+                          name:
+                            description: "Durable consumer name on the source stream."
+                            type: "string"
+                        required:
+                          - "name"
+                        type: "object"
                       externalApiPrefix:
                         type: "string"
                       externalDeliverPrefix:

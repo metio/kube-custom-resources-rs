@@ -13,3 +13,5 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 
 ### about.k8s.io/v1alpha1
 - `ClusterProperty`
+### about.k8s.io/v1beta1
+- `ClusterProperty`

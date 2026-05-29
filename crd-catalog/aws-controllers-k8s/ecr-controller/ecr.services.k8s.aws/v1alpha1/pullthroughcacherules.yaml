@@ -30,7 +30,7 @@ spec:
               description: "PullThroughCacheRuleSpec defines the desired state of PullThroughCacheRule.\n\nThe details of a pull through cache rule."
               properties:
                 credentialARN:
-                  description: "The Amazon Resource Name (ARN) of the Amazon Web Services Secrets Manager\nsecret that identifies the credentials to authenticate to the upstream registry.\n\nRegex Pattern: `^arn:aws:secretsmanager:[a-zA-Z0-9-:]+:secret:ecr\\-pullthroughcache\\/[a-zA-Z0-9\\/_+=.@-]+$`"
+                  description: "The Amazon Resource Name (ARN) of the Amazon Web Services Secrets Manager\nsecret that identifies the credentials to authenticate to the upstream registry.\n\nRegex Pattern: `^arn:aws(-\\w+)*:secretsmanager:[a-zA-Z0-9-:]+:secret:ecr\\-pullthroughcache\\/[a-zA-Z0-9\\/_+=.@-]+$`"
                   type: "string"
                 credentialRef:
                   description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
@@ -104,6 +104,9 @@ spec:
                       type: "string"
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."
+                      type: "string"
+                    partition:
+                      description: "Partition is the AWS partition in which the resource exists or will exist"
                       type: "string"
                     region:
                       description: "Region is the AWS region in which the resource exists or will exist."

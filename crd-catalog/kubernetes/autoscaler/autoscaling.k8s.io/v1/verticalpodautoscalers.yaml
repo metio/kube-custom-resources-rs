@@ -32,6 +32,14 @@ spec:
         - jsonPath: ".metadata.creationTimestamp"
           name: "Age"
           type: "date"
+        - jsonPath: ".spec.updatePolicy.minReplicas"
+          name: "MinReplicas"
+          priority: 1
+          type: "integer"
+        - jsonPath: ".spec.updatePolicy.evictAfterOOMSeconds"
+          name: "OOMSeconds"
+          priority: 1
+          type: "integer"
       name: "v1"
       schema:
         openAPIV3Schema:
@@ -92,6 +100,16 @@ spec:
                               x-kubernetes-int-or-string: true
                             description: "Specifies the maximum amount of resources that will be recommended\nfor the container. The default is no maximum."
                             type: "object"
+                          memoryAggregationIntervalCount:
+                            description: "memoryAggregationIntervalCount is the number of consecutive\nmemoryAggregationIntervals which make up the memory aggregation window.\nThe total window length is:\nMemoryAggregationIntervalSeconds * MemoryAggregationIntervalCount."
+                            format: "int64"
+                            minimum: 1.0
+                            type: "integer"
+                          memoryAggregationIntervalSeconds:
+                            description: "memoryAggregationIntervalSeconds is the length of a single interval\n(in seconds) for which the peak memory usage is computed.\nMemory usage peaks are aggregated in multiples of this interval.\nIn other words, there is one memory usage sample per interval\n(the maximum usage over that interval)."
+                            format: "int32"
+                            minimum: 1.0
+                            type: "integer"
                           minAllowed:
                             additionalProperties:
                               anyOf:
@@ -121,8 +139,80 @@ spec:
                             description: "oomMinBumpUp is the minimum increase in memory when OOM is detected."
                             pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                             x-kubernetes-int-or-string: true
+                          startupBoost:
+                            description: "startupBoost specifies the startup boost policy for the container.\nThis overrides any pod-level startup boost policy.\nThe startup boost policy takes precedence over the rest of the fields in\nthis struct, except for ContainerName and ControlledValues."
+                            properties:
+                              cpu:
+                                description: "cpu specifies the CPU startup boost policy.\nIf this field is not set, no startup boost is applied."
+                                properties:
+                                  durationSeconds:
+                                    description: "durationSeconds indicates for how long to keep the pod boosted after it goes to Ready.\nDefaults to 0."
+                                    format: "int32"
+                                    type: "integer"
+                                  factor:
+                                    description: "factor specifies the factor to apply to the resource request.\nThis field is required when Type is \"Factor\"."
+                                    format: "int32"
+                                    type: "integer"
+                                  quantity:
+                                    anyOf:
+                                      - type: "integer"
+                                      - type: "string"
+                                    description: "quantity specifies the absolute resource quantity to be used as the\nresource request and limit during the boost phase.\nThis field is required when Type is \"Quantity\"."
+                                    pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                    x-kubernetes-int-or-string: true
+                                  type:
+                                    description: "type specifies the kind of boost to apply.\nSupported values are: \"Factor\", \"Quantity\".\nNo startupboost will be applied for unrecognized values."
+                                    enum:
+                                      - "Factor"
+                                      - "Quantity"
+                                    type: "string"
+                                required:
+                                  - "type"
+                                type: "object"
+                                x-kubernetes-validations:
+                                  - message: "factor is required when type is Factor and forbidden otherwise"
+                                    rule: "(self.type == 'Factor') == has(self.factor)"
+                                  - message: "quantity is required when type is Quantity and forbidden otherwise"
+                                    rule: "(self.type == 'Quantity') == has(self.quantity)"
+                            type: "object"
                         type: "object"
                       type: "array"
+                  type: "object"
+                startupBoost:
+                  description: "startupBoost specifies the startup boost policy for the pod."
+                  properties:
+                    cpu:
+                      description: "cpu specifies the CPU startup boost policy.\nIf this field is not set, no startup boost is applied."
+                      properties:
+                        durationSeconds:
+                          description: "durationSeconds indicates for how long to keep the pod boosted after it goes to Ready.\nDefaults to 0."
+                          format: "int32"
+                          type: "integer"
+                        factor:
+                          description: "factor specifies the factor to apply to the resource request.\nThis field is required when Type is \"Factor\"."
+                          format: "int32"
+                          type: "integer"
+                        quantity:
+                          anyOf:
+                            - type: "integer"
+                            - type: "string"
+                          description: "quantity specifies the absolute resource quantity to be used as the\nresource request and limit during the boost phase.\nThis field is required when Type is \"Quantity\"."
+                          pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                          x-kubernetes-int-or-string: true
+                        type:
+                          description: "type specifies the kind of boost to apply.\nSupported values are: \"Factor\", \"Quantity\".\nNo startupboost will be applied for unrecognized values."
+                          enum:
+                            - "Factor"
+                            - "Quantity"
+                          type: "string"
+                      required:
+                        - "type"
+                      type: "object"
+                      x-kubernetes-validations:
+                        - message: "factor is required when type is Factor and forbidden otherwise"
+                          rule: "(self.type == 'Factor') == has(self.factor)"
+                        - message: "quantity is required when type is Quantity and forbidden otherwise"
+                          rule: "(self.type == 'Quantity') == has(self.quantity)"
                   type: "object"
                 targetRef:
                   description: "TargetRef points to the controller managing the set of pods for the\nautoscaler to control - e.g. Deployment, StatefulSet. VerticalPodAutoscaler\ncan be targeted at controller implementing scale subresource (the pod set is\nretrieved from the controller's ScaleStatus) or some well known controllers\n(e.g. for DaemonSet the pod set is read from the controller's spec).\nIf VerticalPodAutoscaler cannot use specified target it will report\nConfigUnsupported condition.\nNote that VerticalPodAutoscaler does not require full implementation\nof scale subresource - it will not use it to modify the replica count.\nThe only thing retrieved is a label selector matching pods grouped by\nthe target resource."
@@ -144,6 +234,11 @@ spec:
                 updatePolicy:
                   description: "Describes the rules on how changes are applied to the pods.\nIf not specified, all fields in the `PodUpdatePolicy` are set to their\ndefault values."
                   properties:
+                    evictAfterOOMSeconds:
+                      description: "evictAfterOOMSeconds specifies the time in seconds to wait after an OOM event before\nconsidering the pod for eviction. Pods that have OOMed in less than this time\nsince start will be evicted."
+                      format: "int32"
+                      minimum: 1.0
+                      type: "integer"
                     evictionRequirements:
                       description: "EvictionRequirements is a list of EvictionRequirements that need to\nevaluate to true in order for a Pod to be evicted. If more than one\nEvictionRequirement is specified, all of them need to be fulfilled to allow eviction."
                       items:
@@ -177,6 +272,7 @@ spec:
                         - "Initial"
                         - "Recreate"
                         - "InPlaceOrRecreate"
+                        - "InPlace"
                         - "Auto"
                       type: "string"
                   type: "object"
@@ -198,6 +294,11 @@ spec:
                       message:
                         description: "message is a human-readable explanation containing details about\nthe transition"
                         type: "string"
+                      observedGeneration:
+                        description: "observedGeneration represents the .metadata.generation that the condition was set based upon.\nFor instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date\nwith respect to the current state of the instance."
+                        format: "int64"
+                        minimum: 0.0
+                        type: "integer"
                       reason:
                         description: "reason is the reason for the condition's last transition."
                         type: "string"
@@ -212,6 +313,11 @@ spec:
                       - "type"
                     type: "object"
                   type: "array"
+                observedGeneration:
+                  description: "observedGeneration is the most recent generation observed by this autoscaler."
+                  format: "int64"
+                  minimum: 0.0
+                  type: "integer"
                 recommendation:
                   description: "The most recently computed amount of resources recommended by the\nautoscaler for the controlled pods."
                   properties:

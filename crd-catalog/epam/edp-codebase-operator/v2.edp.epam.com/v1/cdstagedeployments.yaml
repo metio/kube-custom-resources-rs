@@ -59,6 +59,8 @@ spec:
                   properties:
                     codebase:
                       type: "string"
+                    digest:
+                      type: "string"
                     tag:
                       type: "string"
                   required:
@@ -70,6 +72,8 @@ spec:
                   items:
                     properties:
                       codebase:
+                        type: "string"
+                      digest:
                         type: "string"
                       tag:
                         type: "string"

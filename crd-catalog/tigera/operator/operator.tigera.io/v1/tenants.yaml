@@ -49,11 +49,51 @@ spec:
                                   items:
                                     description: "DashboardsJobContainer is the Dashboards job container."
                                     properties:
+                                      livenessProbe:
+                                        description: "LivenessProbe allows customization of the liveness probe timing parameters.\nThe probe handler is set by the operator and cannot be overridden."
+                                        properties:
+                                          failureThreshold:
+                                            description: "FailureThreshold is the minimum consecutive failures for the probe\nto be considered failed after having succeeded."
+                                            format: "int32"
+                                            type: "integer"
+                                          initialDelaySeconds:
+                                            description: "InitialDelaySeconds is the number of seconds after the container\nstarts before the probe is initiated."
+                                            format: "int32"
+                                            type: "integer"
+                                          periodSeconds:
+                                            description: "PeriodSeconds is how often (in seconds) to perform the probe."
+                                            format: "int32"
+                                            type: "integer"
+                                          timeoutSeconds:
+                                            description: "TimeoutSeconds is the number of seconds after which the probe times out."
+                                            format: "int32"
+                                            type: "integer"
+                                        type: "object"
                                       name:
                                         description: "Name is an enum which identifies the Dashboard Job container by name.\nSupported values are: dashboards-installer"
                                         enum:
                                           - "dashboards-installer"
                                         type: "string"
+                                      readinessProbe:
+                                        description: "ReadinessProbe allows customization of the readiness probe timing parameters.\nThe probe handler is set by the operator and cannot be overridden."
+                                        properties:
+                                          failureThreshold:
+                                            description: "FailureThreshold is the minimum consecutive failures for the probe\nto be considered failed after having succeeded."
+                                            format: "int32"
+                                            type: "integer"
+                                          initialDelaySeconds:
+                                            description: "InitialDelaySeconds is the number of seconds after the container\nstarts before the probe is initiated."
+                                            format: "int32"
+                                            type: "integer"
+                                          periodSeconds:
+                                            description: "PeriodSeconds is how often (in seconds) to perform the probe."
+                                            format: "int32"
+                                            type: "integer"
+                                          timeoutSeconds:
+                                            description: "TimeoutSeconds is the number of seconds after which the probe times out."
+                                            format: "int32"
+                                            type: "integer"
+                                        type: "object"
                                       resources:
                                         description: "Resources allows customization of limits and requests for compute resources such as cpu and memory.\nIf specified, this overrides the named Dashboard Job container's resources.\nIf omitted, the Dashboard Job will use its default value for this container's resources."
                                         properties:
@@ -720,12 +760,52 @@ spec:
                                   items:
                                     description: "CalicoKubeControllersDeploymentContainer is a calico-kube-controllers Deployment container."
                                     properties:
+                                      livenessProbe:
+                                        description: "LivenessProbe allows customization of the liveness probe timing parameters.\nThe probe handler is set by the operator and cannot be overridden."
+                                        properties:
+                                          failureThreshold:
+                                            description: "FailureThreshold is the minimum consecutive failures for the probe\nto be considered failed after having succeeded."
+                                            format: "int32"
+                                            type: "integer"
+                                          initialDelaySeconds:
+                                            description: "InitialDelaySeconds is the number of seconds after the container\nstarts before the probe is initiated."
+                                            format: "int32"
+                                            type: "integer"
+                                          periodSeconds:
+                                            description: "PeriodSeconds is how often (in seconds) to perform the probe."
+                                            format: "int32"
+                                            type: "integer"
+                                          timeoutSeconds:
+                                            description: "TimeoutSeconds is the number of seconds after which the probe times out."
+                                            format: "int32"
+                                            type: "integer"
+                                        type: "object"
                                       name:
                                         description: "Name is an enum which identifies the calico-kube-controllers Deployment container by name.\nSupported values are: calico-kube-controllers, es-calico-kube-controllers"
                                         enum:
                                           - "calico-kube-controllers"
                                           - "es-calico-kube-controllers"
                                         type: "string"
+                                      readinessProbe:
+                                        description: "ReadinessProbe allows customization of the readiness probe timing parameters.\nThe probe handler is set by the operator and cannot be overridden."
+                                        properties:
+                                          failureThreshold:
+                                            description: "FailureThreshold is the minimum consecutive failures for the probe\nto be considered failed after having succeeded."
+                                            format: "int32"
+                                            type: "integer"
+                                          initialDelaySeconds:
+                                            description: "InitialDelaySeconds is the number of seconds after the container\nstarts before the probe is initiated."
+                                            format: "int32"
+                                            type: "integer"
+                                          periodSeconds:
+                                            description: "PeriodSeconds is how often (in seconds) to perform the probe."
+                                            format: "int32"
+                                            type: "integer"
+                                          timeoutSeconds:
+                                            description: "TimeoutSeconds is the number of seconds after which the probe times out."
+                                            format: "int32"
+                                            type: "integer"
+                                        type: "object"
                                       resources:
                                         description: "Resources allows customization of limits and requests for compute resources such as cpu and memory.\nIf specified, this overrides the named calico-kube-controllers Deployment container's resources.\nIf omitted, the calico-kube-controllers Deployment will use its default value for this container's resources.\nIf used in conjunction with the deprecated ComponentResources, then this value takes precedence."
                                         properties:
@@ -787,7 +867,7 @@ spec:
                                         description: "Key is the taint key that the toleration applies to. Empty means match all taint keys.\nIf the key is empty, operator must be Exists; this combination means to match all values and all keys."
                                         type: "string"
                                       operator:
-                                        description: "Operator represents a key's relationship to the value.\nValid operators are Exists and Equal. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category."
+                                        description: "Operator represents a key's relationship to the value.\nValid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category.\nLt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators)."
                                         type: "string"
                                       tolerationSeconds:
                                         description: "TolerationSeconds represents the period of time the toleration (which must be\nof effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,\nit is not set, which means tolerate the taint forever (do not evict). Zero and\nnegative values will be treated as 0 (evict immediately) by the system."
@@ -853,11 +933,51 @@ spec:
                                   items:
                                     description: "LinseedDeploymentContainer is a linseed Deployment container."
                                     properties:
+                                      livenessProbe:
+                                        description: "LivenessProbe allows customization of the liveness probe timing parameters.\nThe probe handler is set by the operator and cannot be overridden."
+                                        properties:
+                                          failureThreshold:
+                                            description: "FailureThreshold is the minimum consecutive failures for the probe\nto be considered failed after having succeeded."
+                                            format: "int32"
+                                            type: "integer"
+                                          initialDelaySeconds:
+                                            description: "InitialDelaySeconds is the number of seconds after the container\nstarts before the probe is initiated."
+                                            format: "int32"
+                                            type: "integer"
+                                          periodSeconds:
+                                            description: "PeriodSeconds is how often (in seconds) to perform the probe."
+                                            format: "int32"
+                                            type: "integer"
+                                          timeoutSeconds:
+                                            description: "TimeoutSeconds is the number of seconds after which the probe times out."
+                                            format: "int32"
+                                            type: "integer"
+                                        type: "object"
                                       name:
                                         description: "Name is an enum which identifies the linseed Deployment container by name.\nSupported values are: tigera-linseed"
                                         enum:
                                           - "tigera-linseed"
                                         type: "string"
+                                      readinessProbe:
+                                        description: "ReadinessProbe allows customization of the readiness probe timing parameters.\nThe probe handler is set by the operator and cannot be overridden."
+                                        properties:
+                                          failureThreshold:
+                                            description: "FailureThreshold is the minimum consecutive failures for the probe\nto be considered failed after having succeeded."
+                                            format: "int32"
+                                            type: "integer"
+                                          initialDelaySeconds:
+                                            description: "InitialDelaySeconds is the number of seconds after the container\nstarts before the probe is initiated."
+                                            format: "int32"
+                                            type: "integer"
+                                          periodSeconds:
+                                            description: "PeriodSeconds is how often (in seconds) to perform the probe."
+                                            format: "int32"
+                                            type: "integer"
+                                          timeoutSeconds:
+                                            description: "TimeoutSeconds is the number of seconds after which the probe times out."
+                                            format: "int32"
+                                            type: "integer"
+                                        type: "object"
                                       resources:
                                         description: "Resources allows customization of limits and requests for compute resources such as cpu and memory.\nIf specified, this overrides the named linseed Deployment container's resources.\nIf omitted, the linseed Deployment will use its default value for this container's resources."
                                         properties:

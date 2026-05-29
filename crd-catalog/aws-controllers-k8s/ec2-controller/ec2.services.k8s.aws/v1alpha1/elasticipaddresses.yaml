@@ -72,6 +72,9 @@ spec:
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."
                       type: "string"
+                    partition:
+                      description: "Partition is the AWS partition in which the resource exists or will exist"
+                      type: "string"
                     region:
                       description: "Region is the AWS region in which the resource exists or will exist."
                       type: "string"
@@ -83,7 +86,7 @@ spec:
                   description: "The ID that represents the allocation of the Elastic IP address."
                   type: "string"
                 carrierIP:
-                  description: "The carrier IP address. This option is only available for network interfaces\nthat reside in a subnet in a Wavelength Zone."
+                  description: "The carrier IP address. Available only for network interfaces that reside\nin a subnet in a Wavelength Zone."
                   type: "string"
                 conditions:
                   description: "All CRs managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
@@ -115,7 +118,7 @@ spec:
                   description: "The customer-owned IP address."
                   type: "string"
                 publicIP:
-                  description: "The Elastic IP address."
+                  description: "The Amazon-owned IP address. Not available when using an address pool that\nyou own."
                   type: "string"
               type: "object"
           type: "object"

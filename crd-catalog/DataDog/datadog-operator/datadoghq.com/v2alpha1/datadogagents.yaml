@@ -28,10 +28,14 @@ spec:
         - jsonPath: ".metadata.creationTimestamp"
           name: "age"
           type: "date"
+        - jsonPath: ".status.experiment.phase"
+          name: "experiment-phase"
+          priority: 1
+          type: "string"
       name: "v2alpha1"
       schema:
         openAPIV3Schema:
-          description: "DatadogAgent Deployment with the Datadog Operator."
+          description: "DatadogAgent defines Agent configuration, see reference https://github.com/DataDog/datadog-operator/blob/main/docs/configuration.v2alpha1.md"
           properties:
             apiVersion:
               description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
@@ -59,6 +63,16 @@ spec:
                             clusterAgentCommunicationEnabled:
                               description: "ClusterAgentCommunicationEnabled enables communication between Agent sidecars and the Cluster Agent.\nDefault : true"
                               type: "boolean"
+                            clusterAgentTlsVerification:
+                              description: "ClusterAgentTLSVerification configures TLS verification for Agent sidecar to Cluster Agent communication."
+                              properties:
+                                copyCaConfigMap:
+                                  description: "CopyCaConfigMap enables automatic creation of a ConfigMap containing the Cluster Agent's CA certificate\nin namespaces where sidecar injection occurs.\nDefault: false"
+                                  type: "boolean"
+                                enabled:
+                                  description: "Enabled enables TLS verification for agent sidecars communicating with the Cluster Agent.\nDefault: false"
+                                  type: "boolean"
+                              type: "object"
                             enabled:
                               description: "Enabled enables Sidecar injections.\nDefault: false"
                               type: "boolean"
@@ -101,7 +115,7 @@ spec:
                                       description: "EnvVar represents an environment variable present in a Container."
                                       properties:
                                         name:
-                                          description: "Name of the environment variable. Must be a C_IDENTIFIER."
+                                          description: "Name of the environment variable.\nMay consist of any printable ASCII characters except '='."
                                           type: "string"
                                         value:
                                           description: "Variable references $(VAR_NAME) are expanded\nusing the previously defined environment variables in the container and\nany service environment variables. If a variable cannot be resolved,\nthe reference in the input string will be unchanged. Double $$ are reduced\nto a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.\n\"$$(VAR_NAME)\" will produce the string literal \"$(VAR_NAME)\".\nEscaped references will never be expanded, regardless of whether the variable\nexists or not.\nDefaults to \"\"."
@@ -137,6 +151,28 @@ spec:
                                                   type: "string"
                                               required:
                                                 - "fieldPath"
+                                              type: "object"
+                                              x-kubernetes-map-type: "atomic"
+                                            fileKeyRef:
+                                              description: "FileKeyRef selects a key of the env file.\nRequires the EnvFiles feature gate to be enabled."
+                                              properties:
+                                                key:
+                                                  description: "The key within the env file. An invalid key will prevent the pod from starting.\nThe keys defined within a source may consist of any printable ASCII characters except '='.\nDuring Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters."
+                                                  type: "string"
+                                                optional:
+                                                  default: false
+                                                  description: "Specify whether the file or its key must be defined. If the file or key\ndoes not exist, then the env var is not published.\nIf optional is set to true and the specified key does not exist,\nthe environment variable will not be set in the Pod's containers.\n\nIf optional is set to false and the specified key does not exist,\nan error will be returned during Pod creation."
+                                                  type: "boolean"
+                                                path:
+                                                  description: "The path within the volume from which to select the file.\nMust be relative and may not contain the '..' path or start with '..'."
+                                                  type: "string"
+                                                volumeName:
+                                                  description: "The name of the volume mount containing the env file."
+                                                  type: "string"
+                                              required:
+                                                - "key"
+                                                - "path"
+                                                - "volumeName"
                                               type: "object"
                                               x-kubernetes-map-type: "atomic"
                                             resourceFieldRef:
@@ -188,7 +224,7 @@ spec:
                                     description: "ResourceRequirements specifies the resource requirements for the profile."
                                     properties:
                                       claims:
-                                        description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
+                                        description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis field depends on the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                                         items:
                                           description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                           properties:
@@ -442,6 +478,21 @@ spec:
                               description: "Enabled enables the Admission Controller mutation webhook.\nDefault: true"
                               type: "boolean"
                           type: "object"
+                        probe:
+                          description: "Probe holds the admission controller connectivity probe configuration."
+                          properties:
+                            enabled:
+                              description: "Enabled enables the admission controller connectivity probe.\nThe probe periodically sends dry-run ConfigMap creation requests to verify the\nwebhook is reachable from the API server. Requires Cluster Agent 7.78.0+.\nDefault: true"
+                              type: "boolean"
+                            gracePeriod:
+                              description: "GracePeriod is the number of seconds to wait at startup before the first probe.\nDefault: 60"
+                              format: "int32"
+                              type: "integer"
+                            interval:
+                              description: "Interval is the number of seconds between probe executions.\nDefault: 60"
+                              format: "int32"
+                              type: "integer"
+                          type: "object"
                         registry:
                           description: "Registry defines an image registry for the admission controller."
                           type: "string"
@@ -501,6 +552,14 @@ spec:
                                 type: "string"
                               type: "array"
                               x-kubernetes-list-type: "set"
+                            injectionMode:
+                              description: "InjectionMode is the injection mode to use for libraries injection.\nValid values are: \"auto\", \"init_container\", \"csi\" (experimental, requires Cluster Agent 7.76.0+ and Datadog CSI Driver 1.2.0+), \"image_volume\" (experimental, requires Cluster Agent 7.77.0+).\nEmpty by default so the Cluster Agent can apply its own defaults."
+                              enum:
+                                - "auto"
+                                - "init_container"
+                                - "csi"
+                                - "image_volume"
+                              type: "string"
                             injector:
                               description: "Injector configures the APM Injector."
                               properties:
@@ -531,7 +590,7 @@ spec:
                                       description: "EnvVar represents an environment variable present in a Container."
                                       properties:
                                         name:
-                                          description: "Name of the environment variable. Must be a C_IDENTIFIER."
+                                          description: "Name of the environment variable.\nMay consist of any printable ASCII characters except '='."
                                           type: "string"
                                         value:
                                           description: "Variable references $(VAR_NAME) are expanded\nusing the previously defined environment variables in the container and\nany service environment variables. If a variable cannot be resolved,\nthe reference in the input string will be unchanged. Double $$ are reduced\nto a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.\n\"$$(VAR_NAME)\" will produce the string literal \"$(VAR_NAME)\".\nEscaped references will never be expanded, regardless of whether the variable\nexists or not.\nDefaults to \"\"."
@@ -567,6 +626,28 @@ spec:
                                                   type: "string"
                                               required:
                                                 - "fieldPath"
+                                              type: "object"
+                                              x-kubernetes-map-type: "atomic"
+                                            fileKeyRef:
+                                              description: "FileKeyRef selects a key of the env file.\nRequires the EnvFiles feature gate to be enabled."
+                                              properties:
+                                                key:
+                                                  description: "The key within the env file. An invalid key will prevent the pod from starting.\nThe keys defined within a source may consist of any printable ASCII characters except '='.\nDuring Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters."
+                                                  type: "string"
+                                                optional:
+                                                  default: false
+                                                  description: "Specify whether the file or its key must be defined. If the file or key\ndoes not exist, then the env var is not published.\nIf optional is set to true and the specified key does not exist,\nthe environment variable will not be set in the Pod's containers.\n\nIf optional is set to false and the specified key does not exist,\nan error will be returned during Pod creation."
+                                                  type: "boolean"
+                                                path:
+                                                  description: "The path within the volume from which to select the file.\nMust be relative and may not contain the '..' path or start with '..'."
+                                                  type: "string"
+                                                volumeName:
+                                                  description: "The name of the volume mount containing the env file."
+                                                  type: "string"
+                                              required:
+                                                - "key"
+                                                - "path"
+                                                - "volumeName"
                                               type: "object"
                                               x-kubernetes-map-type: "atomic"
                                             resourceFieldRef:
@@ -809,15 +890,18 @@ spec:
                               type: "object"
                           type: "object"
                         enabled:
-                          description: "Enabled enables Cloud Security Posture Management.\nDefault: false"
+                          description: "Enabled enables Cloud Security Posture Management, including Docker and Kubernetes benchmarks.\nDefault: false"
                           type: "boolean"
                         hostBenchmarks:
                           description: "HostBenchmarks contains configuration for host benchmarks."
                           properties:
                             enabled:
-                              description: "Enabled enables host benchmarks.\nDefault: true"
+                              description: "Enabled enables Linux host benchmarks. Requires `features.cspm.enabled` to be set to `true`.\nDefault: true"
                               type: "boolean"
                           type: "object"
+                        runInSystemProbe:
+                          description: "RunInSystemProbe configures CSPM to send payloads directly from the system-probe, without using the security-agent.\nThis is an experimental feature. Contact support before using.\nDefault: false"
+                          type: "boolean"
                       type: "object"
                     cws:
                       description: "CWS (Cloud Workload Security) configuration."
@@ -865,6 +949,12 @@ spec:
                         enabled:
                           description: "Enabled enables Cloud Workload Security.\nDefault: false"
                           type: "boolean"
+                        enforcement:
+                          properties:
+                            enabled:
+                              description: "Enabled enables Enforcement for Cloud Workload Security.\nDefault: true"
+                              type: "boolean"
+                          type: "object"
                         network:
                           properties:
                             enabled:
@@ -885,6 +975,20 @@ spec:
                           type: "object"
                         syscallMonitorEnabled:
                           description: "SyscallMonitorEnabled enables Syscall Monitoring (recommended for troubleshooting only).\nDefault: false"
+                          type: "boolean"
+                      type: "object"
+                    dataPlane:
+                      description: "DataPlane configuration for the Agent Data Plane.\nAgent Data Plane is a high-performance sidecar that handles data ingestion."
+                      properties:
+                        dogstatsd:
+                          description: "Dogstatsd configures DogStatsD handling by the Data Plane."
+                          properties:
+                            enabled:
+                              description: "Enabled configures the Data Plane to handle DogStatsD traffic.\nWhen enabled, DogStatsD is disabled in the Core Agent.\nDefault: false"
+                              type: "boolean"
+                          type: "object"
+                        enabled:
+                          description: "Enabled enables the Data Plane.\nDefault: false"
                           type: "boolean"
                       type: "object"
                     dogstatsd:
@@ -945,7 +1049,7 @@ spec:
                           description: "OriginDetectionEnabled enables origin detection for container tagging.\nSee also: https://docs.datadoghq.com/developers/dogstatsd/unix_socket/#using-origin-detection-for-container-tagging"
                           type: "boolean"
                         tagCardinality:
-                          description: "TagCardinality configures tag cardinality for the metrics collected using origin detection (`low`, `orchestrator` or `high`).\nSee also: https://docs.datadoghq.com/getting_started/tagging/assigning_tags/?tab=containerizedenvironments#environment-variables\nCardinality default: low"
+                          description: "TagCardinality configures tag cardinality for the metrics collected using origin detection (`low`, `orchestrator` or `high`).\nThis setting only applies when OriginDetectionEnabled is true.\nSee also: https://docs.datadoghq.com/getting_started/tagging/assigning_tags/?tab=containerizedenvironments#environment-variables\nCardinality default: low"
                           type: "string"
                         unixDomainSocketConfig:
                           description: "UnixDomainSocketConfig contains socket configuration.\nSee also: https://docs.datadoghq.com/agent/kubernetes/apm/?tab=helm#agent-environment-variables\nEnabled Default: true\nPath Default: `/var/run/datadog/dsd.socket`"
@@ -1338,6 +1442,9 @@ spec:
                         collectDNSStats:
                           description: "CollectDNSStats enables DNS stat collection.\nDefault: false"
                           type: "boolean"
+                        directSend:
+                          description: "DirectSend enables CNM/USM to send data directly to the backend\nDefault: false"
+                          type: "boolean"
                         enableConntrack:
                           description: "EnableConntrack enables the system-probe agent to connect to the netlink/conntrack subsystem to add NAT information to connection data.\nSee also: http://conntrack-tools.netfilter.org/\nDefault: false"
                           type: "boolean"
@@ -1413,6 +1520,81 @@ spec:
                         scrubContainers:
                           description: "ScrubContainers enables scrubbing of sensitive container data (passwords, tokens, etc. ).\nDefault: true"
                           type: "boolean"
+                      type: "object"
+                    otelAgentGateway:
+                      description: "OtelAgentGateway configuration."
+                      properties:
+                        conf:
+                          description: "Conf overrides the configuration for the default OTel Agent Gateway.\nThis must point to a ConfigMap containing a valid OTel collector configuration.\nWhen passing a configmap, file name *must* be otel-gateway-config.yaml."
+                          properties:
+                            configData:
+                              description: "ConfigData corresponds to the configuration file content."
+                              type: "string"
+                            configMap:
+                              description: "ConfigMap references an existing ConfigMap with the configuration file content."
+                              properties:
+                                items:
+                                  description: "Items maps a ConfigMap data `key` to a file `path` mount."
+                                  items:
+                                    description: "Maps a string key to a path within a volume."
+                                    properties:
+                                      key:
+                                        description: "key is the key to project."
+                                        type: "string"
+                                      mode:
+                                        description: "mode is Optional: mode bits used to set permissions on this file.\nMust be an octal value between 0000 and 0777 or a decimal value between 0 and 511.\nYAML accepts both octal and decimal values, JSON requires decimal values for mode bits.\nIf not specified, the volume defaultMode will be used.\nThis might be in conflict with other options that affect the file\nmode, like fsGroup, and the result can be other mode bits set."
+                                        format: "int32"
+                                        type: "integer"
+                                      path:
+                                        description: "path is the relative path of the file to map the key to.\nMay not be an absolute path.\nMay not contain the path element '..'.\nMay not start with the string '..'."
+                                        type: "string"
+                                    required:
+                                      - "key"
+                                      - "path"
+                                    type: "object"
+                                  type: "array"
+                                  x-kubernetes-list-map-keys:
+                                    - "key"
+                                  x-kubernetes-list-type: "map"
+                                name:
+                                  description: "Name is the name of the ConfigMap."
+                                  type: "string"
+                              type: "object"
+                          type: "object"
+                        enabled:
+                          description: "Enabled enables the OTel Agent Gateway.\nDefault: false"
+                          type: "boolean"
+                        featureGates:
+                          description: "FeatureGates are the feature gates to pass to the OTel collector as a comma-separated list.\nExample: \"component.UseLocalHostAsDefaultHost,connector.datadogconnector.NativeIngest\""
+                          type: "string"
+                        ports:
+                          description: "Ports contains the ports that the OTel Collector is listening on.\nDefaults: otel-grpc:4317 / otel-http:4318."
+                          items:
+                            description: "ContainerPort represents a network port in a single container."
+                            properties:
+                              containerPort:
+                                description: "Number of port to expose on the pod's IP address.\nThis must be a valid port number, 0 < x < 65536."
+                                format: "int32"
+                                type: "integer"
+                              hostIP:
+                                description: "What host IP to bind the external port to."
+                                type: "string"
+                              hostPort:
+                                description: "Number of port to expose on the host.\nIf specified, this must be a valid port number, 0 < x < 65536.\nIf HostNetwork is specified, this must match ContainerPort.\nMost containers do not need this."
+                                format: "int32"
+                                type: "integer"
+                              name:
+                                description: "If specified, this must be an IANA_SVC_NAME and unique within the pod. Each\nnamed port in a pod must have a unique name. Name for the port that can be\nreferred to by services."
+                                type: "string"
+                              protocol:
+                                default: "TCP"
+                                description: "Protocol for port. Must be UDP, TCP, or SCTP.\nDefaults to \"TCP\"."
+                                type: "string"
+                            required:
+                              - "containerPort"
+                            type: "object"
+                          type: "array"
+                          x-kubernetes-list-type: "atomic"
                       type: "object"
                     otelCollector:
                       description: "OtelCollector configuration."
@@ -1629,10 +1811,10 @@ spec:
                           description: "Enables the service discovery check.\nDefault: false"
                           type: "boolean"
                         networkStats:
-                          description: "Enables the service discovery network stats collection.\nDefault: true"
+                          description: "DEPRECATED: NetworkStats is no longer configurable and will be ignored. Scheduled for removal in v1.28."
                           properties:
                             enabled:
-                              description: "Enables the Service Discovery Network Stats feature.\nDefault: true"
+                              description: "DEPRECATED: this field is ignored."
                               type: "boolean"
                           type: "object"
                       type: "object"
@@ -1718,9 +1900,173 @@ spec:
                     csi:
                       description: "CSI contains configuration for Datadog CSI Driver"
                       properties:
-                        enabled:
-                          description: "Enables the usage of CSI driver in Datadog Agent.\nRequires installation of Datadog CSI Driver https://github.com/DataDog/helm-charts/tree/main/charts/datadog-csi-driver\nDefault: false"
+                        autoManage:
+                          description: "AutoManage controls whether the operator automatically manages the DatadogCSIDriver\ncustom resource on behalf of this DatadogAgent. Set to false to hand ownership over to a\nDatadogCSIDriver CR that you maintain yourself (useful for migrations where you need\ncustomizations not exposed on the DatadogAgent spec). When toggled from true to false,\nthe operator cleans up the DDA-owned DatadogCSIDriver CR; you are then responsible for\nproviding a replacement so CSI continues to work.\nDefault: true"
                           type: "boolean"
+                        enabled:
+                          description: "Enables the usage of CSI driver in Datadog Agent. When the operator is started with\n`--datadogCSIDriverEnabled=true`, it will also install the driver by creating a\nDatadogCSIDriver custom resource, unless a cluster-scoped `k8s.csi.datadoghq.com`\nCSIDriver is already present, in which case it defers to the existing installation\n(e.g. from the Datadog CSI driver Helm chart).\nDefault: false"
+                          type: "boolean"
+                        nodeAffinity:
+                          description: "NodeAffinity specifies node affinity scheduling rules for CSI driver DaemonSet pods."
+                          properties:
+                            preferredDuringSchedulingIgnoredDuringExecution:
+                              description: "The scheduler will prefer to schedule pods to nodes that satisfy\nthe affinity expressions specified by this field, but it may choose\na node that violates one or more of the expressions. The node that is\nmost preferred is the one with the greatest sum of weights, i.e.\nfor each node that meets all of the scheduling requirements (resource\nrequest, requiredDuringScheduling affinity expressions, etc.),\ncompute a sum by iterating through the elements of this field and adding\n\"weight\" to the sum if the node matches the corresponding matchExpressions; the\nnode(s) with the highest sum are the most preferred."
+                              items:
+                                description: "An empty preferred scheduling term matches all objects with implicit weight 0\n(i.e. it's a no-op). A null preferred scheduling term matches no objects (i.e. is also a no-op)."
+                                properties:
+                                  preference:
+                                    description: "A node selector term, associated with the corresponding weight."
+                                    properties:
+                                      matchExpressions:
+                                        description: "A list of node selector requirements by node's labels."
+                                        items:
+                                          description: "A node selector requirement is a selector that contains values, a key, and an operator\nthat relates the key and values."
+                                          properties:
+                                            key:
+                                              description: "The label key that the selector applies to."
+                                              type: "string"
+                                            operator:
+                                              description: "Represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt."
+                                              type: "string"
+                                            values:
+                                              description: "An array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. If the operator is Gt or Lt, the values\narray must have a single element, which will be interpreted as an integer.\nThis array is replaced during a strategic merge patch."
+                                              items:
+                                                type: "string"
+                                              type: "array"
+                                              x-kubernetes-list-type: "atomic"
+                                          required:
+                                            - "key"
+                                            - "operator"
+                                          type: "object"
+                                        type: "array"
+                                        x-kubernetes-list-type: "atomic"
+                                      matchFields:
+                                        description: "A list of node selector requirements by node's fields."
+                                        items:
+                                          description: "A node selector requirement is a selector that contains values, a key, and an operator\nthat relates the key and values."
+                                          properties:
+                                            key:
+                                              description: "The label key that the selector applies to."
+                                              type: "string"
+                                            operator:
+                                              description: "Represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt."
+                                              type: "string"
+                                            values:
+                                              description: "An array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. If the operator is Gt or Lt, the values\narray must have a single element, which will be interpreted as an integer.\nThis array is replaced during a strategic merge patch."
+                                              items:
+                                                type: "string"
+                                              type: "array"
+                                              x-kubernetes-list-type: "atomic"
+                                          required:
+                                            - "key"
+                                            - "operator"
+                                          type: "object"
+                                        type: "array"
+                                        x-kubernetes-list-type: "atomic"
+                                    type: "object"
+                                    x-kubernetes-map-type: "atomic"
+                                  weight:
+                                    description: "Weight associated with matching the corresponding nodeSelectorTerm, in the range 1-100."
+                                    format: "int32"
+                                    type: "integer"
+                                required:
+                                  - "preference"
+                                  - "weight"
+                                type: "object"
+                              type: "array"
+                              x-kubernetes-list-type: "atomic"
+                            requiredDuringSchedulingIgnoredDuringExecution:
+                              description: "If the affinity requirements specified by this field are not met at\nscheduling time, the pod will not be scheduled onto the node.\nIf the affinity requirements specified by this field cease to be met\nat some point during pod execution (e.g. due to an update), the system\nmay or may not try to eventually evict the pod from its node."
+                              properties:
+                                nodeSelectorTerms:
+                                  description: "Required. A list of node selector terms. The terms are ORed."
+                                  items:
+                                    description: "A null or empty node selector term matches no objects. The requirements of\nthem are ANDed.\nThe TopologySelectorTerm type implements a subset of the NodeSelectorTerm."
+                                    properties:
+                                      matchExpressions:
+                                        description: "A list of node selector requirements by node's labels."
+                                        items:
+                                          description: "A node selector requirement is a selector that contains values, a key, and an operator\nthat relates the key and values."
+                                          properties:
+                                            key:
+                                              description: "The label key that the selector applies to."
+                                              type: "string"
+                                            operator:
+                                              description: "Represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt."
+                                              type: "string"
+                                            values:
+                                              description: "An array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. If the operator is Gt or Lt, the values\narray must have a single element, which will be interpreted as an integer.\nThis array is replaced during a strategic merge patch."
+                                              items:
+                                                type: "string"
+                                              type: "array"
+                                              x-kubernetes-list-type: "atomic"
+                                          required:
+                                            - "key"
+                                            - "operator"
+                                          type: "object"
+                                        type: "array"
+                                        x-kubernetes-list-type: "atomic"
+                                      matchFields:
+                                        description: "A list of node selector requirements by node's fields."
+                                        items:
+                                          description: "A node selector requirement is a selector that contains values, a key, and an operator\nthat relates the key and values."
+                                          properties:
+                                            key:
+                                              description: "The label key that the selector applies to."
+                                              type: "string"
+                                            operator:
+                                              description: "Represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt."
+                                              type: "string"
+                                            values:
+                                              description: "An array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. If the operator is Gt or Lt, the values\narray must have a single element, which will be interpreted as an integer.\nThis array is replaced during a strategic merge patch."
+                                              items:
+                                                type: "string"
+                                              type: "array"
+                                              x-kubernetes-list-type: "atomic"
+                                          required:
+                                            - "key"
+                                            - "operator"
+                                          type: "object"
+                                        type: "array"
+                                        x-kubernetes-list-type: "atomic"
+                                    type: "object"
+                                    x-kubernetes-map-type: "atomic"
+                                  type: "array"
+                                  x-kubernetes-list-type: "atomic"
+                              required:
+                                - "nodeSelectorTerms"
+                              type: "object"
+                              x-kubernetes-map-type: "atomic"
+                          type: "object"
+                        nodeSelector:
+                          additionalProperties:
+                            type: "string"
+                          description: "NodeSelector is a map of key-value pairs for CSI driver DaemonSet pod node selection."
+                          type: "object"
+                        tolerations:
+                          description: "Tolerations configure the CSI driver DaemonSet pod tolerations."
+                          items:
+                            description: "The pod this Toleration is attached to tolerates any taint that matches\nthe triple <key,value,effect> using the matching operator <operator>."
+                            properties:
+                              effect:
+                                description: "Effect indicates the taint effect to match. Empty means match all taint effects.\nWhen specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute."
+                                type: "string"
+                              key:
+                                description: "Key is the taint key that the toleration applies to. Empty means match all taint keys.\nIf the key is empty, operator must be Exists; this combination means to match all values and all keys."
+                                type: "string"
+                              operator:
+                                description: "Operator represents a key's relationship to the value.\nValid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category.\nLt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators)."
+                                type: "string"
+                              tolerationSeconds:
+                                description: "TolerationSeconds represents the period of time the toleration (which must be\nof effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,\nit is not set, which means tolerate the taint forever (do not evict). Zero and\nnegative values will be treated as 0 (evict immediately) by the system."
+                                format: "int64"
+                                type: "integer"
+                              value:
+                                description: "Value is the taint value the toleration matches to.\nIf the operator is Exists, the value should be empty, otherwise just a regular string."
+                                type: "string"
+                            type: "object"
+                          type: "array"
+                          x-kubernetes-list-type: "atomic"
                       type: "object"
                     disableNonResourceRules:
                       description: "Set DisableNonResourceRules to exclude NonResourceURLs from default ClusterRoles.\nRequired 'true' for Google Cloud Marketplace."
@@ -1775,7 +2121,7 @@ spec:
                         description: "EnvVar represents an environment variable present in a Container."
                         properties:
                           name:
-                            description: "Name of the environment variable. Must be a C_IDENTIFIER."
+                            description: "Name of the environment variable.\nMay consist of any printable ASCII characters except '='."
                             type: "string"
                           value:
                             description: "Variable references $(VAR_NAME) are expanded\nusing the previously defined environment variables in the container and\nany service environment variables. If a variable cannot be resolved,\nthe reference in the input string will be unchanged. Double $$ are reduced\nto a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.\n\"$$(VAR_NAME)\" will produce the string literal \"$(VAR_NAME)\".\nEscaped references will never be expanded, regardless of whether the variable\nexists or not.\nDefaults to \"\"."
@@ -1811,6 +2157,28 @@ spec:
                                     type: "string"
                                 required:
                                   - "fieldPath"
+                                type: "object"
+                                x-kubernetes-map-type: "atomic"
+                              fileKeyRef:
+                                description: "FileKeyRef selects a key of the env file.\nRequires the EnvFiles feature gate to be enabled."
+                                properties:
+                                  key:
+                                    description: "The key within the env file. An invalid key will prevent the pod from starting.\nThe keys defined within a source may consist of any printable ASCII characters except '='.\nDuring Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters."
+                                    type: "string"
+                                  optional:
+                                    default: false
+                                    description: "Specify whether the file or its key must be defined. If the file or key\ndoes not exist, then the env var is not published.\nIf optional is set to true and the specified key does not exist,\nthe environment variable will not be set in the Pod's containers.\n\nIf optional is set to false and the specified key does not exist,\nan error will be returned during Pod creation."
+                                    type: "boolean"
+                                  path:
+                                    description: "The path within the volume from which to select the file.\nMust be relative and may not contain the '..' path or start with '..'."
+                                    type: "string"
+                                  volumeName:
+                                    description: "The name of the volume mount containing the env file."
+                                    type: "string"
+                                required:
+                                  - "key"
+                                  - "path"
+                                  - "volumeName"
                                 type: "object"
                                 x-kubernetes-map-type: "atomic"
                               resourceFieldRef:
@@ -1944,7 +2312,7 @@ spec:
                           description: "Resources is the requests and limits for the FIPS sidecar container."
                           properties:
                             claims:
-                              description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
+                              description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis field depends on the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                               items:
                                 description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                 properties:
@@ -2021,6 +2389,28 @@ spec:
                                   type: "string"
                               required:
                                 - "fieldPath"
+                              type: "object"
+                              x-kubernetes-map-type: "atomic"
+                            fileKeyRef:
+                              description: "FileKeyRef selects a key of the env file.\nRequires the EnvFiles feature gate to be enabled."
+                              properties:
+                                key:
+                                  description: "The key within the env file. An invalid key will prevent the pod from starting.\nThe keys defined within a source may consist of any printable ASCII characters except '='.\nDuring Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters."
+                                  type: "string"
+                                optional:
+                                  default: false
+                                  description: "Specify whether the file or its key must be defined. If the file or key\ndoes not exist, then the env var is not published.\nIf optional is set to true and the specified key does not exist,\nthe environment variable will not be set in the Pod's containers.\n\nIf optional is set to false and the specified key does not exist,\nan error will be returned during Pod creation."
+                                  type: "boolean"
+                                path:
+                                  description: "The path within the volume from which to select the file.\nMust be relative and may not contain the '..' path or start with '..'."
+                                  type: "string"
+                                volumeName:
+                                  description: "The name of the volume mount containing the env file."
+                                  type: "string"
+                              required:
+                                - "key"
+                                - "path"
+                                - "volumeName"
                               type: "object"
                               x-kubernetes-map-type: "atomic"
                             resourceFieldRef:
@@ -2189,6 +2579,11 @@ spec:
                         command:
                           description: "The secret backend command to use. Datadog provides a pre-defined binary `/readsecret_multiple_providers.sh`.\nRead more about `/readsecret_multiple_providers.sh` at https://docs.datadoghq.com/agent/configuration/secrets-management/?tab=linux#script-for-reading-from-multiple-secret-providers."
                           type: "string"
+                        config:
+                          additionalProperties:
+                            type: "string"
+                          description: "Additional configuration for the secret backend type."
+                          type: "object"
                         enableGlobalPermissions:
                           description: "Whether to create a global permission allowing Datadog agents to read all Kubernetes secrets.\nDefault: `false`."
                           type: "boolean"
@@ -2220,6 +2615,9 @@ spec:
                           description: "The command timeout in seconds.\nDefault: `30`."
                           format: "int32"
                           type: "integer"
+                        type:
+                          description: "The built-in secret backend type to use (e.g., `k8s.secrets`, `docker.secrets`, `aws.secrets`).\nAlternative to Command; when Type is set, the Agent uses the built-in backend to resolve secrets.\nRequires Agent 7.70+."
+                          type: "string"
                       type: "object"
                     site:
                       description: "Site is the Datadog intake site Agent data are sent to.\nSet to 'datadoghq.com' to send data to the US1 site (default).\nSet to 'datadoghq.eu' to send data to the EU site.\nSet to 'us3.datadoghq.com' to send data to the US3 site.\nSet to 'us5.datadoghq.com' to send data to the US5 site.\nSet to 'ddog-gov.com' to send data to the US1-FED site.\nSet to 'ap1.datadoghq.com' to send data to the AP1 site.\nDefault: 'datadoghq.com'"
@@ -2232,6 +2630,9 @@ spec:
                       x-kubernetes-list-type: "set"
                     useFIPSAgent:
                       description: "UseFIPSAgent enables the FIPS flavor of the Agent. If 'true', the FIPS proxy will always be disabled.\nDefault: 'false'"
+                      type: "boolean"
+                    useVSock:
+                      description: "UseVSock allows the use of VSock communication between the Agent and containerized workloads.\nDefault: 'false'"
                       type: "boolean"
                   type: "object"
                 override:
@@ -2418,13 +2819,13 @@ spec:
                                           type: "object"
                                           x-kubernetes-map-type: "atomic"
                                         matchLabelKeys:
-                                          description: "MatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both matchLabelKeys and labelSelector.\nAlso, matchLabelKeys cannot be set when labelSelector isn't set.\nThis is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default)."
+                                          description: "MatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both matchLabelKeys and labelSelector.\nAlso, matchLabelKeys cannot be set when labelSelector isn't set."
                                           items:
                                             type: "string"
                                           type: "array"
                                           x-kubernetes-list-type: "atomic"
                                         mismatchLabelKeys:
-                                          description: "MismatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both mismatchLabelKeys and labelSelector.\nAlso, mismatchLabelKeys cannot be set when labelSelector isn't set.\nThis is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default)."
+                                          description: "MismatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both mismatchLabelKeys and labelSelector.\nAlso, mismatchLabelKeys cannot be set when labelSelector isn't set."
                                           items:
                                             type: "string"
                                           type: "array"
@@ -2523,13 +2924,13 @@ spec:
                                       type: "object"
                                       x-kubernetes-map-type: "atomic"
                                     matchLabelKeys:
-                                      description: "MatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both matchLabelKeys and labelSelector.\nAlso, matchLabelKeys cannot be set when labelSelector isn't set.\nThis is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default)."
+                                      description: "MatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both matchLabelKeys and labelSelector.\nAlso, matchLabelKeys cannot be set when labelSelector isn't set."
                                       items:
                                         type: "string"
                                       type: "array"
                                       x-kubernetes-list-type: "atomic"
                                     mismatchLabelKeys:
-                                      description: "MismatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both mismatchLabelKeys and labelSelector.\nAlso, mismatchLabelKeys cannot be set when labelSelector isn't set.\nThis is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default)."
+                                      description: "MismatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both mismatchLabelKeys and labelSelector.\nAlso, mismatchLabelKeys cannot be set when labelSelector isn't set."
                                       items:
                                         type: "string"
                                       type: "array"
@@ -2586,7 +2987,7 @@ spec:
                             description: "Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s))."
                             properties:
                               preferredDuringSchedulingIgnoredDuringExecution:
-                                description: "The scheduler will prefer to schedule pods to nodes that satisfy\nthe anti-affinity expressions specified by this field, but it may choose\na node that violates one or more of the expressions. The node that is\nmost preferred is the one with the greatest sum of weights, i.e.\nfor each node that meets all of the scheduling requirements (resource\nrequest, requiredDuringScheduling anti-affinity expressions, etc.),\ncompute a sum by iterating through the elements of this field and adding\n\"weight\" to the sum if the node has pods which matches the corresponding podAffinityTerm; the\nnode(s) with the highest sum are the most preferred."
+                                description: "The scheduler will prefer to schedule pods to nodes that satisfy\nthe anti-affinity expressions specified by this field, but it may choose\na node that violates one or more of the expressions. The node that is\nmost preferred is the one with the greatest sum of weights, i.e.\nfor each node that meets all of the scheduling requirements (resource\nrequest, requiredDuringScheduling anti-affinity expressions, etc.),\ncompute a sum by iterating through the elements of this field and subtracting\n\"weight\" from the sum if the node has pods which matches the corresponding podAffinityTerm; the\nnode(s) with the highest sum are the most preferred."
                                 items:
                                   description: "The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)"
                                   properties:
@@ -2627,13 +3028,13 @@ spec:
                                           type: "object"
                                           x-kubernetes-map-type: "atomic"
                                         matchLabelKeys:
-                                          description: "MatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both matchLabelKeys and labelSelector.\nAlso, matchLabelKeys cannot be set when labelSelector isn't set.\nThis is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default)."
+                                          description: "MatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both matchLabelKeys and labelSelector.\nAlso, matchLabelKeys cannot be set when labelSelector isn't set."
                                           items:
                                             type: "string"
                                           type: "array"
                                           x-kubernetes-list-type: "atomic"
                                         mismatchLabelKeys:
-                                          description: "MismatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both mismatchLabelKeys and labelSelector.\nAlso, mismatchLabelKeys cannot be set when labelSelector isn't set.\nThis is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default)."
+                                          description: "MismatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both mismatchLabelKeys and labelSelector.\nAlso, mismatchLabelKeys cannot be set when labelSelector isn't set."
                                           items:
                                             type: "string"
                                           type: "array"
@@ -2732,13 +3133,13 @@ spec:
                                       type: "object"
                                       x-kubernetes-map-type: "atomic"
                                     matchLabelKeys:
-                                      description: "MatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both matchLabelKeys and labelSelector.\nAlso, matchLabelKeys cannot be set when labelSelector isn't set.\nThis is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default)."
+                                      description: "MatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both matchLabelKeys and labelSelector.\nAlso, matchLabelKeys cannot be set when labelSelector isn't set."
                                       items:
                                         type: "string"
                                       type: "array"
                                       x-kubernetes-list-type: "atomic"
                                     mismatchLabelKeys:
-                                      description: "MismatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both mismatchLabelKeys and labelSelector.\nAlso, mismatchLabelKeys cannot be set when labelSelector isn't set.\nThis is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default)."
+                                      description: "MismatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both mismatchLabelKeys and labelSelector.\nAlso, mismatchLabelKeys cannot be set when labelSelector isn't set."
                                       items:
                                         type: "string"
                                       type: "array"
@@ -2797,6 +3198,55 @@ spec:
                           type: "string"
                         description: "Annotations provide annotations that are added to the different component (Datadog Agent, Cluster Agent, Cluster Check Runner) pods."
                         type: "object"
+                      celWorkloadExclude:
+                        description: "CELWorkloadExclude enables excluding workloads from monitoring using Common Expression Language (CEL).\nSee https://docs.datadoghq.com/containers/guide/container-discovery-management\n(Requires Agent 7.73+ and Cluster Agent 7.73+)"
+                        items:
+                          description: "CelWorkloadExcludeConfig configures CEL-based filtering to exclude specific workloads\nfrom Agent collection."
+                          properties:
+                            products:
+                              description: "Products specifies which products these exclusion rules apply to."
+                              items:
+                                description: "Product defines which Datadog product(s) the CEL-based workload exclusion rules apply to.\nUse \"global\" to apply rules across all products, or specify individual products for granular control."
+                                enum:
+                                  - "metrics"
+                                  - "logs"
+                                  - "sbom"
+                                  - "global"
+                                type: "string"
+                              type: "array"
+                              x-kubernetes-list-type: "atomic"
+                            rules:
+                              description: "Rules defines the CEL expressions used to identify workloads to exclude."
+                              properties:
+                                containers:
+                                  description: "Containers exclude rule"
+                                  items:
+                                    type: "string"
+                                  type: "array"
+                                kube_endpoints:
+                                  description: "KubeEndpoints exclude rule"
+                                  items:
+                                    type: "string"
+                                  type: "array"
+                                kube_services:
+                                  description: "KubeServices exclude rule"
+                                  items:
+                                    type: "string"
+                                  type: "array"
+                                pods:
+                                  description: "Pods exclude rule"
+                                  items:
+                                    type: "string"
+                                  type: "array"
+                                processes:
+                                  description: "Processes exclude rule"
+                                  items:
+                                    type: "string"
+                                  type: "array"
+                              type: "object"
+                          type: "object"
+                        type: "array"
+                        x-kubernetes-list-type: "atomic"
                       containers:
                         additionalProperties:
                           description: "DatadogAgentGenericContainer is the generic structure describing any container's common configuration."
@@ -2822,7 +3272,7 @@ spec:
                                 description: "EnvVar represents an environment variable present in a Container."
                                 properties:
                                   name:
-                                    description: "Name of the environment variable. Must be a C_IDENTIFIER."
+                                    description: "Name of the environment variable.\nMay consist of any printable ASCII characters except '='."
                                     type: "string"
                                   value:
                                     description: "Variable references $(VAR_NAME) are expanded\nusing the previously defined environment variables in the container and\nany service environment variables. If a variable cannot be resolved,\nthe reference in the input string will be unchanged. Double $$ are reduced\nto a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.\n\"$$(VAR_NAME)\" will produce the string literal \"$(VAR_NAME)\".\nEscaped references will never be expanded, regardless of whether the variable\nexists or not.\nDefaults to \"\"."
@@ -2858,6 +3308,28 @@ spec:
                                             type: "string"
                                         required:
                                           - "fieldPath"
+                                        type: "object"
+                                        x-kubernetes-map-type: "atomic"
+                                      fileKeyRef:
+                                        description: "FileKeyRef selects a key of the env file.\nRequires the EnvFiles feature gate to be enabled."
+                                        properties:
+                                          key:
+                                            description: "The key within the env file. An invalid key will prevent the pod from starting.\nThe keys defined within a source may consist of any printable ASCII characters except '='.\nDuring Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters."
+                                            type: "string"
+                                          optional:
+                                            default: false
+                                            description: "Specify whether the file or its key must be defined. If the file or key\ndoes not exist, then the env var is not published.\nIf optional is set to true and the specified key does not exist,\nthe environment variable will not be set in the Pod's containers.\n\nIf optional is set to false and the specified key does not exist,\nan error will be returned during Pod creation."
+                                            type: "boolean"
+                                          path:
+                                            description: "The path within the volume from which to select the file.\nMust be relative and may not contain the '..' path or start with '..'."
+                                            type: "string"
+                                          volumeName:
+                                            description: "The name of the volume mount containing the env file."
+                                            type: "string"
+                                        required:
+                                          - "key"
+                                          - "path"
+                                          - "volumeName"
                                         type: "object"
                                         x-kubernetes-map-type: "atomic"
                                       resourceFieldRef:
@@ -3157,7 +3629,7 @@ spec:
                               description: "Specify the Request and Limits of the pods\nTo get guaranteed QoS class, specify requests and limits equal.\nSee also: http://kubernetes.io/docs/user-guide/compute-resources/"
                               properties:
                                 claims:
-                                  description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
+                                  description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis field depends on the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                                   items:
                                     description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                     properties:
@@ -3569,7 +4041,7 @@ spec:
                           description: "EnvVar represents an environment variable present in a Container."
                           properties:
                             name:
-                              description: "Name of the environment variable. Must be a C_IDENTIFIER."
+                              description: "Name of the environment variable.\nMay consist of any printable ASCII characters except '='."
                               type: "string"
                             value:
                               description: "Variable references $(VAR_NAME) are expanded\nusing the previously defined environment variables in the container and\nany service environment variables. If a variable cannot be resolved,\nthe reference in the input string will be unchanged. Double $$ are reduced\nto a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.\n\"$$(VAR_NAME)\" will produce the string literal \"$(VAR_NAME)\".\nEscaped references will never be expanded, regardless of whether the variable\nexists or not.\nDefaults to \"\"."
@@ -3605,6 +4077,28 @@ spec:
                                       type: "string"
                                   required:
                                     - "fieldPath"
+                                  type: "object"
+                                  x-kubernetes-map-type: "atomic"
+                                fileKeyRef:
+                                  description: "FileKeyRef selects a key of the env file.\nRequires the EnvFiles feature gate to be enabled."
+                                  properties:
+                                    key:
+                                      description: "The key within the env file. An invalid key will prevent the pod from starting.\nThe keys defined within a source may consist of any printable ASCII characters except '='.\nDuring Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters."
+                                      type: "string"
+                                    optional:
+                                      default: false
+                                      description: "Specify whether the file or its key must be defined. If the file or key\ndoes not exist, then the env var is not published.\nIf optional is set to true and the specified key does not exist,\nthe environment variable will not be set in the Pod's containers.\n\nIf optional is set to false and the specified key does not exist,\nan error will be returned during Pod creation."
+                                      type: "boolean"
+                                    path:
+                                      description: "The path within the volume from which to select the file.\nMust be relative and may not contain the '..' path or start with '..'."
+                                      type: "string"
+                                    volumeName:
+                                      description: "The name of the volume mount containing the env file."
+                                      type: "string"
+                                  required:
+                                    - "key"
+                                    - "path"
+                                    - "volumeName"
                                   type: "object"
                                   x-kubernetes-map-type: "atomic"
                                 resourceFieldRef:
@@ -3655,7 +4149,7 @@ spec:
                       envFrom:
                         description: "EnvFrom specifies the ConfigMaps and Secrets to expose as environment variables.\nPriority is env > envFrom."
                         items:
-                          description: "EnvFromSource represents the source of a set of ConfigMaps"
+                          description: "EnvFromSource represents the source of a set of ConfigMaps or Secrets"
                           properties:
                             configMapRef:
                               description: "The ConfigMap to select from"
@@ -3670,7 +4164,7 @@ spec:
                               type: "object"
                               x-kubernetes-map-type: "atomic"
                             prefix:
-                              description: "An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER."
+                              description: "Optional text to prepend to the name of each environment variable.\nMay consist of any printable ASCII characters except '='."
                               type: "string"
                             secretRef:
                               description: "The Secret to select from"
@@ -3950,7 +4444,7 @@ spec:
                               description: "Key is the taint key that the toleration applies to. Empty means match all taint keys.\nIf the key is empty, operator must be Exists; this combination means to match all values and all keys."
                               type: "string"
                             operator:
-                              description: "Operator represents a key's relationship to the value.\nValid operators are Exists and Equal. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category."
+                              description: "Operator represents a key's relationship to the value.\nValid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category.\nLt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators)."
                               type: "string"
                             tolerationSeconds:
                               description: "TolerationSeconds represents the period of time the toleration (which must be\nof effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,\nit is not set, which means tolerate the taint forever (do not evict). Zero and\nnegative values will be treated as 0 (evict immediately) by the system."
@@ -4015,10 +4509,10 @@ spec:
                               format: "int32"
                               type: "integer"
                             nodeAffinityPolicy:
-                              description: "NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector\nwhen calculating pod topology spread skew. Options are:\n- Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.\n- Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.\n\nIf this value is nil, the behavior is equivalent to the Honor policy.\nThis is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag."
+                              description: "NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector\nwhen calculating pod topology spread skew. Options are:\n- Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.\n- Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.\n\nIf this value is nil, the behavior is equivalent to the Honor policy."
                               type: "string"
                             nodeTaintsPolicy:
-                              description: "NodeTaintsPolicy indicates how we will treat node taints when calculating\npod topology spread skew. Options are:\n- Honor: nodes without taints, along with tainted nodes for which the incoming pod\nhas a toleration, are included.\n- Ignore: node taints are ignored. All nodes are included.\n\nIf this value is nil, the behavior is equivalent to the Ignore policy.\nThis is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag."
+                              description: "NodeTaintsPolicy indicates how we will treat node taints when calculating\npod topology spread skew. Options are:\n- Honor: nodes without taints, along with tainted nodes for which the incoming pod\nhas a toleration, are included.\n- Ignore: node taints are ignored. All nodes are included.\n\nIf this value is nil, the behavior is equivalent to the Ignore policy."
                               type: "string"
                             topologyKey:
                               description: "TopologyKey is the key of node labels. Nodes that have a label with this key\nand identical values are considered to be in the same topology.\nWe consider each <key, value> as a \"bucket\", and try to put balanced number\nof pods into each bucket.\nWe define a domain as a particular instance of a topology.\nAlso, we define an eligible domain as a domain whose nodes meet the requirements of\nnodeAffinityPolicy and nodeTaintsPolicy.\ne.g. If TopologyKey is \"kubernetes.io/hostname\", each Node is a domain of that topology.\nAnd, if TopologyKey is \"topology.kubernetes.io/zone\", each zone is a domain of that topology.\nIt's a required field."
@@ -4376,7 +4870,7 @@ spec:
                                             - "name"
                                           type: "object"
                                         resources:
-                                          description: "resources represents the minimum resources the volume should have.\nIf RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements\nthat are lower than previous value but must still be higher than capacity recorded in the\nstatus field of the claim.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources"
+                                          description: "resources represents the minimum resources the volume should have.\nUsers are allowed to specify resource requirements\nthat are lower than previous value but must still be higher than capacity recorded in the\nstatus field of the claim.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources"
                                           properties:
                                             limits:
                                               additionalProperties:
@@ -4434,7 +4928,7 @@ spec:
                                           description: "storageClassName is the name of the StorageClass required by the claim.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1"
                                           type: "string"
                                         volumeAttributesClassName:
-                                          description: "volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.\nIf specified, the CSI driver will create or update the volume with the attributes defined\nin the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,\nit can be changed after the claim is created. An empty string value means that no VolumeAttributesClass\nwill be applied to the claim but it's not allowed to reset this field to empty string once it is set.\nIf unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass\nwill be set by the persistentvolume controller if it exists.\nIf the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be\nset to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource\nexists.\nMore info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/\n(Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default)."
+                                          description: "volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.\nIf specified, the CSI driver will create or update the volume with the attributes defined\nin the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,\nit can be changed after the claim is created. An empty string or nil value indicates that no\nVolumeAttributesClass will be applied to the claim. If the claim enters an Infeasible error state,\nthis field can be reset to its previous value (including nil) to cancel the modification.\nIf the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be\nset to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource\nexists.\nMore info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/"
                                           type: "string"
                                         volumeMode:
                                           description: "volumeMode defines what type of volume is required by the claim.\nValue of Filesystem is implied when not included in claim spec."
@@ -4547,10 +5041,10 @@ spec:
                                 - "repository"
                               type: "object"
                             glusterfs:
-                              description: "glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.\nDeprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer supported.\nMore info: https://examples.k8s.io/volumes/glusterfs/README.md"
+                              description: "glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.\nDeprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer supported."
                               properties:
                                 endpoints:
-                                  description: "endpoints is the endpoint name that details Glusterfs topology.\nMore info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod"
+                                  description: "endpoints is the endpoint name that details Glusterfs topology."
                                   type: "string"
                                 path:
                                   description: "path is the Glusterfs volume path.\nMore info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod"
@@ -4575,7 +5069,7 @@ spec:
                                 - "path"
                               type: "object"
                             image:
-                              description: "image represents an OCI object (a container image or artifact) pulled and mounted on the kubelet's host machine.\nThe volume is resolved at pod startup depending on which PullPolicy value is provided:\n\n- Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.\n- Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.\n- IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.\n\nThe volume gets re-resolved if the pod gets deleted and recreated, which means that new remote content will become available on pod recreation.\nA failure to resolve or pull the image during pod startup will block containers from starting and may add significant latency. Failures will be retried using normal volume backoff and will be reported on the pod reason and message.\nThe types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.\nThe OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.\nThe volume will be mounted read-only (ro) and non-executable files (noexec).\nSub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath).\nThe field spec.securityContext.fsGroupChangePolicy has no effect on this volume type."
+                              description: "image represents an OCI object (a container image or artifact) pulled and mounted on the kubelet's host machine.\nThe volume is resolved at pod startup depending on which PullPolicy value is provided:\n\n- Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.\n- Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.\n- IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.\n\nThe volume gets re-resolved if the pod gets deleted and recreated, which means that new remote content will become available on pod recreation.\nA failure to resolve or pull the image during pod startup will block containers from starting and may add significant latency. Failures will be retried using normal volume backoff and will be reported on the pod reason and message.\nThe types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.\nThe OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.\nThe volume will be mounted read-only (ro) and non-executable files (noexec).\nSub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.\nThe field spec.securityContext.fsGroupChangePolicy has no effect on this volume type."
                               properties:
                                 pullPolicy:
                                   description: "Policy for pulling OCI objects. Possible values are:\nAlways: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.\nNever: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.\nIfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.\nDefaults to Always if :latest tag is specified, or IfNotPresent otherwise."
@@ -4585,7 +5079,7 @@ spec:
                                   type: "string"
                               type: "object"
                             iscsi:
-                              description: "iscsi represents an ISCSI Disk resource that is attached to a\nkubelet's host machine and then exposed to the pod.\nMore info: https://examples.k8s.io/volumes/iscsi/README.md"
+                              description: "iscsi represents an ISCSI Disk resource that is attached to a\nkubelet's host machine and then exposed to the pod.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes/#iscsi"
                               properties:
                                 chapAuthDiscovery:
                                   description: "chapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication"
@@ -4844,6 +5338,37 @@ spec:
                                             type: "array"
                                             x-kubernetes-list-type: "atomic"
                                         type: "object"
+                                      podCertificate:
+                                        description: "Projects an auto-rotating credential bundle (private key and certificate\nchain) that the pod can use either as a TLS client or server.\n\nKubelet generates a private key and uses it to send a\nPodCertificateRequest to the named signer.  Once the signer approves the\nrequest and issues a certificate chain, Kubelet writes the key and\ncertificate chain to the pod filesystem.  The pod does not start until\ncertificates have been issued for each podCertificate projected volume\nsource in its spec.\n\nKubelet will begin trying to rotate the certificate at the time indicated\nby the signer using the PodCertificateRequest.Status.BeginRefreshAt\ntimestamp.\n\nKubelet can write a single file, indicated by the credentialBundlePath\nfield, or separate files, indicated by the keyPath and\ncertificateChainPath fields.\n\nThe credential bundle is a single file in PEM format.  The first PEM\nentry is the private key (in PKCS#8 format), and the remaining PEM\nentries are the certificate chain issued by the signer (typically,\nsigners will return their certificate chain in leaf-to-root order).\n\nPrefer using the credential bundle format, since your application code\ncan read it atomically.  If you use keyPath and certificateChainPath,\nyour application must make two separate file reads. If these coincide\nwith a certificate rotation, it is possible that the private key and leaf\ncertificate you read may not correspond to each other.  Your application\nwill need to check for this condition, and re-read until they are\nconsistent.\n\nThe named signer controls chooses the format of the certificate it\nissues; consult the signer implementation's documentation to learn how to\nuse the certificates it issues."
+                                        properties:
+                                          certificateChainPath:
+                                            description: "Write the certificate chain at this path in the projected volume.\n\nMost applications should use credentialBundlePath.  When using keyPath\nand certificateChainPath, your application needs to check that the key\nand leaf certificate are consistent, because it is possible to read the\nfiles mid-rotation."
+                                            type: "string"
+                                          credentialBundlePath:
+                                            description: "Write the credential bundle at this path in the projected volume.\n\nThe credential bundle is a single file that contains multiple PEM blocks.\nThe first PEM block is a PRIVATE KEY block, containing a PKCS#8 private\nkey.\n\nThe remaining blocks are CERTIFICATE blocks, containing the issued\ncertificate chain from the signer (leaf and any intermediates).\n\nUsing credentialBundlePath lets your Pod's application code make a single\natomic read that retrieves a consistent key and certificate chain.  If you\nproject them to separate files, your application code will need to\nadditionally check that the leaf certificate was issued to the key."
+                                            type: "string"
+                                          keyPath:
+                                            description: "Write the key at this path in the projected volume.\n\nMost applications should use credentialBundlePath.  When using keyPath\nand certificateChainPath, your application needs to check that the key\nand leaf certificate are consistent, because it is possible to read the\nfiles mid-rotation."
+                                            type: "string"
+                                          keyType:
+                                            description: "The type of keypair Kubelet will generate for the pod.\n\nValid values are \"RSA3072\", \"RSA4096\", \"ECDSAP256\", \"ECDSAP384\",\n\"ECDSAP521\", and \"ED25519\"."
+                                            type: "string"
+                                          maxExpirationSeconds:
+                                            description: "maxExpirationSeconds is the maximum lifetime permitted for the\ncertificate.\n\nKubelet copies this value verbatim into the PodCertificateRequests it\ngenerates for this projection.\n\nIf omitted, kube-apiserver will set it to 86400(24 hours). kube-apiserver\nwill reject values shorter than 3600 (1 hour).  The maximum allowable\nvalue is 7862400 (91 days).\n\nThe signer implementation is then free to issue a certificate with any\nlifetime *shorter* than MaxExpirationSeconds, but no shorter than 3600\nseconds (1 hour).  This constraint is enforced by kube-apiserver.\n`kubernetes.io` signers will never issue certificates with a lifetime\nlonger than 24 hours."
+                                            format: "int32"
+                                            type: "integer"
+                                          signerName:
+                                            description: "Kubelet's generated CSRs will be addressed to this signer."
+                                            type: "string"
+                                          userAnnotations:
+                                            additionalProperties:
+                                              type: "string"
+                                            description: "userAnnotations allow pod authors to pass additional information to\nthe signer implementation.  Kubernetes does not restrict or validate this\nmetadata in any way.\n\nThese values are copied verbatim into the `spec.unverifiedUserAnnotations` field of\nthe PodCertificateRequest objects that Kubelet creates.\n\nEntries are subject to the same validation as object metadata annotations,\nwith the addition that all keys must be domain-prefixed. No restrictions\nare placed on values, except an overall size limitation on the entire field.\n\nSigners should document the keys and values they support. Signers should\ndeny requests that contain keys they do not recognize."
+                                            type: "object"
+                                        required:
+                                          - "keyType"
+                                          - "signerName"
+                                        type: "object"
                                       secret:
                                         description: "secret information about the secret data to project"
                                         properties:
@@ -4923,7 +5448,7 @@ spec:
                                 - "volume"
                               type: "object"
                             rbd:
-                              description: "rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.\nDeprecated: RBD is deprecated and the in-tree rbd type is no longer supported.\nMore info: https://examples.k8s.io/volumes/rbd/README.md"
+                              description: "rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.\nDeprecated: RBD is deprecated and the in-tree rbd type is no longer supported."
                               properties:
                                 fsType:
                                   description: "fsType is the filesystem type of the volume that you want to mount.\nTip: Ensure that the filesystem type is supported by the host operating system.\nExamples: \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#rbd"
@@ -5332,6 +5857,66 @@ spec:
                   x-kubernetes-list-map-keys:
                     - "type"
                   x-kubernetes-list-type: "map"
+                experiment:
+                  description: "Experiment tracks the state of an active or recent Fleet Automation experiment."
+                  properties:
+                    id:
+                      description: "ID is the unique experiment ID sent by Fleet Automation."
+                      type: "string"
+                    phase:
+                      description: "Phase is the current state of the experiment."
+                      enum:
+                        - "running"
+                        - "stopped"
+                        - "rollback"
+                        - "timeout"
+                        - "promoted"
+                        - "aborted"
+                      type: "string"
+                  type: "object"
+                otelAgentGateway:
+                  description: "The actual state of the OTel Agent Gateway as a deployment."
+                  properties:
+                    availableReplicas:
+                      description: "Total number of available pods (ready for at least minReadySeconds) targeted by this Deployment."
+                      format: "int32"
+                      type: "integer"
+                    currentHash:
+                      description: "CurrentHash is the stored hash of the Deployment."
+                      type: "string"
+                    deploymentName:
+                      description: "DeploymentName corresponds to the name of the Deployment."
+                      type: "string"
+                    generatedToken:
+                      description: "GeneratedToken corresponds to the generated token if any token was provided in the Credential configuration when ClusterAgent is\nenabled."
+                      type: "string"
+                    lastUpdate:
+                      description: "LastUpdate is the last time the status was updated."
+                      format: "date-time"
+                      type: "string"
+                    readyReplicas:
+                      description: "Total number of ready pods targeted by this Deployment."
+                      format: "int32"
+                      type: "integer"
+                    replicas:
+                      description: "Total number of non-terminated pods targeted by this Deployment (their labels match the selector)."
+                      format: "int32"
+                      type: "integer"
+                    state:
+                      description: "State corresponds to the Deployment state."
+                      type: "string"
+                    status:
+                      description: "Status corresponds to the Deployment computed status."
+                      type: "string"
+                    unavailableReplicas:
+                      description: "Total number of unavailable pods targeted by this Deployment. This is the total number of\npods that are still required for the Deployment to have 100% available capacity. They may\neither be pods that are running but not yet available or pods that still have not been created."
+                      format: "int32"
+                      type: "integer"
+                    updatedReplicas:
+                      description: "Total number of non-terminated pods targeted by this Deployment that have the desired template spec."
+                      format: "int32"
+                      type: "integer"
+                  type: "object"
                 remoteConfigConfiguration:
                   description: "RemoteConfigConfiguration stores the configuration received from RemoteConfig."
                   properties:
@@ -5350,6 +5935,16 @@ spec:
                                 clusterAgentCommunicationEnabled:
                                   description: "ClusterAgentCommunicationEnabled enables communication between Agent sidecars and the Cluster Agent.\nDefault : true"
                                   type: "boolean"
+                                clusterAgentTlsVerification:
+                                  description: "ClusterAgentTLSVerification configures TLS verification for Agent sidecar to Cluster Agent communication."
+                                  properties:
+                                    copyCaConfigMap:
+                                      description: "CopyCaConfigMap enables automatic creation of a ConfigMap containing the Cluster Agent's CA certificate\nin namespaces where sidecar injection occurs.\nDefault: false"
+                                      type: "boolean"
+                                    enabled:
+                                      description: "Enabled enables TLS verification for agent sidecars communicating with the Cluster Agent.\nDefault: false"
+                                      type: "boolean"
+                                  type: "object"
                                 enabled:
                                   description: "Enabled enables Sidecar injections.\nDefault: false"
                                   type: "boolean"
@@ -5392,7 +5987,7 @@ spec:
                                           description: "EnvVar represents an environment variable present in a Container."
                                           properties:
                                             name:
-                                              description: "Name of the environment variable. Must be a C_IDENTIFIER."
+                                              description: "Name of the environment variable.\nMay consist of any printable ASCII characters except '='."
                                               type: "string"
                                             value:
                                               description: "Variable references $(VAR_NAME) are expanded\nusing the previously defined environment variables in the container and\nany service environment variables. If a variable cannot be resolved,\nthe reference in the input string will be unchanged. Double $$ are reduced\nto a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.\n\"$$(VAR_NAME)\" will produce the string literal \"$(VAR_NAME)\".\nEscaped references will never be expanded, regardless of whether the variable\nexists or not.\nDefaults to \"\"."
@@ -5428,6 +6023,28 @@ spec:
                                                       type: "string"
                                                   required:
                                                     - "fieldPath"
+                                                  type: "object"
+                                                  x-kubernetes-map-type: "atomic"
+                                                fileKeyRef:
+                                                  description: "FileKeyRef selects a key of the env file.\nRequires the EnvFiles feature gate to be enabled."
+                                                  properties:
+                                                    key:
+                                                      description: "The key within the env file. An invalid key will prevent the pod from starting.\nThe keys defined within a source may consist of any printable ASCII characters except '='.\nDuring Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters."
+                                                      type: "string"
+                                                    optional:
+                                                      default: false
+                                                      description: "Specify whether the file or its key must be defined. If the file or key\ndoes not exist, then the env var is not published.\nIf optional is set to true and the specified key does not exist,\nthe environment variable will not be set in the Pod's containers.\n\nIf optional is set to false and the specified key does not exist,\nan error will be returned during Pod creation."
+                                                      type: "boolean"
+                                                    path:
+                                                      description: "The path within the volume from which to select the file.\nMust be relative and may not contain the '..' path or start with '..'."
+                                                      type: "string"
+                                                    volumeName:
+                                                      description: "The name of the volume mount containing the env file."
+                                                      type: "string"
+                                                  required:
+                                                    - "key"
+                                                    - "path"
+                                                    - "volumeName"
                                                   type: "object"
                                                   x-kubernetes-map-type: "atomic"
                                                 resourceFieldRef:
@@ -5479,7 +6096,7 @@ spec:
                                         description: "ResourceRequirements specifies the resource requirements for the profile."
                                         properties:
                                           claims:
-                                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
+                                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis field depends on the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                                             items:
                                               description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                               properties:
@@ -5733,6 +6350,21 @@ spec:
                                   description: "Enabled enables the Admission Controller mutation webhook.\nDefault: true"
                                   type: "boolean"
                               type: "object"
+                            probe:
+                              description: "Probe holds the admission controller connectivity probe configuration."
+                              properties:
+                                enabled:
+                                  description: "Enabled enables the admission controller connectivity probe.\nThe probe periodically sends dry-run ConfigMap creation requests to verify the\nwebhook is reachable from the API server. Requires Cluster Agent 7.78.0+.\nDefault: true"
+                                  type: "boolean"
+                                gracePeriod:
+                                  description: "GracePeriod is the number of seconds to wait at startup before the first probe.\nDefault: 60"
+                                  format: "int32"
+                                  type: "integer"
+                                interval:
+                                  description: "Interval is the number of seconds between probe executions.\nDefault: 60"
+                                  format: "int32"
+                                  type: "integer"
+                              type: "object"
                             registry:
                               description: "Registry defines an image registry for the admission controller."
                               type: "string"
@@ -5792,6 +6424,14 @@ spec:
                                     type: "string"
                                   type: "array"
                                   x-kubernetes-list-type: "set"
+                                injectionMode:
+                                  description: "InjectionMode is the injection mode to use for libraries injection.\nValid values are: \"auto\", \"init_container\", \"csi\" (experimental, requires Cluster Agent 7.76.0+ and Datadog CSI Driver 1.2.0+), \"image_volume\" (experimental, requires Cluster Agent 7.77.0+).\nEmpty by default so the Cluster Agent can apply its own defaults."
+                                  enum:
+                                    - "auto"
+                                    - "init_container"
+                                    - "csi"
+                                    - "image_volume"
+                                  type: "string"
                                 injector:
                                   description: "Injector configures the APM Injector."
                                   properties:
@@ -5822,7 +6462,7 @@ spec:
                                           description: "EnvVar represents an environment variable present in a Container."
                                           properties:
                                             name:
-                                              description: "Name of the environment variable. Must be a C_IDENTIFIER."
+                                              description: "Name of the environment variable.\nMay consist of any printable ASCII characters except '='."
                                               type: "string"
                                             value:
                                               description: "Variable references $(VAR_NAME) are expanded\nusing the previously defined environment variables in the container and\nany service environment variables. If a variable cannot be resolved,\nthe reference in the input string will be unchanged. Double $$ are reduced\nto a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.\n\"$$(VAR_NAME)\" will produce the string literal \"$(VAR_NAME)\".\nEscaped references will never be expanded, regardless of whether the variable\nexists or not.\nDefaults to \"\"."
@@ -5858,6 +6498,28 @@ spec:
                                                       type: "string"
                                                   required:
                                                     - "fieldPath"
+                                                  type: "object"
+                                                  x-kubernetes-map-type: "atomic"
+                                                fileKeyRef:
+                                                  description: "FileKeyRef selects a key of the env file.\nRequires the EnvFiles feature gate to be enabled."
+                                                  properties:
+                                                    key:
+                                                      description: "The key within the env file. An invalid key will prevent the pod from starting.\nThe keys defined within a source may consist of any printable ASCII characters except '='.\nDuring Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters."
+                                                      type: "string"
+                                                    optional:
+                                                      default: false
+                                                      description: "Specify whether the file or its key must be defined. If the file or key\ndoes not exist, then the env var is not published.\nIf optional is set to true and the specified key does not exist,\nthe environment variable will not be set in the Pod's containers.\n\nIf optional is set to false and the specified key does not exist,\nan error will be returned during Pod creation."
+                                                      type: "boolean"
+                                                    path:
+                                                      description: "The path within the volume from which to select the file.\nMust be relative and may not contain the '..' path or start with '..'."
+                                                      type: "string"
+                                                    volumeName:
+                                                      description: "The name of the volume mount containing the env file."
+                                                      type: "string"
+                                                  required:
+                                                    - "key"
+                                                    - "path"
+                                                    - "volumeName"
                                                   type: "object"
                                                   x-kubernetes-map-type: "atomic"
                                                 resourceFieldRef:
@@ -6100,15 +6762,18 @@ spec:
                                   type: "object"
                               type: "object"
                             enabled:
-                              description: "Enabled enables Cloud Security Posture Management.\nDefault: false"
+                              description: "Enabled enables Cloud Security Posture Management, including Docker and Kubernetes benchmarks.\nDefault: false"
                               type: "boolean"
                             hostBenchmarks:
                               description: "HostBenchmarks contains configuration for host benchmarks."
                               properties:
                                 enabled:
-                                  description: "Enabled enables host benchmarks.\nDefault: true"
+                                  description: "Enabled enables Linux host benchmarks. Requires `features.cspm.enabled` to be set to `true`.\nDefault: true"
                                   type: "boolean"
                               type: "object"
+                            runInSystemProbe:
+                              description: "RunInSystemProbe configures CSPM to send payloads directly from the system-probe, without using the security-agent.\nThis is an experimental feature. Contact support before using.\nDefault: false"
+                              type: "boolean"
                           type: "object"
                         cws:
                           description: "CWS (Cloud Workload Security) configuration."
@@ -6156,6 +6821,12 @@ spec:
                             enabled:
                               description: "Enabled enables Cloud Workload Security.\nDefault: false"
                               type: "boolean"
+                            enforcement:
+                              properties:
+                                enabled:
+                                  description: "Enabled enables Enforcement for Cloud Workload Security.\nDefault: true"
+                                  type: "boolean"
+                              type: "object"
                             network:
                               properties:
                                 enabled:
@@ -6176,6 +6847,20 @@ spec:
                               type: "object"
                             syscallMonitorEnabled:
                               description: "SyscallMonitorEnabled enables Syscall Monitoring (recommended for troubleshooting only).\nDefault: false"
+                              type: "boolean"
+                          type: "object"
+                        dataPlane:
+                          description: "DataPlane configuration for the Agent Data Plane.\nAgent Data Plane is a high-performance sidecar that handles data ingestion."
+                          properties:
+                            dogstatsd:
+                              description: "Dogstatsd configures DogStatsD handling by the Data Plane."
+                              properties:
+                                enabled:
+                                  description: "Enabled configures the Data Plane to handle DogStatsD traffic.\nWhen enabled, DogStatsD is disabled in the Core Agent.\nDefault: false"
+                                  type: "boolean"
+                              type: "object"
+                            enabled:
+                              description: "Enabled enables the Data Plane.\nDefault: false"
                               type: "boolean"
                           type: "object"
                         dogstatsd:
@@ -6236,7 +6921,7 @@ spec:
                               description: "OriginDetectionEnabled enables origin detection for container tagging.\nSee also: https://docs.datadoghq.com/developers/dogstatsd/unix_socket/#using-origin-detection-for-container-tagging"
                               type: "boolean"
                             tagCardinality:
-                              description: "TagCardinality configures tag cardinality for the metrics collected using origin detection (`low`, `orchestrator` or `high`).\nSee also: https://docs.datadoghq.com/getting_started/tagging/assigning_tags/?tab=containerizedenvironments#environment-variables\nCardinality default: low"
+                              description: "TagCardinality configures tag cardinality for the metrics collected using origin detection (`low`, `orchestrator` or `high`).\nThis setting only applies when OriginDetectionEnabled is true.\nSee also: https://docs.datadoghq.com/getting_started/tagging/assigning_tags/?tab=containerizedenvironments#environment-variables\nCardinality default: low"
                               type: "string"
                             unixDomainSocketConfig:
                               description: "UnixDomainSocketConfig contains socket configuration.\nSee also: https://docs.datadoghq.com/agent/kubernetes/apm/?tab=helm#agent-environment-variables\nEnabled Default: true\nPath Default: `/var/run/datadog/dsd.socket`"
@@ -6629,6 +7314,9 @@ spec:
                             collectDNSStats:
                               description: "CollectDNSStats enables DNS stat collection.\nDefault: false"
                               type: "boolean"
+                            directSend:
+                              description: "DirectSend enables CNM/USM to send data directly to the backend\nDefault: false"
+                              type: "boolean"
                             enableConntrack:
                               description: "EnableConntrack enables the system-probe agent to connect to the netlink/conntrack subsystem to add NAT information to connection data.\nSee also: http://conntrack-tools.netfilter.org/\nDefault: false"
                               type: "boolean"
@@ -6704,6 +7392,81 @@ spec:
                             scrubContainers:
                               description: "ScrubContainers enables scrubbing of sensitive container data (passwords, tokens, etc. ).\nDefault: true"
                               type: "boolean"
+                          type: "object"
+                        otelAgentGateway:
+                          description: "OtelAgentGateway configuration."
+                          properties:
+                            conf:
+                              description: "Conf overrides the configuration for the default OTel Agent Gateway.\nThis must point to a ConfigMap containing a valid OTel collector configuration.\nWhen passing a configmap, file name *must* be otel-gateway-config.yaml."
+                              properties:
+                                configData:
+                                  description: "ConfigData corresponds to the configuration file content."
+                                  type: "string"
+                                configMap:
+                                  description: "ConfigMap references an existing ConfigMap with the configuration file content."
+                                  properties:
+                                    items:
+                                      description: "Items maps a ConfigMap data `key` to a file `path` mount."
+                                      items:
+                                        description: "Maps a string key to a path within a volume."
+                                        properties:
+                                          key:
+                                            description: "key is the key to project."
+                                            type: "string"
+                                          mode:
+                                            description: "mode is Optional: mode bits used to set permissions on this file.\nMust be an octal value between 0000 and 0777 or a decimal value between 0 and 511.\nYAML accepts both octal and decimal values, JSON requires decimal values for mode bits.\nIf not specified, the volume defaultMode will be used.\nThis might be in conflict with other options that affect the file\nmode, like fsGroup, and the result can be other mode bits set."
+                                            format: "int32"
+                                            type: "integer"
+                                          path:
+                                            description: "path is the relative path of the file to map the key to.\nMay not be an absolute path.\nMay not contain the path element '..'.\nMay not start with the string '..'."
+                                            type: "string"
+                                        required:
+                                          - "key"
+                                          - "path"
+                                        type: "object"
+                                      type: "array"
+                                      x-kubernetes-list-map-keys:
+                                        - "key"
+                                      x-kubernetes-list-type: "map"
+                                    name:
+                                      description: "Name is the name of the ConfigMap."
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            enabled:
+                              description: "Enabled enables the OTel Agent Gateway.\nDefault: false"
+                              type: "boolean"
+                            featureGates:
+                              description: "FeatureGates are the feature gates to pass to the OTel collector as a comma-separated list.\nExample: \"component.UseLocalHostAsDefaultHost,connector.datadogconnector.NativeIngest\""
+                              type: "string"
+                            ports:
+                              description: "Ports contains the ports that the OTel Collector is listening on.\nDefaults: otel-grpc:4317 / otel-http:4318."
+                              items:
+                                description: "ContainerPort represents a network port in a single container."
+                                properties:
+                                  containerPort:
+                                    description: "Number of port to expose on the pod's IP address.\nThis must be a valid port number, 0 < x < 65536."
+                                    format: "int32"
+                                    type: "integer"
+                                  hostIP:
+                                    description: "What host IP to bind the external port to."
+                                    type: "string"
+                                  hostPort:
+                                    description: "Number of port to expose on the host.\nIf specified, this must be a valid port number, 0 < x < 65536.\nIf HostNetwork is specified, this must match ContainerPort.\nMost containers do not need this."
+                                    format: "int32"
+                                    type: "integer"
+                                  name:
+                                    description: "If specified, this must be an IANA_SVC_NAME and unique within the pod. Each\nnamed port in a pod must have a unique name. Name for the port that can be\nreferred to by services."
+                                    type: "string"
+                                  protocol:
+                                    default: "TCP"
+                                    description: "Protocol for port. Must be UDP, TCP, or SCTP.\nDefaults to \"TCP\"."
+                                    type: "string"
+                                required:
+                                  - "containerPort"
+                                type: "object"
+                              type: "array"
+                              x-kubernetes-list-type: "atomic"
                           type: "object"
                         otelCollector:
                           description: "OtelCollector configuration."
@@ -6920,10 +7683,10 @@ spec:
                               description: "Enables the service discovery check.\nDefault: false"
                               type: "boolean"
                             networkStats:
-                              description: "Enables the service discovery network stats collection.\nDefault: true"
+                              description: "DEPRECATED: NetworkStats is no longer configurable and will be ignored. Scheduled for removal in v1.28."
                               properties:
                                 enabled:
-                                  description: "Enables the Service Discovery Network Stats feature.\nDefault: true"
+                                  description: "DEPRECATED: this field is ignored."
                                   type: "boolean"
                               type: "object"
                           type: "object"
