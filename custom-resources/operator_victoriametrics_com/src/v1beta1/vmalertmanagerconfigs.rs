@@ -785,9 +785,14 @@ pub struct VmAlertmanagerConfigReceiversEmailConfigsTlsConfigKeySecret {
 /// and v0.29.0 alertmanager version
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversIncidentioConfigs {
-    /// AlertSourceToken is used to authenticate with incident.io
+    /// AlertSourceToken is used to authenticate with incident.io.
+    /// Mutually exclusive with AlertSourceTokenFile.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub alert_source_token: Option<VmAlertmanagerConfigReceiversIncidentioConfigsAlertSourceToken>,
+    /// AlertSourceTokenFile defines the path to a file that contains the alert source token.
+    /// Mutually exclusive with AlertSourceToken.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub alert_source_token_file: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http_config: Option<serde_json::Value>,
     /// MaxAlerts defines maximum number of alerts to be sent per incident.io message.
@@ -801,11 +806,17 @@ pub struct VmAlertmanagerConfigReceiversIncidentioConfigs {
     pub timeout: Option<String>,
     /// The URL to send the incident.io alert. This would typically be provided by the
     /// incident.io team when setting up an alert source.
+    /// Mutually exclusive with URLFile.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
+    /// URLFile defines the path to a file that holds the incident.io alert URL.
+    /// Mutually exclusive with URL.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub url_file: Option<String>,
 }
 
-/// AlertSourceToken is used to authenticate with incident.io
+/// AlertSourceToken is used to authenticate with incident.io.
+/// Mutually exclusive with AlertSourceTokenFile.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAlertmanagerConfigReceiversIncidentioConfigsAlertSourceToken {
     /// The key of the secret to select from.  Must be a valid secret key.

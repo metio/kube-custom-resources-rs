@@ -6326,6 +6326,12 @@ pub struct ClusterStatus {
     /// secret data
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretsResourceVersion")]
     pub secrets_resource_version: Option<ClusterStatusSecretsResourceVersion>,
+    /// Selector is the serialized form of the label selector that identifies
+    /// the pods managed by this cluster. Populated by the operator and exposed
+    /// through the scale sub-resource so an autoscaler (such as HPA or VPA)
+    /// can discover the managed instance pods.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selector: Option<String>,
     /// SwitchReplicaClusterStatus is the status of the switch to replica cluster
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "switchReplicaClusterStatus")]
     pub switch_replica_cluster_status: Option<ClusterStatusSwitchReplicaClusterStatus>,

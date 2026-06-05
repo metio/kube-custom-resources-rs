@@ -1421,10 +1421,14 @@ pub struct RouteOptionOptionsRatelimitRateLimits {
     pub limit: Option<RouteOptionOptionsRatelimitRateLimitsLimit>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "setActions")]
     pub set_actions: Option<Vec<RouteOptionOptionsRatelimitRateLimitsSetActions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RouteOptionOptionsRatelimitRateLimitsActions {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cel: Option<RouteOptionOptionsRatelimitRateLimitsActionsCel>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationCluster")]
     pub destination_cluster: Option<RouteOptionOptionsRatelimitRateLimitsActionsDestinationCluster>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "genericKey")]
@@ -1439,6 +1443,14 @@ pub struct RouteOptionOptionsRatelimitRateLimitsActions {
     pub request_headers: Option<RouteOptionOptionsRatelimitRateLimitsActionsRequestHeaders>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceCluster")]
     pub source_cluster: Option<RouteOptionOptionsRatelimitRateLimitsActionsSourceCluster>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RouteOptionOptionsRatelimitRateLimitsActionsCel {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expression: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1559,6 +1571,8 @@ pub struct RouteOptionOptionsRatelimitRateLimitsLimitDynamicMetadataMetadataKeyP
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RouteOptionOptionsRatelimitRateLimitsSetActions {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cel: Option<RouteOptionOptionsRatelimitRateLimitsSetActionsCel>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationCluster")]
     pub destination_cluster: Option<RouteOptionOptionsRatelimitRateLimitsSetActionsDestinationCluster>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "genericKey")]
@@ -1573,6 +1587,14 @@ pub struct RouteOptionOptionsRatelimitRateLimitsSetActions {
     pub request_headers: Option<RouteOptionOptionsRatelimitRateLimitsSetActionsRequestHeaders>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceCluster")]
     pub source_cluster: Option<RouteOptionOptionsRatelimitRateLimitsSetActionsSourceCluster>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RouteOptionOptionsRatelimitRateLimitsSetActionsCel {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expression: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1717,10 +1739,14 @@ pub struct RouteOptionOptionsRatelimitEarlyRateLimits {
     pub limit: Option<RouteOptionOptionsRatelimitEarlyRateLimitsLimit>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "setActions")]
     pub set_actions: Option<Vec<RouteOptionOptionsRatelimitEarlyRateLimitsSetActions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RouteOptionOptionsRatelimitEarlyRateLimitsActions {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cel: Option<RouteOptionOptionsRatelimitEarlyRateLimitsActionsCel>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationCluster")]
     pub destination_cluster: Option<RouteOptionOptionsRatelimitEarlyRateLimitsActionsDestinationCluster>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "genericKey")]
@@ -1735,6 +1761,14 @@ pub struct RouteOptionOptionsRatelimitEarlyRateLimitsActions {
     pub request_headers: Option<RouteOptionOptionsRatelimitEarlyRateLimitsActionsRequestHeaders>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceCluster")]
     pub source_cluster: Option<RouteOptionOptionsRatelimitEarlyRateLimitsActionsSourceCluster>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RouteOptionOptionsRatelimitEarlyRateLimitsActionsCel {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expression: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1855,6 +1889,8 @@ pub struct RouteOptionOptionsRatelimitEarlyRateLimitsLimitDynamicMetadataMetadat
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RouteOptionOptionsRatelimitEarlyRateLimitsSetActions {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cel: Option<RouteOptionOptionsRatelimitEarlyRateLimitsSetActionsCel>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationCluster")]
     pub destination_cluster: Option<RouteOptionOptionsRatelimitEarlyRateLimitsSetActionsDestinationCluster>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "genericKey")]
@@ -1869,6 +1905,14 @@ pub struct RouteOptionOptionsRatelimitEarlyRateLimitsSetActions {
     pub request_headers: Option<RouteOptionOptionsRatelimitEarlyRateLimitsSetActionsRequestHeaders>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceCluster")]
     pub source_cluster: Option<RouteOptionOptionsRatelimitEarlyRateLimitsSetActionsSourceCluster>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RouteOptionOptionsRatelimitEarlyRateLimitsSetActionsCel {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expression: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1989,10 +2033,14 @@ pub struct RouteOptionOptionsRatelimitRegularRateLimits {
     pub limit: Option<RouteOptionOptionsRatelimitRegularRateLimitsLimit>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "setActions")]
     pub set_actions: Option<Vec<RouteOptionOptionsRatelimitRegularRateLimitsSetActions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RouteOptionOptionsRatelimitRegularRateLimitsActions {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cel: Option<RouteOptionOptionsRatelimitRegularRateLimitsActionsCel>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationCluster")]
     pub destination_cluster: Option<RouteOptionOptionsRatelimitRegularRateLimitsActionsDestinationCluster>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "genericKey")]
@@ -2007,6 +2055,14 @@ pub struct RouteOptionOptionsRatelimitRegularRateLimitsActions {
     pub request_headers: Option<RouteOptionOptionsRatelimitRegularRateLimitsActionsRequestHeaders>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceCluster")]
     pub source_cluster: Option<RouteOptionOptionsRatelimitRegularRateLimitsActionsSourceCluster>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RouteOptionOptionsRatelimitRegularRateLimitsActionsCel {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expression: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2127,6 +2183,8 @@ pub struct RouteOptionOptionsRatelimitRegularRateLimitsLimitDynamicMetadataMetad
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RouteOptionOptionsRatelimitRegularRateLimitsSetActions {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cel: Option<RouteOptionOptionsRatelimitRegularRateLimitsSetActionsCel>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationCluster")]
     pub destination_cluster: Option<RouteOptionOptionsRatelimitRegularRateLimitsSetActionsDestinationCluster>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "genericKey")]
@@ -2141,6 +2199,14 @@ pub struct RouteOptionOptionsRatelimitRegularRateLimitsSetActions {
     pub request_headers: Option<RouteOptionOptionsRatelimitRegularRateLimitsSetActionsRequestHeaders>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceCluster")]
     pub source_cluster: Option<RouteOptionOptionsRatelimitRegularRateLimitsSetActionsSourceCluster>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RouteOptionOptionsRatelimitRegularRateLimitsSetActionsCel {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expression: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2347,6 +2413,8 @@ pub struct RouteOptionOptionsRetriesRetryBackOff {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RouteOptionOptionsShadowing {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableShadowHostSuffixAppend")]
+    pub disable_shadow_host_suffix_append: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub percentage: Option<f64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

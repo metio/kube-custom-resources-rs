@@ -57,6 +57,7 @@ spec:
                       properties:
                         timeout:
                           description: "Timeout for admin client policy in milliseconds."
+                          minimum: 0.0
                           type: "integer"
                       required:
                         - "timeout"
@@ -68,6 +69,8 @@ spec:
                         properties:
                           name:
                             description: "Name of this role."
+                            maxLength: 63
+                            minLength: 1
                             type: "string"
                           privileges:
                             description: "Privileges granted to this role."
@@ -110,6 +113,8 @@ spec:
                             type: "string"
                           name:
                             description: "Name is the user's username."
+                            maxLength: 63
+                            minLength: 1
                             type: "string"
                           roles:
                             description: "Roles is the list of roles granted to the user."
@@ -139,6 +144,7 @@ spec:
                   description: "AerospikeNetworkPolicy specifies how clients and tools access the Aerospike cluster."
                   properties:
                     access:
+                      default: "hostInternal"
                       description: "AccessType is the type of network address to use for Aerospike access address.\nDefaults to hostInternal."
                       enum:
                         - "pod"
@@ -148,6 +154,7 @@ spec:
                         - "customInterface"
                       type: "string"
                     alternateAccess:
+                      default: "hostExternal"
                       description: "AlternateAccessType is the type of network address to use for Aerospike alternate access address.\nDefaults to hostExternal."
                       enum:
                         - "pod"
@@ -198,6 +205,7 @@ spec:
                         - "customInterface"
                       type: "string"
                     tlsAccess:
+                      default: "hostInternal"
                       description: "TLSAccessType is the type of network address to use for Aerospike TLS access address.\nDefaults to hostInternal."
                       enum:
                         - "pod"
@@ -207,6 +215,7 @@ spec:
                         - "customInterface"
                       type: "string"
                     tlsAlternateAccess:
+                      default: "hostExternal"
                       description: "TLSAlternateAccessType is the type of network address to use for Aerospike TLS alternate access address.\nDefaults to hostExternal."
                       enum:
                         - "pod"
@@ -249,6 +258,7 @@ spec:
                   type: "object"
                 image:
                   description: "Aerospike server image"
+                  minLength: 1
                   type: "string"
                 k8sNodeBlockList:
                   description: "K8sNodeBlockList is a list of Kubernetes nodes which are not used for Aerospike pods. Pods are not scheduled on\nthese nodes. Pods are migrated from these nodes if already present. This is useful for the maintenance of\nKubernetes nodes."
@@ -1239,6 +1249,10 @@ spec:
                       type: "object"
                     dnsPolicy:
                       description: "DnsPolicy same as https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy.\nIf hostNetwork is true and policy is not specified, it defaults to ClusterFirstWithHostNet"
+                      enum:
+                        - "ClusterFirstWithHostNet"
+                        - "ClusterFirst"
+                        - "None"
                       type: "string"
                     effectiveDNSPolicy:
                       description: "Effective value of the DNSPolicy"
@@ -3961,7 +3975,9 @@ spec:
                                     type: "string"
                                 type: "object"
                               cleanupThreads:
+                                default: 1
                                 description: "CleanupThreads contains the maximum number of cleanup threads(dd or blkdiscard) per init container."
+                                minimum: 0.0
                                 type: "integer"
                               deleteLocalStorageOnRestart:
                                 description: "DeleteLocalStorageOnRestart enables the deletion of local storage PVCs when a pod is restarted or rescheduled\nby AKO. It only considers local storage classes given in the localStorageClasses field."
@@ -4341,7 +4357,9 @@ spec:
                             description: "ForceBlockFromRoster, when set to true, forcefully removes all nodes in this rack from the roster.\nWith this enabled, the operator ignores unavailable or dead partitions and proceeds with node removal.\nAdditionally, any failed or pending pods in this rack are also ignored during this process.\nIt may result in data loss. Use this with caution."
                             type: "boolean"
                           id:
-                            description: "Identifier for the rack"
+                            description: "Identifier for the rack. Allowed range matches Aerospike namespace rack-id."
+                            maximum: 1000000.0
+                            minimum: 0.0
                             type: "integer"
                           nodeName:
                             description: "K8s Node name for setting rack affinity. Rack pods will be deployed in given k8s Node"
@@ -4989,7 +5007,9 @@ spec:
                                     type: "string"
                                 type: "object"
                               cleanupThreads:
+                                default: 1
                                 description: "CleanupThreads contains the maximum number of cleanup threads(dd or blkdiscard) per init container."
+                                minimum: 0.0
                                 type: "integer"
                               deleteLocalStorageOnRestart:
                                 description: "DeleteLocalStorageOnRestart enables the deletion of local storage PVCs when a pod is restarted or rescheduled\nby AKO. It only considers local storage classes given in the localStorageClasses field."
@@ -5431,6 +5451,8 @@ spec:
                 size:
                   description: "Aerospike cluster size"
                   format: "int32"
+                  maximum: 256.0
+                  minimum: 1.0
                   type: "integer"
                 storage:
                   description: "Storage specify persistent storage to use for the Aerospike pods"
@@ -5480,7 +5502,9 @@ spec:
                           type: "string"
                       type: "object"
                     cleanupThreads:
+                      default: 1
                       description: "CleanupThreads contains the maximum number of cleanup threads(dd or blkdiscard) per init container."
+                      minimum: 0.0
                       type: "integer"
                     deleteLocalStorageOnRestart:
                       description: "DeleteLocalStorageOnRestart enables the deletion of local storage PVCs when a pod is restarted or rescheduled\nby AKO. It only considers local storage classes given in the localStorageClasses field."
@@ -5857,6 +5881,8 @@ spec:
                       x-kubernetes-list-type: "map"
                   type: "object"
                 validationPolicy:
+                  default:
+                    skipWorkDirValidate: false
                   description: "ValidationPolicy controls validation of the Aerospike cluster resource."
                   properties:
                     skipWorkDirValidate:
@@ -5885,6 +5911,7 @@ spec:
                       properties:
                         timeout:
                           description: "Timeout for admin client policy in milliseconds."
+                          minimum: 0.0
                           type: "integer"
                       required:
                         - "timeout"
@@ -5896,6 +5923,8 @@ spec:
                         properties:
                           name:
                             description: "Name of this role."
+                            maxLength: 63
+                            minLength: 1
                             type: "string"
                           privileges:
                             description: "Privileges granted to this role."
@@ -5938,6 +5967,8 @@ spec:
                             type: "string"
                           name:
                             description: "Name is the user's username."
+                            maxLength: 63
+                            minLength: 1
                             type: "string"
                           roles:
                             description: "Roles is the list of roles granted to the user."
@@ -5968,6 +5999,7 @@ spec:
                   description: "AerospikeNetworkPolicy specifies how clients and tools access the Aerospike cluster."
                   properties:
                     access:
+                      default: "hostInternal"
                       description: "AccessType is the type of network address to use for Aerospike access address.\nDefaults to hostInternal."
                       enum:
                         - "pod"
@@ -5977,6 +6009,7 @@ spec:
                         - "customInterface"
                       type: "string"
                     alternateAccess:
+                      default: "hostExternal"
                       description: "AlternateAccessType is the type of network address to use for Aerospike alternate access address.\nDefaults to hostExternal."
                       enum:
                         - "pod"
@@ -6027,6 +6060,7 @@ spec:
                         - "customInterface"
                       type: "string"
                     tlsAccess:
+                      default: "hostInternal"
                       description: "TLSAccessType is the type of network address to use for Aerospike TLS access address.\nDefaults to hostInternal."
                       enum:
                         - "pod"
@@ -6036,6 +6070,7 @@ spec:
                         - "customInterface"
                       type: "string"
                     tlsAlternateAccess:
+                      default: "hostExternal"
                       description: "TLSAlternateAccessType is the type of network address to use for Aerospike TLS alternate access address.\nDefaults to hostExternal."
                       enum:
                         - "pod"
@@ -7076,6 +7111,10 @@ spec:
                       type: "object"
                     dnsPolicy:
                       description: "DnsPolicy same as https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy.\nIf hostNetwork is true and policy is not specified, it defaults to ClusterFirstWithHostNet"
+                      enum:
+                        - "ClusterFirstWithHostNet"
+                        - "ClusterFirst"
+                        - "None"
                       type: "string"
                     effectiveDNSPolicy:
                       description: "Effective value of the DNSPolicy"
@@ -9911,7 +9950,9 @@ spec:
                                     type: "string"
                                 type: "object"
                               cleanupThreads:
+                                default: 1
                                 description: "CleanupThreads contains the maximum number of cleanup threads(dd or blkdiscard) per init container."
+                                minimum: 0.0
                                 type: "integer"
                               deleteLocalStorageOnRestart:
                                 description: "DeleteLocalStorageOnRestart enables the deletion of local storage PVCs when a pod is restarted or rescheduled\nby AKO. It only considers local storage classes given in the localStorageClasses field."
@@ -10291,7 +10332,9 @@ spec:
                             description: "ForceBlockFromRoster, when set to true, forcefully removes all nodes in this rack from the roster.\nWith this enabled, the operator ignores unavailable or dead partitions and proceeds with node removal.\nAdditionally, any failed or pending pods in this rack are also ignored during this process.\nIt may result in data loss. Use this with caution."
                             type: "boolean"
                           id:
-                            description: "Identifier for the rack"
+                            description: "Identifier for the rack. Allowed range matches Aerospike namespace rack-id."
+                            maximum: 1000000.0
+                            minimum: 0.0
                             type: "integer"
                           nodeName:
                             description: "K8s Node name for setting rack affinity. Rack pods will be deployed in given k8s Node"
@@ -10939,7 +10982,9 @@ spec:
                                     type: "string"
                                 type: "object"
                               cleanupThreads:
+                                default: 1
                                 description: "CleanupThreads contains the maximum number of cleanup threads(dd or blkdiscard) per init container."
+                                minimum: 0.0
                                 type: "integer"
                               deleteLocalStorageOnRestart:
                                 description: "DeleteLocalStorageOnRestart enables the deletion of local storage PVCs when a pod is restarted or rescheduled\nby AKO. It only considers local storage classes given in the localStorageClasses field."
@@ -11473,7 +11518,9 @@ spec:
                           type: "string"
                       type: "object"
                     cleanupThreads:
+                      default: 1
                       description: "CleanupThreads contains the maximum number of cleanup threads(dd or blkdiscard) per init container."
+                      minimum: 0.0
                       type: "integer"
                     deleteLocalStorageOnRestart:
                       description: "DeleteLocalStorageOnRestart enables the deletion of local storage PVCs when a pod is restarted or rescheduled\nby AKO. It only considers local storage classes given in the localStorageClasses field."

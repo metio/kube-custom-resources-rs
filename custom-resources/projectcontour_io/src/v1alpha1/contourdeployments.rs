@@ -2828,6 +2828,10 @@ pub struct ContourDeploymentRuntimeSettingsEnvoyListenerTls {
     /// Note: This list is a superset of what is valid for stock Envoy builds and those using BoringSSL FIPS.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cipherSuites")]
     pub cipher_suites: Option<Vec<String>>,
+    /// Fingerprint defines TLS fingerprinting configuration
+    /// for the TLS Inspector listener filter.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub fingerprint: Option<ContourDeploymentRuntimeSettingsEnvoyListenerTlsFingerprint>,
     /// MaximumProtocolVersion is the maximum TLS version this vhost should
     /// negotiate.
     /// Values: `1.2`, `1.3`(default).
@@ -2840,6 +2844,20 @@ pub struct ContourDeploymentRuntimeSettingsEnvoyListenerTls {
     /// Other values will produce an error.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minimumProtocolVersion")]
     pub minimum_protocol_version: Option<String>,
+}
+
+/// Fingerprint defines TLS fingerprinting configuration
+/// for the TLS Inspector listener filter.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ContourDeploymentRuntimeSettingsEnvoyListenerTlsFingerprint {
+    /// JA3 enables JA3 fingerprinting in the TLS Inspector.
+    /// When true, populates JA3 hash in dynamic metadata.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ja3: Option<bool>,
+    /// JA4 enables JA4 fingerprinting in the TLS Inspector.
+    /// When true, populates JA4 hash in dynamic metadata.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ja4: Option<bool>,
 }
 
 /// Logging defines how Envoy's logs can be configured.
@@ -3041,12 +3059,19 @@ pub struct ContourDeploymentRuntimeSettingsGlobalExtAuth {
     /// from internal authorization to Contour external authorization.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failOpen")]
     pub fail_open: Option<bool>,
+    /// HTTPAuthorizationServerSettings defines configurations for interacting with an external HTTP authorization server.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpSettings")]
+    pub http_settings: Option<ContourDeploymentRuntimeSettingsGlobalExtAuthHttpSettings>,
     /// ResponseTimeout configures maximum time to wait for a check response from the authorization server.
     /// Timeout durations are expressed in the Go [Duration format](<https://godoc.org/time#ParseDuration).>
     /// Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
     /// The string "infinity" is also a valid input and specifies no timeout.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseTimeout")]
     pub response_timeout: Option<String>,
+    /// ServiceType sets the protocol used to communicate with
+    /// the external authorization server.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceType")]
+    pub service_type: Option<ContourDeploymentRuntimeSettingsGlobalExtAuthServiceType>,
     /// WithRequestBody specifies configuration for sending the client request's body to authorization server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "withRequestBody")]
     pub with_request_body: Option<ContourDeploymentRuntimeSettingsGlobalExtAuthWithRequestBody>,
@@ -3085,6 +3110,76 @@ pub struct ContourDeploymentRuntimeSettingsGlobalExtAuthExtensionRef {
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+}
+
+/// HTTPAuthorizationServerSettings defines configurations for interacting with an external HTTP authorization server.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ContourDeploymentRuntimeSettingsGlobalExtAuthHttpSettings {
+    /// AllowedAuthorizationHeaders specifies client request headers that will be sent to the authorization server.
+    /// Host, Method, Path, Content-Length, and Authorization headers are additionally included in the list.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedAuthorizationHeaders")]
+    pub allowed_authorization_headers: Option<Vec<ContourDeploymentRuntimeSettingsGlobalExtAuthHttpSettingsAllowedAuthorizationHeaders>>,
+    /// AllowedUpstreamHeaders specifies response headers from the authorization server
+    /// that may be added to the original client request before sending it to the upstream.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedUpstreamHeaders")]
+    pub allowed_upstream_headers: Option<Vec<ContourDeploymentRuntimeSettingsGlobalExtAuthHttpSettingsAllowedUpstreamHeaders>>,
+    /// PathPrefix Sets a prefix to the value of authorization request header Path.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pathPrefix")]
+    pub path_prefix: Option<String>,
+}
+
+/// HTTPAuthorizationServerAllowedHeaders specifies how to conditionally match against allowed headers
+/// in the context of HTTP authorization. Regex support is intentionally excluded to simplify the user
+/// experience and prevent potential issues. Only one of Prefix, Exact, Suffix or Contains must be provided.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ContourDeploymentRuntimeSettingsGlobalExtAuthHttpSettingsAllowedAuthorizationHeaders {
+    /// Contains specifies a substring that must be present in the header name.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// Exact specifies a string that the header name must be equal to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exact: Option<String>,
+    /// IgnoreCase specifies whether string matching should be case-insensitive.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreCase")]
+    pub ignore_case: Option<bool>,
+    /// Prefix defines a prefix match for the header name.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub prefix: Option<String>,
+    /// Suffix defines a suffix match for a header name.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub suffix: Option<String>,
+}
+
+/// HTTPAuthorizationServerAllowedHeaders specifies how to conditionally match against allowed headers
+/// in the context of HTTP authorization. Regex support is intentionally excluded to simplify the user
+/// experience and prevent potential issues. Only one of Prefix, Exact, Suffix or Contains must be provided.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ContourDeploymentRuntimeSettingsGlobalExtAuthHttpSettingsAllowedUpstreamHeaders {
+    /// Contains specifies a substring that must be present in the header name.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// Exact specifies a string that the header name must be equal to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exact: Option<String>,
+    /// IgnoreCase specifies whether string matching should be case-insensitive.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreCase")]
+    pub ignore_case: Option<bool>,
+    /// Prefix defines a prefix match for the header name.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub prefix: Option<String>,
+    /// Suffix defines a suffix match for a header name.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub suffix: Option<String>,
+}
+
+/// GlobalExternalAuthorization allows envoys external authorization filter
+/// to be enabled for all virtual hosts.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ContourDeploymentRuntimeSettingsGlobalExtAuthServiceType {
+    #[serde(rename = "http")]
+    Http,
+    #[serde(rename = "grpc")]
+    Grpc,
 }
 
 /// WithRequestBody specifies configuration for sending the client request's body to authorization server.

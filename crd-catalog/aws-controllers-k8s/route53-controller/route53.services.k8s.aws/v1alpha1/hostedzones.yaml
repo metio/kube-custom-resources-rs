@@ -32,6 +32,9 @@ spec:
                 delegationSetID:
                   description: "If you want to associate a reusable delegation set with this hosted zone,\nthe ID that Amazon Route 53 assigned to the reusable delegation set when\nyou created it. For more information about reusable delegation sets, see\nCreateReusableDelegationSet (https://docs.aws.amazon.com/Route53/latest/APIReference/API_CreateReusableDelegationSet.html).\n\nIf you are using a reusable delegation set to create a public hosted zone\nfor a subdomain, make sure that the parent hosted zone doesn't use one or\nmore of the same name servers. If you have overlapping nameservers, the operation\nwill cause a ConflictingDomainsExist error."
                   type: "string"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
                 hostedZoneConfig:
                   description: "(Optional) A complex type that contains the following optional values:\n\n   * For public and private hosted zones, an optional comment\n\n   * For private hosted zones, an optional PrivateZone element\n\nIf you don't specify a comment or the PrivateZone element, omit HostedZoneConfig\nand the other elements."
                   properties:
@@ -39,10 +42,16 @@ spec:
                       type: "string"
                     privateZone:
                       type: "boolean"
+                      x-kubernetes-validations:
+                        - message: "Value is immutable once set"
+                          rule: "self == oldSelf"
                   type: "object"
                 name:
                   description: "The name of the domain. Specify a fully qualified domain name, for example,\nwww.example.com. The trailing dot is optional; Amazon Route 53 assumes that\nthe domain name is fully qualified. This means that Route 53 treats www.example.com\n(without a trailing dot) and www.example.com. (with a trailing dot) as identical.\n\nIf you're creating a public hosted zone, this is the name you have registered\nwith your DNS registrar. If your domain name is registered with a registrar\nother than Route 53, change the name servers for your domain to the set of\nNameServers that CreateHostedZone returns in DelegationSet."
                   type: "string"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
                 tags:
                   description: "A complex type that contains a list of the tags that you want to add to the\nspecified health check or hosted zone and/or the tags that you want to edit\nValue for.\n\nYou can add a maximum of 10 tags to a health check or a hosted zone."
                   items:
@@ -136,6 +145,9 @@ spec:
                       type: "string"
                     privateZone:
                       type: "boolean"
+                      x-kubernetes-validations:
+                        - message: "Value is immutable once set"
+                          rule: "self == oldSelf"
                   type: "object"
                 delegationSet:
                   description: "A complex type that describes the name servers for this hosted zone."

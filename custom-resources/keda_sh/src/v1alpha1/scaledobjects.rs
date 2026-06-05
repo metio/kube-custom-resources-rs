@@ -121,8 +121,8 @@ pub struct ScaledObjectAdvancedHorizontalPodAutoscalerConfigBehaviorScaleDown {
     /// and scale-down and scale-up tolerances of 5% and 1% respectively, scaling will be
     /// triggered when the actual consumption falls below 95Mi or exceeds 101Mi.
     /// 
-    /// This is an alpha field and requires enabling the HPAConfigurableTolerance
-    /// feature gate.
+    /// This is an beta field and requires the HPAConfigurableTolerance feature
+    /// gate to be enabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerance: Option<IntOrString>,
 }
@@ -176,8 +176,8 @@ pub struct ScaledObjectAdvancedHorizontalPodAutoscalerConfigBehaviorScaleUp {
     /// and scale-down and scale-up tolerances of 5% and 1% respectively, scaling will be
     /// triggered when the actual consumption falls below 95Mi or exceeds 101Mi.
     /// 
-    /// This is an alpha field and requires enabling the HPAConfigurableTolerance
-    /// feature gate.
+    /// This is an beta field and requires the HPAConfigurableTolerance feature
+    /// gate to be enabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerance: Option<IntOrString>,
 }

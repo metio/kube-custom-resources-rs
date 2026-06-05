@@ -178,6 +178,14 @@ pub struct MattermostDatabase {
     /// Defines the configuration of database managed by Kubernetes operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatorManaged")]
     pub operator_managed: Option<MattermostDatabaseOperatorManaged>,
+    /// ReadinessCheck configures *how* the readiness init container is built.
+    /// When nil (default), the Operator uses the legacy "external" mode
+    /// (postgres:13 / appropriate/curl images). Ignored when
+    /// DisableReadinessCheck is true. Currently only consulted for the
+    /// external-database path; operator-managed databases always use the
+    /// legacy probe.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessCheck")]
+    pub readiness_check: Option<MattermostDatabaseReadinessCheck>,
 }
 
 /// Defines the configuration of and external database.
@@ -271,6 +279,46 @@ pub struct MattermostDatabaseOperatorManagedResourcesClaims {
     /// only the result of this request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub request: Option<String>,
+}
+
+/// ReadinessCheck configures *how* the readiness init container is built.
+/// When nil (default), the Operator uses the legacy "external" mode
+/// (postgres:13 / appropriate/curl images). Ignored when
+/// DisableReadinessCheck is true. Currently only consulted for the
+/// external-database path; operator-managed databases always use the
+/// legacy probe.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MattermostDatabaseReadinessCheck {
+    /// Mode selects the readiness check implementation.
+    ///   "external" (default): use postgres:13 / appropriate/curl images
+    ///                         and probe via pg_isready / curl. Current
+    ///                         behavior; will be deprecated in a future
+    ///                         release.
+    ///   "builtin":  reuse the main Mattermost image and run
+    ///               `mattermost db ping --timeout=<Timeout>`. Requires
+    ///               a Mattermost version that ships `mattermost db ping`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<MattermostDatabaseReadinessCheckMode>,
+    /// Timeout for the readiness check. When Mode=builtin this value is
+    /// passed to `mattermost db ping --timeout`. Ignored when Mode=external
+    /// (the legacy `until pg_isready ...; sleep 5; done` loop has no
+    /// timeout). Defaults to 5m.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timeout: Option<String>,
+}
+
+/// ReadinessCheck configures *how* the readiness init container is built.
+/// When nil (default), the Operator uses the legacy "external" mode
+/// (postgres:13 / appropriate/curl images). Ignored when
+/// DisableReadinessCheck is true. Currently only consulted for the
+/// external-database path; operator-managed databases always use the
+/// legacy probe.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum MattermostDatabaseReadinessCheckMode {
+    #[serde(rename = "external")]
+    External,
+    #[serde(rename = "builtin")]
+    Builtin,
 }
 
 /// DeploymentTemplate defines configuration for the template for Mattermost deployment.
@@ -491,7 +539,7 @@ pub struct MattermostIngressHosts {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MattermostJobServer {
     /// Determines whether to create a dedicated Mattermost server deployment
-    /// which is configured to run scheduled jobs. This deployment will recieve
+    /// which is configured to run scheduled jobs. This deployment will receive
     /// no user traffic and the primary Mattermost deployment will no longer be
     /// configured to run jobs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dedicatedJobServer")]

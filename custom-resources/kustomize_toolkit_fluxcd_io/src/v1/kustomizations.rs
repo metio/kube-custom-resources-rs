@@ -61,6 +61,12 @@ pub struct KustomizationSpec {
     /// A list of resources to be included in the health assessment.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthChecks")]
     pub health_checks: Option<Vec<KustomizationHealthChecks>>,
+    /// Ignore is a list of rules for specifying which changes to ignore
+    /// during drift detection. These rules are applied to the resources managed
+    /// by the Kustomization and are used to exclude specific JSON pointer paths
+    /// from the drift detection and apply process.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ignore: Option<Vec<KustomizationIgnore>>,
     /// IgnoreMissingComponents instructs the controller to ignore Components paths
     /// not found in source by removing them from the generated kustomization.yaml
     /// before running kustomize build.
@@ -195,13 +201,14 @@ pub enum KustomizationDeletionPolicy {
     Orphan,
 }
 
-/// DependencyReference defines a Kustomization dependency on another Kustomization resource.
+/// DependencyReference contains enough information to locate the referenced Kubernetes resource object
+/// and optional CEL expression to assess its readiness.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KustomizationDependsOn {
     /// Name of the referent.
     pub name: String,
-    /// Namespace of the referent, defaults to the namespace of the Kustomization
-    /// resource object that contains the reference.
+    /// Namespace of the referent, defaults to the namespace of the resource
+    /// object that contains the reference.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// ReadyExpr is a CEL expression that can be used to assess the readiness
@@ -249,6 +256,61 @@ pub struct KustomizationHealthChecks {
     /// Namespace of the referent, when not specified it acts as LocalObjectReference.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+}
+
+/// IgnoreRule defines a rule to selectively disregard specific changes during
+/// the drift detection process.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KustomizationIgnore {
+    /// Paths is a list of JSON Pointer (RFC 6901) paths to be excluded from
+    /// consideration in a Kubernetes object.
+    pub paths: Vec<String>,
+    /// Target is a selector for specifying Kubernetes objects to which this
+    /// rule applies.
+    /// If Target is not set, the Paths will be ignored for all Kubernetes
+    /// objects within the manifest of the Kustomization.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub target: Option<KustomizationIgnoreTarget>,
+}
+
+/// Target is a selector for specifying Kubernetes objects to which this
+/// rule applies.
+/// If Target is not set, the Paths will be ignored for all Kubernetes
+/// objects within the manifest of the Kustomization.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KustomizationIgnoreTarget {
+    /// AnnotationSelector is a string that follows the label selection expression
+    /// <https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#api>
+    /// It matches with the resource annotations.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelector")]
+    pub annotation_selector: Option<String>,
+    /// Group is the API group to select resources from.
+    /// Together with Version and Kind it is capable of unambiguously identifying and/or selecting resources.
+    /// <https://github.com/kubernetes/community/blob/master/contributors/design-proposals/api-machinery/api-group.md>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub group: Option<String>,
+    /// Kind of the API Group to select resources from.
+    /// Together with Group and Version it is capable of unambiguously
+    /// identifying and/or selecting resources.
+    /// <https://github.com/kubernetes/community/blob/master/contributors/design-proposals/api-machinery/api-group.md>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
+    /// LabelSelector is a string that follows the label selection expression
+    /// <https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#api>
+    /// It matches with the resource labels.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<String>,
+    /// Name to match resources with.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Namespace to select resources from.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+    /// Version of the API Group to select resources from.
+    /// Together with Group and Kind it is capable of unambiguously identifying and/or selecting resources.
+    /// <https://github.com/kubernetes/community/blob/master/contributors/design-proposals/api-machinery/api-group.md>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub version: Option<String>,
 }
 
 /// Image contains an image name, a new name, a new tag or digest, which will replace the original name and tag.

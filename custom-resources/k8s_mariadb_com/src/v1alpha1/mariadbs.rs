@@ -230,33 +230,33 @@ pub struct MariaDbAffinity {
     /// Make sure you have at least as many Nodes available as the replicas to not end up with unscheduled Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "antiAffinityEnabled")]
     pub anti_affinity_enabled: Option<bool>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeaffinity-v1-core>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeaffinity-v1-core>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<MariaDbAffinityNodeAffinity>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#podantiaffinity-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#podantiaffinity-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<MariaDbAffinityPodAntiAffinity>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeaffinity-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeaffinity-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbAffinityNodeAffinity {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
     pub preferred_during_scheduling_ignored_during_execution: Option<Vec<MariaDbAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselector-v1-core>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselector-v1-core>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
     pub required_during_scheduling_ignored_during_execution: Option<MariaDbAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#preferredschedulingterm-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#preferredschedulingterm-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorterm-v1-core>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselectorterm-v1-core>
     pub preference: MariaDbAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
     pub weight: i32,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorterm-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselectorterm-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
@@ -265,7 +265,7 @@ pub struct MariaDbAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExec
     pub match_fields: Option<Vec<MariaDbAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorrequirement-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselectorrequirement-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     pub key: String,
@@ -276,7 +276,7 @@ pub struct MariaDbAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExec
     pub values: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorrequirement-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselectorrequirement-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     pub key: String,
@@ -287,14 +287,14 @@ pub struct MariaDbAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExec
     pub values: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselector-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselector-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     #[serde(rename = "nodeSelectorTerms")]
     pub node_selector_terms: Vec<MariaDbAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorterm-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselectorterm-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
@@ -303,7 +303,7 @@ pub struct MariaDbAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecu
     pub match_fields: Option<Vec<MariaDbAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorrequirement-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselectorrequirement-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     pub key: String,
@@ -314,7 +314,7 @@ pub struct MariaDbAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecu
     pub values: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorrequirement-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselectorrequirement-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     pub key: String,
@@ -325,7 +325,7 @@ pub struct MariaDbAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecu
     pub values: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#podantiaffinity-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#podantiaffinity-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbAffinityPodAntiAffinity {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
@@ -334,26 +334,26 @@ pub struct MariaDbAffinityPodAntiAffinity {
     pub required_during_scheduling_ignored_during_execution: Option<Vec<MariaDbAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#weightedpodaffinityterm-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#weightedpodaffinityterm-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#podaffinityterm-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#podaffinityterm-v1-core.>
     #[serde(rename = "podAffinityTerm")]
     pub pod_affinity_term: MariaDbAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
     pub weight: i32,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#podaffinityterm-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#podaffinityterm-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselector-v1-meta>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#labelselector-v1-meta>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<MariaDbAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselector-v1-meta>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#labelselector-v1-meta>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
@@ -362,7 +362,7 @@ pub struct MariaDbAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringE
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselectorrequirement-v1-meta>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#labelselectorrequirement-v1-meta>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     pub key: String,
@@ -372,17 +372,17 @@ pub struct MariaDbAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringE
     pub values: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#podaffinityterm-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#podaffinityterm-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselector-v1-meta>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#labelselector-v1-meta>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<MariaDbAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselector-v1-meta>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#labelselector-v1-meta>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
@@ -391,7 +391,7 @@ pub struct MariaDbAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringEx
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselectorrequirement-v1-meta>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#labelselectorrequirement-v1-meta>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     pub key: String,
@@ -579,33 +579,33 @@ pub struct MariaDbBootstrapFromRestoreJobAffinity {
     /// Make sure you have at least as many Nodes available as the replicas to not end up with unscheduled Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "antiAffinityEnabled")]
     pub anti_affinity_enabled: Option<bool>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeaffinity-v1-core>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeaffinity-v1-core>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<MariaDbBootstrapFromRestoreJobAffinityNodeAffinity>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#podantiaffinity-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#podantiaffinity-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<MariaDbBootstrapFromRestoreJobAffinityPodAntiAffinity>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeaffinity-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeaffinity-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbBootstrapFromRestoreJobAffinityNodeAffinity {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
     pub preferred_during_scheduling_ignored_during_execution: Option<Vec<MariaDbBootstrapFromRestoreJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselector-v1-core>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselector-v1-core>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
     pub required_during_scheduling_ignored_during_execution: Option<MariaDbBootstrapFromRestoreJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#preferredschedulingterm-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#preferredschedulingterm-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbBootstrapFromRestoreJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorterm-v1-core>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselectorterm-v1-core>
     pub preference: MariaDbBootstrapFromRestoreJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
     pub weight: i32,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorterm-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselectorterm-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbBootstrapFromRestoreJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
@@ -614,7 +614,7 @@ pub struct MariaDbBootstrapFromRestoreJobAffinityNodeAffinityPreferredDuringSche
     pub match_fields: Option<Vec<MariaDbBootstrapFromRestoreJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorrequirement-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselectorrequirement-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbBootstrapFromRestoreJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     pub key: String,
@@ -625,7 +625,7 @@ pub struct MariaDbBootstrapFromRestoreJobAffinityNodeAffinityPreferredDuringSche
     pub values: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorrequirement-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselectorrequirement-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbBootstrapFromRestoreJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     pub key: String,
@@ -636,14 +636,14 @@ pub struct MariaDbBootstrapFromRestoreJobAffinityNodeAffinityPreferredDuringSche
     pub values: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselector-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselector-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbBootstrapFromRestoreJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     #[serde(rename = "nodeSelectorTerms")]
     pub node_selector_terms: Vec<MariaDbBootstrapFromRestoreJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorterm-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselectorterm-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbBootstrapFromRestoreJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
@@ -652,7 +652,7 @@ pub struct MariaDbBootstrapFromRestoreJobAffinityNodeAffinityRequiredDuringSched
     pub match_fields: Option<Vec<MariaDbBootstrapFromRestoreJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorrequirement-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselectorrequirement-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbBootstrapFromRestoreJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     pub key: String,
@@ -663,7 +663,7 @@ pub struct MariaDbBootstrapFromRestoreJobAffinityNodeAffinityRequiredDuringSched
     pub values: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorrequirement-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselectorrequirement-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbBootstrapFromRestoreJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     pub key: String,
@@ -674,7 +674,7 @@ pub struct MariaDbBootstrapFromRestoreJobAffinityNodeAffinityRequiredDuringSched
     pub values: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#podantiaffinity-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#podantiaffinity-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbBootstrapFromRestoreJobAffinityPodAntiAffinity {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
@@ -683,26 +683,26 @@ pub struct MariaDbBootstrapFromRestoreJobAffinityPodAntiAffinity {
     pub required_during_scheduling_ignored_during_execution: Option<Vec<MariaDbBootstrapFromRestoreJobAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#weightedpodaffinityterm-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#weightedpodaffinityterm-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbBootstrapFromRestoreJobAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#podaffinityterm-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#podaffinityterm-v1-core.>
     #[serde(rename = "podAffinityTerm")]
     pub pod_affinity_term: MariaDbBootstrapFromRestoreJobAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
     pub weight: i32,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#podaffinityterm-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#podaffinityterm-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbBootstrapFromRestoreJobAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselector-v1-meta>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#labelselector-v1-meta>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<MariaDbBootstrapFromRestoreJobAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselector-v1-meta>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#labelselector-v1-meta>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbBootstrapFromRestoreJobAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
@@ -711,7 +711,7 @@ pub struct MariaDbBootstrapFromRestoreJobAffinityPodAntiAffinityPreferredDuringS
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselectorrequirement-v1-meta>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#labelselectorrequirement-v1-meta>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbBootstrapFromRestoreJobAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     pub key: String,
@@ -721,17 +721,17 @@ pub struct MariaDbBootstrapFromRestoreJobAffinityPodAntiAffinityPreferredDuringS
     pub values: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#podaffinityterm-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#podaffinityterm-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbBootstrapFromRestoreJobAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselector-v1-meta>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#labelselector-v1-meta>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<MariaDbBootstrapFromRestoreJobAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselector-v1-meta>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#labelselector-v1-meta>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbBootstrapFromRestoreJobAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
@@ -740,7 +740,7 @@ pub struct MariaDbBootstrapFromRestoreJobAffinityPodAntiAffinityRequiredDuringSc
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselectorrequirement-v1-meta>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#labelselectorrequirement-v1-meta>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbBootstrapFromRestoreJobAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     pub key: String,
@@ -980,30 +980,30 @@ pub struct MariaDbBootstrapFromStagingStoragePersistentVolumeClaimSelectorMatchE
 /// Volume is a Kubernetes volume specification.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbBootstrapFromStagingStorageVolume {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#csivolumesource-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#csivolumesource-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<MariaDbBootstrapFromStagingStorageVolumeCsi>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#emptydirvolumesource-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#emptydirvolumesource-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<MariaDbBootstrapFromStagingStorageVolumeEmptyDir>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#hostpathvolumesource-v1-core>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#hostpathvolumesource-v1-core>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
     pub host_path: Option<MariaDbBootstrapFromStagingStorageVolumeHostPath>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nfsvolumesource-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nfsvolumesource-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nfs: Option<MariaDbBootstrapFromStagingStorageVolumeNfs>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#persistentvolumeclaimvolumesource-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#persistentvolumeclaimvolumesource-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<MariaDbBootstrapFromStagingStorageVolumePersistentVolumeClaim>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#csivolumesource-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#csivolumesource-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbBootstrapFromStagingStorageVolumeCsi {
     pub driver: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#localobjectreference-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#localobjectreference-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
     pub node_publish_secret_ref: Option<MariaDbBootstrapFromStagingStorageVolumeCsiNodePublishSecretRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
@@ -1012,14 +1012,14 @@ pub struct MariaDbBootstrapFromStagingStorageVolumeCsi {
     pub volume_attributes: Option<BTreeMap<String, String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#localobjectreference-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#localobjectreference-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbBootstrapFromStagingStorageVolumeCsiNodePublishSecretRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#emptydirvolumesource-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#emptydirvolumesource-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbBootstrapFromStagingStorageVolumeEmptyDir {
     /// StorageMedium defines ways that storage can be allocated to a volume.
@@ -1029,7 +1029,7 @@ pub struct MariaDbBootstrapFromStagingStorageVolumeEmptyDir {
     pub size_limit: Option<IntOrString>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#hostpathvolumesource-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#hostpathvolumesource-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbBootstrapFromStagingStorageVolumeHostPath {
     pub path: String,
@@ -1037,7 +1037,7 @@ pub struct MariaDbBootstrapFromStagingStorageVolumeHostPath {
     pub r#type: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nfsvolumesource-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nfsvolumesource-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbBootstrapFromStagingStorageVolumeNfs {
     pub path: String,
@@ -1046,7 +1046,7 @@ pub struct MariaDbBootstrapFromStagingStorageVolumeNfs {
     pub server: String,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#persistentvolumeclaimvolumesource-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#persistentvolumeclaimvolumesource-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbBootstrapFromStagingStorageVolumePersistentVolumeClaim {
     #[serde(rename = "claimName")]
@@ -1058,30 +1058,30 @@ pub struct MariaDbBootstrapFromStagingStorageVolumePersistentVolumeClaim {
 /// Volume is a Kubernetes Volume object that contains a backup.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbBootstrapFromVolume {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#csivolumesource-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#csivolumesource-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<MariaDbBootstrapFromVolumeCsi>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#emptydirvolumesource-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#emptydirvolumesource-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<MariaDbBootstrapFromVolumeEmptyDir>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#hostpathvolumesource-v1-core>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#hostpathvolumesource-v1-core>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
     pub host_path: Option<MariaDbBootstrapFromVolumeHostPath>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nfsvolumesource-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nfsvolumesource-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nfs: Option<MariaDbBootstrapFromVolumeNfs>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#persistentvolumeclaimvolumesource-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#persistentvolumeclaimvolumesource-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<MariaDbBootstrapFromVolumePersistentVolumeClaim>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#csivolumesource-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#csivolumesource-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbBootstrapFromVolumeCsi {
     pub driver: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#localobjectreference-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#localobjectreference-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
     pub node_publish_secret_ref: Option<MariaDbBootstrapFromVolumeCsiNodePublishSecretRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
@@ -1090,14 +1090,14 @@ pub struct MariaDbBootstrapFromVolumeCsi {
     pub volume_attributes: Option<BTreeMap<String, String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#localobjectreference-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#localobjectreference-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbBootstrapFromVolumeCsiNodePublishSecretRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#emptydirvolumesource-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#emptydirvolumesource-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbBootstrapFromVolumeEmptyDir {
     /// StorageMedium defines ways that storage can be allocated to a volume.
@@ -1107,7 +1107,7 @@ pub struct MariaDbBootstrapFromVolumeEmptyDir {
     pub size_limit: Option<IntOrString>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#hostpathvolumesource-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#hostpathvolumesource-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbBootstrapFromVolumeHostPath {
     pub path: String,
@@ -1115,7 +1115,7 @@ pub struct MariaDbBootstrapFromVolumeHostPath {
     pub r#type: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nfsvolumesource-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nfsvolumesource-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbBootstrapFromVolumeNfs {
     pub path: String,
@@ -1124,7 +1124,7 @@ pub struct MariaDbBootstrapFromVolumeNfs {
     pub server: String,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#persistentvolumeclaimvolumesource-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#persistentvolumeclaimvolumesource-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbBootstrapFromVolumePersistentVolumeClaim {
     #[serde(rename = "claimName")]
@@ -1224,33 +1224,33 @@ pub struct MariaDbConnectionSecretTemplateMetadata {
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#envvarsource-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#envvarsource-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#envvarsource-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#envvarsource-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
     pub value_from: Option<MariaDbEnvValueFrom>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#envvarsource-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#envvarsource-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbEnvValueFrom {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#configmapkeyselector-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#configmapkeyselector-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<MariaDbEnvValueFromConfigMapKeyRef>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#objectfieldselector-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#objectfieldselector-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<MariaDbEnvValueFromFieldRef>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#secretkeyselector-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#secretkeyselector-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<MariaDbEnvValueFromSecretKeyRef>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#configmapkeyselector-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#configmapkeyselector-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbEnvValueFromConfigMapKeyRef {
     pub key: String,
@@ -1258,7 +1258,7 @@ pub struct MariaDbEnvValueFromConfigMapKeyRef {
     pub name: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#objectfieldselector-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#objectfieldselector-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbEnvValueFromFieldRef {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
@@ -1267,7 +1267,7 @@ pub struct MariaDbEnvValueFromFieldRef {
     pub field_path: String,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#secretkeyselector-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#secretkeyselector-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbEnvValueFromSecretKeyRef {
     pub key: String,
@@ -1275,27 +1275,27 @@ pub struct MariaDbEnvValueFromSecretKeyRef {
     pub name: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#envfromsource-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#envfromsource-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbEnvFrom {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#localobjectreference-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#localobjectreference-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<MariaDbEnvFromConfigMapRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#localobjectreference-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#localobjectreference-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<MariaDbEnvFromSecretRef>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#localobjectreference-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#localobjectreference-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbEnvFromConfigMapRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#localobjectreference-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#localobjectreference-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbEnvFromSecretRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1432,33 +1432,33 @@ pub struct MariaDbGaleraAgentBasicAuthPasswordSecretKeyRef {
     pub name: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#envvarsource-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#envvarsource-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraAgentEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#envvarsource-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#envvarsource-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
     pub value_from: Option<MariaDbGaleraAgentEnvValueFrom>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#envvarsource-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#envvarsource-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraAgentEnvValueFrom {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#configmapkeyselector-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#configmapkeyselector-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<MariaDbGaleraAgentEnvValueFromConfigMapKeyRef>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#objectfieldselector-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#objectfieldselector-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<MariaDbGaleraAgentEnvValueFromFieldRef>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#secretkeyselector-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#secretkeyselector-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<MariaDbGaleraAgentEnvValueFromSecretKeyRef>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#configmapkeyselector-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#configmapkeyselector-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraAgentEnvValueFromConfigMapKeyRef {
     pub key: String,
@@ -1466,7 +1466,7 @@ pub struct MariaDbGaleraAgentEnvValueFromConfigMapKeyRef {
     pub name: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#objectfieldselector-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#objectfieldselector-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraAgentEnvValueFromFieldRef {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
@@ -1475,7 +1475,7 @@ pub struct MariaDbGaleraAgentEnvValueFromFieldRef {
     pub field_path: String,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#secretkeyselector-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#secretkeyselector-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraAgentEnvValueFromSecretKeyRef {
     pub key: String,
@@ -1483,27 +1483,27 @@ pub struct MariaDbGaleraAgentEnvValueFromSecretKeyRef {
     pub name: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#envfromsource-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#envfromsource-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraAgentEnvFrom {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#localobjectreference-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#localobjectreference-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<MariaDbGaleraAgentEnvFromConfigMapRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#localobjectreference-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#localobjectreference-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<MariaDbGaleraAgentEnvFromSecretRef>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#localobjectreference-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#localobjectreference-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraAgentEnvFromConfigMapRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#localobjectreference-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#localobjectreference-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraAgentEnvFromSecretRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1533,36 +1533,36 @@ pub struct MariaDbGaleraAgentKubernetesAuth {
 /// Lifecycle are actions that the management system should take in response to container lifecycle events.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraAgentLifecycle {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#lifecyclehandler-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#lifecyclehandler-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "postStart")]
     pub post_start: Option<MariaDbGaleraAgentLifecyclePostStart>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#lifecyclehandler-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#lifecyclehandler-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<MariaDbGaleraAgentLifecyclePreStop>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#lifecyclehandler-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#lifecyclehandler-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraAgentLifecyclePostStart {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<MariaDbGaleraAgentLifecyclePostStartExec>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<MariaDbGaleraAgentLifecyclePostStartHttpGet>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#sleepaction-v1-core>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#sleepaction-v1-core>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sleep: Option<MariaDbGaleraAgentLifecyclePostStartSleep>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraAgentLifecyclePostStartExec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraAgentLifecyclePostStartHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1575,35 +1575,35 @@ pub struct MariaDbGaleraAgentLifecyclePostStartHttpGet {
     pub scheme: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#sleepaction-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#sleepaction-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraAgentLifecyclePostStartSleep {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub seconds: Option<i64>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#lifecyclehandler-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#lifecyclehandler-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraAgentLifecyclePreStop {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<MariaDbGaleraAgentLifecyclePreStopExec>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<MariaDbGaleraAgentLifecyclePreStopHttpGet>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#sleepaction-v1-core>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#sleepaction-v1-core>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sleep: Option<MariaDbGaleraAgentLifecyclePreStopSleep>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraAgentLifecyclePreStopExec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraAgentLifecyclePreStopHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1616,7 +1616,7 @@ pub struct MariaDbGaleraAgentLifecyclePreStopHttpGet {
     pub scheme: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#sleepaction-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#sleepaction-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraAgentLifecyclePreStopSleep {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1626,12 +1626,12 @@ pub struct MariaDbGaleraAgentLifecyclePreStopSleep {
 /// LivenessProbe to be used in the Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraAgentLivenessProbe {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<MariaDbGaleraAgentLivenessProbeExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<MariaDbGaleraAgentLivenessProbeHttpGet>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
@@ -1640,21 +1640,21 @@ pub struct MariaDbGaleraAgentLivenessProbe {
     pub period_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#tcpsocketaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#tcpsocketaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<MariaDbGaleraAgentLivenessProbeTcpSocket>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraAgentLivenessProbeExec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraAgentLivenessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1667,7 +1667,7 @@ pub struct MariaDbGaleraAgentLivenessProbeHttpGet {
     pub scheme: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#tcpsocketaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#tcpsocketaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraAgentLivenessProbeTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1678,12 +1678,12 @@ pub struct MariaDbGaleraAgentLivenessProbeTcpSocket {
 /// ReadinessProbe to be used in the Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraAgentReadinessProbe {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<MariaDbGaleraAgentReadinessProbeExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<MariaDbGaleraAgentReadinessProbeHttpGet>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
@@ -1692,21 +1692,21 @@ pub struct MariaDbGaleraAgentReadinessProbe {
     pub period_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#tcpsocketaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#tcpsocketaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<MariaDbGaleraAgentReadinessProbeTcpSocket>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraAgentReadinessProbeExec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraAgentReadinessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1719,7 +1719,7 @@ pub struct MariaDbGaleraAgentReadinessProbeHttpGet {
     pub scheme: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#tcpsocketaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#tcpsocketaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraAgentReadinessProbeTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1772,12 +1772,12 @@ pub struct MariaDbGaleraAgentSecurityContextCapabilities {
 /// StartupProbe to be used in the Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraAgentStartupProbe {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<MariaDbGaleraAgentStartupProbeExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<MariaDbGaleraAgentStartupProbeHttpGet>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
@@ -1786,21 +1786,21 @@ pub struct MariaDbGaleraAgentStartupProbe {
     pub period_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#tcpsocketaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#tcpsocketaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<MariaDbGaleraAgentStartupProbeTcpSocket>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraAgentStartupProbeExec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraAgentStartupProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1813,7 +1813,7 @@ pub struct MariaDbGaleraAgentStartupProbeHttpGet {
     pub scheme: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#tcpsocketaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#tcpsocketaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraAgentStartupProbeTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1821,7 +1821,7 @@ pub struct MariaDbGaleraAgentStartupProbeTcpSocket {
     pub port: IntOrString,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#volumemount-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#volumemount-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraAgentVolumeMounts {
     #[serde(rename = "mountPath")]
@@ -1967,33 +1967,33 @@ pub struct MariaDbGaleraInitContainer {
     pub volume_mounts: Option<Vec<MariaDbGaleraInitContainerVolumeMounts>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#envvarsource-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#envvarsource-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraInitContainerEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#envvarsource-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#envvarsource-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
     pub value_from: Option<MariaDbGaleraInitContainerEnvValueFrom>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#envvarsource-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#envvarsource-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraInitContainerEnvValueFrom {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#configmapkeyselector-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#configmapkeyselector-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<MariaDbGaleraInitContainerEnvValueFromConfigMapKeyRef>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#objectfieldselector-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#objectfieldselector-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<MariaDbGaleraInitContainerEnvValueFromFieldRef>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#secretkeyselector-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#secretkeyselector-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<MariaDbGaleraInitContainerEnvValueFromSecretKeyRef>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#configmapkeyselector-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#configmapkeyselector-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraInitContainerEnvValueFromConfigMapKeyRef {
     pub key: String,
@@ -2001,7 +2001,7 @@ pub struct MariaDbGaleraInitContainerEnvValueFromConfigMapKeyRef {
     pub name: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#objectfieldselector-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#objectfieldselector-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraInitContainerEnvValueFromFieldRef {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
@@ -2010,7 +2010,7 @@ pub struct MariaDbGaleraInitContainerEnvValueFromFieldRef {
     pub field_path: String,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#secretkeyselector-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#secretkeyselector-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraInitContainerEnvValueFromSecretKeyRef {
     pub key: String,
@@ -2018,27 +2018,27 @@ pub struct MariaDbGaleraInitContainerEnvValueFromSecretKeyRef {
     pub name: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#envfromsource-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#envfromsource-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraInitContainerEnvFrom {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#localobjectreference-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#localobjectreference-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<MariaDbGaleraInitContainerEnvFromConfigMapRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#localobjectreference-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#localobjectreference-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<MariaDbGaleraInitContainerEnvFromSecretRef>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#localobjectreference-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#localobjectreference-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraInitContainerEnvFromConfigMapRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#localobjectreference-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#localobjectreference-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraInitContainerEnvFromSecretRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2056,36 +2056,36 @@ pub enum MariaDbGaleraInitContainerImagePullPolicy {
 /// Lifecycle are actions that the management system should take in response to container lifecycle events.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraInitContainerLifecycle {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#lifecyclehandler-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#lifecyclehandler-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "postStart")]
     pub post_start: Option<MariaDbGaleraInitContainerLifecyclePostStart>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#lifecyclehandler-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#lifecyclehandler-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<MariaDbGaleraInitContainerLifecyclePreStop>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#lifecyclehandler-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#lifecyclehandler-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraInitContainerLifecyclePostStart {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<MariaDbGaleraInitContainerLifecyclePostStartExec>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<MariaDbGaleraInitContainerLifecyclePostStartHttpGet>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#sleepaction-v1-core>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#sleepaction-v1-core>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sleep: Option<MariaDbGaleraInitContainerLifecyclePostStartSleep>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraInitContainerLifecyclePostStartExec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraInitContainerLifecyclePostStartHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2098,35 +2098,35 @@ pub struct MariaDbGaleraInitContainerLifecyclePostStartHttpGet {
     pub scheme: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#sleepaction-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#sleepaction-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraInitContainerLifecyclePostStartSleep {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub seconds: Option<i64>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#lifecyclehandler-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#lifecyclehandler-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraInitContainerLifecyclePreStop {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<MariaDbGaleraInitContainerLifecyclePreStopExec>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<MariaDbGaleraInitContainerLifecyclePreStopHttpGet>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#sleepaction-v1-core>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#sleepaction-v1-core>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sleep: Option<MariaDbGaleraInitContainerLifecyclePreStopSleep>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraInitContainerLifecyclePreStopExec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraInitContainerLifecyclePreStopHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2139,7 +2139,7 @@ pub struct MariaDbGaleraInitContainerLifecyclePreStopHttpGet {
     pub scheme: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#sleepaction-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#sleepaction-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraInitContainerLifecyclePreStopSleep {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2149,12 +2149,12 @@ pub struct MariaDbGaleraInitContainerLifecyclePreStopSleep {
 /// LivenessProbe to be used in the Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraInitContainerLivenessProbe {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<MariaDbGaleraInitContainerLivenessProbeExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<MariaDbGaleraInitContainerLivenessProbeHttpGet>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
@@ -2163,21 +2163,21 @@ pub struct MariaDbGaleraInitContainerLivenessProbe {
     pub period_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#tcpsocketaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#tcpsocketaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<MariaDbGaleraInitContainerLivenessProbeTcpSocket>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraInitContainerLivenessProbeExec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraInitContainerLivenessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2190,7 +2190,7 @@ pub struct MariaDbGaleraInitContainerLivenessProbeHttpGet {
     pub scheme: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#tcpsocketaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#tcpsocketaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraInitContainerLivenessProbeTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2201,12 +2201,12 @@ pub struct MariaDbGaleraInitContainerLivenessProbeTcpSocket {
 /// ReadinessProbe to be used in the Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraInitContainerReadinessProbe {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<MariaDbGaleraInitContainerReadinessProbeExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<MariaDbGaleraInitContainerReadinessProbeHttpGet>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
@@ -2215,21 +2215,21 @@ pub struct MariaDbGaleraInitContainerReadinessProbe {
     pub period_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#tcpsocketaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#tcpsocketaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<MariaDbGaleraInitContainerReadinessProbeTcpSocket>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraInitContainerReadinessProbeExec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraInitContainerReadinessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2242,7 +2242,7 @@ pub struct MariaDbGaleraInitContainerReadinessProbeHttpGet {
     pub scheme: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#tcpsocketaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#tcpsocketaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraInitContainerReadinessProbeTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2295,12 +2295,12 @@ pub struct MariaDbGaleraInitContainerSecurityContextCapabilities {
 /// StartupProbe to be used in the Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraInitContainerStartupProbe {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<MariaDbGaleraInitContainerStartupProbeExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<MariaDbGaleraInitContainerStartupProbeHttpGet>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
@@ -2309,21 +2309,21 @@ pub struct MariaDbGaleraInitContainerStartupProbe {
     pub period_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#tcpsocketaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#tcpsocketaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<MariaDbGaleraInitContainerStartupProbeTcpSocket>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraInitContainerStartupProbeExec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraInitContainerStartupProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2336,7 +2336,7 @@ pub struct MariaDbGaleraInitContainerStartupProbeHttpGet {
     pub scheme: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#tcpsocketaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#tcpsocketaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraInitContainerStartupProbeTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2344,7 +2344,7 @@ pub struct MariaDbGaleraInitContainerStartupProbeTcpSocket {
     pub port: IntOrString,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#volumemount-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#volumemount-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbGaleraInitContainerVolumeMounts {
     #[serde(rename = "mountPath")]
@@ -2435,7 +2435,7 @@ pub struct MariaDbGaleraRecovery {
     pub job: Option<MariaDbGaleraRecoveryJob>,
     /// MinClusterSize is the minimum number of replicas to consider the cluster healthy. It can be either a number of replicas (1) or a percentage (50%).
     /// If Galera consistently reports less replicas than this value for the given 'ClusterHealthyTimeout' interval, a cluster recovery is initiated.
-    /// It defaults to '1' replica, and it is highly recommendeded to keep this value at '1' in most cases.
+    /// It defaults to '1' replica, and it is highly recommended to keep this value at '1' in most cases.
     /// If set to more than one replica, the cluster recovery process may restart the healthy replicas as well.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minClusterSize")]
     pub min_cluster_size: Option<IntOrString>,
@@ -2502,7 +2502,7 @@ pub enum MariaDbImagePullPolicy {
     IfNotPresent,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#localobjectreference-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#localobjectreference-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbImagePullSecrets {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2548,33 +2548,33 @@ pub struct MariaDbInitContainers {
     pub volume_mounts: Option<Vec<MariaDbInitContainersVolumeMounts>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#envvarsource-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#envvarsource-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbInitContainersEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#envvarsource-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#envvarsource-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
     pub value_from: Option<MariaDbInitContainersEnvValueFrom>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#envvarsource-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#envvarsource-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbInitContainersEnvValueFrom {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#configmapkeyselector-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#configmapkeyselector-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<MariaDbInitContainersEnvValueFromConfigMapKeyRef>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#objectfieldselector-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#objectfieldselector-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<MariaDbInitContainersEnvValueFromFieldRef>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#secretkeyselector-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#secretkeyselector-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<MariaDbInitContainersEnvValueFromSecretKeyRef>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#configmapkeyselector-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#configmapkeyselector-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbInitContainersEnvValueFromConfigMapKeyRef {
     pub key: String,
@@ -2582,7 +2582,7 @@ pub struct MariaDbInitContainersEnvValueFromConfigMapKeyRef {
     pub name: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#objectfieldselector-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#objectfieldselector-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbInitContainersEnvValueFromFieldRef {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
@@ -2591,7 +2591,7 @@ pub struct MariaDbInitContainersEnvValueFromFieldRef {
     pub field_path: String,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#secretkeyselector-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#secretkeyselector-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbInitContainersEnvValueFromSecretKeyRef {
     pub key: String,
@@ -2618,7 +2618,7 @@ pub struct MariaDbInitContainersResources {
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#volumemount-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#volumemount-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbInitContainersVolumeMounts {
     #[serde(rename = "mountPath")]
@@ -2634,36 +2634,36 @@ pub struct MariaDbInitContainersVolumeMounts {
 /// Lifecycle are actions that the management system should take in response to container lifecycle events.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbLifecycle {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#lifecyclehandler-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#lifecyclehandler-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "postStart")]
     pub post_start: Option<MariaDbLifecyclePostStart>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#lifecyclehandler-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#lifecyclehandler-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<MariaDbLifecyclePreStop>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#lifecyclehandler-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#lifecyclehandler-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbLifecyclePostStart {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<MariaDbLifecyclePostStartExec>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<MariaDbLifecyclePostStartHttpGet>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#sleepaction-v1-core>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#sleepaction-v1-core>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sleep: Option<MariaDbLifecyclePostStartSleep>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbLifecyclePostStartExec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbLifecyclePostStartHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2676,35 +2676,35 @@ pub struct MariaDbLifecyclePostStartHttpGet {
     pub scheme: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#sleepaction-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#sleepaction-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbLifecyclePostStartSleep {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub seconds: Option<i64>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#lifecyclehandler-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#lifecyclehandler-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbLifecyclePreStop {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<MariaDbLifecyclePreStopExec>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<MariaDbLifecyclePreStopHttpGet>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#sleepaction-v1-core>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#sleepaction-v1-core>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sleep: Option<MariaDbLifecyclePreStopSleep>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbLifecyclePreStopExec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbLifecyclePreStopHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2717,7 +2717,7 @@ pub struct MariaDbLifecyclePreStopHttpGet {
     pub scheme: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#sleepaction-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#sleepaction-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbLifecyclePreStopSleep {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2727,12 +2727,12 @@ pub struct MariaDbLifecyclePreStopSleep {
 /// LivenessProbe to be used in the Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbLivenessProbe {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<MariaDbLivenessProbeExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<MariaDbLivenessProbeHttpGet>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
@@ -2741,21 +2741,21 @@ pub struct MariaDbLivenessProbe {
     pub period_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#tcpsocketaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#tcpsocketaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<MariaDbLivenessProbeTcpSocket>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbLivenessProbeExec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbLivenessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2768,7 +2768,7 @@ pub struct MariaDbLivenessProbeHttpGet {
     pub scheme: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#tcpsocketaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#tcpsocketaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbLivenessProbeTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2859,33 +2859,33 @@ pub struct MariaDbMetricsExporterAffinity {
     /// Make sure you have at least as many Nodes available as the replicas to not end up with unscheduled Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "antiAffinityEnabled")]
     pub anti_affinity_enabled: Option<bool>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeaffinity-v1-core>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeaffinity-v1-core>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<MariaDbMetricsExporterAffinityNodeAffinity>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#podantiaffinity-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#podantiaffinity-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<MariaDbMetricsExporterAffinityPodAntiAffinity>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeaffinity-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeaffinity-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbMetricsExporterAffinityNodeAffinity {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
     pub preferred_during_scheduling_ignored_during_execution: Option<Vec<MariaDbMetricsExporterAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselector-v1-core>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselector-v1-core>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
     pub required_during_scheduling_ignored_during_execution: Option<MariaDbMetricsExporterAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#preferredschedulingterm-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#preferredschedulingterm-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbMetricsExporterAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorterm-v1-core>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselectorterm-v1-core>
     pub preference: MariaDbMetricsExporterAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
     pub weight: i32,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorterm-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselectorterm-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbMetricsExporterAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
@@ -2894,7 +2894,7 @@ pub struct MariaDbMetricsExporterAffinityNodeAffinityPreferredDuringSchedulingIg
     pub match_fields: Option<Vec<MariaDbMetricsExporterAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorrequirement-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselectorrequirement-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbMetricsExporterAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     pub key: String,
@@ -2905,7 +2905,7 @@ pub struct MariaDbMetricsExporterAffinityNodeAffinityPreferredDuringSchedulingIg
     pub values: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorrequirement-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselectorrequirement-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbMetricsExporterAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     pub key: String,
@@ -2916,14 +2916,14 @@ pub struct MariaDbMetricsExporterAffinityNodeAffinityPreferredDuringSchedulingIg
     pub values: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselector-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselector-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbMetricsExporterAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     #[serde(rename = "nodeSelectorTerms")]
     pub node_selector_terms: Vec<MariaDbMetricsExporterAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorterm-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselectorterm-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbMetricsExporterAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
@@ -2932,7 +2932,7 @@ pub struct MariaDbMetricsExporterAffinityNodeAffinityRequiredDuringSchedulingIgn
     pub match_fields: Option<Vec<MariaDbMetricsExporterAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorrequirement-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselectorrequirement-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbMetricsExporterAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     pub key: String,
@@ -2943,7 +2943,7 @@ pub struct MariaDbMetricsExporterAffinityNodeAffinityRequiredDuringSchedulingIgn
     pub values: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorrequirement-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselectorrequirement-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbMetricsExporterAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     pub key: String,
@@ -2954,7 +2954,7 @@ pub struct MariaDbMetricsExporterAffinityNodeAffinityRequiredDuringSchedulingIgn
     pub values: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#podantiaffinity-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#podantiaffinity-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbMetricsExporterAffinityPodAntiAffinity {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
@@ -2963,26 +2963,26 @@ pub struct MariaDbMetricsExporterAffinityPodAntiAffinity {
     pub required_during_scheduling_ignored_during_execution: Option<Vec<MariaDbMetricsExporterAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#weightedpodaffinityterm-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#weightedpodaffinityterm-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbMetricsExporterAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#podaffinityterm-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#podaffinityterm-v1-core.>
     #[serde(rename = "podAffinityTerm")]
     pub pod_affinity_term: MariaDbMetricsExporterAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
     pub weight: i32,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#podaffinityterm-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#podaffinityterm-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbMetricsExporterAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselector-v1-meta>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#labelselector-v1-meta>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<MariaDbMetricsExporterAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselector-v1-meta>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#labelselector-v1-meta>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbMetricsExporterAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
@@ -2991,7 +2991,7 @@ pub struct MariaDbMetricsExporterAffinityPodAntiAffinityPreferredDuringSchedulin
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselectorrequirement-v1-meta>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#labelselectorrequirement-v1-meta>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbMetricsExporterAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     pub key: String,
@@ -3001,17 +3001,17 @@ pub struct MariaDbMetricsExporterAffinityPodAntiAffinityPreferredDuringSchedulin
     pub values: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#podaffinityterm-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#podaffinityterm-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbMetricsExporterAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselector-v1-meta>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#labelselector-v1-meta>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<MariaDbMetricsExporterAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselector-v1-meta>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#labelselector-v1-meta>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbMetricsExporterAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
@@ -3020,7 +3020,7 @@ pub struct MariaDbMetricsExporterAffinityPodAntiAffinityRequiredDuringScheduling
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselectorrequirement-v1-meta>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#labelselectorrequirement-v1-meta>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbMetricsExporterAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     pub key: String,
@@ -3038,7 +3038,7 @@ pub enum MariaDbMetricsExporterImagePullPolicy {
     IfNotPresent,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#localobjectreference-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#localobjectreference-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbMetricsExporterImagePullSecrets {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3548,12 +3548,12 @@ pub enum MariaDbPrimaryServiceType {
 /// ReadinessProbe to be used in the Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReadinessProbe {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<MariaDbReadinessProbeExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<MariaDbReadinessProbeHttpGet>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
@@ -3562,21 +3562,21 @@ pub struct MariaDbReadinessProbe {
     pub period_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#tcpsocketaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#tcpsocketaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<MariaDbReadinessProbeTcpSocket>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReadinessProbeExec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReadinessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3589,7 +3589,7 @@ pub struct MariaDbReadinessProbeHttpGet {
     pub scheme: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#tcpsocketaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#tcpsocketaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReadinessProbeTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3732,33 +3732,33 @@ pub struct MariaDbReplicationAgentBasicAuthPasswordSecretKeyRef {
     pub name: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#envvarsource-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#envvarsource-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationAgentEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#envvarsource-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#envvarsource-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
     pub value_from: Option<MariaDbReplicationAgentEnvValueFrom>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#envvarsource-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#envvarsource-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationAgentEnvValueFrom {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#configmapkeyselector-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#configmapkeyselector-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<MariaDbReplicationAgentEnvValueFromConfigMapKeyRef>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#objectfieldselector-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#objectfieldselector-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<MariaDbReplicationAgentEnvValueFromFieldRef>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#secretkeyselector-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#secretkeyselector-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<MariaDbReplicationAgentEnvValueFromSecretKeyRef>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#configmapkeyselector-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#configmapkeyselector-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationAgentEnvValueFromConfigMapKeyRef {
     pub key: String,
@@ -3766,7 +3766,7 @@ pub struct MariaDbReplicationAgentEnvValueFromConfigMapKeyRef {
     pub name: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#objectfieldselector-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#objectfieldselector-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationAgentEnvValueFromFieldRef {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
@@ -3775,7 +3775,7 @@ pub struct MariaDbReplicationAgentEnvValueFromFieldRef {
     pub field_path: String,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#secretkeyselector-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#secretkeyselector-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationAgentEnvValueFromSecretKeyRef {
     pub key: String,
@@ -3783,27 +3783,27 @@ pub struct MariaDbReplicationAgentEnvValueFromSecretKeyRef {
     pub name: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#envfromsource-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#envfromsource-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationAgentEnvFrom {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#localobjectreference-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#localobjectreference-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<MariaDbReplicationAgentEnvFromConfigMapRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#localobjectreference-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#localobjectreference-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<MariaDbReplicationAgentEnvFromSecretRef>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#localobjectreference-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#localobjectreference-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationAgentEnvFromConfigMapRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#localobjectreference-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#localobjectreference-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationAgentEnvFromSecretRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3833,36 +3833,36 @@ pub struct MariaDbReplicationAgentKubernetesAuth {
 /// Lifecycle are actions that the management system should take in response to container lifecycle events.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationAgentLifecycle {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#lifecyclehandler-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#lifecyclehandler-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "postStart")]
     pub post_start: Option<MariaDbReplicationAgentLifecyclePostStart>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#lifecyclehandler-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#lifecyclehandler-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<MariaDbReplicationAgentLifecyclePreStop>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#lifecyclehandler-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#lifecyclehandler-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationAgentLifecyclePostStart {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<MariaDbReplicationAgentLifecyclePostStartExec>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<MariaDbReplicationAgentLifecyclePostStartHttpGet>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#sleepaction-v1-core>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#sleepaction-v1-core>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sleep: Option<MariaDbReplicationAgentLifecyclePostStartSleep>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationAgentLifecyclePostStartExec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationAgentLifecyclePostStartHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3875,35 +3875,35 @@ pub struct MariaDbReplicationAgentLifecyclePostStartHttpGet {
     pub scheme: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#sleepaction-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#sleepaction-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationAgentLifecyclePostStartSleep {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub seconds: Option<i64>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#lifecyclehandler-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#lifecyclehandler-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationAgentLifecyclePreStop {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<MariaDbReplicationAgentLifecyclePreStopExec>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<MariaDbReplicationAgentLifecyclePreStopHttpGet>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#sleepaction-v1-core>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#sleepaction-v1-core>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sleep: Option<MariaDbReplicationAgentLifecyclePreStopSleep>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationAgentLifecyclePreStopExec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationAgentLifecyclePreStopHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3916,7 +3916,7 @@ pub struct MariaDbReplicationAgentLifecyclePreStopHttpGet {
     pub scheme: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#sleepaction-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#sleepaction-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationAgentLifecyclePreStopSleep {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3926,12 +3926,12 @@ pub struct MariaDbReplicationAgentLifecyclePreStopSleep {
 /// LivenessProbe to be used in the Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationAgentLivenessProbe {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<MariaDbReplicationAgentLivenessProbeExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<MariaDbReplicationAgentLivenessProbeHttpGet>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
@@ -3940,21 +3940,21 @@ pub struct MariaDbReplicationAgentLivenessProbe {
     pub period_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#tcpsocketaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#tcpsocketaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<MariaDbReplicationAgentLivenessProbeTcpSocket>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationAgentLivenessProbeExec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationAgentLivenessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3967,7 +3967,7 @@ pub struct MariaDbReplicationAgentLivenessProbeHttpGet {
     pub scheme: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#tcpsocketaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#tcpsocketaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationAgentLivenessProbeTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3978,12 +3978,12 @@ pub struct MariaDbReplicationAgentLivenessProbeTcpSocket {
 /// ReadinessProbe to be used in the Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationAgentReadinessProbe {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<MariaDbReplicationAgentReadinessProbeExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<MariaDbReplicationAgentReadinessProbeHttpGet>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
@@ -3992,21 +3992,21 @@ pub struct MariaDbReplicationAgentReadinessProbe {
     pub period_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#tcpsocketaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#tcpsocketaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<MariaDbReplicationAgentReadinessProbeTcpSocket>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationAgentReadinessProbeExec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationAgentReadinessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4019,7 +4019,7 @@ pub struct MariaDbReplicationAgentReadinessProbeHttpGet {
     pub scheme: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#tcpsocketaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#tcpsocketaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationAgentReadinessProbeTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4072,12 +4072,12 @@ pub struct MariaDbReplicationAgentSecurityContextCapabilities {
 /// StartupProbe to be used in the Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationAgentStartupProbe {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<MariaDbReplicationAgentStartupProbeExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<MariaDbReplicationAgentStartupProbeHttpGet>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
@@ -4086,21 +4086,21 @@ pub struct MariaDbReplicationAgentStartupProbe {
     pub period_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#tcpsocketaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#tcpsocketaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<MariaDbReplicationAgentStartupProbeTcpSocket>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationAgentStartupProbeExec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationAgentStartupProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4113,7 +4113,7 @@ pub struct MariaDbReplicationAgentStartupProbeHttpGet {
     pub scheme: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#tcpsocketaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#tcpsocketaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationAgentStartupProbeTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4121,7 +4121,7 @@ pub struct MariaDbReplicationAgentStartupProbeTcpSocket {
     pub port: IntOrString,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#volumemount-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#volumemount-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationAgentVolumeMounts {
     #[serde(rename = "mountPath")]
@@ -4177,33 +4177,33 @@ pub struct MariaDbReplicationInitContainer {
     pub volume_mounts: Option<Vec<MariaDbReplicationInitContainerVolumeMounts>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#envvarsource-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#envvarsource-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationInitContainerEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#envvarsource-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#envvarsource-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
     pub value_from: Option<MariaDbReplicationInitContainerEnvValueFrom>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#envvarsource-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#envvarsource-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationInitContainerEnvValueFrom {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#configmapkeyselector-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#configmapkeyselector-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<MariaDbReplicationInitContainerEnvValueFromConfigMapKeyRef>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#objectfieldselector-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#objectfieldselector-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<MariaDbReplicationInitContainerEnvValueFromFieldRef>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#secretkeyselector-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#secretkeyselector-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<MariaDbReplicationInitContainerEnvValueFromSecretKeyRef>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#configmapkeyselector-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#configmapkeyselector-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationInitContainerEnvValueFromConfigMapKeyRef {
     pub key: String,
@@ -4211,7 +4211,7 @@ pub struct MariaDbReplicationInitContainerEnvValueFromConfigMapKeyRef {
     pub name: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#objectfieldselector-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#objectfieldselector-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationInitContainerEnvValueFromFieldRef {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
@@ -4220,7 +4220,7 @@ pub struct MariaDbReplicationInitContainerEnvValueFromFieldRef {
     pub field_path: String,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#secretkeyselector-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#secretkeyselector-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationInitContainerEnvValueFromSecretKeyRef {
     pub key: String,
@@ -4228,27 +4228,27 @@ pub struct MariaDbReplicationInitContainerEnvValueFromSecretKeyRef {
     pub name: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#envfromsource-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#envfromsource-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationInitContainerEnvFrom {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#localobjectreference-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#localobjectreference-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<MariaDbReplicationInitContainerEnvFromConfigMapRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#localobjectreference-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#localobjectreference-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<MariaDbReplicationInitContainerEnvFromSecretRef>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#localobjectreference-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#localobjectreference-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationInitContainerEnvFromConfigMapRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#localobjectreference-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#localobjectreference-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationInitContainerEnvFromSecretRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4266,36 +4266,36 @@ pub enum MariaDbReplicationInitContainerImagePullPolicy {
 /// Lifecycle are actions that the management system should take in response to container lifecycle events.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationInitContainerLifecycle {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#lifecyclehandler-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#lifecyclehandler-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "postStart")]
     pub post_start: Option<MariaDbReplicationInitContainerLifecyclePostStart>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#lifecyclehandler-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#lifecyclehandler-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<MariaDbReplicationInitContainerLifecyclePreStop>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#lifecyclehandler-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#lifecyclehandler-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationInitContainerLifecyclePostStart {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<MariaDbReplicationInitContainerLifecyclePostStartExec>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<MariaDbReplicationInitContainerLifecyclePostStartHttpGet>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#sleepaction-v1-core>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#sleepaction-v1-core>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sleep: Option<MariaDbReplicationInitContainerLifecyclePostStartSleep>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationInitContainerLifecyclePostStartExec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationInitContainerLifecyclePostStartHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4308,35 +4308,35 @@ pub struct MariaDbReplicationInitContainerLifecyclePostStartHttpGet {
     pub scheme: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#sleepaction-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#sleepaction-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationInitContainerLifecyclePostStartSleep {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub seconds: Option<i64>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#lifecyclehandler-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#lifecyclehandler-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationInitContainerLifecyclePreStop {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<MariaDbReplicationInitContainerLifecyclePreStopExec>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<MariaDbReplicationInitContainerLifecyclePreStopHttpGet>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#sleepaction-v1-core>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#sleepaction-v1-core>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sleep: Option<MariaDbReplicationInitContainerLifecyclePreStopSleep>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationInitContainerLifecyclePreStopExec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationInitContainerLifecyclePreStopHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4349,7 +4349,7 @@ pub struct MariaDbReplicationInitContainerLifecyclePreStopHttpGet {
     pub scheme: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#sleepaction-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#sleepaction-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationInitContainerLifecyclePreStopSleep {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4359,12 +4359,12 @@ pub struct MariaDbReplicationInitContainerLifecyclePreStopSleep {
 /// LivenessProbe to be used in the Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationInitContainerLivenessProbe {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<MariaDbReplicationInitContainerLivenessProbeExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<MariaDbReplicationInitContainerLivenessProbeHttpGet>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
@@ -4373,21 +4373,21 @@ pub struct MariaDbReplicationInitContainerLivenessProbe {
     pub period_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#tcpsocketaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#tcpsocketaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<MariaDbReplicationInitContainerLivenessProbeTcpSocket>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationInitContainerLivenessProbeExec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationInitContainerLivenessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4400,7 +4400,7 @@ pub struct MariaDbReplicationInitContainerLivenessProbeHttpGet {
     pub scheme: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#tcpsocketaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#tcpsocketaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationInitContainerLivenessProbeTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4411,12 +4411,12 @@ pub struct MariaDbReplicationInitContainerLivenessProbeTcpSocket {
 /// ReadinessProbe to be used in the Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationInitContainerReadinessProbe {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<MariaDbReplicationInitContainerReadinessProbeExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<MariaDbReplicationInitContainerReadinessProbeHttpGet>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
@@ -4425,21 +4425,21 @@ pub struct MariaDbReplicationInitContainerReadinessProbe {
     pub period_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#tcpsocketaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#tcpsocketaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<MariaDbReplicationInitContainerReadinessProbeTcpSocket>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationInitContainerReadinessProbeExec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationInitContainerReadinessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4452,7 +4452,7 @@ pub struct MariaDbReplicationInitContainerReadinessProbeHttpGet {
     pub scheme: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#tcpsocketaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#tcpsocketaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationInitContainerReadinessProbeTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4505,12 +4505,12 @@ pub struct MariaDbReplicationInitContainerSecurityContextCapabilities {
 /// StartupProbe to be used in the Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationInitContainerStartupProbe {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<MariaDbReplicationInitContainerStartupProbeExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<MariaDbReplicationInitContainerStartupProbeHttpGet>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
@@ -4519,21 +4519,21 @@ pub struct MariaDbReplicationInitContainerStartupProbe {
     pub period_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#tcpsocketaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#tcpsocketaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<MariaDbReplicationInitContainerStartupProbeTcpSocket>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationInitContainerStartupProbeExec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationInitContainerStartupProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4546,7 +4546,7 @@ pub struct MariaDbReplicationInitContainerStartupProbeHttpGet {
     pub scheme: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#tcpsocketaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#tcpsocketaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationInitContainerStartupProbeTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4554,7 +4554,7 @@ pub struct MariaDbReplicationInitContainerStartupProbeTcpSocket {
     pub port: IntOrString,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#volumemount-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#volumemount-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationInitContainerVolumeMounts {
     #[serde(rename = "mountPath")]
@@ -4680,33 +4680,33 @@ pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinity {
     /// Make sure you have at least as many Nodes available as the replicas to not end up with unscheduled Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "antiAffinityEnabled")]
     pub anti_affinity_enabled: Option<bool>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeaffinity-v1-core>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeaffinity-v1-core>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityNodeAffinity>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#podantiaffinity-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#podantiaffinity-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityPodAntiAffinity>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeaffinity-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeaffinity-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityNodeAffinity {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
     pub preferred_during_scheduling_ignored_during_execution: Option<Vec<MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselector-v1-core>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselector-v1-core>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
     pub required_during_scheduling_ignored_during_execution: Option<MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#preferredschedulingterm-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#preferredschedulingterm-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorterm-v1-core>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselectorterm-v1-core>
     pub preference: MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
     pub weight: i32,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorterm-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselectorterm-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
@@ -4715,7 +4715,7 @@ pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityNodeAffinityP
     pub match_fields: Option<Vec<MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorrequirement-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselectorrequirement-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     pub key: String,
@@ -4726,7 +4726,7 @@ pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityNodeAffinityP
     pub values: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorrequirement-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselectorrequirement-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     pub key: String,
@@ -4737,14 +4737,14 @@ pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityNodeAffinityP
     pub values: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselector-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselector-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     #[serde(rename = "nodeSelectorTerms")]
     pub node_selector_terms: Vec<MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorterm-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselectorterm-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
@@ -4753,7 +4753,7 @@ pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityNodeAffinityR
     pub match_fields: Option<Vec<MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorrequirement-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselectorrequirement-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     pub key: String,
@@ -4764,7 +4764,7 @@ pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityNodeAffinityR
     pub values: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nodeselectorrequirement-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nodeselectorrequirement-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     pub key: String,
@@ -4775,7 +4775,7 @@ pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityNodeAffinityR
     pub values: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#podantiaffinity-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#podantiaffinity-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityPodAntiAffinity {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
@@ -4784,26 +4784,26 @@ pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityPodAntiAffini
     pub required_during_scheduling_ignored_during_execution: Option<Vec<MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#weightedpodaffinityterm-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#weightedpodaffinityterm-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#podaffinityterm-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#podaffinityterm-v1-core.>
     #[serde(rename = "podAffinityTerm")]
     pub pod_affinity_term: MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
     pub weight: i32,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#podaffinityterm-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#podaffinityterm-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselector-v1-meta>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#labelselector-v1-meta>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselector-v1-meta>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#labelselector-v1-meta>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
@@ -4812,7 +4812,7 @@ pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityPodAntiAffini
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselectorrequirement-v1-meta>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#labelselectorrequirement-v1-meta>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     pub key: String,
@@ -4822,17 +4822,17 @@ pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityPodAntiAffini
     pub values: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#podaffinityterm-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#podaffinityterm-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselector-v1-meta>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#labelselector-v1-meta>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselector-v1-meta>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#labelselector-v1-meta>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
@@ -4841,7 +4841,7 @@ pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityPodAntiAffini
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselectorrequirement-v1-meta>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#labelselectorrequirement-v1-meta>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbReplicationReplicaBootstrapFromRestoreJobAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     pub key: String,
@@ -5177,7 +5177,7 @@ pub enum MariaDbServiceType {
     LoadBalancer,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#serviceport-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#serviceport-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbServicePorts {
     pub name: String,
@@ -5212,33 +5212,33 @@ pub struct MariaDbSidecarContainers {
     pub volume_mounts: Option<Vec<MariaDbSidecarContainersVolumeMounts>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#envvarsource-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#envvarsource-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbSidecarContainersEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#envvarsource-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#envvarsource-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
     pub value_from: Option<MariaDbSidecarContainersEnvValueFrom>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#envvarsource-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#envvarsource-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbSidecarContainersEnvValueFrom {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#configmapkeyselector-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#configmapkeyselector-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<MariaDbSidecarContainersEnvValueFromConfigMapKeyRef>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#objectfieldselector-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#objectfieldselector-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<MariaDbSidecarContainersEnvValueFromFieldRef>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#secretkeyselector-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#secretkeyselector-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<MariaDbSidecarContainersEnvValueFromSecretKeyRef>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#configmapkeyselector-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#configmapkeyselector-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbSidecarContainersEnvValueFromConfigMapKeyRef {
     pub key: String,
@@ -5246,7 +5246,7 @@ pub struct MariaDbSidecarContainersEnvValueFromConfigMapKeyRef {
     pub name: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#objectfieldselector-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#objectfieldselector-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbSidecarContainersEnvValueFromFieldRef {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
@@ -5255,7 +5255,7 @@ pub struct MariaDbSidecarContainersEnvValueFromFieldRef {
     pub field_path: String,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#secretkeyselector-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#secretkeyselector-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbSidecarContainersEnvValueFromSecretKeyRef {
     pub key: String,
@@ -5282,7 +5282,7 @@ pub struct MariaDbSidecarContainersResources {
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#volumemount-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#volumemount-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbSidecarContainersVolumeMounts {
     #[serde(rename = "mountPath")]
@@ -5298,12 +5298,12 @@ pub struct MariaDbSidecarContainersVolumeMounts {
 /// StartupProbe to be used in the Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbStartupProbe {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<MariaDbStartupProbeExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<MariaDbStartupProbeHttpGet>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
@@ -5312,21 +5312,21 @@ pub struct MariaDbStartupProbe {
     pub period_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#tcpsocketaction-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#tcpsocketaction-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<MariaDbStartupProbeTcpSocket>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#execaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#execaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbStartupProbeExec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#httpgetaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#httpgetaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbStartupProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5339,7 +5339,7 @@ pub struct MariaDbStartupProbeHttpGet {
     pub scheme: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#tcpsocketaction-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#tcpsocketaction-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbStartupProbeTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5386,11 +5386,11 @@ pub struct MariaDbStorage {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbStoragePvcRetentionPolicy {
     /// PersistentVolumeClaimRetentionPolicyType describes the lifecycle of persistent volume claims.
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#statefulsetpersistentvolumeclaimretentionpolicy-v1-apps.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#statefulsetpersistentvolumeclaimretentionpolicy-v1-apps.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "whenDeleted")]
     pub when_deleted: Option<String>,
     /// PersistentVolumeClaimRetentionPolicyType describes the lifecycle of persistent volume claims.
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#statefulsetpersistentvolumeclaimretentionpolicy-v1-apps.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#statefulsetpersistentvolumeclaimretentionpolicy-v1-apps.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "whenScaled")]
     pub when_scaled: Option<String>,
 }
@@ -5626,7 +5626,7 @@ pub struct MariaDbTolerations {
     pub value: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#topologyspreadconstraint-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#topologyspreadconstraint-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbTopologySpreadConstraints {
     /// A label selector is a label query over a set of resources. The result of matchLabels and
@@ -5728,7 +5728,7 @@ pub enum MariaDbUpdateStrategyType {
     Never,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#volumemount-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#volumemount-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbVolumeMounts {
     #[serde(rename = "mountPath")]
@@ -5741,37 +5741,37 @@ pub struct MariaDbVolumeMounts {
     pub sub_path: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#volume-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#volume-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbVolumes {
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#configmapvolumesource-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#configmapvolumesource-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<MariaDbVolumesConfigMap>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#csivolumesource-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#csivolumesource-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<MariaDbVolumesCsi>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#emptydirvolumesource-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#emptydirvolumesource-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<MariaDbVolumesEmptyDir>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#ephemeralvolumesource-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#ephemeralvolumesource-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ephemeral: Option<MariaDbVolumesEphemeral>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#hostpathvolumesource-v1-core>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#hostpathvolumesource-v1-core>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
     pub host_path: Option<MariaDbVolumesHostPath>,
     pub name: String,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nfsvolumesource-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nfsvolumesource-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nfs: Option<MariaDbVolumesNfs>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#persistentvolumeclaimvolumesource-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#persistentvolumeclaimvolumesource-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<MariaDbVolumesPersistentVolumeClaim>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#secretvolumesource-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#secretvolumesource-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<MariaDbVolumesSecret>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#configmapvolumesource-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#configmapvolumesource-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbVolumesConfigMap {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
@@ -5780,13 +5780,13 @@ pub struct MariaDbVolumesConfigMap {
     pub name: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#csivolumesource-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#csivolumesource-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbVolumesCsi {
     pub driver: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#localobjectreference-v1-core.>
+    /// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#localobjectreference-v1-core.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
     pub node_publish_secret_ref: Option<MariaDbVolumesCsiNodePublishSecretRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
@@ -5795,14 +5795,14 @@ pub struct MariaDbVolumesCsi {
     pub volume_attributes: Option<BTreeMap<String, String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#localobjectreference-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#localobjectreference-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbVolumesCsiNodePublishSecretRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#emptydirvolumesource-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#emptydirvolumesource-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbVolumesEmptyDir {
     /// StorageMedium defines ways that storage can be allocated to a volume.
@@ -5812,7 +5812,7 @@ pub struct MariaDbVolumesEmptyDir {
     pub size_limit: Option<IntOrString>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#ephemeralvolumesource-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#ephemeralvolumesource-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbVolumesEphemeral {
     /// VolumeClaimTemplate defines a template to customize PVC objects.
@@ -5898,7 +5898,7 @@ pub struct MariaDbVolumesEphemeralVolumeClaimTemplateSelectorMatchExpressions {
     pub values: Option<Vec<String>>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#hostpathvolumesource-v1-core>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#hostpathvolumesource-v1-core>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbVolumesHostPath {
     pub path: String,
@@ -5906,7 +5906,7 @@ pub struct MariaDbVolumesHostPath {
     pub r#type: Option<String>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#nfsvolumesource-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#nfsvolumesource-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbVolumesNfs {
     pub path: String,
@@ -5915,7 +5915,7 @@ pub struct MariaDbVolumesNfs {
     pub server: String,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#persistentvolumeclaimvolumesource-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#persistentvolumeclaimvolumesource-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbVolumesPersistentVolumeClaim {
     #[serde(rename = "claimName")]
@@ -5924,7 +5924,7 @@ pub struct MariaDbVolumesPersistentVolumeClaim {
     pub read_only: Option<bool>,
 }
 
-/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#secretvolumesource-v1-core.>
+/// Refer to the Kubernetes docs: <https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#secretvolumesource-v1-core.>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbVolumesSecret {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]

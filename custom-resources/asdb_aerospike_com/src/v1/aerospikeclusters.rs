@@ -453,7 +453,7 @@ pub struct AerospikeClusterPodSpec {
     /// DnsPolicy same as <https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy.>
     /// If hostNetwork is true and policy is not specified, it defaults to ClusterFirstWithHostNet
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsPolicy")]
-    pub dns_policy: Option<String>,
+    pub dns_policy: Option<AerospikeClusterPodSpecDnsPolicy>,
     /// Effective value of the DNSPolicy
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveDNSPolicy")]
     pub effective_dns_policy: Option<String>,
@@ -1724,6 +1724,14 @@ pub struct AerospikeClusterPodSpecDnsConfigOptions {
     /// Value is this DNS resolver option's value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
+}
+
+/// Specify additional configuration for the Aerospike pods
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AerospikeClusterPodSpecDnsPolicy {
+    ClusterFirstWithHostNet,
+    ClusterFirst,
+    None,
 }
 
 /// LocalObjectReference contains enough information to let you locate the
@@ -4641,7 +4649,7 @@ pub struct AerospikeClusterRackConfigRacks {
     /// It may result in data loss. Use this with caution.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceBlockFromRoster")]
     pub force_block_from_roster: Option<bool>,
-    /// Identifier for the rack
+    /// Identifier for the rack. Allowed range matches Aerospike namespace rack-id.
     pub id: i64,
     /// K8s Node name for setting rack affinity. Rack pods will be deployed in given k8s Node
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeName")]
@@ -8555,7 +8563,7 @@ pub struct AerospikeClusterStatusPodSpec {
     /// DnsPolicy same as <https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy.>
     /// If hostNetwork is true and policy is not specified, it defaults to ClusterFirstWithHostNet
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsPolicy")]
-    pub dns_policy: Option<String>,
+    pub dns_policy: Option<AerospikeClusterStatusPodSpecDnsPolicy>,
     /// Effective value of the DNSPolicy
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveDNSPolicy")]
     pub effective_dns_policy: Option<String>,
@@ -9826,6 +9834,14 @@ pub struct AerospikeClusterStatusPodSpecDnsConfigOptions {
     /// Value is this DNS resolver option's value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
+}
+
+/// Additional configuration for create Aerospike pods.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AerospikeClusterStatusPodSpecDnsPolicy {
+    ClusterFirstWithHostNet,
+    ClusterFirst,
+    None,
 }
 
 /// LocalObjectReference contains enough information to let you locate the
@@ -12851,7 +12867,7 @@ pub struct AerospikeClusterStatusRackConfigRacks {
     /// It may result in data loss. Use this with caution.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceBlockFromRoster")]
     pub force_block_from_roster: Option<bool>,
-    /// Identifier for the rack
+    /// Identifier for the rack. Allowed range matches Aerospike namespace rack-id.
     pub id: i64,
     /// K8s Node name for setting rack affinity. Rack pods will be deployed in given k8s Node
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeName")]

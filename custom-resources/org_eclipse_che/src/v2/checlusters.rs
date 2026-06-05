@@ -14560,11 +14560,11 @@ pub struct CheClusterNetworkingAuth {
     /// For OpenShift with built-in OAuth, the scope `user:full` is used by default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "oAuthScope")]
     pub o_auth_scope: Option<String>,
-    /// Defines the OAuth client secret.
-    /// It can either be a plain text secret value or the name of a Kubernetes secret
-    /// containing a key `oAuthSecret` with the secret value. The Kubernetes secret must exist in the same namespace
-    /// as the `CheCluster` resource and have the label `app.kubernetes.io/part-of=che.eclipse.org`.
-    /// For OpenShift with built-in OAuth, this is the secret set in the `OAuthClient` resource used to set up identity federation.
+    /// For OIDC, this is the client secret issued by the Identity Provider for the configured OIDC client.
+    /// For OpenShift with built-in OAuth, this is the secret configured in the OAuthClient for OpenShift OAuth integration.
+    /// The value can either be a plain text secret value (deprecated) or the name of a Kubernetes secret
+    /// that contains the secret value under the `oAuthSecret` key. The Kubernetes secret must exist in the same namespace
+    /// as the `CheCluster` resource namespace and must have a `app.kubernetes.io/part-of=che.eclipse.org` label.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "oAuthSecret")]
     pub o_auth_secret: Option<String>,
 }

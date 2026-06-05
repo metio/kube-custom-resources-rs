@@ -443,6 +443,9 @@ pub struct ForkliftControllerSpec {
     /// ConfigMap name for vSphere OS mappings (default: forklift-vsphere-osmap)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub vsphere_osmap_configmap_name: Option<String>,
+    /// Wait for final snapshot removal and consolidation in a VMware warm migration (default: true)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub wait_for_final_snapshot_consolidation: Option<ForkliftControllerWaitForFinalSnapshotConsolidation>,
 }
 
 /// Spec defines the desired state of ForkliftController
@@ -690,6 +693,15 @@ pub enum ForkliftControllerMcpServerReadOnly {
 /// Spec defines the desired state of ForkliftController
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ForkliftControllerVirtV2vDontRequestKvm {
+    #[serde(rename = "true")]
+    True,
+    #[serde(rename = "false")]
+    False,
+}
+
+/// Spec defines the desired state of ForkliftController
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ForkliftControllerWaitForFinalSnapshotConsolidation {
     #[serde(rename = "true")]
     True,
     #[serde(rename = "false")]

@@ -110,6 +110,9 @@ spec:
                       - "type"
                     type: "object"
                   type: "array"
+                  x-kubernetes-list-map-keys:
+                    - "type"
+                  x-kubernetes-list-type: "map"
                 status:
                   description: "ProfileState defines the state that the profile is in. A profile in this context\nrefers to a SeccompProfile or a SELinux profile, the states are shared between them\nas well as the management API."
                   type: "string"

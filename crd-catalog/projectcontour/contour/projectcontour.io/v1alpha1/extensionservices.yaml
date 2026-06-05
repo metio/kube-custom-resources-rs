@@ -57,7 +57,7 @@ spec:
                       type: "integer"
                   type: "object"
                 loadBalancerPolicy:
-                  description: "The policy for load balancing GRPC service requests. Note that the\n`Cookie` and `RequestHash` load balancing strategies cannot be used\nhere."
+                  description: "The policy for load balancing service requests. Note that the\n`Cookie` and `RequestHash` load balancing strategies cannot be used\nhere for GRPC service requests."
                   properties:
                     requestHashPolicies:
                       description: "RequestHashPolicies contains a list of hash policies to apply when the\n`RequestHash` load balancing strategy is chosen. If an element of the\nsupplied list of hash policies is invalid, it will be ignored. If the\nlist of hash policies is empty after validation, the load balancing\nstrategy will fall back to the default `RoundRobin`."
@@ -97,8 +97,9 @@ spec:
                       type: "string"
                   type: "object"
                 protocol:
-                  description: "Protocol may be used to specify (or override) the protocol used to reach this Service.\nValues may be h2 or h2c. If omitted, protocol-selection falls back on Service annotations."
+                  description: "Protocol may be used to specify (or override) the protocol used to reach this Service.\nValues may be h2, h2c or http/1.1. If omitted, protocol-selection falls back on Service annotations."
                   enum:
+                    - "http/1.1"
                     - "h2"
                     - "h2c"
                   type: "string"
@@ -108,7 +109,7 @@ spec:
                     - "v3"
                   type: "string"
                 services:
-                  description: "Services specifies the set of Kubernetes Service resources that\nreceive GRPC extension API requests.\nIf no weights are specified for any of the entries in\nthis array, traffic will be spread evenly across all the\nservices.\nOtherwise, traffic is balanced proportionally to the\nWeight field in each entry."
+                  description: "Services specifies the set of Kubernetes Service resources that\nreceive extension API requests.\nIf no weights are specified for any of the entries in\nthis array, traffic will be spread evenly across all the\nservices.\nOtherwise, traffic is balanced proportionally to the\nWeight field in each entry."
                   items:
                     description: "ExtensionServiceTarget defines an Kubernetes Service to target with\nextension service traffic."
                     properties:

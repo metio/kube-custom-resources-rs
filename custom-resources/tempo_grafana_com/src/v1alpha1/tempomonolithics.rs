@@ -1285,7 +1285,7 @@ pub enum TempoMonolithicManagement {
 }
 
 /// Multitenancy defines the multi-tenancy configuration.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoMonolithicMultitenancy {
     /// Authentication defines the tempo-gateway component authentication configuration spec per tenant.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1296,7 +1296,8 @@ pub struct TempoMonolithicMultitenancy {
     /// Enabled defines if multi-tenancy is enabled.
     pub enabled: bool,
     /// Mode defines the multitenancy mode.
-    pub mode: TempoMonolithicMultitenancyMode,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<TempoMonolithicMultitenancyMode>,
     /// Resources defines the compute resource requirements of the gateway container.
     /// The gateway performs authentication and authorization of incoming requests when multi-tenancy is enabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]

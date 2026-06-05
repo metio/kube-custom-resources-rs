@@ -333,6 +333,9 @@ pub struct GlobalTenantResourceStatus {
     /// Condition of the GlobalTenantResource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
+    /// ObservedGeneration is the most recent generation the controller has observed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
+    pub observed_generation: Option<i64>,
     /// List of the replicated resources for the given TenantResource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "processedItems")]
     pub processed_items: Option<Vec<GlobalTenantResourceStatusProcessedItems>>,

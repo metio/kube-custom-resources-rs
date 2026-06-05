@@ -56,9 +56,6 @@ pub struct TokenJwtHs256KeyRef {
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The namespace of the Slurm `auth/jwt` JWT key.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
@@ -76,9 +73,6 @@ pub struct TokenJwtKeyRef {
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The namespace of the Slurm `auth/jwt` JWT key.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,

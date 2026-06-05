@@ -22,8 +22,7 @@ pub struct MeshRateLimitSpec {
     /// From list makes a match between clients and corresponding configurations
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub from: Option<Vec<MeshRateLimitFrom>>,
-    /// Rules defines inbound rate limiting configurations. Currently limited to
-    /// selecting all inbound traffic, as L7 matching is not yet implemented.
+    /// Rules defines inbound rate limiting configurations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rules: Option<Vec<MeshRateLimitRules>>,
     /// TargetRef is a reference to the resource the policy takes an effect on.
@@ -206,6 +205,9 @@ pub struct MeshRateLimitRules {
     /// Default contains configuration of the inbound rate limits
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub default: Option<MeshRateLimitRulesDefault>,
+    /// Matches define additional conditions for applying this rate limit rule.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub matches: Option<Vec<MeshRateLimitRulesMatches>>,
 }
 
 /// Default contains configuration of the inbound rate limits
@@ -307,6 +309,49 @@ pub struct MeshRateLimitRulesDefaultLocalTcpConnectionRate {
     /// Number of units per interval (depending on usage it can be a number of requests,
     /// or a number of connections).
     pub num: i32,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MeshRateLimitRulesMatches {
+    /// SNI defines a matcher configuration for matching by SNI value carried on the TLS connection
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sni: Option<MeshRateLimitRulesMatchesSni>,
+    /// SpiffeID defines a matcher configuration for SpiffeID matching
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "spiffeID")]
+    pub spiffe_id: Option<MeshRateLimitRulesMatchesSpiffeId>,
+}
+
+/// SNI defines a matcher configuration for matching by SNI value carried on the TLS connection
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MeshRateLimitRulesMatchesSni {
+    /// Type defines how to match traffic by SNI. Only `Exact` is supported.
+    #[serde(rename = "type")]
+    pub r#type: MeshRateLimitRulesMatchesSniType,
+    /// Value is the SNI carried on the TLS connection that needs to match for the configuration to be applied
+    pub value: String,
+}
+
+/// SNI defines a matcher configuration for matching by SNI value carried on the TLS connection
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum MeshRateLimitRulesMatchesSniType {
+    Exact,
+}
+
+/// SpiffeID defines a matcher configuration for SpiffeID matching
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MeshRateLimitRulesMatchesSpiffeId {
+    /// Type defines how to match incoming traffic by SpiffeID. `Exact` or `Prefix` are allowed.
+    #[serde(rename = "type")]
+    pub r#type: MeshRateLimitRulesMatchesSpiffeIdType,
+    /// Value is SpiffeID of a client that needs to match for the configuration to be applied
+    pub value: String,
+}
+
+/// SpiffeID defines a matcher configuration for SpiffeID matching
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum MeshRateLimitRulesMatchesSpiffeIdType {
+    Exact,
+    Prefix,
 }
 
 /// TargetRef is a reference to the resource the policy takes an effect on.

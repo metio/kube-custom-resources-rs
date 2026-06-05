@@ -323,6 +323,9 @@ pub struct KialiChatAi {
     /// Configuration for the ChatAI store.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub store_config: Option<KialiChatAiStoreConfig>,
+    /// Optional global filter for the ChatAI toolset. `enabled_tools` acts as an allowlist. `disabled_tools` acts as a denylist and is applied afterwards.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tools: Option<KialiChatAiTools>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -342,6 +345,9 @@ pub struct KialiChatAiProviders {
     /// The endpoint of the provider. This is only used if a model has no endpoint specified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
+    /// Set true to skip verifying certificate validity when Kiali contacts the AI provider over https. When false (the default), the provider's TLS certificate is validated against the Kiali CA bundle.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub insecure_skip_verify: Option<bool>,
     /// The key of the provider. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the token is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
@@ -351,6 +357,9 @@ pub struct KialiChatAiProviders {
     /// The name of the provider.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Optional provider-specific filter for the ChatAI toolset. Applied after the global `chat_ai.tools` filter. It can further restrict tools for this provider, but it cannot re-enable tools that were already filtered out globally or by feature availability.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tools: Option<KialiChatAiProvidersTools>,
     /// The type of the AI models provider. Available values are `openai`, `anthropic`, and `google`. Default value is `openai`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -378,6 +387,17 @@ pub struct KialiChatAiProvidersModels {
     pub name: Option<String>,
 }
 
+/// Optional provider-specific filter for the ChatAI toolset. Applied after the global `chat_ai.tools` filter. It can further restrict tools for this provider, but it cannot re-enable tools that were already filtered out globally or by feature availability.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KialiChatAiProvidersTools {
+    /// A denylist of tool names to hide from this ChatAI provider. Applied after `enabled_tools`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub disabled_tools: Option<Vec<String>>,
+    /// An allowlist of tool names to expose to this ChatAI provider. If set, only the listed tool names remain available for this provider.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled_tools: Option<Vec<String>>,
+}
+
 /// Configuration for the ChatAI store.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KialiChatAiStoreConfig {
@@ -396,6 +416,17 @@ pub struct KialiChatAiStoreConfig {
     /// Enable or disable the ChatAI store reduction with AI.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reduce_with_ai: Option<bool>,
+}
+
+/// Optional global filter for the ChatAI toolset. `enabled_tools` acts as an allowlist. `disabled_tools` acts as a denylist and is applied afterwards.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KialiChatAiTools {
+    /// A denylist of tool names to hide from all ChatAI providers. Applied after `enabled_tools`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub disabled_tools: Option<Vec<String>>,
+    /// An allowlist of tool names to expose to ChatAI providers. If set, only the listed tool names remain available.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled_tools: Option<Vec<String>>,
 }
 
 /// Multi-cluster related features.
@@ -1244,13 +1275,16 @@ pub struct KialiExternalServicesCustomDashboardsPrometheusAuth {
     /// The client private key file to use when accessing Prometheus using https with mTLS. An empty string means no client private key is used. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the key is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key_file: Option<String>,
+    /// Settings for OAuth2 client_credentials authentication. When auth.type is `oauth2`, these settings are used to obtain an access token.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub oauth2: Option<KialiExternalServicesCustomDashboardsPrometheusAuthOauth2>,
     /// Password to be used when making requests to Prometheus, for basic authentication. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the password is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<String>,
     /// Token / API key to access Prometheus, for token-based authentication. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the token is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub token: Option<String>,
-    /// The type of authentication to use when contacting the server. Use `bearer` to send the token to the Prometheus server. Use `basic` to connect with username and password credentials. Use `none` to not use any authentication.
+    /// The type of authentication to use when contacting the server. Use `bearer` to send the token to the Prometheus server. Use `basic` to connect with username and password credentials. Use `oauth2` to use OAuth2 client_credentials flow. Use `none` to not use any authentication.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
     /// When true and if `auth.type` is `bearer`, Kiali Service Account token will be used for the API calls to Prometheus (in this case, `auth.token` config is ignored).
@@ -1259,6 +1293,38 @@ pub struct KialiExternalServicesCustomDashboardsPrometheusAuth {
     /// Username to be used when making requests to Prometheus with `basic` authentication. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the username is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
+}
+
+/// Settings for OAuth2 client_credentials authentication. When auth.type is `oauth2`, these settings are used to obtain an access token.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KialiExternalServicesCustomDashboardsPrometheusAuthOauth2 {
+    /// The audience parameter sent with the token request. Some providers require this to scope the token.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub audience: Option<String>,
+    /// How to send client credentials to the token endpoint. Use `params` to send in the request body or `header` to send as HTTP Basic Auth (default).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub auth_style: Option<KialiExternalServicesCustomDashboardsPrometheusAuthOauth2AuthStyle>,
+    /// The OAuth2 client ID (a public identifier per RFC 6749 §2.2).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub client_id: Option<String>,
+    /// The OAuth2 client secret. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the value is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub client_secret: Option<String>,
+    /// A list of scopes to request with the token.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scopes: Option<Vec<String>>,
+    /// The URL of the OAuth2 token endpoint.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub token_url: Option<String>,
+}
+
+/// Settings for OAuth2 client_credentials authentication. When auth.type is `oauth2`, these settings are used to obtain an access token.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KialiExternalServicesCustomDashboardsPrometheusAuthOauth2AuthStyle {
+    #[serde(rename = "header")]
+    Header,
+    #[serde(rename = "params")]
+    Params,
 }
 
 /// Define this section if Prometheus is to be queried through a Thanos proxy. Kiali will still use the `url` setting to query for Prometheus metrics so make sure that is set appropriately.
@@ -1325,13 +1391,16 @@ pub struct KialiExternalServicesGrafanaAuth {
     /// The client private key file to use when accessing Grafana using https with mTLS. An empty string means no client private key is used. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the key is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key_file: Option<String>,
+    /// Settings for OAuth2 client_credentials authentication. When auth.type is `oauth2`, these settings are used to obtain an access token.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub oauth2: Option<KialiExternalServicesGrafanaAuthOauth2>,
     /// Password to be used when making requests to Grafana, for basic authentication. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the password is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<String>,
     /// Token / API key to access Grafana, for token-based authentication. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the token is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub token: Option<String>,
-    /// The type of authentication to use when contacting the server. Use `bearer` to send the token to the Grafana server. Use `basic` to connect with username and password credentials. Use `none` to not use any authentication.
+    /// The type of authentication to use when contacting the server. Use `bearer` to send the token to the Grafana server. Use `basic` to connect with username and password credentials. Use `oauth2` to use OAuth2 client_credentials flow. Use `none` to not use any authentication.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
     /// When true and if `auth.type` is `bearer`, Kiali Service Account token will be used for the API calls to Grafana (in this case, `auth.token` config is ignored).
@@ -1340,6 +1409,38 @@ pub struct KialiExternalServicesGrafanaAuth {
     /// Username to be used when making requests to Grafana with `basic` authentication. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the username is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
+}
+
+/// Settings for OAuth2 client_credentials authentication. When auth.type is `oauth2`, these settings are used to obtain an access token.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KialiExternalServicesGrafanaAuthOauth2 {
+    /// The audience parameter sent with the token request. Some providers require this to scope the token.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub audience: Option<String>,
+    /// How to send client credentials to the token endpoint. Use `params` to send in the request body or `header` to send as HTTP Basic Auth (default).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub auth_style: Option<KialiExternalServicesGrafanaAuthOauth2AuthStyle>,
+    /// The OAuth2 client ID (a public identifier per RFC 6749 §2.2).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub client_id: Option<String>,
+    /// The OAuth2 client secret. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the value is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub client_secret: Option<String>,
+    /// A list of scopes to request with the token.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scopes: Option<Vec<String>>,
+    /// The URL of the OAuth2 token endpoint.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub token_url: Option<String>,
+}
+
+/// Settings for OAuth2 client_credentials authentication. When auth.type is `oauth2`, these settings are used to obtain an access token.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KialiExternalServicesGrafanaAuthOauth2AuthStyle {
+    #[serde(rename = "header")]
+    Header,
+    #[serde(rename = "params")]
+    Params,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1536,10 +1637,13 @@ pub struct KialiExternalServicesPersesAuth {
     /// The client private key file to use when accessing Perses using https with mTLS. An empty string means no client private key is used. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the key is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key_file: Option<String>,
+    /// Settings for OAuth2 client_credentials authentication. When auth.type is `oauth2`, these settings are used to obtain an access token.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub oauth2: Option<KialiExternalServicesPersesAuthOauth2>,
     /// Password to be used when making requests to Perses, for basic authentication. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the password is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<String>,
-    /// The type of authentication to use when contacting the server. Use `bearer` to send the token to the Perses server. Use `basic` to connect with username and password credentials. Use `none` to not use any authentication.
+    /// The type of authentication to use when contacting the server. Use `bearer` to send the token to the Perses server. Use `basic` to connect with username and password credentials. Use `oauth2` to use OAuth2 client_credentials flow. Use `none` to not use any authentication.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
     /// When true and if `auth.type` is `bearer`, Kiali Service Account token will be used for the API calls to Perses.
@@ -1548,6 +1652,38 @@ pub struct KialiExternalServicesPersesAuth {
     /// Username to be used when making requests to Perses with `basic` authentication. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the username is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
+}
+
+/// Settings for OAuth2 client_credentials authentication. When auth.type is `oauth2`, these settings are used to obtain an access token.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KialiExternalServicesPersesAuthOauth2 {
+    /// The audience parameter sent with the token request. Some providers require this to scope the token.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub audience: Option<String>,
+    /// How to send client credentials to the token endpoint. Use `params` to send in the request body or `header` to send as HTTP Basic Auth (default).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub auth_style: Option<KialiExternalServicesPersesAuthOauth2AuthStyle>,
+    /// The OAuth2 client ID (a public identifier per RFC 6749 §2.2).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub client_id: Option<String>,
+    /// The OAuth2 client secret. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the value is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub client_secret: Option<String>,
+    /// A list of scopes to request with the token.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scopes: Option<Vec<String>>,
+    /// The URL of the OAuth2 token endpoint.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub token_url: Option<String>,
+}
+
+/// Settings for OAuth2 client_credentials authentication. When auth.type is `oauth2`, these settings are used to obtain an access token.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KialiExternalServicesPersesAuthOauth2AuthStyle {
+    #[serde(rename = "header")]
+    Header,
+    #[serde(rename = "params")]
+    Params,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1643,13 +1779,16 @@ pub struct KialiExternalServicesPrometheusAuth {
     /// The client private key file to use when accessing Prometheus using https with mTLS. An empty string means no client private key is used. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the key is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key_file: Option<String>,
+    /// Settings for OAuth2 client_credentials authentication. When auth.type is `oauth2`, these settings are used to obtain an access token.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub oauth2: Option<KialiExternalServicesPrometheusAuthOauth2>,
     /// Password to be used when making requests to Prometheus, for basic authentication. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the password is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<String>,
     /// Token / API key to access Prometheus, for token-based authentication. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the token is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub token: Option<String>,
-    /// The type of authentication to use when contacting the server. Use `bearer` to send the token to the Prometheus server. Use `basic` to connect with username and password credentials. Use `none` to not use any authentication (this is the default).
+    /// The type of authentication to use when contacting the server. Use `bearer` to send the token to the Prometheus server. Use `basic` to connect with username and password credentials. Use `oauth2` to use OAuth2 client_credentials flow. Use `none` to not use any authentication (this is the default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
     /// When true and if `auth.type` is `bearer`, Kiali Service Account token will be used for the API calls to Prometheus (in this case, `auth.token` config is ignored).
@@ -1658,6 +1797,38 @@ pub struct KialiExternalServicesPrometheusAuth {
     /// Username to be used when making requests to Prometheus with `basic` authentication. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the username is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
+}
+
+/// Settings for OAuth2 client_credentials authentication. When auth.type is `oauth2`, these settings are used to obtain an access token.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KialiExternalServicesPrometheusAuthOauth2 {
+    /// The audience parameter sent with the token request. Some providers require this to scope the token.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub audience: Option<String>,
+    /// How to send client credentials to the token endpoint. Use `params` to send in the request body or `header` to send as HTTP Basic Auth (default).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub auth_style: Option<KialiExternalServicesPrometheusAuthOauth2AuthStyle>,
+    /// The OAuth2 client ID (a public identifier per RFC 6749 §2.2).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub client_id: Option<String>,
+    /// The OAuth2 client secret. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the value is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub client_secret: Option<String>,
+    /// A list of scopes to request with the token.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scopes: Option<Vec<String>>,
+    /// The URL of the OAuth2 token endpoint.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub token_url: Option<String>,
+}
+
+/// Settings for OAuth2 client_credentials authentication. When auth.type is `oauth2`, these settings are used to obtain an access token.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KialiExternalServicesPrometheusAuthOauth2AuthStyle {
+    #[serde(rename = "header")]
+    Header,
+    #[serde(rename = "params")]
+    Params,
 }
 
 /// Define this section if Prometheus is to be queried through a Thanos proxy. Kiali will still use the `url` setting to query for Prometheus metrics so make sure that is set appropriately.
@@ -1751,13 +1922,16 @@ pub struct KialiExternalServicesTracingAuth {
     /// The client private key file to use when accessing the Tracing server using https with mTLS. An empty string means no client private key is used. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the key is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key_file: Option<String>,
+    /// Settings for OAuth2 client_credentials authentication. When auth.type is `oauth2`, these settings are used to obtain an access token.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub oauth2: Option<KialiExternalServicesTracingAuthOauth2>,
     /// Password to be used when making requests to the Tracing server, for basic authentication. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the password is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<String>,
     /// Token / API key to access the Tracing server, for token-based authentication. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the token is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub token: Option<String>,
-    /// The type of authentication to use when contacting the server. Use `bearer` to send the token to the Tracing server. Use `basic` to connect with username and password credentials. Use `none` to not use any authentication (this is the default).
+    /// The type of authentication to use when contacting the server. Use `bearer` to send the token to the Tracing server. Use `basic` to connect with username and password credentials. Use `oauth2` to use OAuth2 client_credentials flow (only supported when use_grpc is false). Use `none` to not use any authentication (this is the default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
     /// When true and if `auth.type` is `bearer`, Kiali Service Account token will be used for the API calls to the Tracing server (in this case, `auth.token` config is ignored).
@@ -1766,6 +1940,38 @@ pub struct KialiExternalServicesTracingAuth {
     /// Username to be used when making requests to the Tracing server with `basic` authentication. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the username is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
+}
+
+/// Settings for OAuth2 client_credentials authentication. When auth.type is `oauth2`, these settings are used to obtain an access token.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KialiExternalServicesTracingAuthOauth2 {
+    /// The audience parameter sent with the token request. Some providers require this to scope the token.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub audience: Option<String>,
+    /// How to send client credentials to the token endpoint. Use `params` to send in the request body or `header` to send as HTTP Basic Auth (default).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub auth_style: Option<KialiExternalServicesTracingAuthOauth2AuthStyle>,
+    /// The OAuth2 client ID (a public identifier per RFC 6749 §2.2).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub client_id: Option<String>,
+    /// The OAuth2 client secret. May refer to a secret using the pattern `secret:<secretName>:<secretKey>`. When using a secret, the value is cached and automatically refreshed when the secret changes, enabling rotation without pod restart.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub client_secret: Option<String>,
+    /// A list of scopes to request with the token.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scopes: Option<Vec<String>>,
+    /// The URL of the OAuth2 token endpoint.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub token_url: Option<String>,
+}
+
+/// Settings for OAuth2 client_credentials authentication. When auth.type is `oauth2`, these settings are used to obtain an access token.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KialiExternalServicesTracingAuthOauth2AuthStyle {
+    #[serde(rename = "header")]
+    Header,
+    #[serde(rename = "params")]
+    Params,
 }
 
 /// Configuration used to access the Tracing (Jaeger or Tempo) dashboards.

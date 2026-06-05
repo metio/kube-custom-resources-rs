@@ -2618,6 +2618,19 @@ pub struct VmAuthVpaResourcePolicyContainerPolicies {
     /// for the container. The default is no maximum.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxAllowed")]
     pub max_allowed: Option<BTreeMap<String, IntOrString>>,
+    /// memoryAggregationIntervalCount is the number of consecutive
+    /// memoryAggregationIntervals which make up the memory aggregation window.
+    /// The total window length is:
+    /// MemoryAggregationIntervalSeconds * MemoryAggregationIntervalCount.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memoryAggregationIntervalCount")]
+    pub memory_aggregation_interval_count: Option<i64>,
+    /// memoryAggregationIntervalSeconds is the length of a single interval
+    /// (in seconds) for which the peak memory usage is computed.
+    /// Memory usage peaks are aggregated in multiples of this interval.
+    /// In other words, there is one memory usage sample per interval
+    /// (the maximum usage over that interval).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memoryAggregationIntervalSeconds")]
+    pub memory_aggregation_interval_seconds: Option<i32>,
     /// Specifies the minimal amount of resources that will be recommended
     /// for the container. The default is no minimum.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minAllowed")]
@@ -2631,6 +2644,12 @@ pub struct VmAuthVpaResourcePolicyContainerPolicies {
     /// oomMinBumpUp is the minimum increase in memory when OOM is detected.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "oomMinBumpUp")]
     pub oom_min_bump_up: Option<IntOrString>,
+    /// startupBoost specifies the startup boost policy for the container.
+    /// This overrides any pod-level startup boost policy.
+    /// The startup boost policy takes precedence over the rest of the fields in
+    /// this struct, except for ContainerName and ControlledValues.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupBoost")]
+    pub startup_boost: Option<VmAuthVpaResourcePolicyContainerPoliciesStartupBoost>,
 }
 
 /// ContainerResourcePolicy controls how autoscaler computes the recommended
@@ -2649,9 +2668,58 @@ pub enum VmAuthVpaResourcePolicyContainerPoliciesMode {
     Off,
 }
 
+/// startupBoost specifies the startup boost policy for the container.
+/// This overrides any pod-level startup boost policy.
+/// The startup boost policy takes precedence over the rest of the fields in
+/// this struct, except for ContainerName and ControlledValues.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VmAuthVpaResourcePolicyContainerPoliciesStartupBoost {
+    /// cpu specifies the CPU startup boost policy.
+    /// If this field is not set, no startup boost is applied.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cpu: Option<VmAuthVpaResourcePolicyContainerPoliciesStartupBoostCpu>,
+}
+
+/// cpu specifies the CPU startup boost policy.
+/// If this field is not set, no startup boost is applied.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct VmAuthVpaResourcePolicyContainerPoliciesStartupBoostCpu {
+    /// durationSeconds indicates for how long to keep the pod boosted after it goes to Ready.
+    /// Defaults to 0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "durationSeconds")]
+    pub duration_seconds: Option<i32>,
+    /// factor specifies the factor to apply to the resource request.
+    /// This field is required when Type is "Factor".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub factor: Option<i32>,
+    /// quantity specifies the absolute resource quantity to be used as the
+    /// resource request and limit during the boost phase.
+    /// This field is required when Type is "Quantity".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub quantity: Option<IntOrString>,
+    /// type specifies the kind of boost to apply.
+    /// Supported values are: "Factor", "Quantity".
+    /// No startupboost will be applied for unrecognized values.
+    #[serde(rename = "type")]
+    pub r#type: VmAuthVpaResourcePolicyContainerPoliciesStartupBoostCpuType,
+}
+
+/// cpu specifies the CPU startup boost policy.
+/// If this field is not set, no startup boost is applied.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum VmAuthVpaResourcePolicyContainerPoliciesStartupBoostCpuType {
+    Factor,
+    Quantity,
+}
+
 /// UpdatePolicy controls how the autoscaler applies changes to pod resources.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmAuthVpaUpdatePolicy {
+    /// evictAfterOOMSeconds specifies the time in seconds to wait after an OOM event before
+    /// considering the pod for eviction. Pods that have OOMed in less than this time
+    /// since start will be evicted.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "evictAfterOOMSeconds")]
+    pub evict_after_oom_seconds: Option<i32>,
     /// EvictionRequirements is a list of EvictionRequirements that need to
     /// evaluate to true in order for a Pod to be evicted. If more than one
     /// EvictionRequirement is specified, all of them need to be fulfilled to allow eviction.
@@ -2696,6 +2764,7 @@ pub enum VmAuthVpaUpdatePolicyUpdateMode {
     Initial,
     Recreate,
     InPlaceOrRecreate,
+    InPlace,
     Auto,
 }
 

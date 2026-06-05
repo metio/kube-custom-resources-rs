@@ -6071,6 +6071,8 @@ pub struct PerconaServerMySqlProxyHaproxy {
     pub scheduler_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sidecarResources")]
+    pub sidecar_resources: Option<BTreeMap<String, PerconaServerMySqlProxyHaproxySidecarResources>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub size: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
@@ -6906,6 +6908,23 @@ pub struct PerconaServerMySqlProxyHaproxyResources {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PerconaServerMySqlProxyHaproxyResourcesClaims {
+    pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySqlProxyHaproxySidecarResources {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<PerconaServerMySqlProxyHaproxySidecarResourcesClaims>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySqlProxyHaproxySidecarResourcesClaims {
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub request: Option<String>,

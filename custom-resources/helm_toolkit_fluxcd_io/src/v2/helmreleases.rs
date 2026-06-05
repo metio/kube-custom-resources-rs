@@ -318,13 +318,14 @@ pub struct HelmReleaseCommonMetadata {
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// DependencyReference defines a HelmRelease dependency on another HelmRelease resource.
+/// DependencyReference contains enough information to locate the referenced Kubernetes resource object
+/// and optional CEL expression to assess its readiness.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HelmReleaseDependsOn {
     /// Name of the referent.
     pub name: String,
-    /// Namespace of the referent, defaults to the namespace of the HelmRelease
-    /// resource object that contains the reference.
+    /// Namespace of the referent, defaults to the namespace of the resource
+    /// object that contains the reference.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// ReadyExpr is a CEL expression that can be used to assess the readiness
@@ -1062,6 +1063,16 @@ pub enum HelmReleaseUpgradeStrategyName {
 pub struct HelmReleaseValuesFrom {
     /// Kind of the values referent, valid values are ('Secret', 'ConfigMap').
     pub kind: HelmReleaseValuesFromKind,
+    /// Literal marks this ValuesReference as a literal value. When set in
+    /// combination with TargetPath, the referenced value is merged at the target
+    /// path without interpreting Helm's `--set` syntax (commas, brackets, dots,
+    /// equal signs, etc.), mirroring the behavior of `helm --set-literal`. This
+    /// is the only safe way to inject arbitrary file content (config files, JSON
+    /// blobs, multi-line strings containing special characters) through
+    /// `valuesFrom`. Has no effect when TargetPath is empty: in that mode the
+    /// referenced value is always YAML-merged at the root.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub literal: Option<bool>,
     /// Name of the values referent. Should reside in the same namespace as the
     /// referring resource.
     pub name: String,

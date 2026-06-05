@@ -74,7 +74,7 @@ spec:
                           properties:
                             tolerationSeconds:
                               default: 300
-                              description: "TolerationSeconds represents the period of time Karmada should wait\nafter reaching the desired state before performing failover process.\nIf not specified, Karmada will immediately perform failover process.\nDefaults to 300s."
+                              description: "TolerationSeconds represents the period of time Karmada should wait\nafter reaching the desired state before performing failover process.\n\nDefaults to 300s if not specified.\nSet it to 0 to perform failover immediately."
                               format: "int32"
                               type: "integer"
                           type: "object"

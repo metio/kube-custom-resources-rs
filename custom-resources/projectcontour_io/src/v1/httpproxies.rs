@@ -1628,12 +1628,19 @@ pub struct HttpProxyVirtualhostAuthorization {
     /// from internal authorization to Contour external authorization.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failOpen")]
     pub fail_open: Option<bool>,
+    /// HTTPAuthorizationServerSettings defines configurations for interacting with an external HTTP authorization server.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpSettings")]
+    pub http_settings: Option<HttpProxyVirtualhostAuthorizationHttpSettings>,
     /// ResponseTimeout configures maximum time to wait for a check response from the authorization server.
     /// Timeout durations are expressed in the Go [Duration format](<https://godoc.org/time#ParseDuration).>
     /// Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
     /// The string "infinity" is also a valid input and specifies no timeout.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseTimeout")]
     pub response_timeout: Option<String>,
+    /// ServiceType sets the protocol used to communicate with
+    /// the external authorization server.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceType")]
+    pub service_type: Option<HttpProxyVirtualhostAuthorizationServiceType>,
     /// WithRequestBody specifies configuration for sending the client request's body to authorization server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "withRequestBody")]
     pub with_request_body: Option<HttpProxyVirtualhostAuthorizationWithRequestBody>,
@@ -1672,6 +1679,80 @@ pub struct HttpProxyVirtualhostAuthorizationExtensionRef {
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+}
+
+/// HTTPAuthorizationServerSettings defines configurations for interacting with an external HTTP authorization server.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HttpProxyVirtualhostAuthorizationHttpSettings {
+    /// AllowedAuthorizationHeaders specifies client request headers that will be sent to the authorization server.
+    /// Host, Method, Path, Content-Length, and Authorization headers are additionally included in the list.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedAuthorizationHeaders")]
+    pub allowed_authorization_headers: Option<Vec<HttpProxyVirtualhostAuthorizationHttpSettingsAllowedAuthorizationHeaders>>,
+    /// AllowedUpstreamHeaders specifies response headers from the authorization server
+    /// that may be added to the original client request before sending it to the upstream.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedUpstreamHeaders")]
+    pub allowed_upstream_headers: Option<Vec<HttpProxyVirtualhostAuthorizationHttpSettingsAllowedUpstreamHeaders>>,
+    /// PathPrefix Sets a prefix to the value of authorization request header Path.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pathPrefix")]
+    pub path_prefix: Option<String>,
+}
+
+/// HTTPAuthorizationServerAllowedHeaders specifies how to conditionally match against allowed headers
+/// in the context of HTTP authorization. Regex support is intentionally excluded to simplify the user
+/// experience and prevent potential issues. Only one of Prefix, Exact, Suffix or Contains must be provided.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HttpProxyVirtualhostAuthorizationHttpSettingsAllowedAuthorizationHeaders {
+    /// Contains specifies a substring that must be present in the header name.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// Exact specifies a string that the header name must be equal to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exact: Option<String>,
+    /// IgnoreCase specifies whether string matching should be case-insensitive.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreCase")]
+    pub ignore_case: Option<bool>,
+    /// Prefix defines a prefix match for the header name.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub prefix: Option<String>,
+    /// Suffix defines a suffix match for a header name.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub suffix: Option<String>,
+}
+
+/// HTTPAuthorizationServerAllowedHeaders specifies how to conditionally match against allowed headers
+/// in the context of HTTP authorization. Regex support is intentionally excluded to simplify the user
+/// experience and prevent potential issues. Only one of Prefix, Exact, Suffix or Contains must be provided.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HttpProxyVirtualhostAuthorizationHttpSettingsAllowedUpstreamHeaders {
+    /// Contains specifies a substring that must be present in the header name.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// Exact specifies a string that the header name must be equal to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exact: Option<String>,
+    /// IgnoreCase specifies whether string matching should be case-insensitive.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreCase")]
+    pub ignore_case: Option<bool>,
+    /// Prefix defines a prefix match for the header name.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub prefix: Option<String>,
+    /// Suffix defines a suffix match for a header name.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub suffix: Option<String>,
+}
+
+/// This field configures an extension service to perform
+/// authorization for this virtual host. Authorization can
+/// only be configured on virtual hosts that have TLS enabled.
+/// If the TLS configuration requires client certificate
+/// validation, the client certificate is always included in the
+/// authentication check request.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum HttpProxyVirtualhostAuthorizationServiceType {
+    #[serde(rename = "http")]
+    Http,
+    #[serde(rename = "grpc")]
+    Grpc,
 }
 
 /// WithRequestBody specifies configuration for sending the client request's body to authorization server.

@@ -1180,7 +1180,7 @@ spec:
                   description: "test runner"
                   properties:
                     config:
-                      description: "config map to customize the config for test runner, if not specified default test config will be aplied"
+                      description: "config map to customize the config for test runner, if not specified default test config will be applied"
                       properties:
                         name:
                           default: ""

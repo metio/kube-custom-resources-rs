@@ -1203,6 +1203,23 @@ pub struct DatadogAgentFeaturesAutoscalingCluster {
     /// Default: false
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
+    /// Spot contains the configuration for the spot instance scheduling sub-feature.
+    /// Requires cluster autoscaling to be enabled.
+    /// (Requires Cluster Agent 7.79.0+)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub spot: Option<DatadogAgentFeaturesAutoscalingClusterSpot>,
+}
+
+/// Spot contains the configuration for the spot instance scheduling sub-feature.
+/// Requires cluster autoscaling to be enabled.
+/// (Requires Cluster Agent 7.79.0+)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentFeaturesAutoscalingClusterSpot {
+    /// Enabled enables the cluster spot scheduling product.
+    /// (Requires Cluster Agent 7.79.0+)
+    /// Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
 }
 
 /// Workload contains the configuration for the workload autoscaling product.
@@ -1438,8 +1455,8 @@ pub struct DatadogAgentFeaturesDataPlane {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentFeaturesDataPlaneDogstatsd {
     /// Enabled configures the Data Plane to handle DogStatsD traffic.
-    /// When enabled, DogStatsD is disabled in the Core Agent.
-    /// Default: false
+    /// When set to false, DogStatsD is handled by the Core Agent instead.
+    /// Default: true
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
 }
@@ -2426,6 +2443,9 @@ pub struct DatadogAgentFeaturesSbom {
     /// Default: false
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
+    /// SBOMEnrichmentConfig contains SBOM enrichment configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enrichment: Option<DatadogAgentFeaturesSbomEnrichment>,
     /// SBOMTypeConfig contains configuration for a SBOM collection type.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<DatadogAgentFeaturesSbomHost>,
@@ -2451,6 +2471,24 @@ pub struct DatadogAgentFeaturesSbomContainerImage {
     pub uncompressed_layers_support: Option<bool>,
 }
 
+/// SBOMEnrichmentConfig contains SBOM enrichment configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentFeaturesSbomEnrichment {
+    /// Usage contains configuration for the "package in use" enrichment.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub usage: Option<DatadogAgentFeaturesSbomEnrichmentUsage>,
+}
+
+/// Usage contains configuration for the "package in use" enrichment.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentFeaturesSbomEnrichmentUsage {
+    /// Enable this option to activate SBOM enrichment with runtime "package in use" detection.
+    /// Requires system-probe for eBPF-based file access tracking.
+    /// Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+
 /// SBOMTypeConfig contains configuration for a SBOM collection type.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentFeaturesSbomHost {
@@ -2467,7 +2505,8 @@ pub struct DatadogAgentFeaturesSbomHost {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentFeaturesServiceDiscovery {
     /// Enables the service discovery check.
-    /// Default: false
+    /// Default: true when omitted and the node Agent image is >= 7.78.0. Otherwise false.
+    /// If the image version cannot be determined, it is treated as latest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// DEPRECATED: NetworkStats is no longer configurable and will be ignored. Scheduled for removal in v1.28.
@@ -8054,12 +8093,32 @@ pub struct DatadogAgentStatusClusterChecksRunner {
 /// Experiment tracks the state of an active or recent Fleet Automation experiment.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentStatusExperiment {
-    /// ID is the unique experiment ID sent by Fleet Automation.
+    /// ID is the RC task ID that triggered this experiment state.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     /// Phase is the current state of the experiment.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<DatadogAgentStatusExperimentPhase>,
+    /// StartTaskID is the Fleet Automation task identifier that drove the
+    /// transition into phase=Running. Captured from the daemon's pending
+    /// annotations and preserved across daemon restarts. On local timeout
+    /// the daemon uses it to report TaskState_ERROR for the original start
+    /// task, so Fleet Automation gets an explicit terminal failure tied to
+    /// the task it sent rather than inferring termination from a cleared
+    /// experimentConfigVersion.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTaskID")]
+    pub start_task_id: Option<String>,
+    /// StartedAt is the wall-clock time at which the experiment first
+    /// transitioned to phase=Running. Used as the anchor for the
+    /// experiment timeout. Decoupled from ControllerRevision metadata so
+    /// the timeout decision does not depend on revision creation
+    /// timestamps (which can be stale for re-used revisions).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startedAt")]
+    pub started_at: Option<String>,
+    /// TerminationReason distinguishes why the experiment was terminated.
+    /// Only set when Phase is "terminated".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationReason")]
+    pub termination_reason: Option<String>,
 }
 
 /// Experiment tracks the state of an active or recent Fleet Automation experiment.
@@ -8067,12 +8126,8 @@ pub struct DatadogAgentStatusExperiment {
 pub enum DatadogAgentStatusExperimentPhase {
     #[serde(rename = "running")]
     Running,
-    #[serde(rename = "stopped")]
-    Stopped,
-    #[serde(rename = "rollback")]
-    Rollback,
-    #[serde(rename = "timeout")]
-    Timeout,
+    #[serde(rename = "terminated")]
+    Terminated,
     #[serde(rename = "promoted")]
     Promoted,
     #[serde(rename = "aborted")]
@@ -9298,6 +9353,23 @@ pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesAutoscalingCluster
     /// Default: false
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
+    /// Spot contains the configuration for the spot instance scheduling sub-feature.
+    /// Requires cluster autoscaling to be enabled.
+    /// (Requires Cluster Agent 7.79.0+)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub spot: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesAutoscalingClusterSpot>,
+}
+
+/// Spot contains the configuration for the spot instance scheduling sub-feature.
+/// Requires cluster autoscaling to be enabled.
+/// (Requires Cluster Agent 7.79.0+)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesAutoscalingClusterSpot {
+    /// Enabled enables the cluster spot scheduling product.
+    /// (Requires Cluster Agent 7.79.0+)
+    /// Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
 }
 
 /// Workload contains the configuration for the workload autoscaling product.
@@ -9533,8 +9605,8 @@ pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesDataPlane {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesDataPlaneDogstatsd {
     /// Enabled configures the Data Plane to handle DogStatsD traffic.
-    /// When enabled, DogStatsD is disabled in the Core Agent.
-    /// Default: false
+    /// When set to false, DogStatsD is handled by the Core Agent instead.
+    /// Default: true
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
 }
@@ -10521,6 +10593,9 @@ pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesSbom {
     /// Default: false
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
+    /// SBOMEnrichmentConfig contains SBOM enrichment configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enrichment: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesSbomEnrichment>,
     /// SBOMTypeConfig contains configuration for a SBOM collection type.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesSbomHost>,
@@ -10546,6 +10621,24 @@ pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesSbomContainerImage
     pub uncompressed_layers_support: Option<bool>,
 }
 
+/// SBOMEnrichmentConfig contains SBOM enrichment configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesSbomEnrichment {
+    /// Usage contains configuration for the "package in use" enrichment.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub usage: Option<DatadogAgentStatusRemoteConfigConfigurationFeaturesSbomEnrichmentUsage>,
+}
+
+/// Usage contains configuration for the "package in use" enrichment.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesSbomEnrichmentUsage {
+    /// Enable this option to activate SBOM enrichment with runtime "package in use" detection.
+    /// Requires system-probe for eBPF-based file access tracking.
+    /// Default: false
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+
 /// SBOMTypeConfig contains configuration for a SBOM collection type.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesSbomHost {
@@ -10562,7 +10655,8 @@ pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesSbomHost {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogAgentStatusRemoteConfigConfigurationFeaturesServiceDiscovery {
     /// Enables the service discovery check.
-    /// Default: false
+    /// Default: true when omitted and the node Agent image is >= 7.78.0. Otherwise false.
+    /// If the image version cannot be determined, it is treated as latest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// DEPRECATED: NetworkStats is no longer configurable and will be ignored. Scheduled for removal in v1.28.

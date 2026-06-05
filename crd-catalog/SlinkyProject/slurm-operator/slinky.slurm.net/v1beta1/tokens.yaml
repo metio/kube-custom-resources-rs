@@ -54,9 +54,6 @@ spec:
                       default: ""
                       description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                       type: "string"
-                    namespace:
-                      description: "The namespace of the Slurm `auth/jwt` JWT key."
-                      type: "string"
                     optional:
                       description: "Specify whether the Secret or its key must be defined"
                       type: "boolean"
@@ -73,9 +70,6 @@ spec:
                     name:
                       default: ""
                       description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
-                      type: "string"
-                    namespace:
-                      description: "The namespace of the Slurm `auth/jwt` JWT key."
                       type: "string"
                     optional:
                       description: "Specify whether the Secret or its key must be defined"

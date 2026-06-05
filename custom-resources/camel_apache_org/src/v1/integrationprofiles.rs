@@ -629,7 +629,7 @@ pub struct IntegrationProfileTraitsCamel {
     /// A list of properties to be provided to the Integration runtime
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub properties: Option<Vec<String>>,
-    /// The runtime provider to use for the integration. (Default, Camel K Runtime).
+    /// The runtime provider to use for the integration. (Default, plain Quarkus).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeProvider")]
     pub runtime_provider: Option<IntegrationProfileTraitsCamelRuntimeProvider>,
     /// The runtime version to use for the integration. It overrides the default version set in the Integration Platform.
@@ -2767,7 +2767,7 @@ pub struct IntegrationProfileStatusTraitsCamel {
     /// A list of properties to be provided to the Integration runtime
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub properties: Option<Vec<String>>,
-    /// The runtime provider to use for the integration. (Default, Camel K Runtime).
+    /// The runtime provider to use for the integration. (Default, plain Quarkus).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeProvider")]
     pub runtime_provider: Option<IntegrationProfileStatusTraitsCamelRuntimeProvider>,
     /// The runtime version to use for the integration. It overrides the default version set in the Integration Platform.

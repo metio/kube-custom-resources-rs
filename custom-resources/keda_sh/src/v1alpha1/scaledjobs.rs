@@ -112,9 +112,6 @@ pub struct ScaledJobJobTargetRef {
     /// by RFC 1123. All characters trailing the first "/" must be valid HTTP Path
     /// characters as defined by RFC 3986. The value cannot exceed 63 characters.
     /// This field is immutable.
-    /// 
-    /// This field is beta-level. The job controller accepts setting the field
-    /// when the feature gate JobManagedBy is enabled (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "managedBy")]
     pub managed_by: Option<String>,
     /// manualSelector controls generation of pod labels and pod selectors.
@@ -284,7 +281,8 @@ pub struct ScaledJobJobTargetRefPodFailurePolicyRulesOnPodConditions {
     /// Specifies the required Pod condition status. To match a pod condition
     /// it is required that the specified status equals the pod condition status.
     /// Defaults to True.
-    pub status: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub status: Option<String>,
     /// Specifies the required Pod condition type. To match a pod condition
     /// it is required that specified type equals the pod condition type.
     #[serde(rename = "type")]
@@ -597,8 +595,8 @@ pub struct ScaledJobJobTargetRefTemplateSpec {
     /// will be made available to those containers which consume them
     /// by name.
     /// 
-    /// This is an alpha field and requires enabling the
-    /// DynamicResourceAllocation feature gate.
+    /// This is a stable field but requires that the
+    /// DynamicResourceAllocation feature gate is enabled.
     /// 
     /// This field is immutable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaims")]
@@ -690,6 +688,15 @@ pub struct ScaledJobJobTargetRefTemplateSpec {
     /// More info: <https://kubernetes.io/docs/concepts/storage/volumes>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<ScaledJobJobTargetRefTemplateSpecVolumes>>,
+    /// WorkloadRef provides a reference to the Workload object that this Pod belongs to.
+    /// This field is used by the scheduler to identify the PodGroup and apply the
+    /// correct group scheduling policies. The Workload object referenced
+    /// by this field may not exist at the time the Pod is created.
+    /// This field is immutable, but a Workload object with the same name
+    /// may be recreated with different policies. Doing this during pod scheduling
+    /// may result in the placement not conforming to the expected policies.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workloadRef")]
+    pub workload_ref: Option<ScaledJobJobTargetRefTemplateSpecWorkloadRef>,
 }
 
 /// If specified, the pod's scheduling constraints
@@ -1463,6 +1470,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecContainers {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<ScaledJobJobTargetRefTemplateSpecContainersReadinessProbe>,
     /// Resources resize policy for the container.
+    /// This field cannot be set on ephemeral containers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
     pub resize_policy: Option<Vec<ScaledJobJobTargetRefTemplateSpecContainersResizePolicy>>,
     /// Compute Resources required by this container.
@@ -4066,6 +4074,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecInitContainers {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<ScaledJobJobTargetRefTemplateSpecInitContainersReadinessProbe>,
     /// Resources resize policy for the container.
+    /// This field cannot be set on ephemeral containers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
     pub resize_policy: Option<Vec<ScaledJobJobTargetRefTemplateSpecInitContainersResizePolicy>>,
     /// Compute Resources required by this container.
@@ -5654,9 +5663,10 @@ pub struct ScaledJobJobTargetRefTemplateSpecTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// Operator represents a key's relationship to the value.
-    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Valid operators are Exists, Equal, Lt, and Gt. Defaults to Equal.
     /// Exists is equivalent to wildcard for value, so that a pod can
     /// tolerate all taints of a particular category.
+    /// Lt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
     /// TolerationSeconds represents the period of time the toleration (which must be
@@ -6480,7 +6490,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesEphemeralVolumeClaimTemplateS
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
     pub data_source_ref: Option<ScaledJobJobTargetRefTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
     /// resources represents the minimum resources the volume should have.
-    /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+    /// Users are allowed to specify resource requirements
     /// that are lower than previous value but must still be higher than capacity recorded in the
     /// status field of the claim.
     /// More info: <https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources>
@@ -6577,7 +6587,7 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesEphemeralVolumeClaimTemplateS
 }
 
 /// resources represents the minimum resources the volume should have.
-/// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+/// Users are allowed to specify resource requirements
 /// that are lower than previous value but must still be higher than capacity recorded in the
 /// status field of the claim.
 /// More info: <https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources>
@@ -7300,6 +7310,21 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesProjectedSourcesPodCertificat
     /// Kubelet's generated CSRs will be addressed to this signer.
     #[serde(rename = "signerName")]
     pub signer_name: String,
+    /// userAnnotations allow pod authors to pass additional information to
+    /// the signer implementation.  Kubernetes does not restrict or validate this
+    /// metadata in any way.
+    /// 
+    /// These values are copied verbatim into the `spec.unverifiedUserAnnotations` field of
+    /// the PodCertificateRequest objects that Kubelet creates.
+    /// 
+    /// Entries are subject to the same validation as object metadata annotations,
+    /// with the addition that all keys must be domain-prefixed. No restrictions
+    /// are placed on values, except an overall size limitation on the entire field.
+    /// 
+    /// Signers should document the keys and values they support. Signers should
+    /// deny requests that contain keys they do not recognize.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userAnnotations")]
+    pub user_annotations: Option<BTreeMap<String, String>>,
 }
 
 /// secret information about the secret data to project
@@ -7623,6 +7648,35 @@ pub struct ScaledJobJobTargetRefTemplateSpecVolumesVsphereVolume {
     /// volumePath is the path that identifies vSphere volume vmdk
     #[serde(rename = "volumePath")]
     pub volume_path: String,
+}
+
+/// WorkloadRef provides a reference to the Workload object that this Pod belongs to.
+/// This field is used by the scheduler to identify the PodGroup and apply the
+/// correct group scheduling policies. The Workload object referenced
+/// by this field may not exist at the time the Pod is created.
+/// This field is immutable, but a Workload object with the same name
+/// may be recreated with different policies. Doing this during pod scheduling
+/// may result in the placement not conforming to the expected policies.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScaledJobJobTargetRefTemplateSpecWorkloadRef {
+    /// Name defines the name of the Workload object this Pod belongs to.
+    /// Workload must be in the same namespace as the Pod.
+    /// If it doesn't match any existing Workload, the Pod will remain unschedulable
+    /// until a Workload object is created and observed by the kube-scheduler.
+    /// It must be a DNS subdomain.
+    pub name: String,
+    /// PodGroup is the name of the PodGroup within the Workload that this Pod
+    /// belongs to. If it doesn't match any existing PodGroup within the Workload,
+    /// the Pod will remain unschedulable until the Workload object is recreated
+    /// and observed by the kube-scheduler. It must be a DNS label.
+    #[serde(rename = "podGroup")]
+    pub pod_group: String,
+    /// PodGroupReplicaKey specifies the replica key of the PodGroup to which this
+    /// Pod belongs. It is used to distinguish pods belonging to different replicas
+    /// of the same pod group. The pod group policy is applied separately to each replica.
+    /// When set, it must be a DNS label.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podGroupReplicaKey")]
+    pub pod_group_replica_key: Option<String>,
 }
 
 /// Rollout defines the strategy for job rollouts

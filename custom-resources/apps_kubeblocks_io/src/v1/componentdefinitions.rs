@@ -4407,9 +4407,11 @@ pub struct ComponentDefinitionConfigs {
     /// Refers to documents of k8s.ConfigMapVolumeSource.defaultMode for more information.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    /// ExternalManaged specifies whether the file management is delegated to an external system or manual user control.
+    /// ExternalManaged specifies whether the file management is delegated to an external system.
     /// 
-    /// When set to true, the controller will ignore the management of this file.
+    /// When set to true, the apps controller will ignore the rendering and lifecycle management of
+    /// this file. A ConfigMap source for this template is accepted only when the referenced ConfigMap
+    /// carries the common KubeBlocks component labels.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalManaged")]
     pub external_managed: Option<bool>,
     /// Specifies the name of the template.
@@ -4486,6 +4488,9 @@ pub struct ComponentDefinitionConfigsReconfigure {
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
+    /// - When `targetPodSelector` is set to `Ordinal`, `matchingKey` must be a non-negative integer
+    ///   and only the replica whose Pod name ends with `-<matchingKey>` will be selected for the Action.
+    ///   The selector is considered ambiguous and the action fails if multiple Pods share the same ordinal.
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
@@ -4586,6 +4591,9 @@ pub struct ComponentDefinitionConfigsReconfigureExec {
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
+    /// - When `targetPodSelector` is set to `Ordinal`, `matchingKey` must be a non-negative integer
+    ///   and only the replica whose Pod name ends with `-<matchingKey>` will be selected for the Action.
+    ///   The selector is considered ambiguous and the action fails if multiple Pods share the same ordinal.
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
@@ -5229,6 +5237,9 @@ pub struct ComponentDefinitionLifecycleActionsAccountProvision {
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
+    /// - When `targetPodSelector` is set to `Ordinal`, `matchingKey` must be a non-negative integer
+    ///   and only the replica whose Pod name ends with `-<matchingKey>` will be selected for the Action.
+    ///   The selector is considered ambiguous and the action fails if multiple Pods share the same ordinal.
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
@@ -5329,6 +5340,9 @@ pub struct ComponentDefinitionLifecycleActionsAccountProvisionExec {
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
+    /// - When `targetPodSelector` is set to `Ordinal`, `matchingKey` must be a non-negative integer
+    ///   and only the replica whose Pod name ends with `-<matchingKey>` will be selected for the Action.
+    ///   The selector is considered ambiguous and the action fails if multiple Pods share the same ordinal.
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
@@ -5638,6 +5652,9 @@ pub struct ComponentDefinitionLifecycleActionsAvailableProbe {
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
+    /// - When `targetPodSelector` is set to `Ordinal`, `matchingKey` must be a non-negative integer
+    ///   and only the replica whose Pod name ends with `-<matchingKey>` will be selected for the Action.
+    ///   The selector is considered ambiguous and the action fails if multiple Pods share the same ordinal.
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
@@ -5746,6 +5763,9 @@ pub struct ComponentDefinitionLifecycleActionsAvailableProbeExec {
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
+    /// - When `targetPodSelector` is set to `Ordinal`, `matchingKey` must be a non-negative integer
+    ///   and only the replica whose Pod name ends with `-<matchingKey>` will be selected for the Action.
+    ///   The selector is considered ambiguous and the action fails if multiple Pods share the same ordinal.
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
@@ -6053,6 +6073,9 @@ pub struct ComponentDefinitionLifecycleActionsDataDump {
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
+    /// - When `targetPodSelector` is set to `Ordinal`, `matchingKey` must be a non-negative integer
+    ///   and only the replica whose Pod name ends with `-<matchingKey>` will be selected for the Action.
+    ///   The selector is considered ambiguous and the action fails if multiple Pods share the same ordinal.
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
@@ -6153,6 +6176,9 @@ pub struct ComponentDefinitionLifecycleActionsDataDumpExec {
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
+    /// - When `targetPodSelector` is set to `Ordinal`, `matchingKey` must be a non-negative integer
+    ///   and only the replica whose Pod name ends with `-<matchingKey>` will be selected for the Action.
+    ///   The selector is considered ambiguous and the action fails if multiple Pods share the same ordinal.
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
@@ -6471,6 +6497,9 @@ pub struct ComponentDefinitionLifecycleActionsDataLoad {
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
+    /// - When `targetPodSelector` is set to `Ordinal`, `matchingKey` must be a non-negative integer
+    ///   and only the replica whose Pod name ends with `-<matchingKey>` will be selected for the Action.
+    ///   The selector is considered ambiguous and the action fails if multiple Pods share the same ordinal.
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
@@ -6571,6 +6600,9 @@ pub struct ComponentDefinitionLifecycleActionsDataLoadExec {
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
+    /// - When `targetPodSelector` is set to `Ordinal`, `matchingKey` must be a non-negative integer
+    ///   and only the replica whose Pod name ends with `-<matchingKey>` will be selected for the Action.
+    ///   The selector is considered ambiguous and the action fails if multiple Pods share the same ordinal.
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
@@ -6899,6 +6931,9 @@ pub struct ComponentDefinitionLifecycleActionsMemberJoin {
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
+    /// - When `targetPodSelector` is set to `Ordinal`, `matchingKey` must be a non-negative integer
+    ///   and only the replica whose Pod name ends with `-<matchingKey>` will be selected for the Action.
+    ///   The selector is considered ambiguous and the action fails if multiple Pods share the same ordinal.
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
@@ -6999,6 +7034,9 @@ pub struct ComponentDefinitionLifecycleActionsMemberJoinExec {
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
+    /// - When `targetPodSelector` is set to `Ordinal`, `matchingKey` must be a non-negative integer
+    ///   and only the replica whose Pod name ends with `-<matchingKey>` will be selected for the Action.
+    ///   The selector is considered ambiguous and the action fails if multiple Pods share the same ordinal.
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
@@ -7342,6 +7380,9 @@ pub struct ComponentDefinitionLifecycleActionsMemberLeave {
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
+    /// - When `targetPodSelector` is set to `Ordinal`, `matchingKey` must be a non-negative integer
+    ///   and only the replica whose Pod name ends with `-<matchingKey>` will be selected for the Action.
+    ///   The selector is considered ambiguous and the action fails if multiple Pods share the same ordinal.
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
@@ -7442,6 +7483,9 @@ pub struct ComponentDefinitionLifecycleActionsMemberLeaveExec {
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
+    /// - When `targetPodSelector` is set to `Ordinal`, `matchingKey` must be a non-negative integer
+    ///   and only the replica whose Pod name ends with `-<matchingKey>` will be selected for the Action.
+    ///   The selector is considered ambiguous and the action fails if multiple Pods share the same ordinal.
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
@@ -7765,6 +7809,9 @@ pub struct ComponentDefinitionLifecycleActionsPostProvision {
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
+    /// - When `targetPodSelector` is set to `Ordinal`, `matchingKey` must be a non-negative integer
+    ///   and only the replica whose Pod name ends with `-<matchingKey>` will be selected for the Action.
+    ///   The selector is considered ambiguous and the action fails if multiple Pods share the same ordinal.
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
@@ -7865,6 +7912,9 @@ pub struct ComponentDefinitionLifecycleActionsPostProvisionExec {
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
+    /// - When `targetPodSelector` is set to `Ordinal`, `matchingKey` must be a non-negative integer
+    ///   and only the replica whose Pod name ends with `-<matchingKey>` will be selected for the Action.
+    ///   The selector is considered ambiguous and the action fails if multiple Pods share the same ordinal.
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
@@ -8168,6 +8218,9 @@ pub struct ComponentDefinitionLifecycleActionsPreTerminate {
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
+    /// - When `targetPodSelector` is set to `Ordinal`, `matchingKey` must be a non-negative integer
+    ///   and only the replica whose Pod name ends with `-<matchingKey>` will be selected for the Action.
+    ///   The selector is considered ambiguous and the action fails if multiple Pods share the same ordinal.
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
@@ -8268,6 +8321,9 @@ pub struct ComponentDefinitionLifecycleActionsPreTerminateExec {
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
+    /// - When `targetPodSelector` is set to `Ordinal`, `matchingKey` must be a non-negative integer
+    ///   and only the replica whose Pod name ends with `-<matchingKey>` will be selected for the Action.
+    ///   The selector is considered ambiguous and the action fails if multiple Pods share the same ordinal.
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
@@ -8571,6 +8627,9 @@ pub struct ComponentDefinitionLifecycleActionsReadonly {
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
+    /// - When `targetPodSelector` is set to `Ordinal`, `matchingKey` must be a non-negative integer
+    ///   and only the replica whose Pod name ends with `-<matchingKey>` will be selected for the Action.
+    ///   The selector is considered ambiguous and the action fails if multiple Pods share the same ordinal.
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
@@ -8671,6 +8730,9 @@ pub struct ComponentDefinitionLifecycleActionsReadonlyExec {
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
+    /// - When `targetPodSelector` is set to `Ordinal`, `matchingKey` must be a non-negative integer
+    ///   and only the replica whose Pod name ends with `-<matchingKey>` will be selected for the Action.
+    ///   The selector is considered ambiguous and the action fails if multiple Pods share the same ordinal.
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
@@ -8976,6 +9038,9 @@ pub struct ComponentDefinitionLifecycleActionsReadwrite {
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
+    /// - When `targetPodSelector` is set to `Ordinal`, `matchingKey` must be a non-negative integer
+    ///   and only the replica whose Pod name ends with `-<matchingKey>` will be selected for the Action.
+    ///   The selector is considered ambiguous and the action fails if multiple Pods share the same ordinal.
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
@@ -9076,6 +9141,9 @@ pub struct ComponentDefinitionLifecycleActionsReadwriteExec {
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
+    /// - When `targetPodSelector` is set to `Ordinal`, `matchingKey` must be a non-negative integer
+    ///   and only the replica whose Pod name ends with `-<matchingKey>` will be selected for the Action.
+    ///   The selector is considered ambiguous and the action fails if multiple Pods share the same ordinal.
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
@@ -9375,6 +9443,9 @@ pub struct ComponentDefinitionLifecycleActionsReconfigure {
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
+    /// - When `targetPodSelector` is set to `Ordinal`, `matchingKey` must be a non-negative integer
+    ///   and only the replica whose Pod name ends with `-<matchingKey>` will be selected for the Action.
+    ///   The selector is considered ambiguous and the action fails if multiple Pods share the same ordinal.
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
@@ -9475,6 +9546,9 @@ pub struct ComponentDefinitionLifecycleActionsReconfigureExec {
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
+    /// - When `targetPodSelector` is set to `Ordinal`, `matchingKey` must be a non-negative integer
+    ///   and only the replica whose Pod name ends with `-<matchingKey>` will be selected for the Action.
+    ///   The selector is considered ambiguous and the action fails if multiple Pods share the same ordinal.
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
@@ -9811,6 +9885,9 @@ pub struct ComponentDefinitionLifecycleActionsRoleProbe {
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
+    /// - When `targetPodSelector` is set to `Ordinal`, `matchingKey` must be a non-negative integer
+    ///   and only the replica whose Pod name ends with `-<matchingKey>` will be selected for the Action.
+    ///   The selector is considered ambiguous and the action fails if multiple Pods share the same ordinal.
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
@@ -9919,6 +9996,9 @@ pub struct ComponentDefinitionLifecycleActionsRoleProbeExec {
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
+    /// - When `targetPodSelector` is set to `Ordinal`, `matchingKey` must be a non-negative integer
+    ///   and only the replica whose Pod name ends with `-<matchingKey>` will be selected for the Action.
+    ///   The selector is considered ambiguous and the action fails if multiple Pods share the same ordinal.
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
@@ -10263,6 +10343,9 @@ pub struct ComponentDefinitionLifecycleActionsSwitchover {
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
+    /// - When `targetPodSelector` is set to `Ordinal`, `matchingKey` must be a non-negative integer
+    ///   and only the replica whose Pod name ends with `-<matchingKey>` will be selected for the Action.
+    ///   The selector is considered ambiguous and the action fails if multiple Pods share the same ordinal.
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
@@ -10363,6 +10446,9 @@ pub struct ComponentDefinitionLifecycleActionsSwitchoverExec {
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
+    /// - When `targetPodSelector` is set to `Ordinal`, `matchingKey` must be a non-negative integer
+    ///   and only the replica whose Pod name ends with `-<matchingKey>` will be selected for the Action.
+    ///   The selector is considered ambiguous and the action fails if multiple Pods share the same ordinal.
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
@@ -17234,9 +17320,11 @@ pub struct ComponentDefinitionScripts {
     /// Refers to documents of k8s.ConfigMapVolumeSource.defaultMode for more information.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    /// ExternalManaged specifies whether the file management is delegated to an external system or manual user control.
+    /// ExternalManaged specifies whether the file management is delegated to an external system.
     /// 
-    /// When set to true, the controller will ignore the management of this file.
+    /// When set to true, the apps controller will ignore the rendering and lifecycle management of
+    /// this file. A ConfigMap source for this template is accepted only when the referenced ConfigMap
+    /// carries the common KubeBlocks component labels.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalManaged")]
     pub external_managed: Option<bool>,
     /// Specifies the name of the template.
@@ -17313,6 +17401,9 @@ pub struct ComponentDefinitionScriptsReconfigure {
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
+    /// - When `targetPodSelector` is set to `Ordinal`, `matchingKey` must be a non-negative integer
+    ///   and only the replica whose Pod name ends with `-<matchingKey>` will be selected for the Action.
+    ///   The selector is considered ambiguous and the action fails if multiple Pods share the same ordinal.
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
@@ -17413,6 +17504,9 @@ pub struct ComponentDefinitionScriptsReconfigureExec {
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
+    /// - When `targetPodSelector` is set to `Ordinal`, `matchingKey` must be a non-negative integer
+    ///   and only the replica whose Pod name ends with `-<matchingKey>` will be selected for the Action.
+    ///   The selector is considered ambiguous and the action fails if multiple Pods share the same ordinal.
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]

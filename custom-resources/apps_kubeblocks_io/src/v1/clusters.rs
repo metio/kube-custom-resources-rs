@@ -394,12 +394,12 @@ pub struct ClusterComponentSpecsConfigs {
     /// ConfigMap source for the config.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<ClusterComponentSpecsConfigsConfigMap>,
-    /// ExternalManaged specifies whether the configuration management is delegated to an external system
-    /// or manual user control.
+    /// ExternalManaged specifies whether the configuration management is delegated to an external system.
     /// 
-    /// When set to true, the controller will exclusively utilize the user-provided configuration source
-    /// and the 'reconfigure' action defined in this config, bypassing the default templates and
-    /// update behaviors specified in the ComponentDefinition.
+    /// When set to true, the apps controller does not render or manage the configuration from the
+    /// default templates and update behaviors specified in the ComponentDefinition. A ConfigMap source
+    /// for an external-managed configuration is accepted only when the referenced ConfigMap carries
+    /// the common KubeBlocks component labels.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalManaged")]
     pub external_managed: Option<bool>,
     /// The name of the config.
@@ -508,6 +508,9 @@ pub struct ClusterComponentSpecsConfigsReconfigureAction {
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
+    /// - When `targetPodSelector` is set to `Ordinal`, `matchingKey` must be a non-negative integer
+    ///   and only the replica whose Pod name ends with `-<matchingKey>` will be selected for the Action.
+    ///   The selector is considered ambiguous and the action fails if multiple Pods share the same ordinal.
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
@@ -608,6 +611,9 @@ pub struct ClusterComponentSpecsConfigsReconfigureActionExec {
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
+    /// - When `targetPodSelector` is set to `Ordinal`, `matchingKey` must be a non-negative integer
+    ///   and only the replica whose Pod name ends with `-<matchingKey>` will be selected for the Action.
+    ///   The selector is considered ambiguous and the action fails if multiple Pods share the same ordinal.
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
@@ -5505,9 +5511,10 @@ pub struct ClusterRestore {
 /// Specifies the restore source.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterRestoreSource {
-    /// Specifies the API group of the restore source.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
-    pub api_group: Option<String>,
+    /// Specifies the API group of the restore source. For example, use "dataprotection.kubeblocks.io" for KubeBlocks
+    /// data protection Backup sources.
+    #[serde(rename = "apiGroup")]
+    pub api_group: String,
     /// Specifies the kind of the restore source.
     pub kind: String,
     /// Specifies the name of the restore source.
@@ -9755,12 +9762,12 @@ pub struct ClusterShardingsTemplateConfigs {
     /// ConfigMap source for the config.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<ClusterShardingsTemplateConfigsConfigMap>,
-    /// ExternalManaged specifies whether the configuration management is delegated to an external system
-    /// or manual user control.
+    /// ExternalManaged specifies whether the configuration management is delegated to an external system.
     /// 
-    /// When set to true, the controller will exclusively utilize the user-provided configuration source
-    /// and the 'reconfigure' action defined in this config, bypassing the default templates and
-    /// update behaviors specified in the ComponentDefinition.
+    /// When set to true, the apps controller does not render or manage the configuration from the
+    /// default templates and update behaviors specified in the ComponentDefinition. A ConfigMap source
+    /// for an external-managed configuration is accepted only when the referenced ConfigMap carries
+    /// the common KubeBlocks component labels.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalManaged")]
     pub external_managed: Option<bool>,
     /// The name of the config.
@@ -9869,6 +9876,9 @@ pub struct ClusterShardingsTemplateConfigsReconfigureAction {
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
+    /// - When `targetPodSelector` is set to `Ordinal`, `matchingKey` must be a non-negative integer
+    ///   and only the replica whose Pod name ends with `-<matchingKey>` will be selected for the Action.
+    ///   The selector is considered ambiguous and the action fails if multiple Pods share the same ordinal.
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
@@ -9969,6 +9979,9 @@ pub struct ClusterShardingsTemplateConfigsReconfigureActionExec {
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
+    /// - When `targetPodSelector` is set to `Ordinal`, `matchingKey` must be a non-negative integer
+    ///   and only the replica whose Pod name ends with `-<matchingKey>` will be selected for the Action.
+    ///   The selector is considered ambiguous and the action fails if multiple Pods share the same ordinal.
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]

@@ -95,6 +95,10 @@ pub struct VmSingleSpec {
     /// DNSPolicy sets DNS policy for the pod
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsPolicy")]
     pub dns_policy: Option<String>,
+    /// Downsampling defines downsampling rules for VMSingle.
+    /// Requires enterprise license. See <https://docs.victoriametrics.com/victoriametrics/single-server-victoriametrics/#downsampling>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub downsampling: Option<VmSingleDownsampling>,
     /// EnableKubernetesAPISelectors instructs vmagent or vmsingle to use CRD scrape objects spec.selectors for
     /// Kubernetes API list and watch requests.
     /// <https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#list-and-watch-filtering>
@@ -323,6 +327,10 @@ pub struct VmSingleSpec {
     /// if not defined default resources from operator config will be used
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<VmSingleResources>,
+    /// RetentionFilters defines per-series retention filters for VMSingle.
+    /// Requires enterprise license. See <https://docs.victoriametrics.com/victoriametrics/single-server-victoriametrics/#retention-filters>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retentionFilters")]
+    pub retention_filters: Option<Vec<VmSingleRetentionFilters>>,
     /// RetentionPeriod defines how long to retain stored metrics, specified as a duration (e.g., "1d", "1w", "1m").
     /// Data with timestamps outside the RetentionPeriod is automatically deleted. The minimum allowed value is 1d, or 24h.
     /// The default value is 1 (one month).
@@ -863,6 +871,45 @@ pub struct VmSingleDnsConfigOptions {
     /// Value is this DNS resolver option's value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
+}
+
+/// Downsampling defines downsampling rules for VMSingle.
+/// Requires enterprise license. See <https://docs.victoriametrics.com/victoriametrics/single-server-victoriametrics/#downsampling>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VmSingleDownsampling {
+    /// DedupInterval sets the deduplication interval used with downsampling.
+    /// It corresponds to -dedup.minScrapeInterval flag.
+    /// Must be a multiple of all configured downsampling intervals.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dedupInterval")]
+    pub dedup_interval: Option<String>,
+    /// Rules defines downsampling rules.
+    /// Each rule matches time series by an optional filter and applies downsampling after a given offset.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub rules: Option<Vec<VmSingleDownsamplingRules>>,
+}
+
+/// DownsamplingRule defines downsampling periods for an optional label filter.
+/// All period intervals must be pairwise multiples of each other.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VmSingleDownsamplingRules {
+    /// Filter is an optional MetricsQL label filter for matching time series.
+    /// If not set, the rule is applied to all time series.
+    /// Example: '{env="prod"}'
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub filter: Option<String>,
+    /// Periods defines the downsampling time horizons applied to matching series.
+    pub periods: Vec<VmSingleDownsamplingRulesPeriods>,
+}
+
+/// DownsamplingPeriod defines a single downsampling time horizon.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VmSingleDownsamplingRulesPeriods {
+    /// Interval is the target downsampling resolution; only the last sample per interval is kept.
+    /// Example: "10m"
+    pub interval: String,
+    /// Offset is the minimum age of data before downsampling is applied.
+    /// Example: "30d"
+    pub offset: String,
 }
 
 /// EnvVar represents an environment variable present in a Container.
@@ -1679,6 +1726,20 @@ pub struct VmSingleResourcesClaims {
     /// only the result of this request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub request: Option<String>,
+}
+
+/// RetentionFilter defines per-series retention based on a label filter.
+/// Requires enterprise license.
+/// See <https://docs.victoriametrics.com/victoriametrics/single-server-victoriametrics/#retention-filters>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VmSingleRetentionFilters {
+    /// Filter is a MetricsQL label filter for matching time series.
+    /// Example: '{env="dev"}'
+    pub filter: String,
+    /// Retention is the retention period for matching time series.
+    /// Must not exceed the global retentionPeriod.
+    /// Example: "3d", "1w"
+    pub retention: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

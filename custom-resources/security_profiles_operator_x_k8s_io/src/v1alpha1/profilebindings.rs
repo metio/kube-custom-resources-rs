@@ -40,6 +40,7 @@ pub struct ProfileBindingProfileRef {
 pub enum ProfileBindingProfileRefKind {
     SeccompProfile,
     SelinuxProfile,
+    AppArmorProfile,
 }
 
 /// ProfileBindingStatus contains status of the Profilebinding.
