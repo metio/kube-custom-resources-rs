@@ -103,7 +103,7 @@ spec:
                   description: "Specifies the config file name in the config template."
                   type: "string"
                 immutableParameters:
-                  description: "Lists the parameters that cannot be modified once set.\nAttempting to change any of these parameters will be ignored."
+                  description: "Lists the parameters that cannot be modified once set.\nAttempts to change any of these parameters are rejected during configuration merge and surface as a merge failure."
                   items:
                     type: "string"
                   type: "array"

@@ -345,8 +345,9 @@ pub struct ClusterResourceBindingFailoverApplication {
 pub struct ClusterResourceBindingFailoverApplicationDecisionConditions {
     /// TolerationSeconds represents the period of time Karmada should wait
     /// after reaching the desired state before performing failover process.
-    /// If not specified, Karmada will immediately perform failover process.
-    /// Defaults to 300s.
+    /// 
+    /// Defaults to 300s if not specified.
+    /// Set it to 0 to perform failover immediately.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i32>,
 }

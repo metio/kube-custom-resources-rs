@@ -1585,7 +1585,7 @@ pub struct DeviceConfigRemediationWorkflowNodeRemediationTaints {
 /// test runner
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceConfigTestRunner {
-    /// config map to customize the config for test runner, if not specified default test config will be aplied
+    /// config map to customize the config for test runner, if not specified default test config will be applied
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<DeviceConfigTestRunnerConfig>,
     /// enable test runner, disabled by default
@@ -1614,7 +1614,7 @@ pub struct DeviceConfigTestRunner {
     pub upgrade_policy: Option<DeviceConfigTestRunnerUpgradePolicy>,
 }
 
-/// config map to customize the config for test runner, if not specified default test config will be aplied
+/// config map to customize the config for test runner, if not specified default test config will be applied
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceConfigTestRunnerConfig {
     /// Name of the referent.

@@ -1271,6 +1271,9 @@ pub struct VmAnomalyReader {
     /// Optional argoverrides how search.maxPointsPerTimeseries flagimpacts vmanomaly on splitting long fitWindow queries into smaller sub-intervals
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxPointsPerQuery")]
     pub max_points_per_query: Option<i64>,
+    /// Offset adds a time shift to the query window for all queries, e.g. to account for delayed data ingestion
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub offset: Option<String>,
     /// If True, then query will be performed from the last seen timestamp for a given series.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryFromLastSeenTimestamp")]
     pub query_from_last_seen_timestamp: Option<bool>,
@@ -1577,6 +1580,10 @@ pub struct VmAnomalyServer {
     /// UIDefaultState defines default query state for anomaly UI
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "uiDefaultState")]
     pub ui_default_state: Option<String>,
+    /// UseReaderConnectionSettings when set to true, anomaly UI reuses connection settings
+    /// (credentials, TLS, etc.) from the reader configuration to connect to datasources
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useReaderConnectionSettings")]
+    pub use_reader_connection_settings: Option<bool>,
 }
 
 /// Storage configures storage for StatefulSet
@@ -2053,6 +2060,9 @@ pub struct VmAnomalyWriter {
     /// BearerAuth defines authorization with Authorization: Bearer header
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bearer: Option<VmAnomalyWriterBearer>,
+    /// ConnectionRetryAttempts defines the number of attempts to retry the connection in case of failure
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionRetryAttempts")]
+    pub connection_retry_attempts: Option<i64>,
     /// DatasourceURL defines remote write url for write requests
     /// provided endpoint must serve /api/v1/import path
     /// vmanomaly joins datasourceURL + "/api/v1/import"

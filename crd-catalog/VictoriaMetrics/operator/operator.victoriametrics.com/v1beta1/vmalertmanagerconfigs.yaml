@@ -627,7 +627,7 @@ spec:
                           description: "IncidentioConfig configures notifications via incident.io.\nhttps://prometheus.io/docs/alerting/latest/configuration/#incidentio_config\navailable from v0.66.0 operator version\nand v0.29.0 alertmanager version"
                           properties:
                             alert_source_token:
-                              description: "AlertSourceToken is used to authenticate with incident.io"
+                              description: "AlertSourceToken is used to authenticate with incident.io.\nMutually exclusive with AlertSourceTokenFile."
                               properties:
                                 key:
                                   description: "The key of the secret to select from.  Must be a valid secret key."
@@ -643,6 +643,9 @@ spec:
                                 - "key"
                               type: "object"
                               x-kubernetes-map-type: "atomic"
+                            alert_source_token_file:
+                              description: "AlertSourceTokenFile defines the path to a file that contains the alert source token.\nMutually exclusive with AlertSourceToken."
+                              type: "string"
                             http_config:
                               x-kubernetes-preserve-unknown-fields: true
                             max_alerts:
@@ -655,7 +658,10 @@ spec:
                               description: "Timeout is the maximum time allowed to invoke incident.io"
                               type: "string"
                             url:
-                              description: "The URL to send the incident.io alert. This would typically be provided by the\nincident.io team when setting up an alert source."
+                              description: "The URL to send the incident.io alert. This would typically be provided by the\nincident.io team when setting up an alert source.\nMutually exclusive with URLFile."
+                              type: "string"
+                            url_file:
+                              description: "URLFile defines the path to a file that holds the incident.io alert URL.\nMutually exclusive with URL."
                               type: "string"
                           type: "object"
                         type: "array"

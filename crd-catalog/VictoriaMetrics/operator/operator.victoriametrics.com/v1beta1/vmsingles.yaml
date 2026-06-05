@@ -385,6 +385,41 @@ spec:
                 dnsPolicy:
                   description: "DNSPolicy sets DNS policy for the pod"
                   type: "string"
+                downsampling:
+                  description: "Downsampling defines downsampling rules for VMSingle.\nRequires enterprise license. See https://docs.victoriametrics.com/victoriametrics/single-server-victoriametrics/#downsampling"
+                  properties:
+                    dedupInterval:
+                      description: "DedupInterval sets the deduplication interval used with downsampling.\nIt corresponds to -dedup.minScrapeInterval flag.\nMust be a multiple of all configured downsampling intervals."
+                      type: "string"
+                    rules:
+                      description: "Rules defines downsampling rules.\nEach rule matches time series by an optional filter and applies downsampling after a given offset."
+                      items:
+                        description: "DownsamplingRule defines downsampling periods for an optional label filter.\nAll period intervals must be pairwise multiples of each other."
+                        properties:
+                          filter:
+                            description: "Filter is an optional MetricsQL label filter for matching time series.\nIf not set, the rule is applied to all time series.\nExample: '{env=\"prod\"}'"
+                            type: "string"
+                          periods:
+                            description: "Periods defines the downsampling time horizons applied to matching series."
+                            items:
+                              description: "DownsamplingPeriod defines a single downsampling time horizon."
+                              properties:
+                                interval:
+                                  description: "Interval is the target downsampling resolution; only the last sample per interval is kept.\nExample: \"10m\""
+                                  type: "string"
+                                offset:
+                                  description: "Offset is the minimum age of data before downsampling is applied.\nExample: \"30d\""
+                                  type: "string"
+                              required:
+                                - "interval"
+                                - "offset"
+                              type: "object"
+                            type: "array"
+                        required:
+                          - "periods"
+                        type: "object"
+                      type: "array"
+                  type: "object"
                 enableKubernetesAPISelectors:
                   description: "EnableKubernetesAPISelectors instructs vmagent or vmsingle to use CRD scrape objects spec.selectors for\nKubernetes API list and watch requests.\nhttps://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#list-and-watch-filtering\nIt could be useful to reduce Kubernetes API server resource usage for serving less than 100 CRD scrape objects in total."
                   type: "boolean"
@@ -1243,6 +1278,22 @@ spec:
                       description: "Requests describes the minimum amount of compute resources required.\nIf Requests is omitted for a container, it defaults to Limits if that is explicitly specified,\notherwise to an implementation-defined value. Requests cannot exceed Limits.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                       type: "object"
                   type: "object"
+                retentionFilters:
+                  description: "RetentionFilters defines per-series retention filters for VMSingle.\nRequires enterprise license. See https://docs.victoriametrics.com/victoriametrics/single-server-victoriametrics/#retention-filters"
+                  items:
+                    description: "RetentionFilter defines per-series retention based on a label filter.\nRequires enterprise license.\nSee https://docs.victoriametrics.com/victoriametrics/single-server-victoriametrics/#retention-filters"
+                    properties:
+                      filter:
+                        description: "Filter is a MetricsQL label filter for matching time series.\nExample: '{env=\"dev\"}'"
+                        type: "string"
+                      retention:
+                        description: "Retention is the retention period for matching time series.\nMust not exceed the global retentionPeriod.\nExample: \"3d\", \"1w\""
+                        type: "string"
+                    required:
+                      - "filter"
+                      - "retention"
+                    type: "object"
+                  type: "array"
                 retentionPeriod:
                   description: "RetentionPeriod defines how long to retain stored metrics, specified as a duration (e.g., \"1d\", \"1w\", \"1m\").\nData with timestamps outside the RetentionPeriod is automatically deleted. The minimum allowed value is 1d, or 24h.\nThe default value is 1 (one month).\nSee [retention](https://docs.victoriametrics.com/victoriametrics/single-server-victoriametrics/#retention) docs for details."
                   pattern: "^[0-9]+(h|d|w|y)?$"

@@ -166,6 +166,20 @@ spec:
                           description: "Defines the cluster version for the database to use"
                           type: "string"
                       type: "object"
+                    readinessCheck:
+                      description: "ReadinessCheck configures *how* the readiness init container is built.\nWhen nil (default), the Operator uses the legacy \"external\" mode\n(postgres:13 / appropriate/curl images). Ignored when\nDisableReadinessCheck is true. Currently only consulted for the\nexternal-database path; operator-managed databases always use the\nlegacy probe."
+                      properties:
+                        mode:
+                          description: "Mode selects the readiness check implementation.\n  \"external\" (default): use postgres:13 / appropriate/curl images\n                        and probe via pg_isready / curl. Current\n                        behavior; will be deprecated in a future\n                        release.\n  \"builtin\":  reuse the main Mattermost image and run\n              `mattermost db ping --timeout=<Timeout>`. Requires\n              a Mattermost version that ships `mattermost db ping`."
+                          enum:
+                            - "external"
+                            - "builtin"
+                          type: "string"
+                        timeout:
+                          description: "Timeout for the readiness check. When Mode=builtin this value is\npassed to `mattermost db ping --timeout`. Ignored when Mode=external\n(the legacy `until pg_isready ...; sleep 5; done` loop has no\ntimeout). Defaults to 5m."
+                          pattern: "^([0-9]+(\\.[0-9]+)?(ns|us|µs|ms|s|m|h))+$"
+                          type: "string"
+                      type: "object"
                   type: "object"
                 deploymentTemplate:
                   description: "DeploymentTemplate defines configuration for the template for Mattermost deployment."
@@ -380,7 +394,7 @@ spec:
                   description: "JobServer defines configuration for the Mattermost job server."
                   properties:
                     dedicatedJobServer:
-                      description: "Determines whether to create a dedicated Mattermost server deployment\nwhich is configured to run scheduled jobs. This deployment will recieve\nno user traffic and the primary Mattermost deployment will no longer be\nconfigured to run jobs."
+                      description: "Determines whether to create a dedicated Mattermost server deployment\nwhich is configured to run scheduled jobs. This deployment will receive\nno user traffic and the primary Mattermost deployment will no longer be\nconfigured to run jobs."
                       type: "boolean"
                   type: "object"
                 licenseSecret:

@@ -194,6 +194,22 @@ pub struct ObjectStoreConfigurationData {
     /// to 2
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub jobs: Option<i32>,
+    /// Additional arguments that can be appended to the 'barman-cloud-restore'
+    /// command-line invocation. These arguments provide flexibility to customize
+    /// the data restore process further, according to specific requirements or
+    /// configurations.
+    /// 
+    /// Example:
+    /// In a scenario where specialized restore options are required, such as setting
+    /// a specific read timeout or defining custom behavior, users can use this field
+    /// to specify additional command arguments.
+    /// 
+    /// Note:
+    /// It's essential to ensure that the provided arguments are valid and supported
+    /// by the 'barman-cloud-restore' command, to avoid potential errors or unintended
+    /// behavior during execution.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restoreAdditionalCommandArgs")]
+    pub restore_additional_command_args: Option<Vec<String>>,
 }
 
 /// The configuration to be used to backup the data files

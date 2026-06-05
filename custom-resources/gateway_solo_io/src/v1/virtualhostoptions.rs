@@ -983,10 +983,14 @@ pub struct VirtualHostOptionOptionsRatelimitRateLimits {
     pub limit: Option<VirtualHostOptionOptionsRatelimitRateLimitsLimit>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "setActions")]
     pub set_actions: Option<Vec<VirtualHostOptionOptionsRatelimitRateLimitsSetActions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualHostOptionOptionsRatelimitRateLimitsActions {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cel: Option<VirtualHostOptionOptionsRatelimitRateLimitsActionsCel>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationCluster")]
     pub destination_cluster: Option<VirtualHostOptionOptionsRatelimitRateLimitsActionsDestinationCluster>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "genericKey")]
@@ -1001,6 +1005,14 @@ pub struct VirtualHostOptionOptionsRatelimitRateLimitsActions {
     pub request_headers: Option<VirtualHostOptionOptionsRatelimitRateLimitsActionsRequestHeaders>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceCluster")]
     pub source_cluster: Option<VirtualHostOptionOptionsRatelimitRateLimitsActionsSourceCluster>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VirtualHostOptionOptionsRatelimitRateLimitsActionsCel {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expression: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1121,6 +1133,8 @@ pub struct VirtualHostOptionOptionsRatelimitRateLimitsLimitDynamicMetadataMetada
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualHostOptionOptionsRatelimitRateLimitsSetActions {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cel: Option<VirtualHostOptionOptionsRatelimitRateLimitsSetActionsCel>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationCluster")]
     pub destination_cluster: Option<VirtualHostOptionOptionsRatelimitRateLimitsSetActionsDestinationCluster>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "genericKey")]
@@ -1135,6 +1149,14 @@ pub struct VirtualHostOptionOptionsRatelimitRateLimitsSetActions {
     pub request_headers: Option<VirtualHostOptionOptionsRatelimitRateLimitsSetActionsRequestHeaders>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceCluster")]
     pub source_cluster: Option<VirtualHostOptionOptionsRatelimitRateLimitsSetActionsSourceCluster>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VirtualHostOptionOptionsRatelimitRateLimitsSetActionsCel {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expression: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1277,10 +1299,14 @@ pub struct VirtualHostOptionOptionsRatelimitEarlyRateLimits {
     pub limit: Option<VirtualHostOptionOptionsRatelimitEarlyRateLimitsLimit>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "setActions")]
     pub set_actions: Option<Vec<VirtualHostOptionOptionsRatelimitEarlyRateLimitsSetActions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualHostOptionOptionsRatelimitEarlyRateLimitsActions {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cel: Option<VirtualHostOptionOptionsRatelimitEarlyRateLimitsActionsCel>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationCluster")]
     pub destination_cluster: Option<VirtualHostOptionOptionsRatelimitEarlyRateLimitsActionsDestinationCluster>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "genericKey")]
@@ -1295,6 +1321,14 @@ pub struct VirtualHostOptionOptionsRatelimitEarlyRateLimitsActions {
     pub request_headers: Option<VirtualHostOptionOptionsRatelimitEarlyRateLimitsActionsRequestHeaders>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceCluster")]
     pub source_cluster: Option<VirtualHostOptionOptionsRatelimitEarlyRateLimitsActionsSourceCluster>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VirtualHostOptionOptionsRatelimitEarlyRateLimitsActionsCel {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expression: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1415,6 +1449,8 @@ pub struct VirtualHostOptionOptionsRatelimitEarlyRateLimitsLimitDynamicMetadataM
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualHostOptionOptionsRatelimitEarlyRateLimitsSetActions {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cel: Option<VirtualHostOptionOptionsRatelimitEarlyRateLimitsSetActionsCel>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationCluster")]
     pub destination_cluster: Option<VirtualHostOptionOptionsRatelimitEarlyRateLimitsSetActionsDestinationCluster>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "genericKey")]
@@ -1429,6 +1465,14 @@ pub struct VirtualHostOptionOptionsRatelimitEarlyRateLimitsSetActions {
     pub request_headers: Option<VirtualHostOptionOptionsRatelimitEarlyRateLimitsSetActionsRequestHeaders>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceCluster")]
     pub source_cluster: Option<VirtualHostOptionOptionsRatelimitEarlyRateLimitsSetActionsSourceCluster>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VirtualHostOptionOptionsRatelimitEarlyRateLimitsSetActionsCel {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expression: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1547,10 +1591,14 @@ pub struct VirtualHostOptionOptionsRatelimitRegularRateLimits {
     pub limit: Option<VirtualHostOptionOptionsRatelimitRegularRateLimitsLimit>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "setActions")]
     pub set_actions: Option<Vec<VirtualHostOptionOptionsRatelimitRegularRateLimitsSetActions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualHostOptionOptionsRatelimitRegularRateLimitsActions {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cel: Option<VirtualHostOptionOptionsRatelimitRegularRateLimitsActionsCel>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationCluster")]
     pub destination_cluster: Option<VirtualHostOptionOptionsRatelimitRegularRateLimitsActionsDestinationCluster>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "genericKey")]
@@ -1565,6 +1613,14 @@ pub struct VirtualHostOptionOptionsRatelimitRegularRateLimitsActions {
     pub request_headers: Option<VirtualHostOptionOptionsRatelimitRegularRateLimitsActionsRequestHeaders>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceCluster")]
     pub source_cluster: Option<VirtualHostOptionOptionsRatelimitRegularRateLimitsActionsSourceCluster>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VirtualHostOptionOptionsRatelimitRegularRateLimitsActionsCel {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expression: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1685,6 +1741,8 @@ pub struct VirtualHostOptionOptionsRatelimitRegularRateLimitsLimitDynamicMetadat
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualHostOptionOptionsRatelimitRegularRateLimitsSetActions {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cel: Option<VirtualHostOptionOptionsRatelimitRegularRateLimitsSetActionsCel>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationCluster")]
     pub destination_cluster: Option<VirtualHostOptionOptionsRatelimitRegularRateLimitsSetActionsDestinationCluster>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "genericKey")]
@@ -1699,6 +1757,14 @@ pub struct VirtualHostOptionOptionsRatelimitRegularRateLimitsSetActions {
     pub request_headers: Option<VirtualHostOptionOptionsRatelimitRegularRateLimitsSetActionsRequestHeaders>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceCluster")]
     pub source_cluster: Option<VirtualHostOptionOptionsRatelimitRegularRateLimitsSetActionsSourceCluster>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VirtualHostOptionOptionsRatelimitRegularRateLimitsSetActionsCel {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expression: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

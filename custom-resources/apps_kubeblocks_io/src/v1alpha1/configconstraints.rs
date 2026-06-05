@@ -69,7 +69,7 @@ pub struct ConfigConstraintSpec {
     #[serde(rename = "formatterConfig")]
     pub formatter_config: ConfigConstraintFormatterConfig,
     /// Lists the parameters that cannot be modified once set.
-    /// Attempting to change any of these parameters will be ignored.
+    /// Attempts to change any of these parameters are rejected during configuration merge and surface as a merge failure.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "immutableParameters")]
     pub immutable_parameters: Option<Vec<String>>,
     /// Specifies the dynamic reload action supported by the engine.

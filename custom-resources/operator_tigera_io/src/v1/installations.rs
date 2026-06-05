@@ -70,9 +70,8 @@ pub struct InstallationSpec {
     /// CSINodeDriverDaemonSet configures the csi-node-driver DaemonSet.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "csiNodeDriverDaemonSet")]
     pub csi_node_driver_daemon_set: Option<InstallationCsiNodeDriverDaemonSet>,
-    /// FIPSMode uses images and features only that are using FIPS 140-2 validated cryptographic modules and standards.
-    /// Only supported for Variant=Calico.
-    /// Default: Disabled
+    /// Deprecated. FIPS mode is no longer supported. Setting fipsMode to Enabled marks the
+    /// installation degraded.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fipsMode")]
     pub fips_mode: Option<InstallationFipsMode>,
     /// FlexVolumePath optionally specifies a custom path for FlexVolume. If not specified, FlexVolume will be
@@ -124,6 +123,10 @@ pub struct InstallationSpec {
     /// Logging Configuration for Components
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<InstallationLogging>,
+    /// NetworkPolicy configures how the operator manages the NetworkPolicies and GlobalNetworkPolicies
+    /// it installs to protect the Calico components it manages.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkPolicy")]
+    pub network_policy: Option<InstallationNetworkPolicy>,
     /// NodeMetricsPort specifies which port calico/node serves prometheus metrics on. By default, metrics are not enabled.
     /// If specified, this overrides any FelixConfiguration resources which may exist. If omitted, then
     /// prometheus metrics may still be configured through FelixConfiguration.
@@ -169,6 +172,11 @@ pub struct InstallationSpec {
     /// TyphaMetricsPort specifies which port calico/typha serves prometheus metrics on. By default, metrics are not enabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "typhaMetricsPort")]
     pub typha_metrics_port: Option<i32>,
+    /// TyphaPodDisruptionBudget configures the PodDisruptionBudget for the calico-typha
+    /// Deployment. Fields left unset fall back to the operator's defaults. The PDB's
+    /// selector is managed by the operator and cannot be overridden.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "typhaPodDisruptionBudget")]
+    pub typha_pod_disruption_budget: Option<InstallationTyphaPodDisruptionBudget>,
     /// Variant is the product to install - one of Calico or CalicoEnterprise.
     /// TigeraSecureEnterprise is also accepted as a deprecated alias for CalicoEnterprise.
     /// Default: Calico
@@ -5712,6 +5720,26 @@ pub enum InstallationLoggingCniLogSeverity {
     Debug,
 }
 
+/// NetworkPolicy configures how the operator manages the NetworkPolicies and GlobalNetworkPolicies
+/// it installs to protect the Calico components it manages.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstallationNetworkPolicy {
+    /// ManagePolicies controls whether the operator creates and reconciles the NetworkPolicies and
+    /// GlobalNetworkPolicies it uses to protect the Calico components it installs. When set to
+    /// Disabled, the operator stops creating or updating these policies and deletes any it has
+    /// already created, leaving policy management to the user. Defaults to Enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managePolicies")]
+    pub manage_policies: Option<InstallationNetworkPolicyManagePolicies>,
+}
+
+/// NetworkPolicy configures how the operator manages the NetworkPolicies and GlobalNetworkPolicies
+/// it installs to protect the Calico components it manages.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum InstallationNetworkPolicyManagePolicies {
+    Enabled,
+    Disabled,
+}
+
 /// NodeUpdateStrategy can be used to customize the desired update strategy, such as the MaxUnavailable
 /// field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -7181,6 +7209,61 @@ pub struct InstallationTyphaDeploymentSpecTemplateSpecTopologySpreadConstraintsL
     pub values: Option<Vec<String>>,
 }
 
+/// TyphaPodDisruptionBudget configures the PodDisruptionBudget for the calico-typha
+/// Deployment. Fields left unset fall back to the operator's defaults. The PDB's
+/// selector is managed by the operator and cannot be overridden.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstallationTyphaPodDisruptionBudget {
+    /// Metadata is a subset of a Kubernetes object's metadata that is added to the PodDisruptionBudget.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<InstallationTyphaPodDisruptionBudgetMetadata>,
+    /// Spec is the specification of the PodDisruptionBudget.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub spec: Option<InstallationTyphaPodDisruptionBudgetSpec>,
+}
+
+/// Metadata is a subset of a Kubernetes object's metadata that is added to the PodDisruptionBudget.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstallationTyphaPodDisruptionBudgetMetadata {
+    /// Annotations is a map of arbitrary non-identifying metadata. Each of these
+    /// key/value pairs are added to the object's annotations provided the key does not
+    /// already exist in the object's annotations.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Labels is a map of string keys and values that may match replicaset and
+    /// service selectors. Each of these key/value pairs are added to the
+    /// object's labels provided the key does not already exist in the object's labels.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+}
+
+/// Spec is the specification of the PodDisruptionBudget.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstallationTyphaPodDisruptionBudgetSpec {
+    /// MaxUnavailable is the maximum number of pods (as an integer or percentage) that
+    /// can be unavailable during a disruption. Mutually exclusive with MinAvailable.
+    /// If neither MinAvailable nor MaxUnavailable is set, the operator applies its
+    /// default (MaxUnavailable=1 for calico-typha).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
+    pub max_unavailable: Option<IntOrString>,
+    /// MinAvailable is the minimum number of pods (as an integer or percentage) that
+    /// must remain available during a disruption. Mutually exclusive with MaxUnavailable.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minAvailable")]
+    pub min_available: Option<IntOrString>,
+    /// UnhealthyPodEvictionPolicy defines when unhealthy pods should be considered
+    /// for eviction. Defaults to IfHealthyBudget (the Kubernetes default) when unset.
+    /// See <https://kubernetes.io/docs/tasks/run-application/configure-pdb/#unhealthy-pod-eviction-policy.>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyPodEvictionPolicy")]
+    pub unhealthy_pod_eviction_policy: Option<InstallationTyphaPodDisruptionBudgetSpecUnhealthyPodEvictionPolicy>,
+}
+
+/// Spec is the specification of the PodDisruptionBudget.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum InstallationTyphaPodDisruptionBudgetSpecUnhealthyPodEvictionPolicy {
+    IfHealthyBudget,
+    AlwaysAllow,
+}
+
 /// Specification of the desired state for the Calico or Calico Enterprise installation.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum InstallationVariant {
@@ -7298,9 +7381,8 @@ pub struct InstallationStatusComputed {
     /// CSINodeDriverDaemonSet configures the csi-node-driver DaemonSet.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "csiNodeDriverDaemonSet")]
     pub csi_node_driver_daemon_set: Option<InstallationStatusComputedCsiNodeDriverDaemonSet>,
-    /// FIPSMode uses images and features only that are using FIPS 140-2 validated cryptographic modules and standards.
-    /// Only supported for Variant=Calico.
-    /// Default: Disabled
+    /// Deprecated. FIPS mode is no longer supported. Setting fipsMode to Enabled marks the
+    /// installation degraded.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fipsMode")]
     pub fips_mode: Option<InstallationStatusComputedFipsMode>,
     /// FlexVolumePath optionally specifies a custom path for FlexVolume. If not specified, FlexVolume will be
@@ -7352,6 +7434,10 @@ pub struct InstallationStatusComputed {
     /// Logging Configuration for Components
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<InstallationStatusComputedLogging>,
+    /// NetworkPolicy configures how the operator manages the NetworkPolicies and GlobalNetworkPolicies
+    /// it installs to protect the Calico components it manages.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkPolicy")]
+    pub network_policy: Option<InstallationStatusComputedNetworkPolicy>,
     /// NodeMetricsPort specifies which port calico/node serves prometheus metrics on. By default, metrics are not enabled.
     /// If specified, this overrides any FelixConfiguration resources which may exist. If omitted, then
     /// prometheus metrics may still be configured through FelixConfiguration.
@@ -7397,6 +7483,11 @@ pub struct InstallationStatusComputed {
     /// TyphaMetricsPort specifies which port calico/typha serves prometheus metrics on. By default, metrics are not enabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "typhaMetricsPort")]
     pub typha_metrics_port: Option<i32>,
+    /// TyphaPodDisruptionBudget configures the PodDisruptionBudget for the calico-typha
+    /// Deployment. Fields left unset fall back to the operator's defaults. The PDB's
+    /// selector is managed by the operator and cannot be overridden.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "typhaPodDisruptionBudget")]
+    pub typha_pod_disruption_budget: Option<InstallationStatusComputedTyphaPodDisruptionBudget>,
     /// Variant is the product to install - one of Calico or CalicoEnterprise.
     /// TigeraSecureEnterprise is also accepted as a deprecated alias for CalicoEnterprise.
     /// Default: Calico
@@ -12940,6 +13031,26 @@ pub enum InstallationStatusComputedLoggingCniLogSeverity {
     Debug,
 }
 
+/// NetworkPolicy configures how the operator manages the NetworkPolicies and GlobalNetworkPolicies
+/// it installs to protect the Calico components it manages.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstallationStatusComputedNetworkPolicy {
+    /// ManagePolicies controls whether the operator creates and reconciles the NetworkPolicies and
+    /// GlobalNetworkPolicies it uses to protect the Calico components it installs. When set to
+    /// Disabled, the operator stops creating or updating these policies and deletes any it has
+    /// already created, leaving policy management to the user. Defaults to Enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managePolicies")]
+    pub manage_policies: Option<InstallationStatusComputedNetworkPolicyManagePolicies>,
+}
+
+/// NetworkPolicy configures how the operator manages the NetworkPolicies and GlobalNetworkPolicies
+/// it installs to protect the Calico components it manages.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum InstallationStatusComputedNetworkPolicyManagePolicies {
+    Enabled,
+    Disabled,
+}
+
 /// NodeUpdateStrategy can be used to customize the desired update strategy, such as the MaxUnavailable
 /// field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -14407,6 +14518,61 @@ pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecTopologySpre
     /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
+}
+
+/// TyphaPodDisruptionBudget configures the PodDisruptionBudget for the calico-typha
+/// Deployment. Fields left unset fall back to the operator's defaults. The PDB's
+/// selector is managed by the operator and cannot be overridden.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstallationStatusComputedTyphaPodDisruptionBudget {
+    /// Metadata is a subset of a Kubernetes object's metadata that is added to the PodDisruptionBudget.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<InstallationStatusComputedTyphaPodDisruptionBudgetMetadata>,
+    /// Spec is the specification of the PodDisruptionBudget.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub spec: Option<InstallationStatusComputedTyphaPodDisruptionBudgetSpec>,
+}
+
+/// Metadata is a subset of a Kubernetes object's metadata that is added to the PodDisruptionBudget.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstallationStatusComputedTyphaPodDisruptionBudgetMetadata {
+    /// Annotations is a map of arbitrary non-identifying metadata. Each of these
+    /// key/value pairs are added to the object's annotations provided the key does not
+    /// already exist in the object's annotations.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Labels is a map of string keys and values that may match replicaset and
+    /// service selectors. Each of these key/value pairs are added to the
+    /// object's labels provided the key does not already exist in the object's labels.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+}
+
+/// Spec is the specification of the PodDisruptionBudget.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstallationStatusComputedTyphaPodDisruptionBudgetSpec {
+    /// MaxUnavailable is the maximum number of pods (as an integer or percentage) that
+    /// can be unavailable during a disruption. Mutually exclusive with MinAvailable.
+    /// If neither MinAvailable nor MaxUnavailable is set, the operator applies its
+    /// default (MaxUnavailable=1 for calico-typha).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
+    pub max_unavailable: Option<IntOrString>,
+    /// MinAvailable is the minimum number of pods (as an integer or percentage) that
+    /// must remain available during a disruption. Mutually exclusive with MaxUnavailable.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minAvailable")]
+    pub min_available: Option<IntOrString>,
+    /// UnhealthyPodEvictionPolicy defines when unhealthy pods should be considered
+    /// for eviction. Defaults to IfHealthyBudget (the Kubernetes default) when unset.
+    /// See <https://kubernetes.io/docs/tasks/run-application/configure-pdb/#unhealthy-pod-eviction-policy.>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyPodEvictionPolicy")]
+    pub unhealthy_pod_eviction_policy: Option<InstallationStatusComputedTyphaPodDisruptionBudgetSpecUnhealthyPodEvictionPolicy>,
+}
+
+/// Spec is the specification of the PodDisruptionBudget.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum InstallationStatusComputedTyphaPodDisruptionBudgetSpecUnhealthyPodEvictionPolicy {
+    IfHealthyBudget,
+    AlwaysAllow,
 }
 
 /// Computed is the final installation including overlaid resources.

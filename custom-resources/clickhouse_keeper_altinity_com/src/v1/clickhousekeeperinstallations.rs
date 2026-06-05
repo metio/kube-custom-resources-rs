@@ -39,20 +39,25 @@ pub struct ClickHouseKeeperInstallationSpec {
     /// Optional, allows tuning reconciling cycle for ClickhouseInstallation from clickhouse-operator side
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reconciling: Option<ClickHouseKeeperInstallationReconciling>,
+    /// CHK-level security defaults, applied to every cluster that does not override
+    /// them. Symmetric with chi.spec.security. See docs/security_hardening.md.
+    /// 
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub security: Option<BTreeMap<String, serde_json::Value>>,
     /// Allows to stop all ClickHouse Keeper clusters defined in a CHK.
     /// Works as the following:
     ///  - When `stop` is `1` operator sets `Replicas: 0` in each StatefulSet. Thie leads to having all `Pods` and `Service` deleted. All PVCs are kept intact.
     ///  - When `stop` is `0` operator sets `Replicas: 1` and `Pod`s and `Service`s will created again and all retained PVCs will be attached to `Pod`s.
     /// 
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub stop: Option<ClickHouseKeeperInstallationStop>,
+    pub stop: Option<serde_json::Value>,
     /// Suspend reconciliation of resources managed by a ClickHouse Keeper.
     /// Works as the following:
     ///  - When `suspend` is `true` operator stops reconciling all resources.
     ///  - When `suspend` is `false` or not set, operator reconciles all resources.
     /// 
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub suspend: Option<ClickHouseKeeperInstallationSuspend>,
+    pub suspend: Option<serde_json::Value>,
     /// Allows to define custom taskID for CHI update and watch status of this update execution.
     /// Displayed in all .status.taskID* fields.
     /// By default (if not filled) every update of CHI manifest will generate random taskID
@@ -88,6 +93,23 @@ pub struct ClickHouseKeeperInstallationConfigurationClusters {
     /// 
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub files: Option<BTreeMap<String, serde_json::Value>>,
+    /// optional, controls exposure of the plaintext Keeper
+    /// client port (zk:2181). Defaults to "yes" (legacy
+    /// behavior, byte-stable). Set to "no" to:
+    /// - suppress zk:2181 from the per-cluster Service and
+    ///   from per-host StatefulSet container ports;
+    /// - emit <tcp_port remove="1"/> in the per-host overlay
+    ///   so the Keeper process binds no plaintext listener at
+    ///   all (the liveness probe automatically falls back to
+    ///   `pgrep clickhouse-keeper` because 4LW does not work
+    ///   over TLS upstream).
+    /// Must be paired with `secure: yes` — the normalizer
+    /// aborts reconcile with reason NoKeeperListener when
+    /// `insecure: no` is set without `secure: yes` (no
+    /// client port would be emitted).
+    /// 
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub insecure: Option<serde_json::Value>,
     /// describe current cluster layout, how much shards in cluster, how much replica in shard
     /// allows override settings on each shard and replica separatelly
     /// 
@@ -104,13 +126,26 @@ pub struct ClickHouseKeeperInstallationConfigurationClusters {
     /// PDB management is enabled.
     /// 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pdbManaged")]
-    pub pdb_managed: Option<ClickHouseKeeperInstallationConfigurationClustersPdbManaged>,
+    pub pdb_managed: Option<serde_json::Value>,
     /// Pod eviction is allowed if at most "pdbMaxUnavailable" pods are unavailable after the eviction,
     /// i.e. even in absence of the evicted pod. For example, one can prevent all voluntary evictions
     /// by specifying 0. This is a mutually exclusive setting with "minAvailable".
     /// 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pdbMaxUnavailable")]
     pub pdb_max_unavailable: Option<i64>,
+    /// optional, open secure (TLS) Keeper client ports for this cluster.
+    /// Translates into <secure>1</secure> in Raft server entries so peer
+    /// Keeper instances dial each other over TLS. Mirrors the cluster.secure
+    /// flag on CHI.
+    /// 
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secure: Option<serde_json::Value>,
+    /// Per-cluster security toggles. Nil fields fall through to CHK spec security and
+    /// then to operator-wide defaults in ClickHouseOperatorConfiguration. Symmetric
+    /// with chi.spec.configuration.clusters[].security. See docs/security_hardening.md.
+    /// 
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub security: Option<BTreeMap<String, serde_json::Value>>,
     /// optional, allows configure `clickhouse-server` settings inside <yandex>...</yandex> tag in each `Pod` only in one cluster during generate `ConfigMap` which will mount in `/etc/clickhouse-server/config.d/`
     /// override top-level `chi.spec.configuration.settings`
     /// More details: <https://clickhouse.tech/docs/en/operations/settings/settings/>
@@ -194,6 +229,9 @@ pub struct ClickHouseKeeperInstallationConfigurationClustersLayoutReplicasShards
     pub templates: Option<ClickHouseKeeperInstallationConfigurationClustersLayoutReplicasShardsTemplates>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "zkPort")]
     pub zk_port: Option<i64>,
+    /// optional, secure (TLS) Keeper client port; emitted alongside zkPort when the cluster opts into secure mode
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "zkPortSecure")]
+    pub zk_port_secure: Option<i64>,
 }
 
 /// optional, configuration of the templates names which will use for generate Kubernetes resources according to selected replica
@@ -270,46 +308,6 @@ pub struct ClickHouseKeeperInstallationConfigurationClustersLayoutReplicasTempla
     pub volume_claim_template: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ClickHouseKeeperInstallationConfigurationClustersPdbManaged {
-    #[serde(rename = "")]
-    KopiumEmpty,
-    #[serde(rename = "0")]
-    r#_0,
-    #[serde(rename = "1")]
-    r#_1,
-    False,
-    #[serde(rename = "false")]
-    FalseX,
-    True,
-    #[serde(rename = "true")]
-    TrueX,
-    No,
-    #[serde(rename = "no")]
-    NoX,
-    Yes,
-    #[serde(rename = "yes")]
-    YesX,
-    Off,
-    #[serde(rename = "off")]
-    OffX,
-    On,
-    #[serde(rename = "on")]
-    OnX,
-    Disable,
-    #[serde(rename = "disable")]
-    DisableX,
-    Enable,
-    #[serde(rename = "enable")]
-    EnableX,
-    Disabled,
-    #[serde(rename = "disabled")]
-    DisabledX,
-    Enabled,
-    #[serde(rename = "enabled")]
-    EnabledX,
-}
-
 /// optional, configuration of the templates names which will use for generate Kubernetes resources according to selected cluster
 /// override top-level `chi.spec.configuration.templates`
 /// 
@@ -362,7 +360,7 @@ pub struct ClickHouseKeeperInstallationDefaults {
     /// "no" by default
     /// 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicasUseFQDN")]
-    pub replicas_use_fqdn: Option<ClickHouseKeeperInstallationDefaultsReplicasUseFqdn>,
+    pub replicas_use_fqdn: Option<serde_json::Value>,
     /// default storage management options
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageManagement")]
     pub storage_management: Option<ClickHouseKeeperInstallationDefaultsStorageManagement>,
@@ -379,49 +377,6 @@ pub struct ClickHouseKeeperInstallationDefaultsDistributedDdl {
     /// Settings from this profile will be used to execute DDL queries
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub profile: Option<String>,
-}
-
-/// define default behavior for whole ClickHouseInstallation, some behavior can be re-define on cluster, shard and replica level
-/// More info: <https://github.com/Altinity/clickhouse-operator/blob/master/docs/custom_resource_explained.md#specdefaults>
-/// 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ClickHouseKeeperInstallationDefaultsReplicasUseFqdn {
-    #[serde(rename = "")]
-    KopiumEmpty,
-    #[serde(rename = "0")]
-    r#_0,
-    #[serde(rename = "1")]
-    r#_1,
-    False,
-    #[serde(rename = "false")]
-    FalseX,
-    True,
-    #[serde(rename = "true")]
-    TrueX,
-    No,
-    #[serde(rename = "no")]
-    NoX,
-    Yes,
-    #[serde(rename = "yes")]
-    YesX,
-    Off,
-    #[serde(rename = "off")]
-    OffX,
-    On,
-    #[serde(rename = "on")]
-    OnX,
-    Disable,
-    #[serde(rename = "disable")]
-    DisableX,
-    Enable,
-    #[serde(rename = "enable")]
-    EnableX,
-    Disabled,
-    #[serde(rename = "disabled")]
-    DisabledX,
-    Enabled,
-    #[serde(rename = "enabled")]
-    EnabledX,
 }
 
 /// default storage management options
@@ -670,92 +625,6 @@ pub enum ClickHouseKeeperInstallationReconcilingPolicy {
     Nowait,
 }
 
-/// Specification of the desired behavior of one or more ClickHouse clusters
-/// More info: <https://github.com/Altinity/clickhouse-operator/blob/master/docs/custom_resource_explained.md>
-/// 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ClickHouseKeeperInstallationStop {
-    #[serde(rename = "")]
-    KopiumEmpty,
-    #[serde(rename = "0")]
-    r#_0,
-    #[serde(rename = "1")]
-    r#_1,
-    False,
-    #[serde(rename = "false")]
-    FalseX,
-    True,
-    #[serde(rename = "true")]
-    TrueX,
-    No,
-    #[serde(rename = "no")]
-    NoX,
-    Yes,
-    #[serde(rename = "yes")]
-    YesX,
-    Off,
-    #[serde(rename = "off")]
-    OffX,
-    On,
-    #[serde(rename = "on")]
-    OnX,
-    Disable,
-    #[serde(rename = "disable")]
-    DisableX,
-    Enable,
-    #[serde(rename = "enable")]
-    EnableX,
-    Disabled,
-    #[serde(rename = "disabled")]
-    DisabledX,
-    Enabled,
-    #[serde(rename = "enabled")]
-    EnabledX,
-}
-
-/// Specification of the desired behavior of one or more ClickHouse clusters
-/// More info: <https://github.com/Altinity/clickhouse-operator/blob/master/docs/custom_resource_explained.md>
-/// 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ClickHouseKeeperInstallationSuspend {
-    #[serde(rename = "")]
-    KopiumEmpty,
-    #[serde(rename = "0")]
-    r#_0,
-    #[serde(rename = "1")]
-    r#_1,
-    False,
-    #[serde(rename = "false")]
-    FalseX,
-    True,
-    #[serde(rename = "true")]
-    TrueX,
-    No,
-    #[serde(rename = "no")]
-    NoX,
-    Yes,
-    #[serde(rename = "yes")]
-    YesX,
-    Off,
-    #[serde(rename = "off")]
-    OffX,
-    On,
-    #[serde(rename = "on")]
-    OnX,
-    Disable,
-    #[serde(rename = "disable")]
-    DisableX,
-    Enable,
-    #[serde(rename = "enable")]
-    EnableX,
-    Disabled,
-    #[serde(rename = "disabled")]
-    DisabledX,
-    Enabled,
-    #[serde(rename = "enabled")]
-    EnabledX,
-}
-
 /// allows define templates which will use for render Kubernetes resources like StatefulSet, ConfigMap, Service, PVC, by default, clickhouse-operator have own templates, but you can override it
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClickHouseKeeperInstallationTemplates {
@@ -825,6 +694,9 @@ pub struct ClickHouseKeeperInstallationTemplatesHostTemplatesSpec {
     pub templates: Option<ClickHouseKeeperInstallationTemplatesHostTemplatesSpecTemplates>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "zkPort")]
     pub zk_port: Option<i64>,
+    /// optional, secure (TLS) Keeper client port; emitted alongside zkPort when the cluster opts into secure mode
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "zkPortSecure")]
+    pub zk_port_secure: Option<i64>,
 }
 
 /// be careful, this part of CRD allows override template inside template, don't use it if you don't understand what you do

@@ -1381,6 +1381,9 @@ pub struct TenantStatus {
     /// List of namespaces assigned to the Tenant. (Deprecated)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
+    /// ObservedGeneration is the most recent generation the controller has observed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
+    pub observed_generation: Option<i64>,
     /// Collected owners for this tenant
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub owners: Option<Vec<TenantStatusOwners>>,

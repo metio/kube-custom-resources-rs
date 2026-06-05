@@ -29,6 +29,8 @@ pub struct OpenTelemetryCollectorSpec {
     pub args: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub autoscaler: Option<OpenTelemetryCollectorAutoscaler>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
     pub config: OpenTelemetryCollectorConfig,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configVersions")]
     pub config_versions: Option<i64>,

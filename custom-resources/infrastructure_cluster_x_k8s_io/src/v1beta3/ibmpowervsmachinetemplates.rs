@@ -100,15 +100,6 @@ pub struct IbmPowerVsMachineTemplateTemplateSpec {
     /// providerID is the unique identifier as specified by the cloud provider.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerID")]
     pub provider_id: Option<String>,
-    /// serviceInstance is the reference to the Power VS workspace on which the server instance(VM) will be created.
-    /// Power VS workspace is a container for all Power VS instances at a specific geographic region.
-    /// serviceInstance can be created via IBM Cloud catalog or CLI.
-    /// supported serviceInstance identifier in PowerVSResource are Name and ID and that can be obtained from IBM Cloud UI or IBM Cloud cli.
-    /// More detail about Power VS service instance.
-    /// <https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-creating-power-virtual-server>
-    /// when omitted system will dynamically create the service instance
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceInstance")]
-    pub service_instance: Option<IbmPowerVsMachineTemplateTemplateSpecServiceInstance>,
     /// sshKey is the name of the SSH key pair provided to the vsi for authenticating users.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sshKey")]
     pub ssh_key: Option<String>,
@@ -119,6 +110,12 @@ pub struct IbmPowerVsMachineTemplateTemplateSpec {
     /// reasonable default, which is subject to change over time. The current default is s922 which is generally available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemType")]
     pub system_type: Option<IbmPowerVsMachineTemplateTemplateSpecSystemType>,
+    /// workspace identifies the PowerVS workspace where the instance will be created.
+    /// If omitted, the workspace is inherited from the associated IBMPowerVSCluster.
+    /// Supported identifiers are name and id.
+    /// More details: <https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-creating-power-virtual-server>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub workspace: Option<IbmPowerVsMachineTemplateTemplateSpecWorkspace>,
 }
 
 /// image the reference to the image which is used to create the instance.
@@ -171,27 +168,6 @@ pub enum IbmPowerVsMachineTemplateTemplateSpecProcessorType {
     KopiumEmpty,
 }
 
-/// serviceInstance is the reference to the Power VS workspace on which the server instance(VM) will be created.
-/// Power VS workspace is a container for all Power VS instances at a specific geographic region.
-/// serviceInstance can be created via IBM Cloud catalog or CLI.
-/// supported serviceInstance identifier in PowerVSResource are Name and ID and that can be obtained from IBM Cloud UI or IBM Cloud cli.
-/// More detail about Power VS service instance.
-/// <https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-creating-power-virtual-server>
-/// when omitted system will dynamically create the service instance
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct IbmPowerVsMachineTemplateTemplateSpecServiceInstance {
-    /// id of resource
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub id: Option<String>,
-    /// name of resource
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// regex is the regular expression to match resource,
-    /// In case of multiple resources matches the provided regular expression the first matched resource will be selected
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub regex: Option<String>,
-}
-
 /// spec is the IBMPowerVSMachineSpec.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum IbmPowerVsMachineTemplateTemplateSpecSystemType {
@@ -207,6 +183,20 @@ pub enum IbmPowerVsMachineTemplateTemplateSpecSystemType {
     E1080,
     #[serde(rename = "")]
     KopiumEmpty,
+}
+
+/// workspace identifies the PowerVS workspace where the instance will be created.
+/// If omitted, the workspace is inherited from the associated IBMPowerVSCluster.
+/// Supported identifiers are name and id.
+/// More details: <https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-creating-power-virtual-server>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IbmPowerVsMachineTemplateTemplateSpecWorkspace {
+    /// ID of the resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    /// Name of the resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// status defines the observed state of IBMPowerVSMachineTemplate

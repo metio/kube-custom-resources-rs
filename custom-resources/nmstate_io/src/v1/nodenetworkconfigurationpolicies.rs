@@ -32,8 +32,10 @@ pub struct NodeNetworkConfigurationPolicySpec {
     /// of machines that can be updating at a time. Default is "50%".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
-    /// NodeSelector is a selector which must be true for the policy to be applied to the node.
-    /// Selector which must match a node's labels for the policy to be scheduled on that node.
+    /// NodeSelector is a selector that determines which nodes the policy will be applied to.
+    /// It uses simple key-value label matching (equality-based selection only). All specified
+    /// labels must match a node's labels for the policy to be scheduled on that node.
+    /// Note: matchLabels and matchExpressions are not supported; only direct key-value pair matching is available.
     /// More info: <https://kubernetes.io/docs/concepts/configuration/assign-pod-node/>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,

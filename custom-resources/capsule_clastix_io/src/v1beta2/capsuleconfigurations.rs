@@ -7,6 +7,7 @@ mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 
 use self::prelude::*;
@@ -21,7 +22,7 @@ use self::prelude::*;
 pub struct CapsuleConfigurationSpec {
     /// Define entities which can act as Administrators in the capsule construct
     /// These entities are automatically owners for all existing tenants. Meaning they can add namespaces to any tenant. However they must be specific by using the capsule label
-    /// for interacting with namespaces. Because if that label is not defined, it's assumed that namespace interaction was not targeted towards a tenant and will therefor
+    /// for interacting with namespaces. Because if that label is not defined, it's assumed that namespace interaction was not targeted towards a tenant and will therefore
     /// be ignored by capsule.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub administrators: Option<Vec<CapsuleConfigurationAdministrators>>,
@@ -1096,6 +1097,18 @@ pub enum CapsuleConfigurationUsersKind {
 /// CapsuleConfigurationStatus defines the Capsule configuration status.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CapsuleConfigurationStatus {
+    /// Conditions holds the reconciliation conditions for this CapsuleConfiguration.
+    /// Includes a Ready condition indicating whether the configuration was
+    /// successfully validated and applied.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
+    /// ObservedGeneration is the most recent generation the controller has observed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
+    pub observed_generation: Option<i64>,
+    /// Tenants is the sorted list of Tenant names currently present in the cluster.
+    /// The total count is available via len(Tenants).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tenants: Option<Vec<String>>,
     /// Users which are considered Capsule Users and are bound to the Capsule Tenant construct.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub users: Option<Vec<CapsuleConfigurationStatusUsers>>,

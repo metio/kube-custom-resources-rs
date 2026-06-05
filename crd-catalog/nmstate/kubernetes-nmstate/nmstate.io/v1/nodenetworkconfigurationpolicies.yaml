@@ -58,7 +58,7 @@ spec:
                 nodeSelector:
                   additionalProperties:
                     type: "string"
-                  description: "NodeSelector is a selector which must be true for the policy to be applied to the node.\nSelector which must match a node's labels for the policy to be scheduled on that node.\nMore info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/"
+                  description: "NodeSelector is a selector that determines which nodes the policy will be applied to.\nIt uses simple key-value label matching (equality-based selection only). All specified\nlabels must match a node's labels for the policy to be scheduled on that node.\nNote: matchLabels and matchExpressions are not supported; only direct key-value pair matching is available.\nMore info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/"
                   maxProperties: 256
                   type: "object"
                   x-kubernetes-validations:

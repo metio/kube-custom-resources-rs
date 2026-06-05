@@ -31,6 +31,10 @@ pub struct VmClusterSpec {
     /// it can be overwritten with component specific image.tag value.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterVersion")]
     pub cluster_version: Option<String>,
+    /// Downsampling defines downsampling rules applied to vmselect and vmstorage components.
+    /// Requires enterprise license. See <https://docs.victoriametrics.com/victoriametrics/cluster-victoriametrics/#downsampling>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub downsampling: Option<VmClusterDownsampling>,
     /// ImagePullSecrets An optional list of references to secrets in the same namespace
     /// to use for pulling images from registries
     /// see <https://kubernetes.io/docs/concepts/containers/images/#referring-to-an-imagepullsecrets-on-a-pod>
@@ -82,6 +86,45 @@ pub struct VmClusterSpec {
     pub vmselect: Option<VmClusterVmselect>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub vmstorage: Option<VmClusterVmstorage>,
+}
+
+/// Downsampling defines downsampling rules applied to vmselect and vmstorage components.
+/// Requires enterprise license. See <https://docs.victoriametrics.com/victoriametrics/cluster-victoriametrics/#downsampling>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VmClusterDownsampling {
+    /// DedupInterval sets the deduplication interval used with downsampling.
+    /// It corresponds to -dedup.minScrapeInterval flag.
+    /// Must be a multiple of all configured downsampling intervals.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dedupInterval")]
+    pub dedup_interval: Option<String>,
+    /// Rules defines downsampling rules.
+    /// Each rule matches time series by an optional filter and applies downsampling after a given offset.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub rules: Option<Vec<VmClusterDownsamplingRules>>,
+}
+
+/// DownsamplingRule defines downsampling periods for an optional label filter.
+/// All period intervals must be pairwise multiples of each other.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VmClusterDownsamplingRules {
+    /// Filter is an optional MetricsQL label filter for matching time series.
+    /// If not set, the rule is applied to all time series.
+    /// Example: '{env="prod"}'
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub filter: Option<String>,
+    /// Periods defines the downsampling time horizons applied to matching series.
+    pub periods: Vec<VmClusterDownsamplingRulesPeriods>,
+}
+
+/// DownsamplingPeriod defines a single downsampling time horizon.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VmClusterDownsamplingRulesPeriods {
+    /// Interval is the target downsampling resolution; only the last sample per interval is kept.
+    /// Example: "10m"
+    pub interval: String,
+    /// Offset is the minimum age of data before downsampling is applied.
+    /// Example: "30d"
+    pub offset: String,
 }
 
 /// LocalObjectReference contains enough information to let you locate the
@@ -876,6 +919,19 @@ pub struct VmClusterVminsertVpaResourcePolicyContainerPolicies {
     /// for the container. The default is no maximum.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxAllowed")]
     pub max_allowed: Option<BTreeMap<String, IntOrString>>,
+    /// memoryAggregationIntervalCount is the number of consecutive
+    /// memoryAggregationIntervals which make up the memory aggregation window.
+    /// The total window length is:
+    /// MemoryAggregationIntervalSeconds * MemoryAggregationIntervalCount.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memoryAggregationIntervalCount")]
+    pub memory_aggregation_interval_count: Option<i64>,
+    /// memoryAggregationIntervalSeconds is the length of a single interval
+    /// (in seconds) for which the peak memory usage is computed.
+    /// Memory usage peaks are aggregated in multiples of this interval.
+    /// In other words, there is one memory usage sample per interval
+    /// (the maximum usage over that interval).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memoryAggregationIntervalSeconds")]
+    pub memory_aggregation_interval_seconds: Option<i32>,
     /// Specifies the minimal amount of resources that will be recommended
     /// for the container. The default is no minimum.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minAllowed")]
@@ -889,6 +945,12 @@ pub struct VmClusterVminsertVpaResourcePolicyContainerPolicies {
     /// oomMinBumpUp is the minimum increase in memory when OOM is detected.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "oomMinBumpUp")]
     pub oom_min_bump_up: Option<IntOrString>,
+    /// startupBoost specifies the startup boost policy for the container.
+    /// This overrides any pod-level startup boost policy.
+    /// The startup boost policy takes precedence over the rest of the fields in
+    /// this struct, except for ContainerName and ControlledValues.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupBoost")]
+    pub startup_boost: Option<VmClusterVminsertVpaResourcePolicyContainerPoliciesStartupBoost>,
 }
 
 /// ContainerResourcePolicy controls how autoscaler computes the recommended
@@ -907,9 +969,58 @@ pub enum VmClusterVminsertVpaResourcePolicyContainerPoliciesMode {
     Off,
 }
 
+/// startupBoost specifies the startup boost policy for the container.
+/// This overrides any pod-level startup boost policy.
+/// The startup boost policy takes precedence over the rest of the fields in
+/// this struct, except for ContainerName and ControlledValues.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VmClusterVminsertVpaResourcePolicyContainerPoliciesStartupBoost {
+    /// cpu specifies the CPU startup boost policy.
+    /// If this field is not set, no startup boost is applied.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cpu: Option<VmClusterVminsertVpaResourcePolicyContainerPoliciesStartupBoostCpu>,
+}
+
+/// cpu specifies the CPU startup boost policy.
+/// If this field is not set, no startup boost is applied.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct VmClusterVminsertVpaResourcePolicyContainerPoliciesStartupBoostCpu {
+    /// durationSeconds indicates for how long to keep the pod boosted after it goes to Ready.
+    /// Defaults to 0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "durationSeconds")]
+    pub duration_seconds: Option<i32>,
+    /// factor specifies the factor to apply to the resource request.
+    /// This field is required when Type is "Factor".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub factor: Option<i32>,
+    /// quantity specifies the absolute resource quantity to be used as the
+    /// resource request and limit during the boost phase.
+    /// This field is required when Type is "Quantity".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub quantity: Option<IntOrString>,
+    /// type specifies the kind of boost to apply.
+    /// Supported values are: "Factor", "Quantity".
+    /// No startupboost will be applied for unrecognized values.
+    #[serde(rename = "type")]
+    pub r#type: VmClusterVminsertVpaResourcePolicyContainerPoliciesStartupBoostCpuType,
+}
+
+/// cpu specifies the CPU startup boost policy.
+/// If this field is not set, no startup boost is applied.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum VmClusterVminsertVpaResourcePolicyContainerPoliciesStartupBoostCpuType {
+    Factor,
+    Quantity,
+}
+
 /// UpdatePolicy controls how the autoscaler applies changes to pod resources.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmClusterVminsertVpaUpdatePolicy {
+    /// evictAfterOOMSeconds specifies the time in seconds to wait after an OOM event before
+    /// considering the pod for eviction. Pods that have OOMed in less than this time
+    /// since start will be evicted.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "evictAfterOOMSeconds")]
+    pub evict_after_oom_seconds: Option<i32>,
     /// EvictionRequirements is a list of EvictionRequirements that need to
     /// evaluate to true in order for a Pod to be evicted. If more than one
     /// EvictionRequirement is specified, all of them need to be fulfilled to allow eviction.
@@ -954,6 +1065,7 @@ pub enum VmClusterVminsertVpaUpdatePolicyUpdateMode {
     Initial,
     Recreate,
     InPlaceOrRecreate,
+    InPlace,
     Auto,
 }
 
@@ -2046,6 +2158,19 @@ pub struct VmClusterVmselectVpaResourcePolicyContainerPolicies {
     /// for the container. The default is no maximum.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxAllowed")]
     pub max_allowed: Option<BTreeMap<String, IntOrString>>,
+    /// memoryAggregationIntervalCount is the number of consecutive
+    /// memoryAggregationIntervals which make up the memory aggregation window.
+    /// The total window length is:
+    /// MemoryAggregationIntervalSeconds * MemoryAggregationIntervalCount.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memoryAggregationIntervalCount")]
+    pub memory_aggregation_interval_count: Option<i64>,
+    /// memoryAggregationIntervalSeconds is the length of a single interval
+    /// (in seconds) for which the peak memory usage is computed.
+    /// Memory usage peaks are aggregated in multiples of this interval.
+    /// In other words, there is one memory usage sample per interval
+    /// (the maximum usage over that interval).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memoryAggregationIntervalSeconds")]
+    pub memory_aggregation_interval_seconds: Option<i32>,
     /// Specifies the minimal amount of resources that will be recommended
     /// for the container. The default is no minimum.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minAllowed")]
@@ -2059,6 +2184,12 @@ pub struct VmClusterVmselectVpaResourcePolicyContainerPolicies {
     /// oomMinBumpUp is the minimum increase in memory when OOM is detected.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "oomMinBumpUp")]
     pub oom_min_bump_up: Option<IntOrString>,
+    /// startupBoost specifies the startup boost policy for the container.
+    /// This overrides any pod-level startup boost policy.
+    /// The startup boost policy takes precedence over the rest of the fields in
+    /// this struct, except for ContainerName and ControlledValues.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupBoost")]
+    pub startup_boost: Option<VmClusterVmselectVpaResourcePolicyContainerPoliciesStartupBoost>,
 }
 
 /// ContainerResourcePolicy controls how autoscaler computes the recommended
@@ -2077,9 +2208,58 @@ pub enum VmClusterVmselectVpaResourcePolicyContainerPoliciesMode {
     Off,
 }
 
+/// startupBoost specifies the startup boost policy for the container.
+/// This overrides any pod-level startup boost policy.
+/// The startup boost policy takes precedence over the rest of the fields in
+/// this struct, except for ContainerName and ControlledValues.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VmClusterVmselectVpaResourcePolicyContainerPoliciesStartupBoost {
+    /// cpu specifies the CPU startup boost policy.
+    /// If this field is not set, no startup boost is applied.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cpu: Option<VmClusterVmselectVpaResourcePolicyContainerPoliciesStartupBoostCpu>,
+}
+
+/// cpu specifies the CPU startup boost policy.
+/// If this field is not set, no startup boost is applied.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct VmClusterVmselectVpaResourcePolicyContainerPoliciesStartupBoostCpu {
+    /// durationSeconds indicates for how long to keep the pod boosted after it goes to Ready.
+    /// Defaults to 0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "durationSeconds")]
+    pub duration_seconds: Option<i32>,
+    /// factor specifies the factor to apply to the resource request.
+    /// This field is required when Type is "Factor".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub factor: Option<i32>,
+    /// quantity specifies the absolute resource quantity to be used as the
+    /// resource request and limit during the boost phase.
+    /// This field is required when Type is "Quantity".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub quantity: Option<IntOrString>,
+    /// type specifies the kind of boost to apply.
+    /// Supported values are: "Factor", "Quantity".
+    /// No startupboost will be applied for unrecognized values.
+    #[serde(rename = "type")]
+    pub r#type: VmClusterVmselectVpaResourcePolicyContainerPoliciesStartupBoostCpuType,
+}
+
+/// cpu specifies the CPU startup boost policy.
+/// If this field is not set, no startup boost is applied.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum VmClusterVmselectVpaResourcePolicyContainerPoliciesStartupBoostCpuType {
+    Factor,
+    Quantity,
+}
+
 /// UpdatePolicy controls how the autoscaler applies changes to pod resources.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmClusterVmselectVpaUpdatePolicy {
+    /// evictAfterOOMSeconds specifies the time in seconds to wait after an OOM event before
+    /// considering the pod for eviction. Pods that have OOMed in less than this time
+    /// since start will be evicted.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "evictAfterOOMSeconds")]
+    pub evict_after_oom_seconds: Option<i32>,
     /// EvictionRequirements is a list of EvictionRequirements that need to
     /// evaluate to true in order for a Pod to be evicted. If more than one
     /// EvictionRequirement is specified, all of them need to be fulfilled to allow eviction.
@@ -2124,6 +2304,7 @@ pub enum VmClusterVmselectVpaUpdatePolicyUpdateMode {
     Initial,
     Recreate,
     InPlaceOrRecreate,
+    InPlace,
     Auto,
 }
 
@@ -2274,6 +2455,10 @@ pub struct VmClusterVmstorage {
     /// if not defined default resources from operator config will be used
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<VmClusterVmstorageResources>,
+    /// RetentionFilters defines per-series retention filters for vmstorage.
+    /// Requires enterprise license. See <https://docs.victoriametrics.com/victoriametrics/cluster-victoriametrics/#retention-filters>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retentionFilters")]
+    pub retention_filters: Option<Vec<VmClusterVmstorageRetentionFilters>>,
     /// The number of old ReplicaSets to retain to allow rollback in deployment or
     /// maximum number of revisions that will be maintained in the Deployment revision history.
     /// Has no effect at StatefulSets
@@ -3150,6 +3335,20 @@ pub struct VmClusterVmstorageResourcesClaims {
     pub request: Option<String>,
 }
 
+/// RetentionFilter defines per-series retention based on a label filter.
+/// Requires enterprise license.
+/// See <https://docs.victoriametrics.com/victoriametrics/single-server-victoriametrics/#retention-filters>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VmClusterVmstorageRetentionFilters {
+    /// Filter is a MetricsQL label filter for matching time series.
+    /// Example: '{env="dev"}'
+    pub filter: String,
+    /// Retention is the retention period for matching time series.
+    /// Must not exceed the global retentionPeriod.
+    /// Example: "3d", "1w"
+    pub retention: String,
+}
+
 /// RollingUpdateStrategyBehavior defines customized behavior for rolling updates.
 /// It applies if the RollingUpdateStrategy is set to OnDelete, which is the default.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3787,6 +3986,19 @@ pub struct VmClusterVmstorageVpaResourcePolicyContainerPolicies {
     /// for the container. The default is no maximum.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxAllowed")]
     pub max_allowed: Option<BTreeMap<String, IntOrString>>,
+    /// memoryAggregationIntervalCount is the number of consecutive
+    /// memoryAggregationIntervals which make up the memory aggregation window.
+    /// The total window length is:
+    /// MemoryAggregationIntervalSeconds * MemoryAggregationIntervalCount.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memoryAggregationIntervalCount")]
+    pub memory_aggregation_interval_count: Option<i64>,
+    /// memoryAggregationIntervalSeconds is the length of a single interval
+    /// (in seconds) for which the peak memory usage is computed.
+    /// Memory usage peaks are aggregated in multiples of this interval.
+    /// In other words, there is one memory usage sample per interval
+    /// (the maximum usage over that interval).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memoryAggregationIntervalSeconds")]
+    pub memory_aggregation_interval_seconds: Option<i32>,
     /// Specifies the minimal amount of resources that will be recommended
     /// for the container. The default is no minimum.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minAllowed")]
@@ -3800,6 +4012,12 @@ pub struct VmClusterVmstorageVpaResourcePolicyContainerPolicies {
     /// oomMinBumpUp is the minimum increase in memory when OOM is detected.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "oomMinBumpUp")]
     pub oom_min_bump_up: Option<IntOrString>,
+    /// startupBoost specifies the startup boost policy for the container.
+    /// This overrides any pod-level startup boost policy.
+    /// The startup boost policy takes precedence over the rest of the fields in
+    /// this struct, except for ContainerName and ControlledValues.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupBoost")]
+    pub startup_boost: Option<VmClusterVmstorageVpaResourcePolicyContainerPoliciesStartupBoost>,
 }
 
 /// ContainerResourcePolicy controls how autoscaler computes the recommended
@@ -3818,9 +4036,58 @@ pub enum VmClusterVmstorageVpaResourcePolicyContainerPoliciesMode {
     Off,
 }
 
+/// startupBoost specifies the startup boost policy for the container.
+/// This overrides any pod-level startup boost policy.
+/// The startup boost policy takes precedence over the rest of the fields in
+/// this struct, except for ContainerName and ControlledValues.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VmClusterVmstorageVpaResourcePolicyContainerPoliciesStartupBoost {
+    /// cpu specifies the CPU startup boost policy.
+    /// If this field is not set, no startup boost is applied.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cpu: Option<VmClusterVmstorageVpaResourcePolicyContainerPoliciesStartupBoostCpu>,
+}
+
+/// cpu specifies the CPU startup boost policy.
+/// If this field is not set, no startup boost is applied.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct VmClusterVmstorageVpaResourcePolicyContainerPoliciesStartupBoostCpu {
+    /// durationSeconds indicates for how long to keep the pod boosted after it goes to Ready.
+    /// Defaults to 0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "durationSeconds")]
+    pub duration_seconds: Option<i32>,
+    /// factor specifies the factor to apply to the resource request.
+    /// This field is required when Type is "Factor".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub factor: Option<i32>,
+    /// quantity specifies the absolute resource quantity to be used as the
+    /// resource request and limit during the boost phase.
+    /// This field is required when Type is "Quantity".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub quantity: Option<IntOrString>,
+    /// type specifies the kind of boost to apply.
+    /// Supported values are: "Factor", "Quantity".
+    /// No startupboost will be applied for unrecognized values.
+    #[serde(rename = "type")]
+    pub r#type: VmClusterVmstorageVpaResourcePolicyContainerPoliciesStartupBoostCpuType,
+}
+
+/// cpu specifies the CPU startup boost policy.
+/// If this field is not set, no startup boost is applied.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum VmClusterVmstorageVpaResourcePolicyContainerPoliciesStartupBoostCpuType {
+    Factor,
+    Quantity,
+}
+
 /// UpdatePolicy controls how the autoscaler applies changes to pod resources.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmClusterVmstorageVpaUpdatePolicy {
+    /// evictAfterOOMSeconds specifies the time in seconds to wait after an OOM event before
+    /// considering the pod for eviction. Pods that have OOMed in less than this time
+    /// since start will be evicted.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "evictAfterOOMSeconds")]
+    pub evict_after_oom_seconds: Option<i32>,
     /// EvictionRequirements is a list of EvictionRequirements that need to
     /// evaluate to true in order for a Pod to be evicted. If more than one
     /// EvictionRequirement is specified, all of them need to be fulfilled to allow eviction.
@@ -3865,6 +4132,7 @@ pub enum VmClusterVmstorageVpaUpdatePolicyUpdateMode {
     Initial,
     Recreate,
     InPlaceOrRecreate,
+    InPlace,
     Auto,
 }
 

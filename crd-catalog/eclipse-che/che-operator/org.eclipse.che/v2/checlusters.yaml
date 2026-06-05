@@ -10645,7 +10645,7 @@ spec:
                           description: "Defines the scope requested from the OIDC provider.\nFor OpenShift with built-in OAuth, the scope `user:full` is used by default."
                           type: "string"
                         oAuthSecret:
-                          description: "Defines the OAuth client secret.\nIt can either be a plain text secret value or the name of a Kubernetes secret\ncontaining a key `oAuthSecret` with the secret value. The Kubernetes secret must exist in the same namespace\nas the `CheCluster` resource and have the label `app.kubernetes.io/part-of=che.eclipse.org`.\nFor OpenShift with built-in OAuth, this is the secret set in the `OAuthClient` resource used to set up identity federation."
+                          description: "For OIDC, this is the client secret issued by the Identity Provider for the configured OIDC client.\nFor OpenShift with built-in OAuth, this is the secret configured in the OAuthClient for OpenShift OAuth integration.\nThe value can either be a plain text secret value (deprecated) or the name of a Kubernetes secret\nthat contains the secret value under the `oAuthSecret` key. The Kubernetes secret must exist in the same namespace\nas the `CheCluster` resource namespace and must have a `app.kubernetes.io/part-of=che.eclipse.org` label."
                           type: "string"
                       type: "object"
                     domain:

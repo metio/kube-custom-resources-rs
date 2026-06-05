@@ -3096,6 +3096,9 @@ pub struct OpenSearchClusterGeneral {
     pub drain_data_nodes: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
     pub host_aliases: Option<Vec<OpenSearchClusterGeneralHostAliases>>,
+    /// HostNetwork enables host networking for all pods in the cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetwork")]
+    pub host_network: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpPort")]
     pub http_port: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5418,6 +5421,15 @@ pub struct OpenSearchClusterSecurityConfig {
     /// TLS Secret that contains a client certificate (tls.key, tls.crt, ca.crt) with admin rights in the opensearch cluster. Must be set if http certificates are provided by user and not generated
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminSecret")]
     pub admin_secret: Option<OpenSearchClusterSecurityConfigAdminSecret>,
+    /// Optional kubernetes.io/tls secret (tls.crt, tls.key, optional ca.crt) used by the operator's runtime REST client to authenticate to the OpenSearch HTTP API via mTLS instead of basic auth.
+    /// The certificate's DN must be mapped to a user/role with the necessary privileges in the OpenSearch security configuration (e.g. via plugins.security.authcz.admin_dn or a clientcert auth domain).
+    /// When set, the operator omits basic-auth credentials from outgoing requests. If ca.crt is present in the secret, it is used to verify the OpenSearch HTTP server certificate; otherwise TLS verification is skipped.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatorClientCert")]
+    pub operator_client_cert: Option<OpenSearchClusterSecurityConfigOperatorClientCert>,
+    /// Optional. Overrides the TLS SNI / ServerName used when verifying the OpenSearch HTTP server certificate.
+    /// Defaults to the host portion of the cluster URL.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatorClientServerName")]
+    pub operator_client_server_name: Option<String>,
     /// Optional secret that contains the different yml files of the opensearch-security config (config.yml, internal_users.yml, ...).
     /// When omitted the operator seeds the cluster with its bundled defaults.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityConfigSecret")]
@@ -5442,6 +5454,20 @@ pub struct OpenSearchClusterSecurityConfigAdminCredentialsSecret {
 /// TLS Secret that contains a client certificate (tls.key, tls.crt, ca.crt) with admin rights in the opensearch cluster. Must be set if http certificates are provided by user and not generated
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpenSearchClusterSecurityConfigAdminSecret {
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// Optional kubernetes.io/tls secret (tls.crt, tls.key, optional ca.crt) used by the operator's runtime REST client to authenticate to the OpenSearch HTTP API via mTLS instead of basic auth.
+/// The certificate's DN must be mapped to a user/role with the necessary privileges in the OpenSearch security configuration (e.g. via plugins.security.authcz.admin_dn or a clientcert auth domain).
+/// When set, the operator omits basic-auth credentials from outgoing requests. If ca.crt is present in the secret, it is used to verify the OpenSearch HTTP server certificate; otherwise TLS verification is skipped.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpenSearchClusterSecurityConfigOperatorClientCert {
     /// Name of the referent.
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are

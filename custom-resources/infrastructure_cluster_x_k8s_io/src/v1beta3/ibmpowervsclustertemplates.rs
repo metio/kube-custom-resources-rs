@@ -12,11 +12,10 @@ mod prelude {
 use self::prelude::*;
 
 /// spec defines the desired state of IBMPowerVSClusterTemplate
-#[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[kube(group = "infrastructure.cluster.x-k8s.io", version = "v1beta3", kind = "IBMPowerVSClusterTemplate", root = "IbmPowerVsClusterTemplate", plural = "ibmpowervsclustertemplates")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct IbmPowerVsClusterTemplateSpec {
     /// template is the IBMPowerVSClusterTemplateResource.
@@ -24,7 +23,7 @@ pub struct IbmPowerVsClusterTemplateSpec {
 }
 
 /// template is the IBMPowerVSClusterTemplateResource.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct IbmPowerVsClusterTemplateTemplate {
     /// metadata is the standard object's metadata.
     /// More info: <https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata>
@@ -53,7 +52,7 @@ pub struct IbmPowerVsClusterTemplateTemplateMetadata {
 }
 
 /// spec is the IBMPowerVSClusterSpec.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct IbmPowerVsClusterTemplateTemplateSpec {
     /// controlPlaneEndpoint represents the endpoint used to communicate with the control plane.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneEndpoint")]
@@ -100,19 +99,8 @@ pub struct IbmPowerVsClusterTemplateTemplateSpec {
     /// ResourceGroup.ID and ResourceGroup.Regex is not yet supported and system will ignore the value.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceGroup")]
     pub resource_group: Option<IbmPowerVsClusterTemplateTemplateSpecResourceGroup>,
-    /// serviceInstance is the reference to the Power VS server workspace on which the server instance(VM) will be created.
-    /// Power VS server workspace is a container for all Power VS instances at a specific geographic region.
-    /// serviceInstance can be created via IBM Cloud catalog or CLI.
-    /// supported serviceInstance identifier in PowerVSResource are Name and ID and that can be obtained from IBM Cloud UI or IBM Cloud cli.
-    /// More detail about Power VS service instance.
-    /// <https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-creating-power-virtual-server>
-    /// when omitted system will dynamically create the service instance with name CLUSTER_NAME-serviceInstance.
-    /// when ServiceInstance.ID is set, its expected that there exist a service instance in PowerVS workspace with id or else system will give error.
-    /// when ServiceInstance.Name is set, system will first check for service instance with Name in PowerVS workspace, if not exist system will create new instance.
-    /// if there are more than one service instance exist with the ServiceInstance.Name in given Zone, installation fails with an error. Use ServiceInstance.ID in those situations to use the specific service instance.
-    /// ServiceInstance.Regex is not yet supported not yet supported and system will ignore the value.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceInstance")]
-    pub service_instance: Option<IbmPowerVsClusterTemplateTemplateSpecServiceInstance>,
+    /// Topology defines the architectural mode for external cluster access.
+    pub topology: IbmPowerVsClusterTemplateTemplateSpecTopology,
     /// transitGateway contains information about IBM Cloud TransitGateway
     /// IBM Cloud TransitGateway helps in establishing network connectivity between IBM Cloud Power VS and VPC infrastructure
     /// more information about TransitGateway can be found here <https://www.ibm.com/products/transit-gateway.>
@@ -140,6 +128,11 @@ pub struct IbmPowerVsClusterTemplateTemplateSpec {
     /// if subnet with name VPCSubnets[].Name not found, system will create new subnet in VPCSubnets[].Zone.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcSubnets")]
     pub vpc_subnets: Option<Vec<IbmPowerVsClusterTemplateTemplateSpecVpcSubnets>>,
+    /// workspace specifies how the PowerVS workspace is sourced.
+    /// A PowerVS workspace is a container for PowerVS resources in a specific zone.
+    /// More details: <https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-creating-power-virtual-server>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub workspace: Option<IbmPowerVsClusterTemplateTemplateSpecWorkspace>,
     /// zone is the name of Power VS zone where the cluster will be created
     /// possible values can be found here <https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-creating-power-virtual-server.>
     /// when powervs.cluster.x-k8s.io/create-infra=true annotation is set on IBMPowerVSCluster resource,
@@ -455,29 +448,12 @@ pub struct IbmPowerVsClusterTemplateTemplateSpecResourceGroup {
     pub regex: Option<String>,
 }
 
-/// serviceInstance is the reference to the Power VS server workspace on which the server instance(VM) will be created.
-/// Power VS server workspace is a container for all Power VS instances at a specific geographic region.
-/// serviceInstance can be created via IBM Cloud catalog or CLI.
-/// supported serviceInstance identifier in PowerVSResource are Name and ID and that can be obtained from IBM Cloud UI or IBM Cloud cli.
-/// More detail about Power VS service instance.
-/// <https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-creating-power-virtual-server>
-/// when omitted system will dynamically create the service instance with name CLUSTER_NAME-serviceInstance.
-/// when ServiceInstance.ID is set, its expected that there exist a service instance in PowerVS workspace with id or else system will give error.
-/// when ServiceInstance.Name is set, system will first check for service instance with Name in PowerVS workspace, if not exist system will create new instance.
-/// if there are more than one service instance exist with the ServiceInstance.Name in given Zone, installation fails with an error. Use ServiceInstance.ID in those situations to use the specific service instance.
-/// ServiceInstance.Regex is not yet supported not yet supported and system will ignore the value.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct IbmPowerVsClusterTemplateTemplateSpecServiceInstance {
-    /// id of resource
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub id: Option<String>,
-    /// name of resource
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// regex is the regular expression to match resource,
-    /// In case of multiple resources matches the provided regular expression the first matched resource will be selected
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub regex: Option<String>,
+/// spec is the IBMPowerVSClusterSpec.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum IbmPowerVsClusterTemplateTemplateSpecTopology {
+    #[serde(rename = "VirtualIP")]
+    VirtualIp,
+    LoadBalancer,
 }
 
 /// transitGateway contains information about IBM Cloud TransitGateway
@@ -757,5 +733,54 @@ pub struct IbmPowerVsClusterTemplateTemplateSpecVpcSubnets {
     /// zone is the zone of the subnet.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub zone: Option<String>,
+}
+
+/// workspace specifies how the PowerVS workspace is sourced.
+/// A PowerVS workspace is a container for PowerVS resources in a specific zone.
+/// More details: <https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-creating-power-virtual-server>
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct IbmPowerVsClusterTemplateTemplateSpecWorkspace {
+    /// provision defines the configuration for creating a new PowerVS workspace.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub provision: Option<IbmPowerVsClusterTemplateTemplateSpecWorkspaceProvision>,
+    /// reference tells the controller to use an existing PowerVS workspace.
+    /// Supported identifiers are name and id.
+    /// If more than one workspace has the same name, use id.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reference: Option<IbmPowerVsClusterTemplateTemplateSpecWorkspaceReference>,
+    /// type defines how the workspace is sourced.
+    #[serde(rename = "type")]
+    pub r#type: IbmPowerVsClusterTemplateTemplateSpecWorkspaceType,
+}
+
+/// provision defines the configuration for creating a new PowerVS workspace.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IbmPowerVsClusterTemplateTemplateSpecWorkspaceProvision {
+    /// name is the explicit name of the workspace to be created.
+    /// If omitted, the system will dynamically create the workspace with the name <CLUSTER_NAME>-workspace.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// reference tells the controller to use an existing PowerVS workspace.
+/// Supported identifiers are name and id.
+/// If more than one workspace has the same name, use id.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IbmPowerVsClusterTemplateTemplateSpecWorkspaceReference {
+    /// ID of the resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    /// Name of the resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// workspace specifies how the PowerVS workspace is sourced.
+/// A PowerVS workspace is a container for PowerVS resources in a specific zone.
+/// More details: <https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-creating-power-virtual-server>
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum IbmPowerVsClusterTemplateTemplateSpecWorkspaceType {
+    Reference,
+    Provision,
 }
 

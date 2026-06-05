@@ -52,7 +52,7 @@ pub struct AppArmorProfileAbstract {
 /// Capability rules for Linux capabilities.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AppArmorProfileAbstractCapability {
-    /// AllowedCapabilities lost of allowed capabilities.
+    /// AllowedCapabilities list of allowed capabilities.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedCapabilities")]
     pub allowed_capabilities: Option<Vec<String>>,
 }

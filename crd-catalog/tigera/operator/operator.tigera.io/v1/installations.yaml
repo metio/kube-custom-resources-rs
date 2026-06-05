@@ -4199,7 +4199,7 @@ spec:
                       type: "object"
                   type: "object"
                 fipsMode:
-                  description: "FIPSMode uses images and features only that are using FIPS 140-2 validated cryptographic modules and standards.\nOnly supported for Variant=Calico.\nDefault: Disabled"
+                  description: "Deprecated. FIPS mode is no longer supported. Setting fipsMode to Enabled marks the\ninstallation degraded."
                   enum:
                     - "Enabled"
                     - "Disabled"
@@ -4278,6 +4278,17 @@ spec:
                             - "Debug"
                           type: "string"
                       type: "object"
+                  type: "object"
+                networkPolicy:
+                  description: "NetworkPolicy configures how the operator manages the NetworkPolicies and GlobalNetworkPolicies\nit installs to protect the Calico components it manages."
+                  properties:
+                    managePolicies:
+                      default: "Enabled"
+                      description: "ManagePolicies controls whether the operator creates and reconciles the NetworkPolicies and\nGlobalNetworkPolicies it uses to protect the Calico components it installs. When set to\nDisabled, the operator stops creating or updating these policies and deletes any it has\nalready created, leaving policy management to the user. Defaults to Enabled."
+                      enum:
+                        - "Enabled"
+                        - "Disabled"
+                      type: "string"
                   type: "object"
                 nodeMetricsPort:
                   description: "NodeMetricsPort specifies which port calico/node serves prometheus metrics on. By default, metrics are not enabled.\nIf specified, this overrides any FelixConfiguration resources which may exist. If omitted, then\nprometheus metrics may still be configured through FelixConfiguration."
@@ -5367,6 +5378,49 @@ spec:
                   description: "TyphaMetricsPort specifies which port calico/typha serves prometheus metrics on. By default, metrics are not enabled."
                   format: "int32"
                   type: "integer"
+                typhaPodDisruptionBudget:
+                  description: "TyphaPodDisruptionBudget configures the PodDisruptionBudget for the calico-typha\nDeployment. Fields left unset fall back to the operator's defaults. The PDB's\nselector is managed by the operator and cannot be overridden."
+                  properties:
+                    metadata:
+                      description: "Metadata is a subset of a Kubernetes object's metadata that is added to the PodDisruptionBudget."
+                      properties:
+                        annotations:
+                          additionalProperties:
+                            type: "string"
+                          description: "Annotations is a map of arbitrary non-identifying metadata. Each of these\nkey/value pairs are added to the object's annotations provided the key does not\nalready exist in the object's annotations."
+                          type: "object"
+                        labels:
+                          additionalProperties:
+                            type: "string"
+                          description: "Labels is a map of string keys and values that may match replicaset and\nservice selectors. Each of these key/value pairs are added to the\nobject's labels provided the key does not already exist in the object's labels."
+                          type: "object"
+                      type: "object"
+                    spec:
+                      description: "Spec is the specification of the PodDisruptionBudget."
+                      properties:
+                        maxUnavailable:
+                          anyOf:
+                            - type: "integer"
+                            - type: "string"
+                          description: "MaxUnavailable is the maximum number of pods (as an integer or percentage) that\ncan be unavailable during a disruption. Mutually exclusive with MinAvailable.\nIf neither MinAvailable nor MaxUnavailable is set, the operator applies its\ndefault (MaxUnavailable=1 for calico-typha)."
+                          x-kubernetes-int-or-string: true
+                        minAvailable:
+                          anyOf:
+                            - type: "integer"
+                            - type: "string"
+                          description: "MinAvailable is the minimum number of pods (as an integer or percentage) that\nmust remain available during a disruption. Mutually exclusive with MaxUnavailable."
+                          x-kubernetes-int-or-string: true
+                        unhealthyPodEvictionPolicy:
+                          description: "UnhealthyPodEvictionPolicy defines when unhealthy pods should be considered\nfor eviction. Defaults to IfHealthyBudget (the Kubernetes default) when unset.\nSee https://kubernetes.io/docs/tasks/run-application/configure-pdb/#unhealthy-pod-eviction-policy."
+                          enum:
+                            - "IfHealthyBudget"
+                            - "AlwaysAllow"
+                          type: "string"
+                      type: "object"
+                      x-kubernetes-validations:
+                        - message: "minAvailable and maxUnavailable are mutually exclusive"
+                          rule: "!(has(self.minAvailable) && has(self.maxUnavailable))"
+                  type: "object"
                 variant:
                   description: "Variant is the product to install - one of Calico or CalicoEnterprise.\nTigeraSecureEnterprise is also accepted as a deprecated alias for CalicoEnterprise.\nDefault: Calico"
                   enum:
@@ -9574,7 +9628,7 @@ spec:
                           type: "object"
                       type: "object"
                     fipsMode:
-                      description: "FIPSMode uses images and features only that are using FIPS 140-2 validated cryptographic modules and standards.\nOnly supported for Variant=Calico.\nDefault: Disabled"
+                      description: "Deprecated. FIPS mode is no longer supported. Setting fipsMode to Enabled marks the\ninstallation degraded."
                       enum:
                         - "Enabled"
                         - "Disabled"
@@ -9653,6 +9707,17 @@ spec:
                                 - "Debug"
                               type: "string"
                           type: "object"
+                      type: "object"
+                    networkPolicy:
+                      description: "NetworkPolicy configures how the operator manages the NetworkPolicies and GlobalNetworkPolicies\nit installs to protect the Calico components it manages."
+                      properties:
+                        managePolicies:
+                          default: "Enabled"
+                          description: "ManagePolicies controls whether the operator creates and reconciles the NetworkPolicies and\nGlobalNetworkPolicies it uses to protect the Calico components it installs. When set to\nDisabled, the operator stops creating or updating these policies and deletes any it has\nalready created, leaving policy management to the user. Defaults to Enabled."
+                          enum:
+                            - "Enabled"
+                            - "Disabled"
+                          type: "string"
                       type: "object"
                     nodeMetricsPort:
                       description: "NodeMetricsPort specifies which port calico/node serves prometheus metrics on. By default, metrics are not enabled.\nIf specified, this overrides any FelixConfiguration resources which may exist. If omitted, then\nprometheus metrics may still be configured through FelixConfiguration."
@@ -10742,6 +10807,49 @@ spec:
                       description: "TyphaMetricsPort specifies which port calico/typha serves prometheus metrics on. By default, metrics are not enabled."
                       format: "int32"
                       type: "integer"
+                    typhaPodDisruptionBudget:
+                      description: "TyphaPodDisruptionBudget configures the PodDisruptionBudget for the calico-typha\nDeployment. Fields left unset fall back to the operator's defaults. The PDB's\nselector is managed by the operator and cannot be overridden."
+                      properties:
+                        metadata:
+                          description: "Metadata is a subset of a Kubernetes object's metadata that is added to the PodDisruptionBudget."
+                          properties:
+                            annotations:
+                              additionalProperties:
+                                type: "string"
+                              description: "Annotations is a map of arbitrary non-identifying metadata. Each of these\nkey/value pairs are added to the object's annotations provided the key does not\nalready exist in the object's annotations."
+                              type: "object"
+                            labels:
+                              additionalProperties:
+                                type: "string"
+                              description: "Labels is a map of string keys and values that may match replicaset and\nservice selectors. Each of these key/value pairs are added to the\nobject's labels provided the key does not already exist in the object's labels."
+                              type: "object"
+                          type: "object"
+                        spec:
+                          description: "Spec is the specification of the PodDisruptionBudget."
+                          properties:
+                            maxUnavailable:
+                              anyOf:
+                                - type: "integer"
+                                - type: "string"
+                              description: "MaxUnavailable is the maximum number of pods (as an integer or percentage) that\ncan be unavailable during a disruption. Mutually exclusive with MinAvailable.\nIf neither MinAvailable nor MaxUnavailable is set, the operator applies its\ndefault (MaxUnavailable=1 for calico-typha)."
+                              x-kubernetes-int-or-string: true
+                            minAvailable:
+                              anyOf:
+                                - type: "integer"
+                                - type: "string"
+                              description: "MinAvailable is the minimum number of pods (as an integer or percentage) that\nmust remain available during a disruption. Mutually exclusive with MaxUnavailable."
+                              x-kubernetes-int-or-string: true
+                            unhealthyPodEvictionPolicy:
+                              description: "UnhealthyPodEvictionPolicy defines when unhealthy pods should be considered\nfor eviction. Defaults to IfHealthyBudget (the Kubernetes default) when unset.\nSee https://kubernetes.io/docs/tasks/run-application/configure-pdb/#unhealthy-pod-eviction-policy."
+                              enum:
+                                - "IfHealthyBudget"
+                                - "AlwaysAllow"
+                              type: "string"
+                          type: "object"
+                          x-kubernetes-validations:
+                            - message: "minAvailable and maxUnavailable are mutually exclusive"
+                              rule: "!(has(self.minAvailable) && has(self.maxUnavailable))"
+                      type: "object"
                     variant:
                       description: "Variant is the product to install - one of Calico or CalicoEnterprise.\nTigeraSecureEnterprise is also accepted as a deprecated alias for CalicoEnterprise.\nDefault: Calico"
                       enum:

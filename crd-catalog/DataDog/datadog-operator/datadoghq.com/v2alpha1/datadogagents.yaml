@@ -820,6 +820,13 @@ spec:
                             enabled:
                               description: "Enabled enables the cluster autoscaling product.\n(Requires Cluster Agent 7.74.0+)\nDefault: false"
                               type: "boolean"
+                            spot:
+                              description: "Spot contains the configuration for the spot instance scheduling sub-feature.\nRequires cluster autoscaling to be enabled.\n(Requires Cluster Agent 7.79.0+)"
+                              properties:
+                                enabled:
+                                  description: "Enabled enables the cluster spot scheduling product.\n(Requires Cluster Agent 7.79.0+)\nDefault: false"
+                                  type: "boolean"
+                              type: "object"
                           type: "object"
                         workload:
                           description: "Workload contains the configuration for the workload autoscaling product."
@@ -984,7 +991,7 @@ spec:
                           description: "Dogstatsd configures DogStatsD handling by the Data Plane."
                           properties:
                             enabled:
-                              description: "Enabled configures the Data Plane to handle DogStatsD traffic.\nWhen enabled, DogStatsD is disabled in the Core Agent.\nDefault: false"
+                              description: "Enabled configures the Data Plane to handle DogStatsD traffic.\nWhen set to false, DogStatsD is handled by the Core Agent instead.\nDefault: true"
                               type: "boolean"
                           type: "object"
                         enabled:
@@ -1790,6 +1797,17 @@ spec:
                         enabled:
                           description: "Enable this option to activate SBOM collection.\nDefault: false"
                           type: "boolean"
+                        enrichment:
+                          description: "SBOMEnrichmentConfig contains SBOM enrichment configuration."
+                          properties:
+                            usage:
+                              description: "Usage contains configuration for the \"package in use\" enrichment."
+                              properties:
+                                enabled:
+                                  description: "Enable this option to activate SBOM enrichment with runtime \"package in use\" detection.\nRequires system-probe for eBPF-based file access tracking.\nDefault: false"
+                                  type: "boolean"
+                              type: "object"
+                          type: "object"
                         host:
                           description: "SBOMTypeConfig contains configuration for a SBOM collection type."
                           properties:
@@ -1808,7 +1826,7 @@ spec:
                       description: "ServiceDiscovery"
                       properties:
                         enabled:
-                          description: "Enables the service discovery check.\nDefault: false"
+                          description: "Enables the service discovery check.\nDefault: true when omitted and the node Agent image is >= 7.78.0. Otherwise false.\nIf the image version cannot be determined, it is treated as latest."
                           type: "boolean"
                         networkStats:
                           description: "DEPRECATED: NetworkStats is no longer configurable and will be ignored. Scheduled for removal in v1.28."
@@ -5861,17 +5879,25 @@ spec:
                   description: "Experiment tracks the state of an active or recent Fleet Automation experiment."
                   properties:
                     id:
-                      description: "ID is the unique experiment ID sent by Fleet Automation."
+                      description: "ID is the RC task ID that triggered this experiment state."
                       type: "string"
                     phase:
                       description: "Phase is the current state of the experiment."
                       enum:
                         - "running"
-                        - "stopped"
-                        - "rollback"
-                        - "timeout"
+                        - "terminated"
                         - "promoted"
                         - "aborted"
+                      type: "string"
+                    startTaskID:
+                      description: "StartTaskID is the Fleet Automation task identifier that drove the\ntransition into phase=Running. Captured from the daemon's pending\nannotations and preserved across daemon restarts. On local timeout\nthe daemon uses it to report TaskState_ERROR for the original start\ntask, so Fleet Automation gets an explicit terminal failure tied to\nthe task it sent rather than inferring termination from a cleared\nexperimentConfigVersion."
+                      type: "string"
+                    startedAt:
+                      description: "StartedAt is the wall-clock time at which the experiment first\ntransitioned to phase=Running. Used as the anchor for the\nexperiment timeout. Decoupled from ControllerRevision metadata so\nthe timeout decision does not depend on revision creation\ntimestamps (which can be stale for re-used revisions)."
+                      format: "date-time"
+                      type: "string"
+                    terminationReason:
+                      description: "TerminationReason distinguishes why the experiment was terminated.\nOnly set when Phase is \"terminated\"."
                       type: "string"
                   type: "object"
                 otelAgentGateway:
@@ -6692,6 +6718,13 @@ spec:
                                 enabled:
                                   description: "Enabled enables the cluster autoscaling product.\n(Requires Cluster Agent 7.74.0+)\nDefault: false"
                                   type: "boolean"
+                                spot:
+                                  description: "Spot contains the configuration for the spot instance scheduling sub-feature.\nRequires cluster autoscaling to be enabled.\n(Requires Cluster Agent 7.79.0+)"
+                                  properties:
+                                    enabled:
+                                      description: "Enabled enables the cluster spot scheduling product.\n(Requires Cluster Agent 7.79.0+)\nDefault: false"
+                                      type: "boolean"
+                                  type: "object"
                               type: "object"
                             workload:
                               description: "Workload contains the configuration for the workload autoscaling product."
@@ -6856,7 +6889,7 @@ spec:
                               description: "Dogstatsd configures DogStatsD handling by the Data Plane."
                               properties:
                                 enabled:
-                                  description: "Enabled configures the Data Plane to handle DogStatsD traffic.\nWhen enabled, DogStatsD is disabled in the Core Agent.\nDefault: false"
+                                  description: "Enabled configures the Data Plane to handle DogStatsD traffic.\nWhen set to false, DogStatsD is handled by the Core Agent instead.\nDefault: true"
                                   type: "boolean"
                               type: "object"
                             enabled:
@@ -7662,6 +7695,17 @@ spec:
                             enabled:
                               description: "Enable this option to activate SBOM collection.\nDefault: false"
                               type: "boolean"
+                            enrichment:
+                              description: "SBOMEnrichmentConfig contains SBOM enrichment configuration."
+                              properties:
+                                usage:
+                                  description: "Usage contains configuration for the \"package in use\" enrichment."
+                                  properties:
+                                    enabled:
+                                      description: "Enable this option to activate SBOM enrichment with runtime \"package in use\" detection.\nRequires system-probe for eBPF-based file access tracking.\nDefault: false"
+                                      type: "boolean"
+                                  type: "object"
+                              type: "object"
                             host:
                               description: "SBOMTypeConfig contains configuration for a SBOM collection type."
                               properties:
@@ -7680,7 +7724,7 @@ spec:
                           description: "ServiceDiscovery"
                           properties:
                             enabled:
-                              description: "Enables the service discovery check.\nDefault: false"
+                              description: "Enables the service discovery check.\nDefault: true when omitted and the node Agent image is >= 7.78.0. Otherwise false.\nIf the image version cannot be determined, it is treated as latest."
                               type: "boolean"
                             networkStats:
                               description: "DEPRECATED: NetworkStats is no longer configurable and will be ignored. Scheduled for removal in v1.28."

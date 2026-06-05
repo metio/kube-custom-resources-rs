@@ -51,6 +51,9 @@ pub struct Ec2NodeClassSpec {
     /// <https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateFleet.html>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub context: Option<String>,
+    /// CPUOptions defines the CPU options for the instance.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuOptions")]
+    pub cpu_options: Option<Ec2NodeClassCpuOptions>,
     /// DetailedMonitoring controls if detailed monitoring is enabled for instances that are launched
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "detailedMonitoring")]
     pub detailed_monitoring: Option<bool>,
@@ -312,6 +315,25 @@ pub struct Ec2NodeClassConnectionTracking {
     /// If unset, EC2 applies its default of 30 seconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "udpTimeout")]
     pub udp_timeout: Option<i32>,
+}
+
+/// CPUOptions defines the CPU options for the instance.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct Ec2NodeClassCpuOptions {
+    /// NestedVirtualization enables or disables nested virtualization on the instance.
+    /// When enabled, Karpenter filters instance types to only those reporting
+    /// "nested-virtualization" in ProcessorInfo.SupportedFeatures from DescribeInstanceTypes.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nestedVirtualization")]
+    pub nested_virtualization: Option<Ec2NodeClassCpuOptionsNestedVirtualization>,
+}
+
+/// CPUOptions defines the CPU options for the instance.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum Ec2NodeClassCpuOptionsNestedVirtualization {
+    #[serde(rename = "enabled")]
+    Enabled,
+    #[serde(rename = "disabled")]
+    Disabled,
 }
 
 /// EC2NodeClassSpec is the top level specification for the AWS Karpenter Provider.

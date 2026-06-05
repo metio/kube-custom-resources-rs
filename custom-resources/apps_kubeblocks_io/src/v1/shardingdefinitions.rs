@@ -140,6 +140,9 @@ pub struct ShardingDefinitionLifecycleActionsPostProvision {
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
+    /// - When `targetPodSelector` is set to `Ordinal`, `matchingKey` must be a non-negative integer
+    ///   and only the replica whose Pod name ends with `-<matchingKey>` will be selected for the Action.
+    ///   The selector is considered ambiguous and the action fails if multiple Pods share the same ordinal.
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
@@ -252,6 +255,9 @@ pub struct ShardingDefinitionLifecycleActionsPostProvisionExec {
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
+    /// - When `targetPodSelector` is set to `Ordinal`, `matchingKey` must be a non-negative integer
+    ///   and only the replica whose Pod name ends with `-<matchingKey>` will be selected for the Action.
+    ///   The selector is considered ambiguous and the action fails if multiple Pods share the same ordinal.
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
@@ -577,6 +583,9 @@ pub struct ShardingDefinitionLifecycleActionsPreTerminate {
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
+    /// - When `targetPodSelector` is set to `Ordinal`, `matchingKey` must be a non-negative integer
+    ///   and only the replica whose Pod name ends with `-<matchingKey>` will be selected for the Action.
+    ///   The selector is considered ambiguous and the action fails if multiple Pods share the same ordinal.
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
@@ -689,6 +698,9 @@ pub struct ShardingDefinitionLifecycleActionsPreTerminateExec {
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
+    /// - When `targetPodSelector` is set to `Ordinal`, `matchingKey` must be a non-negative integer
+    ///   and only the replica whose Pod name ends with `-<matchingKey>` will be selected for the Action.
+    ///   The selector is considered ambiguous and the action fails if multiple Pods share the same ordinal.
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
@@ -1011,6 +1023,9 @@ pub struct ShardingDefinitionLifecycleActionsShardAdd {
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
+    /// - When `targetPodSelector` is set to `Ordinal`, `matchingKey` must be a non-negative integer
+    ///   and only the replica whose Pod name ends with `-<matchingKey>` will be selected for the Action.
+    ///   The selector is considered ambiguous and the action fails if multiple Pods share the same ordinal.
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
@@ -1123,6 +1138,9 @@ pub struct ShardingDefinitionLifecycleActionsShardAddExec {
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
+    /// - When `targetPodSelector` is set to `Ordinal`, `matchingKey` must be a non-negative integer
+    ///   and only the replica whose Pod name ends with `-<matchingKey>` will be selected for the Action.
+    ///   The selector is considered ambiguous and the action fails if multiple Pods share the same ordinal.
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
@@ -1435,6 +1453,9 @@ pub struct ShardingDefinitionLifecycleActionsShardRemove {
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
+    /// - When `targetPodSelector` is set to `Ordinal`, `matchingKey` must be a non-negative integer
+    ///   and only the replica whose Pod name ends with `-<matchingKey>` will be selected for the Action.
+    ///   The selector is considered ambiguous and the action fails if multiple Pods share the same ordinal.
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
@@ -1547,6 +1568,9 @@ pub struct ShardingDefinitionLifecycleActionsShardRemoveExec {
     /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
     /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
     ///   will be selected for the Action.
+    /// - When `targetPodSelector` is set to `Ordinal`, `matchingKey` must be a non-negative integer
+    ///   and only the replica whose Pod name ends with `-<matchingKey>` will be selected for the Action.
+    ///   The selector is considered ambiguous and the action fails if multiple Pods share the same ordinal.
     /// 
     /// This field cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]

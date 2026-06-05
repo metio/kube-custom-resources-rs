@@ -728,6 +728,9 @@ pub enum DestinationRuleSubsetsTrafficPolicyProxyProtocolVersion {
 /// Specifies a limit on concurrent retries in relation to the number of active requests.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DestinationRuleSubsetsTrafficPolicyRetryBudget {
+    /// Specifies the duration in which requests will be considered when calculating the budget for retries.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "budgetInterval")]
+    pub budget_interval: Option<String>,
     /// Specifies the minimum retry concurrency allowed for the retry budget.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minRetryConcurrency")]
     pub min_retry_concurrency: Option<i64>,
@@ -1475,6 +1478,9 @@ pub enum DestinationRuleTrafficPolicyProxyProtocolVersion {
 /// Specifies a limit on concurrent retries in relation to the number of active requests.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DestinationRuleTrafficPolicyRetryBudget {
+    /// Specifies the duration in which requests will be considered when calculating the budget for retries.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "budgetInterval")]
+    pub budget_interval: Option<String>,
     /// Specifies the minimum retry concurrency allowed for the retry budget.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minRetryConcurrency")]
     pub min_retry_concurrency: Option<i64>,

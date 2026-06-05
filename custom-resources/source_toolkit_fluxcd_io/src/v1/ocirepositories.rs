@@ -201,6 +201,12 @@ pub struct OciRepositoryVerify {
     /// trusted public keys.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<OciRepositoryVerifySecretRef>,
+    /// TrustedRootSecretRef specifies the Kubernetes Secret containing a
+    /// Sigstore trusted_root.json file. This enables verification against
+    /// self-hosted Sigstore infrastructure (custom Fulcio CA, self-hosted
+    /// Rekor instance). The Secret must contain a key named "trusted_root.json".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trustedRootSecretRef")]
+    pub trusted_root_secret_ref: Option<OciRepositoryVerifyTrustedRootSecretRef>,
 }
 
 /// OIDCIdentityMatch specifies options for verifying the certificate identity,
@@ -232,6 +238,16 @@ pub enum OciRepositoryVerifyProvider {
 /// trusted public keys.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OciRepositoryVerifySecretRef {
+    /// Name of the referent.
+    pub name: String,
+}
+
+/// TrustedRootSecretRef specifies the Kubernetes Secret containing a
+/// Sigstore trusted_root.json file. This enables verification against
+/// self-hosted Sigstore infrastructure (custom Fulcio CA, self-hosted
+/// Rekor instance). The Secret must contain a key named "trusted_root.json".
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OciRepositoryVerifyTrustedRootSecretRef {
     /// Name of the referent.
     pub name: String,
 }

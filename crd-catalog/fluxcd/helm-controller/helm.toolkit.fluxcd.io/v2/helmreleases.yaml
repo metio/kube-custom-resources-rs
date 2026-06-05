@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.19.0"
+    controller-gen.kubebuilder.io/version: "v0.21.0"
   name: "helmreleases.helm.toolkit.fluxcd.io"
 spec:
   group: "helm.toolkit.fluxcd.io"
@@ -189,13 +189,13 @@ spec:
                 dependsOn:
                   description: "DependsOn may contain a DependencyReference slice with\nreferences to HelmRelease resources that must be ready before this HelmRelease\ncan be reconciled."
                   items:
-                    description: "DependencyReference defines a HelmRelease dependency on another HelmRelease resource."
+                    description: "DependencyReference contains enough information to locate the referenced Kubernetes resource object\nand optional CEL expression to assess its readiness."
                     properties:
                       name:
                         description: "Name of the referent."
                         type: "string"
                       namespace:
-                        description: "Namespace of the referent, defaults to the namespace of the HelmRelease\nresource object that contains the reference."
+                        description: "Namespace of the referent, defaults to the namespace of the resource\nobject that contains the reference."
                         type: "string"
                       readyExpr:
                         description: "ReadyExpr is a CEL expression that can be used to assess the readiness\nof a dependency. When specified, the built-in readiness check\nis replaced by the logic defined in the CEL expression.\nTo make the CEL expression additive to the built-in readiness check,\nthe feature gate `AdditiveCELDependencyCheck` must be set to `true`."
@@ -689,6 +689,9 @@ spec:
                           - "Secret"
                           - "ConfigMap"
                         type: "string"
+                      literal:
+                        description: "Literal marks this ValuesReference as a literal value. When set in\ncombination with TargetPath, the referenced value is merged at the target\npath without interpreting Helm's `--set` syntax (commas, brackets, dots,\nequal signs, etc.), mirroring the behavior of `helm --set-literal`. This\nis the only safe way to inject arbitrary file content (config files, JSON\nblobs, multi-line strings containing special characters) through\n`valuesFrom`. Has no effect when TargetPath is empty: in that mode the\nreferenced value is always YAML-merged at the root."
+                        type: "boolean"
                       name:
                         description: "Name of the values referent. Should reside in the same namespace as the\nreferring resource."
                         maxLength: 253
