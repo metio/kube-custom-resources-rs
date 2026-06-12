@@ -412,6 +412,10 @@ spec:
                     port:
                       description: "Port listen address"
                       type: "string"
+                    preStopSleepSeconds:
+                      description: "PreStopSleepSeconds defines the number of seconds to sleep in the preStop lifecycle hook.\nIt gives time for load balancers to remove the pod from rotation before the pod is terminated.\nDefaults to 15 for applicable components. Set to 0 to disable."
+                      format: "int32"
+                      type: "integer"
                     priorityClassName:
                       description: "PriorityClassName class assigned to the Pods"
                       type: "string"
@@ -1208,6 +1212,10 @@ spec:
                     port:
                       description: "Port listen address"
                       type: "string"
+                    preStopSleepSeconds:
+                      description: "PreStopSleepSeconds defines the number of seconds to sleep in the preStop lifecycle hook.\nIt gives time for load balancers to remove the pod from rotation before the pod is terminated.\nDefaults to 15 for applicable components. Set to 0 to disable."
+                      format: "int32"
+                      type: "integer"
                     priorityClassName:
                       description: "PriorityClassName class assigned to the Pods"
                       type: "string"
@@ -2351,6 +2359,10 @@ spec:
                     port:
                       description: "Port listen address"
                       type: "string"
+                    preStopSleepSeconds:
+                      description: "PreStopSleepSeconds defines the number of seconds to sleep in the preStop lifecycle hook.\nIt gives time for load balancers to remove the pod from rotation before the pod is terminated.\nDefaults to 15 for applicable components. Set to 0 to disable."
+                      format: "int32"
+                      type: "integer"
                     priorityClassName:
                       description: "PriorityClassName class assigned to the Pods"
                       type: "string"

@@ -33,6 +33,13 @@ pub struct L2AdvertisementSpec {
     /// NodeSelectors allows to limit the nodes to announce as next hops for the LoadBalancer IP. When empty, all the nodes having  are announced as next hops.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelectors")]
     pub node_selectors: Option<Vec<L2AdvertisementNodeSelectors>>,
+    /// PreferredNodeSelectors allows specifying soft node preferences for L2
+    /// leader election. Nodes matching these selectors receive a higher score
+    /// and are preferred as the announcing node. If no preferred node is
+    /// available, any eligible node (per NodeSelectors) can announce.
+    /// Modeled after Kubernetes PreferredSchedulingTerm.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredNodeSelectors")]
+    pub preferred_node_selectors: Option<Vec<L2AdvertisementPreferredNodeSelectors>>,
     /// ServiceSelectors limits the set of services that will be advertised via this advertisement.
     /// If empty, all services from the selected pools are advertised.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceSelectors")]
@@ -90,6 +97,54 @@ pub struct L2AdvertisementNodeSelectors {
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct L2AdvertisementNodeSelectorsMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// PreferredNodeSelector expresses a weighted soft preference for nodes.
+/// This follows the Kubernetes PreferredSchedulingTerm pattern where Weight
+/// controls relative priority and Preference selects matching nodes.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct L2AdvertisementPreferredNodeSelectors {
+    /// Preference selects the nodes that receive this weight. An empty
+    /// selector matches every node. Preferences only apply to nodes
+    /// already eligible under the advertisement's NodeSelectors.
+    pub preference: L2AdvertisementPreferredNodeSelectorsPreference,
+    /// Weight associated with matching the corresponding preference,
+    /// in the range 1-100. Higher weights rank the node higher in the
+    /// L2 leader election. Weights from selectors that both match a
+    /// node sum together.
+    pub weight: i32,
+}
+
+/// Preference selects the nodes that receive this weight. An empty
+/// selector matches every node. Preferences only apply to nodes
+/// already eligible under the advertisement's NodeSelectors.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct L2AdvertisementPreferredNodeSelectorsPreference {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<L2AdvertisementPreferredNodeSelectorsPreferenceMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct L2AdvertisementPreferredNodeSelectorsPreferenceMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.

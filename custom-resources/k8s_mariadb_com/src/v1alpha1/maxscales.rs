@@ -79,6 +79,10 @@ pub struct MaxScaleSpec {
     /// LivenessProbe to be used in the Container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<MaxScaleLivenessProbe>,
+    /// Maintenance defines different capabilities of the operator to allow for maintenance to be performed on the DB.
+    /// Not to be confused with `suspend`, maintenance does not interfere with the normal reconciliation of the operator.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub maintenance: Option<MaxScaleMaintenance>,
     /// MariaDBRef is a reference to the MariaDB that MaxScale points to. It is used to initialize the servers field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mariaDbRef")]
     pub maria_db_ref: Option<MaxScaleMariaDbRef>,
@@ -1013,6 +1017,18 @@ pub struct MaxScaleLivenessProbeTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     pub port: IntOrString,
+}
+
+/// Maintenance defines different capabilities of the operator to allow for maintenance to be performed on the DB.
+/// Not to be confused with `suspend`, maintenance does not interfere with the normal reconciliation of the operator.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MaxScaleMaintenance {
+    /// Cordon blocks connections to the resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cordon: Option<bool>,
+    /// Enabled turns on maintenance mode
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
 }
 
 /// MariaDBRef is a reference to the MariaDB that MaxScale points to. It is used to initialize the servers field.

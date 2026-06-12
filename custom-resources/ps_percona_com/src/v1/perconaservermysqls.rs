@@ -71,6 +71,8 @@ pub struct PerconaServerMySqlBackup {
     pub container_security_context: Option<PerconaServerMySqlBackupContainerSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "encryptionKeySecret")]
+    pub encryption_key_secret: Option<PerconaServerMySqlBackupEncryptionKeySecret>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
@@ -169,6 +171,13 @@ pub struct PerconaServerMySqlBackupContainerSecurityContextWindowsOptions {
     pub host_process: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySqlBackupEncryptionKeySecret {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    pub name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1365,6 +1374,8 @@ pub struct PerconaServerMySqlBackupStorages {
     pub container_options: Option<PerconaServerMySqlBackupStoragesContainerOptions>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerSecurityContext")]
     pub container_security_context: Option<PerconaServerMySqlBackupStoragesContainerSecurityContext>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "encryptionKeySecret")]
+    pub encryption_key_secret: Option<PerconaServerMySqlBackupStoragesEncryptionKeySecret>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gcs: Option<PerconaServerMySqlBackupStoragesGcs>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1871,6 +1882,13 @@ pub struct PerconaServerMySqlBackupStoragesContainerSecurityContextWindowsOption
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySqlBackupStoragesEncryptionKeySecret {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    pub name: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PerconaServerMySqlBackupStoragesGcs {
     pub bucket: String,
     #[serde(rename = "credentialsSecret")]
@@ -2247,6 +2265,8 @@ pub struct PerconaServerMySqlMysql {
     pub annotations: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoRecovery")]
     pub auto_recovery: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub bootstrap: Option<PerconaServerMySqlMysqlBootstrap>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterType")]
     pub cluster_type: Option<PerconaServerMySqlMysqlClusterType>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2621,6 +2641,20 @@ pub struct PerconaServerMySqlMysqlAffinityAdvancedPodAntiAffinityRequiredDuringS
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySqlMysqlBootstrap {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<PerconaServerMySqlMysqlBootstrapMode>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PerconaServerMySqlMysqlBootstrapMode {
+    #[serde(rename = "auto")]
+    Auto,
+    #[serde(rename = "manual")]
+    Manual,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -8524,6 +8558,8 @@ pub struct PerconaServerMySqlStatus {
     pub haproxy: Option<PerconaServerMySqlStatusHaproxy>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "innodbClusterName")]
+    pub innodb_cluster_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mysql: Option<PerconaServerMySqlStatusMysql>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

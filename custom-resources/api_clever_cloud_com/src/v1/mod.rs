@@ -1,6 +1,12 @@
+pub mod azimutts;
+pub mod cellars;
 pub mod configproviders;
 pub mod elasticsearches;
+pub mod keycloaks;
+pub mod matomos;
+pub mod metabases;
 pub mod mongodbs;
 pub mod mysqls;
+pub mod otoroshis;
 pub mod postgresqls;
 pub mod redis;

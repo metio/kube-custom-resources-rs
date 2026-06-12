@@ -9411,6 +9411,12 @@ pub struct AlertmanagerConfigReceiversWebhookConfigs {
     /// When 0, all alerts are included in the webhook payload.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxAlerts")]
     pub max_alerts: Option<i32>,
+    /// payload define custom payload to be sent to the webhook endpoint.
+    /// This is an advanced configuration option that allows you
+    /// to define a custom payload using Go templates.
+    /// It requires Alertmanager >= v0.32.0.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub payload: Option<String>,
     /// sendResolved defines whether or not to notify about resolved alerts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sendResolved")]
     pub send_resolved: Option<bool>,

@@ -69,13 +69,12 @@ pub struct LoginSetSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct LoginSetControllerRef {
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/>
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
 }
 
 /// Service defines a template for a Kubernetes Service object.

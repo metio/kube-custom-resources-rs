@@ -49,7 +49,7 @@ spec:
               description: "EphemeralRunnerSetSpec defines the desired state of EphemeralRunnerSet"
               properties:
                 ephemeralRunnerMetadata:
-                  description: "ResourceMeta carries metadata common to all internal resources"
+                  description: "EphemeralRunnerMetadata is the metadata to be applied to all ephemeral runners created by this set.\nIf the EphemeralRunnerMetadata is updated, the update applies to new ephemeral runners created after the update,\nbut does not apply to existing ephemeral runners."
                   properties:
                     annotations:
                       additionalProperties:

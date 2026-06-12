@@ -22,6 +22,9 @@ pub struct PolicyExceptionSpec {
     /// These values can be referenced in CEL expressions via `exceptions.allowedValues`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedValues")]
     pub allowed_values: Option<Vec<String>>,
+    /// Evaluation mode denotes which controller is in charge of compiling and handling this exception.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "evaluationMode")]
+    pub evaluation_mode: Option<String>,
     /// Images specifies container images to be excluded from policy evaluation.
     /// These excluded images can be referenced in CEL expressions via `exceptions.allowedImages`.
     #[serde(default, skip_serializing_if = "Option::is_none")]

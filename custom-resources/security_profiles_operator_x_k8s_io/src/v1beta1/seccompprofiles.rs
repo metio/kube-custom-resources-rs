@@ -11,158 +11,125 @@ mod prelude {
 
 use self::prelude::*;
 
-/// SeccompProfileSpec defines the desired state of SeccompProfile.
-#[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
+/// spec defines the desired state of the SeccompProfile.
+#[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "security-profiles-operator.x-k8s.io", version = "v1beta1", kind = "SeccompProfile", plural = "seccompprofiles")]
 #[kube(status = "SeccompProfileStatus")]
 #[kube(schema = "disabled")]
+#[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct SeccompProfileSpec {
-    /// the architecture used for system calls
+    /// architectures specifies the architecture used for system calls.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub architectures: Option<Vec<String>>,
-    /// BaseProfileName is the name of base profile (in the same namespace) that
+    /// baseProfileName is the name of base profile (in the same namespace) that
     /// will be unioned into this profile. Base profiles can be references as
     /// remote OCI artifacts as well when prefixed with `oci://`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseProfileName")]
     pub base_profile_name: Option<String>,
-    /// the default action for seccomp
+    /// defaultAction is the default action for seccomp. Valid values are:
+    /// SCMP_ACT_KILL, SCMP_ACT_KILL_PROCESS, SCMP_ACT_KILL_THREAD,
+    /// SCMP_ACT_TRAP, SCMP_ACT_ERRNO, SCMP_ACT_TRACE, SCMP_ACT_ALLOW,
+    /// SCMP_ACT_LOG, SCMP_ACT_NOTIFY.
     #[serde(rename = "defaultAction")]
-    pub default_action: SeccompProfileDefaultAction,
-    /// Whether the profile is disabled and should be skipped during reconciliation.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub disabled: Option<bool>,
-    /// list of flags to use with seccomp(2)
+    pub default_action: String,
+    /// flags is a list of flags to use with seccomp(2).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub flags: Option<Vec<String>>,
-    /// opaque data to pass to the seccomp agent
+    /// listenerMetadata contains opaque data to pass to the seccomp agent.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenerMetadata")]
     pub listener_metadata: Option<String>,
-    /// path of UNIX domain socket to contact a seccomp agent for SCMP_ACT_NOTIFY
+    /// listenerPath is the path of UNIX domain socket to contact a seccomp
+    /// agent for SCMP_ACT_NOTIFY.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenerPath")]
     pub listener_path: Option<String>,
-    /// match a syscall in seccomp. While this property is OPTIONAL, some values
-    /// of defaultAction are not useful without syscalls entries. For example,
-    /// if defaultAction is SCMP_ACT_KILL and syscalls is empty or unset, the
-    /// kernel will kill the container process on its first syscall
+    /// state controls whether the profile is enabled or disabled for
+    /// reconciliation. A disabled profile will be skipped.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub state: Option<SeccompProfileState>,
+    /// syscalls match a syscall in seccomp. While this property is optional,
+    /// some values of defaultAction are not useful without syscalls entries.
+    /// For example, if defaultAction is SCMP_ACT_KILL and syscalls is empty
+    /// or unset, the kernel will kill the container process on its first syscall.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub syscalls: Option<Vec<SeccompProfileSyscalls>>,
 }
 
-/// SeccompProfileSpec defines the desired state of SeccompProfile.
+/// spec defines the desired state of the SeccompProfile.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum SeccompProfileDefaultAction {
-    #[serde(rename = "SCMP_ACT_KILL")]
-    ScmpActKill,
-    #[serde(rename = "SCMP_ACT_KILL_PROCESS")]
-    ScmpActKillProcess,
-    #[serde(rename = "SCMP_ACT_KILL_THREAD")]
-    ScmpActKillThread,
-    #[serde(rename = "SCMP_ACT_TRAP")]
-    ScmpActTrap,
-    #[serde(rename = "SCMP_ACT_ERRNO")]
-    ScmpActErrno,
-    #[serde(rename = "SCMP_ACT_TRACE")]
-    ScmpActTrace,
-    #[serde(rename = "SCMP_ACT_ALLOW")]
-    ScmpActAllow,
-    #[serde(rename = "SCMP_ACT_LOG")]
-    ScmpActLog,
-    #[serde(rename = "SCMP_ACT_NOTIFY")]
-    ScmpActNotify,
+pub enum SeccompProfileState {
+    Enabled,
+    Disabled,
 }
 
 /// Syscall defines a syscall in seccomp.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SeccompProfileSyscalls {
-    /// the action for seccomp rules
-    pub action: SeccompProfileSyscallsAction,
-    /// the specific syscall in seccomp
+    /// action is the action for seccomp rules. Valid values are:
+    /// SCMP_ACT_KILL, SCMP_ACT_KILL_PROCESS, SCMP_ACT_KILL_THREAD,
+    /// SCMP_ACT_TRAP, SCMP_ACT_ERRNO, SCMP_ACT_TRACE, SCMP_ACT_ALLOW,
+    /// SCMP_ACT_LOG, SCMP_ACT_NOTIFY.
+    pub action: String,
+    /// args defines the specific syscall arguments in seccomp.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<SeccompProfileSyscallsArgs>>,
-    /// the errno return code to use. Some actions like SCMP_ACT_ERRNO and
-    /// SCMP_ACT_TRACE allow to specify the errno code to return
+    /// errnoRet is the errno return code to use. Some actions like
+    /// SCMP_ACT_ERRNO and SCMP_ACT_TRACE allow to specify the errno
+    /// code to return.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "errnoRet")]
-    pub errno_ret: Option<i64>,
-    /// the names of the syscalls
+    pub errno_ret: Option<i32>,
+    /// names specifies the names of the syscalls.
     pub names: Vec<String>,
 }
 
-/// Syscall defines a syscall in seccomp.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum SeccompProfileSyscallsAction {
-    #[serde(rename = "SCMP_ACT_KILL")]
-    ScmpActKill,
-    #[serde(rename = "SCMP_ACT_KILL_PROCESS")]
-    ScmpActKillProcess,
-    #[serde(rename = "SCMP_ACT_KILL_THREAD")]
-    ScmpActKillThread,
-    #[serde(rename = "SCMP_ACT_TRAP")]
-    ScmpActTrap,
-    #[serde(rename = "SCMP_ACT_ERRNO")]
-    ScmpActErrno,
-    #[serde(rename = "SCMP_ACT_TRACE")]
-    ScmpActTrace,
-    #[serde(rename = "SCMP_ACT_ALLOW")]
-    ScmpActAllow,
-    #[serde(rename = "SCMP_ACT_LOG")]
-    ScmpActLog,
-    #[serde(rename = "SCMP_ACT_NOTIFY")]
-    ScmpActNotify,
-}
-
 /// Arg defines the specific syscall in seccomp.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SeccompProfileSyscallsArgs {
-    /// the index for syscall arguments in seccomp
-    pub index: i64,
-    /// the operator for syscall arguments in seccomp
-    pub op: SeccompProfileSyscallsArgsOp,
-    /// the value for syscall arguments in seccomp
+    /// index is the index for syscall arguments in seccomp.
+    pub index: i32,
+    /// op is the operator for syscall arguments in seccomp. Valid values are:
+    /// SCMP_CMP_NE, SCMP_CMP_LT, SCMP_CMP_LE, SCMP_CMP_EQ, SCMP_CMP_GE,
+    /// SCMP_CMP_GT, SCMP_CMP_MASKED_EQ.
+    pub op: String,
+    /// value is the value for syscall arguments in seccomp.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<i64>,
-    /// the value for syscall arguments in seccomp
+    /// valueTwo is the second value for syscall arguments in seccomp.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueTwo")]
     pub value_two: Option<i64>,
 }
 
-/// Arg defines the specific syscall in seccomp.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum SeccompProfileSyscallsArgsOp {
-    #[serde(rename = "SCMP_CMP_NE")]
-    ScmpCmpNe,
-    #[serde(rename = "SCMP_CMP_LT")]
-    ScmpCmpLt,
-    #[serde(rename = "SCMP_CMP_LE")]
-    ScmpCmpLe,
-    #[serde(rename = "SCMP_CMP_EQ")]
-    ScmpCmpEq,
-    #[serde(rename = "SCMP_CMP_GE")]
-    ScmpCmpGe,
-    #[serde(rename = "SCMP_CMP_GT")]
-    ScmpCmpGt,
-    #[serde(rename = "SCMP_CMP_MASKED_EQ")]
-    ScmpCmpMaskedEq,
-}
-
-/// SeccompProfileStatus contains status of the deployed SeccompProfile.
+/// status contains the observed state of the SeccompProfile.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SeccompProfileStatus {
+    /// activeWorkloads lists the workloads currently using this profile.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeWorkloads")]
     pub active_workloads: Option<Vec<String>>,
-    /// Conditions of the resource.
+    /// conditions contains the conditions of the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// The path that should be provided to the `securityContext.seccompProfile.localhostProfile`
-    /// field of a Pod or container spec
+    /// localhostProfile is the path that should be provided to the
+    /// `securityContext.seccompProfile.localhostProfile` field of a Pod
+    /// or container spec.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
+    /// path is the file path of the installed seccomp profile on the node.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// ProfileState defines the state that the profile is in. A profile in this context
-    /// refers to a SeccompProfile or a SELinux profile, the states are shared between them
-    /// as well as the management API.
+    /// status is the current state of the profile across nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub status: Option<String>,
+    pub status: Option<SeccompProfileStatusStatus>,
+}
+
+/// status contains the observed state of the SeccompProfile.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum SeccompProfileStatusStatus {
+    Partial,
+    Disabled,
+    Pending,
+    InProgress,
+    Installed,
+    Terminating,
+    Error,
 }
 

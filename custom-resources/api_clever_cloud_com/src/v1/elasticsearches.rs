@@ -43,6 +43,8 @@ pub enum ElasticSearchOptionsVersion {
     r#_7,
     #[serde(rename = "8")]
     r#_8,
+    #[serde(rename = "9")]
+    r#_9,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

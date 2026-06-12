@@ -134,7 +134,7 @@ spec:
                             pattern: "^[a-z0-9]([a-z0-9\\-]*[a-z0-9])?$"
                             type: "string"
                           reconfigure:
-                            description: "Defines the procedure that reloads the file when it's content changes.\n\nIf specified, this action overrides the global reconfigure action defined in lifecycle actions\nfor this specific file template.\n\nThe container executing this action has access to following variables:\n\n- KB_CONFIG_FILES_CREATED: file1,file2...\n- KB_CONFIG_FILES_REMOVED: file1,file2...\n- KB_CONFIG_FILES_UPDATED: file1:checksum1,file2:checksum2...\n\nNote: This field is immutable once it has been set."
+                            description: "Defines the procedure that reloads the file when it's content changes.\n\nIf specified, this action overrides the global reconfigure action defined in lifecycle actions\nfor this specific file template.\nExternal-managed systems may define different behavior for this action entry.\n\nThe container executing this action has access to following variables:\n\n- KB_CONFIG_FILES_CREATED: file1,file2...\n- KB_CONFIG_FILES_REMOVED: file1,file2...\n- KB_CONFIG_FILES_UPDATED: file1:checksum1,file2:checksum2...\n\nNote: This field is immutable once it has been set."
                             properties:
                               exec:
                                 description: "Defines the command to run.\n\nThis field cannot be updated."

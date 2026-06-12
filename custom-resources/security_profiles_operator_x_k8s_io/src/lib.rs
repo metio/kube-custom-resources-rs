@@ -3,6 +3,15 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 
 # Available Custom Resources
 
+## security-profiles-operator.x-k8s.io/v1
+- `AppArmorProfile`
+- `ProfileBinding`
+- `ProfileRecording`
+- `RawSelinuxProfile`
+- `SeccompProfile`
+- `SecurityProfileNodeStatus`
+- `SecurityProfilesOperatorDaemon`
+- `SelinuxProfile`
 ## security-profiles-operator.x-k8s.io/v1alpha1
 - `AppArmorProfile`
 - `ProfileBinding`
@@ -15,6 +24,8 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## security-profiles-operator.x-k8s.io/v1beta1
 - `SeccompProfile`
 */
+#[cfg(feature = "v1")]
+pub mod v1;
 #[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;
 #[cfg(feature = "v1alpha2")]

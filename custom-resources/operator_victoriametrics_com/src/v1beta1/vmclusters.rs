@@ -31,6 +31,11 @@ pub struct VmClusterSpec {
     /// it can be overwritten with component specific image.tag value.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterVersion")]
     pub cluster_version: Option<String>,
+    /// Discovery configures automatic vmstorage node discovery for vminsert and vmselect.
+    /// This is an enterprise feature and requires a valid license key.
+    /// See <https://docs.victoriametrics.com/victoriametrics/cluster-victoriametrics/#automatic-vmstorage-discovery>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub discovery: Option<VmClusterDiscovery>,
     /// Downsampling defines downsampling rules applied to vmselect and vmstorage components.
     /// Requires enterprise license. See <https://docs.victoriametrics.com/victoriametrics/cluster-victoriametrics/#downsampling>
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -86,6 +91,26 @@ pub struct VmClusterSpec {
     pub vmselect: Option<VmClusterVmselect>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub vmstorage: Option<VmClusterVmstorage>,
+}
+
+/// Discovery configures automatic vmstorage node discovery for vminsert and vmselect.
+/// This is an enterprise feature and requires a valid license key.
+/// See <https://docs.victoriametrics.com/victoriametrics/cluster-victoriametrics/#automatic-vmstorage-discovery>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VmClusterDiscovery {
+    /// Enabled turns on automatic vmstorage node discovery via DNS SRV records.
+    /// This is an enterprise feature and requires a valid license key.
+    /// See <https://docs.victoriametrics.com/victoriametrics/cluster-victoriametrics/#automatic-vmstorage-discovery>
+    pub enabled: bool,
+    /// Filter is an optional regexp filter applied to discovered vmstorage addresses.
+    /// Only addresses matching the filter are used; non-matching addresses are ignored.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub filter: Option<String>,
+    /// Interval is the interval for refreshing the vmstorage node list resolved from DNS SRV records.
+    /// The minimum supported value is 1s.
+    /// Defaults to 2s if not set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub interval: Option<String>,
 }
 
 /// Downsampling defines downsampling rules applied to vmselect and vmstorage components.
@@ -246,6 +271,9 @@ pub struct VmClusterVminsert {
     /// Has priority over `VM_DISABLESELFSERVICESCRAPECREATION` operator env variable
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableSelfServiceScrape")]
     pub disable_self_service_scrape: Option<bool>,
+    /// Discovery overrides the cluster-level discovery config for vminsert.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub discovery: Option<VmClusterVminsertDiscovery>,
     /// Specifies the DNS parameters of a pod.
     /// Parameters specified here will be merged to the generated DNS
     /// configuration based on DNSPolicy.
@@ -335,6 +363,11 @@ pub struct VmClusterVminsert {
     /// Port listen address
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<String>,
+    /// PreStopSleepSeconds defines the number of seconds to sleep in the preStop lifecycle hook.
+    /// It gives time for load balancers to remove the pod from rotation before the pod is terminated.
+    /// Defaults to 15 for applicable components. Set to 0 to disable.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStopSleepSeconds")]
+    pub pre_stop_sleep_seconds: Option<i32>,
     /// PriorityClassName class assigned to the Pods
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
@@ -422,6 +455,24 @@ pub struct VmClusterVminsert {
     /// Configures vertical pod autoscaling.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub vpa: Option<VmClusterVminsertVpa>,
+}
+
+/// Discovery overrides the cluster-level discovery config for vminsert.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VmClusterVminsertDiscovery {
+    /// Enabled turns on automatic vmstorage node discovery via DNS SRV records.
+    /// This is an enterprise feature and requires a valid license key.
+    /// See <https://docs.victoriametrics.com/victoriametrics/cluster-victoriametrics/#automatic-vmstorage-discovery>
+    pub enabled: bool,
+    /// Filter is an optional regexp filter applied to discovered vmstorage addresses.
+    /// Only addresses matching the filter are used; non-matching addresses are ignored.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub filter: Option<String>,
+    /// Interval is the interval for refreshing the vmstorage node list resolved from DNS SRV records.
+    /// The minimum supported value is 1s.
+    /// Defaults to 2s if not set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub interval: Option<String>,
 }
 
 /// Specifies the DNS parameters of a pod.
@@ -1111,6 +1162,9 @@ pub struct VmClusterVmselect {
     /// Has priority over `VM_DISABLESELFSERVICESCRAPECREATION` operator env variable
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableSelfServiceScrape")]
     pub disable_self_service_scrape: Option<bool>,
+    /// Discovery overrides the cluster-level discovery config for vmselect.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub discovery: Option<VmClusterVmselectDiscovery>,
     /// Specifies the DNS parameters of a pod.
     /// Parameters specified here will be merged to the generated DNS
     /// configuration based on DNSPolicy.
@@ -1201,6 +1255,11 @@ pub struct VmClusterVmselect {
     /// Port listen address
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<String>,
+    /// PreStopSleepSeconds defines the number of seconds to sleep in the preStop lifecycle hook.
+    /// It gives time for load balancers to remove the pod from rotation before the pod is terminated.
+    /// Defaults to 15 for applicable components. Set to 0 to disable.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStopSleepSeconds")]
+    pub pre_stop_sleep_seconds: Option<i32>,
     /// PriorityClassName class assigned to the Pods
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
@@ -1300,6 +1359,24 @@ pub struct VmClusterVmselect {
 /// PersistentVolumeClaim is a user's request for and claim to a persistent volume
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VmClusterVmselectClaimTemplates {
+}
+
+/// Discovery overrides the cluster-level discovery config for vmselect.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VmClusterVmselectDiscovery {
+    /// Enabled turns on automatic vmstorage node discovery via DNS SRV records.
+    /// This is an enterprise feature and requires a valid license key.
+    /// See <https://docs.victoriametrics.com/victoriametrics/cluster-victoriametrics/#automatic-vmstorage-discovery>
+    pub enabled: bool,
+    /// Filter is an optional regexp filter applied to discovered vmstorage addresses.
+    /// Only addresses matching the filter are used; non-matching addresses are ignored.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub filter: Option<String>,
+    /// Interval is the interval for refreshing the vmstorage node list resolved from DNS SRV records.
+    /// The minimum supported value is 1s.
+    /// Defaults to 2s if not set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub interval: Option<String>,
 }
 
 /// Specifies the DNS parameters of a pod.
@@ -2439,6 +2516,11 @@ pub struct VmClusterVmstorage {
     /// Port listen address
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<String>,
+    /// PreStopSleepSeconds defines the number of seconds to sleep in the preStop lifecycle hook.
+    /// It gives time for load balancers to remove the pod from rotation before the pod is terminated.
+    /// Defaults to 15 for applicable components. Set to 0 to disable.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStopSleepSeconds")]
+    pub pre_stop_sleep_seconds: Option<i32>,
     /// PriorityClassName class assigned to the Pods
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,

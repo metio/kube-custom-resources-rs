@@ -11,7 +11,7 @@ mod prelude {
 
 use self::prelude::*;
 
-/// RawSelinuxProfileSpec defines the desired state of RawSelinuxProfile.
+/// spec defines the desired state of the RawSelinuxProfile.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "security-profiles-operator.x-k8s.io", version = "v1alpha2", kind = "RawSelinuxProfile", plural = "rawselinuxprofiles")]
 #[kube(status = "RawSelinuxProfileStatus")]
@@ -19,29 +19,49 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct RawSelinuxProfileSpec {
-    /// Whether the profile is disabled and should be skipped during reconciliation.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub disabled: Option<bool>,
+    /// policy is the raw SELinux policy module content.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub policy: Option<String>,
+    /// state controls whether the profile is enabled or disabled for
+    /// reconciliation. A disabled profile will be skipped.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub state: Option<RawSelinuxProfileState>,
 }
 
-/// SelinuxProfileStatus defines the observed state of SelinuxProfile.
+/// spec defines the desired state of the RawSelinuxProfile.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum RawSelinuxProfileState {
+    Enabled,
+    Disabled,
+}
+
+/// status contains the observed state of the RawSelinuxProfile.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RawSelinuxProfileStatus {
+    /// activeWorkloads lists the workloads currently using this profile.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeWorkloads")]
     pub active_workloads: Option<Vec<String>>,
-    /// Conditions of the resource.
+    /// conditions contains the conditions of the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// ProfileState defines the state that the profile is in. A profile in this context
-    /// refers to a SeccompProfile or a SELinux profile, the states are shared between them
-    /// as well as the management API.
+    /// status is the current state of the profile across nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub status: Option<String>,
-    /// Represents the string that the SelinuxProfile object can be
+    pub status: Option<RawSelinuxProfileStatusStatus>,
+    /// usage represents the string that the SelinuxProfile object can be
     /// referenced as in a pod seLinuxOptions section.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub usage: Option<String>,
+}
+
+/// status contains the observed state of the RawSelinuxProfile.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum RawSelinuxProfileStatusStatus {
+    Partial,
+    Disabled,
+    Pending,
+    InProgress,
+    Installed,
+    Terminating,
+    Error,
 }
 

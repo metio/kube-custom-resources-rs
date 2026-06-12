@@ -12,10 +12,16 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 ## Available Custom Resources
 
 ### api.clever-cloud.com/v1
+- `Azimutt`
+- `Cellar`
 - `ConfigProvider`
 - `ElasticSearch`
+- `Keycloak`
+- `Matomo`
+- `Metabase`
 - `MongoDb`
 - `MySql`
+- `Otoroshi`
 - `PostgreSql`
 - `Redis`
 ### api.clever-cloud.com/v1alpha1

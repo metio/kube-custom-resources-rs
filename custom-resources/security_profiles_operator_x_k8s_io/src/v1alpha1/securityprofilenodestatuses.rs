@@ -10,7 +10,7 @@ mod prelude {
 
 use self::prelude::*;
 
-/// SecurityProfileNodeStatusSpec defines the desired state of SecurityProfileNodeStatus.
+/// spec defines the desired state of the SecurityProfileNodeStatus.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "security-profiles-operator.x-k8s.io", version = "v1alpha1", kind = "SecurityProfileNodeStatus", plural = "securityprofilenodestatuses")]
 #[kube(status = "SecurityProfileNodeStatusStatus")]
@@ -18,16 +18,28 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct SecurityProfileNodeStatusSpec {
-    /// NodeName is the name of the node on which the profile is installed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeName")]
-    pub node_name: Option<String>,
+    /// nodeName is the name of the node on which the profile is installed.
+    #[serde(rename = "nodeName")]
+    pub node_name: String,
 }
 
-/// SecurityProfileNodeStatusStatus defines the observed state of SecurityProfileNodeStatus.
+/// status contains the observed state of the SecurityProfileNodeStatus.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecurityProfileNodeStatusStatus {
-    /// Status is the installation status of the profile on this node.
+    /// status is the installation status of the profile on this node.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub status: Option<String>,
+    pub status: Option<SecurityProfileNodeStatusStatusStatus>,
+}
+
+/// status contains the observed state of the SecurityProfileNodeStatus.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum SecurityProfileNodeStatusStatusStatus {
+    Partial,
+    Disabled,
+    Pending,
+    InProgress,
+    Installed,
+    Terminating,
+    Error,
 }
 

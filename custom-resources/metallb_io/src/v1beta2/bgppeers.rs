@@ -62,9 +62,16 @@ pub struct BgpPeerSpec {
     /// Requested BGP keepalive time, per RFC4271.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepaliveTime")]
     pub keepalive_time: Option<String>,
+    /// LocalASN allows advertising a different AS number to the peer using BGP's
+    /// local-as feature. When set, MetalLB will advertise this ASN to the peer
+    /// via "neighbor <peer> local-as <ASN> no-prepend replace-as", overriding
+    /// the router-level MyASN for this specific session.
+    /// Not supported in native BGP mode.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localASN")]
+    pub local_asn: Option<i64>,
     /// AS number to use for the local end of the session.
     #[serde(rename = "myASN")]
-    pub my_asn: i32,
+    pub my_asn: i64,
     /// Only connect to this peer on nodes that match one of these
     /// selectors.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelectors")]
@@ -81,7 +88,7 @@ pub struct BgpPeerSpec {
     /// AS number to expect from the remote end of the session.
     /// ASN and DynamicASN are mutually exclusive and one of them must be specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "peerASN")]
-    pub peer_asn: Option<i32>,
+    pub peer_asn: Option<i64>,
     /// Address to dial when establishing the session.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "peerAddress")]
     pub peer_address: Option<String>,

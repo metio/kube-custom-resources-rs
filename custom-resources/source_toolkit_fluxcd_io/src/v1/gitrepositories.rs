@@ -181,7 +181,8 @@ pub struct GitRepositoryVerify {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<GitRepositoryVerifyMode>,
     /// SecretRef specifies the Secret containing the public keys of trusted Git
-    /// authors.
+    /// authors. PGP public keys must be stored under keys with the .asc suffix,
+    /// and SSH public keys must be stored under keys with the .sshpub suffix.
     #[serde(rename = "secretRef")]
     pub secret_ref: GitRepositoryVerifySecretRef,
 }
@@ -200,7 +201,8 @@ pub enum GitRepositoryVerifyMode {
 }
 
 /// SecretRef specifies the Secret containing the public keys of trusted Git
-/// authors.
+/// authors. PGP public keys must be stored under keys with the .asc suffix,
+/// and SSH public keys must be stored under keys with the .sshpub suffix.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GitRepositoryVerifySecretRef {
     /// Name of the referent.

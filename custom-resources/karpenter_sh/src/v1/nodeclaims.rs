@@ -35,13 +35,13 @@ pub struct NodeClaimSpec {
     /// Resources models the resource requirements for the NodeClaim to launch
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<NodeClaimResources>,
-    /// StartupTaints are taints that are applied to nodes upon startup which are expected to be removed automatically
+    /// startupTaints are taints that are applied to nodes upon startup which are expected to be removed automatically
     /// within a short period of time, typically by a DaemonSet that tolerates the taint. These are commonly used by
     /// daemonsets to allow initialization and enforce startup ordering.  StartupTaints are ignored for provisioning
     /// purposes in that pods are not required to tolerate a StartupTaint in order to have nodes provisioned for them.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupTaints")]
     pub startup_taints: Option<Vec<NodeClaimStartupTaints>>,
-    /// Taints will be applied to the NodeClaim's node.
+    /// taints will be applied to the NodeClaim's node.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub taints: Option<Vec<NodeClaimTaints>>,
     /// TerminationGracePeriod is the maximum duration the controller will wait before forcefully deleting the pods on a node, measured from when deletion is first initiated.

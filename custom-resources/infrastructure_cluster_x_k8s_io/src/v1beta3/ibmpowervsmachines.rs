@@ -38,7 +38,8 @@ pub struct IbmPowerVsMachineSpec {
     pub memory_gi_b: Option<i32>,
     /// network is the reference to the Network to use for this instance.
     /// supported network identifier in IBMPowerVSResourceReference are Name, ID and RegEx and that can be obtained from IBM Cloud UI or IBM Cloud cli.
-    pub network: IbmPowerVsMachineNetwork,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub network: Option<IbmPowerVsMachineNetwork>,
     /// processorType is the VM instance processor type.
     /// It must be set to one of the following values: Dedicated, Capped or Shared.
     /// Dedicated: resources are allocated for a specific client, The hypervisor makes a 1:1 binding of a partition’s processor to a physical processor core.
@@ -110,16 +111,12 @@ pub struct IbmPowerVsMachineImageRef {
 /// supported network identifier in IBMPowerVSResourceReference are Name, ID and RegEx and that can be obtained from IBM Cloud UI or IBM Cloud cli.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IbmPowerVsMachineNetwork {
-    /// id of resource
+    /// ID of the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
-    /// name of resource
+    /// Name of the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// regex is the regular expression to match resource,
-    /// In case of multiple resources matches the provided regular expression the first matched resource will be selected
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub regex: Option<String>,
 }
 
 /// spec defines the desired state of IBMPowerVSMachine

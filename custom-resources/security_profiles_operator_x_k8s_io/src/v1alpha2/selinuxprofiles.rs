@@ -12,7 +12,7 @@ mod prelude {
 
 use self::prelude::*;
 
-/// SelinuxProfileSpec defines the desired state of SelinuxProfile.
+/// spec defines the desired state of the SelinuxProfile.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "security-profiles-operator.x-k8s.io", version = "v1alpha2", kind = "SelinuxProfile", plural = "selinuxprofiles")]
 #[kube(status = "SelinuxProfileStatus")]
@@ -20,32 +20,34 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct SelinuxProfileSpec {
-    /// Defines the allow policy for the profile
+    /// allow defines the allow policy for the profile.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub allow: Option<BTreeMap<String, BTreeMap<String, Vec<String>>>>,
-    /// Whether the profile is disabled and should be skipped during reconciliation.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub disabled: Option<bool>,
-    /// A SELinuxProfile or set of profiles that this inherits from.
+    /// inherit specifies a SELinuxProfile or set of profiles that this inherits from.
     /// Note that they need to be in the same namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub inherit: Option<Vec<SelinuxProfileInherit>>,
-    /// Permissive, when true will cause the SELinux profile to only
-    /// log violations instead of enforcing them.
+    /// mode controls the enforcement mode for the SELinux profile.
+    /// In "Permissive" mode, violations are logged but allowed.
+    /// In "Enforcing" mode (the default), violations are denied.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub permissive: Option<bool>,
+    pub mode: Option<SelinuxProfileMode>,
+    /// state controls whether the profile is enabled or disabled for
+    /// reconciliation. A disabled profile will be skipped.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub state: Option<SelinuxProfileState>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SelinuxProfileInherit {
-    /// The Kind of the policy that this inherits from.
-    /// Can be a SelinuxProfile object Or "System" if an already
+    /// kind specifies the type of policy that this inherits from.
+    /// Can be a SelinuxProfile object or "System" if an already
     /// installed policy will be used.
     /// The allowed "System" policies are available in the
     /// SecurityProfilesOperatorDaemon instance.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<SelinuxProfileInheritKind>,
-    /// The name of the policy that this inherits from.
+    /// name is the name of the policy that this inherits from.
     pub name: String,
 }
 
@@ -55,22 +57,47 @@ pub enum SelinuxProfileInheritKind {
     SelinuxProfile,
 }
 
-/// SelinuxProfileStatus defines the observed state of SelinuxProfile.
+/// spec defines the desired state of the SelinuxProfile.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum SelinuxProfileMode {
+    Enforcing,
+    Permissive,
+}
+
+/// spec defines the desired state of the SelinuxProfile.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum SelinuxProfileState {
+    Enabled,
+    Disabled,
+}
+
+/// status contains the observed state of the SelinuxProfile.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SelinuxProfileStatus {
+    /// activeWorkloads lists the workloads currently using this profile.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeWorkloads")]
     pub active_workloads: Option<Vec<String>>,
-    /// Conditions of the resource.
+    /// conditions contains the conditions of the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// ProfileState defines the state that the profile is in. A profile in this context
-    /// refers to a SeccompProfile or a SELinux profile, the states are shared between them
-    /// as well as the management API.
+    /// status is the current state of the profile across nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub status: Option<String>,
-    /// Represents the string that the SelinuxProfile object can be
+    pub status: Option<SelinuxProfileStatusStatus>,
+    /// usage represents the string that the SelinuxProfile object can be
     /// referenced as in a pod seLinuxOptions section.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub usage: Option<String>,
+}
+
+/// status contains the observed state of the SelinuxProfile.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum SelinuxProfileStatusStatus {
+    Partial,
+    Disabled,
+    Pending,
+    InProgress,
+    Installed,
+    Terminating,
+    Error,
 }
 

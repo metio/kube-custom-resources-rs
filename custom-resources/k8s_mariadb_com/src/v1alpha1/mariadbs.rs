@@ -79,6 +79,10 @@ pub struct MariaDbSpec {
     /// LivenessProbe to be used in the Container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<MariaDbLivenessProbe>,
+    /// Maintenance defines different capabilities of the operator to allow for maintenance to be performed on the DB.
+    /// Not to be confused with `suspend`, maintenance does not interfere with the normal reconciliation of the operator.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub maintenance: Option<MariaDbMaintenance>,
     /// MaxScaleRef is a reference to a MaxScale resource to be used with the current MariaDB.
     /// Providing this reference implies delegating high availability tasks such as primary failover to MaxScale.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxScaleRef")]
@@ -86,6 +90,9 @@ pub struct MariaDbSpec {
     /// Metrics configures metrics and how to scrape them.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metrics: Option<MariaDbMetrics>,
+    /// MultiCluster configures the multi-cluster topology.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "multiCluster")]
+    pub multi_cluster: Option<MariaDbMultiCluster>,
     /// MyCnf allows to specify the my.cnf file mounted by Mariadb.
     /// Updating this field will trigger an update to the Mariadb resource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "myCnf")]
@@ -1321,6 +1328,12 @@ pub struct MariaDbGalera {
     /// More info: <https://galeracluster.com/library/documentation/mysql-wsrep-options.html#wsrep-provider.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "galeraLibPath")]
     pub galera_lib_path: Option<String>,
+    /// GtidDomainID is the domain ID to be used in GTID mode, enabled when the multi-cluster topology is used.
+    /// For example: if you set this to `0`, the 'wsrep_gtid_domain_id' will be 0, while the replicas (if 3) will have 'gtid_domain_id' 1,2,3.
+    /// Make sure it has a different value on each the member of a multi-cluster topology.
+    /// See: <https://mariadb.com/docs/galera-cluster/high-availability/using-mariadb-replication-with-mariadb-galera-cluster/configuring-mariadb-replication-between-two-mariadb-galera-clusters>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gtidDomainId")]
+    pub gtid_domain_id: Option<i64>,
     /// InitContainer is an init container that runs in the MariaDB Pod and co-operates with mariadb-operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainer")]
     pub init_container: Option<MariaDbGaleraInitContainer>,
@@ -1338,10 +1351,20 @@ pub struct MariaDbGalera {
     /// More info: <https://galeracluster.com/library/documentation/crash-recovery.html.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub recovery: Option<MariaDbGaleraRecovery>,
+    /// ReplPasswordSecretKeyRef provides a reference to the Secret to use as password for the replication user.
+    /// This will be utilized as password of the replication user, when the multi-cluster topology is enabled.
+    /// By default, a random password will be generated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replPasswordSecretKeyRef")]
+    pub repl_password_secret_key_ref: Option<MariaDbGaleraReplPasswordSecretKeyRef>,
     /// ReplicaThreads is the number of replica threads used to apply Galera write sets in parallel.
     /// More info: <https://mariadb.com/kb/en/galera-cluster-system-variables/#wsrep_slave_threads.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaThreads")]
     pub replica_threads: Option<i64>,
+    /// ServerID is the server ID to be used in GTID mode, enabled when the multi-cluster topology is used.
+    /// Make sure it has a different value on each the member of a multi-cluster topology.
+    /// See: <https://mariadb.com/docs/galera-cluster/high-availability/using-mariadb-replication-with-mariadb-galera-cluster/configuring-mariadb-replication-between-two-mariadb-galera-clusters>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverId")]
+    pub server_id: Option<i64>,
     /// SST is the Snapshot State Transfer used when new Pods join the cluster.
     /// More info: <https://galeracluster.com/library/documentation/sst.html.>
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2483,6 +2506,19 @@ pub struct MariaDbGaleraRecoveryJobResources {
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
 
+/// ReplPasswordSecretKeyRef provides a reference to the Secret to use as password for the replication user.
+/// This will be utilized as password of the replication user, when the multi-cluster topology is enabled.
+/// By default, a random password will be generated.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbGaleraReplPasswordSecretKeyRef {
+    /// Generate indicates whether the Secret should be generated if the Secret referenced is not present.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub generate: Option<bool>,
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
 /// Replication configures high availability via Galera.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum MariaDbGaleraSst {
@@ -2774,6 +2810,27 @@ pub struct MariaDbLivenessProbeTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     pub port: IntOrString,
+}
+
+/// Maintenance defines different capabilities of the operator to allow for maintenance to be performed on the DB.
+/// Not to be confused with `suspend`, maintenance does not interfere with the normal reconciliation of the operator.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbMaintenance {
+    /// Cordon blocks connections to the resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cordon: Option<bool>,
+    /// DrainConnections determines whether all connections in MariaDB should be drained after `drainGracePeriodSeconds`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "drainConnections")]
+    pub drain_connections: Option<bool>,
+    /// DrainGracePeriodSeconds defines the grace period in seconds before a connection in MariaDB is drained.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "drainGracePeriodSeconds")]
+    pub drain_grace_period_seconds: Option<i64>,
+    /// Enabled turns on maintenance mode
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// ReadOnly will allow only read statements to be performed on the resource.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
 }
 
 /// MaxScaleRef is a reference to a MaxScale resource to be used with the current MariaDB.
@@ -3242,6 +3299,41 @@ pub struct MariaDbMetricsServiceMonitor {
     pub scrape_timeout: Option<String>,
 }
 
+/// MultiCluster configures the multi-cluster topology.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbMultiCluster {
+    /// Enabled is a flag to enable the multi-cluster topology.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// Members is the specification of each member of the multi-cluster topology.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub members: Option<Vec<MariaDbMultiClusterMembers>>,
+    /// Primary is the name of the primary cluster. It refers to a member in the 'members' field, containing its full specification.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub primary: Option<String>,
+}
+
+/// MultiClusterMember defines the configuration for a multi-cluster topology member.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbMultiClusterMembers {
+    /// ExternalMariaDBRef holds a reference to an ExternalMariaDB with connection details to form the multi-cluster topology.
+    /// These connection details are utilized to setup remote replicas.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalMariaDbRef")]
+    pub external_maria_db_ref: Option<MariaDbMultiClusterMembersExternalMariaDbRef>,
+    /// Name is the identifier of the member.
+    pub name: String,
+}
+
+/// ExternalMariaDBRef holds a reference to an ExternalMariaDB with connection details to form the multi-cluster topology.
+/// These connection details are utilized to setup remote replicas.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDbMultiClusterMembersExternalMariaDbRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
 /// MyCnfConfigMapKeyRef is a reference to the my.cnf config file provided via a ConfigMap.
 /// If not provided, it will be defaulted with a reference to a ConfigMap containing the MyCnf field.
 /// If the referred ConfigMap is labeled with "k8s.mariadb.com/watch", an update to the Mariadb resource will be triggered when the ConfigMap is updated.
@@ -3606,6 +3698,11 @@ pub struct MariaDbReplication {
     /// Enabled is a flag to enable replication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
+    /// GtidDomainID is gtid_domain_id for all of the MariaDB nodes.
+    /// It is immutable.
+    /// See: <https://mariadb.com/docs/server/ha-and-performance/standard-replication/gtid#gtid_domain_id>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gtidDomainId")]
+    pub gtid_domain_id: Option<i64>,
     /// GtidStrictMode determines whether the GTID strict mode is enabled.
     /// See: <https://mariadb.com/docs/server/ha-and-performance/standard-replication/gtid#gtid_strict_mode.>
     /// It is enabled by default.
@@ -3638,6 +3735,11 @@ pub struct MariaDbReplication {
     /// See: <https://mariadb.com/kb/en/semisynchronous-replication/#rpl_semi_sync_master_wait_point.>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "semiSyncWaitPoint")]
     pub semi_sync_wait_point: Option<MariaDbReplicationSemiSyncWaitPoint>,
+    /// ServerIDStartIndex sets the start index of the MariaDB nodes. Each subsequent replica will increment this by 1.
+    /// It is immutable.
+    /// See: <https://mariadb.com/docs/server/ha-and-performance/standard-replication/replication-and-binary-log-system-variables#server_id>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverIdStartIndex")]
+    pub server_id_start_index: Option<i64>,
     /// StandaloneProbes indicates whether to use the default non-HA startup and liveness probes.
     /// It is disabled by default
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "standaloneProbes")]
@@ -5512,6 +5614,9 @@ pub struct MariaDbTls {
     /// If not provided, a self-signed CA will be provisioned to issue the server certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverCASecretRef")]
     pub server_ca_secret_ref: Option<MariaDbTlsServerCaSecretRef>,
+    /// ServerCertAdditionalNames is a list of additional certificate common names
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverCertAdditionalNames")]
+    pub server_cert_additional_names: Option<Vec<String>>,
     /// ServerCertIssuerRef is a reference to a cert-manager issuer object used to issue the server certificate. cert-manager must be installed previously in the cluster.
     /// It is mutually exclusive with serverCertSecretRef.
     /// By default, the Secret field 'ca.crt' provisioned by cert-manager will be added to the trust chain. A custom trust bundle may be specified via serverCASecretRef.
@@ -5939,6 +6044,9 @@ pub struct MariaDbStatus {
     /// Conditions for the Mariadb object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
+    /// CurrentMultiClusterPrimary is the current primary cluster name when using the multi-cluster topology.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentMultiClusterPrimary")]
+    pub current_multi_cluster_primary: Option<String>,
     /// CurrentPrimary is the primary Pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentPrimary")]
     pub current_primary: Option<String>,
@@ -6027,9 +6135,6 @@ pub struct MariaDbStatusGaleraRecoveryState {
 /// PointInTimeRecovery is the status of the point-in-time-recovery process.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbStatusPointInTimeRecovery {
-    /// GtidStrictModePaused indicates that gtid_strict_mode has been temporarily paused to replay binlogs.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gtidStrictModePaused")]
-    pub gtid_strict_mode_paused: Option<bool>,
     /// LastArchivedBinaryLog is name of the last archived binary log.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastArchivedBinaryLog")]
     pub last_archived_binary_log: Option<String>,
@@ -6053,6 +6158,9 @@ pub struct MariaDbStatusPointInTimeRecovery {
 /// Replication is the replication current status per each Pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDbStatusReplication {
+    /// GtidStrictModePaused indicates that gtid_strict_mode has been temporarily paused.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gtidStrictModePaused")]
+    pub gtid_strict_mode_paused: Option<bool>,
     /// ReplicaToRecover is the replica that is being recovered by the operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaToRecover")]
     pub replica_to_recover: Option<String>,
@@ -6097,6 +6205,9 @@ pub struct MariaDbStatusReplicationReplicas {
     /// SlaveSQLRunning indicates whether the slave SQL thread is running.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "slaveSQLRunning")]
     pub slave_sql_running: Option<bool>,
+    /// UsingGtid is the GTID position mode (Slave_Pos or Current_Pos)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "usingGtid")]
+    pub using_gtid: Option<String>,
 }
 
 /// TLS aggregates the status of the certificates used by the MariaDB instance.

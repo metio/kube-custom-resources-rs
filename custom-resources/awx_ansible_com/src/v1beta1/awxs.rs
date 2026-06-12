@@ -294,7 +294,7 @@ pub struct AwxSpec {
     /// (Deprecated, use postgres_resource_requirements parameter) Resource requirements for the postgres init container
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub postgres_init_container_resource_requirements: Option<AwxPostgresInitContainerResourceRequirements>,
-    /// Specify whether or not to keep the old PVC after PostgreSQL upgrades
+    /// (Deprecated) Specify whether or not to keep the old PVC after PostgreSQL upgrades
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub postgres_keep_pvc_after_upgrade: Option<bool>,
     /// Controls whether client-side TCP keepalives are used for Postgres connections.

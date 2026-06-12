@@ -55,7 +55,8 @@ spec:
                   description: "Whether host networking is enabled for the gateway. If not set, the network settings from the cluster CR will be applied."
                   type: "boolean"
                 image:
-                  description: "Image is the container image to use for the NVMe-oF gateway daemon.\nFor example, quay.io/ceph/nvmeof:1.5"
+                  description: "Image is the container image to use for the NVMe-oF gateway daemon.\nFor example, quay.io/ceph/nvmeof:1.5\nIf not specified, the image is fetched from the Ceph mon config store\n(mgr/cephadm/container_image_nvmeof)."
+                  maxLength: 1024
                   minLength: 1
                   type: "string"
                 instances:
@@ -771,7 +772,6 @@ spec:
                   type: "object"
               required:
                 - "group"
-                - "image"
                 - "instances"
                 - "pool"
               type: "object"

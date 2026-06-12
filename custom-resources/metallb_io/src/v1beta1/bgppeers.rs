@@ -32,7 +32,7 @@ pub struct BgpPeerSpec {
     pub keepalive_time: Option<String>,
     /// AS number to use for the local end of the session.
     #[serde(rename = "myASN")]
-    pub my_asn: i32,
+    pub my_asn: i64,
     /// Only connect to this peer on nodes that match one of these
     /// selectors.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelectors")]
@@ -42,7 +42,7 @@ pub struct BgpPeerSpec {
     pub password: Option<String>,
     /// AS number to expect from the remote end of the session.
     #[serde(rename = "peerASN")]
-    pub peer_asn: i32,
+    pub peer_asn: i64,
     /// Address to dial when establishing the session.
     #[serde(rename = "peerAddress")]
     pub peer_address: String,

@@ -82,27 +82,6 @@ spec:
                       pattern: "^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$"
                       type: "string"
                   type: "object"
-                dhcpServer:
-                  description: "dhcpServer is contains the configuration to be used while creating a new DHCP server in PowerVS workspace.\nwhen the field is omitted, CLUSTER_NAME will be used as DHCPServer.Name and DHCP server will be created.\nit will automatically create network with name DHCPSERVER<DHCPServer.Name>_Private in PowerVS workspace."
-                  properties:
-                    cidr:
-                      description: "cidr for DHCP private network"
-                      type: "string"
-                    dnsServer:
-                      default: "1.1.1.1"
-                      description: "dnsServer for DHCP service"
-                      type: "string"
-                    id:
-                      description: "id of the existing DHCPServer"
-                      type: "string"
-                    name:
-                      description: "name of DHCP Service. Only alphanumeric characters and dashes are allowed."
-                      type: "string"
-                    snat:
-                      default: true
-                      description: "snat indicates if SNAT will be enabled for DHCP service"
-                      type: "boolean"
-                  type: "object"
                 ignition:
                   description: "ignition defined options related to the bootstrapping systems where Ignition is used."
                   properties:
@@ -320,37 +299,94 @@ spec:
                     type: "object"
                   type: "array"
                 network:
-                  description: "network is the reference to the Network to use for this cluster.\nwhen the field is omitted, A DHCP service will be created in the Power VS workspace and its private network will be used.\nthe DHCP service created network will have the following name format\n1. in the case of DHCPServer.Name is not set the name will be DHCPSERVER<CLUSTER_NAME>_Private.\n2. if DHCPServer.Name is set the name will be DHCPSERVER<DHCPServer.Name>_Private.\nwhen Network.ID is set, its expected that there exist a network in PowerVS workspace with id or else system will give error.\nwhen Network.Name is set, system will first check for network with Name in PowerVS workspace, if not exist system will check DHCP network with given Network.name, if that also not exist, it will create a new DHCP service and name will be DHCPSERVER<Network.Name>_Private.\nNetwork.RegEx is not yet supported and system will ignore the value."
+                  description: "network specifies how the PowerVS network should be sourced."
                   properties:
-                    id:
-                      description: "id of resource"
-                      minLength: 1
+                    provision:
+                      description: "provision provides the configuration for the controller to CREATE a new Network and DHCP Server."
+                      properties:
+                        dhcpServer:
+                          description: "dhcpServer contains the configuration for the DHCP server that will be created."
+                          properties:
+                            cidr:
+                              description: "CIDR is the CIDR for the DHCP private network."
+                              pattern: "^([0-9]{1,3}\\.){3}[0-9]{1,3}($|/[0-9]{1,2})$"
+                              type: "string"
+                            dnsServer:
+                              description: "DNSServer is the DNS Server for the DHCP service."
+                              type: "string"
+                            name:
+                              description: "name is the name of the DHCP Service to be created. Only alphanumeric characters and dashes are allowed.\nIf omitted, the name will default to DHCPSERVER<CLUSTER_NAME>_Private."
+                              minLength: 1
+                              type: "string"
+                            snat:
+                              description: "snat indicates the SNAT policy for the DHCP service.\nAllowed values are \"Enabled\" and \"Disabled\".\nIf omitted, the system will choose a Enabled policy by default."
+                              enum:
+                                - "Enabled"
+                                - "Disabled"
+                              type: "string"
+                          type: "object"
+                      type: "object"
+                    reference:
+                      description: "reference tells the controller to look up an EXISTING PowerVS network."
+                      properties:
+                        id:
+                          description: "ID of the resource."
+                          minLength: 1
+                          type: "string"
+                        name:
+                          description: "Name of the resource."
+                          minLength: 1
+                          type: "string"
+                      type: "object"
+                      x-kubernetes-validations:
+                        - message: "exactly one of id or name must be specified"
+                          rule: "(has(self.id) ? 1 : 0) + (has(self.name) ? 1 : 0) == 1"
+                    type:
+                      description: "type defines how the Network is sourced."
+                      enum:
+                        - "Reference"
+                        - "Provision"
                       type: "string"
-                    name:
-                      description: "name of resource"
-                      minLength: 1
-                      type: "string"
-                    regex:
-                      description: "regex is the regular expression to match resource,\nIn case of multiple resources matches the provided regular expression the first matched resource will be selected"
-                      minLength: 1
-                      type: "string"
+                      x-kubernetes-validations:
+                        - message: "Network type is immutable once set"
+                          rule: "self == oldSelf"
+                  required:
+                    - "type"
                   type: "object"
+                  x-kubernetes-validations:
+                    - message: "reference configuration is required when type is Reference, and forbidden otherwise"
+                      rule: "self.type == 'Reference' ? has(self.reference) : !has(self.reference)"
+                    - message: "provision configuration is required when type is Provision, and forbidden otherwise"
+                      rule: "self.type == 'Provision' ? has(self.provision) : !has(self.provision)"
                 resourceGroup:
-                  description: "resourceGroup name under which the resources will be created.\nwhen powervs.cluster.x-k8s.io/create-infra=true annotation is set on IBMPowerVSCluster resource,\n1. it is expected to set the ResourceGroup.Name, not setting will result in webhook error.\nResourceGroup.ID and ResourceGroup.Regex is not yet supported and system will ignore the value."
+                  description: "ResourceGroup defines the IBM Cloud Resource Group for the cluster."
                   properties:
-                    id:
-                      description: "id of resource"
-                      minLength: 1
+                    reference:
+                      description: "Reference specifies the existing Resource Group to use by Name or ID."
+                      properties:
+                        id:
+                          description: "ID of the resource."
+                          minLength: 1
+                          type: "string"
+                        name:
+                          description: "Name of the resource."
+                          minLength: 1
+                          type: "string"
+                      type: "object"
+                      x-kubernetes-validations:
+                        - message: "exactly one of id or name must be specified"
+                          rule: "(has(self.id) ? 1 : 0) + (has(self.name) ? 1 : 0) == 1"
+                    type:
+                      description: "Type defines the intended action for the Resource Group.\nCurrently, only \"Reference\" is supported."
                       type: "string"
-                    name:
-                      description: "name of resource"
-                      minLength: 1
-                      type: "string"
-                    regex:
-                      description: "regex is the regular expression to match resource,\nIn case of multiple resources matches the provided regular expression the first matched resource will be selected"
-                      minLength: 1
-                      type: "string"
+                  required:
+                    - "type"
                   type: "object"
+                  x-kubernetes-validations:
+                    - message: "reference configuration is required when type is Reference"
+                      rule: "self.type == 'Reference' ? has(self.reference) : true"
+                    - message: "Provisioning a Resource Group is not yet supported in this API version"
+                      rule: "self.type != 'Provision'"
                 topology:
                   description: "Topology defines the architectural mode for external cluster access."
                   enum:
@@ -686,12 +722,18 @@ spec:
                     - message: "provision configuration is required when type is Provision, and forbidden otherwise"
                       rule: "self.type == 'Provision' ? has(self.provision) : !has(self.provision)"
                 zone:
-                  description: "zone is the name of Power VS zone where the cluster will be created\npossible values can be found here https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-creating-power-virtual-server.\nwhen powervs.cluster.x-k8s.io/create-infra=true annotation is set on IBMPowerVSCluster resource,\n1. it is expected to set the zone, not setting will result in webhook error.\n2. the zone should have PER capabilities, or else system will give error."
+                  description: "zone is the name of PowerVS zone where the cluster will be created\npossible values can be found here https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-creating-power-virtual-server."
+                  minLength: 1
                   type: "string"
+                  x-kubernetes-validations:
+                    - message: "zone is immutable"
+                      rule: "self == oldSelf"
               required:
-                - "network"
                 - "topology"
               type: "object"
+              x-kubernetes-validations:
+                - message: "zone is required when topology is set to LoadBalancer"
+                  rule: "self.topology != 'LoadBalancer' || (has(self.zone) && size(self.zone) > 0)"
             status:
               description: "status defines the observed state of IBMPowerVSCluster"
               properties:
@@ -799,17 +841,6 @@ spec:
                           type: "array"
                       type: "object"
                   type: "object"
-                dhcpServer:
-                  description: "dhcpServer is the reference to the Power VS DHCP server."
-                  properties:
-                    controllerCreated:
-                      default: false
-                      description: "controllerCreated indicates whether the resource is created by the controller."
-                      type: "boolean"
-                    id:
-                      description: "id represents the id of the resource."
-                      type: "string"
-                  type: "object"
                 initialization:
                   description: "initialization provides observations of the IBMPowerVSCluster initialization process.\nNOTE: Fields in this struct are part of the Cluster API contract and are used to orchestrate initial Cluster provisioning."
                   minProperties: 1
@@ -839,25 +870,33 @@ spec:
                   description: "loadBalancers reference to IBM Cloud VPC Loadbalancer."
                   type: "object"
                 network:
-                  description: "network is the reference to the Power VS network to use for this cluster."
+                  description: "network tracks the status of the PowerVS network and its associated resources."
                   properties:
-                    controllerCreated:
-                      default: false
-                      description: "controllerCreated indicates whether the resource is created by the controller."
-                      type: "boolean"
+                    dhcpServer:
+                      description: "dhcpServer tracks the provisioned DHCP server identity, if one was created."
+                      properties:
+                        id:
+                          description: "id represents the id of the resource."
+                          type: "string"
+                        name:
+                          description: "name is the name of the resource.\nWhen used in a list, this field acts as the unique correlation key (listMapKey)\nto map the Status object back to its corresponding Spec definition."
+                          type: "string"
+                      type: "object"
+                    id:
+                      description: "id is the unique identifier of the network."
+                      type: "string"
+                    name:
+                      description: "name is the name of the network."
+                      type: "string"
+                  type: "object"
+                resourceGroup:
+                  description: "ResourceGroup is the reference to the IBM Cloud Resource Group where the cluster resources are provisioned."
+                  properties:
                     id:
                       description: "id represents the id of the resource."
                       type: "string"
-                  type: "object"
-                resourceGroupID:
-                  description: "resourceGroupID is the reference to the Power VS resource group under which the resources will be created."
-                  properties:
-                    controllerCreated:
-                      default: false
-                      description: "controllerCreated indicates whether the resource is created by the controller."
-                      type: "boolean"
-                    id:
-                      description: "id represents the id of the resource."
+                    name:
+                      description: "name is the name of the resource.\nWhen used in a list, this field acts as the unique correlation key (listMapKey)\nto map the Status object back to its corresponding Spec definition."
                       type: "string"
                   type: "object"
                 transitGateway:

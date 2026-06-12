@@ -3448,6 +3448,8 @@ pub struct PerconaServerMongoDbReplsetsExpose {
     pub enabled: bool,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "exposeType")]
     pub expose_type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalDNS")]
+    pub external_dns: Option<PerconaServerMongoDbReplsetsExposeExternalDns>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTrafficPolicy")]
     pub external_traffic_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "internalTrafficPolicy")]
@@ -3464,6 +3466,15 @@ pub struct PerconaServerMongoDbReplsetsExpose {
     pub service_labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMongoDbReplsetsExposeExternalDns {
+    pub domain: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub prefix: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ttl: Option<i64>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -12386,6 +12397,8 @@ pub struct PerconaServerMongoDbShardingConfigsvrReplSetExpose {
     pub enabled: bool,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "exposeType")]
     pub expose_type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalDNS")]
+    pub external_dns: Option<PerconaServerMongoDbShardingConfigsvrReplSetExposeExternalDns>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTrafficPolicy")]
     pub external_traffic_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "internalTrafficPolicy")]
@@ -12402,6 +12415,15 @@ pub struct PerconaServerMongoDbShardingConfigsvrReplSetExpose {
     pub service_labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMongoDbShardingConfigsvrReplSetExposeExternalDns {
+    pub domain: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub prefix: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ttl: Option<i64>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -19365,6 +19387,8 @@ pub struct PerconaServerMongoDbShardingMongosExpose {
     pub annotations: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "exposeType")]
     pub expose_type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalDNS")]
+    pub external_dns: Option<PerconaServerMongoDbShardingMongosExposeExternalDns>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTrafficPolicy")]
     pub external_traffic_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "internalTrafficPolicy")]
@@ -19385,6 +19409,15 @@ pub struct PerconaServerMongoDbShardingMongosExpose {
     pub service_per_pod: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMongoDbShardingMongosExposeExternalDns {
+    pub domain: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub prefix: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ttl: Option<i64>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -21148,12 +21181,22 @@ pub struct PerconaServerMongoDbStorageScalingAutoscaling {
 pub struct PerconaServerMongoDbTls {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowInvalidCertificates")]
     pub allow_invalid_certificates: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certManagementPolicy")]
+    pub cert_management_policy: Option<PerconaServerMongoDbTlsCertManagementPolicy>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certValidityDuration")]
     pub cert_validity_duration: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "issuerConf")]
     pub issuer_conf: Option<PerconaServerMongoDbTlsIssuerConf>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PerconaServerMongoDbTlsCertManagementPolicy {
+    #[serde(rename = "auto")]
+    Auto,
+    #[serde(rename = "userProvidedOnly")]
+    UserProvidedOnly,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

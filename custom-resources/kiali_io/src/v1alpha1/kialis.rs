@@ -1122,6 +1122,9 @@ pub struct KialiDeploymentTlsConfig {
     /// Explicit TLS cipher suites (OpenSSL names). Ignored for TLS 1.3.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cipher_suites: Option<Vec<String>>,
+    /// Explicit TLS groups (supported key exchange mechanisms, e.g., X25519, secp256r1).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub groups: Option<Vec<String>>,
     /// Maximum TLS version (e.g., TLSv1.3, TLSv1.2).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max_version: Option<String>,

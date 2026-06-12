@@ -468,11 +468,19 @@ pub struct OperatorConfigurationConfigurationLoadBalancer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable_master_load_balancer: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enable_master_node_port: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable_master_pooler_load_balancer: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enable_master_pooler_node_port: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable_replica_load_balancer: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enable_replica_node_port: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable_replica_pooler_load_balancer: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enable_replica_pooler_node_port: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub external_traffic_policy: Option<OperatorConfigurationConfigurationLoadBalancerExternalTrafficPolicy>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

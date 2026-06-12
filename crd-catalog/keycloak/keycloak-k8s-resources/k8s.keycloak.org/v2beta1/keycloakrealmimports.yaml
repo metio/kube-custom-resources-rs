@@ -1848,6 +1848,8 @@ spec:
                               properties:
                                 createdDate:
                                   type: "integer"
+                                credentialConfigurationId:
+                                  type: "string"
                                 credentialScopeName:
                                   type: "string"
                                 revision:
@@ -3419,6 +3421,8 @@ spec:
                                     properties:
                                       createdDate:
                                         type: "integer"
+                                      credentialConfigurationId:
+                                        type: "string"
                                       credentialScopeName:
                                         type: "string"
                                       revision:
@@ -3970,6 +3974,8 @@ spec:
                               properties:
                                 createdDate:
                                   type: "integer"
+                                credentialConfigurationId:
+                                  type: "string"
                                 credentialScopeName:
                                   type: "string"
                                 revision:

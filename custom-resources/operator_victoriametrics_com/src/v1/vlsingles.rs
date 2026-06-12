@@ -147,6 +147,11 @@ pub struct VlSingleSpec {
     /// Port listen address
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<String>,
+    /// PreStopSleepSeconds defines the number of seconds to sleep in the preStop lifecycle hook.
+    /// It gives time for load balancers to remove the pod from rotation before the pod is terminated.
+    /// Defaults to 15 for applicable components. Set to 0 to disable.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStopSleepSeconds")]
+    pub pre_stop_sleep_seconds: Option<i32>,
     /// PriorityClassName class assigned to the Pods
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,

@@ -17,6 +17,18 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct CiliumPodIpPoolSpec {
+    /// AllowFirstIP allows the first IP of each allocated CIDR to be used. If
+    /// unset or false, this IP is reserved. This field is ignored for /{31,32}
+    /// and /{127,128} CIDRs since reserving the first and last IPs would make
+    /// the CIDRs unusable. This field is immutable.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowFirstIP")]
+    pub allow_first_ip: Option<bool>,
+    /// AllowLastIP allows the last IP of each allocated CIDR to be used. If
+    /// unset or false, this IP is reserved. This field is ignored for /{31,32}
+    /// and /{127,128} CIDRs since reserving the first and last IPs would make
+    /// the CIDRs unusable. This field is immutable.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowLastIP")]
+    pub allow_last_ip: Option<bool>,
     /// IPv4 specifies the IPv4 CIDRs and mask sizes of the pool
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ipv4: Option<CiliumPodIpPoolIpv4>,

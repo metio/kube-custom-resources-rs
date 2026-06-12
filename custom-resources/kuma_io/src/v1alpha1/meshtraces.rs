@@ -103,15 +103,10 @@ pub struct MeshTraceDefaultBackendsOpenTelemetry {
 pub struct MeshTraceDefaultBackendsOpenTelemetryBackendRef {
     /// Kind of the backend resource.
     pub kind: MeshTraceDefaultBackendsOpenTelemetryBackendRefKind,
-    /// Labels to match the referenced resource. Use for cross-zone references
-    /// where KDS adds a hash suffix to metadata.name. Mutually exclusive with
-    /// Name. When multiple resources match, the oldest by creation time wins.
+    /// Labels to match the referenced resource. When multiple resources match,
+    /// the oldest by creation time wins.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    /// Name of the referenced resource (metadata.name). Use for same-cluster
-    /// references. Mutually exclusive with Labels.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
 }
 
 /// BackendRef is a reference to a MeshOpenTelemetryBackend resource that

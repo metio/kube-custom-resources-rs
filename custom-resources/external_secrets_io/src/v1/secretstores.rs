@@ -101,6 +101,9 @@ pub struct SecretStoreProvider {
     /// Beyondtrust configures this store to sync secrets using Password Safe provider.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub beyondtrust: Option<SecretStoreProviderBeyondtrust>,
+    /// BeyondtrustWorkloadCredentials configures this store to sync secrets using the BeyondTrust Workload Credentials provider.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub beyondtrustworkloadcredentials: Option<SecretStoreProviderBeyondtrustworkloadcredentials>,
     /// BitwardenSecretsManager configures this store to sync secrets using BitwardenSecretsManager provider
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bitwardensecretsmanager: Option<SecretStoreProviderBitwardensecretsmanager>,
@@ -166,6 +169,9 @@ pub struct SecretStoreProvider {
     /// OnePasswordSDK configures this store to use 1Password's new Go SDK to sync secrets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "onepasswordSDK")]
     pub onepassword_sdk: Option<SecretStoreProviderOnepasswordSdk>,
+    /// OpenBao configures this store to sync secrets using the OpenBao provider.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "openBao")]
+    pub open_bao: Option<SecretStoreProviderOpenBao>,
     /// Oracle configures this store to sync secrets using Oracle Vault provider
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oracle: Option<SecretStoreProviderOracle>,
@@ -1041,6 +1047,124 @@ pub struct SecretStoreProviderBeyondtrustServer {
     pub separator: Option<String>,
     #[serde(rename = "verifyCA")]
     pub verify_ca: bool,
+}
+
+/// BeyondtrustWorkloadCredentials configures this store to sync secrets using the BeyondTrust Workload Credentials provider.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderBeyondtrustworkloadcredentials {
+    /// Auth configures how the Operator authenticates with the BeyondTrust Workload Credentials API.
+    /// Currently supports API key authentication via Kubernetes secret reference.
+    /// For authentication setup, see: <https://docs.beyondtrust.com/bt-docs/docs/secrets-api#authentication>
+    pub auth: SecretStoreProviderBeyondtrustworkloadcredentialsAuth,
+    /// CABundle is a base64-encoded CA certificate used to validate the BeyondTrust Workload Credentials API TLS certificate.
+    /// Use this when your BeyondTrust instance uses a self-signed certificate or internal CA.
+    /// If not set, the system's trusted root certificates are used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
+    pub ca_bundle: Option<String>,
+    /// CAProvider points to a Secret or ConfigMap containing a PEM-encoded CA certificate.
+    /// This is used to validate the BeyondTrust Workload Credentials API TLS certificate.
+    /// Use this as an alternative to CABundle when you want to reference an existing Kubernetes resource.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caProvider")]
+    pub ca_provider: Option<SecretStoreProviderBeyondtrustworkloadcredentialsCaProvider>,
+    /// FolderPath specifies the default folder path for secret retrieval.
+    /// Secrets will be fetched from this folder unless overridden in the ExternalSecret spec.
+    /// Example: "production/database" or "dev/api-keys"
+    /// Leave empty to retrieve secrets from the root folder.
+    /// For folder organization, see: <https://docs.beyondtrust.com/bt-docs/docs/secrets-api#folders>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "folderPath")]
+    pub folder_path: Option<String>,
+    /// Server configures the BeyondTrust Workload Credentials server connection details.
+    /// Includes the API URL and Site ID for your BeyondTrust instance.
+    /// For API reference, see: <https://docs.beyondtrust.com/bt-docs/docs/secrets-api>
+    pub server: SecretStoreProviderBeyondtrustworkloadcredentialsServer,
+}
+
+/// Auth configures how the Operator authenticates with the BeyondTrust Workload Credentials API.
+/// Currently supports API key authentication via Kubernetes secret reference.
+/// For authentication setup, see: <https://docs.beyondtrust.com/bt-docs/docs/secrets-api#authentication>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderBeyondtrustworkloadcredentialsAuth {
+    /// APIKey configures API token authentication for BeyondTrust Workload Credentials.
+    /// The token is retrieved from a Kubernetes secret and used as a Bearer token for API requests.
+    pub apikey: SecretStoreProviderBeyondtrustworkloadcredentialsAuthApikey,
+}
+
+/// APIKey configures API token authentication for BeyondTrust Workload Credentials.
+/// The token is retrieved from a Kubernetes secret and used as a Bearer token for API requests.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderBeyondtrustworkloadcredentialsAuthApikey {
+    /// Token references the Kubernetes secret containing the BeyondTrust Workload Credentials API token.
+    /// The secret should contain the API key used to authenticate with BeyondTrust Workload Credentials.
+    /// Create an API token in your BeyondTrust Workload Credentials console and store it in a Kubernetes secret.
+    /// For details on creating API tokens, see: <https://docs.beyondtrust.com/bt-docs/docs/secrets-api#authentication>
+    pub token: SecretStoreProviderBeyondtrustworkloadcredentialsAuthApikeyToken,
+}
+
+/// Token references the Kubernetes secret containing the BeyondTrust Workload Credentials API token.
+/// The secret should contain the API key used to authenticate with BeyondTrust Workload Credentials.
+/// Create an API token in your BeyondTrust Workload Credentials console and store it in a Kubernetes secret.
+/// For details on creating API tokens, see: <https://docs.beyondtrust.com/bt-docs/docs/secrets-api#authentication>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderBeyondtrustworkloadcredentialsAuthApikeyToken {
+    /// A key in the referenced Secret.
+    /// Some instances of this field may be defaulted, in others it may be required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the Secret resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// The namespace of the Secret resource being referred to.
+    /// Ignored if referent is not cluster-scoped, otherwise defaults to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// CAProvider points to a Secret or ConfigMap containing a PEM-encoded CA certificate.
+/// This is used to validate the BeyondTrust Workload Credentials API TLS certificate.
+/// Use this as an alternative to CABundle when you want to reference an existing Kubernetes resource.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct SecretStoreProviderBeyondtrustworkloadcredentialsCaProvider {
+    /// The key where the CA certificate can be found in the Secret or ConfigMap.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the object located at the provider type.
+    pub name: String,
+    /// The namespace the Provider type is in.
+    /// Can only be defined when used in a ClusterSecretStore.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+    /// The type of provider to use such as "Secret", or "ConfigMap".
+    #[serde(rename = "type")]
+    pub r#type: SecretStoreProviderBeyondtrustworkloadcredentialsCaProviderType,
+}
+
+/// CAProvider points to a Secret or ConfigMap containing a PEM-encoded CA certificate.
+/// This is used to validate the BeyondTrust Workload Credentials API TLS certificate.
+/// Use this as an alternative to CABundle when you want to reference an existing Kubernetes resource.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum SecretStoreProviderBeyondtrustworkloadcredentialsCaProviderType {
+    Secret,
+    ConfigMap,
+}
+
+/// Server configures the BeyondTrust Workload Credentials server connection details.
+/// Includes the API URL and Site ID for your BeyondTrust instance.
+/// For API reference, see: <https://docs.beyondtrust.com/bt-docs/docs/secrets-api>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderBeyondtrustworkloadcredentialsServer {
+    /// APIURL is the base URL of your BeyondTrust Workload Credentials API server.
+    /// This should be the full URL to your BeyondTrust instance.
+    /// Example: <https://api.beyondtrust.io/siie>
+    /// For more information, see: <https://docs.beyondtrust.com/bt-docs/docs/secrets-api#base-url>
+    #[serde(rename = "apiUrl")]
+    pub api_url: String,
+    /// SiteID is your BeyondTrust Workload Credentials site identifier (UUID format).
+    /// This identifier is unique to your BeyondTrust Workload Credentials instance.
+    /// You can find your Site ID in the BeyondTrust Workload Credentials admin console.
+    /// Example: a1b2c3d4-e5f6-4890-abcd-ef1234567890
+    /// For more information, see: <https://docs.beyondtrust.com/bt-docs/docs/secrets-api>
+    #[serde(rename = "siteId")]
+    pub site_id: String,
 }
 
 /// BitwardenSecretsManager configures this store to sync secrets using BitwardenSecretsManager provider
@@ -3287,6 +3411,59 @@ pub struct SecretStoreProviderOnepasswordSdkIntegrationInfo {
     /// Version defaults to "v1.0.0".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
+}
+
+/// OpenBao configures this store to sync secrets using the OpenBao provider.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderOpenBao {
+    /// Auth configures how secret-manager authenticates with the OpenBao server.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub auth: Option<SecretStoreProviderOpenBaoAuth>,
+    /// Path is the mount path of the OpenBao KV backend endpoint, e.g:
+    /// "secret". The v2 KV secret engine version specific "/data" path suffix
+    /// for fetching secrets from OpenBao is optional and will be appended
+    /// if not present in specified path.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// Server is the connection address for the OpenBao server, e.g: `<https://openbao.example.com:8200`.>
+    pub server: String,
+    /// Version is the OpenBao KV secret engine version. This can be either "v1" or
+    /// "v2". Version defaults to "v2".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub version: Option<SecretStoreProviderOpenBaoVersion>,
+}
+
+/// Auth configures how secret-manager authenticates with the OpenBao server.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderOpenBaoAuth {
+    /// TokenSecretRef authenticates with OpenBao by presenting a token.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenSecretRef")]
+    pub token_secret_ref: Option<SecretStoreProviderOpenBaoAuthTokenSecretRef>,
+}
+
+/// TokenSecretRef authenticates with OpenBao by presenting a token.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderOpenBaoAuthTokenSecretRef {
+    /// A key in the referenced Secret.
+    /// Some instances of this field may be defaulted, in others it may be required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the Secret resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// The namespace of the Secret resource being referred to.
+    /// Ignored if referent is not cluster-scoped, otherwise defaults to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// OpenBao configures this store to sync secrets using the OpenBao provider.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum SecretStoreProviderOpenBaoVersion {
+    #[serde(rename = "v1")]
+    V1,
+    #[serde(rename = "v2")]
+    V2,
 }
 
 /// Oracle configures this store to sync secrets using Oracle Vault provider

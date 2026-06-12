@@ -808,10 +808,6 @@ pub struct PrometheusSpec {
     pub sha: Option<String>,
     /// shardRetentionPolicy defines the retention policy for the Prometheus shards.
     /// (Alpha) Using this field requires the 'PrometheusShardRetentionPolicy' feature gate to be enabled.
-    /// 
-    /// The final goals for this feature can be seen at <https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/proposals/202310-shard-autoscaling.md#graceful-scale-down-of-prometheus-servers,>
-    /// however, the feature is not yet fully implemented in this PR. The limitation being:
-    /// * Retention duration is not settable, for now, shards are retained forever.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "shardRetentionPolicy")]
     pub shard_retention_policy: Option<PrometheusShardRetentionPolicy>,
     /// shardingStrategy defines the sharding strategy for distributing scraped targets across Prometheus shards.
@@ -8576,10 +8572,6 @@ pub struct PrometheusServiceMonitorSelectorMatchExpressions {
 
 /// shardRetentionPolicy defines the retention policy for the Prometheus shards.
 /// (Alpha) Using this field requires the 'PrometheusShardRetentionPolicy' feature gate to be enabled.
-/// 
-/// The final goals for this feature can be seen at <https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/proposals/202310-shard-autoscaling.md#graceful-scale-down-of-prometheus-servers,>
-/// however, the feature is not yet fully implemented in this PR. The limitation being:
-/// * Retention duration is not settable, for now, shards are retained forever.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusShardRetentionPolicy {
     /// retain defines the config for retention when the retention policy is set
@@ -8615,10 +8607,6 @@ pub struct PrometheusShardRetentionPolicyRetain {
 
 /// shardRetentionPolicy defines the retention policy for the Prometheus shards.
 /// (Alpha) Using this field requires the 'PrometheusShardRetentionPolicy' feature gate to be enabled.
-/// 
-/// The final goals for this feature can be seen at <https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/proposals/202310-shard-autoscaling.md#graceful-scale-down-of-prometheus-servers,>
-/// however, the feature is not yet fully implemented in this PR. The limitation being:
-/// * Retention duration is not settable, for now, shards are retained forever.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PrometheusShardRetentionPolicyWhenScaled {
     Retain,

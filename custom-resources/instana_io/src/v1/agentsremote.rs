@@ -1425,7 +1425,7 @@ pub struct InstanaAgentRemoteAgentPodVolumes {
     /// A failure to resolve or pull the image during pod startup will block containers from starting and may add significant latency. Failures will be retried using normal volume backoff and will be reported on the pod reason and message.
     /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
     /// The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
-    /// The volume will be mounted read-only (ro) and non-executable files (noexec).
+    /// The volume will be mounted read-only (ro).
     /// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.
     /// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1454,8 +1454,7 @@ pub struct InstanaAgentRemoteAgentPodVolumes {
     pub photon_persistent_disk: Option<InstanaAgentRemoteAgentPodVolumesPhotonPersistentDisk>,
     /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine.
     /// Deprecated: PortworxVolume is deprecated. All operations for the in-tree portworxVolume type
-    /// are redirected to the pxd.portworx.com CSI driver when the CSIMigrationPortworx feature-gate
-    /// is on.
+    /// are redirected to the pxd.portworx.com CSI driver.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
     pub portworx_volume: Option<InstanaAgentRemoteAgentPodVolumesPortworxVolume>,
     /// projected items for all in one resources secrets, configmaps, and downward API
@@ -2286,7 +2285,7 @@ pub struct InstanaAgentRemoteAgentPodVolumesHostPath {
 /// A failure to resolve or pull the image during pod startup will block containers from starting and may add significant latency. Failures will be retried using normal volume backoff and will be reported on the pod reason and message.
 /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
 /// The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
-/// The volume will be mounted read-only (ro) and non-executable files (noexec).
+/// The volume will be mounted read-only (ro).
 /// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.
 /// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2415,8 +2414,7 @@ pub struct InstanaAgentRemoteAgentPodVolumesPhotonPersistentDisk {
 
 /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine.
 /// Deprecated: PortworxVolume is deprecated. All operations for the in-tree portworxVolume type
-/// are redirected to the pxd.portworx.com CSI driver when the CSIMigrationPortworx feature-gate
-/// is on.
+/// are redirected to the pxd.portworx.com CSI driver.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstanaAgentRemoteAgentPodVolumesPortworxVolume {
     /// fSType represents the filesystem type to mount

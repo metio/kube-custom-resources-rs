@@ -1869,14 +1869,27 @@ pub struct HttpProxyVirtualhostJwtProviders {
     /// If not provided, JWT issuers are not checked.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub issuer: Option<String>,
+    /// Local JWKS loads signing keys from a Kubernetes Secret.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localJWKS")]
+    pub local_jwks: Option<HttpProxyVirtualhostJwtProvidersLocalJwks>,
     /// Unique name for the provider.
     pub name: String,
-    /// Remote JWKS to use for verifying JWT signatures.
-    #[serde(rename = "remoteJWKS")]
-    pub remote_jwks: HttpProxyVirtualhostJwtProvidersRemoteJwks,
+    /// Remote JWKS fetches signing keys from an HTTP(S) endpoint.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteJWKS")]
+    pub remote_jwks: Option<HttpProxyVirtualhostJwtProvidersRemoteJwks>,
 }
 
-/// Remote JWKS to use for verifying JWT signatures.
+/// Local JWKS loads signing keys from a Kubernetes Secret.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HttpProxyVirtualhostJwtProvidersLocalJwks {
+    /// The key of the secret that contains the JWKS.
+    pub key: String,
+    /// The name of the secret that contains the JWKS.
+    #[serde(rename = "secretName")]
+    pub secret_name: String,
+}
+
+/// Remote JWKS fetches signing keys from an HTTP(S) endpoint.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HttpProxyVirtualhostJwtProvidersRemoteJwks {
     /// How long to cache the JWKS locally. If not specified,
@@ -1908,7 +1921,7 @@ pub struct HttpProxyVirtualhostJwtProvidersRemoteJwks {
     pub validation: Option<HttpProxyVirtualhostJwtProvidersRemoteJwksValidation>,
 }
 
-/// Remote JWKS to use for verifying JWT signatures.
+/// Remote JWKS fetches signing keys from an HTTP(S) endpoint.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum HttpProxyVirtualhostJwtProvidersRemoteJwksDnsLookupFamily {
     #[serde(rename = "auto")]

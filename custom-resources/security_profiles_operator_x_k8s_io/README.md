@@ -11,6 +11,15 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 
 ## Available Custom Resources
 
+### security-profiles-operator.x-k8s.io/v1
+- `AppArmorProfile`
+- `ProfileBinding`
+- `ProfileRecording`
+- `RawSelinuxProfile`
+- `SeccompProfile`
+- `SecurityProfileNodeStatus`
+- `SecurityProfilesOperatorDaemon`
+- `SelinuxProfile`
 ### security-profiles-operator.x-k8s.io/v1alpha1
 - `AppArmorProfile`
 - `ProfileBinding`

@@ -165,6 +165,8 @@ pub struct PerconaServerMySqlBackupStatusStorage {
     pub container_options: Option<PerconaServerMySqlBackupStatusStorageContainerOptions>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerSecurityContext")]
     pub container_security_context: Option<PerconaServerMySqlBackupStatusStorageContainerSecurityContext>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "encryptionKeySecret")]
+    pub encryption_key_secret: Option<PerconaServerMySqlBackupStatusStorageEncryptionKeySecret>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gcs: Option<PerconaServerMySqlBackupStatusStorageGcs>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -668,6 +670,13 @@ pub struct PerconaServerMySqlBackupStatusStorageContainerSecurityContextWindowsO
     pub host_process: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySqlBackupStatusStorageEncryptionKeySecret {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    pub name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

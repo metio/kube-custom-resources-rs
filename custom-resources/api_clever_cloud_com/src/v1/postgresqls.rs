@@ -51,6 +51,8 @@ pub enum PostgreSqlOptionsVersion {
     r#_16,
     #[serde(rename = "17")]
     r#_17,
+    #[serde(rename = "18")]
+    r#_18,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

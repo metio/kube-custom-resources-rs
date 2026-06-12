@@ -255,7 +255,8 @@ pub struct ServiceMonitorEndpoints {
     /// If empty, Prometheus uses the default value (e.g. `/metrics`).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// port defines the name of the Service port which this endpoint refers to.
+    /// port defines the name of the Service port which this endpoint refers to
+    /// (e.g. `.spec.ports[].name`).
     /// 
     /// It takes precedence over `targetPort`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -294,8 +295,10 @@ pub struct ServiceMonitorEndpoints {
     /// The value cannot be greater than the scrape interval otherwise the operator will reject the resource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeTimeout")]
     pub scrape_timeout: Option<String>,
-    /// targetPort defines the name or number of the target port of the `Pod` object behind the
-    /// Service. The port must be specified with the container's port property.
+    /// targetPort defines the name or number of a container port on Pods selected
+    /// by the Service.
+    /// If a name, it matches against `.spec.containers[].ports[].name` of the Pods.
+    /// If a number, it matches against `.spec.containers[].ports[].containerPort` of the Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPort")]
     pub target_port: Option<IntOrString>,
     /// tlsConfig defines TLS configuration used by the client.

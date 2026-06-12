@@ -115,52 +115,51 @@ pub struct ControllerSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ControllerAccountingRef {
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/>
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
 }
 
-/// ObjectReference is a reference to an object.
+/// LocalObjectReference contains enough information to let you locate the
+/// referenced object inside the same namespace.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ControllerConfigFileRefs {
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/>
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
 }
 
-/// ObjectReference is a reference to an object.
+/// LocalObjectReference contains enough information to let you locate the
+/// referenced object inside the same namespace.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ControllerEpilogScriptRefs {
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/>
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
 }
 
-/// ObjectReference is a reference to an object.
+/// LocalObjectReference contains enough information to let you locate the
+/// referenced object inside the same namespace.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ControllerEpilogSlurmctldScriptRefs {
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/>
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
 }
 
 /// ExternalConfig describes how to communicate with this external component.
@@ -482,30 +481,30 @@ pub struct ControllerPersistenceSelectorMatchExpressions {
     pub values: Option<Vec<String>>,
 }
 
-/// ObjectReference is a reference to an object.
+/// LocalObjectReference contains enough information to let you locate the
+/// referenced object inside the same namespace.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ControllerPrologScriptRefs {
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/>
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
 }
 
-/// ObjectReference is a reference to an object.
+/// LocalObjectReference contains enough information to let you locate the
+/// referenced object inside the same namespace.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ControllerPrologSlurmctldScriptRefs {
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/>
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
 }
 
 /// Service defines a template for a Kubernetes Service object.
