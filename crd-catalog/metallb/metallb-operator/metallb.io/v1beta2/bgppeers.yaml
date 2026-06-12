@@ -85,9 +85,15 @@ spec:
                 keepaliveTime:
                   description: "Requested BGP keepalive time, per RFC4271."
                   type: "string"
+                localASN:
+                  description: "LocalASN allows advertising a different AS number to the peer using BGP's\nlocal-as feature. When set, MetalLB will advertise this ASN to the peer\nvia \"neighbor <peer> local-as <ASN> no-prepend replace-as\", overriding\nthe router-level MyASN for this specific session.\nNot supported in native BGP mode."
+                  format: "int64"
+                  maximum: 4294967295.0
+                  minimum: 1.0
+                  type: "integer"
                 myASN:
                   description: "AS number to use for the local end of the session."
-                  format: "int32"
+                  format: "int64"
                   maximum: 4294967295.0
                   minimum: 0.0
                   type: "integer"
@@ -143,7 +149,7 @@ spec:
                   x-kubernetes-map-type: "atomic"
                 peerASN:
                   description: "AS number to expect from the remote end of the session.\nASN and DynamicASN are mutually exclusive and one of them must be specified."
-                  format: "int32"
+                  format: "int64"
                   maximum: 4294967295.0
                   minimum: 0.0
                   type: "integer"

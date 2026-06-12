@@ -31,6 +31,11 @@ pub struct ClusterGeneratorGenerator {
     /// see: <https://github.com/Azure/acr/blob/main/docs/AAD-OAuth.md#overview>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "acrAccessTokenSpec")]
     pub acr_access_token_spec: Option<ClusterGeneratorGeneratorAcrAccessTokenSpec>,
+    /// BeyondtrustWorkloadCredentialsDynamicSecretSpec defines the desired spec for BeyondtrustWorkloadCredentials dynamic generator.
+    /// This generator enables obtaining temporary, short-lived credentials from BeyondTrust Workload Credentials.
+    /// For more information, see: <https://docs.beyondtrust.com/bt-docs/docs/secrets-api>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "beyondtrustWorkloadCredentialsDynamicSecretSpec")]
+    pub beyondtrust_workload_credentials_dynamic_secret_spec: Option<ClusterGeneratorGeneratorBeyondtrustWorkloadCredentialsDynamicSecretSpec>,
     /// CloudsmithAccessTokenSpec defines the configuration for generating a Cloudsmith access token using OIDC authentication.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cloudsmithAccessTokenSpec")]
     pub cloudsmith_access_token_spec: Option<ClusterGeneratorGeneratorCloudsmithAccessTokenSpec>,
@@ -219,6 +224,159 @@ pub enum ClusterGeneratorGeneratorAcrAccessTokenSpecEnvironmentType {
     ChinaCloud,
     GermanCloud,
     AzureStackCloud,
+}
+
+/// BeyondtrustWorkloadCredentialsDynamicSecretSpec defines the desired spec for BeyondtrustWorkloadCredentials dynamic generator.
+/// This generator enables obtaining temporary, short-lived credentials from BeyondTrust Workload Credentials.
+/// For more information, see: <https://docs.beyondtrust.com/bt-docs/docs/secrets-api>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterGeneratorGeneratorBeyondtrustWorkloadCredentialsDynamicSecretSpec {
+    /// Controller selects the controller that should handle this generator.
+    /// Leave empty to use the default controller.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub controller: Option<String>,
+    /// Provider contains the BeyondtrustWorkloadCredentials provider configuration including authentication,
+    /// server connection details, and the folder path to the dynamic secret definition.
+    /// The folderPath should point to a dynamic secret definition that has been created in
+    /// BeyondTrust Workload Credentials (e.g., "production/aws-temp").
+    /// For setup details, see: <https://docs.beyondtrust.com/bt-docs/docs/secrets-api>
+    pub provider: ClusterGeneratorGeneratorBeyondtrustWorkloadCredentialsDynamicSecretSpecProvider,
+    /// RetrySettings configures exponential backoff for failed API requests.
+    /// If not specified, uses the default retry settings.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retrySettings")]
+    pub retry_settings: Option<ClusterGeneratorGeneratorBeyondtrustWorkloadCredentialsDynamicSecretSpecRetrySettings>,
+}
+
+/// Provider contains the BeyondtrustWorkloadCredentials provider configuration including authentication,
+/// server connection details, and the folder path to the dynamic secret definition.
+/// The folderPath should point to a dynamic secret definition that has been created in
+/// BeyondTrust Workload Credentials (e.g., "production/aws-temp").
+/// For setup details, see: <https://docs.beyondtrust.com/bt-docs/docs/secrets-api>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterGeneratorGeneratorBeyondtrustWorkloadCredentialsDynamicSecretSpecProvider {
+    /// Auth configures how the Operator authenticates with the BeyondTrust Workload Credentials API.
+    /// Currently supports API key authentication via Kubernetes secret reference.
+    /// For authentication setup, see: <https://docs.beyondtrust.com/bt-docs/docs/secrets-api#authentication>
+    pub auth: ClusterGeneratorGeneratorBeyondtrustWorkloadCredentialsDynamicSecretSpecProviderAuth,
+    /// CABundle is a base64-encoded CA certificate used to validate the BeyondTrust Workload Credentials API TLS certificate.
+    /// Use this when your BeyondTrust instance uses a self-signed certificate or internal CA.
+    /// If not set, the system's trusted root certificates are used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
+    pub ca_bundle: Option<String>,
+    /// CAProvider points to a Secret or ConfigMap containing a PEM-encoded CA certificate.
+    /// This is used to validate the BeyondTrust Workload Credentials API TLS certificate.
+    /// Use this as an alternative to CABundle when you want to reference an existing Kubernetes resource.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caProvider")]
+    pub ca_provider: Option<ClusterGeneratorGeneratorBeyondtrustWorkloadCredentialsDynamicSecretSpecProviderCaProvider>,
+    /// FolderPath specifies the default folder path for secret retrieval.
+    /// Secrets will be fetched from this folder unless overridden in the ExternalSecret spec.
+    /// Example: "production/database" or "dev/api-keys"
+    /// Leave empty to retrieve secrets from the root folder.
+    /// For folder organization, see: <https://docs.beyondtrust.com/bt-docs/docs/secrets-api#folders>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "folderPath")]
+    pub folder_path: Option<String>,
+    /// Server configures the BeyondTrust Workload Credentials server connection details.
+    /// Includes the API URL and Site ID for your BeyondTrust instance.
+    /// For API reference, see: <https://docs.beyondtrust.com/bt-docs/docs/secrets-api>
+    pub server: ClusterGeneratorGeneratorBeyondtrustWorkloadCredentialsDynamicSecretSpecProviderServer,
+}
+
+/// Auth configures how the Operator authenticates with the BeyondTrust Workload Credentials API.
+/// Currently supports API key authentication via Kubernetes secret reference.
+/// For authentication setup, see: <https://docs.beyondtrust.com/bt-docs/docs/secrets-api#authentication>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterGeneratorGeneratorBeyondtrustWorkloadCredentialsDynamicSecretSpecProviderAuth {
+    /// APIKey configures API token authentication for BeyondTrust Workload Credentials.
+    /// The token is retrieved from a Kubernetes secret and used as a Bearer token for API requests.
+    pub apikey: ClusterGeneratorGeneratorBeyondtrustWorkloadCredentialsDynamicSecretSpecProviderAuthApikey,
+}
+
+/// APIKey configures API token authentication for BeyondTrust Workload Credentials.
+/// The token is retrieved from a Kubernetes secret and used as a Bearer token for API requests.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterGeneratorGeneratorBeyondtrustWorkloadCredentialsDynamicSecretSpecProviderAuthApikey {
+    /// Token references the Kubernetes secret containing the BeyondTrust Workload Credentials API token.
+    /// The secret should contain the API key used to authenticate with BeyondTrust Workload Credentials.
+    /// Create an API token in your BeyondTrust Workload Credentials console and store it in a Kubernetes secret.
+    /// For details on creating API tokens, see: <https://docs.beyondtrust.com/bt-docs/docs/secrets-api#authentication>
+    pub token: ClusterGeneratorGeneratorBeyondtrustWorkloadCredentialsDynamicSecretSpecProviderAuthApikeyToken,
+}
+
+/// Token references the Kubernetes secret containing the BeyondTrust Workload Credentials API token.
+/// The secret should contain the API key used to authenticate with BeyondTrust Workload Credentials.
+/// Create an API token in your BeyondTrust Workload Credentials console and store it in a Kubernetes secret.
+/// For details on creating API tokens, see: <https://docs.beyondtrust.com/bt-docs/docs/secrets-api#authentication>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterGeneratorGeneratorBeyondtrustWorkloadCredentialsDynamicSecretSpecProviderAuthApikeyToken {
+    /// A key in the referenced Secret.
+    /// Some instances of this field may be defaulted, in others it may be required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the Secret resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// The namespace of the Secret resource being referred to.
+    /// Ignored if referent is not cluster-scoped, otherwise defaults to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// CAProvider points to a Secret or ConfigMap containing a PEM-encoded CA certificate.
+/// This is used to validate the BeyondTrust Workload Credentials API TLS certificate.
+/// Use this as an alternative to CABundle when you want to reference an existing Kubernetes resource.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterGeneratorGeneratorBeyondtrustWorkloadCredentialsDynamicSecretSpecProviderCaProvider {
+    /// The key where the CA certificate can be found in the Secret or ConfigMap.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the object located at the provider type.
+    pub name: String,
+    /// The namespace the Provider type is in.
+    /// Can only be defined when used in a ClusterSecretStore.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+    /// The type of provider to use such as "Secret", or "ConfigMap".
+    #[serde(rename = "type")]
+    pub r#type: ClusterGeneratorGeneratorBeyondtrustWorkloadCredentialsDynamicSecretSpecProviderCaProviderType,
+}
+
+/// CAProvider points to a Secret or ConfigMap containing a PEM-encoded CA certificate.
+/// This is used to validate the BeyondTrust Workload Credentials API TLS certificate.
+/// Use this as an alternative to CABundle when you want to reference an existing Kubernetes resource.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterGeneratorGeneratorBeyondtrustWorkloadCredentialsDynamicSecretSpecProviderCaProviderType {
+    Secret,
+    ConfigMap,
+}
+
+/// Server configures the BeyondTrust Workload Credentials server connection details.
+/// Includes the API URL and Site ID for your BeyondTrust instance.
+/// For API reference, see: <https://docs.beyondtrust.com/bt-docs/docs/secrets-api>
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterGeneratorGeneratorBeyondtrustWorkloadCredentialsDynamicSecretSpecProviderServer {
+    /// APIURL is the base URL of your BeyondTrust Workload Credentials API server.
+    /// This should be the full URL to your BeyondTrust instance.
+    /// Example: <https://api.beyondtrust.io/siie>
+    /// For more information, see: <https://docs.beyondtrust.com/bt-docs/docs/secrets-api#base-url>
+    #[serde(rename = "apiUrl")]
+    pub api_url: String,
+    /// SiteID is your BeyondTrust Workload Credentials site identifier (UUID format).
+    /// This identifier is unique to your BeyondTrust Workload Credentials instance.
+    /// You can find your Site ID in the BeyondTrust Workload Credentials admin console.
+    /// Example: a1b2c3d4-e5f6-4890-abcd-ef1234567890
+    /// For more information, see: <https://docs.beyondtrust.com/bt-docs/docs/secrets-api>
+    #[serde(rename = "siteId")]
+    pub site_id: String,
+}
+
+/// RetrySettings configures exponential backoff for failed API requests.
+/// If not specified, uses the default retry settings.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterGeneratorGeneratorBeyondtrustWorkloadCredentialsDynamicSecretSpecRetrySettings {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
+    pub max_retries: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
+    pub retry_interval: Option<String>,
 }
 
 /// CloudsmithAccessTokenSpec defines the configuration for generating a Cloudsmith access token using OIDC authentication.
@@ -1962,6 +2120,7 @@ pub struct ClusterGeneratorGeneratorWebhookSpecSecretsSecretRef {
 pub enum ClusterGeneratorKind {
     #[serde(rename = "ACRAccessToken")]
     AcrAccessToken,
+    BeyondtrustWorkloadCredentialsDynamicSecret,
     CloudsmithAccessToken,
     #[serde(rename = "ECRAuthorizationToken")]
     EcrAuthorizationToken,
@@ -1980,5 +2139,7 @@ pub enum ClusterGeneratorKind {
     VaultDynamicSecret,
     Webhook,
     Grafana,
+    #[serde(rename = "MFA")]
+    Mfa,
 }
 

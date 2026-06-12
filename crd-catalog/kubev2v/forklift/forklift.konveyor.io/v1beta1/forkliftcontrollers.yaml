@@ -296,7 +296,7 @@ spec:
                     - "false"
                   type: "string"
                 feature_windows_wait_for_reboot:
-                  description: "Enable automatic wait-for-reboot step for Windows VM migrations (default: false)"
+                  description: "Enable automatic wait-for-reboot step for Windows VM migrations (default: true)"
                   enum:
                     - "true"
                     - "false"
@@ -433,6 +433,10 @@ spec:
                 must_gather_image_fqin:
                   description: "Must-gather debugging image"
                   example: "quay.io/kubev2v/forklift-must-gather:latest"
+                  type: "string"
+                naa_oui_map_configmap_name:
+                  description: "ConfigMap name for custom NAA OUI to storage vendor mappings (default: forklift-naa-oui-map)"
+                  example: "custom-naa-oui-map"
                   type: "string"
                 ova_container_limits_cpu:
                   description: "OVA CPU limit (default: 1000m)"

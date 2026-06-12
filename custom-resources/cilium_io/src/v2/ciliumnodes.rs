@@ -314,6 +314,12 @@ pub struct CiliumNodeIpamPools {
 /// node. It contains the assigned PodCIDRs allocated from this pool
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumNodeIpamPoolsAllocated {
+    /// AllowFirstIP allows the first IP of each allocated CIDR to be used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowFirstIP")]
+    pub allow_first_ip: Option<bool>,
+    /// AllowLastIP allows the last IP of each allocated CIDR to be used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowLastIP")]
+    pub allow_last_ip: Option<bool>,
     /// CIDRs contains a list of pod CIDRs currently allocated from this pool
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cidrs: Option<Vec<String>>,

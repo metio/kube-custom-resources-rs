@@ -267,10 +267,13 @@ pub struct ComponentConfigs {
     /// - KB_CONFIG_FILES_UPDATED: file1:checksum1,file2:checksum2...
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconfigureAction")]
     pub reconfigure_action: Option<ComponentConfigsReconfigureAction>,
+    /// ReconfigureArgs is a list of runtime argument groups for the reconfigure action.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconfigureArgs")]
+    pub reconfigure_args: Option<Vec<Vec<String>>>,
     /// Specifies whether to restart the component to reload the updated configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub restart: Option<bool>,
-    /// Variables are key-value pairs for dynamic configuration values that can be provided by the user.
+    /// Variables are template variables used to render managed configuration templates.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub variables: Option<BTreeMap<String, String>>,
 }

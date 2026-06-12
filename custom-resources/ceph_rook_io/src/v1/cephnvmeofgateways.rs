@@ -36,7 +36,10 @@ pub struct CephNvMeOfGatewaySpec {
     pub host_network: Option<bool>,
     /// Image is the container image to use for the NVMe-oF gateway daemon.
     /// For example, quay.io/ceph/nvmeof:1.5
-    pub image: String,
+    /// If not specified, the image is fetched from the Ceph mon config store
+    /// (mgr/cephadm/container_image_nvmeof).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<String>,
     /// The number of active gateway instances
     pub instances: i64,
     /// The labels-related configuration to add/set on each Pod related object.

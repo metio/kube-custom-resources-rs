@@ -62,6 +62,7 @@ spec:
                     version:
                       enum:
                         - 724
+                        - 880
                       type: "integer"
                   required:
                     - "encryption"

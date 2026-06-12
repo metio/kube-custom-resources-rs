@@ -33,11 +33,6 @@ pub struct IbmPowerVsClusterSpec {
     /// 3. CosInstance.BucketRegion should be set not setting will result in webhook error.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cosInstance")]
     pub cos_instance: Option<IbmPowerVsClusterCosInstance>,
-    /// dhcpServer is contains the configuration to be used while creating a new DHCP server in PowerVS workspace.
-    /// when the field is omitted, CLUSTER_NAME will be used as DHCPServer.Name and DHCP server will be created.
-    /// it will automatically create network with name DHCPSERVER<DHCPServer.Name>_Private in PowerVS workspace.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dhcpServer")]
-    pub dhcp_server: Option<IbmPowerVsClusterDhcpServer>,
     /// ignition defined options related to the bootstrapping systems where Ignition is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ignition: Option<IbmPowerVsClusterIgnition>,
@@ -50,19 +45,10 @@ pub struct IbmPowerVsClusterSpec {
     /// For each loadbalancer a default backed pool and front listener will be configured with port 6443.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancers")]
     pub load_balancers: Option<Vec<IbmPowerVsClusterLoadBalancers>>,
-    /// network is the reference to the Network to use for this cluster.
-    /// when the field is omitted, A DHCP service will be created in the Power VS workspace and its private network will be used.
-    /// the DHCP service created network will have the following name format
-    /// 1. in the case of DHCPServer.Name is not set the name will be DHCPSERVER<CLUSTER_NAME>_Private.
-    /// 2. if DHCPServer.Name is set the name will be DHCPSERVER<DHCPServer.Name>_Private.
-    /// when Network.ID is set, its expected that there exist a network in PowerVS workspace with id or else system will give error.
-    /// when Network.Name is set, system will first check for network with Name in PowerVS workspace, if not exist system will check DHCP network with given Network.name, if that also not exist, it will create a new DHCP service and name will be DHCPSERVER<Network.Name>_Private.
-    /// Network.RegEx is not yet supported and system will ignore the value.
-    pub network: IbmPowerVsClusterNetwork,
-    /// resourceGroup name under which the resources will be created.
-    /// when powervs.cluster.x-k8s.io/create-infra=true annotation is set on IBMPowerVSCluster resource,
-    /// 1. it is expected to set the ResourceGroup.Name, not setting will result in webhook error.
-    /// ResourceGroup.ID and ResourceGroup.Regex is not yet supported and system will ignore the value.
+    /// network specifies how the PowerVS network should be sourced.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub network: Option<IbmPowerVsClusterNetwork>,
+    /// ResourceGroup defines the IBM Cloud Resource Group for the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceGroup")]
     pub resource_group: Option<IbmPowerVsClusterResourceGroup>,
     /// Topology defines the architectural mode for external cluster access.
@@ -99,11 +85,8 @@ pub struct IbmPowerVsClusterSpec {
     /// More details: <https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-creating-power-virtual-server>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub workspace: Option<IbmPowerVsClusterWorkspace>,
-    /// zone is the name of Power VS zone where the cluster will be created
+    /// zone is the name of PowerVS zone where the cluster will be created
     /// possible values can be found here <https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-creating-power-virtual-server.>
-    /// when powervs.cluster.x-k8s.io/create-infra=true annotation is set on IBMPowerVSCluster resource,
-    /// 1. it is expected to set the zone, not setting will result in webhook error.
-    /// 2. the zone should have PER capabilities, or else system will give error.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub zone: Option<String>,
 }
@@ -139,28 +122,6 @@ pub struct IbmPowerVsClusterCosInstance {
     /// when IBMPowerVSCluster.Ignition is set
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-}
-
-/// dhcpServer is contains the configuration to be used while creating a new DHCP server in PowerVS workspace.
-/// when the field is omitted, CLUSTER_NAME will be used as DHCPServer.Name and DHCP server will be created.
-/// it will automatically create network with name DHCPSERVER<DHCPServer.Name>_Private in PowerVS workspace.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct IbmPowerVsClusterDhcpServer {
-    /// cidr for DHCP private network
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cidr: Option<String>,
-    /// dnsServer for DHCP service
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsServer")]
-    pub dns_server: Option<String>,
-    /// id of the existing DHCPServer
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub id: Option<String>,
-    /// name of DHCP Service. Only alphanumeric characters and dashes are allowed.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// snat indicates if SNAT will be enabled for DHCP service
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub snat: Option<bool>,
 }
 
 /// ignition defined options related to the bootstrapping systems where Ignition is used.
@@ -374,44 +335,94 @@ pub struct IbmPowerVsClusterLoadBalancersSubnets {
     pub name: Option<String>,
 }
 
-/// network is the reference to the Network to use for this cluster.
-/// when the field is omitted, A DHCP service will be created in the Power VS workspace and its private network will be used.
-/// the DHCP service created network will have the following name format
-/// 1. in the case of DHCPServer.Name is not set the name will be DHCPSERVER<CLUSTER_NAME>_Private.
-/// 2. if DHCPServer.Name is set the name will be DHCPSERVER<DHCPServer.Name>_Private.
-/// when Network.ID is set, its expected that there exist a network in PowerVS workspace with id or else system will give error.
-/// when Network.Name is set, system will first check for network with Name in PowerVS workspace, if not exist system will check DHCP network with given Network.name, if that also not exist, it will create a new DHCP service and name will be DHCPSERVER<Network.Name>_Private.
-/// Network.RegEx is not yet supported and system will ignore the value.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+/// network specifies how the PowerVS network should be sourced.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct IbmPowerVsClusterNetwork {
-    /// id of resource
+    /// provision provides the configuration for the controller to CREATE a new Network and DHCP Server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub id: Option<String>,
-    /// name of resource
+    pub provision: Option<IbmPowerVsClusterNetworkProvision>,
+    /// reference tells the controller to look up an EXISTING PowerVS network.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// regex is the regular expression to match resource,
-    /// In case of multiple resources matches the provided regular expression the first matched resource will be selected
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub regex: Option<String>,
+    pub reference: Option<IbmPowerVsClusterNetworkReference>,
+    /// type defines how the Network is sourced.
+    #[serde(rename = "type")]
+    pub r#type: IbmPowerVsClusterNetworkType,
 }
 
-/// resourceGroup name under which the resources will be created.
-/// when powervs.cluster.x-k8s.io/create-infra=true annotation is set on IBMPowerVSCluster resource,
-/// 1. it is expected to set the ResourceGroup.Name, not setting will result in webhook error.
-/// ResourceGroup.ID and ResourceGroup.Regex is not yet supported and system will ignore the value.
+/// provision provides the configuration for the controller to CREATE a new Network and DHCP Server.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct IbmPowerVsClusterResourceGroup {
-    /// id of resource
+pub struct IbmPowerVsClusterNetworkProvision {
+    /// dhcpServer contains the configuration for the DHCP server that will be created.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dhcpServer")]
+    pub dhcp_server: Option<IbmPowerVsClusterNetworkProvisionDhcpServer>,
+}
+
+/// dhcpServer contains the configuration for the DHCP server that will be created.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IbmPowerVsClusterNetworkProvisionDhcpServer {
+    /// CIDR is the CIDR for the DHCP private network.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub id: Option<String>,
-    /// name of resource
+    pub cidr: Option<String>,
+    /// DNSServer is the DNS Server for the DHCP service.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsServer")]
+    pub dns_server: Option<String>,
+    /// name is the name of the DHCP Service to be created. Only alphanumeric characters and dashes are allowed.
+    /// If omitted, the name will default to DHCPSERVER<CLUSTER_NAME>_Private.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// regex is the regular expression to match resource,
-    /// In case of multiple resources matches the provided regular expression the first matched resource will be selected
+    /// snat indicates the SNAT policy for the DHCP service.
+    /// Allowed values are "Enabled" and "Disabled".
+    /// If omitted, the system will choose a Enabled policy by default.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub regex: Option<String>,
+    pub snat: Option<IbmPowerVsClusterNetworkProvisionDhcpServerSnat>,
+}
+
+/// dhcpServer contains the configuration for the DHCP server that will be created.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum IbmPowerVsClusterNetworkProvisionDhcpServerSnat {
+    Enabled,
+    Disabled,
+}
+
+/// reference tells the controller to look up an EXISTING PowerVS network.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IbmPowerVsClusterNetworkReference {
+    /// ID of the resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    /// Name of the resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// network specifies how the PowerVS network should be sourced.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum IbmPowerVsClusterNetworkType {
+    Reference,
+    Provision,
+}
+
+/// ResourceGroup defines the IBM Cloud Resource Group for the cluster.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IbmPowerVsClusterResourceGroup {
+    /// Reference specifies the existing Resource Group to use by Name or ID.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reference: Option<IbmPowerVsClusterResourceGroupReference>,
+    /// Type defines the intended action for the Resource Group.
+    /// Currently, only "Reference" is supported.
+    #[serde(rename = "type")]
+    pub r#type: String,
+}
+
+/// Reference specifies the existing Resource Group to use by Name or ID.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IbmPowerVsClusterResourceGroupReference {
+    /// ID of the resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    /// Name of the resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// spec defines the desired state of IBMPowerVSCluster
@@ -762,9 +773,6 @@ pub struct IbmPowerVsClusterStatus {
     /// deprecated groups all the status fields that are deprecated and will be removed when all the nested field are removed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deprecated: Option<IbmPowerVsClusterStatusDeprecated>,
-    /// dhcpServer is the reference to the Power VS DHCP server.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dhcpServer")]
-    pub dhcp_server: Option<IbmPowerVsClusterStatusDhcpServer>,
     /// initialization provides observations of the IBMPowerVSCluster initialization process.
     /// NOTE: Fields in this struct are part of the Cluster API contract and are used to orchestrate initial Cluster provisioning.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -772,12 +780,12 @@ pub struct IbmPowerVsClusterStatus {
     /// loadBalancers reference to IBM Cloud VPC Loadbalancer.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancers")]
     pub load_balancers: Option<BTreeMap<String, IbmPowerVsClusterStatusLoadBalancers>>,
-    /// network is the reference to the Power VS network to use for this cluster.
+    /// network tracks the status of the PowerVS network and its associated resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub network: Option<IbmPowerVsClusterStatusNetwork>,
-    /// resourceGroupID is the reference to the Power VS resource group under which the resources will be created.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceGroupID")]
-    pub resource_group_id: Option<IbmPowerVsClusterStatusResourceGroupId>,
+    /// ResourceGroup is the reference to the IBM Cloud Resource Group where the cluster resources are provisioned.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceGroup")]
+    pub resource_group: Option<IbmPowerVsClusterStatusResourceGroup>,
     /// transitGateway is reference to IBM Cloud TransitGateway.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "transitGateway")]
     pub transit_gateway: Option<IbmPowerVsClusterStatusTransitGateway>,
@@ -824,17 +832,6 @@ pub struct IbmPowerVsClusterStatusDeprecatedV1beta2 {
     pub conditions: Option<Vec<Condition>>,
 }
 
-/// dhcpServer is the reference to the Power VS DHCP server.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct IbmPowerVsClusterStatusDhcpServer {
-    /// controllerCreated indicates whether the resource is created by the controller.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controllerCreated")]
-    pub controller_created: Option<bool>,
-    /// id represents the id of the resource.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub id: Option<String>,
-}
-
 /// initialization provides observations of the IBMPowerVSCluster initialization process.
 /// NOTE: Fields in this struct are part of the Cluster API contract and are used to orchestrate initial Cluster provisioning.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -862,26 +859,44 @@ pub struct IbmPowerVsClusterStatusLoadBalancers {
     pub state: Option<String>,
 }
 
-/// network is the reference to the Power VS network to use for this cluster.
+/// network tracks the status of the PowerVS network and its associated resources.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IbmPowerVsClusterStatusNetwork {
-    /// controllerCreated indicates whether the resource is created by the controller.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controllerCreated")]
-    pub controller_created: Option<bool>,
-    /// id represents the id of the resource.
+    /// dhcpServer tracks the provisioned DHCP server identity, if one was created.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dhcpServer")]
+    pub dhcp_server: Option<IbmPowerVsClusterStatusNetworkDhcpServer>,
+    /// id is the unique identifier of the network.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
+    /// name is the name of the network.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
-/// resourceGroupID is the reference to the Power VS resource group under which the resources will be created.
+/// dhcpServer tracks the provisioned DHCP server identity, if one was created.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct IbmPowerVsClusterStatusResourceGroupId {
-    /// controllerCreated indicates whether the resource is created by the controller.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controllerCreated")]
-    pub controller_created: Option<bool>,
+pub struct IbmPowerVsClusterStatusNetworkDhcpServer {
     /// id represents the id of the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
+    /// name is the name of the resource.
+    /// When used in a list, this field acts as the unique correlation key (listMapKey)
+    /// to map the Status object back to its corresponding Spec definition.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// ResourceGroup is the reference to the IBM Cloud Resource Group where the cluster resources are provisioned.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IbmPowerVsClusterStatusResourceGroup {
+    /// id represents the id of the resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    /// name is the name of the resource.
+    /// When used in a list, this field acts as the unique correlation key (listMapKey)
+    /// to map the Status object back to its corresponding Spec definition.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// transitGateway is reference to IBM Cloud TransitGateway.

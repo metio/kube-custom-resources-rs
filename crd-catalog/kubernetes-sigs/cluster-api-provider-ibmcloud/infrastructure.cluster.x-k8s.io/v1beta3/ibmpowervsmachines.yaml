@@ -102,18 +102,17 @@ spec:
                   description: "network is the reference to the Network to use for this instance.\nsupported network identifier in IBMPowerVSResourceReference are Name, ID and RegEx and that can be obtained from IBM Cloud UI or IBM Cloud cli."
                   properties:
                     id:
-                      description: "id of resource"
+                      description: "ID of the resource."
                       minLength: 1
                       type: "string"
                     name:
-                      description: "name of resource"
-                      minLength: 1
-                      type: "string"
-                    regex:
-                      description: "regex is the regular expression to match resource,\nIn case of multiple resources matches the provided regular expression the first matched resource will be selected"
+                      description: "Name of the resource."
                       minLength: 1
                       type: "string"
                   type: "object"
+                  x-kubernetes-validations:
+                    - message: "exactly one of id or name must be specified"
+                      rule: "(has(self.id) ? 1 : 0) + (has(self.name) ? 1 : 0) == 1"
                 processorType:
                   description: "processorType is the VM instance processor type.\nIt must be set to one of the following values: Dedicated, Capped or Shared.\nDedicated: resources are allocated for a specific client, The hypervisor makes a 1:1 binding of a partition’s processor to a physical processor core.\nShared: Shared among other clients.\nCapped: Shared, but resources do not expand beyond those that are requested, the amount of CPU time is Capped to the value specified for the entitlement.\nif the processorType is selected as Dedicated, then processors value cannot be fractional.\nWhen omitted, this means that the user has no opinion and the platform is left to choose a\nreasonable default, which is subject to change over time. The current default is Shared."
                   enum:
@@ -161,8 +160,6 @@ spec:
                   x-kubernetes-validations:
                     - message: "exactly one of id or name must be specified"
                       rule: "(has(self.id) ? 1 : 0) + (has(self.name) ? 1 : 0) == 1"
-              required:
-                - "network"
               type: "object"
             status:
               description: "status defines the observed state of IBMPowerVSMachine"

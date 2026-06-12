@@ -1959,6 +1959,8 @@ pub struct KeycloakRealmImportRealmFederatedUsersUserProfileMetadataGroupsAnnota
 pub struct KeycloakRealmImportRealmFederatedUsersVerifiableCredentials {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "createdDate")]
     pub created_date: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialConfigurationId")]
+    pub credential_configuration_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialScopeName")]
     pub credential_scope_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3223,6 +3225,8 @@ pub struct KeycloakRealmImportRealmOrganizationsMembersUserProfileMetadataGroups
 pub struct KeycloakRealmImportRealmOrganizationsMembersVerifiableCredentials {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "createdDate")]
     pub created_date: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialConfigurationId")]
+    pub credential_configuration_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialScopeName")]
     pub credential_scope_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3615,6 +3619,8 @@ pub struct KeycloakRealmImportRealmUsersUserProfileMetadataGroupsAnnotations {
 pub struct KeycloakRealmImportRealmUsersVerifiableCredentials {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "createdDate")]
     pub created_date: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialConfigurationId")]
+    pub credential_configuration_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialScopeName")]
     pub credential_scope_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

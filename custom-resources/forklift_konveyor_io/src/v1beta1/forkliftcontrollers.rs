@@ -206,7 +206,7 @@ pub struct ForkliftControllerSpec {
     /// Use registry-based network configuration scripts for Windows static IP setup (default: false)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub feature_windows_registry_network_config: Option<ForkliftControllerFeatureWindowsRegistryNetworkConfig>,
-    /// Enable automatic wait-for-reboot step for Windows VM migrations (default: false)
+    /// Enable automatic wait-for-reboot step for Windows VM migrations (default: true)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub feature_windows_wait_for_reboot: Option<ForkliftControllerFeatureWindowsWaitForReboot>,
     /// Ignore xfs_repair exit status during conversion (default: false)
@@ -299,6 +299,9 @@ pub struct ForkliftControllerSpec {
     /// Must-gather debugging image
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub must_gather_image_fqin: Option<String>,
+    /// ConfigMap name for custom NAA OUI to storage vendor mappings (default: forklift-naa-oui-map)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub naa_oui_map_configmap_name: Option<String>,
     /// OVA CPU limit (default: 1000m)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ova_container_limits_cpu: Option<String>,

@@ -317,7 +317,7 @@ pub struct EnvoyFilterConfigPatchesPatch {
     pub filter_class: Option<EnvoyFilterConfigPatchesPatchFilterClass>,
     /// Determines how the patch should be applied.
     /// 
-    /// Valid Options: MERGE, ADD, REMOVE, INSERT_BEFORE, INSERT_AFTER, INSERT_FIRST, REPLACE
+    /// Valid Options: MERGE, ADD, REMOVE, INSERT_BEFORE, INSERT_AFTER, INSERT_FIRST, REPLACE, MERGE_AND_REPLACE_LIST
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operation: Option<EnvoyFilterConfigPatchesPatchOperation>,
     /// The JSON config of the object being patched.
@@ -357,6 +357,8 @@ pub enum EnvoyFilterConfigPatchesPatchOperation {
     InsertFirst,
     #[serde(rename = "REPLACE")]
     Replace,
+    #[serde(rename = "MERGE_AND_REPLACE_LIST")]
+    MergeAndReplaceList,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

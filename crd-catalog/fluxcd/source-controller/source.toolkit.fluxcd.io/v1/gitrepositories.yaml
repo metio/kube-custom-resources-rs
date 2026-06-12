@@ -156,7 +156,7 @@ spec:
                         - "TagAndHEAD"
                       type: "string"
                     secretRef:
-                      description: "SecretRef specifies the Secret containing the public keys of trusted Git\nauthors."
+                      description: "SecretRef specifies the Secret containing the public keys of trusted Git\nauthors. PGP public keys must be stored under keys with the .asc suffix,\nand SSH public keys must be stored under keys with the .sshpub suffix."
                       properties:
                         name:
                           description: "Name of the referent."

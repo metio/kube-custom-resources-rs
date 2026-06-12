@@ -186,7 +186,7 @@ pub struct ValidatingPolicyEvaluation {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub background: Option<ValidatingPolicyEvaluationBackground>,
     /// Mode is the mode of policy evaluation.
-    /// Allowed values are "Kubernetes" or "JSON".
+    /// Allowed values are "Kubernetes", "HTTP" or "Envoy".
     /// Optional. Default value is "Kubernetes".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<String>,
@@ -844,7 +844,7 @@ pub struct ValidatingPolicyStatusAutogenConfigsSpecEvaluation {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub background: Option<ValidatingPolicyStatusAutogenConfigsSpecEvaluationBackground>,
     /// Mode is the mode of policy evaluation.
-    /// Allowed values are "Kubernetes" or "JSON".
+    /// Allowed values are "Kubernetes", "HTTP" or "Envoy".
     /// Optional. Default value is "Kubernetes".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<String>,

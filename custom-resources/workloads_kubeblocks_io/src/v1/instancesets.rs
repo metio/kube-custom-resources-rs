@@ -177,7 +177,7 @@ pub struct InstanceSetConfigs {
     pub config_hash: Option<String>,
     /// The name of the config.
     pub name: String,
-    /// The parameters to call the reconfigure action.
+    /// The env/template parameters to call the reconfigure action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parameters: Option<BTreeMap<String, String>>,
     /// The custom reconfigure action.
@@ -188,6 +188,9 @@ pub struct InstanceSetConfigs {
     /// An empty name indicates that the reconfigure action is the default one defined by lifecycle actions.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconfigureActionName")]
     pub reconfigure_action_name: Option<String>,
+    /// ReconfigureArgs is the runtime argv payload for the reconfigure action.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconfigureArgs")]
+    pub reconfigure_args: Option<Vec<Vec<String>>>,
     /// Specifies whether to restart instances.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub restart: Option<bool>,

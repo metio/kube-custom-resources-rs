@@ -1362,6 +1362,9 @@ pub enum ArgoCdControllerShardingAlgorithm {
 /// Dex defines the Dex server options for ArgoCD.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCdDex {
+    /// Custom annotations to pods deployed by the operator
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
     /// Config is the dex connector configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<String>,
@@ -1371,6 +1374,9 @@ pub struct ArgoCdDex {
     /// Image is the Dex container image.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
+    /// Custom labels to pods deployed by the operator
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
     /// OpenShiftOAuth enables OpenShift OAuth authentication for the Dex server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "openShiftOAuth")]
     pub open_shift_o_auth: Option<bool>,
@@ -2220,6 +2226,9 @@ pub struct ArgoCdRbac {
 /// Redis defines the Redis server options for ArgoCD.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCdRedis {
+    /// Custom annotations to pods deployed by the operator
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
     /// AutoTLS specifies the method to use for automatic TLS configuration for the redis server
     /// The value specified here can currently be:
     /// - openshift - Use the OpenShift service CA to request TLS config
@@ -2231,6 +2240,9 @@ pub struct ArgoCdRedis {
     /// Image is the Redis container image.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
+    /// Custom labels to pods deployed by the operator
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
     /// Resources defines the Compute Resources required by the container for Redis.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ArgoCdRedisResources>,
@@ -7540,6 +7552,9 @@ pub struct ArgoCdSso {
 /// Dex contains the configuration for Argo CD dex authentication
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCdSsoDex {
+    /// Custom annotations to pods deployed by the operator
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
     /// Config is the dex connector configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<String>,
@@ -7549,6 +7564,9 @@ pub struct ArgoCdSsoDex {
     /// Image is the Dex container image.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
+    /// Custom labels to pods deployed by the operator
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
     /// OpenShiftOAuth enables OpenShift OAuth authentication for the Dex server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "openShiftOAuth")]
     pub open_shift_o_auth: Option<bool>,

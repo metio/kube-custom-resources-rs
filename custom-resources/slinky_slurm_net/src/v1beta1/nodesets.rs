@@ -87,12 +87,6 @@ pub struct NodeSetSpec {
     /// SSH configuration for worker pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssh: Option<NodeSetSsh>,
-    /// TaintKubeNodes controls whether or not to apply a NoExecute taint to any nodes which are running a pod from this NodeSet.
-    /// See <https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/> for more information.
-    /// 
-    /// Deprecated: To be removed in the future.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "taintKubeNodes")]
-    pub taint_kube_nodes: Option<bool>,
     /// Template is the object that describes the pod that will be created if
     /// insufficient replicas are detected.
     /// More info: <https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller#pod-template>
@@ -122,13 +116,12 @@ pub struct NodeSetSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeSetControllerRef {
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent.
-    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/>
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
 }
 
 /// Partition defines the Slurm partition configuration for this NodeSet.

@@ -546,7 +546,7 @@ pub struct FelixConfigurationSpec {
     /// number with at least 8 bits set, none of which clash with any other mark bits in use on the system.
     /// [Default: 0xffff0000]
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "iptablesMarkMask")]
-    pub iptables_mark_mask: Option<i32>,
+    pub iptables_mark_mask: Option<i64>,
     /// This parameter can be used to limit the host interfaces on which Calico will apply SNAT to traffic leaving a
     /// Calico IPAM pool with "NAT outgoing" enabled. This can be useful if you have a main data interface, where
     /// traffic should be SNATted and a secondary device (such as the docker bridge) which is local to the host and
@@ -600,7 +600,7 @@ pub struct FelixConfigurationSpec {
     /// SYN packets at the final hop to avoid interference with other protocols. This value is reserved by Calico and must not be used
     /// with other Istio installation. [Default: 23]
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "istioDSCPMark")]
-    pub istio_dscp_mark: Option<i64>,
+    pub istio_dscp_mark: Option<IntOrString>,
     /// KubeNodePortRanges holds list of port ranges used for service node ports. Only used if felix detects kube-proxy running in ipvs mode.
     /// Felix uses these ranges to separate host and workload traffic. [Default: 30000:32767].
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeNodePortRanges")]
@@ -610,6 +610,21 @@ pub struct FelixConfigurationSpec {
     /// reverting to normal priority. [Default: 30s]
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "liveMigrationRouteConvergenceTime")]
     pub live_migration_route_convergence_time: Option<String>,
+    /// LocalSubnetL2Reachability controls whether Felix automatically responds to
+    /// ARP (IPv4) and NDP (IPv6) requests on host interfaces for local pod IPs and
+    /// selected LoadBalancer VIPs that fall within the same subnet as the host
+    /// interface. When set to PodsAndLoadBalancers, pods and LB VIPs on the host
+    /// subnet are reachable from the local L2 segment without BGP. [Default: Disabled]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localSubnetL2Reachability")]
+    pub local_subnet_l2_reachability: Option<FelixConfigurationLocalSubnetL2Reachability>,
+    /// LocalSubnetL2ReachabilityRefreshInterval controls how often Felix re-announces
+    /// (gratuitous ARP / unsolicited NA) every IP it proxies ARP/NDP for when
+    /// LocalSubnetL2Reachability is enabled, keeping neighbor caches and switch
+    /// forwarding tables warm even when the set of proxied IPs is unchanged. Set to 0
+    /// to disable periodic re-announcement, leaving only the one-shot announce when an
+    /// IP is added. [Default: 120s]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localSubnetL2ReachabilityRefreshInterval")]
+    pub local_subnet_l2_reachability_refresh_interval: Option<String>,
     /// LogActionRateLimit sets the rate of hitting a Log action. The value must be in the format "N/unit",
     /// where N is a number and unit is one of: second, minute, hour, or day. For example: "10/second" or "100/hour".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logActionRateLimit")]
@@ -704,7 +719,7 @@ pub struct FelixConfigurationSpec {
     /// number with at least 8 bits set, none of which clash with any other mark bits in use on the system.
     /// [Default: 0xffff0000]
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nftablesMarkMask")]
-    pub nftables_mark_mask: Option<i32>,
+    pub nftables_mark_mask: Option<i64>,
     /// NFTablesMode configures nftables support in Felix. [Default: Auto]
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nftablesMode")]
     pub nftables_mode: Option<FelixConfigurationNftablesMode>,
@@ -1107,6 +1122,13 @@ pub enum FelixConfigurationIptablesBackend {
 pub enum FelixConfigurationIstioAmbientMode {
     Enabled,
     Disabled,
+}
+
+/// FelixConfigurationSpec contains the values of the Felix configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum FelixConfigurationLocalSubnetL2Reachability {
+    Disabled,
+    PodsAndLoadBalancers,
 }
 
 /// FelixConfigurationSpec contains the values of the Felix configuration.

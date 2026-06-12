@@ -236,6 +236,10 @@ pub struct PerconaServerMongoDbRestorePitr {
 pub struct PerconaServerMongoDbRestoreSelective {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nsFrom")]
+    pub ns_from: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nsTo")]
+    pub ns_to: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "withUsersAndRoles")]
     pub with_users_and_roles: Option<bool>,
 }

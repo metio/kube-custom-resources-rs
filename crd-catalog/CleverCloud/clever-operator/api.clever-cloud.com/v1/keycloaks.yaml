@@ -1,0 +1,87 @@
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  name: "keycloaks.api.clever-cloud.com"
+spec:
+  group: "api.clever-cloud.com"
+  names:
+    categories: []
+    kind: "Keycloak"
+    plural: "keycloaks"
+    shortNames:
+      - "kc"
+    singular: "keycloak"
+  scope: "Namespaced"
+  versions:
+    - additionalPrinterColumns:
+        - description: "Organisation"
+          jsonPath: ".spec.organisation"
+          name: "organisation"
+          type: "string"
+        - description: "Addon"
+          jsonPath: ".status.addon"
+          name: "addon"
+          type: "string"
+        - description: "Region"
+          jsonPath: ".spec.instance.region"
+          name: "region"
+          type: "string"
+        - description: "Instance"
+          jsonPath: ".spec.instance.plan"
+          name: "instance"
+          type: "string"
+        - description: "URL"
+          jsonPath: ".status.url"
+          name: "url"
+          type: "string"
+        - description: "Admin URL"
+          jsonPath: ".status.admin_url"
+          name: "admin_url"
+          type: "string"
+      name: "v1"
+      schema:
+        openAPIV3Schema:
+          description: "Auto-generated derived type for Spec via `CustomResource`"
+          properties:
+            spec:
+              properties:
+                instance:
+                  properties:
+                    plan:
+                      type: "string"
+                    region:
+                      type: "string"
+                  required:
+                    - "plan"
+                    - "region"
+                  type: "object"
+                options:
+                  default: {}
+                  type: "object"
+                organisation:
+                  type: "string"
+              required:
+                - "instance"
+                - "organisation"
+              type: "object"
+            status:
+              nullable: true
+              properties:
+                addon:
+                  nullable: true
+                  type: "string"
+                admin_url:
+                  nullable: true
+                  type: "string"
+                url:
+                  nullable: true
+                  type: "string"
+              type: "object"
+          required:
+            - "spec"
+          title: "Keycloak"
+          type: "object"
+      served: true
+      storage: true
+      subresources:
+        status: {}

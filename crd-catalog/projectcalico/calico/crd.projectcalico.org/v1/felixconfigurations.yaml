@@ -483,7 +483,9 @@ spec:
                   type: "string"
                 iptablesMarkMask:
                   description: "IptablesMarkMask is the mask that Felix selects its IPTables Mark bits from. Should be a 32 bit hexadecimal\nnumber with at least 8 bits set, none of which clash with any other mark bits in use on the system.\n[Default: 0xffff0000]"
-                  format: "int32"
+                  format: "int64"
+                  maximum: 4294967295.0
+                  minimum: 0.0
                   type: "integer"
                 iptablesNATOutgoingInterfaceFilter:
                   description: "This parameter can be used to limit the host interfaces on which Calico will apply SNAT to traffic leaving a\nCalico IPAM pool with \"NAT outgoing\" enabled. This can be useful if you have a main data interface, where\ntraffic should be SNATted and a secondary device (such as the docker bridge) which is local to the host and\ndoesn't require SNAT. This parameter uses the iptables interface matching syntax, which allows + as a\nwildcard. Most users will not need to set this. Example: if your data interfaces are eth0 and eth1 and you\nwant to exclude the docker bridge, you could set this to eth+"
@@ -518,9 +520,11 @@ spec:
                     - "Disabled"
                   type: "string"
                 istioDSCPMark:
+                  anyOf:
+                    - type: "integer"
+                    - type: "string"
                   description: "IstioDSCPMark sets the value to use when directing traffic to Istio ZTunnel, when Istio is enabled. The mark is set only on\nSYN packets at the final hop to avoid interference with other protocols. This value is reserved by Calico and must not be used\nwith other Istio installation. [Default: 23]"
                   pattern: "^.*"
-                  type: "integer"
                   x-kubernetes-int-or-string: true
                 kubeNodePortRanges:
                   description: "KubeNodePortRanges holds list of port ranges used for service node ports. Only used if felix detects kube-proxy running in ipvs mode.\nFelix uses these ranges to separate host and workload traffic. [Default: 30000:32767]."
@@ -535,6 +539,15 @@ spec:
                 liveMigrationRouteConvergenceTime:
                   description: "LiveMigrationRouteConvergenceTime is the time to keep elevated route priority after a\nVM live migration completes.  This allows routes to converge across the cluster before\nreverting to normal priority. [Default: 30s]"
                   pattern: "^([0-9]+(\\.[0-9]+)?(ms|s|m|h))*$"
+                  type: "string"
+                localSubnetL2Reachability:
+                  description: "LocalSubnetL2Reachability controls whether Felix automatically responds to\nARP (IPv4) and NDP (IPv6) requests on host interfaces for local pod IPs and\nselected LoadBalancer VIPs that fall within the same subnet as the host\ninterface. When set to PodsAndLoadBalancers, pods and LB VIPs on the host\nsubnet are reachable from the local L2 segment without BGP. [Default: Disabled]"
+                  enum:
+                    - "Disabled"
+                    - "PodsAndLoadBalancers"
+                  type: "string"
+                localSubnetL2ReachabilityRefreshInterval:
+                  description: "LocalSubnetL2ReachabilityRefreshInterval controls how often Felix re-announces\n(gratuitous ARP / unsolicited NA) every IP it proxies ARP/NDP for when\nLocalSubnetL2Reachability is enabled, keeping neighbor caches and switch\nforwarding tables warm even when the set of proxied IPs is unchanged. Set to 0\nto disable periodic re-announcement, leaving only the one-shot announce when an\nIP is added. [Default: 120s]"
                   type: "string"
                 logActionRateLimit:
                   description: "LogActionRateLimit sets the rate of hitting a Log action. The value must be in the format \"N/unit\",\nwhere N is a number and unit is one of: second, minute, hour, or day. For example: \"10/second\" or \"100/hour\"."
@@ -614,7 +627,9 @@ spec:
                   type: "string"
                 nftablesMarkMask:
                   description: "NftablesMarkMask is the mask that Felix selects its nftables Mark bits from. Should be a 32 bit hexadecimal\nnumber with at least 8 bits set, none of which clash with any other mark bits in use on the system.\n[Default: 0xffff0000]"
-                  format: "int32"
+                  format: "int64"
+                  maximum: 4294967295.0
+                  minimum: 0.0
                   type: "integer"
                 nftablesMode:
                   default: "Auto"

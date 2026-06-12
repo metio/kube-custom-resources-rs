@@ -77,10 +77,8 @@ spec:
                   description: "controllerRef is a reference to the Controller CR to which this has membership."
                   properties:
                     name:
-                      description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
-                      type: "string"
-                    namespace:
-                      description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
+                      default: ""
+                      description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                       type: "string"
                   type: "object"
                   x-kubernetes-map-type: "atomic"
@@ -104,6 +102,7 @@ spec:
                   properties:
                     config:
                       description: "Config is added to the NodeSet's partition line.\nRef: https://slurm.schedmd.com/slurm.conf.html#SECTION_PARTITION-CONFIGURATION"
+                      pattern: "^[^\\n]+$"
                       type: "string"
                     enabled:
                       default: false
@@ -193,10 +192,6 @@ spec:
                     - "enabled"
                     - "sssdConfRef"
                   type: "object"
-                taintKubeNodes:
-                  default: false
-                  description: "TaintKubeNodes controls whether or not to apply a NoExecute taint to any nodes which are running a pod from this NodeSet.\nSee https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/ for more information.\n\nDeprecated: To be removed in the future."
-                  type: "boolean"
                 template:
                   description: "Template is the object that describes the pod that will be created if\ninsufficient replicas are detected.\nMore info: https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller#pod-template"
                   properties:

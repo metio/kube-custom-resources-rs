@@ -4,10 +4,16 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 # Available Custom Resources
 
 ## api.clever-cloud.com/v1
+- `Azimutt`
+- `Cellar`
 - `ConfigProvider`
 - `ElasticSearch`
+- `Keycloak`
+- `Matomo`
+- `Metabase`
 - `MongoDb`
 - `MySql`
+- `Otoroshi`
 - `PostgreSql`
 - `Redis`
 ## api.clever-cloud.com/v1alpha1

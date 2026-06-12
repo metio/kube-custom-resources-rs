@@ -46,6 +46,12 @@ pub struct MigrationTables {
 pub struct MigrationStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "approvedAt")]
     pub approved_at: Option<i64>,
+    /// ApprovedBy records the actor that approved this migration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "approvedBy")]
+    pub approved_by: Option<String>,
+    /// ApprovedPlanHash is the plan hash that was approved. It must match PlanHash before the controller will execute the migration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "approvedPlanHash")]
+    pub approved_plan_hash: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "executedAt")]
     pub executed_at: Option<i64>,
     /// InvalidatedAt is the unix nano timestamp when this plan was determined to be invalid or outdated
@@ -53,11 +59,17 @@ pub struct MigrationStatus {
     pub invalidated_at: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<MigrationStatusPhase>,
+    /// PlanHash is a stable SHA-256 hash of the exact generated DDL in this plan.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "planHash")]
+    pub plan_hash: Option<String>,
     /// PlannedAt is the unix nano timestamp when the plan was generated
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "plannedAt")]
     pub planned_at: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rejectedAt")]
     pub rejected_at: Option<i64>,
+    /// RejectedBy records the actor that rejected this migration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rejectedBy")]
+    pub rejected_by: Option<String>,
 }
 
 /// MigrationStatus defines the observed state of Migration

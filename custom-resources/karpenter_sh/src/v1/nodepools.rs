@@ -96,7 +96,7 @@ pub struct NodePoolDisruptionBudgets {
     /// checking for int nodes for IntOrString nodes.
     /// Ref: <https://github.com/kubernetes-sigs/controller-tools/blob/55efe4be40394a288216dab63156b0a64fb82929/pkg/crd/markers/validation.go#L379-L388>
     pub nodes: String,
-    /// Reasons is a list of disruption methods that this budget applies to. If Reasons is not set, this budget applies to all methods.
+    /// reasons is a list of disruption methods that this budget applies to. If Reasons is not set, this budget applies to all methods.
     /// Otherwise, this will apply to each reason defined.
     /// allowed reasons are Underutilized, Empty, and Drifted.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -130,13 +130,13 @@ pub struct NodePoolTemplate {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodePoolTemplateMetadata {
-    /// Annotations is an unstructured key value map stored with a resource that may be
+    /// annotations is an unstructured key value map stored with a resource that may be
     /// set by external tools to store and retrieve arbitrary metadata. They are not
     /// queryable and should be preserved when modifying objects.
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Map of string keys and values that can be used to organize and categorize
+    /// labels is a map of string keys and values that can be used to organize and categorize
     /// (scope and select) objects. May match selectors of replication controllers
     /// and services.
     /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/labels>
@@ -160,13 +160,13 @@ pub struct NodePoolTemplateSpec {
     pub node_class_ref: NodePoolTemplateSpecNodeClassRef,
     /// Requirements are layered with GetLabels and applied to every node.
     pub requirements: Vec<NodePoolTemplateSpecRequirements>,
-    /// StartupTaints are taints that are applied to nodes upon startup which are expected to be removed automatically
+    /// startupTaints are taints that are applied to nodes upon startup which are expected to be removed automatically
     /// within a short period of time, typically by a DaemonSet that tolerates the taint. These are commonly used by
     /// daemonsets to allow initialization and enforce startup ordering.  StartupTaints are ignored for provisioning
     /// purposes in that pods are not required to tolerate a StartupTaint in order to have nodes provisioned for them.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupTaints")]
     pub startup_taints: Option<Vec<NodePoolTemplateSpecStartupTaints>>,
-    /// Taints will be applied to the NodeClaim's node.
+    /// taints will be applied to the NodeClaim's node.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub taints: Option<Vec<NodePoolTemplateSpecTaints>>,
     /// TerminationGracePeriod is the maximum duration the controller will wait before forcefully deleting the pods on a node, measured from when deletion is first initiated.

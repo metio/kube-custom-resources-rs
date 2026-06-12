@@ -21,7 +21,9 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct EphemeralRunnerSetSpec {
-    /// ResourceMeta carries metadata common to all internal resources
+    /// EphemeralRunnerMetadata is the metadata to be applied to all ephemeral runners created by this set.
+    /// If the EphemeralRunnerMetadata is updated, the update applies to new ephemeral runners created after the update,
+    /// but does not apply to existing ephemeral runners.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ephemeralRunnerMetadata")]
     pub ephemeral_runner_metadata: Option<EphemeralRunnerSetEphemeralRunnerMetadata>,
     /// EphemeralRunnerSpec is the spec of the ephemeral runner
@@ -35,7 +37,9 @@ pub struct EphemeralRunnerSetSpec {
     pub replicas: Option<i64>,
 }
 
-/// ResourceMeta carries metadata common to all internal resources
+/// EphemeralRunnerMetadata is the metadata to be applied to all ephemeral runners created by this set.
+/// If the EphemeralRunnerMetadata is updated, the update applies to new ephemeral runners created after the update,
+/// but does not apply to existing ephemeral runners.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EphemeralRunnerSetEphemeralRunnerMetadata {
     #[serde(default, skip_serializing_if = "Option::is_none")]

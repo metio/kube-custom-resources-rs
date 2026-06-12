@@ -1118,22 +1118,56 @@ pub struct TenantRules {
 /// Enforcement for given rule
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantRulesEnforce {
+    /// Declare the action being performed on the enforcement rule:
+    /// deny: On match, deny admission request
+    /// allow: On match, allowed admission request
+    /// audit: On match, audit (post event) of admission request
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub action: Option<TenantRulesEnforceAction>,
+    /// Enforcement for Workloads (Pods)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub workloads: Option<TenantRulesEnforceWorkloads>,
+}
+
+/// Enforcement for given rule
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum TenantRulesEnforceAction {
+    #[serde(rename = "allow")]
+    Allow,
+    #[serde(rename = "deny")]
+    Deny,
+    #[serde(rename = "audit")]
+    Audit,
+}
+
+/// Enforcement for Workloads (Pods)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TenantRulesEnforceWorkloads {
+    /// Define Pod QoS classes matched by this enforcement rule.
+    /// Supported values are Guaranteed, Burstable and BestEffort.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "qosClasses")]
+    pub qos_classes: Option<Vec<String>>,
     /// Define registries which are allowed to be used within this tenant
     /// The rules are aggregated, since you can use Regular Expressions the match registry endpoints
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub registries: Option<Vec<TenantRulesEnforceRegistries>>,
+    pub registries: Option<Vec<TenantRulesEnforceWorkloadsRegistries>>,
+    /// Define the enforcement targets this rule applies to.
+    /// If empty, each webhook applies its own backwards-compatible default.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub targets: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantRulesEnforceRegistries {
+pub struct TenantRulesEnforceWorkloadsRegistries {
+    /// Expression used to evaluate regex
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exp: Option<String>,
+    /// Negate regular Expression
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub negate: Option<bool>,
     /// Allowed PullPolicy for the given registry. Supplying no value allows all policies.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub policy: Option<Vec<String>>,
-    /// OCI Registry endpoint, is treated as regular expression.
-    pub url: String,
-    /// Requesting Resources
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub validation: Option<Vec<String>>,
 }
 
 /// Select namespaces which are going to be targeted with this rule
@@ -1172,11 +1206,11 @@ pub struct TenantRulesPermissions {
     /// Define Promotion Rules which distributed additional ClusterRoles across the Tenant
     /// for promoted ServiceAccounts.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub rules: Option<Vec<TenantRulesPermissionsRules>>,
+    pub promotions: Option<Vec<TenantRulesPermissionsPromotions>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantRulesPermissionsRules {
+pub struct TenantRulesPermissionsPromotions {
     /// ClusterRoles granted to the promoted ServiceAccounts across the Tenant
     /// kubebuilder:validation:Minimum=1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterRoles")]
@@ -1184,16 +1218,16 @@ pub struct TenantRulesPermissionsRules {
     /// Match ServiceAccounts which are promoted which are granted these additional ClusterRoles
     /// across the Tenant
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub selector: Option<TenantRulesPermissionsRulesSelector>,
+    pub selector: Option<TenantRulesPermissionsPromotionsSelector>,
 }
 
 /// Match ServiceAccounts which are promoted which are granted these additional ClusterRoles
 /// across the Tenant
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantRulesPermissionsRulesSelector {
+pub struct TenantRulesPermissionsPromotionsSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<TenantRulesPermissionsRulesSelectorMatchExpressions>>,
+    pub match_expressions: Option<Vec<TenantRulesPermissionsPromotionsSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
@@ -1204,7 +1238,7 @@ pub struct TenantRulesPermissionsRulesSelector {
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TenantRulesPermissionsRulesSelectorMatchExpressions {
+pub struct TenantRulesPermissionsPromotionsSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1485,14 +1519,15 @@ pub struct TenantStatusSpacesEnforce {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantStatusSpacesEnforceRegistry {
+    /// Expression used to evaluate regex
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exp: Option<String>,
+    /// Negate regular Expression
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub negate: Option<bool>,
     /// Allowed PullPolicy for the given registry. Supplying no value allows all policies.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub policy: Option<Vec<String>>,
-    /// OCI Registry endpoint, is treated as regular expression.
-    pub url: String,
-    /// Requesting Resources
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub validation: Option<Vec<String>>,
 }
 
 /// Managed Metadata

@@ -82,6 +82,9 @@ spec:
                 name:
                   description: "The name of the alias.\n\nRegex Pattern: `^(?!^[0-9]+$)([a-zA-Z0-9-_]+)$`"
                   type: "string"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
                 permissions:
                   description: "Permissions configures a set of Lambda permissions to grant to an alias."
                   items:

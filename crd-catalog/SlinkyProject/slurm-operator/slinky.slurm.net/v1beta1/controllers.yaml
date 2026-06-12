@@ -39,10 +39,8 @@ spec:
                   description: "accountingRef is a reference to the Accounting CR to which this has membership."
                   properties:
                     name:
-                      description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
-                      type: "string"
-                    namespace:
-                      description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
+                      default: ""
+                      description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                       type: "string"
                   type: "object"
                   x-kubernetes-map-type: "atomic"
@@ -52,13 +50,11 @@ spec:
                 configFileRefs:
                   description: "ConfigFileRefs is a list of ConfigMap references containing files to be mounted in `/etc/slurm`.\nRef: https://slurm.schedmd.com/slurm.conf.html"
                   items:
-                    description: "ObjectReference is a reference to an object."
+                    description: "LocalObjectReference contains enough information to let you locate the\nreferenced object inside the same namespace."
                     properties:
                       name:
-                        description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
-                        type: "string"
-                      namespace:
-                        description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
+                        default: ""
+                        description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                         type: "string"
                     type: "object"
                     x-kubernetes-map-type: "atomic"
@@ -67,13 +63,11 @@ spec:
                 epilogScriptRefs:
                   description: "EpilogScriptRefs is a list of epilog scripts to be mounted in `/etc/slurm`.\nRef: https://slurm.schedmd.com/prolog_epilog.html"
                   items:
-                    description: "ObjectReference is a reference to an object."
+                    description: "LocalObjectReference contains enough information to let you locate the\nreferenced object inside the same namespace."
                     properties:
                       name:
-                        description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
-                        type: "string"
-                      namespace:
-                        description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
+                        default: ""
+                        description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                         type: "string"
                     type: "object"
                     x-kubernetes-map-type: "atomic"
@@ -82,13 +76,11 @@ spec:
                 epilogSlurmctldScriptRefs:
                   description: "EpilogSlurmctldScriptRefs is a list of EpilogSlurmctld scripts to be mounted in `/etc/slurm`.\nRef: https://slurm.schedmd.com/slurm.conf.html#OPT_EpilogSlurmctld"
                   items:
-                    description: "ObjectReference is a reference to an object."
+                    description: "LocalObjectReference contains enough information to let you locate the\nreferenced object inside the same namespace."
                     properties:
                       name:
-                        description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
-                        type: "string"
-                      namespace:
-                        description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
+                        default: ""
+                        description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                         type: "string"
                     type: "object"
                     x-kubernetes-map-type: "atomic"
@@ -355,13 +347,11 @@ spec:
                 prologScriptRefs:
                   description: "PrologScriptRefs is a list of prolog scripts to be mounted in `/etc/slurm`.\nRef: https://slurm.schedmd.com/prolog_epilog.html"
                   items:
-                    description: "ObjectReference is a reference to an object."
+                    description: "LocalObjectReference contains enough information to let you locate the\nreferenced object inside the same namespace."
                     properties:
                       name:
-                        description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
-                        type: "string"
-                      namespace:
-                        description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
+                        default: ""
+                        description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                         type: "string"
                     type: "object"
                     x-kubernetes-map-type: "atomic"
@@ -370,13 +360,11 @@ spec:
                 prologSlurmctldScriptRefs:
                   description: "PrologSlurmctldScriptRefs is a list of PrologSlurmctld scripts to be mounted in `/etc/slurm`.\nRef: https://slurm.schedmd.com/slurm.conf.html#OPT_PrologSlurmctld"
                   items:
-                    description: "ObjectReference is a reference to an object."
+                    description: "LocalObjectReference contains enough information to let you locate the\nreferenced object inside the same namespace."
                     properties:
                       name:
-                        description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
-                        type: "string"
-                      namespace:
-                        description: "Namespace of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
+                        default: ""
+                        description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                         type: "string"
                     type: "object"
                     x-kubernetes-map-type: "atomic"

@@ -878,6 +878,10 @@ spec:
                 port:
                   description: "Port listen address"
                   type: "string"
+                preStopSleepSeconds:
+                  description: "PreStopSleepSeconds defines the number of seconds to sleep in the preStop lifecycle hook.\nIt gives time for load balancers to remove the pod from rotation before the pod is terminated.\nDefaults to 15 for applicable components. Set to 0 to disable."
+                  format: "int32"
+                  type: "integer"
                 priorityClassName:
                   description: "PriorityClassName class assigned to the Pods"
                   type: "string"
@@ -1102,7 +1106,7 @@ spec:
                           type: "string"
                       type: "object"
                     tz:
-                      description: "Optional argumentspecifies the IANA timezone to account for local shifts, like DST, in models sensitive to seasonal patterns"
+                      description: "Optional argument specifies the IANA timezone to account for local shifts, like DST, in models sensitive to seasonal patterns"
                       type: "string"
                   required:
                     - "datasourceURL"
@@ -1201,7 +1205,6 @@ spec:
                       type: "string"
                     maxConcurrentTasks:
                       description: "MaxConcurrentTasks defines maximum number of concurrent anomaly detection tasks"
-                      maximum: 20.0
                       minimum: 1.0
                       type: "integer"
                     pathPrefix:

@@ -204,6 +204,7 @@ pub struct ClusterExternalSecretExternalSecretSpecDataSourceRefGeneratorRef {
 pub enum ClusterExternalSecretExternalSecretSpecDataSourceRefGeneratorRefKind {
     #[serde(rename = "ACRAccessToken")]
     AcrAccessToken,
+    BeyondtrustWorkloadCredentialsDynamicSecret,
     ClusterGenerator,
     CloudsmithAccessToken,
     #[serde(rename = "ECRAuthorizationToken")]
@@ -508,6 +509,7 @@ pub struct ClusterExternalSecretExternalSecretSpecDataFromSourceRefGeneratorRef 
 pub enum ClusterExternalSecretExternalSecretSpecDataFromSourceRefGeneratorRefKind {
     #[serde(rename = "ACRAccessToken")]
     AcrAccessToken,
+    BeyondtrustWorkloadCredentialsDynamicSecret,
     ClusterGenerator,
     CloudsmithAccessToken,
     #[serde(rename = "ECRAuthorizationToken")]

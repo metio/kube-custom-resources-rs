@@ -34,7 +34,7 @@ spec:
             metadata:
               type: "object"
             spec:
-              description: "SelinuxProfileSpec defines the desired state of SelinuxProfile."
+              description: "spec defines the desired state of the SelinuxProfile."
               properties:
                 allow:
                   additionalProperties:
@@ -43,68 +43,94 @@ spec:
                         type: "string"
                       type: "array"
                     type: "object"
-                  description: "Defines the allow policy for the profile"
+                  description: "allow defines the allow policy for the profile."
                   type: "object"
-                disabled:
-                  default: false
-                  description: "Whether the profile is disabled and should be skipped during reconciliation."
-                  type: "boolean"
                 inherit:
                   default:
                     - kind: "System"
                       name: "container"
-                  description: "A SELinuxProfile or set of profiles that this inherits from.\nNote that they need to be in the same namespace."
+                  description: "inherit specifies a SELinuxProfile or set of profiles that this inherits from.\nNote that they need to be in the same namespace."
                   items:
                     properties:
                       kind:
                         default: "System"
-                        description: "The Kind of the policy that this inherits from.\nCan be a SelinuxProfile object Or \"System\" if an already\ninstalled policy will be used.\nThe allowed \"System\" policies are available in the\nSecurityProfilesOperatorDaemon instance."
+                        description: "kind specifies the type of policy that this inherits from.\nCan be a SelinuxProfile object or \"System\" if an already\ninstalled policy will be used.\nThe allowed \"System\" policies are available in the\nSecurityProfilesOperatorDaemon instance."
                         enum:
                           - "System"
                           - "SelinuxProfile"
                         type: "string"
                       name:
-                        description: "The name of the policy that this inherits from."
+                        description: "name is the name of the policy that this inherits from."
+                        minLength: 1
                         type: "string"
                     required:
                       - "name"
                     type: "object"
                   type: "array"
-                permissive:
-                  default: false
-                  description: "Permissive, when true will cause the SELinux profile to only\nlog violations instead of enforcing them."
-                  type: "boolean"
+                  x-kubernetes-list-type: "atomic"
+                mode:
+                  default: "Enforcing"
+                  description: "mode controls the enforcement mode for the SELinux profile.\nIn \"Permissive\" mode, violations are logged but allowed.\nIn \"Enforcing\" mode (the default), violations are denied."
+                  enum:
+                    - "Enforcing"
+                    - "Permissive"
+                  type: "string"
+                state:
+                  default: "Enabled"
+                  description: "state controls whether the profile is enabled or disabled for\nreconciliation. A disabled profile will be skipped."
+                  enum:
+                    - "Enabled"
+                    - "Disabled"
+                  type: "string"
               type: "object"
             status:
-              description: "SelinuxProfileStatus defines the observed state of SelinuxProfile."
+              description: "status contains the observed state of the SelinuxProfile."
               properties:
                 activeWorkloads:
+                  description: "activeWorkloads lists the workloads currently using this profile."
                   items:
                     type: "string"
                   type: "array"
+                  x-kubernetes-list-type: "set"
                 conditions:
-                  description: "Conditions of the resource."
+                  description: "conditions contains the conditions of the resource."
                   items:
-                    description: "A Condition that may apply to a resource."
+                    description: "Condition contains details for one aspect of the current state of this API Resource."
                     properties:
                       lastTransitionTime:
-                        description: "LastTransitionTime is the last time this condition transitioned from one\nstatus to another."
+                        description: "lastTransitionTime is the last time the condition transitioned from one status to another.\nThis should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable."
                         format: "date-time"
                         type: "string"
                       message:
-                        description: "A Message containing details about this condition's last transition from\none status to another, if any."
+                        description: "message is a human readable message indicating details about the transition.\nThis may be an empty string."
+                        maxLength: 32768
                         type: "string"
+                      observedGeneration:
+                        description: "observedGeneration represents the .metadata.generation that the condition was set based upon.\nFor instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date\nwith respect to the current state of the instance."
+                        format: "int64"
+                        minimum: 0.0
+                        type: "integer"
                       reason:
-                        description: "A Reason for this condition's last transition from one status to another."
+                        description: "reason contains a programmatic identifier indicating the reason for the condition's last transition.\nProducers of specific condition types may define expected values and meanings for this field,\nand whether the values are considered a guaranteed API.\nThe value should be a CamelCase string.\nThis field may not be empty."
+                        maxLength: 1024
+                        minLength: 1
+                        pattern: "^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$"
                         type: "string"
                       status:
-                        description: "Status of this condition; is it currently True, False, or Unknown?"
+                        description: "status of the condition, one of True, False, Unknown."
+                        enum:
+                          - "True"
+                          - "False"
+                          - "Unknown"
                         type: "string"
                       type:
-                        description: "Type of this condition. At most one of each condition type may apply to\na resource at any point in time."
+                        description: "type of condition in CamelCase or in foo.example.com/CamelCase."
+                        maxLength: 316
+                        pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$"
                         type: "string"
                     required:
                       - "lastTransitionTime"
+                      - "message"
                       - "reason"
                       - "status"
                       - "type"
@@ -114,14 +140,22 @@ spec:
                     - "type"
                   x-kubernetes-list-type: "map"
                 status:
-                  description: "ProfileState defines the state that the profile is in. A profile in this context\nrefers to a SeccompProfile or a SELinux profile, the states are shared between them\nas well as the management API."
+                  description: "status is the current state of the profile across nodes."
+                  enum:
+                    - "Partial"
+                    - "Disabled"
+                    - "Pending"
+                    - "InProgress"
+                    - "Installed"
+                    - "Terminating"
+                    - "Error"
                   type: "string"
                 usage:
-                  description: "Represents the string that the SelinuxProfile object can be\nreferenced as in a pod seLinuxOptions section."
+                  description: "usage represents the string that the SelinuxProfile object can be\nreferenced as in a pod seLinuxOptions section."
                   type: "string"
               type: "object"
           type: "object"
       served: true
-      storage: true
+      storage: false
       subresources:
         status: {}

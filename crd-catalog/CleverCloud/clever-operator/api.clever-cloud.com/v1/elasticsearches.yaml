@@ -42,7 +42,7 @@ spec:
           jsonPath: ".spec.options.kibana"
           name: "kibana"
           type: "boolean"
-        - description: "Application Perfomance Monitoring"
+        - description: "Application Performance Monitoring"
           jsonPath: ".spec.options.apm"
           name: "apm"
           type: "boolean"
@@ -75,6 +75,7 @@ spec:
                       enum:
                         - 7
                         - 8
+                        - 9
                       type: "integer"
                   required:
                     - "apm"

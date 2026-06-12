@@ -55,6 +55,22 @@ spec:
                 clusterVersion:
                   description: "ClusterVersion defines default images tag for all components.\nit can be overwritten with component specific image.tag value."
                   type: "string"
+                discovery:
+                  description: "Discovery configures automatic vmstorage node discovery for vminsert and vmselect.\nThis is an enterprise feature and requires a valid license key.\nSee https://docs.victoriametrics.com/victoriametrics/cluster-victoriametrics/#automatic-vmstorage-discovery"
+                  properties:
+                    enabled:
+                      description: "Enabled turns on automatic vmstorage node discovery via DNS SRV records.\nThis is an enterprise feature and requires a valid license key.\nSee https://docs.victoriametrics.com/victoriametrics/cluster-victoriametrics/#automatic-vmstorage-discovery"
+                      type: "boolean"
+                    filter:
+                      description: "Filter is an optional regexp filter applied to discovered vmstorage addresses.\nOnly addresses matching the filter are used; non-matching addresses are ignored."
+                      type: "string"
+                    interval:
+                      description: "Interval is the interval for refreshing the vmstorage node list resolved from DNS SRV records.\nThe minimum supported value is 1s.\nDefaults to 2s if not set."
+                      pattern: "^[0-9]+(s|m|h)$"
+                      type: "string"
+                  required:
+                    - "enabled"
+                  type: "object"
                 downsampling:
                   description: "Downsampling defines downsampling rules applied to vmselect and vmstorage components.\nRequires enterprise license. See https://docs.victoriametrics.com/victoriametrics/cluster-victoriametrics/#downsampling"
                   properties:
@@ -209,6 +225,22 @@ spec:
                     disableSelfServiceScrape:
                       description: "DisableSelfServiceScrape controls creation of VMServiceScrape by operator\nfor the application.\nHas priority over `VM_DISABLESELFSERVICESCRAPECREATION` operator env variable"
                       type: "boolean"
+                    discovery:
+                      description: "Discovery overrides the cluster-level discovery config for vminsert."
+                      properties:
+                        enabled:
+                          description: "Enabled turns on automatic vmstorage node discovery via DNS SRV records.\nThis is an enterprise feature and requires a valid license key.\nSee https://docs.victoriametrics.com/victoriametrics/cluster-victoriametrics/#automatic-vmstorage-discovery"
+                          type: "boolean"
+                        filter:
+                          description: "Filter is an optional regexp filter applied to discovered vmstorage addresses.\nOnly addresses matching the filter are used; non-matching addresses are ignored."
+                          type: "string"
+                        interval:
+                          description: "Interval is the interval for refreshing the vmstorage node list resolved from DNS SRV records.\nThe minimum supported value is 1s.\nDefaults to 2s if not set."
+                          pattern: "^[0-9]+(s|m|h)$"
+                          type: "string"
+                      required:
+                        - "enabled"
+                      type: "object"
                     dnsConfig:
                       description: "Specifies the DNS parameters of a pod.\nParameters specified here will be merged to the generated DNS\nconfiguration based on DNSPolicy."
                       items:
@@ -473,6 +505,10 @@ spec:
                     port:
                       description: "Port listen address"
                       type: "string"
+                    preStopSleepSeconds:
+                      description: "PreStopSleepSeconds defines the number of seconds to sleep in the preStop lifecycle hook.\nIt gives time for load balancers to remove the pod from rotation before the pod is terminated.\nDefaults to 15 for applicable components. Set to 0 to disable."
+                      format: "int32"
+                      type: "integer"
                     priorityClassName:
                       description: "PriorityClassName class assigned to the Pods"
                       type: "string"
@@ -915,6 +951,22 @@ spec:
                     disableSelfServiceScrape:
                       description: "DisableSelfServiceScrape controls creation of VMServiceScrape by operator\nfor the application.\nHas priority over `VM_DISABLESELFSERVICESCRAPECREATION` operator env variable"
                       type: "boolean"
+                    discovery:
+                      description: "Discovery overrides the cluster-level discovery config for vmselect."
+                      properties:
+                        enabled:
+                          description: "Enabled turns on automatic vmstorage node discovery via DNS SRV records.\nThis is an enterprise feature and requires a valid license key.\nSee https://docs.victoriametrics.com/victoriametrics/cluster-victoriametrics/#automatic-vmstorage-discovery"
+                          type: "boolean"
+                        filter:
+                          description: "Filter is an optional regexp filter applied to discovered vmstorage addresses.\nOnly addresses matching the filter are used; non-matching addresses are ignored."
+                          type: "string"
+                        interval:
+                          description: "Interval is the interval for refreshing the vmstorage node list resolved from DNS SRV records.\nThe minimum supported value is 1s.\nDefaults to 2s if not set."
+                          pattern: "^[0-9]+(s|m|h)$"
+                          type: "string"
+                      required:
+                        - "enabled"
+                      type: "object"
                     dnsConfig:
                       description: "Specifies the DNS parameters of a pod.\nParameters specified here will be merged to the generated DNS\nconfiguration based on DNSPolicy."
                       items:
@@ -1173,6 +1225,10 @@ spec:
                     port:
                       description: "Port listen address"
                       type: "string"
+                    preStopSleepSeconds:
+                      description: "PreStopSleepSeconds defines the number of seconds to sleep in the preStop lifecycle hook.\nIt gives time for load balancers to remove the pod from rotation before the pod is terminated.\nDefaults to 15 for applicable components. Set to 0 to disable."
+                      format: "int32"
+                      type: "integer"
                     priorityClassName:
                       description: "PriorityClassName class assigned to the Pods"
                       type: "string"
@@ -2540,6 +2596,10 @@ spec:
                     port:
                       description: "Port listen address"
                       type: "string"
+                    preStopSleepSeconds:
+                      description: "PreStopSleepSeconds defines the number of seconds to sleep in the preStop lifecycle hook.\nIt gives time for load balancers to remove the pod from rotation before the pod is terminated.\nDefaults to 15 for applicable components. Set to 0 to disable."
+                      format: "int32"
+                      type: "integer"
                     priorityClassName:
                       description: "PriorityClassName class assigned to the Pods"
                       type: "string"

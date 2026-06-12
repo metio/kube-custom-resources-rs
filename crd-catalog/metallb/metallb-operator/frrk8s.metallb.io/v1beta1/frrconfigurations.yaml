@@ -87,7 +87,7 @@ spec:
                         properties:
                           asn:
                             description: "ASN is the AS number to use for the local end of the session."
-                            format: "int32"
+                            format: "int64"
                             maximum: 4294967295.0
                             minimum: 0.0
                             type: "integer"
@@ -114,7 +114,7 @@ spec:
                                   type: "string"
                                 asn:
                                   description: "ASN is the AS number to use for the local end of the session.\nASN and DynamicASN are mutually exclusive and one of them must be specified."
-                                  format: "int32"
+                                  format: "int64"
                                   maximum: 4294967295.0
                                   minimum: 0.0
                                   type: "integer"
@@ -158,6 +158,12 @@ spec:
                                 keepaliveTime:
                                   description: "KeepaliveTime is the requested BGP keepalive time, per RFC4271.\nDefaults to 60s."
                                   type: "string"
+                                localASN:
+                                  description: "LocalASN allows advertising a different AS number to the peer using BGP's\nlocal-as feature. When set, FRR will advertise this ASN to the peer\nvia \"neighbor <peer> local-as <ASN> no-prepend replace-as\", overriding\nthe router-level ASN for this specific session.\nNote: this field is only applicable to eBGP sessions (where the peer ASN differs\nfrom the router ASN). Setting it on an iBGP session is rejected."
+                                  format: "int64"
+                                  maximum: 4294967295.0
+                                  minimum: 1.0
+                                  type: "integer"
                                 password:
                                   description: "Password to be used for establishing the BGP session.\nPassword and PasswordSecret are mutually exclusive."
                                   type: "string"

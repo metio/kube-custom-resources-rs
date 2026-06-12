@@ -7979,10 +7979,10 @@ pub struct PipeIntegrationTraitsSecurityContext {
     /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    /// Security Context RunAsNonRoot configuration (default false).
+    /// Security Context RunAsNonRoot configuration (default true).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
-    /// Security Context RunAsUser configuration (default none): this value is automatically retrieved in Openshift clusters when not explicitly set.
+    /// Security Context RunAsUser configuration (default user 1000): this value is automatically retrieved in Openshift clusters when not explicitly set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
     /// Security Context SeccompProfileType configuration (default RuntimeDefault).
@@ -10009,10 +10009,10 @@ pub struct PipeTraitsSecurityContext {
     /// Deprecated: no longer in use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    /// Security Context RunAsNonRoot configuration (default false).
+    /// Security Context RunAsNonRoot configuration (default true).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
-    /// Security Context RunAsUser configuration (default none): this value is automatically retrieved in Openshift clusters when not explicitly set.
+    /// Security Context RunAsUser configuration (default user 1000): this value is automatically retrieved in Openshift clusters when not explicitly set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
     /// Security Context SeccompProfileType configuration (default RuntimeDefault).

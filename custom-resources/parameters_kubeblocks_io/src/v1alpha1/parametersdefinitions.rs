@@ -29,6 +29,10 @@ pub struct ParametersDefinitionSpec {
     pub deleted_policy: Option<ParametersDefinitionDeletedPolicy>,
     /// List dynamic parameters.
     /// Modifications to these parameters trigger a configuration reload without requiring a process restart.
+    /// When parameter updates are applied through a ComponentDefinition config template reconfigure ExecAction,
+    /// the controller invokes the action once for each updated
+    /// parameter and appends the parameter name and value as the last arguments.
+    /// HTTP and gRPC reconfigure actions are not currently supported for parameter updates.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dynamicParameters")]
     pub dynamic_parameters: Option<Vec<String>>,
     /// Specifies the format of the configuration file and any associated parameters that are specific to the chosen format.

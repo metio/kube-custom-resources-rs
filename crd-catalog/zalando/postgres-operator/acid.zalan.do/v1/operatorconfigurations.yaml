@@ -481,13 +481,25 @@ spec:
                     enable_master_load_balancer:
                       default: true
                       type: "boolean"
+                    enable_master_node_port:
+                      default: false
+                      type: "boolean"
                     enable_master_pooler_load_balancer:
+                      default: false
+                      type: "boolean"
+                    enable_master_pooler_node_port:
                       default: false
                       type: "boolean"
                     enable_replica_load_balancer:
                       default: false
                       type: "boolean"
+                    enable_replica_node_port:
+                      default: false
+                      type: "boolean"
                     enable_replica_pooler_load_balancer:
+                      default: false
+                      type: "boolean"
+                    enable_replica_pooler_node_port:
                       default: false
                       type: "boolean"
                     external_traffic_policy:

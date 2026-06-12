@@ -301,6 +301,7 @@ pub struct PushSecretSelectorGeneratorRef {
 pub enum PushSecretSelectorGeneratorRefKind {
     #[serde(rename = "ACRAccessToken")]
     AcrAccessToken,
+    BeyondtrustWorkloadCredentialsDynamicSecret,
     ClusterGenerator,
     CloudsmithAccessToken,
     #[serde(rename = "ECRAuthorizationToken")]

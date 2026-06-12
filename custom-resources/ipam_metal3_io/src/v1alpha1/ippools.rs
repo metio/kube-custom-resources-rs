@@ -20,6 +20,14 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct IpPoolSpec {
+    /// AllocationStrategy defines how IP addresses are allocated from the pools.
+    /// "sequential" (default) allocates the first available IP.
+    /// "random" allocates a random available IP.
+    /// In both strategies, multiple pools are consumed in declaration order: a
+    /// pool is fully exhausted before the next one is used, and the strategy only
+    /// changes how an address is selected within a single pool.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocationStrategy")]
+    pub allocation_strategy: Option<IpPoolAllocationStrategy>,
     /// ClusterName is the name of the Cluster this object belongs to.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterName")]
     pub cluster_name: Option<String>,
@@ -41,6 +49,15 @@ pub struct IpPoolSpec {
     /// Prefix is the mask of the network as integer (max 128)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<i64>,
+}
+
+/// IPPoolSpec defines the desired state of IPPool.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum IpPoolAllocationStrategy {
+    #[serde(rename = "sequential")]
+    Sequential,
+    #[serde(rename = "random")]
+    Random,
 }
 
 /// MetaDataIPAddress contains the info to render th ip address. It is IP-version

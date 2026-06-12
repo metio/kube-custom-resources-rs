@@ -75,11 +75,8 @@ spec:
                                   labels:
                                     additionalProperties:
                                       type: "string"
-                                    description: "Labels to match the referenced resource. Use for cross-zone references\nwhere KDS adds a hash suffix to metadata.name. Mutually exclusive with\nName. When multiple resources match, the oldest by creation time wins."
+                                    description: "Labels to match the referenced resource. When multiple resources match,\nthe oldest by creation time wins."
                                     type: "object"
-                                  name:
-                                    description: "Name of the referenced resource (metadata.name). Use for same-cluster\nreferences. Mutually exclusive with Labels."
-                                    type: "string"
                                 required:
                                   - "kind"
                                 type: "object"

@@ -89,6 +89,10 @@ pub struct TerraformSpec {
     /// Defaults to 'None', which translates to the root path of the SourceRef.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
+    /// Plan configures options that apply only to the plan phase. They never
+    /// affect the apply phase, which always runs lock-protected.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub plan: Option<TerraformPlan>,
     /// PlanOnly specifies if the reconciliation should or should not stop at plan
     /// phase.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "planOnly")]
@@ -324,6 +328,23 @@ pub enum TerraformHealthChecksType {
     Tcp,
     #[serde(rename = "http")]
     Http,
+}
+
+/// Plan configures options that apply only to the plan phase. They never
+/// affect the apply phase, which always runs lock-protected.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TerraformPlan {
+    /// Lock controls whether the plan acquires the Terraform state lock.
+    /// 
+    /// Leaving this unset preserves the Terraform default (locking enabled).
+    /// Setting it to `false` runs `terraform plan -lock=false`, which allows
+    /// multiple plans to run concurrently (for example, parallel Branch Planner
+    /// pull requests) without serialising on the state lock.
+    /// 
+    /// Only the plan phase is affected; the apply phase always runs
+    /// lock-protected.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub lock: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

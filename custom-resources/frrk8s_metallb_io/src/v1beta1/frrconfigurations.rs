@@ -92,7 +92,7 @@ pub struct FrrConfigurationBgpBfdProfiles {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FrrConfigurationBgpRouters {
     /// ASN is the AS number to use for the local end of the session.
-    pub asn: i32,
+    pub asn: i64,
     /// ID is the BGP router ID
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -127,7 +127,7 @@ pub struct FrrConfigurationBgpRoutersNeighbors {
     /// ASN is the AS number to use for the local end of the session.
     /// ASN and DynamicASN are mutually exclusive and one of them must be specified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub asn: Option<i32>,
+    pub asn: Option<i64>,
     /// BFDProfile is the name of the BFD Profile to be used for the BFD session associated
     /// to the BGP session. If not set, the BFD session won't be set up.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bfdProfile")]
@@ -177,6 +177,14 @@ pub struct FrrConfigurationBgpRoutersNeighbors {
     /// Defaults to 60s.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepaliveTime")]
     pub keepalive_time: Option<String>,
+    /// LocalASN allows advertising a different AS number to the peer using BGP's
+    /// local-as feature. When set, FRR will advertise this ASN to the peer
+    /// via "neighbor <peer> local-as <ASN> no-prepend replace-as", overriding
+    /// the router-level ASN for this specific session.
+    /// Note: this field is only applicable to eBGP sessions (where the peer ASN differs
+    /// from the router ASN). Setting it on an iBGP session is rejected.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localASN")]
+    pub local_asn: Option<i64>,
     /// Password to be used for establishing the BGP session.
     /// Password and PasswordSecret are mutually exclusive.
     #[serde(default, skip_serializing_if = "Option::is_none")]

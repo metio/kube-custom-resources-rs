@@ -4423,6 +4423,7 @@ pub struct ComponentDefinitionConfigs {
     /// 
     /// If specified, this action overrides the global reconfigure action defined in lifecycle actions
     /// for this specific file template.
+    /// External-managed systems may define different behavior for this action entry.
     /// 
     /// The container executing this action has access to following variables:
     /// 
@@ -4457,6 +4458,7 @@ pub struct ComponentDefinitionConfigs {
 /// 
 /// If specified, this action overrides the global reconfigure action defined in lifecycle actions
 /// for this specific file template.
+/// External-managed systems may define different behavior for this action entry.
 /// 
 /// The container executing this action has access to following variables:
 /// 
@@ -4852,6 +4854,7 @@ pub struct ComponentDefinitionConfigsReconfigureRetryPolicy {
 /// 
 /// If specified, this action overrides the global reconfigure action defined in lifecycle actions
 /// for this specific file template.
+/// External-managed systems may define different behavior for this action entry.
 /// 
 /// The container executing this action has access to following variables:
 /// 
@@ -17336,6 +17339,7 @@ pub struct ComponentDefinitionScripts {
     /// 
     /// If specified, this action overrides the global reconfigure action defined in lifecycle actions
     /// for this specific file template.
+    /// External-managed systems may define different behavior for this action entry.
     /// 
     /// The container executing this action has access to following variables:
     /// 
@@ -17370,6 +17374,7 @@ pub struct ComponentDefinitionScripts {
 /// 
 /// If specified, this action overrides the global reconfigure action defined in lifecycle actions
 /// for this specific file template.
+/// External-managed systems may define different behavior for this action entry.
 /// 
 /// The container executing this action has access to following variables:
 /// 
@@ -17765,6 +17770,7 @@ pub struct ComponentDefinitionScriptsReconfigureRetryPolicy {
 /// 
 /// If specified, this action overrides the global reconfigure action defined in lifecycle actions
 /// for this specific file template.
+/// External-managed systems may define different behavior for this action entry.
 /// 
 /// The container executing this action has access to following variables:
 /// 

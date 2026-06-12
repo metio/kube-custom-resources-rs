@@ -63,6 +63,9 @@ pub struct GrafanaLibraryPanelSpec {
     /// Jsonnet project build
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonnetLib")]
     pub jsonnet_lib: Option<GrafanaLibraryPanelJsonnetLib>,
+    /// model from an OCI artifact (e.g. ghcr.io/team/dashboards:v1)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub oci: Option<GrafanaLibraryPanelOci>,
     /// plugins
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub plugins: Option<Vec<GrafanaLibraryPanelPlugins>>,
@@ -258,6 +261,40 @@ pub struct GrafanaLibraryPanelJsonnetLib {
     pub gzip_jsonnet_project: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jPath")]
     pub j_path: Option<Vec<String>>,
+}
+
+/// model from an OCI artifact (e.g. ghcr.io/team/dashboards:v1)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GrafanaLibraryPanelOci {
+    /// InsecurePlainHTTP switches the registry connection to plain HTTP (non-TLS) instead of HTTPS.
+    /// Intended for in-cluster or test registries; HTTPS registries with self-signed
+    /// certificates are not supported. Default false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecurePlainHTTP")]
+    pub insecure_plain_http: Option<bool>,
+    /// Path is the path of the file to extract from the artifact.
+    pub path: String,
+    /// PullSecretRef references a kubernetes.io/dockerconfigjson Secret in the same namespace as the CR.
+    /// If omitted, anonymous pull is attempted.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullSecretRef")]
+    pub pull_secret_ref: Option<GrafanaLibraryPanelOciPullSecretRef>,
+    /// Reference is the full OCI artifact reference including a tag or digest,
+    /// e.g. "ghcr.io/team/dashboards:v1.4.7" or
+    /// "ghcr.io/team/dashboards@sha256:abc123...". Prefer a digest for
+    /// reproducible deployments.
+    pub reference: String,
+}
+
+/// PullSecretRef references a kubernetes.io/dockerconfigjson Secret in the same namespace as the CR.
+/// If omitted, anonymous pull is attempted.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GrafanaLibraryPanelOciPullSecretRef {
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

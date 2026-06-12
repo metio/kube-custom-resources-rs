@@ -129,6 +129,10 @@ pub struct ServiceImportStatus {
     pub clusters: Option<Vec<ServiceImportStatusClusters>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
+    /// EndpointSliceObjects indicates whether imported EndpointSlice objects are
+    /// present for this ServiceImport.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointSliceObjects")]
+    pub endpoint_slice_objects: Option<ServiceImportStatusEndpointSliceObjects>,
 }
 
 /// ClusterStatus contains service configuration mapped to a specific source cluster
@@ -137,5 +141,13 @@ pub struct ServiceImportStatusClusters {
     /// cluster is the name of the exporting cluster. Must be a valid RFC-1123 DNS
     /// label.
     pub cluster: String,
+}
+
+/// status contains information about the exported services that form
+/// the multi-cluster service referenced by this ServiceImport.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ServiceImportStatusEndpointSliceObjects {
+    Present,
+    Absent,
 }
 
