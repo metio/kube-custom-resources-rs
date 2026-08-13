@@ -50,4 +50,3 @@ jobs:
           fi
         env:
           RUSTFLAGS: "--deny warnings"
-          K8S_OPENAPI_ENABLED_VERSION: "1.31"
