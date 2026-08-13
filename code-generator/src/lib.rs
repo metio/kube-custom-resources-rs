@@ -9,7 +9,8 @@ use std::path::Path;
 
 pub mod catalog;
 
-const KUBERNETES_MAJOR_VERSION: usize = 35;
+const KUBERNETES_MAJOR_VERSION: usize = 36;
+const K8S_OPENAPI_CRATE_VERSION: &str = "0.28";
 
 pub fn k8s_openapi_kubernetes_version() -> String {
     format!("v1_{}", KUBERNETES_MAJOR_VERSION)
@@ -18,6 +19,10 @@ pub fn k8s_openapi_kubernetes_version() -> String {
 pub fn kube_rs_major_version() -> String {
     // Kubernetes was at 1.33 when kube-rs 1.0.0 was released
     format!("{}", KUBERNETES_MAJOR_VERSION - 32)
+}
+
+pub fn k8s_openapi_crate_version() -> String {
+    K8S_OPENAPI_CRATE_VERSION.to_string()
 }
 
 pub fn last_path_segment<P: AsRef<Path>>(path: P) -> String {

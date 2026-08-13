@@ -20,6 +20,10 @@ categories = ["api-bindings"]
 license = "0BSD"
 repository = "https://github.com/metio/kube-custom-resources-rs"
 
+[workspace.dependencies]
+kube = { version = "{{kube_rs_major_version}}", default-features = false, features = ["derive"] }
+k8s-openapi = { version = "{{k8s_openapi_crate_version}}" }
+
 [profile.dev]
 # Disable settings to speed up builds
 debug = false

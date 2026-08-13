@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: The kube-custom-resources-rs Authors
 // SPDX-License-Identifier: 0BSD
 
+use code_generator::{k8s_openapi_crate_version, kube_rs_major_version};
 use handlebars::{to_json, Handlebars};
 use serde_json::Map;
 use std::fs;
@@ -37,6 +38,14 @@ fn main() -> Result<()> {
 
     let mut data = Map::new();
     data.insert("groups".to_string(), to_json(&groups));
+    data.insert(
+        "kube_rs_major_version".to_string(),
+        to_json(kube_rs_major_version()),
+    );
+    data.insert(
+        "k8s_openapi_crate_version".to_string(),
+        to_json(k8s_openapi_crate_version()),
+    );
 
     let cargo_toml_file =
         fs::canonicalize(format!("{}/Cargo.toml", root)).expect("absolute failed");
