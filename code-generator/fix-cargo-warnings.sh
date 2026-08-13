@@ -5,6 +5,9 @@
 
 FILTER="${1:-}"
 
+K8S_OPENAPI_ENABLED_VERSION=$(cargo run --quiet --manifest-path code-generator/Cargo.toml --bin print_k8s_openapi_enabled_version)
+export K8S_OPENAPI_ENABLED_VERSION
+
 ### Fix cargo warnings
 for group_level_directory in ./custom-resources/*; do
   group=$(basename "${group_level_directory}")
@@ -17,5 +20,5 @@ for group_level_directory in ./custom-resources/*; do
 
   # apply auto-fixable fixes
   echo "fixing ${group}"
-  K8S_OPENAPI_ENABLED_VERSION=1.34 cargo fix --lib --package "kcr_${group}" --allow-no-vcs
+  cargo fix --lib --package "kcr_${group}" --allow-no-vcs
 done

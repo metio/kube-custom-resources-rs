@@ -9,3 +9,14 @@ updates:
       interval: weekly
     assignees:
       - sebhoss
+  - package-ecosystem: cargo
+    directory: /
+    schedule:
+      interval: weekly
+    assignees:
+      - sebhoss
+    groups:
+      kube-rs:
+        patterns:
+          - kube
+          - k8s-openapi
