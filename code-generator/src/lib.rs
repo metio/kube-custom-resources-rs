@@ -25,6 +25,14 @@ pub fn k8s_openapi_crate_version() -> String {
     K8S_OPENAPI_CRATE_VERSION.to_string()
 }
 
+// Value for the `K8S_OPENAPI_ENABLED_VERSION` env var k8s-openapi's build script
+// reads to disambiguate types when multiple `v1_*` features are active at once
+// (e.g. in dev-dependencies during `cargo check`/`cargo fix`). Keep this tied to
+// KUBERNETES_MAJOR_VERSION so it can never drift out of sync on a version bump.
+pub fn k8s_openapi_enabled_version() -> String {
+    format!("1.{}", KUBERNETES_MAJOR_VERSION)
+}
+
 pub fn last_path_segment<P: AsRef<Path>>(path: P) -> String {
     path.as_ref()
         .file_name()

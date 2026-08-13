@@ -5,6 +5,9 @@
 
 FILTER="${1:-}"
 
+K8S_OPENAPI_ENABLED_VERSION=$(cargo run --quiet --manifest-path code-generator/Cargo.toml --bin print_k8s_openapi_enabled_version)
+export K8S_OPENAPI_ENABLED_VERSION
+
 ### Test custom resources
 for group_level_directory in ./custom-resources/*; do
   group=$(basename "${group_level_directory}")
@@ -17,7 +20,7 @@ for group_level_directory in ./custom-resources/*; do
 
   # apply auto-fixable fixes
   echo "testing ${group}"
-  if K8S_OPENAPI_ENABLED_VERSION=1.31 cargo check --lib --package "kcr_${group}" --locked; then
+  if cargo check --lib --package "kcr_${group}" --locked; then
     echo "${group} succeeded"
   else
     echo "${group} failed"
