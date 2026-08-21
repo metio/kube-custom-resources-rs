@@ -314,6 +314,18 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ignores: &[],
     },
     UpstreamSource {
+        project_name: "argoproj/argo-rollouts",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/argoproj/argo-rollouts/blob/master/manifests/crds/analysis-run-crd.yaml",
+            "https://github.com/argoproj/argo-rollouts/blob/master/manifests/crds/analysis-template-crd.yaml",
+            "https://github.com/argoproj/argo-rollouts/blob/master/manifests/crds/cluster-analysis-template-crd.yaml",
+            "https://github.com/argoproj/argo-rollouts/blob/master/manifests/crds/experiment-crd.yaml",
+            "https://github.com/argoproj/argo-rollouts/blob/master/manifests/crds/rollout-crd.yaml",
+        ],
+        ignores: &[],
+    },
+    UpstreamSource {
         project_name: "arsenalzp/apch-operator",
         license: APACHE_V2,
         urls: &[],
