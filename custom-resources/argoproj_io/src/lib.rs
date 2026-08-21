@@ -4,6 +4,11 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 # Available Custom Resources
 
 ## argoproj.io/v1alpha1
+- `AnalysisRun`
+- `AnalysisTemplate`
+- `ClusterAnalysisTemplate`
+- `Experiment`
+- `Rollout`
 - `Application`
 - `ApplicationSet`
 - `AppProject`

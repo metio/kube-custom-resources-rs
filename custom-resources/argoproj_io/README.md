@@ -12,6 +12,11 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 ## Available Custom Resources
 
 ### argoproj.io/v1alpha1
+- `AnalysisRun`
+- `AnalysisTemplate`
+- `ClusterAnalysisTemplate`
+- `Experiment`
+- `Rollout`
 - `Application`
 - `ApplicationSet`
 - `AppProject`
