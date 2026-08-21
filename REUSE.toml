@@ -154,6 +154,12 @@ SPDX-FileCopyrightText = "The argoproj-labs/argocd-operator Authors"
 SPDX-License-Identifier = "Apache-2.0"
 
 [[annotations]]
+path = "crd-catalog/argoproj/argo-rollouts/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The argoproj/argo-rollouts Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
 path = "crd-catalog/arsenalzp/apch-operator/**"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "The arsenalzp/apch-operator Authors"
