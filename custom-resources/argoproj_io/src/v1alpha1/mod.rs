@@ -1,5 +1,10 @@
+pub mod analysisruns;
+pub mod analysistemplates;
 pub mod applications;
 pub mod applicationsets;
 pub mod appprojects;
 pub mod argocdexports;
 pub mod argocds;
+pub mod clusteranalysistemplates;
+pub mod experiments;
+pub mod rollouts;

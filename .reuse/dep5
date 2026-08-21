@@ -103,6 +103,10 @@ Files: crd-catalog/argoproj-labs/argocd-operator/*
 Copyright: The argoproj-labs/argocd-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/argoproj/argo-rollouts/*
+Copyright: The argoproj/argo-rollouts Authors
+License: Apache-2.0
+
 Files: crd-catalog/arsenalzp/apch-operator/*
 Copyright: The arsenalzp/apch-operator Authors
 License: Apache-2.0
