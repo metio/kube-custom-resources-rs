@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: 0BSD
 
 cff-version: 1.2.0
-title: kube-custom-resources-rs
+title: Kubernetes Custom Resource Bindings for Rust
 message: If you use this software, please cite it as below.
 type: software
 authors:
