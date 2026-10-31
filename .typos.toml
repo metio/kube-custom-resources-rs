@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: The kube-custom-resources-rs Authors
+# SPDX-License-Identifier: 0BSD
+
+[default]
+extend-ignore-re = []
+
+[default.extend-words]
+edn = "edn"
+
+[default.extend-identifiers]
+
+[files]
+extend-exclude = ["LICENSES/"]

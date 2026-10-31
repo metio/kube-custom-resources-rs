@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: The kube-custom-resources-rs Authors
+# SPDX-License-Identifier: 0BSD
+
+cff-version: 1.2.0
+title: kube-custom-resources-rs
+message: If you use this software, please cite it as below.
+type: software
+authors:
+- family-names: Hoß
+  given-names: Sebastian
+  email: seb@hoß.de
+url: https://github.com/metio/kube-custom-resources-rs/
+license: 0BSD
+keywords:
+  - custom-resource
+  - custom-resource-definition
+  - kubernetes

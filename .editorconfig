@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: The kube-custom-resources-rs Authors
+# SPDX-License-Identifier: 0BSD
+
+# top-most EditorConfig file
+root = true
+
+# global rules for all files
+[*]
+charset = utf-8
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# Makefiles use tabs by convention
+[Makefile]
+indent_style = tab
+[*.mk]
+indent_style = tab

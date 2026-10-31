@@ -1,0 +1,8 @@
+// SPDX-FileCopyrightText: The kube-custom-resources-rs Authors
+// SPDX-License-Identifier: 0BSD
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "github>metio/renovate-config"
+  ]
+}

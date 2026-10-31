@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: The kube-custom-resources-rs Authors
+# SPDX-License-Identifier: 0BSD
+
+default: true
+MD010:
+  code_blocks: false
+MD013: false
+MD024:
+  siblings_only: true
+MD025:
+  front_matter_title: ""
+MD033: false
+MD060: false
