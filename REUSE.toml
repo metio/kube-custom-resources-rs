@@ -1,0 +1,2242 @@
+version = 1
+SPDX-PackageName = "kube-custom-resources-rs"
+SPDX-PackageSupplier = "Sebastian Hoß <seb@hoß.de>"
+SPDX-PackageDownloadLocation = "https://github.com/metio/kube-custom-resources-rs"
+
+[[annotations]]
+path = "crd-catalog/1Password/onepassword-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The 1Password/onepassword-operator Authors"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "crd-catalog/3scale/3scale-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The 3scale/3scale-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/3scale/apicast-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The 3scale/apicast-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/3scale-ops/marin3r/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The 3scale-ops/marin3r Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/abalki001/mariadb-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The abalki001/mariadb-operator Authors"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "crd-catalog/actions/actions-runner-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The actions/actions-runner-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aenix-io/etcd-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aenix-io/etcd-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aerospike/aerospike-kubernetes-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aerospike/aerospike-kubernetes-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/alauda/nativestor/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The alauda/nativestor Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/alexandrevilain/temporal-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The alexandrevilain/temporal-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/Altinity/clickhouse-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The Altinity/clickhouse-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/Alvearie/imaging-ingestion/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The Alvearie/imaging-ingestion Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/angeloxx/cilium-haegress-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The angeloxx/cilium-haegress-operator Authors"
+SPDX-License-Identifier = "AGPL-3.0-or-later"
+
+[[annotations]]
+path = "crd-catalog/ansible/awx-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The ansible/awx-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/antrea-io/antrea/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The antrea-io/antrea Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/apache/apisix-ingress-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The apache/apisix-ingress-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/apache/camel-k/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The apache/camel-k Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/apache/flink-kubernetes-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The apache/flink-kubernetes-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/apache/rocketmq-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The apache/rocketmq-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/apecloud/kubeblocks/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The apecloud/kubeblocks Authors"
+SPDX-License-Identifier = "AGPL-3.0-or-later"
+
+[[annotations]]
+path = "crd-catalog/Apicurio/apicurio-registry-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The Apicurio/apicurio-registry-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/apimatic/apimatic-kubernetes-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The apimatic/apimatic-kubernetes-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/application-stacks/runtime-component-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The application-stacks/runtime-component-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aquasecurity/aqua-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aquasecurity/aqua-operator Authors"
+SPDX-License-Identifier = "LicenseRef-Aqua"
+
+[[annotations]]
+path = "crd-catalog/argoproj-labs/argocd-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The argoproj-labs/argocd-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/arsenalzp/apch-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The arsenalzp/apch-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/atlasmap/atlasmap-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The atlasmap/atlasmap-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/authzed/spicedb-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The authzed/spicedb-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws/amazon-cloudwatch-agent-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws/amazon-cloudwatch-agent-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws/amazon-network-policy-controller-k8s/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws/amazon-network-policy-controller-k8s Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws/amazon-vpc-resource-controller-k8s/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws/amazon-vpc-resource-controller-k8s Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws/aws-application-networking-k8s/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws/aws-application-networking-k8s Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws/aws-app-mesh-controller-for-k8/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws/aws-app-mesh-controller-for-k8 Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws/eks-anywhere/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws/eks-anywhere Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws/karpenter-provider-aws/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws/karpenter-provider-aws Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws/zone-aware-controllers-for-k8s/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws/zone-aware-controllers-for-k8s Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws-controllers-k8s/acmpca-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws-controllers-k8s/acmpca-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws-controllers-k8s/apigatewayv2-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws-controllers-k8s/apigatewayv2-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws-controllers-k8s/applicationautoscaling-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws-controllers-k8s/applicationautoscaling-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws-controllers-k8s/cloudfront-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws-controllers-k8s/cloudfront-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws-controllers-k8s/cloudtrail-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws-controllers-k8s/cloudtrail-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws-controllers-k8s/cloudwatch-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws-controllers-k8s/cloudwatch-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws-controllers-k8s/cloudwatchlogs-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws-controllers-k8s/cloudwatchlogs-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws-controllers-k8s/documentdb-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws-controllers-k8s/documentdb-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws-controllers-k8s/dynamodb-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws-controllers-k8s/dynamodb-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws-controllers-k8s/ec2-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws-controllers-k8s/ec2-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws-controllers-k8s/ecr-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws-controllers-k8s/ecr-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws-controllers-k8s/efs-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws-controllers-k8s/efs-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws-controllers-k8s/eks-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws-controllers-k8s/eks-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws-controllers-k8s/elasticache-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws-controllers-k8s/elasticache-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws-controllers-k8s/emrcontainers-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws-controllers-k8s/emrcontainers-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws-controllers-k8s/iam-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws-controllers-k8s/iam-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws-controllers-k8s/kafka-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws-controllers-k8s/kafka-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws-controllers-k8s/keyspaces-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws-controllers-k8s/keyspaces-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws-controllers-k8s/kinesis-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws-controllers-k8s/kinesis-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws-controllers-k8s/kms-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws-controllers-k8s/kms-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws-controllers-k8s/lambda-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws-controllers-k8s/lambda-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws-controllers-k8s/memorydb-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws-controllers-k8s/memorydb-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws-controllers-k8s/mq-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws-controllers-k8s/mq-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws-controllers-k8s/networkfirewall-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws-controllers-k8s/networkfirewall-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws-controllers-k8s/opensearchservice-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws-controllers-k8s/opensearchservice-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws-controllers-k8s/organizations-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws-controllers-k8s/organizations-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws-controllers-k8s/pipes-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws-controllers-k8s/pipes-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws-controllers-k8s/prometheusservice-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws-controllers-k8s/prometheusservice-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws-controllers-k8s/rds-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws-controllers-k8s/rds-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws-controllers-k8s/route53-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws-controllers-k8s/route53-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws-controllers-k8s/route53resolver-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws-controllers-k8s/route53resolver-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws-controllers-k8s/s3-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws-controllers-k8s/s3-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws-controllers-k8s/sagemaker-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws-controllers-k8s/sagemaker-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws-controllers-k8s/secretsmanager-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws-controllers-k8s/secretsmanager-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws-controllers-k8s/sfn-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws-controllers-k8s/sfn-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws-controllers-k8s/sns-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws-controllers-k8s/sns-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/aws-controllers-k8s/sqs-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The aws-controllers-k8s/sqs-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/Azure/azure-service-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The Azure/azure-service-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/b3scale/b3scale-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The b3scale/b3scale-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/backube/snapscheduler/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The backube/snapscheduler Authors"
+SPDX-License-Identifier = "AGPL-3.0-or-later"
+
+[[annotations]]
+path = "crd-catalog/backube/volsync/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The backube/volsync Authors"
+SPDX-License-Identifier = "AGPL-3.0-or-later"
+
+[[annotations]]
+path = "crd-catalog/banzaicloud/istio-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The banzaicloud/istio-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/banzaicloud/koperator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The banzaicloud/koperator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/berops/claudie/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The berops/claudie Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/bitnami-labs/sealed-secrets/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The bitnami-labs/sealed-secrets Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/bitspur/rock8s/integration-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The bitspur/rock8s/integration-operator Authors"
+SPDX-License-Identifier = "AGPL-3.0-or-later"
+
+[[annotations]]
+path = "crd-catalog/bpfman/bpfman/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The bpfman/bpfman Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/bpfman/bpfman-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The bpfman/bpfman-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/buildpacks-community/kpack/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The buildpacks-community/kpack Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/carlosedp/lbconfig-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The carlosedp/lbconfig-operator Authors"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "crd-catalog/ceph/ceph-csi-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The ceph/ceph-csi-operator Authors"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "crd-catalog/cert-manager/cert-manager/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The cert-manager/cert-manager Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/cert-manager/trust-manager/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The cert-manager/trust-manager Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/change-metrics/monocle-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The change-metrics/monocle-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/chaosblade-io/chaosblade-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The chaosblade-io/chaosblade-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/chaos-mesh/chaos-mesh/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The chaos-mesh/chaos-mesh Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/che-incubator/kubernetes-image-puller-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The che-incubator/kubernetes-image-puller-operator Authors"
+SPDX-License-Identifier = "EPL-2.0"
+
+[[annotations]]
+path = "crd-catalog/cilium/cilium/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The cilium/cilium Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/clastix/capsule/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The clastix/capsule Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/clastix/kamaji/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The clastix/kamaji Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/CleverCloud/clever-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The CleverCloud/clever-operator Authors"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "crd-catalog/cloud-bulldozer/benchmark-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The cloud-bulldozer/benchmark-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/cloudnative-pg/cloudnative-pg/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The cloudnative-pg/cloudnative-pg Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/cloudnative-pg/plugin-barman-cloud/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The cloudnative-pg/plugin-barman-cloud Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/clusternet/clusternet/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The clusternet/clusternet Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/clusterpedia-io/clusterpedia/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The clusterpedia-io/clusterpedia Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/composable-operator/composable/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The composable-operator/composable Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/confidential-containers/operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The confidential-containers/operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/controlplaneio-fluxcd/flux-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The controlplaneio-fluxcd/flux-operator Authors"
+SPDX-License-Identifier = "AGPL-3.0-or-later"
+
+[[annotations]]
+path = "crd-catalog/couchbase-partners/helm-charts/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The couchbase-partners/helm-charts Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/craftypath/sops-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The craftypath/sops-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/crossplane/crossplane/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The crossplane/crossplane Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/CrunchyData/postgres-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The CrunchyData/postgres-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/cryostatio/cryostat-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The cryostatio/cryostat-operator Authors"
+SPDX-License-Identifier = "UPL-1.0"
+
+[[annotations]]
+path = "crd-catalog/ctron/ditto-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The ctron/ditto-operator Authors"
+SPDX-License-Identifier = "EPL-2.0"
+
+[[annotations]]
+path = "crd-catalog/ctron/hawkbit-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The ctron/hawkbit-operator Authors"
+SPDX-License-Identifier = "EPL-2.0"
+
+[[annotations]]
+path = "crd-catalog/DataDog/datadog-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The DataDog/datadog-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/datainfrahq/druid-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The datainfrahq/druid-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/devfile/api/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The devfile/api Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/devfile/registry-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The devfile/registry-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/dexidp/dex/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The dexidp/dex Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/digitalis-io/vals-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The digitalis-io/vals-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/dmesser/cockroachdb-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The dmesser/cockroachdb-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/DopplerHQ/kubernetes-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The DopplerHQ/kubernetes-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/eclipse-che/che-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The eclipse-che/che-operator Authors"
+SPDX-License-Identifier = "EPL-2.0"
+
+[[annotations]]
+path = "crd-catalog/elastic/cloud-on-k8s/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The elastic/cloud-on-k8s Authors"
+SPDX-License-Identifier = "LicenseRef-Elastic"
+
+[[annotations]]
+path = "crd-catalog/emissary-ingress/emissary/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The emissary-ingress/emissary Authors"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "crd-catalog/emqx/emqx-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The emqx/emqx-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/epam/edp-cd-pipeline-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The epam/edp-cd-pipeline-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/epam/edp-codebase-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The epam/edp-codebase-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/epam/edp-gerrit-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The epam/edp-gerrit-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/epam/edp-nexus-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The epam/edp-nexus-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/epam/edp-sonar-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The epam/edp-sonar-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/eryalito/kubensync-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The eryalito/kubensync-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/external-secrets/external-secrets/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The external-secrets/external-secrets Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/FairwindsOps/rbac-manager/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The FairwindsOps/rbac-manager Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/Flagsmith/flagsmith-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The Flagsmith/flagsmith-operator Authors"
+SPDX-License-Identifier = "LicenseRef-Flagsmith"
+
+[[annotations]]
+path = "crd-catalog/flanksource/canary-checker/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The flanksource/canary-checker Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/fluent/fluent-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The fluent/fluent-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/fluid-cloudnative/fluid/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The fluid-cloudnative/fluid Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/fluxcd/flagger/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The fluxcd/flagger Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/fluxcd/helm-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The fluxcd/helm-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/fluxcd/image-automation-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The fluxcd/image-automation-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/fluxcd/image-reflector-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The fluxcd/image-reflector-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/fluxcd/kustomize-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The fluxcd/kustomize-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/fluxcd/notification-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The fluxcd/notification-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/fluxcd/source-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The fluxcd/source-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/flux-framework/flux-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The flux-framework/flux-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/fossul/fossul/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The fossul/fossul Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/FyraLabs/chisel-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The FyraLabs/chisel-operator Authors"
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+[[annotations]]
+path = "crd-catalog/furiko-io/furiko/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The furiko-io/furiko Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/giantswarm/silence-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The giantswarm/silence-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/gitlab-org/cloud-native/gitlab-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The gitlab-org/cloud-native/gitlab-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/gitlab-org/gl-openshift/gitlab-runner-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The gitlab-org/gl-openshift/gitlab-runner-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/GoogleCloudPlatform/compute-class-api/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The GoogleCloudPlatform/compute-class-api Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/GoogleCloudPlatform/elcarro-oracle-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The GoogleCloudPlatform/elcarro-oracle-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/GoogleCloudPlatform/gke-managed-certs/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The GoogleCloudPlatform/gke-managed-certs Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/GoogleCloudPlatform/gke-networking-recipes/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The GoogleCloudPlatform/gke-networking-recipes Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/GoogleCloudPlatform/spark-on-k8s-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The GoogleCloudPlatform/spark-on-k8s-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/gp42/aws-auth-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The gp42/aws-auth-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/gpu-ninja/dex-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The gpu-ninja/dex-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/grafana/grafana-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The grafana/grafana-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/grafana/k6-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The grafana/k6-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/grafana/loki/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The grafana/loki Authors"
+SPDX-License-Identifier = "AGPL-3.0-only"
+
+[[annotations]]
+path = "crd-catalog/grafana/tempo-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The grafana/tempo-operator Authors"
+SPDX-License-Identifier = "AGPL-3.0-only"
+
+[[annotations]]
+path = "crd-catalog/gravitational/teleport/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The gravitational/teleport Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/hardbyte/netchecks/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The hardbyte/netchecks Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/hashicorp/terraform-cloud-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The hashicorp/terraform-cloud-operator Authors"
+SPDX-License-Identifier = "MPL-2.0"
+
+[[annotations]]
+path = "crd-catalog/hashicorp/vault-secrets-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The hashicorp/vault-secrets-operator Authors"
+SPDX-License-Identifier = "LicenseRef-HashiCorp"
+
+[[annotations]]
+path = "crd-catalog/hazelcast/hazelcast-platform-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The hazelcast/hazelcast-platform-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/Hyperfoil/horreum-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The Hyperfoil/horreum-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/Hyperfoil/hyperfoil-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The Hyperfoil/hyperfoil-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/hyperspike/valkey-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The hyperspike/valkey-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/IBM/varnish-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The IBM/varnish-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/infinispan/infinispan-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The infinispan/infinispan-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/instana/instana-agent-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The instana/instana-agent-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/ipfs-cluster/ipfs-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The ipfs-cluster/ipfs-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/isindir/sops-secrets-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The isindir/sops-secrets-operator Authors"
+SPDX-License-Identifier = "MPL-2.0"
+
+[[annotations]]
+path = "crd-catalog/istio/istio/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The istio/istio Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/jaegertracing/jaeger-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The jaegertracing/jaeger-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/jenkinsci/kubernetes-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The jenkinsci/kubernetes-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/k8gb-io/k8gb/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The k8gb-io/k8gb Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/k8ssandra/cass-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The k8ssandra/cass-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/k8up-io/k8up/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The k8up-io/k8up Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kaiso/kom-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kaiso/kom-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/KaotoIO/kaoto-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The KaotoIO/kaoto-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/karmada-io/karmada/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The karmada-io/karmada Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kedacore/keda/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kedacore/keda Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/keycloak/keycloak-k8s-resources/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The keycloak/keycloak-k8s-resources Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/keycloak/keycloak-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The keycloak/keycloak-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kiali/kiali-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kiali/kiali-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kiegroup/kogito-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kiegroup/kogito-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kiegroup/kogito-serverless-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kiegroup/kogito-serverless-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/knative/operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The knative/operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/konveyor/operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The konveyor/operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/koordinator-sh/koordinator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The koordinator-sh/koordinator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/krestomatio/moodle-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The krestomatio/moodle-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/ktsstudio/mirrors/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The ktsstudio/mirrors Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/Kuadrant/authorino-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The Kuadrant/authorino-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/Kuadrant/dns-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The Kuadrant/dns-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/Kuadrant/kuadrant-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The Kuadrant/kuadrant-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/Kuadrant/limitador-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The Kuadrant/limitador-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kube-green/kube-green/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kube-green/kube-green Authors"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "crd-catalog/kube-logging/logging-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kube-logging/logging-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kubean-io/kubean/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kubean-io/kubean Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kubecost/cluster-turndown/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kubecost/cluster-turndown Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kubedl-io/kubedl/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kubedl-io/kubedl Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kubeedge/kubeedge/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kubeedge/kubeedge Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kubemod/kubemod/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kubemod/kubemod Authors"
+SPDX-License-Identifier = "LicenseRef-Kubemod"
+
+[[annotations]]
+path = "crd-catalog/kubernetes-csi/external-snapshotter/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kubernetes-csi/external-snapshotter Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kubernetes-sigs/about-api/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kubernetes-sigs/about-api Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kubernetes-sigs/application/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kubernetes-sigs/application Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kubernetes-sigs/aws-load-balancer-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kubernetes-sigs/aws-load-balancer-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kubernetes-sigs/boskos/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kubernetes-sigs/boskos Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kubernetes-sigs/cluster-api/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kubernetes-sigs/cluster-api Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kubernetes-sigs/cluster-api-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kubernetes-sigs/cluster-api-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kubernetes-sigs/cluster-api-provider-ibmcloud/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kubernetes-sigs/cluster-api-provider-ibmcloud Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kubernetes-sigs/cluster-api-provider-kubevirt/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kubernetes-sigs/cluster-api-provider-kubevirt Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kubernetes-sigs/cluster-api-provider-vsphere/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kubernetes-sigs/cluster-api-provider-vsphere Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kubernetes-sigs/container-object-storage-interface/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kubernetes-sigs/container-object-storage-interface Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kubernetes-sigs/external-dns/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kubernetes-sigs/external-dns Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kubernetes-sigs/gateway-api/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kubernetes-sigs/gateway-api Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kubernetes-sigs/hierarchical-namespaces/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kubernetes-sigs/hierarchical-namespaces Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kubernetes-sigs/jobset/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kubernetes-sigs/jobset Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kubernetes-sigs/kernel-module-management/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kubernetes-sigs/kernel-module-management Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kubernetes-sigs/kueue/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kubernetes-sigs/kueue Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kubernetes-sigs/lws/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kubernetes-sigs/lws Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kubernetes-sigs/mcs-api/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kubernetes-sigs/mcs-api Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kubernetes-sigs/network-policy-api/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kubernetes-sigs/network-policy-api Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kubernetes-sigs/node-feature-discovery-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kubernetes-sigs/node-feature-discovery-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kubernetes-sigs/secrets-store-csi-driver/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kubernetes-sigs/secrets-store-csi-driver Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kubernetes-sigs/security-profiles-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kubernetes-sigs/security-profiles-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kubernetes-sigs/wg-policy-prototypes/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kubernetes-sigs/wg-policy-prototypes Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kubernetes-sigs/work-api/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kubernetes-sigs/work-api Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kubernetes/autoscaler/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kubernetes/autoscaler Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kubeshop/testkube-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kubeshop/testkube-operator Authors"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "crd-catalog/kubesphere-sigs/ks-releaser-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kubesphere-sigs/ks-releaser-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kubev2v/forklift/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kubev2v/forklift Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kubevious/workload-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kubevious/workload-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kubewharf/kubeadmiral/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kubewharf/kubeadmiral Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kumahq/kuma/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kumahq/kuma Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kyverno/chainsaw/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kyverno/chainsaw Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/kyverno/kyverno/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kyverno/kyverno Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/l7mp/stunner/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The l7mp/stunner Authors"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "crd-catalog/leaksignal/leaksignal-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The leaksignal/leaksignal-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/Lerentis/bitwarden-crd-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The Lerentis/bitwarden-crd-operator Authors"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "crd-catalog/lightbend/akka-cluster-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The lightbend/akka-cluster-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/linki/cloudformation-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The linki/cloudformation-operator Authors"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "crd-catalog/LinuxSuRen/api-testing/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The LinuxSuRen/api-testing Authors"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "crd-catalog/LinuxSuRen/atest-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The LinuxSuRen/atest-operator Authors"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "crd-catalog/litmuschaos/chaos-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The litmuschaos/chaos-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/longhorn/longhorn/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The longhorn/longhorn Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/lukaszraczylo/jobs-manager-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The lukaszraczylo/jobs-manager-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/m88i/nexus-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The m88i/nexus-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/maistra/istio-workspace/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The maistra/istio-workspace Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/mariadb-operator/mariadb-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The mariadb-operator/mariadb-operator Authors"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "crd-catalog/mattermost/mattermost-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The mattermost/mattermost-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/medik8s/fence-agents-remediation/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The medik8s/fence-agents-remediation Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/medik8s/machine-deletion-remediation/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The medik8s/machine-deletion-remediation Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/medik8s/node-healthcheck-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The medik8s/node-healthcheck-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/medik8s/self-node-remediation/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The medik8s/self-node-remediation Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/metacontroller/metacontroller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The metacontroller/metacontroller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/metal3-io/baremetal-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The metal3-io/baremetal-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/metal3-io/ip-address-manager/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The metal3-io/ip-address-manager Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/metallb/metallb-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The metallb/metallb-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/microcks/microcks-ansible-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The microcks/microcks-ansible-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/migtools/crane-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The migtools/crane-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/minio/operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The minio/operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/mittwald/kubernetes-secret-generator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The mittwald/kubernetes-secret-generator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/nats-io/nack/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The nats-io/nack Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/NetApp/trident/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The NetApp/trident Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/netbirdio/kubernetes-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The netbirdio/kubernetes-operator Authors"
+SPDX-License-Identifier = "BSD-3-Clause"
+
+[[annotations]]
+path = "crd-catalog/netobserv/network-observability-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The netobserv/network-observability-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/nginxinc/kubernetes-ingress/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The nginxinc/kubernetes-ingress Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/nginxinc/nginx-kubernetes-gateway/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The nginxinc/nginx-kubernetes-gateway Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/nmstate/kubernetes-nmstate/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The nmstate/kubernetes-nmstate Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/opdev/synapse-helm/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The opdev/synapse-helm Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/open-cluster-management-io/ocm/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The open-cluster-management-io/ocm Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/open-feature/open-feature-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The open-feature/open-feature-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/open-policy-agent/gatekeeper/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The open-policy-agent/gatekeeper Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/open-telemetry/opentelemetry-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The open-telemetry/opentelemetry-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/opensearch-project/opensearch-k8s-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The opensearch-project/opensearch-k8s-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/openshift/certman-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The openshift/certman-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/openshift/hive/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The openshift/hive Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/openshift/managed-upgrade-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The openshift/managed-upgrade-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/openshift/ocm-agent-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The openshift/ocm-agent-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/openshift/ptp-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The openshift/ptp-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/openshift/sriov-network-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The openshift/sriov-network-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/otterize/helm-charts/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The otterize/helm-charts Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/percona/everest-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The percona/everest-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/percona/percona-postgresql-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The percona/percona-postgresql-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/percona/percona-server-mongodb-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The percona/percona-server-mongodb-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/percona/percona-server-mysql-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The percona/percona-server-mysql-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/percona/percona-xtradb-cluster-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The percona/percona-xtradb-cluster-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/perses/perses-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The perses/perses-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/planetscale/vitess-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The planetscale/vitess-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/pravega/zookeeper-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The pravega/zookeeper-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/project-akri/akri/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The project-akri/akri Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/project-codeflare/codeflare-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The project-codeflare/codeflare-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/projectcalico/calico/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The projectcalico/calico Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/projectcapsule/capsule/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The projectcapsule/capsule Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/projectcontour/contour/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The projectcontour/contour Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/prometheus-operator/prometheus-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The prometheus-operator/prometheus-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/pulp/pulp-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The pulp/pulp-operator Authors"
+SPDX-License-Identifier = "GPL-2.0-or-later"
+
+[[annotations]]
+path = "crd-catalog/quay/container-security-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The quay/container-security-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/quay/quay-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The quay/quay-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/radius-project/radius/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The radius-project/radius Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/rancher/system-upgrade-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The rancher/system-upgrade-controller Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/ray-project/kuberay/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The ray-project/kuberay Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/reddec/keycloak-ext-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The reddec/keycloak-ext-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/redhat-cop/keepalived-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The redhat-cop/keepalived-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/redhat-cop/namespace-configuration-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The redhat-cop/namespace-configuration-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/redhat-cop/patch-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The redhat-cop/patch-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/redhat-cop/vault-config-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The redhat-cop/vault-config-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/redhat-developer/service-binding-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The redhat-developer/service-binding-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/redhat-performance/cluster-impairment-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The redhat-performance/cluster-impairment-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/RedisLabs/redis-enterprise-k8s-docs/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The RedisLabs/redis-enterprise-k8s-docs Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/replicatedhq/troubleshoot/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The replicatedhq/troubleshoot Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/ROCm/gpu-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The ROCm/gpu-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/rook/rook/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The rook/rook Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/schemahero/schemahero/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The schemahero/schemahero Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/scylladb/scylla-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The scylladb/scylla-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/sematext/sematext-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The sematext/sematext-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/shipwright-io/build/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The shipwright-io/build Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/shipwright-io/operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The shipwright-io/operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/sigstore/sigstore-helm-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The sigstore/sigstore-helm-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/SlinkyProject/slurm-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The SlinkyProject/slurm-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/slok/sloth/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The slok/sloth Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/smartxworks/virtink/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The smartxworks/virtink Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/snapp-incubator/ceph-s3-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The snapp-incubator/ceph-s3-operator Authors"
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+[[annotations]]
+path = "crd-catalog/snyk/kubernetes-monitor/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The snyk/kubernetes-monitor Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/SolaceProducts/pubsubplus-kubernetes-quickstart/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The SolaceProducts/pubsubplus-kubernetes-quickstart Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/solo-io/gloo/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The solo-io/gloo Authors"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "crd-catalog/SparebankenVest/azure-key-vault-to-kubernetes/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The SparebankenVest/azure-key-vault-to-kubernetes Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/spidernet-io/egressgateway/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The spidernet-io/egressgateway Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/spotahome/redis-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The spotahome/redis-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/stackabletech/airflow-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The stackabletech/airflow-operator Authors"
+SPDX-License-Identifier = "OSL-3.0"
+
+[[annotations]]
+path = "crd-catalog/stackabletech/commons-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The stackabletech/commons-operator Authors"
+SPDX-License-Identifier = "OSL-3.0"
+
+[[annotations]]
+path = "crd-catalog/stackabletech/druid-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The stackabletech/druid-operator Authors"
+SPDX-License-Identifier = "OSL-3.0"
+
+[[annotations]]
+path = "crd-catalog/stackabletech/edc-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The stackabletech/edc-operator Authors"
+SPDX-License-Identifier = "OSL-3.0"
+
+[[annotations]]
+path = "crd-catalog/stackabletech/hbase-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The stackabletech/hbase-operator Authors"
+SPDX-License-Identifier = "OSL-3.0"
+
+[[annotations]]
+path = "crd-catalog/stackabletech/hdfs-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The stackabletech/hdfs-operator Authors"
+SPDX-License-Identifier = "OSL-3.0"
+
+[[annotations]]
+path = "crd-catalog/stackabletech/hive-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The stackabletech/hive-operator Authors"
+SPDX-License-Identifier = "OSL-3.0"
+
+[[annotations]]
+path = "crd-catalog/stackabletech/kafka-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The stackabletech/kafka-operator Authors"
+SPDX-License-Identifier = "OSL-3.0"
+
+[[annotations]]
+path = "crd-catalog/stackabletech/listener-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The stackabletech/listener-operator Authors"
+SPDX-License-Identifier = "OSL-3.0"
+
+[[annotations]]
+path = "crd-catalog/stackabletech/nifi-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The stackabletech/nifi-operator Authors"
+SPDX-License-Identifier = "OSL-3.0"
+
+[[annotations]]
+path = "crd-catalog/stackabletech/opa-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The stackabletech/opa-operator Authors"
+SPDX-License-Identifier = "OSL-3.0"
+
+[[annotations]]
+path = "crd-catalog/stackabletech/secret-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The stackabletech/secret-operator Authors"
+SPDX-License-Identifier = "OSL-3.0"
+
+[[annotations]]
+path = "crd-catalog/stackabletech/spark-k8s-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The stackabletech/spark-k8s-operator Authors"
+SPDX-License-Identifier = "OSL-3.0"
+
+[[annotations]]
+path = "crd-catalog/stackabletech/superset-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The stackabletech/superset-operator Authors"
+SPDX-License-Identifier = "OSL-3.0"
+
+[[annotations]]
+path = "crd-catalog/stackabletech/trino-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The stackabletech/trino-operator Authors"
+SPDX-License-Identifier = "OSL-3.0"
+
+[[annotations]]
+path = "crd-catalog/stackabletech/zookeeper-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The stackabletech/zookeeper-operator Authors"
+SPDX-License-Identifier = "OSL-3.0"
+
+[[annotations]]
+path = "crd-catalog/stolostron/cluster-templates-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The stolostron/cluster-templates-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/storageos/operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The storageos/operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/strimzi/strimzi-kafka-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The strimzi/strimzi-kafka-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/submariner-io/submariner-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The submariner-io/submariner-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/superedge/superedge/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The superedge/superedge Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/tektoncd/operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The tektoncd/operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/teseraio/ensemble/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The teseraio/ensemble Authors"
+SPDX-License-Identifier = "MPL-2.0"
+
+[[annotations]]
+path = "crd-catalog/theketchio/ketch/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The theketchio/ketch Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/ThinkParQ/beegfs-csi-driver/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The ThinkParQ/beegfs-csi-driver Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/tigera/operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The tigera/operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/tinkerbell/cluster-api-provider-tinkerbell/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The tinkerbell/cluster-api-provider-tinkerbell Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/tinkerbell/operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The tinkerbell/operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/tinkerbell/rufio/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The tinkerbell/rufio Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/tinkerbell/tink/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The tinkerbell/tink Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/traefik/traefik/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The traefik/traefik Authors"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "crd-catalog/tungstenfabric/tf-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The tungstenfabric/tf-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/validatedpatterns/patterns-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The validatedpatterns/patterns-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/VictoriaMetrics/operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The VictoriaMetrics/operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/vmware-tanzu/velero/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The vmware-tanzu/velero Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/volcano-sh/volcano/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The volcano-sh/volcano Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/weaveworks/tf-controller/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The weaveworks/tf-controller Authors"
+SPDX-License-Identifier = "MPL-2.0"
+
+[[annotations]]
+path = "crd-catalog/wildfly/wildfly-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The wildfly/wildfly-operator Authors"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "crd-catalog/zalando/postgres-operator/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The zalando/postgres-operator Authors"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "code-generator/src/templates**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kube-custom-resources-rs Authors"
+SPDX-License-Identifier = "0BSD"
+
+[[annotations]]
+path = "custom-resources/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The kube-custom-resources-rs Authors"
+SPDX-License-Identifier = "0BSD"
