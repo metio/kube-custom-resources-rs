@@ -6,15 +6,19 @@ on:
   schedule:
     - cron: 40 5 * * SAT
   workflow_dispatch:
+permissions:
+  contents: read
+
 jobs:
   release:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: read
     steps:
       - id: checkout
         name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
       - id: commits
@@ -26,9 +30,9 @@ jobs:
         run: echo "version=3.$(date --utc +'%Y%m%d').$(date --utc +'%-H%M%S')" >> $GITHUB_OUTPUT
       - name: Set up Rust
         if: steps.commits.outputs.count > 0
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec # stable
       - name: Install cargo-workspaces
-        uses: taiki-e/install-action@v2
+        uses: taiki-e/install-action@68a389c788b2cd04016ce8c80ee23b80d2ab3d68 # v2
         with:
           tool: cargo-edit
       - name: Cargo Version
