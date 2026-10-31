@@ -6,19 +6,23 @@ on:
   schedule:
     - cron: 53 9 * * FRI
   workflow_dispatch:
+permissions:
+  contents: read
+
 jobs:
   update:
     name: Update CRDs
     runs-on: ubuntu-latest
+    timeout-minutes: 120
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           fetch-depth: 0
       - name: Set up Rust
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec # stable
       - name: Cache Dependencies
-        uses: Swatinem/rust-cache@v2
+        uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2
       - name: Install kopium
         run: cargo install kopium
       - name: Verify kopium
@@ -37,7 +41,7 @@ jobs:
           K8S_OPENAPI_ENABLED_VERSION: "1.31"
       - id: cpr
         name: Create Pull Request
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@22a9089034f40e5a961c8808d113e2c98fb63676 # v7
         with:
           token: ${{ secrets.PAT }}
           commit-message: Update upstream specifications to their latest version
