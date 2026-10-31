@@ -1,9 +1,9 @@
 <!--
 SPDX-FileCopyrightText: The kube-custom-resources-rs Authors
 SPDX-License-Identifier: 0BSD
- -->
+-->
 
-# Kubernetes Custom Resource Bindings for Rust [![Chat](https://img.shields.io/badge/matrix-%23talk.metio:matrix.org-brightgreen.svg?style=social&label=Matrix)](https://matrix.to/#/#talk.metio:matrix.org)
+# Kubernetes Custom Resource Bindings for Rust
 
 This repository contains [kube-rs](https://kube.rs/) compatible bindings for Kubernetes [custom resources](https://kubernetes.io/docs/tasks/extend-kubernetes/custom-resources/custom-resource-definitions/) generated with [kopium](https://github.com/kube-rs/kopium).
 
@@ -497,3 +497,7 @@ The following groups are available:
 - [zonecontrol.k8s.aws](https://crates.io/crates/kcr_zonecontrol_k8s_aws)
 - [zookeeper.pravega.io](https://crates.io/crates/kcr_zookeeper_pravega_io)
 - [zookeeper.stackable.tech](https://crates.io/crates/kcr_zookeeper_stackable_tech)
+
+## License
+
+[0BSD](LICENSES/0BSD.txt).
