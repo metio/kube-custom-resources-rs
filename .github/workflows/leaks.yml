@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: The kube-custom-resources-rs Authors
+# SPDX-License-Identifier: 0BSD
+
+name: Leaks
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  leaks:
+    name: leaks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: metio/ci/leaks@ac4eab9855ea1c083e82ee4a143a4ecaa9f1cb4f # 2026.10.31214114
