@@ -33,8 +33,6 @@ jobs:
               ./code-generator/fix-cargo-warnings.sh "${group}"
             fi
           done
-        env:
-          K8S_OPENAPI_ENABLED_VERSION: "1.31"
       - id: cpr
         name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
