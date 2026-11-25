@@ -1,0 +1,39 @@
+# SPDX-FileCopyrightText: The kube-custom-resources-rs Authors
+# SPDX-License-Identifier: 0BSD
+
+# The leaks job of metio/ci's baseline, called as its action. The reusable
+# baseline workflow also runs policy-check, whose rules the generated release
+# workflows do not meet yet. The required check is the `Baseline` job, so moving
+# to the reusable workflow later leaves branch protection untouched.
+name: Baseline
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  merge_group:
+
+permissions:
+  contents: read
+
+jobs:
+  leaks:
+    name: leaks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: metio/ci/leaks@481c52330329f9256f7f3d895da0ff54ede66603 # 2026.11.23065533
+  baseline:
+    name: Baseline
+    needs: [leaks]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - env:
+          RESULT: ${{ needs.leaks.result }}
+        run: '[ "$RESULT" = success ] || { echo "::error::the leaks check ended in $RESULT"; exit 1; }'
